@@ -1,0 +1,140 @@
+.addMember .avatar
+{
+    display: inline-block; 
+
+    width: 30px;
+}
+
+.addMember-items
+{
+    display: inline-block;
+
+    margin-bottom: 0;
+    padding-left: 0;
+
+    list-style: none;
+
+    vertical-align: middle;
+}
+
+.addMember-item
+{
+    position: relative;
+
+    display: inline-block;
+
+    margin-right: 10px;
+}
+.addMember-item:hover .addMember-remove
+{
+    display: block;
+}
+
+.addMember-remove
+{
+    font-size: 10px;
+    line-height: 1;
+
+    position: absolute;
+    top: -2px; 
+    right: -2px;
+
+    display: none;
+
+    cursor: pointer;
+
+    color: #f44336;
+    border-radius: 50%;
+    background-color: #fff;
+}
+
+.addMember-trigger
+{
+    position: relative;
+
+    display: inline-block;
+
+    vertical-align: middle;
+}
+.addMember-trigger-button
+{
+    line-height: 28px;
+
+    width: 30px;
+    height: 30px;
+
+    cursor: pointer; 
+    text-align: center;
+
+    color: #fff;
+    border-radius: 50%;
+    background-color: #dcdfe3;
+}
+.addMember-trigger-button:hover
+{
+    background-color: #e6e9ed;
+}
+.addMember-trigger-dropdown
+{
+    position: absolute;
+    z-index: 1200; 
+    top: 0;
+    left: 45px;
+
+    display: none;
+
+    padding: 1px;
+
+    background-color: #fff;
+    -webkit-box-shadow: 0 2px 12px rgba(0, 0, 0, .2);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, .2);
+}
+.addMember-trigger-dropdown:before
+{
+    position: absolute;
+    top: 6px; 
+    left: -19px;
+
+    display: block;
+
+    width: 0;
+    height: 0;
+
+    content: '';
+
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent #fff transparent transparent;
+}
+.addMember-trigger.addMember-active .addMember-trigger-dropdown
+{
+    display: block;
+}
+
+.addMember-list
+{
+    overflow-y: auto; 
+
+    max-height: 260px;
+    margin-bottom: 0;
+    padding-left: 0;
+
+    list-style: none;
+}
+.addMember-list-item
+{
+    margin-bottom: 1px;
+    padding: 8px 20px;
+
+    cursor: pointer; 
+    white-space: nowrap;
+}
+.addMember-list-item > .avatar
+{
+    margin-right: 10px;
+}
+.addMember-list-item.addMember-selected,
+.addMember-list-item:hover
+{
+    background-color: #eee;
+}

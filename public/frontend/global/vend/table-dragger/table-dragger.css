@@ -1,0 +1,138 @@
+@charset 'UTF-8';
+.table-dragger-handle
+{
+    font-family: 'Material Design Iconic';
+    font-weight: normal;
+    font-style: normal;
+
+    position: relative;
+
+    display: inline-block;
+
+    margin-left: .3em; 
+
+    -webkit-transform: translate(0, 0);
+        -ms-transform: translate(0, 0);
+         -o-transform: translate(0, 0);
+            transform: translate(0, 0);
+
+    text-rendering: auto;
+    speak: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.table-dragger-handle:before
+{
+    content: '';
+}
+
+.sindu_dragger
+{
+    overflow: hidden;
+
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box; 
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+.sindu_handle
+{
+    cursor: move;
+}
+
+.sindu_dragger table
+{
+    background: #eee;
+}
+
+.sindu_dragger li
+{
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+
+    text-align: inherit;
+}
+
+.sindu_dragger li table,
+.sindu_dragger tr,
+.sindu_dragger th,
+.sindu_dragger td
+{
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+}
+
+.gu-mirror
+{
+    list-style: none;
+}
+
+.sindu_dragger.sindu_column li
+{
+    float: left;
+}
+
+.sindu_dragging .sindu_origin_table
+{
+    visibility: hidden;
+}
+
+.gu-mirror
+{
+    position: fixed !important;
+    z-index: 9999 !important;
+
+    margin: 0 !important;
+
+    opacity: .8;
+}
+
+.gu-mirror li
+{
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+
+    text-align: inherit;
+}
+
+.gu-mirror table
+{
+    background: #e0e0e0;
+}
+
+.gu-mirror li table,
+.gu-mirror tr,
+.gu-mirror th,
+.gu-mirror td
+{
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+}
+
+.gu-hide
+{
+    display: none !important;
+}
+
+.gu-unselectable
+{
+    -webkit-user-select: none !important;
+       -moz-user-select: none !important;
+        -ms-user-select: none !important;
+            user-select: none !important;
+}
+
+.gu-transit
+{
+    opacity: .5;
+}

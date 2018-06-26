@@ -1,0 +1,32 @@
+.ui-helper-hidden {
+  display: none;
+}
+
+.ui-helper-hidden-accessible {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  border: 0;
+}
+
+.btn-group label.btn {
+  margin-bottom: 0;
+}
+
+@media (max-width: 991px) {
+  #custom_view .panel-actions {
+    position: relative;
+    top: 0;
+    right: 0;
+    float: right;
+    padding: 0 30px 10px;
+    -webkit-transform: none;
+        -ms-transform: none;
+         -o-transform: none;
+            transform: none;
+  }
+}

@@ -1,0 +1,37 @@
+/**
+ * Framework7 Icons, 0.8.9
+ * Created by Vladimir Kharlampidi
+ * http://framework7.io/icons/
+ * MIT License
+ */
+@font-face
+{
+    font-family: 'Framework7 Icons';
+    font-weight: normal;
+    font-style: normal; 
+
+    src: url('./framework7.eot?v=0.8.9');
+    src: url('./framework7.eot?#iefix&v=0.8.9') format('embedded-opentype'), url('./framework7.woff2?v=0.8.9') format('woff2'), url('./framework7.woff?v=0.8.9') format('woff'), url('./framework7.ttf?v=0.8.9') format('truetype');
+}
+
+[class^='f7-'],
+[class*=' f7-']
+{
+    font-family: 'Framework7 Icons';
+    font-weight: normal;
+    font-style: normal;
+
+    position: relative;
+
+    display: inline-block;
+
+    -webkit-transform: translate(0, 0);
+        -ms-transform: translate(0, 0);
+         -o-transform: translate(0, 0);
+            transform: translate(0, 0); 
+
+    text-rendering: auto;
+    speak: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}

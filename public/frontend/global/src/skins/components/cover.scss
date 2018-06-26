@@ -1,0 +1,28 @@
+// Name:            Cover
+//
+// Component:       `cover`
+//
+// Modifiers:       `cover-background'
+//                  `cover-image`
+//                  `cover-quote`
+//                  `cover-gallery`
+//                  `cover-iframe`
+//
+// ========================================================================
+
+
+// Modifier: `cover-quote`
+// ========================================================================
+.cover-quote {
+  border-left: none;
+  &.blockquote-reverse {
+    border-right: none;
+  }
+}
+
+// Modifier: `cover-iframe`
+// ========================================================================
+
+.cover-iframe {
+  border: 0 none;
+}
