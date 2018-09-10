@@ -11,5 +11,6 @@
 6. From the projects root folder run `sudo chmod -R 755 ../orservices`
 7. From the projects root folder run `php artisan key:generate`
 8. From the projects root folder run `php artisan migrate`
-9. From the projects root folder run `composer dump-autoload`
-10. From the projects root/database folder run `mysql -u root -p nycconections < nycconnection.sql`
+9. From the projects root folder run `php artisan db:seed`
+10. From the projects root folder run `composer dump-autoload`
+11. After login in admin panel, try synchronize of Data from Airtable.
