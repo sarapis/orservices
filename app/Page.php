@@ -22,7 +22,7 @@ class Page extends Model
      */
     protected $fillable = ['name', 'title', 'body'];
 
-    use SoftDeletes;
+    // use SoftDeletes;
     protected $dates = ['deleted_at'];
 
 }

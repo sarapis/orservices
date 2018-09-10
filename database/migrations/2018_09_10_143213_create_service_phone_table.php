@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePagesTable extends Migration
+class CreateServicePhoneTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,11 @@ class CreatePagesTable extends Migration
      */
     public function up()
     {
-        
-        Schema::create('pages', function(Blueprint $table) {
+        Schema::create('service_phone', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('title');
-            $table->text('body');
-            $table->string('files');
-            $table->timestamps();
-            $table->softDeletes();
+            $table->bigInteger('service_recordid')->nullable();
+            $table->bigInteger('phone_recordid')->nullable();
         });
-            
     }
 
     /**
@@ -33,7 +27,6 @@ class CreatePagesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('pages');
+        Schema::dropIfExists('service_phone');
     }
-
 }

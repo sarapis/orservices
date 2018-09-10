@@ -13,5 +13,7 @@ class DatabaseSeeder extends Seeder
     {
           $this->call(UsersGenerate::class);
           $this->call(AirtableGenerate::class);
+          $this->call(LayoutGenerate::class);
+          $this->call(PagesGenerate::class);
     }
 }

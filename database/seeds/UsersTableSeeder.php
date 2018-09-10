@@ -52,6 +52,6 @@ class UsersGenerate extends Seeder
 			    		'code' 			=> '1S4u7lJzehk62xDm3DgYgXXYWtbHE6gSP',
 			    		'completed' 			=> '1',
 			    ]
-		 ]);
+		 ]);    
     }
 }

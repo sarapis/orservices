@@ -16,23 +16,39 @@ class AirtableGenerate extends Seeder
 	    DB::table('airtable')->insert([
 		    [		
 	    		'id'=>'1',
-	    		'name' 		=> 'Projects'
+	    		'name' 		=> 'Services'
 		    ],
 		    [		
 	    		'id'=>'2',
-	    		'name' 			=> 'Processes_Annual'
+	    		'name' 			=> 'Locations'
 		    ],
 		    [		
 	    		'id'=>'3',
-	    		'name' 			=> 'District-Ward'
+	    		'name' 			=> 'Organizations'
 		    ],
 		    [		
 	    		'id'=>'4',
-	    		'name' 			=> 'Contacts'
+	    		'name' 			=> 'Contact'
 		    ],
 		    [		
 	    		'id'=>'5',
-	    		'name' 			=> 'Agency'
+	    		'name' 			=> 'Phones'
+		    ],
+		    [		
+	    		'id'=>'6',
+	    		'name' 			=> 'Address'
+		    ],
+		    [		
+	    		'id'=>'7',
+	    		'name' 			=> 'Schedule'
+		    ],
+		    [		
+	    		'id'=>'8',
+	    		'name' 			=> 'Taxonomy'
+		    ],
+		    [		
+	    		'id'=>'9',
+	    		'name' 			=> 'Details'
 		    ]
 		]);
     }
