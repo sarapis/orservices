@@ -9,7 +9,7 @@
 
                 <li class="">
                   <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    <img src="{{ URL::asset('/images/myPB.png') }}" alt="">{{Sentinel::getUser()->first_name.' ' .Sentinel::getUser()->last_name }}
+                    <img src="{{ URL::asset('/images/avatar.png') }}" alt="">{{Sentinel::getUser()->first_name.' ' .Sentinel::getUser()->last_name }}
                     <span class=" fa fa-angle-down"></span>
                   </a>
                   <ul class="dropdown-menu dropdown-usermenu pull-right">

@@ -28,7 +28,7 @@
 	                <span class="icon-bar"></span>
 	                <span class="icon-bar"></span>
 	            </button>
-	            <a class="navbar-brand" href="{{url('/')}}">NYC Services</a>
+	            <a class="navbar-brand" href="{{url('/')}}">{{$layout->site_name}}</a>
 	        </div>
 
 			<div class="collapse navbar-collapse" id="navbar-collapse-1">
@@ -53,7 +53,7 @@
 	<hr/>
 
 	<footer class="site-footer" style="padding-left: 40px;">
-    	<div class="site-footer-legal">© 2018<a href="https://www.participatorybudgeting.org/" style="color: #3f897a;"> Brought to you by PBP & our funders. Get updates! | Developed by Sarapis.</a></div>
+    	<div class="site-footer-legal">{!! $layout->footer !!}</div>
     
   	</footer>
 

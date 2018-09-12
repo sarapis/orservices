@@ -15,7 +15,7 @@ Login
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="dashboard_graph">
 
-                <h2>Welcome To NYC Services!</h2>
+                <h2>Welcome To {{$layout->site_name}}!</h2>
               </div>
             </div>
 

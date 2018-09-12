@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use App\Layout;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -52,8 +53,9 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
     public function showLoginForm()
-    {
-        return view('auth.login');
+    {   
+        $layout = Layout::first();
+        return view('auth.login', compact('layout'));
     }
     
     protected function login(Request $request)

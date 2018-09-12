@@ -59,7 +59,7 @@ Edit Layout
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Contact Text 
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <input id="occupation" type="text" name="contact_text" required="required" class="optional form-control col-md-7 col-xs-12" value="{{$layout->contact_text}}">
+                  <input id="occupation" type="text" name="contact_text" class="optional form-control col-md-7 col-xs-12" value="{{$layout->contact_text}}">
                 </div>
               </div>
 
@@ -67,7 +67,7 @@ Edit Layout
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Contact Button Label
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <input id="occupation" type="text" name="contact_btn_label" required="required" class="optional form-control col-md-7 col-xs-12" value="{{$layout->contact_btn_label}}">
+                  <input id="occupation" type="text" name="contact_btn_label" class="optional form-control col-md-7 col-xs-12" value="{{$layout->contact_btn_label}}">
                 </div>
               </div>
 
@@ -75,7 +75,7 @@ Edit Layout
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="website">Contact Button Link 
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <input type="url" id="website" name="contact_btn_link" required="required" placeholder="www.website.com" class="form-control col-md-7 col-xs-12" value="{{$layout->contact_btn_link}}">
+                  <input type="url" id="website" name="contact_btn_link" placeholder="www.website.com" class="form-control col-md-7 col-xs-12" value="{{$layout->contact_btn_link}}">
                 </div>
               </div>
 

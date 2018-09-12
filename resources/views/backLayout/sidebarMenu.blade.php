@@ -1,7 +1,7 @@
 
 <div class="left_col scroll-view">
   <div class="navbar nav_title" style="border: 0;">
-    <a href="{{url('dashboard')}}" class="site_title"><i class="fa fa-paw"></i> <span>NYC Services</span></a>
+    <a href="{{url('dashboard')}}" class="site_title"><span>{{$layout->site_name}}</span></a>
   </div>
 
   <div class="clearfix"></div>
@@ -34,7 +34,7 @@
         </li> -->
         <li><a><i class="fa fa-table"></i> Pages <span class="fa fa-chevron-down"></span></a>
           <ul class="nav child_menu">
-            <li><a href="/layout_edit">Layout</a></li>
+            <li><a href="/layout_edit">Site Text</a></li>
             <li><a href="/home_edit">Home</a></li>
             <li><a href="/about_edit">About</a></li>
           </ul>

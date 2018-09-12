@@ -34,6 +34,11 @@ class AppServiceProvider extends ServiceProvider
         {
             $view->with('layout', \App\Layout::first());
         });
+
+        view()->composer('backLayout.sidebarMenu', function($view)
+        {
+            $view->with('layout', \App\Layout::first());
+        });
     }
 
     /**

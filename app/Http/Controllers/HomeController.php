@@ -41,7 +41,8 @@ class HomeController extends Controller
 
     public function dashboard($value='')
     {
-    	return view('backEnd.dashboard');
+        $layout = Layout::first();
+    	return view('backEnd.dashboard', compact('layout'));
     }
 
     public function logviewerdashboard($value='')
