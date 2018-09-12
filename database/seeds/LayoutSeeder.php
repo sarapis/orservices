@@ -17,10 +17,10 @@ class LayoutGenerate extends Seeder
 			    		'logo' 		=> '1526052756.png',
 			    		'site_name' 		=> 'orservices.sarapis.org',
 			    		'tagline' 	=> 'This website provides information about health and human services available to New Yorkers.',
-			    		'contact_text' 			=> '',
-			    		'contact_btn_label' 		=> '',
-			    		'contact_btn_link' 		=> '',
-			    		'footer'  => '© 2018<a href="https://www.participatorybudgeting.org/" style="color: #3f897a;"> Brought to you by PBP &amp; our funders. Get updates! | Developed by Sarapis.</a>'
+			    		'contact_text' 			=> 'We can help you create a directory like this for your organizations.',
+			    		'contact_btn_label' 		=> 'Contact Us',
+			    		'contact_btn_link' 		=> 'http://sarapis.org/contact',
+			    		'footer'  => 'This website is produced by Sarapis, in partnership with Sahana Software Foundatioan and the Open Referral initiative.'
 			    		
 			    ]
 
