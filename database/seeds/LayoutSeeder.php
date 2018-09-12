@@ -20,7 +20,7 @@ class LayoutGenerate extends Seeder
 			    		'contact_text' 			=> '',
 			    		'contact_btn_label' 		=> '',
 			    		'contact_btn_link' 		=> '',
-			    		'footer'  => ''
+			    		'footer'  => '© 2018<a href="https://www.participatorybudgeting.org/" style="color: #3f897a;"> Brought to you by PBP &amp; our funders. Get updates! | Developed by Sarapis.</a>'
 			    		
 			    ]
 
