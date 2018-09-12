@@ -16,7 +16,7 @@ class LayoutGenerate extends Seeder
 			    [		'id' 			=> '1',
 			    		'logo' 		=> '1526052756.png',
 			    		'site_name' 		=> 'orservices.sarapis.org',
-			    		'tagline' 	=> 'This website provides information about health and human services available to New Yorkers.',
+			    		'tagline' 	=> '',
 			    		'contact_text' 			=> 'We can help you create a directory like this for your organizations.',
 			    		'contact_btn_label' 		=> 'Contact Us',
 			    		'contact_btn_link' 		=> 'http://sarapis.org/contact',
