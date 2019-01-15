@@ -17,8 +17,8 @@ class PhoneController extends Controller
 
         Phone::truncate();
         $airtable = new Airtable(array(
-            'api_key'   => 'keyIvQZcMYmjNbtUO',
-            'base'      => 'appqjWvTygtaX9eil',
+            'api_key'   => env('AIRTABLE_API_KEY'),
+            'base'      => env('AIRTABLE_BASE_URL'),
         ));
 
         $request = $airtable->getContent( 'phones' );
@@ -68,7 +68,20 @@ class PhoneController extends Controller
                     }
                 }
 
-                $phone->phone_organizations = isset($record['fields']['organizations'])? implode(",", $record['fields']['organizations']):null;
+                if(isset($record['fields']['organizations'])){
+                    $i = 0;
+                    foreach ($record['fields']['organizations']  as  $value) {
+
+                        $phoneorganization=$strtointclass->string_to_int($value);
+
+                        if($i != 0)
+                            $phone->phone_organizations = $phone->phone_organizations. ','. $phoneorganization;
+                        else
+                            $phone->phone_organizations = $phoneorganization;
+                        $i ++;
+                    }
+                }
+
                 $phone->phone_contacts = isset($record['fields']['contacts'])? implode(",", $record['fields']['contacts']):null;
                 $phone->phone_extension = isset($record['fields']['extension'])?$record['fields']['extension']:null;
                 $phone->phone_type = isset($record['fields']['type'])?$record['fields']['type']:null;

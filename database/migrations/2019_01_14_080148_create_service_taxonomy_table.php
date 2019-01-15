@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateServiceDetailTable extends Migration
+class CreateServiceTaxonomyTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateServiceDetailTable extends Migration
      */
     public function up()
     {
-        Schema::create('service_detail', function (Blueprint $table) {
+        Schema::create('service_taxonomy', function (Blueprint $table) {
             $table->increments('id');
             $table->bigInteger('service_recordid')->nullable();
-            $table->bigInteger('detail_recordid')->nullable();
+            $table->bigInteger('taxonomy_recordid')->nullable();
         });
     }
 
@@ -27,6 +27,6 @@ class CreateServiceDetailTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('service_detail');
+        Schema::dropIfExists('service_taxonomy');
     }
 }

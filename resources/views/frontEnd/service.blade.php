@@ -44,13 +44,16 @@ ul#ui-id-1 {
                         <h2>{{$service->service_name}}</h2>
                         <h4 class="panel-text"><span class="badge bg-red">Alternate Name:</span> {{$service->service_alternate_name}}</h4>
 
+                        <h4 class="panel-text"><span class="badge bg-red">Category:</span>
                         @if($service->service_taxonomy!=0)
-                        <h4><span class="badge bg-red">Category:</span> <a class="panel-link" href="/category_{{$service->taxonomy()->first()->taxonomy_recordid}}"> {{$service->taxonomy()->first()->taxonomy_name}}</a></h4>
+                        <a class="panel-link" href="/category_{{$service->taxonomy()->first()->taxonomy_recordid}}"> {{$service->taxonomy()->first()->taxonomy_name}}</a>
                         @endif
-
+                        </h4>
+                        <h4 class="panel-text"><span class="badge bg-red">Organization:</span>
                         @if($service->service_organization!=null)
-                        <h4><span class="badge bg-red">Organization:</span><a class="panel-link" href="/organization_{{$service->organization()->first()->organization_recordid}}"> {{$service->organization()->first()->organization_name}}</a></h4>
+                        <a class="panel-link" href="/organization_{{$service->organization()->first()->organization_recordid}}"> {{$service->organization()->first()->organization_name}}</a>
                         @endif
+                        </h4>
 
                         <h4 class="panel-text"><span class="badge bg-blue">Description:</span> {!! $service->service_description !!}</h4>
 

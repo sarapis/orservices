@@ -50,12 +50,13 @@ ul#ui-id-1 {
                             @endforeach
                         </h4>
                         @endif
+
                         <h4 class="panel-text"><span class="badge bg-red">Description:</span> {{$organization->organization_description}}</h4>
 
                         <h4 class="panel-text"><span class="badge bg-red">Website</span> {{$organization->organization_url}}</h4>
 
                         @if($organization->organization_phones!='')
-                        <h4 class="panel-text"><span class="badge bg-red">Main Phone:</span> @foreach($organization->phone as $phone)
+                        <h4 class="panel-text"><span class="badge bg-red">Main Phone:</span> @foreach($organization->phones as $phone)
                            {!! $phone->phone_number !!}, 
                         @endforeach</h4>
                         @endif
@@ -71,9 +72,6 @@ ul#ui-id-1 {
                             <h4><span class="badge bg-red">Service:</span><a class="panel-link" href="/service_{{$service->service_recordid}}"> {{$service->service_name}}</a></h4>
 
                             <h4><span class="badge bg-red">Category:</span><a class="panel-link" href="/category_{{$service->taxonomy()->first()->taxonomy_recordid}}"> {{$service->taxonomy()->first()->taxonomy_name}}</a></h4>
-
-                            <h4><span class="badge bg-red">Oragnization:</span><a class="panel-link" href="/organization_{{$service->organization()->first()->organization_recordid}}"> {{$service->organization()->first()->organization_name}}</a></h4>
-
 
                             <h4><span class="badge bg-red">Phone:</span> @foreach($service->phone as $phone) {!! $phone->phone_number !!} @endforeach</h4>
                             <h4><span class="badge bg-blue">Address:</span>

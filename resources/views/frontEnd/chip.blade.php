@@ -47,12 +47,19 @@ ul#ui-id-1 {
                         <div class="panel-body p-20">
                             
                             <a class="panel-link" href="/service_{{$service->service_recordid}}">{{$service->service_name}}</a>
+
+                            <h4><span class="badge bg-red">Category:</span>
                             @if($service->service_taxonomy!=0)
-                            <h4><span class="badge bg-red">Category:</span> <a class="panel-link" href="/category_{{$service->taxonomy()->first()->taxonomy_recordid}}">{{$service->taxonomy()->first()->taxonomy_name}}</a></h4>
+                            <a class="panel-link" href="/category_{{$service->taxonomy()->first()->taxonomy_recordid}}">{{$service->taxonomy()->first()->taxonomy_name}}</a>
                             @endif
-                            @if($service->service_organization!=null)
-                            <h4><span class="badge bg-red">Organization:</span><a class="panel-link" href="/organization_{{$service->organization()->first()->organization_recordid}}"> {{$service->organization()->first()->organization_name}}</a></h4>
+                            </h4>
+                            
+                            <h4><span class="badge bg-red">Organization:</span>
+                            @if($service->service_organization!=0)
+                            <a class="panel-link" href="/organization_{{$service->organizations()->first()->organization_recordid}}"> {{$service->organizations()->first()->organization_name}}</a>
                             @endif
+                            </h4>
+
                             <h4><span class="badge bg-red">Phone:</span> @foreach($service->phone as $phone) {!! $phone->phone_number !!} @endforeach</h4>
                             <h4><span class="badge bg-blue">Address:</span>
                                 @if($service->service_address!=NULL)

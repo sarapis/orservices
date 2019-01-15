@@ -14,14 +14,16 @@ class Service extends Model
     protected $primaryKey = 'service_recordid';
     
 	public $timestamps = false;
-  
 
-	public function organization()
+    public function organizations()
     {
-        return $this->belongsTo('App\Organization', 'service_organization', 'organization_recordid');
+        $this->primaryKey='service_recordid';
+
+        return $this->belongsToMany('App\Organization', 'service_organization', 'service_recordid', 'organization_recordid');
+
     }
 
-     public function locations()
+    public function locations()
     {
         $this->primaryKey='service_recordid';
 
@@ -31,7 +33,10 @@ class Service extends Model
 
     public function taxonomy()
     {
-        return $this->belongsTo('App\Taxonomy', 'service_taxonomy', 'taxonomy_recordid');
+        $this->primaryKey='service_recordid';
+
+        return $this->belongsToMany('App\Taxonomy', 'service_taxonomy', 'service_recordid', 'taxonomy_recordid');
+
     }
 
     public function phone()

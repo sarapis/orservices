@@ -5,13 +5,13 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Kyslik\ColumnSortable\Sortable;
 
-class Servicelocation extends Model
+class Serviceorganization extends Model
 {
     use Sortable;
 
     protected $primaryKey = 'id';
 
-    protected $table = 'service_location';
+    protected $table = 'service_organization';
     
 	public $timestamps = false;
 

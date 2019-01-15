@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-  <title>@yield('title')| Nycservices.sarapis</title>
+  <title>@yield('title')| {{ config('app.name') }}</title>
 
   <!-- Bootstrap -->
   <link href="{{ URL::asset('/backend/vendors/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">

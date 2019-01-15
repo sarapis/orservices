@@ -10,6 +10,8 @@ use App\Servicelocation;
 use App\Servicephone;
 use App\Servicedetail;
 use App\Serviceaddress;
+use App\Serviceorganization;
+use App\Servicetaxonomy;
 use App\Location;
 use App\Airtables;
 use App\Taxonomy;
@@ -32,10 +34,12 @@ class ServiceController extends Controller
         Serviceaddress::truncate();
         Servicephone::truncate();
         Servicedetail::truncate();
+        Serviceorganization::truncate();
+        Servicetaxonomy::truncate();
 
         $airtable = new Airtable(array(
-            'api_key'   => 'keyIvQZcMYmjNbtUO',
-            'base'      => 'appqjWvTygtaX9eil',
+            'api_key'   => env('AIRTABLE_API_KEY'),
+            'base'      => env('AIRTABLE_BASE_URL'),
         ));
 
         $request = $airtable->getContent( 'services' );
@@ -54,8 +58,24 @@ class ServiceController extends Controller
                 $strtointclass = new Stringtoint();
                 $service->service_recordid= $strtointclass->string_to_int($record[ 'id' ]);
                 $service->service_name = isset($record['fields']['name'])?$record['fields']['name']:null;
-                $service->service_organization = isset($record['fields']['organization'])? implode(",", $record['fields']['organization']):null;
-                $service->service_organization = $strtointclass->string_to_int($service->service_organization);
+
+                if(isset($record['fields']['organization'])){
+                    $i = 0;
+                    foreach ($record['fields']['organization']  as  $value) {
+                        $service_organization = new Serviceorganization();
+                        $service_organization->service_recordid=$service->service_recordid;
+                        $service_organization->organization_recordid=$strtointclass->string_to_int($value);
+                        $service_organization->save();
+                        $serviceorganization=$strtointclass->string_to_int($value);
+
+                        if($i != 0)
+                            $service->service_organization = $service->service_organization. ','. $serviceorganization;
+                        else
+                            $service->service_organization = $serviceorganization;
+                        $i ++;
+                    }
+                }
+
                 $service->service_alternate_name = isset($record['fields']['alternate_name'])?$record['fields']['alternate_name']:null;
                 $service->service_description = isset($record['fields']['description'])?$record['fields']['description']:null;
 
@@ -79,9 +99,23 @@ class ServiceController extends Controller
                 $service->service_url = isset($record['fields']['url'])?$record['fields']['url']:null;
                 $service->service_email = isset($record['fields']['email'])?$record['fields']['email']:null;
                 $service->service_status = isset($record['fields']['status'])?$record['fields']['status']:null;
-                $service->service_taxonomy = isset($record['fields']['taxonomy'])? implode(",", $record['fields']['taxonomy']):null;
 
-                $service->service_taxonomy= $strtointclass->string_to_int($service->service_taxonomy);
+                if(isset($record['fields']['taxonomy'])){
+                    $i = 0;
+                    foreach ($record['fields']['taxonomy']  as  $value) {
+                        $service_taxonomy = new Servicetaxonomy();
+                        $service_taxonomy->service_recordid=$service->service_recordid;
+                        $service_taxonomy->taxonomy_recordid=$strtointclass->string_to_int($value);
+                        $service_taxonomy->save();
+                        $servicetaxonomy=$strtointclass->string_to_int($value);
+
+                        if($i != 0)
+                            $service->service_taxonomy = $service->service_taxonomy. ','. $servicetaxonomy;
+                        else
+                            $service->service_taxonomy = $servicetaxonomy;
+                        $i ++;
+                    }
+                }
 
                 $service->service_application_process = isset($record['fields']['application_process'])?$record['fields']['application_process']:null;
                 $service->service_wait_time = isset($record['fields']['wait_time'])?$record['fields']['wait_time']:null;
@@ -189,9 +223,9 @@ class ServiceController extends Controller
 
     public function taxonomy($id)
     {
-        $chip_name = Taxonomy::find($id)->value('taxonomy_name');
+        $chip_name = Taxonomy::where('taxonomy_recordid', '=', $id)->first()->taxonomy_name;
         $chip_title = 'Category:';
-        $services = Service::where('service_taxonomy', '=', $id)->orderBy('service_name')->paginate(10);
+        $services = Service::where('service_taxonomy', 'like', '%'.$id.'%')->orderBy('service_name')->paginate(10);
         $locations = Location::where('location_organization', '=', $id)->with('services','organization')->get();
 
         return view('frontEnd.chip', compact('services', 'locations', 'chip_title', 'chip_name'));
