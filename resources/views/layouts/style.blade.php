@@ -67,7 +67,9 @@
   </script>
   <script type='text/javascript' src='//platform-api.sharethis.com/js/sharethis.js#property=5a98fe1e54d8310013ae576a&product=inline-share-buttons' async='async'></script>
   <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTMtpxeKLL1goekXSe73nSY8mtgK9q2ys&v=3.exp&callback=initMap"></script> -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDo-Ba1uQA_-eQ0zAA-ymOSrfrakLUZsHo">
+<!--     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDo-Ba1uQA_-eQ0zAA-ymOSrfrakLUZsHo">
+    </script> -->
+     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDo-Ba1uQA_-eQ0zAA-ymOSrfrakLUZsHo">
     </script>
   <script src="{{asset('js/gmaps.js')}}"></script>
 
