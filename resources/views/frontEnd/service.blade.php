@@ -51,7 +51,7 @@ ul#ui-id-1 {
                         </h4>
                         <h4 class="panel-text"><span class="badge bg-red">Organization:</span>
                         @if($service->service_organization!=null)
-                        <a class="panel-link" href="/organization_{{$service->organization()->first()->organization_recordid}}"> {{$service->organization()->first()->organization_name}}</a>
+                        <a class="panel-link" href="/organization_{{$service->organizations()->first()->organization_recordid}}"> {{$service->organizations()->first()->organization_name}}</a>
                         @endif
                         </h4>
 

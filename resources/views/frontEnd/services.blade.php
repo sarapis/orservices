@@ -45,14 +45,14 @@ ul#ui-id-1 {
                         
                         <a class="panel-link" href="/service_{{$service->service_recordid}}">{{$service->service_name}}</a>
                         <h4><span class="badge bg-red">Category:</span> 
-                            @if($service->service_taxonomy!=null)
+                            @if($service->service_taxonomy!=0)
                                 @foreach($service->taxonomy as $taxonomy)
                                 <a class="panel-link" href="/category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>,
                                 @endforeach
                             @endif    
                         </h4>
                         <h4><span class="badge bg-red">Organization:</span>
-                            @if($service->service_organization!=null)                        
+                            @if($service->service_organization!=0)                        
                                 @foreach($service->organizations as $organization)
                                 <a class="panel-link" href="/organization_{{$organization->organization_recordid}}"> {{$organization->organization_name}}</a>,
                                 @endforeach                       
@@ -102,8 +102,8 @@ ul#ui-id-1 {
         }
     }
     if(length != 0){
-        var avglat = sumlat/length;
-        var avglng = sumlng/length;
+        avglat = 40.730981;
+        avglng = -73.998107;
     }
     else
     {
@@ -118,9 +118,13 @@ ul#ui-id-1 {
       zoom:10
     });
 
+    
 
     $.each( locations, function(index, value ){
         // console.log(value);
+        var name = value.organization==null?'':value.organization.organization_name;
+        var serviceid = value.services.length == 0?'':value.services[0].service_recordid;
+        var service_name = value.services.length == 0?'':value.services[0].service_name;;
         if(value.location_latitude){
             mymap.addMarker({
 
@@ -130,7 +134,7 @@ ul#ui-id-1 {
                        
                 infoWindow: {
                     maxWidth: 250,
-                    content: ('<a href="/service_'+value.services[0].service_recordid+'" style="color:#428bca;font-weight:500;font-size:14px;">'+value.services[0].service_name+'</a><br><p>'+value.organization.organization_name+'</p>')
+                    content: ('<a href="/service_'+serviceid+'" style="color:#428bca;font-weight:500;font-size:14px;">'+service_name+'</a><br><p>'+name+'</p>')
                 }
             });
         }

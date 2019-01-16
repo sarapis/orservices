@@ -71,7 +71,13 @@ ul#ui-id-1 {
 
                             <h4><span class="badge bg-red">Service:</span><a class="panel-link" href="/service_{{$service->service_recordid}}"> {{$service->service_name}}</a></h4>
 
-                            <h4><span class="badge bg-red">Category:</span><a class="panel-link" href="/category_{{$service->taxonomy()->first()->taxonomy_recordid}}"> {{$service->taxonomy()->first()->taxonomy_name}}</a></h4>
+                            <h4><span class="badge bg-red">Category:</span>
+                            @if($service->service_taxonomy!=0)
+                                @foreach($service->taxonomy as $taxonomy)
+                                <a class="panel-link" href="/category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>,
+                                @endforeach
+                            @endif    
+                            </h4>
 
                             <h4><span class="badge bg-red">Phone:</span> @foreach($service->phone as $phone) {!! $phone->phone_number !!} @endforeach</h4>
                             <h4><span class="badge bg-blue">Address:</span>
@@ -162,7 +168,7 @@ ul#ui-id-1 {
         avglat = 40.730981;
         avglng = -73.998107;
     }
-    console.log(avglat);
+    
     var mymap = new GMaps({
       el: '#map',
       lat: avglat,
@@ -182,7 +188,7 @@ ul#ui-id-1 {
                        
                 infoWindow: {
                     maxWidth: 250,
-                    content: ('<a href="/service_" style="color:#424242;font-weight:500;font-size:14px;">'+value.services.service_name+'<br>'+organization+'</a>')
+                    content: ('<a href="/service_'+value.services[0].service_recordid+'" style="color:#428bca;font-weight:500;font-size:14px;">'+value.services[0].service_name+'</a><br><p>'+organization+'</p>')
                 }
             });
         }
