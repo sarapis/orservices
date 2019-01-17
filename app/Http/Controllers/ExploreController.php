@@ -60,8 +60,9 @@ class ExploreController extends Controller
 
         $chip_title = "Search Address:";
         $chip_name = $request->input('search_address');
-        $response = Geocode::make()->address($chip_name);
 
+        $response = Geocode::make()->address($chip_name);
+    //     $response = Geocode::make()->address('1 Infinite Loop');
     //     if ($response) {
     //         echo $response->latitude();
     //         echo $response->longitude();
