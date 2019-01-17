@@ -55,7 +55,7 @@ class HomeController extends Controller
         $chip_name = $request->input('find');
         $chip_title ="Search for Services:";
 
-        $services= Service::with(['organization', 'taxonomy'])->where('service_name', 'like', '%'.$chip_name.'%')->orwhere('service_description', 'like', '%'.$chip_name.'%')->orwhereHas('organization', function ($q)  use($chip_name){
+        $services= Service::with(['organizations', 'taxonomy'])->where('service_name', 'like', '%'.$chip_name.'%')->orwhere('service_description', 'like', '%'.$chip_name.'%')->orwhereHas('organizations', function ($q)  use($chip_name){
                     $q->where('organization_name', 'like', '%'.$chip_name.'%');
                 })->orwhereHas('taxonomy', function ($q)  use($chip_name){
                     $q->where('taxonomy_name', 'like', '%'.$chip_name.'%');
