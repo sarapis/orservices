@@ -123,8 +123,8 @@ ul#ui-id-1 {
         }
     }
     if(length != 0){
-        var avglat = sumlat/length;
-        var avglng = sumlng/length;
+        avglat = 40.730981;
+        avglng = -73.998107;
     }
     else
     {
