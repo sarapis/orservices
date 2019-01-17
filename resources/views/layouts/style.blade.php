@@ -70,7 +70,7 @@
 <!--     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDo-Ba1uQA_-eQ0zAA-ymOSrfrakLUZsHo">
     </script> -->
     
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAQNT8rJjsFbZDC_L8dP_PGCj0EV-ysqw">
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBXAMfD4r2em_zWekrkIDEmP6fiyliKzao">
     </script>
   <script src="{{asset('js/gmaps.js')}}"></script>
 
