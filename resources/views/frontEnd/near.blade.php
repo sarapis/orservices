@@ -46,12 +46,22 @@ ul#ui-id-1 {
                     <div class="panel content-panel">
                         <div class="panel-body p-20">
                             <a class="panel-link" href="/service_{{$service->service_recordid}}">{{$service->service_name}}</a>
+                            <h4><span class="badge bg-red">Category:</span> 
                             @if($service->service_taxonomy!=0)
-                            <h4><span class="badge bg-red">Category:</span> <a class="panel-link" href="/category_{{$service->taxonomy()->first()->taxonomy_recordid}}">{{$service->taxonomy()->first()->taxonomy_name}}</a></h4>
+                                @foreach($service->taxonomy as $taxonomy)
+                                <a class="panel-link" href="/category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>,
+                                @endforeach
+                            @endif    
+                            </h4>
+
+                            <h4><span class="badge bg-red">Organization:</span>
+                            @if($service->service_organization!=0)                        
+                                @foreach($service->organizations as $organization)
+                                <a class="panel-link" href="/organization_{{$organization->organization_recordid}}"> {{$organization->organization_name}}</a>,
+                                @endforeach                       
                             @endif
-                            @if($service->service_organization!=null)
-                            <h4><span class="badge bg-red">Organization:</span><a class="panel-link" href="/organization_{{$service->organization()->first()->organization_recordid}}"> {{$service->organization()->first()->organization_name}}</a></h4>
-                            @endif
+                            </h4>
+                            
                             <h4><span class="badge bg-red">Phone:</span> @foreach($service->phone as $phone) {!! $phone->phone_number !!} @endforeach</h4>
                             <h4><span class="badge bg-blue">Address:</span>
                                 @if($service->service_address!=NULL)
