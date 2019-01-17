@@ -44,15 +44,26 @@ ul#ui-id-1 {
                         <h2>{{$service->service_name}}</h2>
                         <h4 class="panel-text"><span class="badge bg-red">Alternate Name:</span> {{$service->service_alternate_name}}</h4>
 
-                        <h4 class="panel-text"><span class="badge bg-red">Category:</span>
-                        @if($service->service_taxonomy!=0)
-                        <a class="panel-link" href="/category_{{$service->taxonomy()->first()->taxonomy_recordid}}"> {{$service->taxonomy()->first()->taxonomy_name}}</a>
-                        @endif
+                         <h4 class="panel-text"><span class="badge bg-red">Category:</span> 
+                            @if($service->service_taxonomy!=0)
+                                @foreach($service->taxonomy as $key => $taxonomy)
+                                    @if($loop->last)
+                                    <a class="panel-link" href="/category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>                                    @else
+                                    <a class="panel-link" href="/category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>,
+                                    @endif
+                                @endforeach
+                            @endif    
                         </h4>
                         <h4 class="panel-text"><span class="badge bg-red">Organization:</span>
-                        @if($service->service_organization!=null)
-                        <a class="panel-link" href="/organization_{{$service->organizations()->first()->organization_recordid}}"> {{$service->organizations()->first()->organization_name}}</a>
-                        @endif
+                            @if($service->service_organization!=0)                        
+                                @foreach($service->organizations as $organization)
+                                    @if($loop->last)
+                                    <a class="panel-link" href="/organization_{{$organization->organization_recordid}}"> {{$organization->organization_name}}</a>
+                                    @else
+                                    <a class="panel-link" href="/organization_{{$organization->organization_recordid}}"> {{$organization->organization_name}}</a>,
+                                    @endif
+                                @endforeach                       
+                            @endif
                         </h4>
 
                         <h4 class="panel-text"><span class="badge bg-blue">Description:</span> {!! $service->service_description !!}</h4>

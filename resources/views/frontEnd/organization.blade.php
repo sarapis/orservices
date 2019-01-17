@@ -43,13 +43,7 @@ ul#ui-id-1 {
                     <div class="panel-body p-20">
                         <h2>{{$organization->organization_name}} @if($organization->organization_alternate_name!='')({{$organization->organization_alternate_name}})@endif</h2>
 
-                        @if($organization->organization_services!='')
-                        <h4 class="panel-text"> 
-                            @foreach($organization->service as $service)
-                                {{$service->taxonomy->first()->taxonomy_name}},
-                            @endforeach
-                        </h4>
-                        @endif
+                        <h4 class="panel-text"><span class="badge bg-red">Alternate Name:</span> {{$organization->organization_alternate_name}}</h4>
 
                         <h4 class="panel-text"><span class="badge bg-red">Description:</span> {{$organization->organization_description}}</h4>
 
@@ -71,12 +65,15 @@ ul#ui-id-1 {
 
                             <h4><span class="badge bg-red">Service:</span><a class="panel-link" href="/service_{{$service->service_recordid}}"> {{$service->service_name}}</a></h4>
 
-                            <h4><span class="badge bg-red">Category:</span>
-                            @if($service->service_taxonomy!=0)
-                                @foreach($service->taxonomy as $taxonomy)
-                                <a class="panel-link" href="/category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>,
-                                @endforeach
-                            @endif    
+                            <h4><span class="badge bg-red">Category:</span> 
+                                @if($service->service_taxonomy!=0)
+                                    @foreach($service->taxonomy as $key => $taxonomy)
+                                        @if($loop->last)
+                                        <a class="panel-link" href="/category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>                                    @else
+                                        <a class="panel-link" href="/category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>,
+                                        @endif
+                                    @endforeach
+                                @endif    
                             </h4>
 
                             <h4><span class="badge bg-red">Phone:</span> @foreach($service->phone as $phone) {!! $phone->phone_number !!} @endforeach</h4>
