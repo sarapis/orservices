@@ -72,13 +72,13 @@ Home
                     <div class="panel-body bg-custom">
                         <div class="form-group">
                             <h4 class="text-white">Find Services Near an Address?</h4>
-                            <form method="post" action="/search_address">
+                            <form method="post" action="/search_address" id="search_location">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                               <div class="form-group">
                                   
                                     <div class="input-search">
                                         <i class="input-search-icon md-search" aria-hidden="true"></i>
-                                        <input id="location" type="text" class="form-control text-black" name="search_address" placeholder="Search Address" style="border-radius:0;">
+                                        <input id="location1" type="text" class="form-control text-black" name="search_address" placeholder="Search Address" style="border-radius:0;">
                                     </div>
                                   
                               </div>
@@ -95,10 +95,11 @@ Home
               <!-- End Panel -->
         </div>
     </div>
+<!-- <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="{{asset('js/treeview.js')}}"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+
 <!-- <script>
     $(document).ready(function(){
         if(screen.width < 768){
@@ -114,6 +115,7 @@ Home
         }
     });
 </script> -->
+
 <script>
 
 $(function () {
@@ -131,11 +133,11 @@ $(function () {
     };
  
     var selectItem = function (event, ui) {
-        $("#location").val(ui.item.value);
+        $("#location1").val(ui.item.value);
         return false;
     }
  
-    $("#location").autocomplete({
+    $("#location1").autocomplete({
         source: getData,
         select: selectItem,
         minLength: 2,
@@ -144,6 +146,12 @@ $(function () {
 
         }
     });
+
+    $('.ui-menu').click(function(){
+        $('#search_location').submit();
+    });
+
+  
 });
 </script>
 @endsection
