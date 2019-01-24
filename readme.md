@@ -1,3 +1,12 @@
+This codebase allows you to pull data from this AirTable Template: https://airtable.com/universe/expTMdQFD5r9G6V9Y/open-referral-human-services-template 
+
+... into a web app that looks like this: http://orservices.sarapis.org
+
+How does it work? The code pulls data from AirTable via you AirTable API Key and syncs it with a MySQL database. These imports can be triggers as fast as you'd like. 
+
+The database is used (and controlled by) a Laravel/PHP app that renders apps using JavaScript frameworks. Our app uses Vue.JS for that but it could just as easily be React.
+
+The result is an online directory app that is responsive, can deliver full search, multi-filter browsing and the mapping, charting and exporting of all data. We built this for Open Referral, but we’d love to adapt it to more use cases and also generalize the features so other people can use it too.
 
 ### Installation Instructions
 1. Run `git clone https://github.com/sarapis/orservices`
