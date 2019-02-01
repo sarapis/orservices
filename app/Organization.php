@@ -14,7 +14,8 @@ class Organization extends Model
 
 	public function service()
     {
-        return $this->hasMany('App\Service', 'service_organization', 'organization_recordid');
+        return $this->hasMany('App\Service', 'service_organization', 'service_recordid', 'organization_recordid');
+        
     }
 
     public function phones()

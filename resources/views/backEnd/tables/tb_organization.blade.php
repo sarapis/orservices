@@ -70,13 +70,15 @@ Organization
 
                   <td class="text-center">{{$organization->organization_year_incorporated}}</td>
 
-                  <td class="text-center">@if($organization->organization_services!='')@foreach($organization->service as $service)
+                  <td class="text-center">@if($organization->organization_services)
+                  @foreach($organization->service() as $service)
                     <span class="badge bg-green">{{$service->service_name}}</span>
                   @endforeach
                   @endif
                   </td>
 
-                  <td class="text-center">@if($organization->organization_phones!='')@foreach($organization->phone as $phone)
+                  <td class="text-center">@if($organization->organization_phones!='')
+                  @foreach($organization->phones as $phone)
                     <span class="badge bg-blue">{{$phone->phone_number}}</span>
                   @endforeach
                   @endif

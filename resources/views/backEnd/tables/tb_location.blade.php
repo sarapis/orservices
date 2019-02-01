@@ -50,7 +50,9 @@ Locations
                   <td>{{$location->location_name}}</td>
                   
                   <td>
+                    @if($location->location_organization)
                     <span class="badge bg-green">{{$location->organization()->first()->organization_name}}</span>
+                    @endif
                   </td>
                   
                   <td class="text-center">{{$location->location_alternate_name}}</td>

@@ -60,7 +60,7 @@ Services
                   
                   <td class="text-center">
                   @if($service->service_organization!=0)
-                    <span class="badge bg-green">{{$service->organization()->first()->organization_name}}</span>
+                    <span class="badge bg-green">{{$service->organizations()->first()->organization_name}}</span>
                   @endif
                   </td>
                  
