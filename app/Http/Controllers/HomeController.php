@@ -16,7 +16,7 @@ class HomeController extends Controller
     public function home($value='')
     {
         $home = Page::where('name', '=', 'Home')->first();
-        $taxonomies = Taxonomy::where('taxonomy_parent_name', '=', NULL)->get();
+        $taxonomies = Taxonomy::where('taxonomy_parent_name', '=', NULL)->orderBy('taxonomy_name', 'asc')->get();
 
     	return view('frontEnd.home', compact('home', 'taxonomies'));
     }
