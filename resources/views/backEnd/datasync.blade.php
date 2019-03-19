@@ -8,9 +8,12 @@ Datasync
 <div class="row">
   <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
-      <div class="x_title">
-        <h2>Datasync</h2>
-        <div class="clearfix"></div>  
+      <div class="col-md-12">
+        <div class="col-md-6">
+          <h2>Datasync</h2>
+        </div>
+        <div class="clearfix text-right"><button class="btn btn-primary btn-sm sync_all" id="sync_1">SYNC ALL</button>  </div>
+        
       </div>
       <div class="x_content">
 
@@ -55,29 +58,69 @@ Datasync
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script type="text/javascript">
-  $(document).ready(function() {
-      var $img = $('<img class="probar titleimage" id="title" src="images/xpProgressBar.gif" alt="Loading..." />');
+    $(document).ready(function() {
+        var $img = $('<img class="probar titleimage" id="title" src="images/xpProgressBar.gif" alt="Loading..." />');
 
-    $('.sync_now').click(function(){
-        $(this).hide();
-        name = $(this).attr('name');
 
-        $(this).after($img);
-        $here = $(this);
-        name = name.toLowerCase();
-        $.ajax({
-            type: "GET",
-            url: '/sync_'+name,
-            success: function(result) {
-                $img.remove();
-                $here.show();
-                $here.html('Updated');
-                $here.removeClass('bg-yellow');
-                $here.addClass('bg-purple');
-                $here.parent().prev().html('<?php echo date("Y/m/d H:i:s"); ?>');
-            }
+
+        $('.sync_all').click(function(){
+            sync_all_now(this, 0);
+        });
+
+        function sync_all_now(parent, c){
+
+            current = $('.sync_now').eq(c);
+
+            current.hide();
+
+            current.after($img);
+
+            var name = current.parent().prev().prev().prev().prev().html();
+
+
+            current.after($img);
+            
+            $here = current;
+            name = name.toLowerCase();
+            
+            $.ajax({
+                type: "GET",
+                url: '/sync_'+name,
+                success: function(result) {
+                    $img.remove();
+                    $here.show();
+                    $here.html('Updated');
+                    $here.removeClass('bg-yellow');
+                    $here.addClass('bg-purple');
+                    $here.parent().prev().html('<?php echo date("Y/m/d H:i:s"); ?>');
+                    c ++;
+                    if($('.sync_now').length != c)
+                        sync_all_now(parent, c);
+                }
+            });
+        }
+
+
+        $('.sync_now').click(function(){
+            $(this).hide();
+            var name = $(this).parent().prev().prev().prev().prev().html();
+
+            $(this).after($img);
+            $here = $(this);
+            name = name.toLowerCase();
+            $.ajax({
+                type: "GET",
+                url: '/sync_'+name,
+                success: function(result) {
+                    $img.remove();
+                    $here.show();
+                    $here.html('Updated');
+                    $here.removeClass('bg-yellow');
+                    $here.addClass('bg-purple');
+                    $here.parent().prev().html('<?php echo date("Y/m/d H:i:s"); ?>');
+                }
+            });
         });
     });
-  });
 </script>
 @endsection
