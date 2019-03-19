@@ -17,12 +17,14 @@ class AppServiceProvider extends ServiceProvider
 
         view()->composer('layouts.sidebar', function($view)
         {
-            $view->with('organizations', \App\Organization::all());
+            $organizations = \App\Organization::orderBy('organization_name', 'asc')->get();
+            $view->with('organizations', $organizations);
         });
 
         view()->composer('layouts.sidebar', function($view)
         {
-            $view->with('taxonomies', \App\Taxonomy::all());
+            $taxonomies = \App\Taxonomy::orderBy('taxonomy_name', 'asc')->get();
+            $view->with('taxonomies', $taxonomies);
         });
 
         view()->composer('layouts.header', function($view)
