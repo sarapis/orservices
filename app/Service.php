@@ -41,7 +41,10 @@ class Service extends Model
 
     public function phone()
     {
-        return $this->hasmany('App\Phone', 'phone_services', 'service_recordid');
+        $this->primaryKey='service_recordid';
+
+        return $this->belongsToMany('App\Phone', 'service_phone', 'service_recordid', 'phone_recordid');
+
     }
 
     public function schedule()

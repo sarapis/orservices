@@ -70,6 +70,8 @@ ul#ui-id-1 {
 
                         <h4 class="panel-text"><span class="badge bg-red">Phone:</span> @foreach($service->phone as $phone) {!! $phone->phone_number !!}, @endforeach</h4>
 
+                        <h4 class="panel-text" style="padding-left: 80px;">@foreach($service->phone as $phone) {!! $phone->phone_extension !!} @endforeach</h4>
+
                         <h4 class="panel-text" style="word-wrap: break-word;"><span class="badge bg-blue" >Url:</span> @if($service->service_url!=NULL) {!! $service->service_url !!} @endif</h4>
 
                         @if($service->service_email!=NULL) 
