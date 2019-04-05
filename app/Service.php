@@ -64,6 +64,8 @@ class Service extends Model
 
     public function address()
     {
-        return $this->hasmany('App\Address', 'address_services', 'service_recordid');
+        $this->primaryKey='service_recordid';
+
+        return $this->belongsToMany('App\Address', 'service_address', 'service_recordid', 'address_recordid');
     }
 }

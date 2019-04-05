@@ -68,9 +68,23 @@ ul#ui-id-1 {
 
                         <h4 class="panel-text"><span class="badge bg-blue">Description:</span> {!! $service->service_description !!}</h4>
 
-                        <h4 class="panel-text"><span class="badge bg-red">Phone:</span> @foreach($service->phone as $phone) {!! $phone->phone_number !!}, @endforeach</h4>
+                        <h4 class="panel-text"><span class="badge bg-red">Phone:</span>
+                            @if($service->service_phones!=0)                        
+                                @foreach($service->phone as $phone)
+                                    @if($loop->last)
+                                    {{$phone->phone_number}}
+                                    @else
+                                    {{$phone->phone_number}},
+                                    @endif
+                                @endforeach                       
+                            @endif
+                        </h4>
 
-                        <h4 class="panel-text" style="padding-left: 80px;">@foreach($service->phone as $phone) {!! $phone->phone_extension !!} @endforeach</h4>
+                        <h4 class="panel-text"><span class="badge bg-red">Extension:</span>
+                            @if($service->service_phones!=0)
+                                @foreach($service->phone as $phone) {!! $phone->phone_extension !!} @endforeach
+                            @endif  
+                        </h4>
 
                         <h4 class="panel-text" style="word-wrap: break-word;"><span class="badge bg-blue" >Url:</span> @if($service->service_url!=NULL) {!! $service->service_url !!} @endif</h4>
 
