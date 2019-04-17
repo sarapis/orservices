@@ -14,6 +14,10 @@
     <!-- Bootstrap -->
     <script src="{{ URL::asset('/backend/vendors/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 
+    <script src="{{ URL::asset('/backend/vendors/switchery/dist/switchery.min.js')}}"></script>
+
+    <script src="{{ URL::asset('/backend/vendors/select2/dist/js/select2.full.min.js')}}"></script>
+
     <script src="{{ URL::asset('/backend/summernote/js/summernote.js')}}"></script>
     <!-- FastClick -->
     <script src="{{ URL::asset('/backend/vendors/fastclick/lib/fastclick.js') }}"></script>

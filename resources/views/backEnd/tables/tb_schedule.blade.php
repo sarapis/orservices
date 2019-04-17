@@ -44,9 +44,11 @@ Schedule
                 <tr id="schedule{{$schedule->id}}" class="{{$schedule->flag}}">
                   <td class="text-center">{{$key+1}}</td>
 
-                  <td>@if($schedule->schedule_services!='')
-                    <span class="badge bg-blue">{{$schedule->service()->first()->service_name}}</span>
-                  @endif
+                  <td>@if($schedule->schedule_services!=0)
+                        @foreach($schedule->services as $service)
+                          <span class="badge bg-blue">{{$service->service_name}}</span>
+                        @endforeach
+                      @endif
                   </td>
 
                   <td>
@@ -55,7 +57,7 @@ Schedule
                   @endif
                   </td>
 
-                  <td>@if($schedule->schedule_services!='')
+                  <td>@if($schedule->schedule_phone!='')
                     <span class="badge bg-red">{{$schedule->phone()->first()->phone_number}}</span>
                   @endif
                   </td>

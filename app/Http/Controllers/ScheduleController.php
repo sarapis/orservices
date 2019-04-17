@@ -39,6 +39,8 @@ class ScheduleController extends Controller
 
                 $schedule->schedule_recordid = $strtointclass->string_to_int($record[ 'id' ]);
 
+                $schedule->schedule_id = isset($record['fields']['id'])?$record['fields']['id']:null;
+
                 $schedule->schedule_services = isset($record['fields']['services'])? implode(",", $record['fields']['services']):null;
 
                 if(isset($record['fields']['services'])){

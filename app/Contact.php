@@ -19,7 +19,10 @@ class Contact extends Model
 
     public function service()
     {
-        return $this->belongsTo('App\Service', 'contact_services', 'service_recordid');
+
+        $this->primaryKey='contact_recordid';
+
+        return $this->belongsToMany('App\Service', 'service_contact', 'contact_recordid', 'service_recordid');
     }
 
     public function phone()

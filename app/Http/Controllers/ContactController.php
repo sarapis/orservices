@@ -50,6 +50,9 @@ class ContactController extends Controller
                 $contact->contact_department = isset($record['fields']['department'])?$record['fields']['department']:null;
                 $contact->contact_email = isset($record['fields']['email'])?$record['fields']['email']:null;
                 $contact->contact_phones = isset($record['fields']['phones'])? implode(",", $record['fields']['phones']):null;
+
+                $contact->contact_phones = $strtointclass->string_to_int($contact->contact_phones);
+
                 $contact ->save();
 
             }

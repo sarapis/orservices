@@ -15,9 +15,11 @@ class Schedule extends Model
     
 	public $timestamps = false;
 
-	public function service()
+	public function services()
     {
-        return $this->belongsTo('App\Service', 'schedule_services', 'service_recordid');
+        $this->primaryKey='schedule_recordid';
+
+        return $this->belongsToMany('App\Service', 'service_schedule', 'schedule_recordid', 'service_recordid');
     }
 
     public function locations()

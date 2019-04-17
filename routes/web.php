@@ -99,6 +99,8 @@ Route::post('/range', 'ExploreController@filterValues1');
         Route::resource('layout_edit', 'EditlayoutController');
         Route::resource('home_edit', 'EdithomeController');
         Route::resource('about_edit', 'EditaboutController');
+
+        Route::resource('map', 'MapController');
         
         Route::get('/datasync', ['uses' => 'PagesController@datasync']);
  });

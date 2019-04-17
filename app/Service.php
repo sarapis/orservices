@@ -47,14 +47,19 @@ class Service extends Model
 
     }
 
-    public function schedule()
+    public function schedules()
     {
-        return $this->belongsTo('App\Schedule', 'id', 'schedule_recordid');
+        $this->primaryKey='service_recordid';
+
+        return $this->belongsToMany('App\Schedule', 'service_schedule', 'service_recordid', 'schedule_recordid');
     }
 
     public function contact()
     {
-        return $this->belongsTo('App\Contact', 'service_contacts', 'contact_recordid');
+
+        $this->primaryKey='service_recordid';
+
+        return $this->belongsToMany('App\Contact', 'service_contact', 'service_recordid', 'contact_recordid');
     }
 
     public function detail()

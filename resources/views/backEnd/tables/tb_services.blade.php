@@ -101,10 +101,22 @@ Services
                   <td class="text-center">@foreach($service->phone as $phone)
                     <span class="badge bg-red">{!! $phone->phone_number !!}</span>
                   @endforeach</td>
-                  <td class="text-center"><span class="badge bg-purple">@if($service->service_schedule!=''){{$service->schedule()->first()->id}}@endif</span></td>
+                  <td class="text-center">
+                  
+                  
+                      @foreach($service->schedules as $schedule)
+                        
+                      <span class="badge bg-purple">{{$schedule->schedule_id}}</span>
+                      
+                      @endforeach
+                           
+                 
+                  </td>
+
                   <td class="text-center"><span class="badge bg-red">@if($service->service_contacts!=NULL)
                   {{$service->contact()->first()->contact_name}}</span>
                   @endif</td>
+                  
                   <td class="text-center"><span style="white-space:normal;">
                     @foreach($service->detail as $detail)
                       <span class="badge bg-red">{!! $detail->detail_value !!}</span>

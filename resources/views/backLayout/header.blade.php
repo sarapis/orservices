@@ -19,12 +19,18 @@
   <link href="{{ URL::asset('/backend/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css') }}" rel="stylesheet">
   <link href="{{ URL::asset('/backend/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css') }}" rel="stylesheet">
   <link href="{{ URL::asset('/backend/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css') }}" rel="stylesheet">
-  <!-- Custom Theme Style -->
-  <link href="{{ URL::asset('/backend/build/css/custom.min.css') }}" rel="stylesheet">
+  
   <!-- Datatables -->
   <link rel="stylesheet" href="{{ URL::asset('/backend/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
   <link rel="stylesheet" href="{{ URL::asset('/backend/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css') }}">
   <link href="{{ URL::asset('/backend/summernote/css/summernote.css')}}" rel="stylesheet" type="text/css" />
+
+  <link href="{{ URL::asset('/backend/vendors/switchery/dist/switchery.min.css') }}" rel="stylesheet">
+
+  <link href="{{ URL::asset('/backend/vendors/select2/dist/css/select2.min.css') }}" rel="stylesheet">
+
+  <!-- Custom Theme Style -->
+  <link href="{{ URL::asset('/backend/build/css/custom.min.css') }}" rel="stylesheet">
   @yield('style')
   </head>
 

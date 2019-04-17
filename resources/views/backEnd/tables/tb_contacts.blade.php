@@ -43,12 +43,24 @@ Contacts
                 <tr id="contact{{$contact->id}}" class="{{$contact->flag}}">
                   <td class="text-center">{{$key+1}}</td>
                   <td class="text-center">{{$contact->contact_name}}</td>
-                  <td class="text-center"><span class="badge bg-red">{{$contact->organization()->first()->organization_name}}</span></td>
-                  <td class="text-center"><span class="badge bg-blue">{{$contact->service()->first()->service_name}}</span></td>
+                  <td class="text-center">
+                    @if($contact->contact_organizations!=0)
+                    <span class="badge bg-red">{{$contact->organization()->first()->organization_name}}</span>
+                    @endif
+                  </td>
+                  <td class="text-center">
+                    @if($contact->contact_services!=0)
+                    <span class="badge bg-blue">{{$contact->service()->first()->service_name}}</span>
+                    @endif
+                  </td>
                   <td class="text-center">{{$contact->contact_title}}</td>
                   <td class="text-center">{{$contact->contact_department}}</td>
                   <td class="text-center">{{$contact->contact_email}}</td>
-                  <td class="text-center">@if($contact->contact_phones!='')<span class="badge bg-purple">{{$contact->phone()->first()->phone_number}}</span>@endif</td>
+                  <td class="text-center">
+                    @if($contact->contact_phones!=0)
+                      <span class="badge bg-purple">{{$contact->phone()->first()->phone_number}}</span>
+                    @endif
+                  </td>
                   <td>
                     <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$contact->contact_recordid}}"><i class="fa fa-fw fa-edit"></i>Edit</button>
                   </td>

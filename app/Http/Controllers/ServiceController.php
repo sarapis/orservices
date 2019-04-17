@@ -11,7 +11,9 @@ use App\Servicephone;
 use App\Servicedetail;
 use App\Serviceaddress;
 use App\Serviceorganization;
+use App\Servicecontact;
 use App\Servicetaxonomy;
+use App\Serviceschedule;
 use App\Location;
 use App\Airtables;
 use App\Taxonomy;
@@ -35,7 +37,9 @@ class ServiceController extends Controller
         Servicephone::truncate();
         Servicedetail::truncate();
         Serviceorganization::truncate();
+        Servicecontact::truncate();
         Servicetaxonomy::truncate();
+        Serviceschedule::truncate();
 
         $airtable = new Airtable(array(
             'api_key'   => env('AIRTABLE_API_KEY'),
@@ -142,8 +146,39 @@ class ServiceController extends Controller
                 }
 
 
-                $service->service_schedule = isset($record['fields']['schedule'])? implode(",", $record['fields']['schedule']):null;
-                $service->service_contacts = isset($record['fields']['contacts'])? implode(",", $record['fields']['contacts']):null;
+                if(isset($record['fields']['schedule'])){
+                    $i = 0;
+                    foreach ($record['fields']['schedule']  as  $value) {
+                        $service_schedule = new Serviceschedule();
+                        $service_schedule->service_recordid=$service->service_recordid;
+                        $service_schedule->schedule_recordid=$strtointclass->string_to_int($value);
+                        $service_schedule->save();
+                        $serviceschedule=$strtointclass->string_to_int($value);
+
+                        if($i != 0)
+                            $service->service_schedule = $service->service_schedule. ','. $serviceschedule;
+                        else
+                            $service->service_schedule = $serviceschedule;
+                        $i ++;
+                    }
+                }
+
+                if(isset($record['fields']['contacts'])){
+                    $i = 0;
+                    foreach ($record['fields']['contacts']  as  $value) {
+                        $service_contact = new Servicecontact();
+                        $service_contact->service_recordid=$service->service_recordid;
+                        $service_contact->contact_recordid=$strtointclass->string_to_int($value);
+                        $service_contact->save();
+                        $servicecontact=$strtointclass->string_to_int($value);
+
+                        if($i != 0)
+                            $service->service_contacts = $service->service_contacts. ','. $servicecontact;
+                        else
+                            $service->service_contacts = $servicecontact;
+                        $i ++;
+                    }
+                }
 
                 if(isset($record['fields']['details'])){
                     $i = 0;
