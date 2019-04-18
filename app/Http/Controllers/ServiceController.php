@@ -253,7 +253,7 @@ class ServiceController extends Controller
     public function service($id)
     {
         $service = Service::where('service_recordid', '=', $id)->first();
-        $location = Location::with('organization', 'address')->where('location_services', '=', $id)->get();
+        $location = Location::with('organization', 'address')->where('location_services', 'like', '%'.$id.'%')->get();
         $map = Map::find(1);
 
         return view('frontEnd.service', compact('service', 'location', 'map'));

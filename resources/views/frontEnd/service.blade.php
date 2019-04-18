@@ -161,6 +161,7 @@ ul#ui-id-1 {
     var locations = <?php print_r(json_encode($location)) ?>;
     var maplocation = <?php print_r(json_encode($map)) ?>;
 
+    console.log(locations);
     var show = 1;
     if(locations.length == 0){
       show = 0;
@@ -188,7 +189,7 @@ ul#ui-id-1 {
           mymap.addMarker({
               lat: value.location_latitude,
               lng: value.location_longitude,
-              title: value.city,
+              title: value.location_name
                      
               
           });
