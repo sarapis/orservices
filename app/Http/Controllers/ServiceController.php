@@ -234,7 +234,7 @@ class ServiceController extends Controller
 
     public function index()
     {
-        $services = Service::with('locations')->orderBy('service_name')->paginate(10);
+        $services = Service::orderBy('service_name')->paginate(10);
         
 
         return view('backEnd.tables.tb_services', compact('services'));
@@ -269,7 +269,9 @@ class ServiceController extends Controller
 
         $locations = Location::whereIn('location_recordid', $locationids)->with('services','organization')->get();
 
-        return view('frontEnd.chip', compact('services', 'locations', 'chip_title', 'chip_name'));
+        $map = Map::find(1);
+
+        return view('frontEnd.chip', compact('services', 'locations', 'chip_title', 'chip_name', 'map'));
     }
 
     /**

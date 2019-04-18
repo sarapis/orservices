@@ -38,7 +38,7 @@ Home
                           <!--   <input type="text" placeholder="Search here..." class="form-control text-black" name="find"/>
                             <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button> -->
 
-                            <input type="text" class="form-control" placeholder="Search here..." name="find"/>
+                            <input type="text" class="form-control" placeholder="Search here..." name="find"/ style="z-index: 0;">
                             <div class="input-group-btn pull-right ">
                                 <button type="submit" class="btn btn-primary btn-search"><i class="fa fa-search"></i></button>
                             </div>
