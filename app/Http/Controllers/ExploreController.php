@@ -79,8 +79,7 @@ class ExploreController extends Controller
         $lat =$response->latitude();
         $lng =$response->longitude();
 
-        var_dump($lat, $lng);
-        exit();
+
 
         // $lat =37.3422;
         // $lng = -121.905;
