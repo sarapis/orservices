@@ -2,7 +2,11 @@
 @section('title')
 Edit Layout
 @stop
-
+<style>
+  #map{
+    height: 250px;
+  }
+</style>
 @section('content')
 
     <div class="row">
@@ -110,7 +114,9 @@ Edit Layout
                 </div>
               </div>
             </div>
-            <div class="col-md-4"></div>
+            <div class="col-md-4">
+              <div id="map"></div>
+            </div>
             </div>
               <div class="ln_solid"></div>
               <div class="form-group">
@@ -129,6 +135,8 @@ Edit Layout
 
 @endsection
 @section('scripts')
+<script src="https://maps.googleapis.com/maps/api/js?key={{$map->api_key}}&callback=initMap"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gmaps.js/0.4.9/gmaps.min.js"></script>
 <script>
 $(document).ready(function() {
     $('.js-switch').change(function(){
@@ -145,5 +153,21 @@ $(document).ready(function() {
     });
     $('.select2-search').select2();
 });
+
+var locations = <?php print_r(json_encode($map)) ?>;
+
+var map = new GMaps({
+  el: '#map',
+  lat: 40.712722,
+  lng: -74.006058,
+  zoom:10
+});
+
+
+map.addMarker({
+  lat: locations.lat,
+  lng: locations.long
+});
+
 </script>
 @endsection
