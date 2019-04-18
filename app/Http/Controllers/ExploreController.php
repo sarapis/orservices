@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Geolocation;
 use Geocode;
 use App\Location;
+use App\Map;
 
 class ExploreController extends Controller
 {
@@ -50,8 +51,10 @@ class ExploreController extends Controller
                 $services[] = $value;
             }
         }
+
+        $map = Map::find(1);
         
-        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_name'));
+        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_name', 'map'));
     }
 
     public function geocode(Request $request)
@@ -92,8 +95,9 @@ class ExploreController extends Controller
                 $services[] = $value;
             }
         }
+        $map = Map::find(1);
         
-        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_name'));
+        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_name', 'map'));
 
     }
     public function index(Request $request)
