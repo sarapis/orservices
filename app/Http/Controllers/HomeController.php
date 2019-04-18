@@ -8,6 +8,7 @@ use App\Layout;
 use App\Service;
 use App\Organization;
 use App\Taxonomy;
+use App\Map;
 use App\Location;
 use App\Http\Controllers\Controller;
 
@@ -16,9 +17,10 @@ class HomeController extends Controller
     public function home($value='')
     {
         $home = Page::where('name', '=', 'Home')->first();
+        $map = Map::find(1);
         $taxonomies = Taxonomy::where('taxonomy_parent_name', '=', NULL)->orderBy('taxonomy_name', 'asc')->get();
 
-    	return view('frontEnd.home', compact('home', 'taxonomies'));
+    	return view('frontEnd.home', compact('home', 'taxonomies', 'map'));
     }
 
     public function about($value='')
