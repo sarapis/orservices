@@ -17,6 +17,7 @@ use App\Serviceschedule;
 use App\Location;
 use App\Airtables;
 use App\Taxonomy;
+use App\Map;
 use App\Services\Stringtoint;
 
 class ServiceController extends Controller
@@ -244,8 +245,9 @@ class ServiceController extends Controller
     {
         $services = Service::with('locations')->orderBy('service_name')->paginate(10);
         $locations = Location::with('services','organization')->get();
+        $map = Map::find(1);
 
-        return view('frontEnd.services', compact('services', 'locations'));
+        return view('frontEnd.services', compact('services', 'locations', 'map'));
     }
 
     public function service($id)

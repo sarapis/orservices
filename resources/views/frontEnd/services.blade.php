@@ -89,35 +89,27 @@ ul#ui-id-1 {
     </div>
 </div>
 
-
 <script>
     
     var locations = <?php print_r(json_encode($locations)) ?>;
-    // console.log(locations);
+    var maplocation = <?php print_r(json_encode($map)) ?>;
+    // console.log(map);
 
     var sumlat = 0.0;
     var sumlng = 0.0;
     var length = 0;
     // console.log(locations.length);
-    for(var i = 0; i < locations.length; i ++)
-    {
-        if(locations[i].location_latitude)
-        {
-            sumlat += parseFloat(locations[i].location_latitude);
-            sumlng += parseFloat(locations[i].location_longitude);
-            length ++;
-        }
-    }
-    if(length != 0){
-        avglat = 40.730981;
-        avglng = -73.998107;
+
+    if(maplocation.active == 1){
+        avglat = maplocation.lat;
+        avglng = maplocation.long;
     }
     else
     {
         avglat = 40.730981;
         avglng = -73.998107;
     }
-    // console.log(avglat);
+    console.log(maplocation.active);
     var mymap = new GMaps({
       el: '#map',
       lat: avglat,

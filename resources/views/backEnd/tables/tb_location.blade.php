@@ -50,7 +50,7 @@ Locations
                   <td>{{$location->location_name}}</td>
                   
                   <td>
-                    @if($location->location_organization)
+                    @if($location->location_organization!=0)
                     <span class="badge bg-green">{{$location->organization()->first()->organization_name}}</span>
                     @endif
                   </td>
@@ -63,7 +63,7 @@ Locations
                   <td class="text-center"><span style="white-space:normal;">{!! $location->service_description !!}</span></td>
 
                   <td class="text-center">
-                    @if($location->location_services!='') 
+                    @if($location->location_services!=null) 
                   
                       @foreach($location->services as $service)
                         
@@ -71,7 +71,7 @@ Locations
                       
                       @endforeach
                            
-                  @endif
+                    @endif
                   </td>
 
                   <td class="text-center">

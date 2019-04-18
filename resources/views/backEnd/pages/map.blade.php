@@ -1,6 +1,6 @@
 @extends('backLayout.app')
 @section('title')
-Edit Layout
+Map Settings
 @stop
 <style>
   #map{
