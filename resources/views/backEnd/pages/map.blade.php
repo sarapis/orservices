@@ -28,10 +28,12 @@ Edit Layout
             {{ Form::open(array('url' => ['map', 1], 'class' => 'form-horizontal form-label-left', 'method' => 'put', 'enctype'=> 'multipart/form-data')) }}
             <div class="row">
             <div class="col-md-8"> 
-              <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12">NYC or Not?</label>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
                 <div class="col-md-8 col-sm-8 col-xs-12">
-                      <input type="checkbox" class="js-switch" value="checked" name="active"  @if($map->active==1) checked @endif />
+                    <label>NYC&nbsp;&nbsp;
+                      <input type="checkbox" class="js-switch" value="checked" name="active"  @if($map->active==1) checked @endif/>&nbsp;&nbsp;Out NYC
+                    </label>
                 </div>
               </div>
 
@@ -152,22 +154,35 @@ $(document).ready(function() {
 
     });
     $('.select2-search').select2();
+
+
+    var locations = <?php print_r(json_encode($map)) ?>;
+
+    if (locations.active == 1) {
+        var map = new GMaps({
+          el: '#map',
+          lat: locations.lat,
+          lng: locations.long,
+          zoom:10
+        });
+        map.addMarker({
+          lat: locations.lat,
+          lng: locations.long
+        });
+    }
+    else{
+        var map = new GMaps({
+          el: '#map',
+          lat: 40.712722,
+          lng: -74.006058,
+          zoom:10
+        });
+        map.addMarker({
+          lat: 40.712722,
+          lng: -74.006058
+        });
+    }
+
 });
-
-var locations = <?php print_r(json_encode($map)) ?>;
-
-var map = new GMaps({
-  el: '#map',
-  lat: 40.712722,
-  lng: -74.006058,
-  zoom:10
-});
-
-
-map.addMarker({
-  lat: locations.lat,
-  lng: locations.long
-});
-
 </script>
 @endsection

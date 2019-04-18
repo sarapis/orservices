@@ -113,18 +113,20 @@ class MapController extends Controller
     public function update($id, Request $request)
     {
     	$map=Map::find(1);
+        // var_dump($request->input('active'));
+        // exit();
         if ($request->input('active') == 'checked')
         {
             $map->active = 1;
+            $map->api_key=$request->input('api_key');
+            $map->state=$request->input('state');
+            $map->lat=$request->input('lat');
+            $map->long=$request->input('long');
         }
         else {
             $map->active = 0;
         }
-        $map->api_key=$request->input('api_key');
-        $map->state=$request->input('state');
-        $map->lat=$request->input('lat');
-        $map->long=$request->input('long');
-
+        
         $map->save();
 
         Session::flash('message', 'Map updated!');
