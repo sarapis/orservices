@@ -254,8 +254,9 @@ class ServiceController extends Controller
     {
         $service = Service::where('service_recordid', '=', $id)->first();
         $location = Location::with('organization', 'address')->where('location_services', '=', $id)->get();
+        $map = Map::find(1);
 
-        return view('frontEnd.service', compact('service', 'location'));
+        return view('frontEnd.service', compact('service', 'location', 'map'));
     }
 
     public function taxonomy($id)

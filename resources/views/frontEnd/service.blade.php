@@ -159,24 +159,23 @@ ul#ui-id-1 {
 </script> -->
 <script>
     var locations = <?php print_r(json_encode($location)) ?>;
+    var maplocation = <?php print_r(json_encode($map)) ?>;
+
     var show = 1;
     if(locations.length == 0){
       show = 0;
-      locations[0] = {};
-      locations[0].location_latitude = 40.730981;
-      locations[0].location_longitude = -73.998107;
     }
 
-    var sumlat = 0.0;
-    var sumlng = 0.0;
-    for(var i = 0; i < locations.length; i ++)
+    if(maplocation.active == 1){
+        avglat = maplocation.lat;
+        avglng = maplocation.long;
+    }
+    else
     {
-        sumlat += parseFloat(locations[i].location_latitude);
-        sumlng += parseFloat(locations[i].location_longitude);
-
+        avglat = 40.730981;
+        avglng = -73.998107;
     }
-    var avglat = sumlat/locations.length;
-    var avglng = sumlng/locations.length;
+
     var mymap = new GMaps({
       el: '#map',
       lat: avglat,
