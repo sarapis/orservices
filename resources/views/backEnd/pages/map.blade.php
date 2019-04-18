@@ -45,7 +45,7 @@ Map Settings
                 </div>
               </div>
 
-              <div class="item form-group">
+              <!-- <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">USA State 
                 </label>
                 <div class="col-md-8 col-sm-8 col-xs-12">
@@ -103,7 +103,7 @@ Map Settings
                     <option value="WY">Wyoming</option>
                   </select>
                 </div>
-              </div>
+              </div> -->
 
               <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Map Center Lat/Long <span class="required">*</span>
