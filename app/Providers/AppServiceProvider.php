@@ -33,6 +33,12 @@ class AppServiceProvider extends ServiceProvider
             $view->with('map', $map);
         });
 
+        view()->composer('layouts.sidebar', function($view)
+        {
+            $map = \App\Map::find(1);
+            $view->with('map', $map);
+        });
+
         view()->composer('layouts.header', function($view)
         {
             $view->with('layout', \App\Layout::first());
