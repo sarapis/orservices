@@ -79,6 +79,9 @@ class ExploreController extends Controller
         $lat =$response->latitude();
         $lng =$response->longitude();
 
+        var_dump($lat, $lng);
+        exit();
+
         // $lat =37.3422;
         // $lng = -121.905;
 
@@ -96,7 +99,7 @@ class ExploreController extends Controller
             }
         }
         $map = Map::find(1);
-        
+
         return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_name', 'map'));
 
     }
