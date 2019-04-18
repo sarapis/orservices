@@ -20,23 +20,21 @@ Edit Layout
           </div>
           <div class="x_content">
 
+          
             {{ Form::open(array('url' => ['map', 1], 'class' => 'form-horizontal form-label-left', 'method' => 'put', 'enctype'=> 'multipart/form-data')) }}
-        
-              <div class="form-group">
+            <div class="row">
+            <div class="col-md-8"> 
+              <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12">NYC or Not?</label>
-                <div class="col-md-9 col-sm-9 col-xs-12">
-                  <div class="">
-                    <label>
+                <div class="col-md-8 col-sm-8 col-xs-12">
                       <input type="checkbox" class="js-switch" value="checked" name="active"  @if($map->active==1) checked @endif />
-                    </label>
-                  </div>
                 </div>
               </div>
 
               <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Google Maps API Key 
                 </label>
-                <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="col-md-8 col-sm-8 col-xs-12">
                   <input type="text" name="api_key" class="form-control col-md-7 col-xs-12" value="{{$map->api_key}}" @if($map->active==0) disabled="disabled" @endif>
                 </div>
               </div>
@@ -44,7 +42,7 @@ Edit Layout
               <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">USA State 
                 </label>
-                <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="col-md-8 col-sm-8 col-xs-12">
                   <select class="select2-search form-control usa-state" name="state" @if($map->active==0) disabled="disabled" @endif>
                     <option value="AL">Alabama</option>
                     <option value="AK">Alaska</option>
@@ -104,15 +102,17 @@ Edit Layout
               <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Map Center Lat/Long <span class="required">*</span>
                 </label>
-                <div class="col-md-3 col-sm-3 col-xs-12">
+                <div class="col-md-4 col-sm-4 col-xs-12">
                   <input id="occupation" type="text" name="lat" class="optional form-control col-md-7 col-xs-12" value="{{$map->lat}}" required="required" @if($map->active==0) disabled="disabled" @endif>
                 </div>
-                <div class="col-md-3 col-sm-3 col-xs-12">
+                <div class="col-md-4 col-sm-4 col-xs-12">
                   <input id="occupation" type="text" name="long" class="optional form-control col-md-7 col-xs-12" value="{{$map->long}}" required="required" @if($map->active==0) disabled="disabled" @endif>
                 </div>
               </div>
-
-               <div class="ln_solid"></div>
+            </div>
+            <div class="col-md-4"></div>
+            </div>
+              <div class="ln_solid"></div>
               <div class="form-group">
                 <div class="col-md-6 col-md-offset-3">
                   <button id="send" type="submit" class="btn btn-success">Submit</button>
@@ -120,6 +120,8 @@ Edit Layout
               </div>
 
              {!! Form::close() !!}
+          
+          
           </div>
         </div>
       </div>
