@@ -217,18 +217,6 @@ $(function () {
           infowindow.open(map, marker);
         });
 
-        // Sets a listener on a given radio button. The radio buttons specify
-        // the countries used to restrict the autocomplete search.
-        // function setupClickListener(id, countries) {
-        //   var radioButton = document.getElementById(id);
-        //   radioButton.addEventListener('click', function() {
-        //     autocomplete.setComponentRestrictions({'country': countries});
-        //   });
-        // }
-
-        // setupClickListener('changecountry-usa', 'us');
-        // setupClickListener(
-        //     'changecountry-usa-and-uot', ['us', 'pr', 'vi', 'gu', 'mp']);
       }
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5XHJ6oNL9-qh0XsL0G74y1xbcxNGkSxw&libraries=places&callback=initMap"

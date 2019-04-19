@@ -66,7 +66,19 @@ class OrganizationController extends Controller
                     }
                 }
 
-                $organization->organization_phones = isset($record['fields']['phones'])? implode(",", $record['fields']['phones']):null;
+                if(isset($record['fields']['phones'])){
+                    $i = 0;
+                    foreach ($record['fields']['phones']  as  $value) {
+
+                        $organizationphone=$strtointclass->string_to_int($value);
+
+                        if($i != 0)
+                            $organization->organization_phones = $organization->organization_phones. ','. $organizationphone;
+                        else
+                            $organization->organization_phones = $organizationphone;
+                        $i ++;
+                    }
+                }
                 
 
                 if(isset($record['fields']['locations'])){

@@ -141,7 +141,7 @@ ul#ui-id-1 {
     
     var locations = <?php print_r(json_encode($locations)) ?>;
     var organization = <?php print_r(json_encode($organization->organization_name)) ?>;
-    console.log(locations);
+    // console.log(locations);
 
     var sumlat = 0.0;
     var sumlng = 0.0;
@@ -162,15 +162,22 @@ ul#ui-id-1 {
     }
     else
     {
-        avglat = 40.730981;
-        avglng = -73.998107;
+        if(maplocation.active == 1){
+        avglat = maplocation.lat;
+        avglng = maplocation.long;
+        }
+        else
+        {
+            avglat = 40.730981;
+            avglng = -73.998107;
+        }
     }
     
     var mymap = new GMaps({
       el: '#map',
       lat: avglat,
       lng: avglng,
-      zoom:10
+      zoom:12
     });
 
 
