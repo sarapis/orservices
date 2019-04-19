@@ -1,3 +1,4 @@
+<body>
   <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega navbar-inverse bg-custom" role="navigation">
     <div class="navbar-header">
       <a class="navbar-brand p-25 pl-15" href="/">

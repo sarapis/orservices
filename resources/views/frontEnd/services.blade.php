@@ -88,7 +88,8 @@ ul#ui-id-1 {
         </div>
     </div>
 </div>
-
+@endsection
+@section('scripts')
 <script>
     
     $(document).ready(function(){

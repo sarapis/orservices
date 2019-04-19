@@ -10,4 +10,4 @@
     <div class="footer-content text-white" style="margin-right: -1.0715rem;margin-left: -1.0715rem;">
         {!! $layout->footer !!}
     </div>
-</div>
+</footer>
