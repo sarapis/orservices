@@ -108,7 +108,7 @@ ul#ui-id-1 {
     });
 </script> -->
 <script>
-    
+ $(document).ready(function(){   
     var locations = <?php print_r(json_encode($locations)) ?>;
     // console.log(locations);
 
@@ -162,6 +162,7 @@ ul#ui-id-1 {
             });
         }
    });
+});
 </script>
 @endsection
 
