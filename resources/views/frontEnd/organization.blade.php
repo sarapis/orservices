@@ -58,8 +58,8 @@ ul#ui-id-1 {
                     </div>
                   </div>
 
-                  @if($organization->organization_services!='')
-                    @foreach($organization->service as $service)
+                  @if($organization->organization_services!=null)
+                    @foreach($organization->services as $service)
                     <div class="panel content-panel">
                         <div class="panel-body p-20">
 

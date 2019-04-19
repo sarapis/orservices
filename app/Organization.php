@@ -12,9 +12,9 @@ class Organization extends Model
     
 	public $timestamps = false;
 
-	public function service()
+	public function services()
     {
-        return $this->hasMany('App\Service', 'service_organization', 'service_recordid', 'organization_recordid');
+        return $this->hasMany('App\Service', 'service_organization', 'organization_recordid');
         
     }
 
