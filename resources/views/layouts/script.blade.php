@@ -331,6 +331,5 @@ $('#widget').draggable();
           // }
       });
   </script>
-  @yield('scripts')
 </body>
 
