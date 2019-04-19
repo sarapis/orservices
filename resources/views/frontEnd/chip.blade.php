@@ -111,69 +111,71 @@ ul#ui-id-1 {
     });
 </script> -->
 <script>
-    
-    var locations = <?php print_r(json_encode($locations)) ?>;
-    var maplocation = <?php print_r(json_encode($map)) ?>;
-    // console.log(locations);
-    var sumlat = 0.0;
-    var sumlng = 0.0;
-    var length = 0;
-    // console.log(locations.length);
-    for(var i = 0; i < locations.length; i ++)
-    {
-        if(locations[i].location_latitude)
+   $(document).ready(function(){
+        var locations = <?php print_r(json_encode($locations)) ?>;
+        var maplocation = <?php print_r(json_encode($map)) ?>;
+        // console.log(locations);
+        var sumlat = 0.0;
+        var sumlng = 0.0;
+        var length = 0;
+        // console.log(locations.length);
+        for(var i = 0; i < locations.length; i ++)
         {
-            sumlat += parseFloat(locations[i].location_latitude);
-            sumlng += parseFloat(locations[i].location_longitude);
-            length ++;
+            if(locations[i].location_latitude)
+            {
+                sumlat += parseFloat(locations[i].location_latitude);
+                sumlng += parseFloat(locations[i].location_longitude);
+                length ++;
+            }
         }
-    }
-    if(length != 0){
-        var avglat = sumlat/length;
-        var avglng = sumlng/length;
-    }
-    else
-    {
-        if(maplocation.active == 1){
-        avglat = maplocation.lat;
-        avglng = maplocation.long;
+        if(length != 0){
+            var avglat = sumlat/length;
+            var avglng = sumlng/length;
         }
         else
         {
-            avglat = 40.730981;
-            avglng = -73.998107;
+            if(maplocation.active == 1){
+            avglat = maplocation.lat;
+            avglng = maplocation.long;
+            }
+            else
+            {
+                avglat = 40.730981;
+                avglng = -73.998107;
+            }
         }
-    }
 
+        
+        // console.log(avglat);
+        var mymap = new GMaps({
+          el: '#map',
+          lat: avglat,
+          lng: avglng,
+          zoom:13
+        });
+
+
+        $.each( locations, function(index, value ){
+            // console.log(value);
+            var name = value.organization==null?'':value.organization.organization_name;
+            var serviceid = value.services.length == 0?'':value.services[0].service_recordid;
+            var service_name = value.services.length == 0?'':value.services[0].service_name;;
+            if(value.location_latitude){
+                mymap.addMarker({
+
+                    lat: value.location_latitude,
+                    lng: value.location_longitude,
+                    title: value.city,
+                           
+                    infoWindow: {
+                        maxWidth: 250,
+                        content: ('<a href="/service_'+serviceid+'" style="color:#428bca;font-weight:500;font-size:14px;">'+service_name+'</a><br><p>'+name+'</p>')
+                    }
+                });
+            }
+       });
+   }); 
     
-    // console.log(avglat);
-    var mymap = new GMaps({
-      el: '#map',
-      lat: avglat,
-      lng: avglng,
-      zoom:13
-    });
-
-
-    $.each( locations, function(index, value ){
-        // console.log(value);
-        var name = value.organization==null?'':value.organization.organization_name;
-        var serviceid = value.services.length == 0?'':value.services[0].service_recordid;
-        var service_name = value.services.length == 0?'':value.services[0].service_name;;
-        if(value.location_latitude){
-            mymap.addMarker({
-
-                lat: value.location_latitude,
-                lng: value.location_longitude,
-                title: value.city,
-                       
-                infoWindow: {
-                    maxWidth: 250,
-                    content: ('<a href="/service_'+serviceid+'" style="color:#428bca;font-weight:500;font-size:14px;">'+service_name+'</a><br><p>'+name+'</p>')
-                }
-            });
-        }
-   });
 </script>
 @endsection
 

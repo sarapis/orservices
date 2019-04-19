@@ -123,76 +123,131 @@ $(function () {
       // This example requires the Places library. Include the libraries=places
       // parameter when you first load the API. For example:
       // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+        //$(document).ready(function(){
+            function initMap() {
 
-      function initMap() {
+            var input = document.getElementById('location');
 
-        var input = document.getElementById('location');
+            // map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
 
-        // map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
+            var autocomplete = new google.maps.places.Autocomplete(input);
 
-        var autocomplete = new google.maps.places.Autocomplete(input);
+            // Set initial restrict to the greater list of countries.
+            autocomplete.setComponentRestrictions(
+                {'country': ['us']});
 
-        // Set initial restrict to the greater list of countries.
-        autocomplete.setComponentRestrictions(
-            {'country': ['us']});
-
-        // Specify only the data fields that are needed.
-        autocomplete.setFields(
-            ['address_components', 'geometry', 'icon', 'name']);
+            // Specify only the data fields that are needed.
+            autocomplete.setFields(
+                ['address_components', 'geometry', 'icon', 'name']);
 
 
-        autocomplete.addListener('place_changed', function() {
-          infowindow.close();
-          marker.setVisible(false);
-          var place = autocomplete.getPlace();
-          if (!place.geometry) {
-            // User entered the name of a Place that was not suggested and
-            // pressed the Enter key, or the Place Details request failed.
-            window.alert("No details available for input: '" + place.name + "'");
-            return;
+            autocomplete.addListener('place_changed', function() {
+              infowindow.close();
+              marker.setVisible(false);
+              var place = autocomplete.getPlace();
+              if (!place.geometry) {
+                // User entered the name of a Place that was not suggested and
+                // pressed the Enter key, or the Place Details request failed.
+                window.alert("No details available for input: '" + place.name + "'");
+                return;
+              }
+
+              // If the place has a geometry, then present it on a map.
+              if (place.geometry.viewport) {
+                map.fitBounds(place.geometry.viewport);
+              } else {
+                map.setCenter(place.geometry.location);
+                map.setZoom(17);  // Why 17? Because it looks good.
+              }
+              marker.setPosition(place.geometry.location);
+              marker.setVisible(true);
+
+              var address = '';
+              if (place.address_components) {
+                address = [
+                  (place.address_components[0] && place.address_components[0].short_name || ''),
+                  (place.address_components[1] && place.address_components[1].short_name || ''),
+                  (place.address_components[2] && place.address_components[2].short_name || '')
+                ].join(' ');
+              }
+
+              infowindowContent.children['place-icon'].src = place.icon;
+              infowindowContent.children['place-name'].textContent = place.name;
+              infowindowContent.children['place-address'].textContent = address;
+              infowindow.open(map, marker);
+            });
+
+            // Sets a listener on a given radio button. The radio buttons specify
+            // the countries used to restrict the autocomplete search.
+            // function setupClickListener(id, countries) {
+            //   var radioButton = document.getElementById(id);
+            //   radioButton.addEventListener('click', function() {
+            //     autocomplete.setComponentRestrictions({'country': countries});
+            //   });
+            // }
+
+            // setupClickListener('changecountry-usa', 'us');
+            // setupClickListener(
+            //     'changecountry-usa-and-uot', ['us', 'pr', 'vi', 'gu', 'mp']);
+
+            var input1 = document.getElementById('location1');
+            // var countries = document.getElementById('country-selector');
+
+            // map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
+            if(input1){
+                var autocomplete1 = new google.maps.places.Autocomplete(input1);
+
+                // Set initial restrict to the greater list of countries.
+                autocomplete1.setComponentRestrictions(
+                    {'country': ['us']});
+
+                // Specify only the data fields that are needed.
+                autocomplete1.setFields(
+                    ['address_components', 'geometry', 'icon', 'name']);
+
+
+                autocomplete1.addListener('place_changed', function() {
+                  infowindow.close();
+                  marker.setVisible(false);
+                  var place = autocomplete1.getPlace();
+                  if (!place.geometry) {
+                    // User entered the name of a Place that was not suggested and
+                    // pressed the Enter key, or the Place Details request failed.
+                    window.alert("No details available for input: '" + place.name + "'");
+                    return;
+                  }
+
+                  // If the place has a geometry, then present it on a map.
+                  if (place.geometry.viewport) {
+                    map.fitBounds(place.geometry.viewport);
+                  } else {
+                    map.setCenter(place.geometry.location);
+                    map.setZoom(17);  // Why 17? Because it looks good.
+                  }
+                  marker.setPosition(place.geometry.location);
+                  marker.setVisible(true);
+
+                  var address = '';
+                  if (place.address_components) {
+                    address = [
+                      (place.address_components[0] && place.address_components[0].short_name || ''),
+                      (place.address_components[1] && place.address_components[1].short_name || ''),
+                      (place.address_components[2] && place.address_components[2].short_name || '')
+                    ].join(' ');
+                  }
+
+                  infowindowContent.children['place-icon'].src = place.icon;
+                  infowindowContent.children['place-name'].textContent = place.name;
+                  infowindowContent.children['place-address'].textContent = address;
+                  infowindow.open(map, marker);
+                });
+            }
+            
           }
-
-          // If the place has a geometry, then present it on a map.
-          if (place.geometry.viewport) {
-            map.fitBounds(place.geometry.viewport);
-          } else {
-            map.setCenter(place.geometry.location);
-            map.setZoom(17);  // Why 17? Because it looks good.
-          }
-          marker.setPosition(place.geometry.location);
-          marker.setVisible(true);
-
-          var address = '';
-          if (place.address_components) {
-            address = [
-              (place.address_components[0] && place.address_components[0].short_name || ''),
-              (place.address_components[1] && place.address_components[1].short_name || ''),
-              (place.address_components[2] && place.address_components[2].short_name || '')
-            ].join(' ');
-          }
-
-          infowindowContent.children['place-icon'].src = place.icon;
-          infowindowContent.children['place-name'].textContent = place.name;
-          infowindowContent.children['place-address'].textContent = address;
-          infowindow.open(map, marker);
-        });
-
-        // Sets a listener on a given radio button. The radio buttons specify
-        // the countries used to restrict the autocomplete search.
-        // function setupClickListener(id, countries) {
-        //   var radioButton = document.getElementById(id);
-        //   radioButton.addEventListener('click', function() {
-        //     autocomplete.setComponentRestrictions({'country': countries});
-        //   });
-        // }
-
-        // setupClickListener('changecountry-usa', 'us');
-        // setupClickListener(
-        //     'changecountry-usa-and-uot', ['us', 'pr', 'vi', 'gu', 'mp']);
-      }
+//      });
+      
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5XHJ6oNL9-qh0XsL0G74y1xbcxNGkSxw&libraries=places&callback=initMap"
-        async defer></script>
+
 
 @endif
 

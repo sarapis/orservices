@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Functions\Airtable;
 use App\Organization;
 use App\Location;
+use App\Map;
 use App\Airtables;
 use App\Services\Stringtoint;
 
@@ -130,16 +131,18 @@ class OrganizationController extends Controller
     public function organizations()
     {
         $organizations = Organization::orderBy('organization_name')->paginate(10);
+        $map = Map::find(1);
 
-        return view('frontEnd.organizations', compact('organizations'));
+        return view('frontEnd.organizations', compact('organizations', 'map'));
     }
 
     public function organization($id)
     {
         $organization = Organization::where('organization_recordid', '=', $id)->first();
         $locations = Location::with('services', 'address')->where('location_organization', '=', $id)->get();
+        $map = Map::find(1);
 
-        return view('frontEnd.organization', compact('organization', 'locations'));
+        return view('frontEnd.organization', compact('organization', 'locations', 'map'));
     }
 
     /**

@@ -27,13 +27,7 @@ class AppServiceProvider extends ServiceProvider
             $view->with('taxonomies', $taxonomies);
         });
 
-        view()->composer('layouts.style', function($view)
-        {
-            $map = \App\Map::find(1);
-            $view->with('map', $map);
-        });
-
-        view()->composer('layouts.sidebar', function($view)
+        view()->composer('layouts.script', function($view)
         {
             $map = \App\Map::find(1);
             $view->with('map', $map);

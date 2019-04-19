@@ -138,7 +138,7 @@ ul#ui-id-1 {
     });
 </script> -->
 <script>
-    
+  $(document).ready(function(){  
     var locations = <?php print_r(json_encode($locations)) ?>;
     var organization = <?php print_r(json_encode($organization->organization_name)) ?>;
     // console.log(locations);
@@ -197,6 +197,7 @@ ul#ui-id-1 {
             });
         }
    });
+  });
 </script>
 @endsection
 

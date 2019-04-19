@@ -142,22 +142,8 @@ ul#ui-id-1 {
     </div>
 </div>
 
-<!-- <script>
-    $(document).ready(function(){
-        if(screen.width < 768){
-          var text= $('.navbar-header').css('height');
-          var height = text.slice(0, -2);
-          $('.page').css('padding-top', height);
-          $('#content').css('top', height);
-        }
-        else{
-          var text= $('.navbar-header').css('height');
-          var height = 0;
-          $('.page').css('margin-top', height);
-        }
-    });
-</script> -->
 <script>
+$(document).ready(function(){
     var locations = <?php print_r(json_encode($location)) ?>;
     var maplocation = <?php print_r(json_encode($map)) ?>;
 
@@ -195,7 +181,7 @@ ul#ui-id-1 {
           });
      });
     }
-
+});
 
 
 </script>
