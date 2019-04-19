@@ -163,9 +163,9 @@ ul#ui-id-1 {
 
             var content = "";
             for(i = 0; i < value.services.length; i ++){
-                content +=  '<a href="/service_'+value.services[i].service_recordid+'" style="color:#428bca;font-weight:500;font-size:14px;">'+value.services[i].service_name+'</a>';
+                content +=  '<a href="/service_'+value.services[i].service_recordid+'" style="color:#428bca;font-weight:500;font-size:14px;">'+value.services[i].service_name+'</a><br>';
             }
-            content += '<br><p>'+name+'</p>';
+            content += '<p>'+name+'</p>';
 
             if(value.location_latitude){
                 mymap.addMarker({

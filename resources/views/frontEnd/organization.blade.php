@@ -182,31 +182,31 @@ ul#ui-id-1 {
 
 
     $.each( locations, function(index, value ){
-        // console.log(locations);
-        var name = value.organization==null?'':value.organization.organization_name;
-        var serviceid = value.services.length == 0?'':value.services[0].service_recordid;
-        var service_name = value.services.length == 0?'':value.services[0].service_name;
+            // console.log(locations);
+            var name = value.organization==null?'':value.organization.organization_name;
+            var serviceid = value.services.length == 0?'':value.services[0].service_recordid;
+            var service_name = value.services.length == 0?'':value.services[0].service_name;
 
-        var content = "";
-        for(i = 0; i < value.services.length; i ++){
-            content +=  '<a href="/service_'+value.services[i].service_recordid+'" style="color:#428bca;font-weight:500;font-size:14px;">'+value.services[i].service_name+'</a>';
-        }
-        content += '<br><p>'+name+'</p>';
+            var content = "";
+            for(i = 0; i < value.services.length; i ++){
+                content +=  '<a href="/service_'+value.services[i].service_recordid+'" style="color:#428bca;font-weight:500;font-size:14px;">'+value.services[i].service_name+'</a><br>';
+            }
+            content += '<p>'+name+'</p>';
 
-        if(value.location_latitude){
-            mymap.addMarker({
+            if(value.location_latitude){
+                mymap.addMarker({
 
-                lat: value.location_latitude,
-                lng: value.location_longitude,
-                title: value.city,
-                       
-                infoWindow: {
-                    maxWidth: 250,
-                    content: (content)
-                }
-            });
-        }
-   });
+                    lat: value.location_latitude,
+                    lng: value.location_longitude,
+                    title: value.city,
+                           
+                    infoWindow: {
+                        maxWidth: 250,
+                        content: (content)
+                    }
+                });
+            }
+       });
   });
 </script>
 @endsection
