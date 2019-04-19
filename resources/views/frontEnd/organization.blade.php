@@ -182,7 +182,7 @@ ul#ui-id-1 {
 
 
     $.each( locations, function(index, value ){
-        console.log(value);
+        // console.log(value);
         if(value.location_latitude){
             mymap.addMarker({
 
