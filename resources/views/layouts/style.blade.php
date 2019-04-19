@@ -66,9 +66,7 @@
   Breakpoints();
   </script>
   <script type='text/javascript' src='//platform-api.sharethis.com/js/sharethis.js#property=5a98fe1e54d8310013ae576a&product=inline-share-buttons' async='async'></script>
-<script src="https://maps.googleapis.com/maps/api/js?key={{$map->api_key}}&libraries=places&callback=initMap"
-  async defer></script>
-  <script src="{{asset('js/gmaps.js')}}"></script>
+
  <style>
   body{
     top: 0 !important;
