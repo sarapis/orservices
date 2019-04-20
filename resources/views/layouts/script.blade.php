@@ -1,6 +1,5 @@
 <!-- Core  -->
-    <script src="https://maps.googleapis.com/maps/api/js?key={{$map->api_key}}&libraries=places&callback=initMap"
-  async defer></script>
+   
   <script src="../../../frontend/global/vend/babel-external-helpers/babel-external-helpers.js"></script>
   <script src="../../../frontend/global/vend/tether/tether.js"></script>
 <!--   <script src="../../../frontend/global/vend/bootstrap/bootstrap.js"></script> -->
@@ -332,5 +331,4 @@ $('#widget').draggable();
           // }
       });
   </script>
-</body>
 

@@ -10,6 +10,8 @@ class Detail extends Model
 	use Sortable;
 
     protected $table = 'details';
+
+    protected $primaryKey = 'detail_recordid';
     
 	public $timestamps = false;
 

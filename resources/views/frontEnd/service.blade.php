@@ -132,7 +132,7 @@ ul#ui-id-1 {
                 <h3>Details</h3>
                 @if($service->service_details!=NULL)
                 
-                  @foreach($service->detail as $detail)
+                  @foreach($service->details as $detail)
                     <h4><span class="badge bg-red">{{ $detail->detail_type }}:</span> {!! $detail->detail_value !!}</h4>
                   @endforeach
  

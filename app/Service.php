@@ -31,9 +31,14 @@ class Service extends Model
 
     }
 
+     public function details()
+    {
+
+        return $this->belongsToMany('App\Detail', 'service_detail', 'service_recordid', 'detail_recordid');
+    }
+
     public function taxonomy()
     {
-        $this->primaryKey='service_recordid';
 
         return $this->belongsToMany('App\Taxonomy', 'service_taxonomy', 'service_recordid', 'taxonomy_recordid');
 
@@ -62,10 +67,8 @@ class Service extends Model
         return $this->belongsToMany('App\Contact', 'service_contact', 'service_recordid', 'contact_recordid');
     }
 
-    public function detail()
-    {
-        return $this->hasmany('App\Detail', 'detail_services', 'service_recordid');
-    }
+
+   
 
     public function address()
     {

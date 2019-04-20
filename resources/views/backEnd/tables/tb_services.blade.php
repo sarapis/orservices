@@ -89,7 +89,9 @@ Services
                   
                   <td class="text-center">
                     @if($service->service_taxonomy!=0)
-                    <span class="badge bg-blue">{{$service->taxonomy()->first()->taxonomy_name}}</span>
+                      @foreach($service->taxonomy as $taxonomy)
+                      <span class="badge bg-blue">{{$taxonomy->taxonomy_name}}</span>
+                      @endforeach
                     @endif
                   </td>
                 
@@ -117,12 +119,14 @@ Services
                   {{$service->contact()->first()->contact_name}}</span>
                   @endif</td>
                   
-                  <td class="text-center"><span style="white-space:normal;">
-                    @foreach($service->detail as $detail)
-                      <span class="badge bg-red">{!! $detail->detail_value !!}</span>
-                    @endforeach
-                    </span>
+                  <td class="text-center">
+                    @if($service->service_details != null )
+                      @foreach($service->details as $deta)
+                        <span class="badge bg-red">{{$deta->detail_value}}</span>
+                      @endforeach
+                    @endif
                   </td>
+
 
                   <td class="text-center"><span style="white-space:normal;">
                   @if($service->service_address!=NULL)
