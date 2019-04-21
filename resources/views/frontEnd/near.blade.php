@@ -93,67 +93,69 @@ ul#ui-id-1 {
 </div>
 
 <script>
- $(document).ready(function(){   
-    var locations = <?php print_r(json_encode($locations)) ?>;
-    // console.log(locations);
-
-    var sumlat = 0.0;
-    var sumlng = 0.0;
-    var length = 0;
-    // console.log(locations.length);
-    for(var i = 0; i < locations.length; i ++)
-    {
-        if(locations[i].location_latitude)
-        {
-            sumlat += parseFloat(locations[i].location_latitude);
-            sumlng += parseFloat(locations[i].location_longitude);
-            length ++;
-        }
-    }
-    if(length != 0){
-        var avglat = sumlat/length;
-        var avglng = sumlng/length;
-    }
-    else
-    {
-        avglat = 40.730981;
-        avglng = -73.998107;
-    }
-    // console.log(avglat);
-    var mymap = new GMaps({
-      el: '#map',
-      lat: avglat,
-      lng: avglng,
-      zoom:12
-    });
-
-
-   $.each( locations, function(index, value ){
+ $(document).ready(function(){ 
+    setTimeout(function(){  
+        var locations = <?php print_r(json_encode($locations)) ?>;
         // console.log(locations);
-        var name = value.organization==null?'':value.organization.organization_name;
-        var serviceid = value.services.length == 0?'':value.services[0].service_recordid;
-        var service_name = value.services.length == 0?'':value.services[0].service_name;
 
-        var content = "";
-        for(i = 0; i < value.services.length; i ++){
-            content +=  '<a href="/service_'+value.services[i].service_recordid+'" style="color:#428bca;font-weight:500;font-size:14px;">'+value.services[i].service_name+'</a><br>';
+        var sumlat = 0.0;
+        var sumlng = 0.0;
+        var length = 0;
+        // console.log(locations.length);
+        for(var i = 0; i < locations.length; i ++)
+        {
+            if(locations[i].location_latitude)
+            {
+                sumlat += parseFloat(locations[i].location_latitude);
+                sumlng += parseFloat(locations[i].location_longitude);
+                length ++;
+            }
         }
-        content += '<p>'+name+'</p>';
-
-        if(value.location_latitude){
-            mymap.addMarker({
-
-                lat: value.location_latitude,
-                lng: value.location_longitude,
-                title: value.city,
-                       
-                infoWindow: {
-                    maxWidth: 250,
-                    content: (content)
-                }
-            });
+        if(length != 0){
+            var avglat = sumlat/length;
+            var avglng = sumlng/length;
         }
-   });
+        else
+        {
+            avglat = 40.730981;
+            avglng = -73.998107;
+        }
+        // console.log(avglat);
+        var mymap = new GMaps({
+          el: '#map',
+          lat: avglat,
+          lng: avglng,
+          zoom:12
+        });
+
+
+       $.each( locations, function(index, value ){
+            // console.log(locations);
+            var name = value.organization==null?'':value.organization.organization_name;
+            var serviceid = value.services.length == 0?'':value.services[0].service_recordid;
+            var service_name = value.services.length == 0?'':value.services[0].service_name;
+
+            var content = "";
+            for(i = 0; i < value.services.length; i ++){
+                content +=  '<a href="/service_'+value.services[i].service_recordid+'" style="color:#428bca;font-weight:500;font-size:14px;">'+value.services[i].service_name+'</a><br>';
+            }
+            content += '<p>'+name+'</p>';
+
+            if(value.location_latitude){
+                mymap.addMarker({
+
+                    lat: value.location_latitude,
+                    lng: value.location_longitude,
+                    title: value.city,
+                           
+                    infoWindow: {
+                        maxWidth: 250,
+                        content: (content)
+                    }
+                });
+            }
+       });
+    }, 3000)
 });
 </script>
 @endsection

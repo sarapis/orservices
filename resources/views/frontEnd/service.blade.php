@@ -144,43 +144,45 @@ ul#ui-id-1 {
 
 <script>
 $(document).ready(function(){
-    var locations = <?php print_r(json_encode($location)) ?>;
-    var maplocation = <?php print_r(json_encode($map)) ?>;
+    setTimeout(function(){
+        var locations = <?php print_r(json_encode($location)) ?>;
+        var maplocation = <?php print_r(json_encode($map)) ?>;
 
-    console.log(locations);
-    var show = 1;
-    if(locations.length == 0){
-      show = 0;
-    }
+        // console.log(locations);
+        var show = 1;
+        if(locations.length == 0){
+          show = 0;
+        }
 
-    if(maplocation.active == 1){
-        avglat = maplocation.lat;
-        avglng = maplocation.long;
-    }
-    else
-    {
-        avglat = 40.730981;
-        avglng = -73.998107;
-    }
+        if(maplocation.active == 1){
+            avglat = maplocation.lat;
+            avglng = maplocation.long;
+        }
+        else
+        {
+            avglat = 40.730981;
+            avglng = -73.998107;
+        }
 
-    var mymap = new GMaps({
-      el: '#map',
-      lat: avglat,
-      lng: avglng,
-      zoom:10
-    });
+        var mymap = new GMaps({
+          el: '#map',
+          lat: avglat,
+          lng: avglng,
+          zoom:10
+        });
 
-    if(show == 1){
-      $.each( locations, function(index, value ){
-          mymap.addMarker({
-              lat: value.location_latitude,
-              lng: value.location_longitude,
-              title: value.location_name
-                     
-              
-          });
-     });
-    }
+        if(show == 1){
+          $.each( locations, function(index, value ){
+              mymap.addMarker({
+                  lat: value.location_latitude,
+                  lng: value.location_longitude,
+                  title: value.location_name
+                         
+                  
+              });
+         });
+        }
+    }, 3000)
 });
 
 
