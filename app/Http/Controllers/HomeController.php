@@ -63,8 +63,9 @@ class HomeController extends Controller
                     $q->where('taxonomy_name', 'like', '%'.$chip_name.'%');
                 })->paginate(10);
         $locations = Location::with('services','organization')->get();
+        $map = Map::find(1);
 
         // $services =Service::where('service_name',  'like', '%'.$search.'%')->get();
-        return view('frontEnd.chip', compact('services','locations', 'chip_title', 'chip_name'));
+        return view('frontEnd.chip', compact('services','locations', 'chip_title', 'chip_name', 'map'));
     }
 }
