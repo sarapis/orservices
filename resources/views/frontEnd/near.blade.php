@@ -96,30 +96,20 @@ ul#ui-id-1 {
  $(document).ready(function(){ 
     setTimeout(function(){  
         var locations = <?php print_r(json_encode($locations)) ?>;
-        // console.log(locations);
-
-        var sumlat = 0.0;
-        var sumlng = 0.0;
-        var length = 0;
-        // console.log(locations.length);
-        for(var i = 0; i < locations.length; i ++)
-        {
-            if(locations[i].location_latitude)
+        var maplocation = <?php print_r(json_encode($map)) ?>;
+            // console.log(locations);
+            var avglat = 0.0;
+            var avglat = 0.0;
+            
+            if(maplocation.active == 1){
+                avglat = maplocation.lat;
+                avglng = maplocation.long;
+                }
+            else
             {
-                sumlat += parseFloat(locations[i].location_latitude);
-                sumlng += parseFloat(locations[i].location_longitude);
-                length ++;
+                avglat = 40.730981;
+                avglng = -73.998107;
             }
-        }
-        if(length != 0){
-            var avglat = sumlat/length;
-            var avglng = sumlng/length;
-        }
-        else
-        {
-            avglat = 40.730981;
-            avglng = -73.998107;
-        }
         // console.log(avglat);
         var mymap = new GMaps({
           el: '#map',
