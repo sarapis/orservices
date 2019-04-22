@@ -29,6 +29,7 @@ ul#ui-id-1 {
 </style>
 
 @section('content')
+@include('layouts.filter')
 <div class="wrapper">
     @include('layouts.sidebar')
     <!-- Page Content Holder -->
