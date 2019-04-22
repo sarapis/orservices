@@ -120,6 +120,7 @@ class EditlayoutController extends Controller
         }
         $layout->site_name=$request->site_name;
         $layout->tagline=$request->tagline;
+        $layout->sidebar_content=$request->sidebar_content;
         $layout->contact_text=$request->contact_text;
         $layout->contact_btn_label=$request->contact_btn_label;
         $layout->contact_btn_link=$request->contact_btn_link;

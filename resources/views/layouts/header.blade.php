@@ -8,14 +8,11 @@
         title="{{$layout->site_name}}">
       </a>
       <a class="navbar-brand" href="/">{{$layout->site_name}}</a>
-       <div class="navbar-brand ticker well ml-10 mr-10">
-        <span>{{$layout->tagline}}</span>
+      @if($layout->tagline!=null)
+      <div class="navbar-brand ticker well ml-10 mr-10">
+         <span>{{$layout->tagline}}</span> 
       </div>
-      <!-- <a class="navbar-brand nav-item nav-link mr-0 pl-0 pr-5" href="/explore">Explore</a>
-      <a class="navbar-brand nav-item nav-link mr-0 pl-0 pr-5" href="/about">About</a>
-      <a class="navbar-brand nav-item nav-link mr-0 pl-0 pr-5" href="https://www.participatorybudgeting.org/donate/" target="_blank">Donate</a>
-      <a class="navbar-brand nav-item mr-0 pl-0 pr-5" href="">Español</a> -->
-        
+      @endif  
         <ul class="nav navbar-toolbar nav-menubar pull-right">
           <li class="nav-item nav-menu">
             <a class="nav-link text-white" href="/services"><b>Services</b></a>
@@ -42,8 +39,9 @@
         </ul>
         
     </div>
-  
-
+    <div class="navbar-header" style="background: #A2E9FF;">
+        
+    </div>
   </nav>
 <style type="text/css">
   .ticker {
@@ -51,5 +49,13 @@
     background-color:transparent;
     color:#fff;
     border: 0;
+  }
+  .search-near{
+    padding: 10px;
+    padding-left: 20px;
+    font-size: 1.1em;
+    display: block;
+    color: #424242;
+    font-weight: 400;
   }
 </style>

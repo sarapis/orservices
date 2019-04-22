@@ -56,6 +56,14 @@ Edit Layout
               </div>
 
               <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Sidebar Content
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <textarea id="summernote1" type="text" name="sidebar_content" class="optional form-control col-md-7 col-xs-12">{{$layout->sidebar_content}}</textarea>
+                </div>
+              </div>
+
+              <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Contact Text 
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
@@ -105,6 +113,9 @@ Edit Layout
 <script>
 $(document).ready(function() {
     $('#summernote').summernote({
+        height: 200
+    });
+    $('#summernote1').summernote({
         height: 200
     });
 });

@@ -35,7 +35,7 @@
         <li><a><i class="fa fa-table"></i> Pages <span class="fa fa-chevron-down"></span></a>
           <ul class="nav child_menu">
             <li><a href="/layout_edit">Site Text</a></li>
-            <li><a href="/home_edit">Home</a></li>
+            <!-- <li><a href="/home_edit">Home</a></li> -->
             <li><a href="/about_edit">About</a></li>
             <li><a href="/map">Map</a></li>
           </ul>

@@ -327,7 +327,7 @@ p{
 }
 
 .input-search{
-    box-shadow: 0 1px 6px rgba(57,73,76,.35);
+    box-shadow: 0 1px 4px 0 rgba(0,0,0,.1);
 }
 .form-control.search-form{
     border-radius: 0;

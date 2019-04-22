@@ -18,6 +18,7 @@ class CreateLayoutTable extends Migration
             $table->string('logo')->nullable();
             $table->string('site_name')->nullable();
             $table->string('tagline')->nullable();
+            $table->string('sidebar_content')->nullable();
             $table->string('contact_text')->nullable();
             $table->string('contact_btn_label')->nullable();
             $table->string('contact_btn_link')->nullable();
