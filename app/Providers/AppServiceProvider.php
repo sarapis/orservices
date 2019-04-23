@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
 
         view()->composer('layouts.sidebar', function($view)
         {
-            $taxonomies = \App\Taxonomy::orderBy('taxonomy_name', 'asc')->get();
+            $taxonomies = \App\Taxonomy::where('taxonomy_parent_name', '=', NULL)->orderBy('taxonomy_name', 'asc')->get();
             $view->with('taxonomies', $taxonomies);
         });
 
