@@ -19,8 +19,10 @@ class HomeController extends Controller
         $home = Layout::find(1);
         $map = Map::find(1);
         $taxonomies = Taxonomy::where('taxonomy_parent_name', '=', NULL)->orderBy('taxonomy_name', 'asc')->get();
+        $parent_taxonomy = [];
+        $child_taxonomy = [];
 
-    	return view('frontEnd.home', compact('home', 'taxonomies', 'map'));
+    	return view('frontEnd.home', compact('home', 'taxonomies', 'map', 'parent_taxonomy', 'child_taxonomy'));
     }
 
     public function about($value='')
