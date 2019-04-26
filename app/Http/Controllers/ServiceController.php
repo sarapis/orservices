@@ -234,8 +234,7 @@ class ServiceController extends Controller
 
     public function index()
     {
-        $services = Service::orderBy('service_name')->paginate(10);
-        
+        $services = Service::orderBy('service_name')->paginate(10);      
 
         return view('backEnd.tables.tb_services', compact('services'));
     }
@@ -246,8 +245,10 @@ class ServiceController extends Controller
         $services = Service::with('locations')->orderBy('service_name')->paginate(10);
         $locations = Location::with('services','organization')->get();
         $map = Map::find(1);
+        $parent_taxonomy = [];
+        $child_taxonomy = [];
 
-        return view('frontEnd.services', compact('services', 'locations', 'map'));
+        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy'));
     }
 
     public function service($id)

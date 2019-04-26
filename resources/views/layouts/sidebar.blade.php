@@ -97,22 +97,31 @@
             <li class="option-side sidebar-menu">
                 <button class="btn btn-block waves-effect waves-classic" style="padding: 0;background: #A2E9FF;"><a href="/services_near_me" style="display: block;padding-left: 10px;">Services Near Me</a></button>
             </li> 
-                    
+
+            <form action="/filter" method="POST" id="filter">
+            {{ csrf_field() }}      
             <li class="option-side">
                 <a href="#projectcategory" class="text-side" data-toggle="collapse" aria-expanded="false">Category</a>
                 <ul class="collapse list-unstyled option-ul" id="projectcategory">
                     <ul id="tree2">
                         @foreach($taxonomies as $taxonomy)
                             @if($taxonomy->taxonomy_name)
-                            <li class="nobranch">
+                            
+
+                                    
+                                    <li class="nobranch">
+                                        
+                                            <input type="checkbox" @if(count($taxonomy->childs)) name="parents[]" @else name="childs[]" @endif value="{{$taxonomy->taxonomy_recordid}}"  class="regular-checkbox" @if(in_array($taxonomy->taxonomy_recordid, $parent_taxonomy)) checked @elseif(in_array($taxonomy->taxonomy_recordid, $child_taxonomy)) checked @endif/>
+                                            <span class="inputChecked">{{$taxonomy->taxonomy_name}}</span>
+                                        
+                                        @if(count($taxonomy->childs))
+                                            @include('layouts.manageChild1',['childs' => $taxonomy->childs])
+                                        @endif
+                                    </li>
+                                    
+                                
                                
-                                  <input type="checkbox" name="parents[]" value="{{$taxonomy->taxonomy_recordid}}"  class="regular-checkbox" />
-                                  <span class="inputChecked">{{$taxonomy->taxonomy_name}}</span>
-                               
-                                @if(count($taxonomy->childs))
-                                    @include('layouts.manageChild1',['childs' => $taxonomy->childs])
-                                @endif
-                            </li>
+
                             @endif
                         @endforeach
                     </ul>
@@ -129,6 +138,9 @@
                     @endforeach
                 </ul>
             </li>
+            <input type="text" name="paginate" id='paginate' @if(isset($pagination)) value="{{$pagination}}" @else value="10" @endif>
+            <input type="text" name="sort" id='sort'>
+            </form>
         </ul>
 
 </nav>
@@ -138,5 +150,20 @@
     <input type="hidden" name="location" id="location" value="">
 @endif
 <script src="{{asset('js/treeview2.js')}}"></script>
+<script>
+$(document).ready(function(){
+    $('.regular-checkbox').on('click', function(e){
+        $("#filter").submit();
+    });
+    $('.drop-paginate').on('click', function(){
+        $("#paginate").val($(this).text());
+        $("#filter").submit();
+    });
+    $('.drop-sort').on('click', function(){
+        $("#sort").val($(this).text());
+        $("#filter").submit();
+    });
+});
+</script>
 
 
