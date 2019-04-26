@@ -138,8 +138,8 @@
                     @endforeach
                 </ul>
             </li>
-            <input type="text" name="paginate" id='paginate' @if(isset($pagination)) value="{{$pagination}}" @else value="10" @endif>
-            <input type="text" name="sort" id='sort'>
+            <input type="hidden" name="paginate" id='paginate' @if(isset($pagination)) value="{{$pagination}}" @else value="10" @endif>
+            <input type="hidden" name="sort" id='sort'>
             </form>
         </ul>
 
