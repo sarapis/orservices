@@ -272,7 +272,10 @@ class ServiceController extends Controller
 
         $map = Map::find(1);
 
-        return view('frontEnd.chip', compact('services', 'locations', 'chip_title', 'chip_name', 'map'));
+        $parent_taxonomy = [];
+        $child_taxonomy = [];
+
+        return view('frontEnd.chip', compact('services', 'locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy'));
     }
 
     /**
