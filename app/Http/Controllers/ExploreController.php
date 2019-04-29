@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Service;
+use App\Organization;
 use App\Taxonomy;
 use App\Servicetaxonomy;
+use App\Serviceorganization;
 use App\Servicelocation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
@@ -109,7 +111,7 @@ class ExploreController extends Controller
 
         $parents = $request->input('parents');
         $childs = $request->input('childs');
-        $organizations = $request->input('organizations');
+        $checked = $request->input('organizations');
         $pagination = strval($request->input('paginate'));
 
         $sort = $request->input('sort');
@@ -120,6 +122,7 @@ class ExploreController extends Controller
 
         $parent_taxonomy = [];
         $child_taxonomy = [];
+        $checked_organizations = [];
 
 
         if($parents!=null){
@@ -147,21 +150,36 @@ class ExploreController extends Controller
             $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
         }
 
+        if($checked!=null){
+            $checked_organizations = Organization::whereIn('organization_recordid', $checked)->pluck('organization_recordid');
+            $checked_organizations = json_decode(json_encode($checked_organizations));
+            
+            $service_ids = Serviceorganization::whereIn('organization_recordid', $checked)->groupBy('service_recordid')->pluck('service_recordid');
+            $location_ids = Servicelocation::whereIn('service_recordid', $service_ids)->groupBy('location_recordid')->pluck('location_recordid');
+            $services = $services->whereIn('service_recordid', $service_ids);
+            $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
+        }
+
         if($sort == 'Service Name'){
             $services = $services->orderBy('service_name');
         }
+
+        if($sort == 'Organization Name'){
+            $services = $services->with(['organizations' => function($query) {
+                $query->orderBy('id');
+            }]);
+        }
+
+       
 
 
             
         $services = $services->paginate($pagination);
         $locations = $locations->get();
-
-
-
        
         $map = Map::find(1);
 
-        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'pagination'));
+        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'pagination', 'sort'));
 
     }
     /**

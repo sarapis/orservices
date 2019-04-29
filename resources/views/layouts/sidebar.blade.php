@@ -131,15 +131,17 @@
                 <a href="#cityagency" class="text-side" data-toggle="collapse" aria-expanded="false">Organization</a>
                 <ul class="collapse list-unstyled option-ul" id="cityagency">
                     @foreach($organizations as $organization)
-                    <li class="nobranch">
-                        <input type="checkbox" name="organizations[]" value="{{$organization->organization_recordid}}"  class="regular-checkbox" />
-                        <span class="inputChecked">{{$organization->organization_name}}</span>
-                    </li>   
+                        @if($organization->organization_services)
+                        <li class="nobranch">
+                            <input type="checkbox" name="organizations[]" value="{{$organization->organization_recordid}}"  class="regular-checkbox" @if(in_array($organization->organization_recordid, $checked_organizations)) checked @endif/>
+                            <span class="inputChecked">{{$organization->organization_name}}</span>
+                        </li>   
+                        @endif
                     @endforeach
                 </ul>
             </li>
-            <input type="hidden" name="paginate" id='paginate' @if(isset($pagination)) value="{{$pagination}}" @else value="10" @endif>
-            <input type="hidden" name="sort" id='sort'>
+            <input type="text" name="paginate" id='paginate' @if(isset($pagination)) value="{{$pagination}}" @else value="10" @endif>
+            <input type="text" name="sort" id='sort' @if(isset($sort)) value="{{$sort}}" @endif>
             </form>
         </ul>
 

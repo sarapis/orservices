@@ -119,7 +119,7 @@ ul#ui-id-1 {
                             </button>
                             <div class="dropdown-menu" aria-labelledby="exampleSizingDropdown2" role="menu">
                               <a class="dropdown-item drop-sort" href="javascript:void(0)" role="menuitem">Service Name</a>
-                              <a class="dropdown-item drop-sort" href="javascript:void(0)" role="menuitem">Oranization Name</a>
+                              <a class="dropdown-item drop-sort" href="javascript:void(0)" role="menuitem">Organization Name</a>
                               <a class="dropdown-item drop-sort" href="javascript:void(0)" role="menuitem">Distance from Address</a>
                             </div>
                         </div>

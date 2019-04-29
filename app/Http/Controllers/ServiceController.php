@@ -247,8 +247,9 @@ class ServiceController extends Controller
         $map = Map::find(1);
         $parent_taxonomy = [];
         $child_taxonomy = [];
+        $checked_organizations = [];
 
-        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy'));
+        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations'));
     }
 
     public function service($id)
@@ -256,8 +257,11 @@ class ServiceController extends Controller
         $service = Service::where('service_recordid', '=', $id)->first();
         $location = Location::with('organization', 'address')->where('location_services', 'like', '%'.$id.'%')->get();
         $map = Map::find(1);
+        $parent_taxonomy = [];
+        $child_taxonomy = [];
+        $checked_organizations = [];
 
-        return view('frontEnd.service', compact('service', 'location', 'map'));
+        return view('frontEnd.service', compact('service', 'location', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations'));
     }
 
     public function taxonomy($id)
@@ -274,8 +278,9 @@ class ServiceController extends Controller
 
         $parent_taxonomy = [];
         $child_taxonomy = [];
+        $checked_organizations = [];
 
-        return view('frontEnd.chip', compact('services', 'locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy'));
+        return view('frontEnd.chip', compact('services', 'locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations'));
     }
 
     /**

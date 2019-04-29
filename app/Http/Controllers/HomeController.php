@@ -21,8 +21,9 @@ class HomeController extends Controller
         $taxonomies = Taxonomy::where('taxonomy_parent_name', '=', NULL)->orderBy('taxonomy_name', 'asc')->get();
         $parent_taxonomy = [];
         $child_taxonomy = [];
+        $checked_organizations = [];
 
-    	return view('frontEnd.home', compact('home', 'taxonomies', 'map', 'parent_taxonomy', 'child_taxonomy'));
+    	return view('frontEnd.home', compact('home', 'taxonomies', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations'));
     }
 
     public function about($value='')

@@ -132,8 +132,11 @@ class OrganizationController extends Controller
     {
         $organizations = Organization::orderBy('organization_name')->paginate(10);
         $map = Map::find(1);
+        $parent_taxonomy = [];
+        $child_taxonomy = [];
+        $checked_organizations = [];
 
-        return view('frontEnd.organizations', compact('organizations', 'map'));
+        return view('frontEnd.organizations', compact('organizations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations'));
     }
 
     public function organization($id)
@@ -141,8 +144,11 @@ class OrganizationController extends Controller
         $organization = Organization::where('organization_recordid', '=', $id)->first();
         $locations = Location::with('services', 'address')->where('location_organization', '=', $id)->get();
         $map = Map::find(1);
+        $parent_taxonomy = [];
+        $child_taxonomy = [];
+        $checked_organizations = [];
 
-        return view('frontEnd.organization', compact('organization', 'locations', 'map'));
+        return view('frontEnd.organization', compact('organization', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations'));
     }
 
     /**
