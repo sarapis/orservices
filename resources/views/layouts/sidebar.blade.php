@@ -144,8 +144,8 @@
                     @endforeach
                 </ul>
             </li>
-            <input type="text" name="paginate" id="paginate" @if(isset($pagination)) value="{{$pagination}}" @else value="10" @endif>
-            <input type="text" name="sort" id="sort" @if(isset($sort)) value="{{$sort}}" @endif>
+            <input type="hidden" name="paginate" id="paginate" @if(isset($pagination)) value="{{$pagination}}" @else value="10" @endif>
+            <input type="hidden" name="sort" id="sort" @if(isset($sort)) value="{{$sort}}" @endif>
 
             @if(isset($chip_title) || isset($chip_name))
             <li class="option-side">
