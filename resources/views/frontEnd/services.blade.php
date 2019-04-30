@@ -118,9 +118,9 @@ ul#ui-id-1 {
                               Sort
                             </button>
                             <div class="dropdown-menu" aria-labelledby="exampleSizingDropdown2" role="menu">
-                              <a class="dropdown-item drop-sort" href="javascript:void(0)" role="menuitem">Service Name</a>
-                              <a class="dropdown-item drop-sort" href="javascript:void(0)" role="menuitem">Organization Name</a>
-                              <a class="dropdown-item drop-sort" href="javascript:void(0)" role="menuitem">Distance from Address</a>
+                              <a @if(isset($sort) && $sort == 'Service Name') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Service Name</a>
+                              <a @if(isset($sort) && $sort == 'Organization Name') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Organization Name</a>
+                              <a @if(isset($sort) && $sort == 'Distance from Address') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Distance from Address</a>
                             </div>
                         </div>
                     </div>

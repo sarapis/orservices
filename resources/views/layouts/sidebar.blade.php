@@ -58,6 +58,10 @@
     #cityagency{
         padding-left: 12px;
     }
+    .alert{
+        padding-left: 15px;
+        padding-right: 30px;
+    }
 </style>
 <nav id="sidebar">
     <ul class="list-unstyled components pt-0 mb-0 sidebar-menu"> 
@@ -140,8 +144,19 @@
                     @endforeach
                 </ul>
             </li>
-            <input type="text" name="paginate" id='paginate' @if(isset($pagination)) value="{{$pagination}}" @else value="10" @endif>
-            <input type="text" name="sort" id='sort' @if(isset($sort)) value="{{$sort}}" @endif>
+            <input type="text" name="paginate" id="paginate" @if(isset($pagination)) value="{{$pagination}}" @else value="10" @endif>
+            <input type="text" name="sort" id="sort" @if(isset($sort)) value="{{$sort}}" @endif>
+
+            @if(isset($chip_title) || isset($chip_name))
+            <li class="option-side">
+                <div class="alert dark alert-info alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                  <b>{{$chip_title}} {{$chip_name}}</b>
+                </div>
+            </li>
+            @endif 
             </form>
         </ul>
 

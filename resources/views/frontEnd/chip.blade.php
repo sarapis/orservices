@@ -23,9 +23,9 @@ Services
 ul#ui-id-1 {
     width: 260px !important;
 }
-#map{
+/*#map{
     position: fixed !important;
-}
+}*/
 </style>
 
 @section('content')
@@ -37,9 +37,7 @@ ul#ui-id-1 {
         <!-- <div id="map" style="height: 30vh;"></div> -->
         <!-- Example Striped Rows -->
         <div class="row" style="margin-right: 0">
-            <div class="alert alert-alt alert-success alert-dismissible alert-chip" role="alert">
-                  {{$chip_title}} <a class="alert-link">{{$chip_name}}</a>
-            </div>
+            
             <div class="col-md-12 p-0">
                 <div class="col-md-8 pt-15 pr-0">
                     @foreach($services as $service)
@@ -88,8 +86,48 @@ ul#ui-id-1 {
                     </div>
                 </div>
                 
-                <div class="col-md-4 p-0">
-                    <div id="map" style="position: fixed !important;width: 28%;"></div>
+                <div class="col-md-4 pt-15">
+                    <div class="row pl-15 pr-15">
+                        <div class="col-md-4 p-0">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-info dropdown-toggle btn-sort" id="exampleSizingDropdown2"
+                                data-toggle="dropdown" aria-expanded="false">
+                                  Print/Export
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="exampleSizingDropdown2" role="menu">
+                                  <a class="dropdown-item" href="javascript:void(0)" role="menuitem">Expert CSV</a>
+                                  <a class="dropdown-item" href="javascript:void(0)" role="menuitem">Print PDF action</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 p-0">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-info dropdown-toggle btn-sort" id="exampleSizingDropdown2"
+                                data-toggle="dropdown" aria-expanded="false">
+                                  Results Per Page
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="exampleSizingDropdown2" role="menu">
+                                  <a @if(isset($pagination) && $pagination == '10') class="dropdown-item drop-paginate active" @else class="dropdown-item drop-paginate" @endif href="javascript:void(0)" role="menuitem" >10</a>
+                                  <a @if(isset($pagination) && $pagination == '25') class="dropdown-item drop-paginate active" @else class="dropdown-item drop-paginate" @endif href="javascript:void(0)" role="menuitem">25</a>
+                                  <a @if(isset($pagination) && $pagination == '50') class="dropdown-item drop-paginate active" @else class="dropdown-item drop-paginate" @endif href="javascript:void(0)" role="menuitem">50</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 p-0">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-info dropdown-toggle btn-sort" id="exampleSizingDropdown2"
+                                data-toggle="dropdown" aria-expanded="false">
+                                  Sort
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="exampleSizingDropdown2" role="menu">
+                                  <a @if(isset($sort) && $sort == 'Service Name') class="dropdown-item drop-paginate active" @else class="dropdown-item drop-paginate" @endif href="javascript:void(0)" role="menuitem">Service Name</a>
+                                  <a @if(isset($sort) && $sort == 'Organization Name') class="dropdown-item drop-paginate active" @else class="dropdown-item drop-paginate" @endif href="javascript:void(0)" role="menuitem">Organization Name</a>
+                                  <a @if(isset($sort) && $sort == 'Distance from Address') class="dropdown-item drop-paginate active" @else class="dropdown-item drop-paginate" @endif href="javascript:void(0)" role="menuitem">Distance from Address</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="map" style="width: 100%;"></div>
                 </div>
             </div>
         </div>

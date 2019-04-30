@@ -60,6 +60,10 @@ class HomeController extends Controller
         $chip_name = $request->input('find');
         $chip_title ="Search for Services:";
 
+        $parent_taxonomy = [];
+        $child_taxonomy = [];
+        $checked_organizations = [];
+
         $services= Service::with(['organizations', 'taxonomy'])->where('service_name', 'like', '%'.$chip_name.'%')->orwhere('service_description', 'like', '%'.$chip_name.'%')->orwhereHas('organizations', function ($q)  use($chip_name){
                     $q->where('organization_name', 'like', '%'.$chip_name.'%');
                 })->orwhereHas('taxonomy', function ($q)  use($chip_name){
@@ -69,6 +73,6 @@ class HomeController extends Controller
         $map = Map::find(1);
 
         // $services =Service::where('service_name',  'like', '%'.$search.'%')->get();
-        return view('frontEnd.chip', compact('services','locations', 'chip_title', 'chip_name', 'map'));
+        return view('frontEnd.chip', compact('services','locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations'));
     }
 }
