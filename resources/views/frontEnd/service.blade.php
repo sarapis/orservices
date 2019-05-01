@@ -27,6 +27,15 @@ ul#ui-id-1 {
     position: relative !important;
     z-index: 0 !important;
 }
+@media (max-width: 768px) {
+    .property{
+        padding-left: 30px !important;
+    }
+    #map{
+        display: block !important;
+        width: 100% !important;
+    }
+}
 </style>
 
 @section('content')
@@ -110,34 +119,41 @@ ul#ui-id-1 {
                 </div>
             </div>
             
-            <div class="col-md-4 p-0">
-                <div id="map" style="position: fixed !important;width: 28%;"></div>
-                <hr>
-                @if($service->service_address!=NULL)
-                <h4><span class="badge bg-blue">Address:</span>
-                    
-                        @foreach($service->address as $address)
-                           <br>{{ $address->address_1 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
-                        @endforeach
-                    
-                </h4>
-                @endif
-                @if($service->service_contacts!=0)
-                <h4><span class="badge bg-red">Contact:</span>
-                  
-                    {{$service->contact()->first()->contact_name}}
+            <div class="col-md-4 pt-15 property">
                 
-                </h4>
-                @endif
+                <div class="panel">
+                    <div class="panel-body p-0">
+                        <div id="map" style="position: fixed !important;width: 28.6%;margin: 0;"></div>
+                        <hr>
+                        @if($service->service_address!=NULL)
+                        <div class="p-20">
+                            <h4><span class="badge bg-blue">Address:</span>
+                                
+                                    @foreach($service->address as $address)
+                                       <br>{{ $address->address_1 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
+                                    @endforeach
+                                
+                            </h4>
+                            @endif
+                            @if($service->service_contacts!=0)
+                            <h4><span class="badge bg-red">Contact:</span>
+                              
+                                {{$service->contact()->first()->contact_name}}
+                            
+                            </h4>
+                            @endif
 
-                <h3>Details</h3>
-                @if($service->service_details!=NULL)
-                
-                  @foreach($service->details as $detail)
-                    <h4><span class="badge bg-red">{{ $detail->detail_type }}:</span> {!! $detail->detail_value !!}</h4>
-                  @endforeach
- 
-                @endif
+                            <h3>Details</h3>
+                            @if($service->service_details!=NULL)
+                            
+                              @foreach($service->details as $detail)
+                                <h4><span class="badge bg-red">{{ $detail->detail_type }}:</span> {!! $detail->detail_value !!}</h4>
+                              @endforeach
+             
+                            @endif
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -149,7 +165,7 @@ $(document).ready(function(){
         var locations = <?php print_r(json_encode($location)) ?>;
         var maplocation = <?php print_r(json_encode($map)) ?>;
 
-        // console.log(locations);
+        console.log(locations);
         var show = 1;
         if(locations.length == 0){
           show = 0;
