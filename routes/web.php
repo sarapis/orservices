@@ -42,6 +42,7 @@ Route::get('/category_{id}', 'ServiceController@taxonomy');
 
 Route::get('/services_near_me', 'ExploreController@geolocation');
 
+Route::post('/filter', 'ExploreController@filter');
 Route::get('/filter', 'ExploreController@filter');
 
 // Route::post('/explore', 'ExploreController@index');
