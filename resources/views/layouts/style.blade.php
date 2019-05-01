@@ -108,13 +108,14 @@ $(function () {
 </script>
 @else
 <script>
+
       // This example requires the Places library. Include the libraries=places
       // parameter when you first load the API. For example:
       // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
         //$(document).ready(function(){
             function initMap() {
-
-            var input = document.getElementById('location');
+              setTimeout(function(){
+                var input = document.getElementById('location');
 
             // map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
 
@@ -283,6 +284,8 @@ $(function () {
                   infowindow.open(map, marker);
                 });
             }
+              },1000);
+            
             
           }
 //      });

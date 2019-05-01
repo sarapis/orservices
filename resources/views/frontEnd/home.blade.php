@@ -17,6 +17,9 @@ Home
     ul#tree1 {
         column-count: 2;
     }
+    .home-category{
+        cursor: pointer;
+    }
 </style>
 <link href="{{asset('css/treeview.css')}}" rel="stylesheet">
 @section('content')
@@ -35,8 +38,6 @@ Home
                     <form action="/find" method="POST" class="hidden-sm hidden-xs col-md-6 col-md-offset-3" style="display: block !important; padding-bottom: 30px;padding: 5px; ">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="input-group pull-right text-white pr-25">
-                          <!--   <input type="text" placeholder="Search here..." class="form-control text-black" name="find"/>
-                            <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button> -->
 
                             <input type="text" class="form-control" placeholder="Search here..." name="find"/ style="z-index: 0;">
                             <div class="input-group-btn pull-right ">
@@ -56,9 +57,9 @@ Home
                     <ul id="tree1">
                         @foreach($taxonomies as $taxonomy)
                             <li>
-                                <a href="category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>
+                                <a at="{{$taxonomy->taxonomy_recordid}}" class="home-category">{{$taxonomy->taxonomy_name}}</a>
                                 @if(count($taxonomy->childs))
-                                    @include('frontLayout.manageChild',['childs' => $taxonomy->childs])
+                                    @include('layouts.manageChild',['childs' => $taxonomy->childs])
                                 @endif
                             </li>
                         @endforeach
@@ -97,75 +98,19 @@ Home
     </div>
 
 
-<!-- <script>
-    $(document).ready(function(){
-        if(screen.width < 768){
-          var text= $('.navbar-header').css('height');
-          var height = text.slice(0, -2);
-          $('.page').css('padding-top', height);
-          $('#content').css('top', height);
-        }
-        else{
-          var text= $('.navbar-header').css('height');
-          var height = 0;
-          $('.page').css('margin-top', height);
-        }
-    });
-</script> -->
 <script src="{{asset('js/treeview.js')}}"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-@if($map->active == 0)
-
 <script>
-
-$(function () {
-    var getData = function (request, response) {
-        $.getJSON(
-            "https://geosearch.planninglabs.nyc/v1/autocomplete?text=" + request.term,
-            function (data) {
-                response(data.features);
-                
-                var label = new Object();
-                for(i = 0; i < data.features.length; i++)
-                    label[i] = data.features[i].properties.label;
-                response(label);
-            });
-    };
- 
-    var selectItem = function (event, ui) {
-        $("#location1").val(ui.item.value);
-        return false;
-    }
- 
-    $("#location1").autocomplete({
-        source: getData,
-        select: selectItem,
-        minLength: 2,
-        change: function() {
-            console.log(selectItem);
-
-        }
+$(document).ready(function(){
+    $('.home-category').on('click', function(e){
+        var id = $(this).attr('at');
+        console.log(id);
+        $("#category_" +  id).prop( "checked", true );
+        $("#filter").submit();
     });
-
-    // $('.ui-menu').click(function(){
-    //     $('#search_location').submit();
-    // });
-
-  
 });
 </script>
-@else
-<script>
-      // This example requires the Places library. Include the libraries=places
-      // parameter when you first load the API. For example:
-      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
-
-      
-    
-    </script>
-
-@endif
 @endsection

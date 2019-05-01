@@ -110,22 +110,17 @@
                     <ul id="tree2">
                         @foreach($taxonomies as $taxonomy)
                             @if($taxonomy->taxonomy_name)
-                            
-
+                                                                
+                                <li class="nobranch">
                                     
-                                    <li class="nobranch">
-                                        
-                                            <input type="checkbox" @if(count($taxonomy->childs)) name="parents[]" @else name="childs[]" @endif value="{{$taxonomy->taxonomy_recordid}}"  class="regular-checkbox" @if(in_array($taxonomy->taxonomy_recordid, $parent_taxonomy)) checked @elseif(in_array($taxonomy->taxonomy_recordid, $child_taxonomy)) checked @endif/>
-                                            <span class="inputChecked">{{$taxonomy->taxonomy_name}}</span>
-                                        
-                                        @if(count($taxonomy->childs))
-                                            @include('layouts.manageChild1',['childs' => $taxonomy->childs])
-                                        @endif
-                                    </li>
+                                        <input type="checkbox" id="category_{{$taxonomy->taxonomy_recordid}}" @if(count($taxonomy->childs)) name="parents[]" @else name="childs[]" @endif value="{{$taxonomy->taxonomy_recordid}}"  class="regular-checkbox" @if(in_array($taxonomy->taxonomy_recordid, $parent_taxonomy)) checked @elseif(in_array($taxonomy->taxonomy_recordid, $child_taxonomy)) checked @endif/>
+                                        <span class="inputChecked">{{$taxonomy->taxonomy_name}}</span>
                                     
-                                
-                               
-
+                                    @if(count($taxonomy->childs))
+                                        @include('layouts.manageChild1',['childs' => $taxonomy->childs])
+                                    @endif
+                                </li>
+                                    
                             @endif
                         @endforeach
                     </ul>
@@ -147,25 +142,12 @@
             <input type="hidden" name="paginate" id="paginate" @if(isset($pagination)) value="{{$pagination}}" @else value="10" @endif>
             <input type="hidden" name="sort" id="sort" @if(isset($sort)) value="{{$sort}}" @endif>
 
-            @if(isset($chip_title) || isset($chip_name))
-            <li class="option-side">
-                <div class="alert dark alert-info alert-dismissible" role="alert">
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                  </button>
-                  <b>{{$chip_title}} {{$chip_name}}</b>
-                </div>
-            </li>
-            @endif 
+
             </form>
         </ul>
 
 </nav>
-@if(isset($location) == TRUE)
-    <input type="hidden" name="location" id="location" value="{{$location}}">
-@else
-    <input type="hidden" name="location" id="location" value="">
-@endif
+
 <script src="{{asset('js/treeview2.js')}}"></script>
 <script>
 $(document).ready(function(){

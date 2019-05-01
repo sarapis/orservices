@@ -57,22 +57,22 @@ class HomeController extends Controller
 
     public function search(Request $request)
     {
-        $chip_name = $request->input('find');
+        $chip_service = $request->input('find');
         $chip_title ="Search for Services:";
 
         $parent_taxonomy = [];
         $child_taxonomy = [];
         $checked_organizations = [];
 
-        $services= Service::with(['organizations', 'taxonomy'])->where('service_name', 'like', '%'.$chip_name.'%')->orwhere('service_description', 'like', '%'.$chip_name.'%')->orwhereHas('organizations', function ($q)  use($chip_name){
-                    $q->where('organization_name', 'like', '%'.$chip_name.'%');
-                })->orwhereHas('taxonomy', function ($q)  use($chip_name){
-                    $q->where('taxonomy_name', 'like', '%'.$chip_name.'%');
+        $services= Service::with(['organizations', 'taxonomy'])->where('service_name', 'like', '%'.$chip_service.'%')->orwhere('service_description', 'like', '%'.$chip_service.'%')->orwhereHas('organizations', function ($q)  use($chip_service){
+                    $q->where('organization_name', 'like', '%'.$chip_service.'%');
+                })->orwhereHas('taxonomy', function ($q)  use($chip_service){
+                    $q->where('taxonomy_name', 'like', '%'.$chip_service.'%');
                 })->paginate(10);
         $locations = Location::with('services','organization')->get();
         $map = Map::find(1);
 
         // $services =Service::where('service_name',  'like', '%'.$search.'%')->get();
-        return view('frontEnd.chip', compact('services','locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations'));
+        return view('frontEnd.chip', compact('services','locations', 'chip_title', 'chip_service', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations'));
     }
 }

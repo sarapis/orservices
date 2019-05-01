@@ -56,8 +56,12 @@ class ExploreController extends Controller
         }
 
         $map = Map::find(1);
+
+        $parent_taxonomy = [];
+        $child_taxonomy = [];
+        $checked_organizations = [];
         
-        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_name', 'map'));
+        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations'));
     }
 
     public function geocode(Request $request)
@@ -65,9 +69,9 @@ class ExploreController extends Controller
         $ip= \Request::ip();
 
         $chip_title = "Search Address:";
-        $chip_name = $request->input('search_address');
+        $chip_address = $request->input('search_address');
 
-        $response = Geocode::make()->address($chip_name);
+        $response = Geocode::make()->address($chip_address);
     //     $response = Geocode::make()->address('1 Infinite Loop');
     //     if ($response) {
     //         echo $response->latitude();
@@ -102,7 +106,11 @@ class ExploreController extends Controller
         }
         $map = Map::find(1);
 
-        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_name', 'map'));
+        $parent_taxonomy = [];
+        $child_taxonomy = [];
+        $checked_organizations = [];
+
+        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_address', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations'));
 
     }
 

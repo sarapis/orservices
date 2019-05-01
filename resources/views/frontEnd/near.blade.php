@@ -37,9 +37,7 @@ ul#ui-id-1 {
         <!-- <div id="map" style="height: 30vh;"></div> -->
         <!-- Example Striped Rows -->
         <div class="row" style="margin-right: 0">
-            <div class="alert alert-alt alert-success alert-dismissible alert-chip" role="alert">
-                  {{$chip_title}} <a class="alert-link">{{$chip_name}}</a>
-            </div>
+
             <div class="col-md-12 p-0">
                 <div class="col-md-8 pt-15 pr-0">
                     @foreach($services as $service)
