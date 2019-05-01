@@ -82,7 +82,7 @@
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <div class="input-search">
                         <i class="input-search-icon md-search" aria-hidden="true"></i>
-                        <input type="text" class="form-control search-form" name="find" placeholder="Search for Services" id="search_address">
+                        <input type="text" class="form-control search-form" name="find" placeholder="Search for Services" id="search_address" @if(isset($chip_service)) value="{{$chip_service}}" @endif>
                     </div>
                 </form>
             </li>
@@ -93,7 +93,7 @@
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <div class="input-search">
                         <i class="input-search-icon md-pin" aria-hidden="true"></i>
-                        <input id="location" type="text" class="form-control search-form" name="search_address" placeholder="Search Address">
+                        <input id="location" type="text" class="form-control search-form" name="search_address" placeholder="Search Address" @if(isset($chip_address)) value="{{$chip_address}}" @endif>
                     </div>
                 </form>
             </li>

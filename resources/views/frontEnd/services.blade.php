@@ -35,11 +35,19 @@ ul#ui-id-1 {
     @include('layouts.sidebar')
     <!-- Page Content Holder -->
     <div id="content" class="container">
-        <!-- <div id="map" style="height: 30vh;"></div> -->
         <!-- Example Striped Rows -->
         <div class="row" style="margin-right: 0">
-
+            
             <div class="col-md-8 pt-15 pr-0">
+                @if (session('address'))
+                    <div class="alert dark alert-danger alert-dismissible" role="alert" style="margin: 0 15px 15px 15px; width: 200px;">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                      </button>
+                      {{ session('address') }}
+                    </div>
+                @endif
+
                 @foreach($services as $service)
 
                 <div class="panel content-panel">

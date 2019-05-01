@@ -71,6 +71,11 @@ class ExploreController extends Controller
         $chip_title = "Search Address:";
         $chip_address = $request->input('search_address');
 
+        if($chip_address == null){
+
+            return redirect('services')->with('address', 'Search Address is not exist');
+        }
+
         $response = Geocode::make()->address($chip_address);
     //     $response = Geocode::make()->address('1 Infinite Loop');
     //     if ($response) {
