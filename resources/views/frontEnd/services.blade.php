@@ -40,11 +40,11 @@ ul#ui-id-1 {
             
             <div class="col-md-8 pt-15 pr-0">
                 @if (session('address'))
-                    <div class="alert dark alert-danger alert-dismissible" role="alert" style="margin: 0 15px 15px 15px; width: 250px;">
+                    <div class="alert dark alert-danger alert-dismissible" role="alert" style="margin: 0 15px 15px 15px; width: 400px;">
                       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">×</span>
                       </button>
-                      {{ session('address') }}
+                      <b>{{ session('address') }}</b>
                     </div>
                 @endif
 
