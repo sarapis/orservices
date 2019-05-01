@@ -62,6 +62,14 @@
         padding-left: 15px;
         padding-right: 30px;
     }
+    .mobile-btn{
+        display: none;
+    }
+    @media (max-width: 768px) {
+        .mobile-btn{
+            display: block;
+        }
+    }
 </style>
 <nav id="sidebar">
     <ul class="list-unstyled components pt-0 mb-0 sidebar-menu"> 
@@ -137,6 +145,35 @@
                         </li>   
                         @endif
                     @endforeach
+                </ul>
+            </li>
+            <li class="option-side mobile-btn">
+                <a href="#export" class="text-side" data-toggle="collapse" aria-expanded="false">Print/Export</a>
+                <ul class="collapse list-unstyled option-ul" id="export">
+                    <li class="nobranch">
+                        <a class="dropdown-item" href="javascript:void(0)" role="menuitem">Expert CSV</a>
+                        <a class="dropdown-item" href="javascript:void(0)" role="menuitem">Print PDF action</a>
+                    </li>   
+                </ul>
+            </li>
+            <li class="option-side mobile-btn">
+                <a href="#perpage" class="text-side" data-toggle="collapse" aria-expanded="false">Results Per Page</a>
+                <ul class="collapse list-unstyled option-ul" id="perpage">
+                    <li class="nobranch">
+                        <a @if(isset($pagination) && $pagination == '10') class="dropdown-item drop-paginate active" @else class="dropdown-item drop-paginate" @endif href="javascript:void(0)" role="menuitem" >10</a>
+                        <a @if(isset($pagination) && $pagination == '25') class="dropdown-item drop-paginate active" @else class="dropdown-item drop-paginate" @endif href="javascript:void(0)" role="menuitem">25</a>
+                        <a @if(isset($pagination) && $pagination == '50') class="dropdown-item drop-paginate active" @else class="dropdown-item drop-paginate" @endif href="javascript:void(0)" role="menuitem">50</a>
+                    </li>   
+                </ul>
+            </li>
+            <li class="option-side mobile-btn">
+                <a href="#sort" class="text-side" data-toggle="collapse" aria-expanded="false">Sort</a>
+                <ul class="collapse list-unstyled option-ul" id="sort">
+                    <li class="nobranch">
+                        <a @if(isset($sort) && $sort == 'Service Name') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Service Name</a>
+                        <a @if(isset($sort) && $sort == 'Organization Name') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Organization Name</a>
+                        <a @if(isset($sort) && $sort == 'Distance from Address') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Distance from Address</a>
+                    </li>   
                 </ul>
             </li>
             <input type="hidden" name="paginate" id="paginate" @if(isset($pagination)) value="{{$pagination}}" @else value="10" @endif>
