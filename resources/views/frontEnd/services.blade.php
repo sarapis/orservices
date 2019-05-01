@@ -94,7 +94,7 @@ ul#ui-id-1 {
             
             <div class="col-md-4 pt-15">
                 <div class="row pl-15 pr-15">
-                    <div class="col-md-4 p-0">
+                    <div class="col-md-4 p-0 btn-feature">
                         <div class="btn-group">
                             <button type="button" class="btn btn-info dropdown-toggle btn-sort" id="exampleSizingDropdown2"
                             data-toggle="dropdown" aria-expanded="false">
@@ -106,7 +106,7 @@ ul#ui-id-1 {
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 p-0">
+                    <div class="col-md-4 p-0 btn-feature">
                         <div class="btn-group">
                             <button type="button" class="btn btn-info dropdown-toggle btn-sort" id="exampleSizingDropdown2"
                             data-toggle="dropdown" aria-expanded="false">
@@ -119,7 +119,7 @@ ul#ui-id-1 {
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 p-0">
+                    <div class="col-md-4 p-0 btn-feature">
                         <div class="btn-group">
                             <button type="button" class="btn btn-info dropdown-toggle btn-sort" id="exampleSizingDropdown2"
                             data-toggle="dropdown" aria-expanded="false">

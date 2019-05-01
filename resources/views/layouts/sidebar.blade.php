@@ -69,6 +69,9 @@
         .mobile-btn{
             display: block;
         }
+        .btn-feature{
+            display: none;
+        }
     }
 </style>
 <nav id="sidebar">
