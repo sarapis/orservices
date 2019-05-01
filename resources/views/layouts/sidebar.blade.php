@@ -152,6 +152,7 @@
 <script>
 $(document).ready(function(){
     $('.regular-checkbox').on('click', function(e){
+        $('input', $(this).next().next()).prop('checked',0);
         $("#filter").submit();
     });
     $('.drop-paginate').on('click', function(){
