@@ -162,6 +162,13 @@ $(document).ready(function(){
         $("#sort").val($(this).text());
         $("#filter").submit();
     });
+
+    if($('input[checked]', $('#projectcategory')).length > 0){
+        $('#projectcategory').prev().trigger('click');
+    }
+    if($('input[checked]', $('#cityagency')).length > 0){
+        $('#cityagency').prev().trigger('click');
+    }
 });
 </script>
 

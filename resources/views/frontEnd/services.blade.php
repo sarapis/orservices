@@ -98,7 +98,7 @@ ul#ui-id-1 {
                         <div class="btn-group">
                             <button type="button" class="btn btn-info dropdown-toggle btn-sort" id="exampleSizingDropdown2"
                             data-toggle="dropdown" aria-expanded="false">
-                              Print/Export
+                              <b>Print/Export</b>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="exampleSizingDropdown2" role="menu">
                               <a class="dropdown-item" href="javascript:void(0)" role="menuitem">Expert CSV</a>
@@ -110,7 +110,7 @@ ul#ui-id-1 {
                         <div class="btn-group">
                             <button type="button" class="btn btn-info dropdown-toggle btn-sort" id="exampleSizingDropdown2"
                             data-toggle="dropdown" aria-expanded="false">
-                              Results Per Page
+                              <b>Results Per Page</b>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="exampleSizingDropdown2" role="menu">
                               <a @if(isset($pagination) && $pagination == '10') class="dropdown-item drop-paginate active" @else class="dropdown-item drop-paginate" @endif href="javascript:void(0)" role="menuitem" >10</a>
@@ -123,7 +123,7 @@ ul#ui-id-1 {
                         <div class="btn-group">
                             <button type="button" class="btn btn-info dropdown-toggle btn-sort" id="exampleSizingDropdown2"
                             data-toggle="dropdown" aria-expanded="false">
-                              Sort
+                              <b>Sort</b>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="exampleSizingDropdown2" role="menu">
                               <a @if(isset($sort) && $sort == 'Service Name') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Service Name</a>
