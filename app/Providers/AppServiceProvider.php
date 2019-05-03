@@ -27,6 +27,13 @@ class AppServiceProvider extends ServiceProvider
             $view->with('taxonomies', $taxonomies);
         });
 
+
+        view()->composer('layouts.sidebar', function($view)
+        {
+            $insurances = \App\Detail::where('detail_type', '=', 'insurance')->orderBy('detail_value', 'asc')->get();
+            $view->with('insurances', $insurances);
+        });
+
         view()->composer('layouts.script', function($view)
         {
             $map = \App\Map::find(1);

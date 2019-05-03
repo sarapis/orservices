@@ -7,9 +7,11 @@ use App\Http\Controllers\Controller;
 use App\Service;
 use App\Organization;
 use App\Taxonomy;
+use App\Detail;
 use App\Servicetaxonomy;
 use App\Serviceorganization;
 use App\Servicelocation;
+use App\Servicedetail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -60,8 +62,9 @@ class ExploreController extends Controller
         $parent_taxonomy = [];
         $child_taxonomy = [];
         $checked_organizations = [];
+        $checked_insurances = [];
         
-        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations'));
+        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances'));
     }
 
     public function geocode(Request $request)
@@ -114,8 +117,9 @@ class ExploreController extends Controller
         $parent_taxonomy = [];
         $child_taxonomy = [];
         $checked_organizations = [];
+        $checked_insurances = [];
 
-        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_address', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations'));
+        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_address', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances'));
 
     }
 
@@ -125,6 +129,8 @@ class ExploreController extends Controller
         $parents = $request->input('parents');
         $childs = $request->input('childs');
         $checked = $request->input('organizations');
+        $details = $request->input('insurances');
+
         $pagination = strval($request->input('paginate'));
 
         $sort = $request->input('sort');
@@ -136,6 +142,7 @@ class ExploreController extends Controller
         $parent_taxonomy = [];
         $child_taxonomy = [];
         $checked_organizations = [];
+        $checked_insurances = [];
 
 
         if($parents!=null){
@@ -173,6 +180,16 @@ class ExploreController extends Controller
             $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
         }
 
+        if($details!=null){
+            $checked_insurances = Detail::whereIn('detail_recordid', $details)->pluck('detail_recordid');
+            $checked_insurances = json_decode(json_encode($checked_insurances));
+            
+            $service_ids = Servicedetail::whereIn('detail_recordid', $details)->groupBy('service_recordid')->pluck('service_recordid');
+            $location_ids = Servicelocation::whereIn('service_recordid', $service_ids)->groupBy('location_recordid')->pluck('location_recordid');
+            $services = $services->whereIn('service_recordid', $service_ids);
+            $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
+        }
+
         if($sort == 'Service Name'){
             $services = $services->orderBy('service_name');
         }
@@ -183,16 +200,13 @@ class ExploreController extends Controller
             }]);
         }
 
-       
-
-
-            
+    
         $services = $services->paginate($pagination);
         $locations = $locations->get();
        
         $map = Map::find(1);
 
-        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'pagination', 'sort'));
+        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'pagination', 'sort'));
 
     }
     /**

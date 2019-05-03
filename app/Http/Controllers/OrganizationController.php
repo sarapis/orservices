@@ -135,8 +135,9 @@ class OrganizationController extends Controller
         $parent_taxonomy = [];
         $child_taxonomy = [];
         $checked_organizations = [];
+        $checked_insurances = [];
 
-        return view('frontEnd.organizations', compact('organizations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations'));
+        return view('frontEnd.organizations', compact('organizations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances'));
     }
 
     public function organization($id)
@@ -147,8 +148,9 @@ class OrganizationController extends Controller
         $parent_taxonomy = [];
         $child_taxonomy = [];
         $checked_organizations = [];
+        $checked_insurances = [];
 
-        return view('frontEnd.organization', compact('organization', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations'));
+        return view('frontEnd.organization', compact('organization', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances'));
     }
 
     /**

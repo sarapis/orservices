@@ -248,8 +248,9 @@ class ServiceController extends Controller
         $parent_taxonomy = [];
         $child_taxonomy = [];
         $checked_organizations = [];
+        $checked_insurances = [];
 
-        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations'));
+        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances'));
     }
 
     public function service($id)
@@ -260,8 +261,9 @@ class ServiceController extends Controller
         $parent_taxonomy = [];
         $child_taxonomy = [];
         $checked_organizations = [];
+        $checked_insurances = [];
 
-        return view('frontEnd.service', compact('service', 'location', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations'));
+        return view('frontEnd.service', compact('service', 'location', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances'));
     }
 
     public function taxonomy($id)
@@ -279,8 +281,9 @@ class ServiceController extends Controller
         $parent_taxonomy = [];
         $child_taxonomy = [];
         $checked_organizations = [];
+        $checked_insurances = [];
 
-        return view('frontEnd.chip', compact('services', 'locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations'));
+        return view('frontEnd.chip', compact('services', 'locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances'));
     }
 
     /**

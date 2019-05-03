@@ -58,6 +58,9 @@
     #cityagency{
         padding-left: 12px;
     }
+    #insurance{
+        padding-left: 12px;
+    }
     .alert{
         padding-left: 15px;
         padding-right: 30px;
@@ -150,6 +153,19 @@
                     @endforeach
                 </ul>
             </li>
+            <li class="option-side">
+                <a href="#insurance" class="text-side" data-toggle="collapse" aria-expanded="false">Insurance</a>
+                <ul class="collapse list-unstyled option-ul" id="insurance">
+                    @foreach($insurances as $insurance)
+                        @if($insurance->detail_value)
+                        <li class="nobranch">
+                            <input type="checkbox" name="insurances[]" value="{{$insurance->detail_recordid}}"  class="regular-checkbox" @if(in_array($insurance->detail_recordid, $checked_insurances)) checked @endif/>
+                            <span class="inputChecked">{{$insurance->detail_value}}</span>
+                        </li>   
+                        @endif
+                    @endforeach
+                </ul>
+            </li>
             <li class="option-side mobile-btn">
                 <a href="#export" class="text-side" data-toggle="collapse" aria-expanded="false">Print/Export</a>
                 <ul class="collapse list-unstyled option-ul" id="export">
@@ -209,6 +225,9 @@ $(document).ready(function(){
     }
     if($('input[checked]', $('#cityagency')).length > 0){
         $('#cityagency').prev().trigger('click');
+    }
+    if($('input[checked]', $('#insurance')).length > 0){
+        $('#insurance').prev().trigger('click');
     }
 });
 </script>
