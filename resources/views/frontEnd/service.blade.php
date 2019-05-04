@@ -123,7 +123,7 @@ ul#ui-id-1 {
                 
                 <div class="panel">
                     <div class="panel-body p-0">
-                        <div id="map" style="position: fixed !important;width: 27.1%;margin: 0;"></div>
+                        <div id="map" style="width:initial;margin: 0;"></div>
                         <hr>
                         @if($service->service_address!=NULL)
                         <div class="p-20">
