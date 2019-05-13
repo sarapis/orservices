@@ -23,6 +23,12 @@ Services
 ul#ui-id-1 {
     width: 260px !important;
 }
+.btn-group{
+    width: 90%;
+}
+.btn-sort{
+    width: 90% !important;
+}
 /*#map{
     position: fixed !important;
 }*/
@@ -37,7 +43,7 @@ ul#ui-id-1 {
     <div id="content" class="container">
         <!-- Example Striped Rows -->
         <div class="row pl-15 pt-15">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="col-md-4 p-0 btn-feature">
                     <div class="btn-group">
                         <button type="button" class="btn btn-info dropdown-toggle btn-sort" id="exampleSizingDropdown2"
