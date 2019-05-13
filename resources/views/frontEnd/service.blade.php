@@ -123,6 +123,9 @@ ul#ui-id-1 {
                 
                 <div class="panel">
                     <div class="panel-body p-0">
+                        <div class="p-10">
+                            <button type="button" class="btn btn-info btn-sort">Download PDF</button>
+                        </div>
                         <div id="map" style="width:initial;margin: 0;"></div>
                         <hr>
                         @if($service->service_address!=NULL)
