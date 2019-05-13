@@ -18,7 +18,7 @@
           </form>
         </div>
         <div class="col-md-2">
-           <button class="btn btn-block waves-effect waves-classic btn_findout" style="padding: 0;margin-bottom: 14px;"><a href="/services_near_me" class="search-near" style="display: block;padding-left: 10px;">Services Near Me</a></button>
+           <button class="btn btn-block waves-effect waves-classic btn_findout" style="padding: 0;margin-bottom: 14px;" title="Services Near Me"><a href="/services_near_me" class="search-near" style="display: block;font-size: 22px;padding: 5px;"><i class="input-search-icon md-pin-drop" aria-hidden="true"></i></a></button>
         </div>
     </div>  
 </div>
