@@ -27,7 +27,7 @@ ul#ui-id-1 {
     width: 90%;
 }
 .btn-sort{
-    width: 90% !important;
+    width: 100% !important;
 }
 /*#map{
     position: fixed !important;
