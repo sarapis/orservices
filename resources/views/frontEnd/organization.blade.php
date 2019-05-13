@@ -94,7 +94,10 @@ ul#ui-id-1 {
             </div>
             
             <div class="col-md-4 p-0 pr-15">
-                <div id="map" style="width: 100%;"></div>
+                <div class="pb-10 pt-20">
+                    <button type="button" class="btn btn-info btn-sort">Download PDF</button>
+                </div>
+                <div id="map" style="width: 100%; margin-top: 0;"></div>
                 
                 @if($organization->organization_locations!='')
                   <hr>
