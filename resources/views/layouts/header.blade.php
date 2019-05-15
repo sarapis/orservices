@@ -9,8 +9,8 @@
       </a>
       <a class="navbar-brand" href="/">{{$layout->site_name}}</a>
       @if($layout->tagline!=null)
-      <div class="navbar-brand ticker well ml-10 mr-10">
-         <span>{{$layout->tagline}}</span> 
+      <div class="navbar-brand ticker well ml-10 mr-10" style="width: auto;">
+         <label style="transition: none !important; display: content;"><b>{{$layout->tagline}}</b></label>
       </div>
       @endif  
         <ul class="nav navbar-toolbar nav-menubar pull-right">

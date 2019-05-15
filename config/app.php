@@ -191,7 +191,9 @@ return [
 
         Stevebauman\Location\LocationServiceProvider::class,
 
-        Jcf\Geocode\GeocodeServiceProvider::class
+        Jcf\Geocode\GeocodeServiceProvider::class,
+
+        Barryvdh\DomPDF\ServiceProvider::class,
     ],
 
     /*
@@ -248,6 +250,7 @@ return [
         'Image' => Intervention\Image\Facades\Image::class,
         'Geolocation' => Stevebauman\Location\Facades\Location::class,        
         'Geocode' => Jcf\Geocode\Facades\Geocode::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
 
     ],
 

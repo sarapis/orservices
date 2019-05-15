@@ -48,7 +48,7 @@ ul#ui-id-1 {
 
                         <h4 class="panel-text"><span class="badge bg-red">Description:</span> {{$organization->organization_description}}</h4>
 
-                        <h4 class="panel-text"><span class="badge bg-red">Website</span> {{$organization->organization_url}}</h4>
+                        <h4 class="panel-text"><span class="badge bg-red">Website:</span><a href="{{$organization->organization_url}}">{{$organization->organization_url}}</a></h4>
 
                         @if($organization->organization_phones!='')
                         <h4 class="panel-text"><span class="badge bg-red">Main Phone:</span> @foreach($organization->phones as $phone)
@@ -95,7 +95,7 @@ ul#ui-id-1 {
             
             <div class="col-md-4 p-0 pr-15">
                 <div class="pb-10 pt-20">
-                    <button type="button" class="btn btn-info btn-sort">Download PDF</button>
+                    <a href="/download_organization/{{$organization->organization_recordid}}"><button type="button" class="btn btn-info btn-sort">Download PDF</button></a>
                 </div>
                 <div id="map" style="width: 100%; margin-top: 0;"></div>
                 

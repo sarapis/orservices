@@ -54,6 +54,10 @@ Route::get('/explore/cityagency_{id}', 'ExploreController@cityagency');
 // Route::post('/search', 'ExploreController@search');
 // Route::get('/filter', 'ExploreController@filterValues');
 
+//download pdf
+Route::get('/download_service/{id}', 'ServiceController@download');
+Route::get('/download_organization/{id}', 'OrganizationController@download');
+
 Route::post('/range', 'ExploreController@filterValues1');
 
 

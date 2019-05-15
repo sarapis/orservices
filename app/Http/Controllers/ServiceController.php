@@ -19,6 +19,7 @@ use App\Airtables;
 use App\Taxonomy;
 use App\Map;
 use App\Services\Stringtoint;
+use PDF;
 
 class ServiceController extends Controller
 {
@@ -291,9 +292,15 @@ class ServiceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function download($id)
     {
-        //
+        $service = Service::where('service_recordid', '=', $id)->first();
+        $service_name= $service->service_name;
+
+        $pdf = PDF::loadView('frontEnd.service_download', compact('service'));
+
+        return $pdf->download($service_name.'.pdf');
+
     }
 
     /**

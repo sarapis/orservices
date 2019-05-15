@@ -1,7 +1,4 @@
-@extends('layouts.app')
-@section('title')
-Service
-@stop
+
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
 
@@ -38,10 +35,8 @@ ul#ui-id-1 {
 }
 </style>
 
-@section('content')
-@include('layouts.filter')
+
 <div class="wrapper">
-    @include('layouts.sidebar')
     <!-- Page Content Holder -->
     <div id="content" class="container">
         <!-- <div id="map" style="height: 30vh;"></div> -->
@@ -58,8 +53,8 @@ ul#ui-id-1 {
                             @if($service->service_taxonomy!=0)
                                 @foreach($service->taxonomy as $key => $taxonomy)
                                     @if($loop->last)
-                                    <a class="panel-link" href="/category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>                                    @else
-                                    <a class="panel-link" href="/category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>,
+                                    <a class="panel-link" href="{{ config('app.url')}}/category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>                                    @else
+                                    <a class="panel-link" href="{{ config('app.url')}}/category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>,
                                     @endif
                                 @endforeach
                             @endif    
@@ -68,9 +63,9 @@ ul#ui-id-1 {
                             @if($service->service_organization!=0)                        
                                 @foreach($service->organizations as $organization)
                                     @if($loop->last)
-                                    <a class="panel-link" href="/organization_{{$organization->organization_recordid}}"> {{$organization->organization_name}}</a>
+                                    <a class="panel-link" href="{{ config('app.url')}}/organization_{{$organization->organization_recordid}}"> {{$organization->organization_name}}</a>
                                     @else
-                                    <a class="panel-link" href="/organization_{{$organization->organization_recordid}}"> {{$organization->organization_name}}</a>,
+                                    <a class="panel-link" href="{{ config('app.url')}}/organization_{{$organization->organization_recordid}}"> {{$organization->organization_name}}</a>,
                                     @endif
                                 @endforeach                       
                             @endif
@@ -115,61 +110,49 @@ ul#ui-id-1 {
                         <h4 class="panel-text"><span class="badge bg-blue">Accreditations:</span> {{$service->service_accreditations}}</h4>
 
                         <h4 class="panel-text"><span class="badge bg-blue">Licenses:</span> {{$service->service_licenses}}</h4>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4 pt-15 property">
-                
-                <div class="panel">
-                    <div class="panel-body p-0">
-                        <div class="p-10">
-                            <a href="/download_service/{{$service->service_recordid}}"><button type="button" class="btn btn-info btn-sort">Download PDF</button></a>
-                        </div>
-                        <div id="map" style="width:initial;margin: 0;"></div>
-                        <hr>
-                        @if($service->service_address!=NULL)
-                        <div class="p-20">
-                            <h4><span class="badge bg-blue">Address:</span>
-                                
-                                    @foreach($service->address as $address)
-                                       <br>{{ $address->address_1 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
-                                    @endforeach
-                                
-                            </h4>
-                            @endif
-                            @if($service->service_contacts!=0)
-                            <h4><span class="badge bg-red">Contact:</span>
-                              
-                                {{$service->contact()->first()->contact_name}}
-                            
-                            </h4>
-                            @endif
 
-                            <h3>Details</h3>
-                            @if($service->service_details!=NULL)
-                                @php
-                                    $show_details = [];
-                                @endphp
-                              @foreach($service->details as $detail)
-                                @php
-                                    for($i = 0; $i < count($show_details); $i ++){
-                                        if($show_details[$i]['detail_type'] == $detail->detail_type)
-                                            break;
-                                    }
-                                    if($i == count($show_details)){
-                                        $show_details[$i] = array('detail_type'=> $detail->detail_type, 'detail_value'=> $detail->detail_value);
-                                    }
-                                    else{
-                                        $show_details[$i]['detail_value'] = $show_details[$i]['detail_value'].', '.$detail->detail_value;
-                                    }
-                                @endphp                                
-                              @endforeach
-                              @foreach($show_details as $detail)
-                                <h4><span class="badge bg-red">{{ $detail['detail_type'] }}:</span> {!! $detail['detail_value'] !!}</h4>  
-                              @endforeach
-                            @endif
-                        </div>
+                        <hr>
+
+                        @if($service->service_address!=NULL)
+                        <h4><span class="badge bg-blue">Address:</span>
+                            
+                                @foreach($service->address as $address)
+                                   <br>{{ $address->address_1 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
+                                @endforeach
+                            
+                        </h4>
+                        @endif
+                        @if($service->service_contacts!=0)
+                        <h4><span class="badge bg-red">Contact:</span>
+                          
+                            {{$service->contact()->first()->contact_name}}
+                        
+                        </h4>
+                        @endif
+
+                        <h3>Details</h3>
+                        @if($service->service_details!=NULL)
+                            @php
+                                $show_details = [];
+                            @endphp
+                          @foreach($service->details as $detail)
+                            @php
+                                for($i = 0; $i < count($show_details); $i ++){
+                                    if($show_details[$i]['detail_type'] == $detail->detail_type)
+                                        break;
+                                }
+                                if($i == count($show_details)){
+                                    $show_details[$i] = array('detail_type'=> $detail->detail_type, 'detail_value'=> $detail->detail_value);
+                                }
+                                else{
+                                    $show_details[$i]['detail_value'] = $show_details[$i]['detail_value'].', '.$detail->detail_value;
+                                }
+                            @endphp                                
+                          @endforeach
+                          @foreach($show_details as $detail)
+                            <h4><span class="badge bg-red">{{ $detail['detail_type'] }}:</span> {!! $detail['detail_value'] !!}</h4>  
+                          @endforeach
+                        @endif
                     </div>
                 </div>
             </div>
@@ -177,51 +160,6 @@ ul#ui-id-1 {
     </div>
 </div>
 
-<script>
-$(document).ready(function(){
-    setTimeout(function(){
-        var locations = <?php print_r(json_encode($location)) ?>;
-        var maplocation = <?php print_r(json_encode($map)) ?>;
 
-        console.log(locations);
-        var show = 1;
-        if(locations.length == 0){
-          show = 0;
-        }
-
-        if(maplocation.active == 1){
-            avglat = maplocation.lat;
-            avglng = maplocation.long;
-        }
-        else
-        {
-            avglat = 40.730981;
-            avglng = -73.998107;
-        }
-
-        var mymap = new GMaps({
-          el: '#map',
-          lat: avglat,
-          lng: avglng,
-          zoom:10
-        });
-
-        if(show == 1){
-          $.each( locations, function(index, value ){
-              mymap.addMarker({
-                  lat: value.location_latitude,
-                  lng: value.location_longitude,
-                  title: value.location_name
-                         
-                  
-              });
-         });
-        }
-    }, 2000)
-});
-
-
-</script>
-@endsection
 
 
