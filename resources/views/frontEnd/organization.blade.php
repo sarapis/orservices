@@ -49,7 +49,7 @@ ul#ui-id-1 {
 
                         <h4 class="panel-text"><span class="badge bg-red">Description:</span> {{$organization->organization_description}}</h4>
 
-                        <h4 class="panel-text"><span class="badge bg-red">Website:</span><a href="{{$organization->organization_url}}">{{$organization->organization_url}}</a></h4>
+                        <h4 class="panel-text"><span class="badge bg-red">Website:</span> <a href="{{$organization->organization_url}}"> {{$organization->organization_url}}</a></h4>
 
                         @if($organization->organization_phones!='')
                         <h4 class="panel-text"><span class="badge bg-red">Main Phone:</span> @foreach($organization->phones as $phone)
