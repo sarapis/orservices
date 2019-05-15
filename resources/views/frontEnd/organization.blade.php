@@ -26,6 +26,7 @@ ul#ui-id-1 {
 #map{
     position: relative !important;
     z-index: 0 !important;
+    height: 30vh;
 }
 </style>
 
