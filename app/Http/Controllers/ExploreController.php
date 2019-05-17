@@ -238,6 +238,7 @@ class ExploreController extends Controller
                 $organizations = '';
                 $phones = '';
                 $address1 ='';
+                $contacts ='';
                 foreach($service->taxonomy as $key => $taxonomy){
                     $taxonomies = $taxonomies.$taxonomy->taxonomy_name.',';
                 }
@@ -254,10 +255,16 @@ class ExploreController extends Controller
                 $service['phones'] = $phones;
 
                 foreach($service->address as $address){
-                    $address1 = $address1.$address->address_1;
+                    $address1 = $address1.$address->address_1.' '.$address->address_city.' '.$address->address_state_province.' '.$address->address_postal_code;
                 }
                 $service['address1'] = $address1;
+
+                foreach($service->contact as $contact){
+                    $contacts = $contacts.$contact->contact_name;
+                }
+                $service['contacts'] = $contacts;
              } 
+
 
             $csv = CSV::find(1);
 
@@ -305,7 +312,7 @@ class ExploreController extends Controller
             $csv = CSV::all();
 
 
-            return $csvExporter->build($services, ['service_name'=>'Service Name', 'service_alternate_name'=>'Service Alternate Name', 'taxonomies'=>'Category', 'organizations'=>'Organization', 'phones'=>'Phone', 'address1'=>'Address', 'service_description'=>'Service Description', 'service_url'=>'URL','service_application_process'=>'Application Process', 'service_wait_time'=>'Wait Time', 'service_fees'=>'Fees', 'service_accreditations'=>'Accreditations', 'service_licenses'=>'Licenses'])->build($csv, ['name'=>'', 'description'=>''])->download();
+            return $csvExporter->build($services, ['service_name'=>'Service Name', 'service_alternate_name'=>'Service Alternate Name', 'taxonomies'=>'Category', 'organizations'=>'Organization', 'phones'=>'Phone', 'address1'=>'Address', 'contacts'=>'Contact', 'service_description'=>'Service Description', 'service_url'=>'URL','service_application_process'=>'Application Process', 'service_wait_time'=>'Wait Time', 'service_fees'=>'Fees', 'service_accreditations'=>'Accreditations', 'service_licenses'=>'Licenses'])->build($csv, ['name'=>'', 'description'=>''])->download();
         }
 
     

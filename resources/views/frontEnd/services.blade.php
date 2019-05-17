@@ -128,7 +128,7 @@ ul#ui-id-1 {
                             <h4><span class="badge bg-blue">Address:</span>
                                 @if($service->service_address!=NULL)
                                     @foreach($service->address as $address)
-                                      {{ $address->address_1 }}
+                                      {{ $address->address_1 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
                                     @endforeach
                                 @endif
                             </h4>
