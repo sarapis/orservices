@@ -48,7 +48,7 @@ ul#ui-id-1 {
                     <div class="btn-group">
                         <button type="button" class="btn btn-info dropdown-toggle btn-sort" id="exampleSizingDropdown2"
                         data-toggle="dropdown" aria-expanded="false">
-                          <b>Download CSV/PDF</b>
+                          <b>Download</b>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="exampleSizingDropdown2" role="menu">
                           <a class="dropdown-item" href="javascript:void(0)" role="menuitem" id="download_csv">Download CSV</a>
