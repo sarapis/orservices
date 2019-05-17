@@ -198,6 +198,9 @@
             <input type="hidden" name="paginate" id="paginate" @if(isset($pagination)) value="{{$pagination}}" @else value="10" @endif>
             <input type="hidden" name="sort" id="sort" @if(isset($sort)) value="{{$sort}}" @endif>
 
+            <input type="hidden" name="pdf" id="pdf">
+
+            <input type="hidden" name="csv" id="csv">
 
             </form>
         </ul>
@@ -218,6 +221,16 @@ $(document).ready(function(){
     $('.drop-sort').on('click', function(){
         $("#sort").val($(this).text());
         $("#filter").submit();
+    });
+    $('#download_csv').on('click', function(){
+        $("#csv").val('csv');
+        $("#filter").submit();
+        $("#csv").val('');
+    });
+    $('#download_pdf').on('click', function(){
+        $("#pdf").val('pdf');
+        $("#filter").submit();
+        $("#pdf").val('');
     });
 
     if($('input[checked]', $('#projectcategory')).length > 0){

@@ -43,7 +43,7 @@ ul#ui-id-1 {
         <!-- Example Striped Rows -->
         <div class="row" style="margin-right: 0">
             <div class="col-md-8 pt-15 pr-0">
-    
+                <h3>{{$layout->header_pdf}}</h3>
                 <div class="panel ml-15 mr-15">
                     <div class="panel-body p-20">
                         <h2>{{$service->service_name}}</h2>
@@ -155,6 +155,7 @@ ul#ui-id-1 {
                         @endif
                     </div>
                 </div>
+                <h3>{{$layout->footer_pdf}}</h3>
             </div>
         </div>
     </div>

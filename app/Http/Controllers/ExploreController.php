@@ -20,6 +20,8 @@ use Geolocation;
 use Geocode;
 use App\Location;
 use App\Map;
+use PDF;
+use App\Layout;
 
 class ExploreController extends Controller
 {
@@ -130,6 +132,8 @@ class ExploreController extends Controller
         $childs = $request->input('childs');
         $checked = $request->input('organizations');
         $details = $request->input('insurances');
+        $pdf = $request->input('pdf');
+        $csv = $request->input('csv');
 
         $pagination = strval($request->input('paginate'));
 
@@ -198,6 +202,17 @@ class ExploreController extends Controller
             $services = $services->with(['organizations' => function($query) {
                 $query->orderBy('id');
             }]);
+        }
+
+        if($pdf == 'pdf'){
+
+            $layout = Layout::find(1);
+
+            $services = $services->get();
+
+            $pdf = PDF::loadView('frontEnd.services_download', compact('services', 'layout'));
+
+            return $pdf->download('services.pdf');
         }
 
     

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Functions\Airtable;
 use App\Organization;
 use App\Location;
+use App\Layout;
 use App\Map;
 use App\Airtables;
 use App\Services\Stringtoint;
@@ -159,16 +160,9 @@ class OrganizationController extends Controller
         $organization = Organization::where('organization_recordid', '=', $id)->first();
         $organization_name = $organization->organization_name;
 
-        $locations = Location::with('services', 'address')->where('location_organization', '=', $id)->get();
-        $map = Map::find(1);
-        $parent_taxonomy = [];
-        $child_taxonomy = [];
-        $checked_organizations = [];
-        $checked_insurances = [];
+        $layout = Layout::find(1);
 
-        // return view('frontEnd.organization_download', compact('organization', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances'));
-
-        $pdf = PDF::loadView('frontEnd.organization_download', compact('organization', 'locations'));
+        $pdf = PDF::loadView('frontEnd.organization_download', compact('organization', 'layout'));
 
         return $pdf->download($organization_name.'.pdf');
     }

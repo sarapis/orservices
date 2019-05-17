@@ -23,6 +23,9 @@ class CreateLayoutTable extends Migration
             $table->string('contact_btn_label')->nullable();
             $table->string('contact_btn_link')->nullable();
             $table->text('footer')->nullable();
+            $table->string('hearder_pdf')->nullable();
+            $table->string('footer_pdf')->nullable();
+            $table->string('footer_csv')->nullable();
         });
     }
 

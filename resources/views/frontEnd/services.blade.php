@@ -48,11 +48,11 @@ ul#ui-id-1 {
                     <div class="btn-group">
                         <button type="button" class="btn btn-info dropdown-toggle btn-sort" id="exampleSizingDropdown2"
                         data-toggle="dropdown" aria-expanded="false">
-                          <b>Print/Export</b>
+                          <b>Download CSV/PDF</b>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="exampleSizingDropdown2" role="menu">
-                          <a class="dropdown-item" href="javascript:void(0)" role="menuitem">Expert CSV</a>
-                          <a class="dropdown-item" href="javascript:void(0)" role="menuitem">Print PDF action</a>
+                          <a class="dropdown-item" href="javascript:void(0)" role="menuitem" id="download_csv">Download CSV</a>
+                          <a class="dropdown-item" href="javascript:void(0)" role="menuitem" id="download_pdf">Download PDF</a>
                         </div>
                     </div>
                 </div>

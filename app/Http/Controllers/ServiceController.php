@@ -18,6 +18,7 @@ use App\Location;
 use App\Airtables;
 use App\Taxonomy;
 use App\Map;
+use App\Layout;
 use App\Services\Stringtoint;
 use PDF;
 
@@ -297,7 +298,9 @@ class ServiceController extends Controller
         $service = Service::where('service_recordid', '=', $id)->first();
         $service_name= $service->service_name;
 
-        $pdf = PDF::loadView('frontEnd.service_download', compact('service'));
+        $layout = Layout::find(1);
+
+        $pdf = PDF::loadView('frontEnd.service_download', compact('service', 'layout'));
 
         return $pdf->download($service_name.'.pdf');
 
