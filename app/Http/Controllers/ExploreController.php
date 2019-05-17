@@ -22,6 +22,7 @@ use App\Location;
 use App\Map;
 use PDF;
 use App\Layout;
+use App\CSV;
 
 class ExploreController extends Controller
 {
@@ -148,6 +149,10 @@ class ExploreController extends Controller
         $checked_organizations = [];
         $checked_insurances = [];
 
+        $child_taxonomy_names = '';
+        $checked_organization_names ='';
+        $checked_insurance_names = '';
+
 
         if($parents!=null){
 
@@ -166,6 +171,8 @@ class ExploreController extends Controller
 
         if($childs!=null){
             $child_taxonomy = Taxonomy::whereIn('taxonomy_recordid', $childs)->pluck('taxonomy_recordid');
+            $child_taxonomy_names = Taxonomy::whereIn('taxonomy_recordid', $childs)->pluck('taxonomy_name');
+
             $child_taxonomy = json_decode(json_encode($child_taxonomy));
             
             $service_ids = Servicetaxonomy::whereIn('taxonomy_recordid', $childs)->groupBy('service_recordid')->pluck('service_recordid');
@@ -176,6 +183,8 @@ class ExploreController extends Controller
 
         if($checked!=null){
             $checked_organizations = Organization::whereIn('organization_recordid', $checked)->pluck('organization_recordid');
+            $checked_organization_names = Organization::whereIn('organization_recordid', $checked)->pluck('organization_name');
+
             $checked_organizations = json_decode(json_encode($checked_organizations));
             
             $service_ids = Serviceorganization::whereIn('organization_recordid', $checked)->groupBy('service_recordid')->pluck('service_recordid');
@@ -186,6 +195,8 @@ class ExploreController extends Controller
 
         if($details!=null){
             $checked_insurances = Detail::whereIn('detail_recordid', $details)->pluck('detail_recordid');
+            $checked_insurance_names = Detail::whereIn('detail_recordid', $details)->pluck('detail_value');
+
             $checked_insurances = json_decode(json_encode($checked_insurances));
             
             $service_ids = Servicedetail::whereIn('detail_recordid', $details)->groupBy('service_recordid')->pluck('service_recordid');
@@ -213,6 +224,88 @@ class ExploreController extends Controller
             $pdf = PDF::loadView('frontEnd.services_download', compact('services', 'layout'));
 
             return $pdf->download('services.pdf');
+        }
+
+        if($csv == 'csv'){
+            $csvExporter = new \Laracsv\Export();
+
+            $layout = Layout::find(1);
+
+            $services = $services->whereNotNull('service_name')->get();
+
+            foreach ($services as $service) {
+                $taxonomies = '';
+                $organizations = '';
+                $phones = '';
+                $address1 ='';
+                foreach($service->taxonomy as $key => $taxonomy){
+                    $taxonomies = $taxonomies.$taxonomy->taxonomy_name.',';
+                }
+                $service['taxonomies'] = $taxonomies;
+
+                foreach ($service->organizations as $organization) {
+                    $organizations = $organizations.$organization->organization_name;
+                }    
+                $service['organizations'] = $organizations;
+
+                foreach($service->phone as $phone1){
+                    $phones = $phones.$phone1->phone_number;
+                }
+                $service['phones'] = $phones;
+
+                foreach($service->address as $address){
+                    $address1 = $address1.$address->address_1;
+                }
+                $service['address1'] = $address1;
+             } 
+
+            $csv = CSV::find(1);
+
+            $source = $layout->footer_csv;
+            $csv->description = $source;
+            $csv->save();
+
+            $csv = CSV::find(2);
+            $description = '';
+            if($child_taxonomy_names != ""){
+                $filter_category ='';
+                foreach($child_taxonomy_names as $child_taxonomy_name){
+                    $filter_category = $filter_category.$child_taxonomy_name.',';
+                }
+
+                $description = $description."Category: ".$filter_category;
+            }
+            if($checked_organization_names != ""){
+                $filter_organization ='';
+                foreach($checked_organization_names as $checked_organization_name){
+                    $filter_organization = $filter_organization.$checked_organization_name.',';
+                }
+
+                $description = $description."Organization: ".$filter_organization;
+            }
+            if($checked_insurance_names != ""){
+                $filter_insurance ='';
+                foreach($checked_insurance_names as $checked_insurance_name){
+                    $filter_insurance = $filter_insurance.$checked_insurance_name.',';
+                }
+
+                $description = $description."Insurance: ".$filter_insurance;
+            }
+            
+
+            $csv->description = $description;
+            $csv->save();
+
+            $csv = CSV::find(3);
+            $csv->description = date('m/d/Y H:i:s');
+            $csv->save();
+            // var_dump($projects);
+            // var_dump($collection);
+            // exit();
+            $csv = CSV::all();
+
+
+            return $csvExporter->build($services, ['service_name'=>'Service Name', 'service_alternate_name'=>'Service Alternate Name', 'taxonomies'=>'Category', 'organizations'=>'Organization', 'phones'=>'Phone', 'address1'=>'Address', 'service_description'=>'Service Description', 'service_url'=>'URL','service_application_process'=>'Application Process', 'service_wait_time'=>'Wait Time', 'service_fees'=>'Fees', 'service_accreditations'=>'Accreditations', 'service_licenses'=>'Licenses'])->build($csv, ['name'=>'', 'description'=>''])->download();
         }
 
     

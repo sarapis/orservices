@@ -168,6 +168,31 @@ INSERT INTO `contacts` VALUES (1,588559626701281,'Lorrie Rumple','13391827131477
 UNLOCK TABLES;
 
 --
+-- Table structure for table `csv`
+--
+
+DROP TABLE IF EXISTS `csv`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `csv` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) DEFAULT NULL,
+  `description` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `csv`
+--
+
+LOCK TABLES `csv` WRITE;
+/*!40000 ALTER TABLE `csv` DISABLE KEYS */;
+INSERT INTO `csv` VALUES (1,'Sources:','Source Text for CSV Downloads'),(2,'Filtered by: ','Insurance: Blue Cross,'),(3,'Downloaded: ','05/17/2019 13:48:36');
+/*!40000 ALTER TABLE `csv` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `details`
 --
 
@@ -1024,4 +1049,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-05-17  3:09:23
+-- Dump completed on 2019-05-17 16:00:29

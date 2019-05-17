@@ -126,7 +126,7 @@ ul#ui-id-1 {
                         <div class="p-10">
                             <a href="/download_service/{{$service->service_recordid}}"><button type="button" class="btn btn-info btn-sort">Download PDF</button></a>
                         </div>
-                        <div id="map" style="width:initial;margin: 0;"></div>
+                        <div id="map" style="width:initial;margin: 0;height: 50vh;"></div>
                         <hr>
                         @if($service->service_address!=NULL)
                         <div class="p-20">
