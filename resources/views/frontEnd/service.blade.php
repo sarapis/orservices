@@ -100,21 +100,56 @@ ul#ui-id-1 {
 
                         @if($service->service_email!=NULL) 
                         <h4 class="panel-text"><span class="badge bg-blue">Email:</span> {{$service->service_email}}</h4>
+                        @endif  
+                        <hr>
+                        <h3>Details</h3>
+                            @if($service->service_details!=NULL)
+                                @php
+                                    $show_details = [];
+                                @endphp
+                              @foreach($service->details as $detail)
+                                @php
+                                    for($i = 0; $i < count($show_details); $i ++){
+                                        if($show_details[$i]['detail_type'] == $detail->detail_type)
+                                            break;
+                                    }
+                                    if($i == count($show_details)){
+                                        $show_details[$i] = array('detail_type'=> $detail->detail_type, 'detail_value'=> $detail->detail_value);
+                                    }
+                                    else{
+                                        $show_details[$i]['detail_value'] = $show_details[$i]['detail_value'].', '.$detail->detail_value;
+                                    }
+                                @endphp                                
+                              @endforeach
+                              @foreach($show_details as $detail)
+                                <h4><span class="badge bg-red">{{ $detail['detail_type'] }}:</span> {!! $detail['detail_value'] !!}</h4>  
+                              @endforeach
+                            @endif
+
+                        @if($service->service_application_process || $service->service_wait_time || $service->service_fees || $service->service_accreditations || $service->service_licenses)
+                        <hr>
+                        <h3>Additional Info</h3>
                         @endif
 
-                        <hr>
-
-                        <h3>Additional Info</h3>
-
+                        @if($service->service_application_process)
                         <h4 class="panel-text"><span class="badge bg-blue">Application Process:</span> {!! $service->service_application_process !!}</h4>
+                        @endif
 
+                        @if($service->service_wait_time)
                         <h4 class="panel-text"><span class="badge bg-blue">Wait Time:</span> {{$service->service_wait_time}}</h4>
+                        @endif
 
+                        @if($service->service_fees)
                         <h4 class="panel-text"><span class="badge bg-blue">Fees:</span> {{$service->service_fees}}</h4>
+                        @endif
 
+                        @if($service->service_accreditations)
                         <h4 class="panel-text"><span class="badge bg-blue">Accreditations:</span> {{$service->service_accreditations}}</h4>
+                        @endif
 
+                        @if($service->service_licenses)
                         <h4 class="panel-text"><span class="badge bg-blue">Licenses:</span> {{$service->service_licenses}}</h4>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -146,29 +181,6 @@ ul#ui-id-1 {
                             </h4>
                             @endif
 
-                            <h3>Details</h3>
-                            @if($service->service_details!=NULL)
-                                @php
-                                    $show_details = [];
-                                @endphp
-                              @foreach($service->details as $detail)
-                                @php
-                                    for($i = 0; $i < count($show_details); $i ++){
-                                        if($show_details[$i]['detail_type'] == $detail->detail_type)
-                                            break;
-                                    }
-                                    if($i == count($show_details)){
-                                        $show_details[$i] = array('detail_type'=> $detail->detail_type, 'detail_value'=> $detail->detail_value);
-                                    }
-                                    else{
-                                        $show_details[$i]['detail_value'] = $show_details[$i]['detail_value'].', '.$detail->detail_value;
-                                    }
-                                @endphp                                
-                              @endforeach
-                              @foreach($show_details as $detail)
-                                <h4><span class="badge bg-red">{{ $detail['detail_type'] }}:</span> {!! $detail['detail_value'] !!}</h4>  
-                              @endforeach
-                            @endif
                         </div>
                     </div>
                 </div>
