@@ -75,6 +75,6 @@ class HomeController extends Controller
         $map = Map::find(1);
 
         // $services =Service::where('service_name',  'like', '%'.$search.'%')->get();
-        return view('frontEnd.chip', compact('services','locations', 'chip_title', 'chip_service', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances'));
+        return view('frontEnd.services', compact('services','locations', 'chip_title', 'chip_service', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances'));
     }
 }

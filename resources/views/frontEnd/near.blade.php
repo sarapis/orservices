@@ -26,6 +26,12 @@ ul#ui-id-1 {
 #map{
     position: fixed !important;
 }
+.btn-group{
+    width: 90%;
+}
+.btn-sort{
+    width: 100% !important;
+}
 </style>
 
 @section('content')
@@ -36,17 +42,17 @@ ul#ui-id-1 {
     <div id="content" class="container">
         <!-- <div id="map" style="height: 30vh;"></div> -->
         <!-- Example Striped Rows -->
-        <div class="row pl-15 pt-15">
-            <div class="col-md-4">
+        <div class="container-fluid pl-15 pt-15">
+            <div class="col-md-6">
                 <div class="col-md-4 p-0 btn-feature">
                     <div class="btn-group">
                         <button type="button" class="btn btn-info dropdown-toggle btn-sort" id="exampleSizingDropdown2"
                         data-toggle="dropdown" aria-expanded="false">
-                          <b>Print/Export</b>
+                          <b>Download</b>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="exampleSizingDropdown2" role="menu">
-                          <a class="dropdown-item" href="javascript:void(0)" role="menuitem">Expert CSV</a>
-                          <a class="dropdown-item" href="javascript:void(0)" role="menuitem">Print PDF action</a>
+                          <a class="dropdown-item" href="javascript:void(0)" role="menuitem" id="download_csv">Download CSV</a>
+                          <a class="dropdown-item" href="javascript:void(0)" role="menuitem" id="download_pdf">Download PDF</a>
                         </div>
                     </div>
                 </div>
@@ -78,9 +84,8 @@ ul#ui-id-1 {
                 </div>
             </div>
         </div>
-        <div class="row" style="margin-right: 0">
+        <div class="container-fluid p-0" style="margin-right: 0">
 
-            <div class="col-md-12 p-0">
                 <div class="col-md-8 pt-15 pr-0">
                     @foreach($services as $service)
                     
@@ -128,7 +133,6 @@ ul#ui-id-1 {
                 <div class="col-md-4 p-0">
                     <div id="map" style="position: fixed !important;width: 28%;"></div>
                 </div>
-            </div>
         </div>
     </div>
 </div>

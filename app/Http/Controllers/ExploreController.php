@@ -285,7 +285,7 @@ class ExploreController extends Controller
                                                                
                 }  
                 foreach($show_details as $detail){
-                    $details = $details.$detail['detail_type'].':'.$detail['detail_value'];
+                    $details = $details.$detail['detail_type'].':'.$detail['detail_value'].'; ';
                 }
                 $service['details'] = $details;           
              } 
