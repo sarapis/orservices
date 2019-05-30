@@ -32,11 +32,12 @@
       <ul class="nav side-menu">
         <!-- <li><a href="{{route('pages.index')}}"><i class="fa fa-windows"></i> Pages</span></a>
         </li> -->
-        <li><a><i class="fa fa-table"></i> Pages <span class="fa fa-chevron-down"></span></a>
+        <li><a><i class="fa fa-table"></i> Settings <span class="fa fa-chevron-down"></span></a>
           <ul class="nav child_menu">
-            <li><a href="/layout_edit">Site Text</a></li>
+            <li><a href="/layout_edit">Appearance</a></li>
             <!-- <li><a href="/home_edit">Home</a></li> -->
-            <li><a href="/about_edit">About</a></li>
+            <li><a href="/about_edit">About Page</a></li>
+            <li><a href="/data">Data</a></li>
             <li><a href="/map">Map</a></li>
           </ul>
         </li>      

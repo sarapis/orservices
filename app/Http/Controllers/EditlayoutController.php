@@ -118,6 +118,13 @@ class EditlayoutController extends Controller
             $constraint->aspectRatio();})->save( public_path('/uploads/images/' . $filename ) );
             $layout->logo=$filename;
         }
+        if ($request->input('logo_active') == 'checked')
+        {
+            $layout->logo_active = 1;
+        }
+        else{
+            $layout->logo_active = 0;
+        }
         $layout->site_name=$request->site_name;
         $layout->tagline=$request->tagline;
         $layout->sidebar_content=$request->sidebar_content;
@@ -128,6 +135,9 @@ class EditlayoutController extends Controller
         $layout->header_pdf=$request->header_pdf;
         $layout->footer_pdf=$request->footer_pdf;
         $layout->footer_csv=$request->footer_csv;
+        $layout->primary_color=$request->primary_color;
+        $layout->secondary_color=$request->secondary_color;
+        $layout->button_color=$request->button_color;
         $layout->save();
 
         Session::flash('message', 'Page updated!');
