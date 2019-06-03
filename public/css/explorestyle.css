@@ -749,3 +749,9 @@ p{
 .btn-sort{
   width: 160px;
 }
+.morelink{
+  color: #428bca !important;
+}
+.morelink:hover{
+  color: #428bca !important;
+}

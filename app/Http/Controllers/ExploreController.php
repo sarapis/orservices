@@ -252,9 +252,9 @@ class ExploreController extends Controller
             $checked_settings = Detail::whereIn('detail_recordid', $service_settings)->pluck('detail_recordid');
             $checked_setting_names = Detail::whereIn('detail_recordid', $service_settings)->pluck('detail_value');
 
-            $checked_languages = json_decode(json_encode($checked_languages));
+            $checked_settings = json_decode(json_encode($checked_settings));
             
-            $service_ids = Servicedetail::whereIn('detail_recordid', $languages)->groupBy('service_recordid')->pluck('service_recordid');
+            $service_ids = Servicedetail::whereIn('detail_recordid', $service_settings)->groupBy('service_recordid')->pluck('service_recordid');
             $location_ids = Servicelocation::whereIn('service_recordid', $service_settings)->groupBy('location_recordid')->pluck('location_recordid');
             $services = $services->whereIn('service_recordid', $service_ids);
             $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
