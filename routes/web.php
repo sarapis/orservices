@@ -109,4 +109,6 @@ Route::post('/range', 'ExploreController@filterValues1');
         Route::resource('map', 'MapController');
         
         Route::get('/datasync', ['uses' => 'PagesController@datasync']);
+
+        Route::resource('data', 'DataController');
  });

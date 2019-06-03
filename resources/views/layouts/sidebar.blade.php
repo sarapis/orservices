@@ -61,6 +61,18 @@
     #insurance{
         padding-left: 12px;
     }
+    #ages{
+        padding-left: 12px;
+    }
+    #languages{
+        padding-left: 12px;
+    }
+    #service_settings{
+        padding-left: 12px;
+    }
+    #culturals{
+        padding-left: 12px;
+    }
     .alert{
         padding-left: 15px;
         padding-right: 30px;
@@ -119,7 +131,7 @@
             <form action="/filter" method="POST" id="filter">
             {{ csrf_field() }}      
             <li class="option-side">
-                <a href="#projectcategory" class="text-side" data-toggle="collapse" aria-expanded="false">Category</a>
+                <a href="#projectcategory" class="text-side" data-toggle="collapse" aria-expanded="false">Services</a>
                 <ul class="collapse list-unstyled option-ul" id="projectcategory">
                     <ul id="tree2">
                         @foreach($taxonomies as $taxonomy)
@@ -140,7 +152,7 @@
                     </ul>
                 </ul>
             </li>
-            <li class="option-side">
+            <!-- <li class="option-side">
                 <a href="#cityagency" class="text-side" data-toggle="collapse" aria-expanded="false">Organization</a>
                 <ul class="collapse list-unstyled option-ul" id="cityagency">
                     @foreach($organizations as $organization)
@@ -152,7 +164,50 @@
                         @endif
                     @endforeach
                 </ul>
+            </li> -->
+
+            <li class="option-side">
+                <a href="#ages" class="text-side" data-toggle="collapse" aria-expanded="false">Ages Served</a>
+                <ul class="collapse list-unstyled option-ul" id="ages">
+                    @foreach($ages as $age)
+                        @if($age->detail_value)
+                        <li class="nobranch">
+                            <input type="checkbox" name="ages[]" value="{{$age->detail_recordid}}"  class="regular-checkbox" @if(in_array($age->detail_recordid, $checked_ages)) checked @endif/>
+                            <span class="inputChecked">{{$age->detail_value}}</span>
+                        </li>   
+                        @endif
+                    @endforeach
+                </ul>
             </li>
+
+            <li class="option-side">
+                <a href="#languages" class="text-side" data-toggle="collapse" aria-expanded="false">Languages</a>
+                <ul class="collapse list-unstyled option-ul" id="languages">
+                    @foreach($languages as $language)
+                        @if($language->detail_value)
+                        <li class="nobranch">
+                            <input type="checkbox" name="languages[]" value="{{$language->detail_recordid}}"  class="regular-checkbox" @if(in_array($language->detail_recordid, $checked_languages)) checked @endif/>
+                            <span class="inputChecked">{{$language->detail_value}}</span>
+                        </li>   
+                        @endif
+                    @endforeach
+                </ul>
+            </li>
+
+            <li class="option-side">
+                <a href="#service_settings" class="text-side" data-toggle="collapse" aria-expanded="false">Service Setting</a>
+                <ul class="collapse list-unstyled option-ul" id="service_settings">
+                    @foreach($service_settings as $service_setting)
+                        @if($service_setting->detail_value)
+                        <li class="nobranch">
+                            <input type="checkbox" name="service_settings[]" value="{{$service_setting->detail_recordid}}"  class="regular-checkbox" @if(in_array($service_setting->detail_recordid, $checked_settings)) checked @endif/>
+                            <span class="inputChecked">{{$service_setting->detail_value}}</span>
+                        </li>   
+                        @endif
+                    @endforeach
+                </ul>
+            </li>
+
             <li class="option-side">
                 <a href="#insurance" class="text-side" data-toggle="collapse" aria-expanded="false">Insurance</a>
                 <ul class="collapse list-unstyled option-ul" id="insurance">
@@ -166,6 +221,21 @@
                     @endforeach
                 </ul>
             </li>
+
+            <li class="option-side">
+                <a href="#culturals" class="text-side" data-toggle="collapse" aria-expanded="false">Cultural Competency</a>
+                <ul class="collapse list-unstyled option-ul" id="culturals">
+                    @foreach($culturals as $cultural)
+                        @if($cultural->detail_value)
+                        <li class="nobranch">
+                            <input type="checkbox" name="culturals[]" value="{{$cultural->detail_recordid}}"  class="regular-checkbox" @if(in_array($cultural->detail_recordid, $checked_culturals)) checked @endif/>
+                            <span class="inputChecked">{{$cultural->detail_value}}</span>
+                        </li>   
+                        @endif
+                    @endforeach
+                </ul>
+            </li>
+
             <li class="option-side mobile-btn">
                 <a href="#export" class="text-side" data-toggle="collapse" aria-expanded="false">Print/Export</a>
                 <ul class="collapse list-unstyled option-ul" id="export">
@@ -241,6 +311,18 @@ $(document).ready(function(){
     }
     if($('input[checked]', $('#insurance')).length > 0){
         $('#insurance').prev().trigger('click');
+    }
+    if($('input[checked]', $('#ages')).length > 0){
+        $('#ages').prev().trigger('click');
+    }
+    if($('input[checked]', $('#languages')).length > 0){
+        $('#languages').prev().trigger('click');
+    }
+    if($('input[checked]', $('#service_settings')).length > 0){
+        $('#service_settings').prev().trigger('click');
+    }
+    if($('input[checked]', $('#culturals')).length > 0){
+        $('#culturals').prev().trigger('click');
     }
 });
 </script>

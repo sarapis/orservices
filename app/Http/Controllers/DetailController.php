@@ -37,9 +37,23 @@ class DetailController extends Controller
 
                 $detail->detail_recordid = $strtointclass->string_to_int($record[ 'id' ]);
                 $detail->detail_value = isset($record['fields']['value'])?$record['fields']['value']:null;
-                $detail->detail_type = isset($record['fields']['detail_type'])?$record['fields']['detail_type']:null;
+                $detail->detail_type = isset($record['fields']['Detail Type'])?$record['fields']['Detail Type']:null;
                 $detail->detail_description= isset($record['fields']['description'])?$record['fields']['description']:null;
-                $detail->detail_organizations = isset($record['fields']['organizations'])? implode(",", $record['fields']['organizations']):null;
+
+                if(isset($record['fields']['organizations'])){
+                    $i = 0;
+                    foreach ($record['fields']['organizations']  as  $value) {
+
+                        $detailorganization=$strtointclass->string_to_int($value);
+
+                        if($i != 0)
+                            $detail->detail_organizations = $detail->detail_organizations. ','. $detailorganization;
+                        else
+                            $detail->detail_organizations = $detailorganization;
+                        $i ++;
+                    }
+                } 
+
                 $detail->detail_services = isset($record['fields']['services'])? implode(",", $record['fields']['services']):null;
 
                 if(isset($record['fields']['services'])){

@@ -66,8 +66,12 @@ class ExploreController extends Controller
         $child_taxonomy = [];
         $checked_organizations = [];
         $checked_insurances = [];
+        $checked_ages = [];
+        $checked_languages = [];
+        $checked_settings = [];
+        $checked_culturals = [];
         
-        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances'));
+        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals'));
     }
 
     public function geocode(Request $request)
@@ -121,8 +125,12 @@ class ExploreController extends Controller
         $child_taxonomy = [];
         $checked_organizations = [];
         $checked_insurances = [];
+        $checked_ages = [];
+        $checked_languages = [];
+        $checked_settings = [];
+        $checked_culturals = [];
 
-        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_address', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances'));
+        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_address', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals'));
 
     }
 
@@ -133,6 +141,10 @@ class ExploreController extends Controller
         $childs = $request->input('childs');
         $checked = $request->input('organizations');
         $details = $request->input('insurances');
+        $ages = $request->input('ages');
+        $languages = $request->input('languages');
+        $service_settings = $request->input('service_settings');
+        $culturals = $request->input('culturals');
         $pdf = $request->input('pdf');
         $csv = $request->input('csv');
 
@@ -148,10 +160,17 @@ class ExploreController extends Controller
         $child_taxonomy = [];
         $checked_organizations = [];
         $checked_insurances = [];
+        $checked_ages = [];
+        $checked_languages = [];
+        $checked_settings = [];
+        $checked_culturals = [];
 
         $child_taxonomy_names = '';
         $checked_organization_names ='';
         $checked_insurance_names = '';
+        $checked_age_names = '';
+        $checked_service_setting_names = '';
+        $checked_cultural_names = '';
 
 
         if($parents!=null){
@@ -200,6 +219,54 @@ class ExploreController extends Controller
             $checked_insurances = json_decode(json_encode($checked_insurances));
             
             $service_ids = Servicedetail::whereIn('detail_recordid', $details)->groupBy('service_recordid')->pluck('service_recordid');
+            $location_ids = Servicelocation::whereIn('service_recordid', $service_ids)->groupBy('location_recordid')->pluck('location_recordid');
+            $services = $services->whereIn('service_recordid', $service_ids);
+            $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
+        }
+
+        if($ages!=null){
+            $checked_ages = Detail::whereIn('detail_recordid', $ages)->pluck('detail_recordid');
+            $checked_age_names = Detail::whereIn('detail_recordid', $ages)->pluck('detail_value');
+
+            $checked_ages = json_decode(json_encode($checked_ages));
+            
+            $service_ids = Servicedetail::whereIn('detail_recordid', $ages)->groupBy('service_recordid')->pluck('service_recordid');
+            $location_ids = Servicelocation::whereIn('service_recordid', $service_ids)->groupBy('location_recordid')->pluck('location_recordid');
+            $services = $services->whereIn('service_recordid', $service_ids);
+            $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
+        }
+
+        if($languages!=null){
+            $checked_languages = Detail::whereIn('detail_recordid', $languages)->pluck('detail_recordid');
+            $checked_language_names = Detail::whereIn('detail_recordid', $languages)->pluck('detail_value');
+
+            $checked_languages = json_decode(json_encode($checked_languages));
+            
+            $service_ids = Servicedetail::whereIn('detail_recordid', $languages)->groupBy('service_recordid')->pluck('service_recordid');
+            $location_ids = Servicelocation::whereIn('service_recordid', $service_ids)->groupBy('location_recordid')->pluck('location_recordid');
+            $services = $services->whereIn('service_recordid', $service_ids);
+            $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
+        }
+
+        if($service_settings!=null){
+            $checked_settings = Detail::whereIn('detail_recordid', $service_settings)->pluck('detail_recordid');
+            $checked_setting_names = Detail::whereIn('detail_recordid', $service_settings)->pluck('detail_value');
+
+            $checked_languages = json_decode(json_encode($checked_languages));
+            
+            $service_ids = Servicedetail::whereIn('detail_recordid', $languages)->groupBy('service_recordid')->pluck('service_recordid');
+            $location_ids = Servicelocation::whereIn('service_recordid', $service_settings)->groupBy('location_recordid')->pluck('location_recordid');
+            $services = $services->whereIn('service_recordid', $service_ids);
+            $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
+        }
+
+        if($culturals!=null){
+            $checked_culturals = Detail::whereIn('detail_recordid', $culturals)->pluck('detail_recordid');
+            $checked_cultural_names = Detail::whereIn('detail_recordid', $culturals)->pluck('detail_value');
+
+            $checked_culturals = json_decode(json_encode($checked_culturals));
+            
+            $service_ids = Servicedetail::whereIn('detail_recordid', $culturals)->groupBy('service_recordid')->pluck('service_recordid');
             $location_ids = Servicelocation::whereIn('service_recordid', $service_ids)->groupBy('location_recordid')->pluck('location_recordid');
             $services = $services->whereIn('service_recordid', $service_ids);
             $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
@@ -346,7 +413,7 @@ class ExploreController extends Controller
        
         $map = Map::find(1);
 
-        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'pagination', 'sort'));
+        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'pagination', 'sort'));
 
     }
     /**

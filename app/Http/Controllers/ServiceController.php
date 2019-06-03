@@ -64,11 +64,11 @@ class ServiceController extends Controller
                 $service = new Service();
                 $strtointclass = new Stringtoint();
                 $service->service_recordid= $strtointclass->string_to_int($record[ 'id' ]);
-                $service->service_name = isset($record['fields']['name'])?$record['fields']['name']:null;
+                $service->service_name = isset($record['fields']['Name'])?$record['fields']['Name']:null;
 
-                if(isset($record['fields']['organization'])){
+                if(isset($record['fields']['Organization'])){
                     $i = 0;
-                    foreach ($record['fields']['organization']  as  $value) {
+                    foreach ($record['fields']['Organization']  as  $value) {
                         $service_organization = new Serviceorganization();
                         $service_organization->service_recordid=$service->service_recordid;
                         $service_organization->organization_recordid=$strtointclass->string_to_int($value);
@@ -83,8 +83,8 @@ class ServiceController extends Controller
                     }
                 }
 
-                $service->service_alternate_name = isset($record['fields']['alternate_name'])?$record['fields']['alternate_name']:null;
-                $service->service_description = isset($record['fields']['description'])?$record['fields']['description']:null;
+                $service->service_alternate_name = isset($record['fields']['Alternate Name'])?$record['fields']['Alternate Name']:null;
+                $service->service_description = isset($record['fields']['Description'])?$record['fields']['Description']:null;
 
                 if(isset($record['fields']['locations'])){
                     $i = 0;
@@ -251,8 +251,12 @@ class ServiceController extends Controller
         $child_taxonomy = [];
         $checked_organizations = [];
         $checked_insurances = [];
+        $checked_ages = [];
+        $checked_languages = [];
+        $checked_settings = [];
+        $checked_culturals = [];
 
-        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances'));
+        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals'));
     }
 
     public function service($id)
@@ -264,8 +268,12 @@ class ServiceController extends Controller
         $child_taxonomy = [];
         $checked_organizations = [];
         $checked_insurances = [];
+        $checked_ages = [];
+        $checked_languages = [];
+        $checked_settings = [];
+        $checked_culturals = [];
 
-        return view('frontEnd.service', compact('service', 'location', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances'));
+        return view('frontEnd.service', compact('service', 'location', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals'));
     }
 
     public function taxonomy($id)
@@ -284,8 +292,12 @@ class ServiceController extends Controller
         $child_taxonomy = [];
         $checked_organizations = [];
         $checked_insurances = [];
+        $checked_ages = [];
+        $checked_languages = [];
+        $checked_settings = [];
+        $checked_culturals = [];
 
-        return view('frontEnd.chip', compact('services', 'locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances'));
+        return view('frontEnd.chip', compact('services', 'locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals'));
     }
 
     /**

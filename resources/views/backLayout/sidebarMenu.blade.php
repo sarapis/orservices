@@ -40,7 +40,8 @@
             <li><a href="/data">Data</a></li>
             <li><a href="/map">Map</a></li>
           </ul>
-        </li>      
+        </li>
+        <li><a href="/analytics"><i class="fa fa-line-chart"></i> Analytics</a>      
         <li><a href="/datasync"><i class="fa fa-database"></i> Datasync</a>
         </li>
         <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>

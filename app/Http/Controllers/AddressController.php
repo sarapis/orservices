@@ -40,12 +40,12 @@ class AddressController extends Controller
                 $address->address_1 = isset($record['fields']['address_1'])?$record['fields']['address_1']:null;
                 $address->address_2 = isset($record['fields']['address_2'])?$record['fields']['address_2']:null;
                 $address->address_city = isset($record['fields']['city'])?$record['fields']['city']:null;
-                $address->address_state_province = isset($record['fields']['state_province'])?$record['fields']['state_province']:null;
-                $address->address_postal_code = isset($record['fields']['postal_code'])?$record['fields']['postal_code']:null;
+                $address->address_state_province = isset($record['fields']['State'])?$record['fields']['State']:null;
+                $address->address_postal_code = isset($record['fields']['Zip Code'])?$record['fields']['Zip Code']:null;
                 $address->address_region = isset($record['fields']['region'])?$record['fields']['region']:null;
-                $address->address_country = isset($record['fields']['country'])?$record['fields']['country']:null;
-                $address->address_attention = isset($record['fields']['attention'])?$record['fields']['attention']:null;
-                $address->address_type = isset($record['fields']['address_type'])? implode(",", $record['fields']['address_type']):null;
+                $address->address_country = isset($record['fields']['Country'])?$record['fields']['Country']:null;
+                $address->address_attention = isset($record['fields']['y-Attention'])?$record['fields']['y-Attention']:null;
+                $address->address_type = isset($record['fields']['y-address_type'])? implode(",", $record['fields']['y-address_type']):null;
 
                 if(isset($record['fields']['locations'])){
                     $i = 0;
