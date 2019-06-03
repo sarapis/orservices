@@ -1,11 +1,13 @@
 <body>
-  <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega navbar-inverse bg-custom" role="navigation">
+  <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega navbar-inverse bg-primary-color" role="navigation">
     <div class="navbar-header">
       <a class="navbar-brand p-25 pl-15" href="/">
+        @if($layout->logo_active == 1)
         <img class="navbar-brand-logo navbar-brand-logo-normal" src="../uploads/images/{{$layout->logo}}"
         title="{{$layout->site_name}}">
         <img class="navbar-brand-logo navbar-brand-logo-special" src="./uploads/images/{{$layout->logo}}"
         title="{{$layout->site_name}}">
+        @endif
       </a>
       <a class="navbar-brand" href="/">{{$layout->site_name}}</a>
       @if($layout->tagline!=null)
@@ -57,5 +59,15 @@
     display: block;
     color: #424242;
     font-weight: 400;
+  }
+  .bg-primary-color {
+    background-color: {{$layout->primary_color}};
+  }
+  .bg-secondary{
+    background-color: {{$layout->secondary_color}};
+  }
+  .btn-button {
+    border-color: {{$layout->button_color}};
+    background-color: {{$layout->button_color}};
   }
 </style>

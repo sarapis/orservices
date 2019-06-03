@@ -1,4 +1,4 @@
-<div class="filter-bar container-fluid" style="padding-top: 14px;background: #A2E9FF;">
+<div class="filter-bar container-fluid bg-secondary" style="padding-top: 14px;">
     <div class="col-md-8 col-md-offset-2">
         <div class="col-md-5">
           <form action="/find" method="POST" class="input-search">

@@ -28,6 +28,13 @@ ul#ui-id-1 {
     z-index: 0 !important;
     height: 30vh !important;
 }
+.morecontent span {
+  display: none;
+
+}
+.morelink{
+  color: #428bca;
+}
 </style>
 
 @section('content')
@@ -43,19 +50,24 @@ ul#ui-id-1 {
     
                 <div class="panel ml-15 mr-15 mb-15">
                     <div class="panel-body p-20">
-                        <h2>{{$organization->organization_name}} @if($organization->organization_alternate_name!='')({{$organization->organization_alternate_name}})@endif</h2>
+                        <h2><img src="{{$organization->organization_logo_x}}" height="80"> {{$organization->organization_name}} @if($organization->organization_alternate_name!='')({{$organization->organization_alternate_name}})@endif</h2>
+
+                        <h4 class="panel-text"><span class="badge bg-red">Status:</span> {{$organization->organization_status_x}}</h4>
 
                         <h4 class="panel-text"><span class="badge bg-red">Alternate Name:</span> {{$organization->organization_alternate_name}}</h4>
 
-                        <h4 class="panel-text"><span class="badge bg-red">Description:</span> {{$organization->organization_description}}</h4>
+                        <h4 class="panel-text"><span class="badge bg-red">Description:</span> <span class="comment more"> {{$organization->organization_description}}</span></h4>
 
-                        <h4 class="panel-text"><span class="badge bg-red">Website:</span> <a href="{{$organization->organization_url}}"> {{$organization->organization_url}}</a></h4>
+                        <h4 class="panel-text"><span class="badge bg-red">Website:</span> <a href="{{$organization->organization_url}}" class="panel-link"> {{$organization->organization_url}}</a></h4>
 
                         @if($organization->organization_phones!='')
                         <h4 class="panel-text"><span class="badge bg-red">Main Phone:</span> @foreach($organization->phones as $phone)
                            {!! $phone->phone_number !!}, 
-                        @endforeach</h4>
+                        @endforeach
+                        </h4>
                         @endif
+
+                        <h4 class="panel-text"><span class="badge bg-red">Referral Forms:</span> <a href="{{$organization->organization_forms_x_url}}" class="panel-link"> {{$organization->organization_forms_x_filename}}</a></h4>
 
                     </div>
                   </div>
@@ -96,32 +108,59 @@ ul#ui-id-1 {
             
             <div class="col-md-4 p-0 pr-15">
                 <div class="pb-10 pt-20">
-                    <a href="/download_organization/{{$organization->organization_recordid}}"><button type="button" class="btn btn-info btn-sort">Download PDF</button></a>
+                    <a href="/download_organization/{{$organization->organization_recordid}}"><button type="button" class="btn btn-info btn-sort btn-button">Download PDF</button></a>
                 </div>
                 <div id="map" style="width: 100%; margin-top: 0;"></div>
                 
-                @if($organization->organization_locations!='')
+               
                   <hr>
-                  @foreach($organization->location as $location)
                   <div class="panel m-0 mt-5">
                       <div class="panel-body p-20">
+                       @if($organization->organization_locations!='')
+                          @foreach($organization->location as $location)
+                          
 
-                          <h4><span class="badge bg-red">Location:</span> {{$location->location_name}}</h4>
-                          <h4><span class="badge bg-red">Address:</span> @if($location->location_address!='')
-                            @foreach($location->address as $address)
-                              {{ $address->address_1 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
-                            @endforeach
-                          @endif
-                          </h4>
-                          <h4><span class="badge bg-red">Phone:</span>
-                             @foreach($location->phones as $phone)
-                              {{$phone->phone_number}},
-                             @endforeach
-                          </h4>
-                      </div>
-                  </div>
+                                  <h4><span class="badge bg-red">Location:</span> {{$location->location_name}}</h4>
+                                  <h4><span class="badge bg-red">Address:</span> @if($location->location_address!='')
+                                    @foreach($location->address as $address)
+                                      {{ $address->address_1 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
+                                    @endforeach
+                                  @endif
+                                  </h4>
+                                  <h4><span class="badge bg-red">Phone:</span>
+                                     @foreach($location->phones as $phone)
+                                      {{$phone->phone_number}},
+                                     @endforeach
+                                  </h4>
+                              
+                          @endforeach
+                        @endif
+                    
+                @if($organization->organization_details!=NULL)
+                <hr>
+                    @php
+                        $show_details = [];
+                    @endphp
+                  @foreach($organization->details as $detail)
+                    @php
+                        for($i = 0; $i < count($show_details); $i ++){
+                            if($show_details[$i]['detail_type'] == $detail->detail_type)
+                                break;
+                        }
+                        if($i == count($show_details)){
+                            $show_details[$i] = array('detail_type'=> $detail->detail_type, 'detail_value'=> $detail->detail_value);
+                        }
+                        else{
+                            $show_details[$i]['detail_value'] = $show_details[$i]['detail_value'].', '.$detail->detail_value;
+                        }
+                    @endphp                                
+                  @endforeach
+                  @foreach($show_details as $detail)
+                    <h4><span class="badge bg-red">{{ $detail['detail_type'] }}:</span> {!! $detail['detail_value'] !!}</h4>  
                   @endforeach
                 @endif
+                  </div>
+                </div>
             </div>
         </div>
     </div>
@@ -214,6 +253,40 @@ ul#ui-id-1 {
             }
       });
     }, 2000)
+  });
+
+  $(document).ready(function() {
+    var showChar = 300;
+    var ellipsestext = "...";
+    var moretext = "More";
+    var lesstext = "Less";
+    $('.more').each(function() {
+      var content = $(this).html();
+
+      if(content.length > showChar) {
+
+        var c = content.substr(0, showChar);
+        var h = content.substr(showChar-1, content.length - showChar);
+
+        var html = c + '<span class="moreelipses">'+ellipsestext+'</span>&nbsp;<span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">'+moretext+'</a></span>';
+
+        $(this).html(html);
+      }
+
+    });
+
+    $(".morelink").click(function(){
+      if($(this).hasClass("less")) {
+        $(this).removeClass("less");
+        $(this).html(moretext);
+      } else {
+        $(this).addClass("less");
+        $(this).html(lesstext);
+      }
+      $(this).parent().prev().toggle();
+      $(this).prev().toggle();
+      return false;
+    });
   });
 </script>
 @endsection

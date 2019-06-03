@@ -102,7 +102,7 @@ ul#ui-id-1 {
                         <h4 class="panel-text"><span class="badge bg-blue">Email:</span> {{$service->service_email}}</h4>
                         @endif  
                         <hr>
-                        <h3>Details</h3>
+                        
                             @if($service->service_details!=NULL)
                                 @php
                                     $show_details = [];

@@ -18,10 +18,15 @@ class CreateOrganizationsTable extends Migration
             $table->bigInteger('organization_recordid')->nullable();
             $table->string('organization_name')->nullable();
             $table->string('organization_alternate_name', 45)->nullable();
+            $table->string('organization_logo_x')->nullable();
             $table->string('organization_x_uid', 45)->nullable();
             $table->longText('organization_description')->nullable();
             $table->string('organization_email', 500)->nullable();
+            $table->string('organization_forms_x_filename')->nullable();
+            $table->string('organization_forms_x_url')->nullable();
             $table->string('organization_url')->nullable();
+            $table->string('organization_status_x')->nullable();
+            $table->string('organization_status_sort')->nullable();
             $table->string('organization_legal_status', 45)->nullable();
             $table->string('organization_tax_status', 45)->nullable();
             $table->string('organization_tax_id', 45)->nullable();

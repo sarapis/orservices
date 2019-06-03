@@ -31,7 +31,7 @@ class Service extends Model
 
     }
 
-     public function details()
+    public function details()
     {
 
         return $this->belongsToMany('App\Detail', 'service_detail', 'service_recordid', 'detail_recordid');

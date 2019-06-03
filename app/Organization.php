@@ -33,8 +33,8 @@ class Organization extends Model
         return $this->hasmany('App\Contact', 'contact_organizations', 'organization_recordid');
     }
 
-    public function detail()
+    public function details()
     {
-        return $this->hasmany('App\Detail', 'detail_organizations', 'organization_recordid');
+        return $this->belongsToMany('App\Detail', 'organization_detail', 'organization_recordid', 'detail_recordid');
     }
 }
