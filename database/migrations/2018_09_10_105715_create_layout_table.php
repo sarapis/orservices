@@ -26,6 +26,10 @@ class CreateLayoutTable extends Migration
             $table->string('hearder_pdf')->nullable();
             $table->string('footer_pdf')->nullable();
             $table->string('footer_csv')->nullable();
+            $table->string('primary_color')->nullable();
+            $table->string('secondary_color')->nullable();
+            $table->string('button_color')->nullable();
+            $table->string('button_hover_color')->nullable();
         });
     }
 

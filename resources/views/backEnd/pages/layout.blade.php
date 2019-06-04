@@ -154,6 +154,14 @@ Appearance
                 </div>
               </div>
 
+              <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Button Hover Color
+                </label>
+                <div class="col-md-2 col-sm-6 col-xs-12">
+                    <input type="color" name="button_hover_color" value="{{$layout->button_hover_color}}" class="color-pick form-control col-md-5 col-xs-5">
+                </div>
+              </div>
+
               <div class="ln_solid"></div>
               <div class="form-group">
                 <div class="col-md-6 col-md-offset-3">

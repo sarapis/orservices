@@ -138,9 +138,10 @@ class EditlayoutController extends Controller
         $layout->primary_color=$request->primary_color;
         $layout->secondary_color=$request->secondary_color;
         $layout->button_color=$request->button_color;
+        $layout->button_hover_color=$request->button_hover_color;
         $layout->save();
 
-        Session::flash('message', 'Page updated!');
+        Session::flash('message', 'Appearance updated!');
         Session::flash('status', 'success');
 
         return redirect('layout_edit');

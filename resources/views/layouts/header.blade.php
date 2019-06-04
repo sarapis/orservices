@@ -69,5 +69,11 @@
   .btn-button {
     border-color: {{$layout->button_color}};
     background-color: {{$layout->button_color}};
+    color: white;
+  }
+  .btn-button:hover {
+    border-color: {{$layout->button_hover_color}};
+    background-color: {{$layout->button_hover_color}};
+    color: white;
   }
 </style>
