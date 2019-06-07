@@ -39,6 +39,15 @@ class PagesGenerate extends Seeder
 			    		'created_at' 		=> '',
 			    		'updated_at' 		=> ''
 			    		
+			    ],
+			    [		'id' 			=> '4',
+			    		'name' 		=> 'Google Analytics',
+			    		'title' 		=> 'This is Google Analytics page',
+			    		'body' 	=> '',
+			    		'files' 			=> '',
+			    		'created_at' 		=> '',
+			    		'updated_at' 		=> ''
+			    		
 			    ]
 
 			]); 

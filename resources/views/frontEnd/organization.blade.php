@@ -104,7 +104,7 @@ ul#ui-id-1 {
                                 @php
                                     $show_details = [];
                                 @endphp
-                              @foreach($service->details as $detail)
+                              @foreach($service->details->sortBy('detail_type') as $detail)
                                 @php
                                     for($i = 0; $i < count($show_details); $i ++){
                                         if($show_details[$i]['detail_type'] == $detail->detail_type)

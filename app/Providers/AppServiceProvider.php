@@ -63,6 +63,12 @@ class AppServiceProvider extends ServiceProvider
             $view->with('map', $map);
         });
 
+        view()->composer('layouts.analytics', function($view)
+        {
+            $analytics = \App\Page::find(4);
+            $view->with('analytics', $analytics);
+        });
+
         view()->composer('layouts.header', function($view)
         {
             $view->with('layout', \App\Layout::first());

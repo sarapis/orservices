@@ -14,5 +14,8 @@
 
 
 @include('layouts.script')
+@if(config('app.env') != 'local')
+    @include('layouts.analytics')
+@endif
 </body>
 </html>

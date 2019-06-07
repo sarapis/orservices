@@ -62,5 +62,8 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/js/bootstrap.min.js"></script>
 	<script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 	@yield('scripts')
+	@if(config('app.env') != 'local')
+        @include('partials.analytics')
+    @endif
 </body>
 </html>
