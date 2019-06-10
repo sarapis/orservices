@@ -15,8 +15,9 @@ class CreateAnalyticsTable extends Migration
     {
         Schema::create('analytics', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('search_term')->nullable();
-            $table->string('search_results')->nullable();
+            $table->integer('search_term')->nullable();
+            $table->integer('search_results')->nullable();
+            $table->integer('times_searched')->nullable();
             $table->string('timestamp')->nullable();
         });
     }

@@ -88,11 +88,20 @@ class HomeController extends Controller
         $locations = Location::with('services','organization')->get();
         $map = Map::find(1);
 
-        $analytic = new Analytic();
-        $analytic->search_term = $chip_service;
-        $analytic->search_results = $search_results;
-        $analytic->save();
-
+        $analytic = Analytic::where('search_term', '=', $chip_service)->first();
+        if(isset($analytic)){
+            $analytic->search_term = $chip_service;
+            $analytic->search_results = $search_results;
+            $analytic->times_searched = $analytic->times_searched + 1;
+            $analytic->save();
+        }
+        else{
+            $new_analytic = new Analytic();
+            $new_analytic->search_term = $chip_service;
+            $new_analytic->search_results = $search_results;
+            $new_analytic->times_searched = 1;
+            $new_analytic->save();
+        }
         // $services =Service::where('service_name',  'like', '%'.$search.'%')->get();
         return view('frontEnd.services', compact('services','locations', 'chip_title', 'chip_service', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'search_results'));
     }

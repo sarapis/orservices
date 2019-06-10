@@ -83,12 +83,9 @@ ul#ui-id-1 {
                     </div>
                 </div>
                 <div class="col-md-3 p-0 btn-feature">
-                    <div class="btn-group">
+                    <div class="btn-group" style="padding: 6px;">
                         @if(isset($search_results))
-                        <button type="button" class="btn btn-info btn-sort btn-button" id="exampleSizingDropdown2"
-                        data-toggle="dropdown" aria-expanded="false">
-                          <b>Result = {{$search_results}}</b>
-                        </button>
+                          <p><b>Result: {{$search_results}}</b></p>
                         @endif
                     </div>
                 </div>

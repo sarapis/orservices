@@ -20,7 +20,34 @@ Analytics
           </div>
           <div class="x_content">
 
-        {!! Form::model($page, [
+        
+          <div class="table table-responsive">
+            <h2>Search Analytics</h2>
+            <table class="table table-striped jambo_table bulk_action" id="tblroles">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Last Time Searched</th>
+                    <th>Search Term</th>
+                    <th>Amount of results of the last search</th>
+                    <th>Times Searched</th>
+                </tr>
+            </thead>
+                <tbody>
+                  @foreach($analytics as $analytic)
+                  <tr>
+                    <td>{{$analytic->id}}</td>
+                    <td>{{$analytic->created_at}}</td>
+                    <td>{{$analytic->search_term}}</td>
+                    <td>{{$analytic->search_results}}</td>
+                    <td>{{$analytic->times_searched}}</td>
+                  </tr>
+                  @endforeach
+                </tbody>
+            </table>
+          </div>
+
+          {!! Form::model($page, [
             'url' => ['analytics', 4],
             'class' => 'form-horizontal', 'method' => 'put'
         ]) !!}
@@ -41,26 +68,6 @@ Analytics
                 </div>
             </div>
           {!! Form::close() !!}
-          <div class="table table-responsive">
-            <h2>Search Analytics</h2>
-            <table class="table table-striped jambo_table bulk_action" id="tblroles">
-            <thead>
-                <tr>
-                    <th>No</th><th>Time/Date</th><th>Search Term</th><th>Results Displayed</th>
-                </tr>
-            </thead>
-                <tbody>
-                  @foreach($analytics as $analytic)
-                  <tr>
-                    <td>{{$analytic->id}}</td>
-                    <td>{{$analytic->created_at}}</td>
-                    <td>{{$analytic->search_term}}</td>
-                    <td>{{$analytic->search_results}}</td>
-                  </tr>
-                  @endforeach
-                </tbody>
-            </table>
-          </div>
         </div>
     </div>
   </div>
