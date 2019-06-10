@@ -40,7 +40,27 @@ Analytics
                     {!! Form::close() !!}
                 </div>
             </div>
-        {!! Form::close() !!}
+          {!! Form::close() !!}
+          <div class="table table-responsive">
+            <h2>Search Analytics</h2>
+            <table class="table table-striped jambo_table bulk_action" id="tblroles">
+            <thead>
+                <tr>
+                    <th>No</th><th>Time/Date</th><th>Search Term</th><th>Results Displayed</th>
+                </tr>
+            </thead>
+                <tbody>
+                  @foreach($analytics as $analytic)
+                  <tr>
+                    <td>{{$analytic->id}}</td>
+                    <td>{{$analytic->created_at}}</td>
+                    <td>{{$analytic->search_term}}</td>
+                    <td>{{$analytic->search_results}}</td>
+                  </tr>
+                  @endforeach
+                </tbody>
+            </table>
+          </div>
         </div>
     </div>
   </div>
@@ -50,9 +70,18 @@ Analytics
 @section('scripts')
 <script>
     $(document).ready(function() {
-    $('#summernote').summernote({
-        height: 300
-    });
+      $('#summernote').summernote({
+          height: 300
+      });
+        $('#tblroles').DataTable({
+            columnDefs: [{
+                targets: [0],
+                visible: false,
+                searchable: false
+                },
+            ],
+            order: [[0, "asc"]],
+        });
     });
   </script>
 @endsection

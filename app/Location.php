@@ -33,7 +33,7 @@ class Location extends Model
 
     public function detail()
     {
-        return $this->hasmany('App\Detail', 'detail_locations', 'location_recordid');
+        return $this->hasMany('App\Detail', 'detail_locations', 'location_recordid');
     }
 
     public function schedules()

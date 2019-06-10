@@ -13,6 +13,7 @@ use Session;
 use Validator;
 use Sentinel;
 use Route;
+use App\Analytic;
 
 class AnalyticsController extends Controller
 {
@@ -28,8 +29,9 @@ class AnalyticsController extends Controller
     public function index()
     {
         $page = Page::findOrFail(4);
+        $analytics = Analytic::all();
 
-        return view('backEnd.pages.analytics', compact('page'));
+        return view('backEnd.pages.analytics', compact('page', 'analytics'));
     }
 
     /**

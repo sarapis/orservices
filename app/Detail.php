@@ -22,6 +22,6 @@ class Detail extends Model
 
     public function location()
     {
-        return $this->hasmany('App\Location', 'detail_organization', 'organization_recordid');
+        return $this->hasMany('App\Location', 'location_recordid', 'detail_locations');
     }
 }

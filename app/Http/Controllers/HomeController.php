@@ -10,6 +10,7 @@ use App\Organization;
 use App\Taxonomy;
 use App\Map;
 use App\Location;
+use App\Analytic;
 use App\Http\Controllers\Controller;
 
 class HomeController extends Controller
@@ -79,10 +80,20 @@ class HomeController extends Controller
                 })->orwhereHas('taxonomy', function ($q)  use($chip_service){
                     $q->where('taxonomy_name', 'like', '%'.$chip_service.'%');
                 })->paginate(10);
+        $search_results = Service::with(['organizations', 'taxonomy'])->where('service_name', 'like', '%'.$chip_service.'%')->orwhere('service_description', 'like', '%'.$chip_service.'%')->orwhereHas('organizations', function ($q)  use($chip_service){
+                    $q->where('organization_name', 'like', '%'.$chip_service.'%');
+                })->orwhereHas('taxonomy', function ($q)  use($chip_service){
+                    $q->where('taxonomy_name', 'like', '%'.$chip_service.'%');
+                })->count();
         $locations = Location::with('services','organization')->get();
         $map = Map::find(1);
 
+        $analytic = new Analytic();
+        $analytic->search_term = $chip_service;
+        $analytic->search_results = $search_results;
+        $analytic->save();
+
         // $services =Service::where('service_name',  'like', '%'.$search.'%')->get();
-        return view('frontEnd.services', compact('services','locations', 'chip_title', 'chip_service', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals'));
+        return view('frontEnd.services', compact('services','locations', 'chip_title', 'chip_service', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'search_results'));
     }
 }

@@ -43,8 +43,8 @@ ul#ui-id-1 {
     <div id="content" class="container">
         <!-- Example Striped Rows -->
         <div class="container-fluid pl-15 pt-15">
-            <div class="col-md-6">
-                <div class="col-md-4 p-0 btn-feature">
+            <div class="col-md-8">
+                <div class="col-md-3 p-0 btn-feature">
                     <div class="btn-group">
                         <button type="button" class="btn btn-info dropdown-toggle btn-sort btn-button" id="exampleSizingDropdown2"
                         data-toggle="dropdown" aria-expanded="false">
@@ -56,7 +56,7 @@ ul#ui-id-1 {
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 p-0 btn-feature">
+                <div class="col-md-3 p-0 btn-feature">
                     <div class="btn-group">
                         <button type="button" class="btn btn-info dropdown-toggle btn-sort btn-button" id="exampleSizingDropdown2"
                         data-toggle="dropdown" aria-expanded="false">
@@ -69,7 +69,7 @@ ul#ui-id-1 {
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 p-0 btn-feature">
+                <div class="col-md-3 p-0 btn-feature">
                     <div class="btn-group">
                         <button type="button" class="btn btn-info dropdown-toggle btn-sort btn-button" id="exampleSizingDropdown2"
                         data-toggle="dropdown" aria-expanded="false">
@@ -80,6 +80,16 @@ ul#ui-id-1 {
                           <a @if(isset($sort) && $sort == 'Organization Name') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Organization Name</a>
                           <a @if(isset($sort) && $sort == 'Distance from Address') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Distance from Address</a>
                         </div>
+                    </div>
+                </div>
+                <div class="col-md-3 p-0 btn-feature">
+                    <div class="btn-group">
+                        @if(isset($search_results))
+                        <button type="button" class="btn btn-info btn-sort btn-button" id="exampleSizingDropdown2"
+                        data-toggle="dropdown" aria-expanded="false">
+                          <b>Result = {{$search_results}}</b>
+                        </button>
+                        @endif
                     </div>
                 </div>
             </div>

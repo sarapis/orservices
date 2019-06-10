@@ -25,6 +25,7 @@ ul#ui-id-1 {
 }
 #map{
     position: fixed !important;
+    height: 50vh;
 }
 .btn-group{
     width: 90%;
