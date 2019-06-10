@@ -160,29 +160,6 @@ ul#ui-id-1 {
                           @endforeach
                         @endif
                     
-                @if($organization->organization_details!=NULL)
-                <hr>
-                    @php
-                        $show_details = [];
-                    @endphp
-                  @foreach($organization->details as $detail)
-                    @php
-                        for($i = 0; $i < count($show_details); $i ++){
-                            if($show_details[$i]['detail_type'] == $detail->detail_type)
-                                break;
-                        }
-                        if($i == count($show_details)){
-                            $show_details[$i] = array('detail_type'=> $detail->detail_type, 'detail_value'=> $detail->detail_value);
-                        }
-                        else{
-                            $show_details[$i]['detail_value'] = $show_details[$i]['detail_value'].', '.$detail->detail_value;
-                        }
-                    @endphp                                
-                  @endforeach
-                  @foreach($show_details as $detail)
-                    <h4><span class="badge bg-red">{{ $detail['detail_type'] }}:</span> {!! $detail['detail_value'] !!}</h4>  
-                  @endforeach
-                @endif
                   </div>
                 </div>
             </div>
