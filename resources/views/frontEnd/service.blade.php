@@ -173,13 +173,13 @@ ul#ui-id-1 {
                                 
                             </h4>
                             @endif
-                            @if($service->service_contacts!=0)
+                            <!-- @if($service->service_contacts!=0)
                             <h4><span class="badge bg-red">Contact:</span>
                               
                                 {{$service->contact()->first()->contact_name}}
                             
                             </h4>
-                            @endif
+                            @endif -->
 
                         </div>
                     </div>
