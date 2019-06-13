@@ -151,6 +151,8 @@ class ExploreController extends Controller
         $pagination = strval($request->input('paginate'));
 
         $sort = $request->input('sort');
+        // var_dump($sort);
+        // exit();
 
         
         $services = \App\Service::with('taxonomy');

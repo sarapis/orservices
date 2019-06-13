@@ -33,7 +33,7 @@ About
           <div class="col-xl-5 col-md-5">
             <!-- Panel -->
               <div class="panel">
-                  <div class="panel-body bg-custom">
+                  <div class="panel-body bg-primary-color">
                       <div class="form-group">
                           <h4 class="text-white">Find Services Near an Address?</h4>
                           <form method="post" action="/search_address">

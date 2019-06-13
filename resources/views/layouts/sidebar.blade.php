@@ -256,8 +256,8 @@
                 </ul>
             </li>
             <li class="option-side mobile-btn">
-                <a href="#sort" class="text-side" data-toggle="collapse" aria-expanded="false">Sort</a>
-                <ul class="collapse list-unstyled option-ul" id="sort">
+                <a href="#sort1" class="text-side" data-toggle="collapse" aria-expanded="false">Sort</a>
+                <ul class="collapse list-unstyled option-ul" id="sort1">
                     <li class="nobranch">
                         <a @if(isset($sort) && $sort == 'Service Name') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Service Name</a>
                         <a @if(isset($sort) && $sort == 'Organization Name') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Organization Name</a>
@@ -266,7 +266,7 @@
                 </ul>
             </li>
             <input type="hidden" name="paginate" id="paginate" @if(isset($pagination)) value="{{$pagination}}" @else value="10" @endif>
-            <input type="hidden" name="sort" id="sort" @if(isset($sort)) value="{{$sort}}" @endif>
+            <input type="hidden" name="sort" id="sort" @if(isset($sort)) value="{{$sort}}" else value="" @endif>
 
             <input type="hidden" name="pdf" id="pdf">
 
