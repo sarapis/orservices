@@ -48,7 +48,7 @@ class HomeController extends Controller
         $checked_hours= [];
 
         $about = Page::where('name', 'About')->first();
-        $home = Page::where('name', 'Home')->first();
+        $home = Layout::find(1);
         $map = Map::find(1);
 
         return view('frontEnd.about', compact('about', 'home', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours'));

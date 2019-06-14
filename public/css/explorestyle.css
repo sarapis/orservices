@@ -395,9 +395,6 @@ a[aria-expanded="false"]::before, a[aria-expanded="true"]::before {
 .panel{
     box-shadow: 0 1px 6px rgba(57,73,76,.35);
 }
-p{
-    margin-bottom: 0;
-}
 .ui-slider {
   position: relative;
   text-align: left;

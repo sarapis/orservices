@@ -163,22 +163,27 @@ ul#ui-id-1 {
                         </div>
                         <div id="map" style="width:initial;margin: 0;height: 50vh;"></div>
                         <hr>
-                        @if($service->service_address!=NULL)
+       
                         <div class="p-20">
-                            <h4><span class="badge bg-blue">Address:</span>
-                                
-                                    @foreach($service->address as $address)
-                                       {{ $address->address_1 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
-                                    @endforeach
-                                
-                            </h4>
-                            @endif
-                            @if($service->service_contacts!=0)
-                            <h4><span class="badge bg-red">Contact:</span>
+                            @if($service->service_locations!='')
+                              @foreach($service->locations as $location)
                               
-                                {{$service->contact()->first()->contact_name}}
-                            
-                            </h4>
+                                  <h4><span class="badge bg-red">Address:</span> @if($location->location_address!='')
+                                    @foreach($location->address as $address)
+                                      {{ $address->address_1 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
+                                    @endforeach
+                                  @endif
+                                  </h4>
+                                  <h4><span class="badge bg-red">Phone:</span>
+                                     @foreach($location->phones as $phone)
+                                      @php 
+                                        $phones ='';
+                                        $phones = $phones.$phone->phone_number.','; @endphp
+                                     @endforeach
+                                     {{ rtrim($phones, ',') }}
+                                  </h4>
+                                  
+                              @endforeach
                             @endif
 
                         </div>

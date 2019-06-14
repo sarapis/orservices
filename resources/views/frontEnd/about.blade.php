@@ -52,7 +52,7 @@ About
                       </div>
                   </div>
                   <div class="panel-body">
-                      {!! $home->body !!}
+                      {!! $home->sidebar_content !!}
                   </div>
               </div>
           </div>

@@ -153,8 +153,11 @@ ul#ui-id-1 {
                                   </h4>
                                   <h4><span class="badge bg-red">Phone:</span>
                                      @foreach($location->phones as $phone)
-                                      {{$phone->phone_number}},
+                                      @php 
+                                        $phones ='';
+                                        $phones = $phones.$phone->phone_number.','; @endphp
                                      @endforeach
+                                     {{ rtrim($phones, ',') }}
                                   </h4>
                               
                           @endforeach
