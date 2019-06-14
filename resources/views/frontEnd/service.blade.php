@@ -168,18 +168,18 @@ ul#ui-id-1 {
                             <h4><span class="badge bg-blue">Address:</span>
                                 
                                     @foreach($service->address as $address)
-                                       <br>{{ $address->address_1 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
+                                       {{ $address->address_1 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
                                     @endforeach
                                 
                             </h4>
                             @endif
-                            <!-- @if($service->service_contacts!=0)
+                            @if($service->service_contacts!=0)
                             <h4><span class="badge bg-red">Contact:</span>
                               
                                 {{$service->contact()->first()->contact_name}}
                             
                             </h4>
-                            @endif -->
+                            @endif
 
                         </div>
                     </div>

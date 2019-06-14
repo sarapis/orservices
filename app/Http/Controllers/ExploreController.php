@@ -70,8 +70,10 @@ class ExploreController extends Controller
         $checked_languages = [];
         $checked_settings = [];
         $checked_culturals = [];
+        $checked_transportations = [];
+        $checked_hours= [];
         
-        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals'));
+        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours'));
     }
 
     public function geocode(Request $request)
@@ -129,8 +131,12 @@ class ExploreController extends Controller
         $checked_languages = [];
         $checked_settings = [];
         $checked_culturals = [];
+        $checked_transportations = [];
+        $checked_hours= [];
+        $checked_transportations = [];
+        $checked_hours= [];
 
-        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_address', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals'));
+        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_address', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours'));
 
     }
 
@@ -145,6 +151,9 @@ class ExploreController extends Controller
         $languages = $request->input('languages');
         $service_settings = $request->input('service_settings');
         $culturals = $request->input('culturals');
+        $transportations = $request->input('transportations');
+        $hours = $request->input('hours');
+
         $pdf = $request->input('pdf');
         $csv = $request->input('csv');
 
@@ -166,13 +175,18 @@ class ExploreController extends Controller
         $checked_languages = [];
         $checked_settings = [];
         $checked_culturals = [];
+        $checked_transportations = [];
+        $checked_hours= [];
 
         $child_taxonomy_names = '';
         $checked_organization_names ='';
         $checked_insurance_names = '';
         $checked_age_names = '';
-        $checked_service_setting_names = '';
+        $checked_language_names = '';
+        $checked_setting_names = '';
         $checked_cultural_names = '';
+        $checked_transportation_names = [];
+        $checked_hour_names= [];
 
 
         if($parents!=null){
@@ -269,6 +283,30 @@ class ExploreController extends Controller
             $checked_culturals = json_decode(json_encode($checked_culturals));
             
             $service_ids = Servicedetail::whereIn('detail_recordid', $culturals)->groupBy('service_recordid')->pluck('service_recordid');
+            $location_ids = Servicelocation::whereIn('service_recordid', $service_ids)->groupBy('location_recordid')->pluck('location_recordid');
+            $services = $services->whereIn('service_recordid', $service_ids);
+            $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
+        }
+
+        if($transportations!=null){
+            $checked_transportations = Detail::whereIn('detail_recordid', $transportations)->pluck('detail_recordid');
+            $checked_transportation_names = Detail::whereIn('detail_recordid', $transportations)->pluck('detail_value');
+
+            $checked_transportations = json_decode(json_encode($checked_transportations));
+            
+            $service_ids = Servicedetail::whereIn('detail_recordid', $transportations)->groupBy('service_recordid')->pluck('service_recordid');
+            $location_ids = Servicelocation::whereIn('service_recordid', $service_ids)->groupBy('location_recordid')->pluck('location_recordid');
+            $services = $services->whereIn('service_recordid', $service_ids);
+            $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
+        }
+
+        if($hours!=null){
+            $checked_hours = Detail::whereIn('detail_recordid', $hours)->pluck('detail_recordid');
+            $checked_hour_names = Detail::whereIn('detail_recordid', $hours)->pluck('detail_value');
+
+            $checked_hours = json_decode(json_encode($checked_hours));
+            
+            $service_ids = Servicedetail::whereIn('detail_recordid', $hours)->groupBy('service_recordid')->pluck('service_recordid');
             $location_ids = Servicelocation::whereIn('service_recordid', $service_ids)->groupBy('location_recordid')->pluck('location_recordid');
             $services = $services->whereIn('service_recordid', $service_ids);
             $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
@@ -392,7 +430,54 @@ class ExploreController extends Controller
 
                 $description = $description."Insurance: ".$filter_insurance;
             }
-            
+            if($checked_age_names != ""){
+                $filter_age ='';
+                foreach($checked_age_names as $checked_age_name){
+                    $filter_age = $filter_age.$checked_age_name.',';
+                }
+
+                $description = $description."Age: ".$filter_age;
+            }
+            if($checked_language_names != ""){
+                $filter_language ='';
+                foreach($checked_language_names as $checked_language_name){
+                    $filter_language = $filter_language.$checked_language_name.',';
+                }
+
+                $description = $description."Language: ".$filter_language;
+            }
+            if($checked_setting_names != ""){
+                $filter_setting ='';
+                foreach($checked_setting_names as $checked_setting_name){
+                    $filter_setting = $filter_setting.$checked_setting_name.',';
+                }
+
+                $description = $description."Setting: ".$filter_setting;
+            }
+            if($checked_cultural_names != ""){
+                $filter_cultural ='';
+                foreach($checked_cultural_names as $checked_cultural_name){
+                    $filter_cultural = $filter_cultural.$checked_cultural_name.',';
+                }
+
+                $description = $description."Cultural: ".$filter_cultural;
+            }
+            if($checked_transportation_names != ""){
+                $filter_transportation ='';
+                foreach($checked_transportation_names as $checked_transportation_name){
+                    $filter_transportation = $filter_cultural.$checked_transportation_name.',';
+                }
+
+                $description = $description."Transportation: ".$filter_transportation;
+            }
+            if($checked_hour_names != ""){
+                $filter_hour ='';
+                foreach($checked_hour_names as $checked_hour_name){
+                    $filter_hour = $filter_hour.$checked_hour_name.',';
+                }
+
+                $description = $description."Additional Hour: ".$filter_hour;
+            }
 
             $csv->description = $description;
             $csv->save();
@@ -415,7 +500,7 @@ class ExploreController extends Controller
        
         $map = Map::find(1);
 
-        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'pagination', 'sort'));
+        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'pagination', 'sort'));
 
     }
     /**

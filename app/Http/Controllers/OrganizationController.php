@@ -186,8 +186,10 @@ class OrganizationController extends Controller
         $checked_languages = [];
         $checked_settings = [];
         $checked_culturals = [];
+        $checked_transportations = [];
+        $checked_hours= [];
 
-        return view('frontEnd.organizations', compact('organizations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals'));
+        return view('frontEnd.organizations', compact('organizations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours'));
     }
 
     public function organization($id)
@@ -203,8 +205,10 @@ class OrganizationController extends Controller
         $checked_languages = [];
         $checked_settings = [];
         $checked_culturals = [];
+        $checked_transportations = [];
+        $checked_hours= [];
 
-        return view('frontEnd.organization', compact('organization', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals'));
+        return view('frontEnd.organization', compact('organization', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours'));
     }
 
     public function download($id)

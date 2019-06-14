@@ -54,7 +54,25 @@ class AppServiceProvider extends ServiceProvider
         view()->composer('layouts.sidebar', function($view)
         {
             $culturals = \App\Detail::where('detail_type', '=', 'Cultural Competencies')->orderBy('detail_value', 'asc')->get();
+            $transportations = \App\Detail::where('detail_type', '=', 'Transportation')->orderBy('detail_value', 'asc')->get();
+
             $view->with('culturals', $culturals);
+        });
+
+        view()->composer('layouts.sidebar', function($view)
+        {
+
+            $transportations = \App\Detail::where('detail_type', '=', 'Transportation')->orderBy('detail_value', 'asc')->get();
+
+            $view->with('transportations', $transportations);
+        });
+
+        view()->composer('layouts.sidebar', function($view)
+        {
+
+            $hours = \App\Detail::where('detail_type', '=', 'Additional Hours')->orderBy('detail_value', 'asc')->get();
+
+            $view->with('hours', $hours);
         });
 
         view()->composer('layouts.script', function($view)

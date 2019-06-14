@@ -255,8 +255,10 @@ class ServiceController extends Controller
         $checked_languages = [];
         $checked_settings = [];
         $checked_culturals = [];
+        $checked_transportations = [];
+        $checked_hours= [];
 
-        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals'));
+        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours'));
     }
 
     public function service($id)
@@ -272,8 +274,10 @@ class ServiceController extends Controller
         $checked_languages = [];
         $checked_settings = [];
         $checked_culturals = [];
+        $checked_transportations = [];
+        $checked_hours= [];
 
-        return view('frontEnd.service', compact('service', 'location', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals'));
+        return view('frontEnd.service', compact('service', 'location', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours'));
     }
 
     public function taxonomy($id)
@@ -296,8 +300,10 @@ class ServiceController extends Controller
         $checked_languages = [];
         $checked_settings = [];
         $checked_culturals = [];
+        $checked_transportations = [];
+        $checked_hours= [];
 
-        return view('frontEnd.chip', compact('services', 'locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals'));
+        return view('frontEnd.chip', compact('services', 'locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours'));
     }
 
     /**

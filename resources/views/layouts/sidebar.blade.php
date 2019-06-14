@@ -73,6 +73,12 @@
     #culturals{
         padding-left: 12px;
     }
+    #transportations{
+        padding-left: 12px;
+    }
+    #hours{
+        padding-left: 12px;
+    }
     .alert{
         padding-left: 15px;
         padding-right: 30px;
@@ -236,6 +242,34 @@
                 </ul>
             </li>
 
+            <li class="option-side">
+                <a href="#transportations" class="text-side" data-toggle="collapse" aria-expanded="false">Transportation</a>
+                <ul class="collapse list-unstyled option-ul" id="transportations">
+                    @foreach($transportations as $transportation)
+                        @if($transportation->detail_value)
+                        <li class="nobranch">
+                            <input type="checkbox" name="transportations[]" value="{{$transportation->detail_recordid}}"  class="regular-checkbox" @if(in_array($transportation->detail_recordid, $checked_transportations)) checked @endif/>
+                            <span class="inputChecked">{{$transportation->detail_value}}</span>
+                        </li>   
+                        @endif
+                    @endforeach
+                </ul>
+            </li>
+
+            <li class="option-side">
+                <a href="#hours" class="text-side" data-toggle="collapse" aria-expanded="false">Additional Hours</a>
+                <ul class="collapse list-unstyled option-ul" id="hours">
+                    @foreach($hours as $hour)
+                        @if($hour->detail_value)
+                        <li class="nobranch">
+                            <input type="checkbox" name="hours[]" value="{{$hour->detail_recordid}}"  class="regular-checkbox" @if(in_array($hour->detail_recordid, $checked_hours)) checked @endif/>
+                            <span class="inputChecked">{{$hour->detail_value}}</span>
+                        </li>   
+                        @endif
+                    @endforeach
+                </ul>
+            </li>
+
             <li class="option-side mobile-btn">
                 <a href="#export" class="text-side" data-toggle="collapse" aria-expanded="false">Print/Export</a>
                 <ul class="collapse list-unstyled option-ul" id="export">
@@ -323,6 +357,12 @@ $(document).ready(function(){
     }
     if($('input[checked]', $('#culturals')).length > 0){
         $('#culturals').prev().trigger('click');
+    }
+    if($('input[checked]', $('#transportations')).length > 0){
+        $('#transportations').prev().trigger('click');
+    }
+    if($('input[checked]', $('#hours')).length > 0){
+        $('#hours').prev().trigger('click');
     }
 });
 </script>

@@ -28,8 +28,10 @@ class HomeController extends Controller
         $checked_languages = [];
         $checked_settings = [];
         $checked_culturals = [];
+        $checked_transportations = [];
+        $checked_hours= [];
 
-    	return view('frontEnd.home', compact('home', 'taxonomies', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals'));
+        return view('frontEnd.home', compact('home', 'taxonomies', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours'));
     }
 
     public function about($value='')
@@ -42,12 +44,14 @@ class HomeController extends Controller
         $checked_languages = [];
         $checked_settings = [];
         $checked_culturals = [];
+        $checked_transportations = [];
+        $checked_hours= [];
 
         $about = Page::where('name', 'About')->first();
         $home = Page::where('name', 'Home')->first();
         $map = Map::find(1);
 
-        return view('frontEnd.about', compact('about', 'home', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals'));
+        return view('frontEnd.about', compact('about', 'home', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours'));
     }
 
     public function feedback($value='')
@@ -58,13 +62,13 @@ class HomeController extends Controller
 
     public function YourhomePage($value='')
     {
-    	return view('home');
+        return view('home');
     }
 
     public function dashboard($value='')
     {
         $layout = Layout::first();
-    	return view('backEnd.dashboard', compact('layout'));
+        return view('backEnd.dashboard', compact('layout'));
     }
 
     public function logviewerdashboard($value='')
@@ -85,6 +89,8 @@ class HomeController extends Controller
         $checked_languages = [];
         $checked_settings = [];
         $checked_culturals = [];
+        $checked_transportations = [];
+        $checked_hours= [];
 
         $services= Service::with(['organizations', 'taxonomy'])->where('service_name', 'like', '%'.$chip_service.'%')->orwhere('service_description', 'like', '%'.$chip_service.'%')->orwhereHas('organizations', function ($q)  use($chip_service){
                     $q->where('organization_name', 'like', '%'.$chip_service.'%');
@@ -114,6 +120,6 @@ class HomeController extends Controller
             $new_analytic->save();
         }
         // $services =Service::where('service_name',  'like', '%'.$search.'%')->get();
-        return view('frontEnd.services', compact('services','locations', 'chip_title', 'chip_service', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'search_results'));
+        return view('frontEnd.services', compact('services','locations', 'chip_title', 'chip_service', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'search_results'));
     }
 }
