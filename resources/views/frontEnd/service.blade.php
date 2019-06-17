@@ -197,7 +197,7 @@ ul#ui-id-1 {
 <script>
 $(document).ready(function(){
     setTimeout(function(){
-        var locations = <?php print_r(json_encode($location)) ?>;
+        var locations = <?php print_r(json_encode($service->locations)) ?>;
         var maplocation = <?php print_r(json_encode($map)) ?>;
 
         console.log(locations);
@@ -223,7 +223,8 @@ $(document).ready(function(){
           zoom:10
         });
 
-        if(show == 1){
+
+        
           $.each( locations, function(index, value ){
               mymap.addMarker({
                   lat: value.location_latitude,
@@ -233,7 +234,7 @@ $(document).ready(function(){
                   
               });
          });
-        }
+        
     }, 2000)
 });
 

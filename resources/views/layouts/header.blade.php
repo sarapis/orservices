@@ -4,9 +4,9 @@
       <a class="navbar-brand p-25 pl-15" href="/">
         @if($layout->logo_active == 1)
         <img class="navbar-brand-logo navbar-brand-logo-normal" src="../uploads/images/{{$layout->logo}}"
-        title="{{$layout->site_name}}">
+        title="{{$layout->site_name}}" style="height: 30px;">
         <img class="navbar-brand-logo navbar-brand-logo-special" src="./uploads/images/{{$layout->logo}}"
-        title="{{$layout->site_name}}">
+        title="{{$layout->site_name}}" style="height: 30px;">
         @endif
       </a>
       <a class="navbar-brand" href="/">{{$layout->site_name}}</a>

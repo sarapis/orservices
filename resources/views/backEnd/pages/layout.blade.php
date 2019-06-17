@@ -36,7 +36,7 @@ Appearance
                     <div class="row">
                       <img src="/uploads/images/{{$layout->logo}}" id="blah">
                     </div>
-
+                    <div class="row">
                     <div class="col-md-6">
                       <label class="custom-file">
                           <input type="file" id="file2" class="custom-file-input" onchange="readURL(this);" name="logo">
@@ -44,8 +44,14 @@ Appearance
                       </label>
                     </div>
                     <div class="col-md-6">
-                    <span><b>Logo Active</b>&nbsp;&nbsp;
-                      <input type="checkbox" class="js-switch" value="checked" name="logo_active"  @if($layout->logo_active==1) checked @endif/>&nbsp;&nbsp;<b>Out Logo Deactive</b></span>
+                    <span><b>Show Logo</b>&nbsp;&nbsp;
+                      <input type="checkbox" class="js-switch" value="checked" name="logo_active"  @if($layout->logo_active==1) checked @endif/>&nbsp;&nbsp;<b>Hide Logo</b></span>
+                    </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <label>Recommended size 30px wide and 30px tall.</label>
+                      </div>
                     </div>
                 </div>
             </div>           
