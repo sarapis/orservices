@@ -260,6 +260,7 @@ ul#ui-id-1 {
   });
 
   $(document).ready(function() {
+    
     var showChar = 250;
     var ellipsestext = "...";
     var moretext = "More";
