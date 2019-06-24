@@ -260,7 +260,7 @@ ul#ui-id-1 {
   });
 
   $(document).ready(function() {
-    var showChar = 300;
+    var showChar = 250;
     var ellipsestext = "...";
     var moretext = "More";
     var lesstext = "Less";
