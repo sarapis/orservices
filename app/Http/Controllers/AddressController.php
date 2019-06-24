@@ -44,8 +44,8 @@ class AddressController extends Controller
                 $address->address_postal_code = isset($record['fields']['Zip Code'])?$record['fields']['Zip Code']:null;
                 $address->address_region = isset($record['fields']['region'])?$record['fields']['region']:null;
                 $address->address_country = isset($record['fields']['Country'])?$record['fields']['Country']:null;
-                $address->address_attention = isset($record['fields']['y-Attention'])?$record['fields']['y-Attention']:null;
-                $address->address_type = isset($record['fields']['y-address_type'])? implode(",", $record['fields']['y-address_type']):null;
+                $address->address_attention = isset($record['fields']['attention'])?$record['fields']['attention']:null;
+                $address->address_type = isset($record['fields']['address_type-x'])? implode(",", $record['fields']['address_type-x']):null;
 
                 if(isset($record['fields']['locations'])){
                     $i = 0;

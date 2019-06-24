@@ -217,7 +217,9 @@ class ServiceController extends Controller
                     }
                 }
 
-                $service->service_metadata = isset($record['fields']['metadata'])? $record['fields']['metadata']:null;              
+                $service->service_metadata = isset($record['fields']['metadata'])? $record['fields']['metadata']:null;
+
+                $service->service_airs_taxonomy_x = isset($record['fields']['AIRS Taxonomy-x'])? implode(",", $record['fields']['AIRS Taxonomy-x']):null;          
                 
                 $service ->save();
 

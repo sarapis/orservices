@@ -149,6 +149,18 @@ class OrganizationController extends Controller
                     }
                 }
 
+                if(isset($record['fields']['AIRS Taxonomy-x'])){
+                    $i = 0;
+                    foreach ($record['fields']['AIRS Taxonomy-x']  as  $value) {
+
+                        if($i != 0)
+                            $organization->organization_airs_taxonomy_x = $organization->organization_airs_taxonomy_x . ','. $value;
+                        else
+                            $organization->organization_airs_taxonomy_x  = $value;
+                        $i ++;
+                    }
+                } 
+
                 $organization ->save();
 
             }
