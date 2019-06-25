@@ -44,8 +44,8 @@ Appearance
                       </label>
                     </div>
                     <div class="col-md-6">
-                    <span><b>Show Logo</b>&nbsp;&nbsp;
-                      <input type="checkbox" class="js-switch" value="checked" name="logo_active"  @if($layout->logo_active==1) checked @endif/>&nbsp;&nbsp;<b>Hide Logo</b></span>
+                    <span><b>Hide Logo</b>&nbsp;&nbsp;
+                      <input type="checkbox" class="js-switch" value="checked" name="logo_active"  @if($layout->logo_active==1) checked @endif/>&nbsp;&nbsp;<b>Show Logo</b></span>
                     </div>
                     </div>
                     <div class="row">
