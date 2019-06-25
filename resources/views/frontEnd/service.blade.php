@@ -97,7 +97,7 @@ ul#ui-id-1 {
                             @foreach($service->phone as $phone) {!! $phone->phone_extension !!} @endforeach  
                         </h4>
                         @endif
-                        
+
                         <h4 class="panel-text" style="word-wrap: break-word;"><span class="badge bg-blue" >Url:</span> @if($service->service_url!=NULL)<a href="{!! $service->service_url !!}">{!! $service->service_url !!}</a> @endif</h4>
 
                         @if($service->service_email!=NULL) 
@@ -158,38 +158,38 @@ ul#ui-id-1 {
             
             <div class="col-md-4 pt-15 property">
                 
-                <div class="panel">
+                <div class="panel mb-5">
                     <div class="panel-body p-0">
                         <div class="p-10">
                             <a href="/download_service/{{$service->service_recordid}}"><button type="button" class="btn btn-info btn-sort btn-button">Download PDF</button></a>
                         </div>
                         <div id="map" style="width:initial;margin: 0;height: 50vh;"></div>
-                        <hr>
-       
-                        <div class="p-20">
-                            @if($service->service_locations!='')
-                              @foreach($service->locations as $location)
-                              
-                                  <h4><span class="badge bg-red">Address:</span> @if($location->location_address!='')
-                                    @foreach($location->address as $address)
-                                      {{ $address->address_1 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
-                                    @endforeach
-                                  @endif
-                                  </h4>
-                                  <h4><span class="badge bg-red">Phone:</span>
-                                     @foreach($location->phones as $phone)
-                                      @php 
-                                        $phones ='';
-                                        $phones = $phones.$phone->phone_number.','; @endphp
-                                     @endforeach
-                                     {{ rtrim($phones, ',') }}
-                                  </h4>
-                                  
-                              @endforeach
-                            @endif
-
+                    </div>
+                </div>
+                @if($service->service_locations!='')
+                  @foreach($service->locations as $location)
+                    <div class="panel mb-5">
+                        <div class="panel-body p-20">
+                          <h4><span class="badge bg-red">Address:</span> @if($location->location_address!='')
+                            @foreach($location->address as $address)
+                              {{ $address->address_1 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
+                            @endforeach
+                          @endif
+                          </h4>
+                          <h4><span class="badge bg-red">Phone:</span>
+                             @foreach($location->phones as $phone)
+                              @php 
+                                $phones ='';
+                                $phones = $phones.$phone->phone_number.','; @endphp
+                             @endforeach
+                             {{ rtrim($phones, ',') }}
+                          </h4>
                         </div>
                     </div>
+                  @endforeach
+                @endif
+
+                        
                 </div>
             </div>
         </div>
