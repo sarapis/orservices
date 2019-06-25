@@ -92,14 +92,14 @@ class HomeController extends Controller
         $checked_transportations = [];
         $checked_hours= [];
 
-        $services= Service::with(['organizations', 'taxonomy'])->where('service_name', 'like', '%'.$chip_service.'%')->orwhere('service_description', 'like', '%'.$chip_service.'%')->orwhere('service_airs_taxonomy_x', 'like', '%'.$chip_service.'%')->orwhereHas('organizations', function ($q)  use($chip_service){
+        $services= Service::with(['organizations', 'taxonomy', 'details'])->where('service_name', 'like', '%'.$chip_service.'%')->orwhere('service_description', 'like', '%'.$chip_service.'%')->orwhere('service_airs_taxonomy_x', 'like', '%'.$chip_service.'%')->orwhereHas('organizations', function ($q)  use($chip_service){
                     $q->where('organization_name', 'like', '%'.$chip_service.'%');
                 })->orwhereHas('taxonomy', function ($q)  use($chip_service){
                     $q->where('taxonomy_name', 'like', '%'.$chip_service.'%');
                 })->orwhereHas('details', function ($q)  use($chip_service){
                     $q->where('detail_value', 'like', '%'.$chip_service.'%');
                 })->paginate(10);
-        $search_results = Service::with(['organizations', 'taxonomy'])->where('service_name', 'like', '%'.$chip_service.'%')->orwhere('service_description', 'like', '%'.$chip_service.'%')->orwhere('service_airs_taxonomy_x', 'like', '%'.$chip_service.'%')->orwhereHas('organizations', function ($q)  use($chip_service){
+        $search_results = Service::with(['organizations', 'taxonomy', 'details'])->where('service_name', 'like', '%'.$chip_service.'%')->orwhere('service_description', 'like', '%'.$chip_service.'%')->orwhere('service_airs_taxonomy_x', 'like', '%'.$chip_service.'%')->orwhereHas('organizations', function ($q)  use($chip_service){
                     $q->where('organization_name', 'like', '%'.$chip_service.'%');
                 })->orwhereHas('taxonomy', function ($q)  use($chip_service){
                     $q->where('taxonomy_name', 'like', '%'.$chip_service.'%');
