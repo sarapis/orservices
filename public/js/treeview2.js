@@ -54,4 +54,4 @@ $.fn.extend({
 
 //Initialization of treeviews
 
-$('#tree2').treed();
+$('.tree2').treed();

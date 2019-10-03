@@ -64,6 +64,7 @@ class MapController extends Controller
         $map->state=$request->state;
         $map->lat=$request->lat;
         $map->long=$request->long;
+        $map->zoom=$request->zoom;
 
         $map->save();
 
@@ -122,6 +123,7 @@ class MapController extends Controller
             $map->state=$request->input('state');
             $map->lat=$request->input('lat');
             $map->long=$request->input('long');
+            $map->zoom=$request->input('zoom');
         }
         else {
             $map->active = 0;

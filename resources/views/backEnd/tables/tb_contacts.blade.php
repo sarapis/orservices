@@ -35,13 +35,21 @@ Contacts
                     <th class="text-center">Department</th>
                     <th class="text-center">Email</th>
                     <th class="text-center">Phone</th>
+                    @if($source_data->active == 0 )
+                    <th class="text-center">Phone Areacode</th>
+                    <th class="text-center">Phone extension</th>
+                    @endif
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
               @foreach($contacts as $key => $contact)
                 <tr id="contact{{$contact->id}}" class="{{$contact->flag}}">
-                  <td class="text-center">{{$key+1}}</td>
+                  @if($source_data->active == 1 )
+                  <td class="text-center">{{$key}}+1</td>
+                  @elseif($source_data->active == 0)
+                  <td class="text-center">{{$contact->contact_recordid}}</td>
+                  @endif
                   <td class="text-center">{{$contact->contact_name}}</td>
                   <td class="text-center">
                     @if($contact->contact_organizations!=0)
@@ -57,10 +65,14 @@ Contacts
                   <td class="text-center">{{$contact->contact_department}}</td>
                   <td class="text-center">{{$contact->contact_email}}</td>
                   <td class="text-center">
-                    @if($contact->contact_phones!=0)
+                    @if(isset($contact->phone()->first()->phone_number))
                       <span class="badge bg-purple">{{$contact->phone()->first()->phone_number}}</span>
                     @endif
                   </td>
+                  @if($source_data->active == 0 )
+                  <td class="text-center">{{$contact->contact_phone_areacode}}</td>
+                  <td class="text-center">{{$contact->contact_phone_extension}}</td>
+                  @endif
                   <td>
                     <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$contact->contact_recordid}}"><i class="fa fa-fw fa-edit"></i>Edit</button>
                   </td>
@@ -68,6 +80,7 @@ Contacts
               @endforeach             
             </tbody>
         </table>
+        {!! $contacts->links() !!}
       </div>
     </div>
   </div>
@@ -149,9 +162,16 @@ $(document).ready(function() {
                         false;
                 }
             }
-        }
-    } );
-} );
+        },
+        "paging": false,
+        "pageLength": 20,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": true,
+        "info": false,
+        "autoWidth": true
+    });
+});
 </script>
 <script src="{{asset('js/contacts_ajaxscript.js')}}"></script>
 @endsection

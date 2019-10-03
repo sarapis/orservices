@@ -1,42 +1,49 @@
 <!-- Core  -->
    
-<!--   <script src="../../../frontend/global/vend/babel-external-helpers/babel-external-helpers.js"></script>
-  <script src="../../../frontend/global/vend/tether/tether.js"></script> -->
-<!--   <script src="../../../frontend/global/vend/bootstrap/bootstrap.js"></script> -->
-<!--   <script src="../../../frontend/global/vend/animsition/animsition.js"></script>
-  <script src="../../../frontend/global/vend/mousewheel/jquery.mousewheel.js"></script>
-  <script src="../../../frontend/global/vend/asscrollbar/jquery-asScrollbar.js"></script>
-  <script src="../../../frontend/global/vend/asscrollable/jquery-asScrollable.js"></script>
-  <script src="../../../frontend/global/vend/waves/waves.js"></script> -->
+<script src="../../frontend/global/vend/babel-external-helpers/babel-external-helpers.js"></script>
+  <script src="../../frontend/global/vend/tether/tether.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.5/jquery.csv.min.js" integrity="sha256-zGo0JbZ5Sn6wU76MyVL0TrUZUq5GLXaFnMQCe/hSwVI=" crossorigin="anonymous"></script>
+{{-- <script src="../../frontend/global/vend/animsition/animsition.js"></script> --}}
+  <script src="../../frontend/global/vend/mousewheel/jquery.mousewheel.js"></script>
+  <script src="../../frontend/global/vend/asscrollbar/jquery-asScrollbar.js"></script>
+  <script src="../../frontend/global/vend/asscrollable/jquery-asScrollable.js"></script>
+  <script src="../../frontend/global/vend/ashoverscroll/jquery-asHoverScroll.js"></script>
+  <script src="../../frontend/global/vend/waves/waves.js"></script>
   <!-- Plugins -->
-  <!-- <script src="../../../frontend/global/vend/switchery/switchery.min.js"></script>
-  <script src="../../../frontend/global/vend/intro-js/intro.js"></script>
-  <script src="../../../frontend/global/vend/screenfull/screenfull.js"></script>
-  <script src="../../../frontend/global/vend/slidepanel/jquery-slidePanel.js"></script>
-  <script src="../../../frontend/global/vend/moment/moment.min.js"></script> -->
+<script src="../../frontend/global/vend/switchery/switchery.min.js"></script>
+  <script src="../../frontend/global/vend/intro-js/intro.js"></script>
+  <script src="../../frontend/global/vend/screenfull/screenfull.js"></script>
+  <script src="../../frontend/global/vend/slidepanel/jquery-slidePanel.js"></script>
+  {{-- <script src="../../frontend/global/vend/moment/moment.min.js"></script> --}}
+  <script src="../../frontend/global/vend/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js"></script>
 
   <!-- Scripts -->
-<!--   <script src="../../../frontend/global/js/State.js"></script>
-  <script src="../../../frontend/global/js/Component.js"></script>
-  <script src="../../../frontend/global/js/Plugin.js"></script>
-  <script src="../../../frontend/global/js/Base.js"></script>
-  <script src="../../../frontend/global/js/Config.js"></script>
+<script src="../../frontend/global/js/State.js"></script>
+  <script src="../../frontend/global/js/Component.js"></script>
+  <script src="../../frontend/global/js/Plugin.js"></script>
+  <script src="../../frontend/global/js/Base.js"></script>
+  <script src="../../frontend/global/js/Config.js"></script>
   <script src="../../frontend/assets/js/Section/Menubar.js"></script>
   <script src="../../frontend/assets/js/Section/Sidebar.js"></script>
   <script src="../../frontend/assets/js/Section/PageAside.js"></script>
-  <script src="../../frontend/assets/js/Plugin/menu.js"></script> -->
+  <script src="../../frontend/assets/js/Plugin/menu.js"></script>
   <!-- Config -->
- <!--  <script src="../../../frontend/global/js/config/colors.js"></script>
-  <script src="../../frontend/assets/js/config/tour.js"></script> -->
-<!--   <script>
-  Config.set('assets', '../../assets');
-  </script> -->
+<script src="../../frontend/global/js/config/colors.js"></script>
+  <script src="../../frontend/assets/js/config/tour.js"></script>
+<script>
+  Config.set('assets', '../../frontend/assets');
+  </script>
   <!-- Page -->
- <!--  <script src="../../frontend/assets/js/Site.js"></script>
-  <script src="../../../frontend/global/js/Plugin/asscrollable.js"></script>
-  <script src="../../../frontend/global/js/Plugin/slidepanel.js"></script>
-  <script src="../../../frontend/global/js/Plugin/switchery.js"></script> -->
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+<script src="../../frontend/assets/js/Site.js"></script>
+  <script src="../../frontend/global/js/Plugin/asscrollable.js"></script>
+  <script src="../../frontend/global/js/Plugin/slidepanel.js"></script>
+  <script src="../../frontend/global/js/Plugin/switchery.js"></script>
+  <script src="../../../frontend/global/js/Plugin/select2.js"></script>
+  <script src="../../../frontend/global/js/Plugin/multi-select.js"></script>
+  {{-- <script src="../../frontend/assets/examples/js/pages/faq.js"></script> --}}
+{{-- <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script> --}}
 <script>
 $('#widget').draggable();
 </script>
@@ -49,55 +56,74 @@ $('#widget').draggable();
     });
   })(document, window, jQuery);
   </script> -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  {{-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> --}}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+  <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=5d162f2d55a8b200110cde49&product=inline-share-buttons"></script>
   <script type="text/javascript">
     function googleTranslateElementInit() {
-      new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,fr,zh-CN,ru,es', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, multilanguagePage: true}, 'google_translate_element');
+      new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,es,ht', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, multilanguagePage: true}, 'google_translate_element');
     }
-
-  </script><script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    setInterval(function(){
+    var iframe = $('.goog-te-menu-frame');
+    // $('table a .text', iframe.contents()).eq(1).text('中文');
+    $('table a .text', iframe.contents()).eq(1).text('Creole');
+    // $('table a .text', iframe.contents()).eq(3).text('Pусский');
+    // $('table a .text', iframe.contents()).eq(4).text('Español');
+    $('.st-btn[data-network="buffer"]').hide();
+    $('.st-btn[data-network="blogger"]').hide();
+    $('.st-btn[data-network="delicious"]').hide();
+    $('.st-btn[data-network="diaspora"]').hide();
+    $('.st-btn[data-network="douban"]').hide();
+    $('.st-btn[data-network="evernote"]').hide();
+    $('.st-btn[data-network="digg"]').hide();
+    $('.st-btn[data-network="getpocket"]').hide();
+    $('.st-btn[data-network="github"]').hide();
+    $('.st-btn[data-network="gmail"]').hide();
+    $('.st-btn[data-network="googlebookmarks"]').hide();
+    $('.st-btn[data-network="hackernews"]').hide();
+    $('.st-btn[data-network="instapaper"]').hide();
+    $('.st-btn[data-network="line"]').hide();
+    $('.st-btn[data-network="linkedin"]').hide();
+    $('.st-btn[data-network="medium"]').hide();
+    $('.st-btn[data-network="quora"]').hide();
+    $('.st-btn[data-network="qzone"]').hide();
+    $('.st-btn[data-network="refind"]').hide();
+    $('.st-btn[data-network="renren"]').hide();
+    $('.st-btn[data-network="skype"]').hide();
+    $('.st-btn[data-network="soundcloud"]').hide();
+    $('.st-btn[data-network="spotify"]').hide();
+    $('.st-btn[data-network="surfingbird"]').hide();
+    $('.st-btn[data-network="telegram"]').hide();
+    $('.st-btn[data-network="twitch"]').hide();
+    $('.st-btn[data-network="yahoomail"]').hide();
+    $('.st-btn[data-network="whatsapp"]').hide();
+    $('.st-btn[data-network="wordpress"]').hide();
+    $('.st-btn[data-network="yelp"]').hide();
+    $('.st-btn[data-network="youtube"]').hide();
+    $('.st-btn[data-network="flipboard"]').hide();
+    $('.st-btn[data-network="googleplus"]').hide();
+    $('.st-btn[data-network="livejournal"]').hide();
+    $('.st-btn[data-network="mailru"]').hide();
+    $('.st-btn[data-network="meneame"]').hide();
+    $('.st-btn[data-network="messenger"]').hide();
+    $('.st-btn[data-network="odnoklassniki"]').hide();
+    $('.st-btn[data-network="pinterest"]').hide();
+    $('.st-btn[data-network="reddit"]').hide();
+    $('.st-btn[data-network="tumblr"]').hide();
+    $('.st-btn[data-network="vk"]').hide();
+    $('.st-btn[data-network="wechat"]').hide();
+    $('.st-btn[data-network="weibo"]').hide();
+    $('.st-btn[data-network="print"]').hide();
+    $('.st-btn[data-network="xing"]').hide();
+  }, 500);
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.touchswipe/1.6.4/jquery.touchSwipe.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
 
   <script src="{{asset('js/gmaps.js')}}"></script>
-<!-- <script>
 
-    $("#content").swipe({
-        swipeStatus:function(event, phase, direction, distance, duration, fingers)
-            {
-                if (phase=="move" && direction =="right") {
-
-                // console.log('aaaaa');
-                     $("#sidebar").addClass("active");
-                     return false;
-                }
-                if (phase=="move" && direction =="left") {
-
-                       $("#sidebar").removeClass("active");
-                       return false;
-                }
-            }
-    });
-    // $("#sidebar").swipe({
-    //     swipeStatus:function(event, phase, direction, distance, duration, fingers)
-    //         {
-    //             // if (phase=="move" && direction =="right") {
-
-    //             // // console.log('aaaaa');
-    //             //      $("#sidebar").addClass("active");
-    //             //      return false;
-    //             // }
-    //             if (phase=="move" && direction =="left") {
-
-    //                    $("#sidebar").removeClass("active");
-    //                    return false;
-    //             }
-    //         }
-    // }); 
-
-</script> -->
   <script type="text/javascript">
 
 
@@ -330,5 +356,18 @@ $('#widget').draggable();
           //   });
           // }
       });
-  </script>
 
+  // Example Multi-Select
+  // --------------------
+
+  </script>
+ <script>
+    (function(document, window, $){
+      'use strict';
+  
+      var Site = window.Site;
+      $(document).ready(function(){
+        Site.run();
+      });
+    })(document, window, jQuery);
+  </script>

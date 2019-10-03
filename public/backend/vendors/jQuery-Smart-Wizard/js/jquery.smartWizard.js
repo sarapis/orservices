@@ -258,19 +258,220 @@ function SmartWizard(target, options) {
         }
     };
 
+
     var _adjustButton = function($this) {
+
+        var original_facet = "";
+        var method = $( "#method option:selected" ).val();
+        console.log(method);
+        var facet = $( "#facet option:selected" ).val();
+        var id = document.getElementById('status').value;
+        var csv_header = '';
+        var csv_data = [];
+        console.log($this.curStepIdx);
+
         if (! $this.options.cycleSteps){
             if (0 >= $this.curStepIdx) {
-                $($this.buttons.previous).addClass("buttonDisabled");
+                $($this.buttons.finish).hide()               
+                $($this.buttons.previous).hide();
+                $($this.buttons.next).show();
+                $($this.buttons.next).text("Next");
 				if ($this.options.hideButtonsOnDisabled) {
                     $($this.buttons.previous).hide();
                 }
-            }else{
-                $($this.buttons.previous).removeClass("buttonDisabled");
+            }else{                
+                if ($this.curStepIdx == 1) {
+                    $($this.buttons.finish).show()                
+                    $($this.buttons.previous).show();
+                    $($this.buttons.next).show();
+                    $($this.buttons.finish).text("Save");
+
+                    if(method == 'Checklist'){
+                        $("#step-2 div#csv_form_2").hide();
+                        $("#step-2 div#checklist_form_2").show();
+                        $($this.buttons.next).text("CSV");
+                        if(facet == 'Taxonomy'){
+                            $.ajaxSetup({
+                              headers: {
+                                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                              }
+                            })
+
+                            if(original_facet == facet){
+                              var url = 'meta_filter/'+id;
+                            }
+                            else{
+                              var url = '/taxonomy_filter';
+                            }
+
+                            console.log(url);
+                            $.ajax({
+                              type: 'POST',
+                              url: url.toLowerCase(),
+                              success: function(data){
+                                  $('#step-2 #list_tb_2').html(data);
+                              }
+                            });
+                        }
+
+                        if(facet == 'Postal_code'){
+                            $.ajaxSetup({
+                              headers: {
+                                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                              }
+                            })
+
+                            if(original_facet == facet)
+                              var url = 'meta_filter/'+id;
+                            else
+                              var url = '/postal_code_filter';
+
+                            $.ajax({
+                              type: 'POST',
+                              url: url.toLowerCase(),
+                              success: function(data){
+                                  $('#step-2 #list_tb_2').html(data);
+                              }
+                            });
+                        }
+
+                        if(facet == 'Service_area'){
+                            $.ajaxSetup({
+                              headers: {
+                                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                              }
+                            })
+
+                            if(original_facet == facet)
+                              var url = 'meta_filter/'+id;
+                            else
+                              var url = '/postal_code_filter';
+
+                            $.ajax({
+                              type: 'POST',
+                              url: url.toLowerCase(),
+                              success: function(data){
+                                  $('#step-2 #list_tb_2').html(data);
+                              }
+                            });
+                        }
+                    }
+                    else{
+                        $("#step-2 div#checklist_form_2").hide();
+                        $("#step-2 div#csv_form_2").show();
+                        $("#step-2 div#csv_form_2 input").on('change', function(evt) {
+                            var file = evt.target.files[0];
+                            var reader = new FileReader();
+                            reader.readAsText(file);
+                            reader.onload = function(event) {
+                                var csvData = event.target.result;
+                                data = $.csv.toArrays(csvData);
+                                if (data && data.length > 0) {
+                                    csv_header = data[0][0];
+                                    for (var i = 1; i < data.length; i++) {
+                                        csv_data.push(parseInt(data[i][0]));
+                                        console.log(csv_data);
+                                    }
+                                }
+                            };
+                            reader.onerror = function() {
+                                alert('Unable to read ' + file.fileName);
+                            };
+                        })
+                        $($this.buttons.next).text("Next");
+                    }
+                } 
+
+                if ($this.curStepIdx == 2) { 
+                    $($this.buttons.finish).show()                
+                    $($this.buttons.previous).show(); 
+                    $($this.buttons.next).hide();
+                    $($this.buttons.finish).text("Save");
+
+                    if(method == 'Checklist'){
+                        $("#step-3 div#csv_form_3").show();
+                        $("#step-3 div#checklist_form_3").hide();
+                    }
+                    else{
+                        $("#step-3 div#checklist_form_3").show();
+                        $("#step-3 div#csv_form_3").hide();
+                        console.log(facet);
+
+                        if(facet == 'Taxonomy'){
+                            $.ajaxSetup({
+                              headers: {
+                                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                              }
+                            })
+
+                            if(original_facet == facet){
+                              var url = 'meta_filter/'+id;
+                            }
+                            else{
+                              var url = '/taxonomy_filter';
+                            }
+
+                            console.log(url);
+                            $.ajax({
+                              type: 'POST',
+                              url: url.toLowerCase(),
+                              success: function(data){
+                                  $('#step-3 #list_tb_3').html(data);
+                              }
+                            });
+                        }
+
+                        if(facet == 'Postal_code'){
+                            $.ajaxSetup({
+                              headers: {
+                                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                              }
+                            })
+
+                            if(original_facet == facet)
+                              var url = 'meta_filter/'+id;
+                            else
+                              var url = '/postal_code_filter';
+
+                            $.ajax({
+                              type: 'POST',
+                              url: url.toLowerCase(),
+                              success: function(data){
+                                  $('#step-3 #list_tb_3').html(data);
+                              }
+                            });
+                        }
+
+                        if(facet == 'Service_area'){
+                            $.ajaxSetup({
+                              headers: {
+                                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                              }
+                            })
+
+                            if(original_facet == facet)
+                              var url = 'meta_filter/'+id;
+                            else
+                              var url = '/postal_code_filter';
+
+                            $.ajax({
+                              type: 'POST',
+                              url: url.toLowerCase(),
+                              success: function(data){
+                                  $('#step-3 #list_tb_3').html(data);
+                              }
+                            });
+                        }
+                    }                  
+                }
+
                 if ($this.options.hideButtonsOnDisabled) {
                     $($this.buttons.previous).show();
                 }
-            }
+            }            
+
+            
+
             if (($this.steps.length-1) <= $this.curStepIdx){
                 $($this.buttons.next).addClass("buttonDisabled");
                 if ($this.options.hideButtonsOnDisabled) {
@@ -290,7 +491,6 @@ function SmartWizard(target, options) {
                 $($this.buttons.finish).show();
             }
         }else{
-            $($this.buttons.finish).addClass("buttonDisabled");
             if ($this.options.hideButtonsOnDisabled) {
                 $($this.buttons.finish).hide();
             }

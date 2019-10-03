@@ -42,7 +42,8 @@ class RoleController extends Controller
      * @return Response
      */
     public function create()
-    {    $roles = Role::get()->pluck('name', 'id');
+    {  
+        $roles = Role::get()->pluck('name', 'id');
         return View('backEnd.roles.create',compact('roles'));
     }
 

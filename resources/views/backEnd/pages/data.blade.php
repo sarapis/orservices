@@ -27,13 +27,22 @@ Data Settings
               <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Data Source (Select One)
                 </label>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <select class="form-control">
+                {{ Form::open(array('url' => ['data', 1], 'class' => 'form-horizontal form-label-left', 'method' => 'put', 'enctype'=> 'multipart/form-data')) }}
+                <div class="form-group">
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <select class="form-control" name="source_data">
                       <option>Choose option</option>
-                      <option>Open Referral AirTable</option>
-                      <option>HSDS SQL</option>
+                      <option value="1" @if($source_data->active == 1) selected @endif>Open Referral AirTable</option>
+                      <option value="0" @if($source_data->active == 0) selected @endif>CSV</option>
                     </select>
                   </div>
+                </div>
+                  <div class="form-group">
+                    <div class="col-md-6 col-md-offset-3">
+                      <button id="send" type="submit" class="btn btn-success">Submit</button>
+                    </div>
+                  </div>
+                  {!! Form::close() !!}
               </div>
             </div>
 

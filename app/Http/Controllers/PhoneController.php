@@ -6,19 +6,28 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Functions\Airtable;
 use App\Phone;
+use App\Servicephone;
+use App\Locationphone;
 use App\Airtables;
+use App\CSV_Source;
+use App\Source_data;
 use App\Services\Stringtoint;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PhoneController extends Controller
 {
 
-    public function airtable()
+    public function airtable($api_key, $base_url)
     {
 
         Phone::truncate();
+        // $airtable = new Airtable(array(
+        //     'api_key'   => env('AIRTABLE_API_KEY'),
+        //     'base'      => env('AIRTABLE_BASE_URL'),
+        // ));
         $airtable = new Airtable(array(
-            'api_key'   => env('AIRTABLE_API_KEY'),
-            'base'      => env('AIRTABLE_BASE_URL'),
+            'api_key'   => $api_key,
+            'base'      => $base_url,
         ));
 
         $request = $airtable->getContent( 'phones' );
@@ -106,11 +115,89 @@ class PhoneController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function csv(Request $request)
+    {
+
+
+        $path = $request->file('csv_file')->getRealPath();
+
+        $data = Excel::load($path)->get();
+
+        $filename =  $request->file('csv_file')->getClientOriginalName();
+        $request->file('csv_file')->move(public_path('/csv/'), $filename);
+
+        if ($filename!='phones.csv') 
+        {
+            $response = array(
+                'status' => 'error',
+                'result' => 'This CSV is not correct.',
+            );
+            return $response;
+        }
+
+        if (count($data) > 0) {
+            $csv_header_fields = [];
+            foreach ($data[0] as $key => $value) {
+                $csv_header_fields[] = $key;
+            }
+            $csv_data = $data;
+        }
+
+        Phone::truncate();
+        Servicephone::truncate();
+        Locationphone::truncate();
+
+        foreach ($csv_data as $row) {
+
+            $phone = new Phone();
+
+            $phone->phone_recordid = $row['id'];
+            $phone->phone_services = $row['service_id'];
+
+            if($row['id'] && $row['service_id']){
+                $service_phone = new Servicephone();
+                $service_phone->service_recordid = $row['service_id']!='NULL'?$row['service_id']:null;
+                $service_phone->phone_recordid = $row['id']!='NULL'?$row['id']:null;
+                $service_phone->save();
+
+            }
+
+            $phone->phone_locations = $row['location_id'];
+
+            if($row['id'] && $row['location_id']){
+                $location_phone = new Locationphone();
+                $location_phone->location_recordid = $row['location_id']!='NULL'?$row['location_id']:null;
+                $location_phone->phone_recordid = $row['id']!='NULL'?$row['id']:null;
+                $location_phone->save();
+
+            }
+
+            $phone->phone_number = $row['number']!='NULL'?$row['number']:null;
+            $phone->phone_organizations = $row['organization_id']!='NULL'?$row['organization_id']:null;
+            $phone->phone_contacts = $row['contact_id']!='NULL'?$row['contact_id']:null;
+            $phone->phone_extension = $row['extension']!='NULL'?$row['extension']:null;
+            $phone->phone_type = $row['type']!='NULL'?$row['type']:null;
+            $phone->phone_language = $row['language']!='NULL'?$row['language']:null;
+            $phone->phone_description = $row['description']!='NULL'?$row['description']:null;                                              
+            $phone ->save();
+
+           
+        }
+
+        $date = date("Y/m/d H:i:s");
+        $csv_source = CSV_Source::where('name', '=', 'Phones')->first();
+        $csv_source->records = Phone::count();
+        $csv_source->syncdate = $date;
+        $csv_source->save();
+    }
+
     public function index()
     {
-        $phones = Phone::orderBy('phone_number')->get();
+        $phones = Phone::orderBy('phone_recordid')->paginate(20);
+        $source_data = Source_data::find(1);
 
-        return view('backEnd.tables.tb_phones', compact('phones'));
+        return view('backEnd.tables.tb_phones', compact('phones', 'source_data'));
     }
 
     /**

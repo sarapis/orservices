@@ -16,10 +16,14 @@ use App\Servicetaxonomy;
 use App\Serviceschedule;
 use App\Location;
 use App\Airtables;
+use App\CSV_Source;
+use App\Source_data;
 use App\Taxonomy;
 use App\Map;
 use App\Layout;
+use App\Metafilter;
 use App\Services\Stringtoint;
+use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 
 class ServiceController extends Controller
@@ -31,7 +35,7 @@ class ServiceController extends Controller
      */
     
 
-    public function airtable()
+    public function airtable($api_key, $base_url)
     {
 
         Service::truncate();
@@ -44,9 +48,13 @@ class ServiceController extends Controller
         Servicetaxonomy::truncate();
         Serviceschedule::truncate();
 
+        // $airtable = new Airtable(array(
+        //     'api_key'   => env('AIRTABLE_API_KEY'),
+        //     'base'      => env('AIRTABLE_BASE_URL'),
+        // ));
         $airtable = new Airtable(array(
-            'api_key'   => env('AIRTABLE_API_KEY'),
-            'base'      => env('AIRTABLE_BASE_URL'),
+            'api_key'   => $api_key,
+            'base'      => $base_url,
         ));
 
         $request = $airtable->getContent( 'services' );
@@ -218,6 +226,7 @@ class ServiceController extends Controller
                 }
 
                 $service->service_metadata = isset($record['fields']['metadata'])? $record['fields']['metadata']:null;
+       
 
                 $service->service_airs_taxonomy_x = isset($record['fields']['AIRS Taxonomy-x'])? implode(",", $record['fields']['AIRS Taxonomy-x']):null;          
                 
@@ -235,19 +244,150 @@ class ServiceController extends Controller
         $airtable->save();
     }
 
+    public function csv(Request $request)
+    {
+
+
+        $path = $request->file('csv_file')->getRealPath();
+
+        $data = Excel::load($path)->get();
+
+        $filename =  $request->file('csv_file')->getClientOriginalName();
+        $request->file('csv_file')->move(public_path('/csv/'), $filename);
+
+        if ($filename!='services.csv') 
+        {
+            $response = array(
+                'status' => 'error',
+                'result' => 'This CSV is not correct.',
+            );
+            return $response;
+        }
+
+        if (count($data) > 0) {
+            $csv_header_fields = [];
+            foreach ($data[0] as $key => $value) {
+                $csv_header_fields[] = $key;
+            }
+            $csv_data = $data;
+        }
+
+
+        Service::truncate();
+        Serviceorganization::truncate();
+
+        $size = '';
+        foreach ($csv_data as $row) {
+            
+       
+            $service = new Service();
+
+            $service->service_recordid= $row['id'];
+            $service->service_name = $row['name']!='NULL'?$row['name']:null;
+
+            if($row['organization_id']){
+
+                    $service_organization = new Serviceorganization();
+                    $service_organization->service_recordid=$service->service_recordid;
+                    $service_organization->organization_recordid=$row['organization_id'];
+                    $service_organization->save();
+
+                    $service->service_organization = $row['organization_id'];
+
+            }
+
+            $service->service_alternate_name = $row['alternate_name']!='NULL'?$row['alternate_name']:null;
+            $service->service_description = $row['description']!='NULL'?$row['description']:null;
+            $service->service_application_process = $row['application_process']!='NULL'?$row['application_process']:null;
+            $service->service_url = $row['url']!='NULL'?$row['url']:null;
+            $service->service_program = $row['program_id']!='NULL'?$row['program_id']:null;
+
+            $service->service_email = $row['email']!='NULL'?$row['email']:null;
+            $service->service_status = $row['status']!='NULL'?$row['status']:null;
+
+            $service->service_wait_time = $row['wait_time']!='NULL'?$row['wait_time']:null;
+            $service->service_fees = $row['fees']!='NULL'?$row['fees']:null;
+            $service->service_accreditations = $row['accreditations']!='NULL'?$row['accreditations']:null;
+            $service->service_licenses = $row['licenses']!='NULL'?$row['licenses']:null;
+        
+            
+            $service ->save();
+
+           
+        }
+
+        $date = date("Y/m/d H:i:s");
+        $csv_source = CSV_Source::where('name', '=', 'Services')->first();
+        $csv_source->records = Service::count();
+        $csv_source->syncdate = $date;
+        $csv_source->save();
+    }
+
+    public function csv_services_location(Request $request)
+    {
+
+
+        $path = $request->file('csv_file')->getRealPath();
+
+        $data = Excel::load($path)->get();
+
+        $filename =  $request->file('csv_file')->getClientOriginalName();
+        $request->file('csv_file')->move(public_path('/csv/'), $filename);
+
+        if ($filename!='services_at_location.csv') 
+        {
+            $response = array(
+                'status' => 'error',
+                'result' => 'This CSV is not correct.',
+            );
+            return $response;
+        }
+
+        if (count($data) > 0) {
+            $csv_header_fields = [];
+            foreach ($data[0] as $key => $value) {
+                $csv_header_fields[] = $key;
+            }
+            $csv_data = $data;
+        }
+
+
+        Servicelocation::truncate();
+
+        foreach ($csv_data as $key => $row) {
+
+            $service_location = new Servicelocation();
+
+            $service_location->location_recordid = $row['location_id']!='NULL'?$row['location_id']:null;
+            $service_location->service_recordid =$row['service_id']!='NULL'?$row['service_id']:null;
+                      
+            $service_location->save();
+
+           
+        }
+
+        $date = date("Y/m/d H:i:s");
+        $csv_source = CSV_Source::where('name', '=', 'Services_location')->first();
+        $csv_source->records = Servicelocation::count();
+        $csv_source->syncdate = $date;
+        $csv_source->save();
+    }
 
     public function index()
     {
-        $services = Service::orderBy('service_name')->paginate(10);      
+        $services = Service::with('locations', 'organizations', 'locations', 'taxonomy', 'phone', 'schedules', 'contact', 'details', 'address')->orderBy('service_recordid', 'asc')->paginate(20);
+        $source_data = Source_data::find(1);      
 
-        return view('backEnd.tables.tb_services', compact('services'));
+        return view('backEnd.tables.tb_services', compact('services', 'source_data'));
     }
 
 
     public function services()
     {
-        $services = Service::with('locations')->orderBy('service_name')->paginate(10);
-        $locations = Location::with('services','organization')->get();
+        $services = Service::with('locations')->orderBy('service_name');  
+
+        $locations = Location::with('services','organization');
+
         $map = Map::find(1);
         $parent_taxonomy = [];
         $child_taxonomy = [];
@@ -259,14 +399,58 @@ class ServiceController extends Controller
         $checked_culturals = [];
         $checked_transportations = [];
         $checked_hours= [];
+        $meta_status = 'On';
 
-        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours'));
+        $metas = Metafilter::all();
+        $count_metas = Metafilter::count();       
+        
+
+        if($meta_status == 'On' && $count_metas > 0){
+            $address_serviceids = Service::pluck('service_recordid')->toArray();
+            $taxonomy_serviceids = Service::pluck('service_recordid')->toArray();
+
+            foreach ($metas as $key => $meta) {
+                $values = explode(",", $meta->values);
+
+                if($meta->facet == 'Postal_code'){
+                    $address_serviceids = [];
+                    if($meta->operations == 'Include')
+                        $serviceids = Serviceaddress::whereIn('address_recordid', $values)->pluck('service_recordid')->toArray();
+                    if($meta->operations == 'Exclude')
+                        $serviceids = Serviceaddress::whereNotIn('address_recordid', $values)->pluck('service_recordid')->toArray();
+                    
+                    $address_serviceids = array_merge($serviceids, $address_serviceids);
+                    
+                }
+                if($meta->facet == 'Taxonomy'){
+
+                    if($meta->operations == 'Include')
+                        $serviceids = Servicetaxonomy::whereIn('taxonomy_recordid', $values)->pluck('service_recordid')->toArray();
+                    if($meta->operations == 'Exclude')
+                        $serviceids = Servicetaxonomy::whereNotIn('taxonomy_recordid', $values)->pluck('service_recordid')->toArray();
+                    $taxonomy_serviceids = array_merge($serviceids, $taxonomy_serviceids);
+
+                }
+            }
+            // $services = $services->whereIn('service_recordid', $taxonomy_serviceids);
+            $services = $services->whereIn('service_recordid', $address_serviceids)->whereIn('service_recordid', $taxonomy_serviceids);
+          
+            $services_ids = $services->pluck('service_recordid')->toArray();
+            $locations_ids = Servicelocation::whereIn('service_recordid', $services_ids)->pluck('location_recordid')->toArray();
+            $locations = $locations->whereIn('location_recordid', $locations_ids);
+
+        }
+
+        $services = $services->paginate(10);         
+        $locations = $locations->get();
+
+        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'meta_status'));
     }
 
     public function service($id)
     {
-        $service = Service::where('service_recordid', '=', $id)->first();
-        $location = Location::with('organization', 'address')->where('location_services', 'like', '%'.$id.'%')->get();
+        $service = Service::where('service_recordid', '=', $id)->first();         
+        $location = Location::with('organization', 'address')->where('location_services', 'like', '%'.$id.'%')->get();         
 
         $map = Map::find(1);
         $parent_taxonomy = [];
@@ -287,8 +471,10 @@ class ServiceController extends Controller
     {
         $chip_name = Taxonomy::where('taxonomy_recordid', '=', $id)->first()->taxonomy_name;
         $chip_title = 'Category:';
-        $services = Service::where('service_taxonomy', 'like', '%'.$id.'%')->orderBy('service_name')->paginate(10);
-        $serviceids = Service::where('service_taxonomy', 'like', '%'.$id.'%')->orderBy('service_name')->pluck('service_recordid')->toArray();
+
+        $serviceids = Servicetaxonomy::where('taxonomy_recordid', '=', $id)->pluck('service_recordid')->toArray();
+        $services = Service::whereIn('service_recordid', $serviceids)->orderBy('service_name')->paginate(10);
+
         $locationids = Servicelocation::whereIn('service_recordid', $serviceids)->pluck('location_recordid')->toArray();
 
         $locations = Location::whereIn('location_recordid', $locationids)->with('services','organization')->get();
@@ -306,7 +492,7 @@ class ServiceController extends Controller
         $checked_transportations = [];
         $checked_hours= [];
 
-        return view('frontEnd.chip', compact('services', 'locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours'));
+        return view('frontEnd.services', compact('services', 'locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours'));
     }
 
     /**
@@ -317,13 +503,15 @@ class ServiceController extends Controller
     public function download($id)
     {
         $service = Service::where('service_recordid', '=', $id)->first();
-        $service_name= $service->service_name;
+        $service_name = $service->service_name;
+        
 
         $layout = Layout::find(1);
 
         $pdf = PDF::loadView('frontEnd.service_download', compact('service', 'layout'));
+        $service_name = str_replace('"','',$service_name);
 
-        return $pdf->download($service_name.'.pdf');
+        return $pdf->download($service_name.'111.pdf');
 
     }
 

@@ -12,6 +12,9 @@ use App\Servicetaxonomy;
 use App\Serviceorganization;
 use App\Servicelocation;
 use App\Servicedetail;
+use App\Metafilter;
+use App\Serviceaddress;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -23,6 +26,8 @@ use App\Map;
 use PDF;
 use App\Layout;
 use App\CSV;
+use App\Analytic;
+use App\Source_data;
 
 class ExploreController extends Controller
 {
@@ -48,17 +53,19 @@ class ExploreController extends Controller
 
         $locations = Location::with('services', 'organization')->select(DB::raw('*, ( 3959 * acos( cos( radians('.$lat.') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians('.$lng.') ) + sin( radians('.$lat.') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
         ->having('distance', '<', 2)
-        ->orderBy('distance')
-        ->get();
+        ->orderBy('distance');
 
-        $services = [];
-        foreach ($locations as $key => $location) {
-            
-            $values = Service::where('service_locations', 'like', '%'.$location->location_recordid.'%')->get();
-            foreach ($values as $key => $value) {
-                $services[] = $value;
-            }
-        }
+        $locationids = $locations->pluck('location_recordid')->toArray();
+
+        $location_serviceids = Servicelocation::whereIn('location_recordid', $locationids)->pluck('service_recordid')->toArray();
+
+        $services = Service::whereIn('service_recordid', $location_serviceids)->orderBy('service_name');
+
+        $search_results = $services->count();
+
+        $services = $services->paginate(10);
+
+        $locations = $locations->get();
 
         $map = Map::find(1);
 
@@ -73,54 +80,96 @@ class ExploreController extends Controller
         $checked_transportations = [];
         $checked_hours= [];
         
-        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours'));
+        return view('frontEnd.services', compact('services','locations', 'chip_title', 'chip_name', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'search_results'));
     }
 
     public function geocode(Request $request)
     {
-        $ip= \Request::ip();
-
-        $chip_title = "Search Address:";
+        $chip_service = $request->input('find');
         $chip_address = $request->input('search_address');
 
-        if($chip_address == null){
+        $source_data = Source_data::find(1);
 
-            return redirect('services')->with('address', 'Please enter an address to search by location');
-        }
+        $location_serviceids = Service::pluck('service_recordid')->toArray();
+        $location_locationids = Location::with('services','organization')->pluck('location_recordid')->toArray();
 
-        $response = Geocode::make()->address($chip_address);
-    //     $response = Geocode::make()->address('1 Infinite Loop');
-    //     if ($response) {
-    //         echo $response->latitude();
-    //         echo $response->longitude();
-    //         echo $response->formattedAddress();
-    //         echo $response->locationType();
-    // //         echo $response->raw()->address_components[8]['types'][0];
-    // // echo $response->raw()->address_components[8]['long_name'];
-    //        dd($response);
-    //     }
+        if($source_data->active == 1)
 
-        $lat =$response->latitude();
-        $lng =$response->longitude();
+            $services= Service::with(['organizations', 'taxonomy', 'details'])->where('service_name', 'like', '%'.$chip_service.'%')->orwhere('service_description', 'like', '%'.$chip_service.'%')->orwhere('service_airs_taxonomy_x', 'like', '%'.$chip_service.'%')->orwhereHas('organizations', function ($q)  use($chip_service){
+                    $q->where('organization_name', 'like', '%'.$chip_service.'%');
+                })->orwhereHas('taxonomy', function ($q)  use($chip_service){
+                    $q->where('taxonomy_name', 'like', '%'.$chip_service.'%');
+                })->orwhereHas('details', function ($q)  use($chip_service){
+                    $q->where('detail_value', 'like', '%'.$chip_service.'%');
+                })->select('services.*');
+        else
+            $serviceids= Service::where('service_name', 'like', '%'.$chip_service.'%')->orwhere('service_description', 'like', '%'.$chip_service.'%')->orwhere('service_airs_taxonomy_x', 'like', '%'.$chip_service.'%')->pluck('service_recordid')->toArray();
+
+            $organization_recordids = Organization::where('organization_name', 'like', '%'.$chip_service.'%')->pluck('organization_recordid')->toArray();
+            $organization_serviceids = Serviceorganization::whereIn('organization_recordid', $organization_recordids)->pluck('service_recordid')->toArray();
+            $taxonomy_recordids = Taxonomy::where('taxonomy_name', 'like', '%'.$chip_service.'%')->pluck('taxonomy_recordid')->toArray();
+            $taxonomy_serviceids = Servicetaxonomy::whereIn('taxonomy_recordid', $taxonomy_recordids)->pluck('service_recordid')->toArray();
 
 
+            $service_locationids = Servicelocation::whereIn('service_recordid', $serviceids)->pluck('location_recordid')->toArray();
 
-        // $lat =37.3422;
-        // $lng = -121.905;
 
-        $locations = Location::with('services', 'organization')->select(DB::raw('*, ( 3959 * acos( cos( radians('.$lat.') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians('.$lng.') ) + sin( radians('.$lat.') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
-        ->having('distance', '<', 2)
-        ->orderBy('distance')
-        ->get();
-
-        $services = [];
-        foreach ($locations as $key => $location) {
+        if($chip_address != null){
             
-            $values = Service::where('service_locations', 'like', '%'.$location->location_recordid.'%')->get();
-            foreach ($values as $key => $value) {
-                $services[] = $value;
-            }
+            $response = Geocode::make()->address($chip_address);
+
+
+            $lat =$response->latitude();
+            $lng =$response->longitude();
+
+            $locations = Location::with('services','organization')->select(DB::raw('*, ( 3959 * acos( cos( radians('.$lat.') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians('.$lng.') ) + sin( radians('.$lat.') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
+            ->having('distance', '<', 2)
+            ->orderBy('distance');
+
+            $location_locationids = $locations->pluck('location_recordid')->toArray();
+
+            $location_serviceids = Servicelocation::whereIn('location_recordid', $location_locationids)->pluck('service_recordid')->toArray();
+        }   
+
+        if($chip_service != null)
+        {
+
+            $service_ids = Service::whereIn('service_recordid', $serviceids)->orWhereIn('service_recordid', $organization_serviceids)->orWhereIn('service_recordid', $taxonomy_serviceids)->pluck('service_recordid')->toArray();
+
+            $services = Service::whereIn('service_recordid', $serviceids)->whereIn('service_recordid', $location_serviceids)->orderBy('service_name');
+
+            $locations = Location::with('services','organization')->whereIn('location_recordid', $service_locationids)->whereIn('location_recordid', $location_locationids);
         }
+        else{
+            $services = Service::WhereIn('service_recordid', $location_serviceids)->orderBy('service_name');
+            $locations = Location::with('services','organization')->whereIn('location_recordid', $service_locationids)->whereIn('location_recordid', $location_locationids);
+        }
+        if($chip_service == null && $chip_address == null){
+            $services = Service::orderBy('service_name');
+            $locations = Location::with('services','organization');
+        }
+
+        $search_results = $services->count();
+
+        $services = $services->paginate(10);
+
+        $locations = $locations->get();
+
+        $analytic = Analytic::where('search_term', '=', $chip_service)->orWhere('search_term', '=', $chip_address)->first();
+        if(isset($analytic)){
+            $analytic->search_term = $chip_service;
+            $analytic->search_results = $search_results;
+            $analytic->times_searched = $analytic->times_searched + 1;
+            $analytic->save();
+        }
+        else{
+            $new_analytic = new Analytic();
+            $new_analytic->search_term = $chip_service;
+            $new_analytic->search_results = $search_results;
+            $new_analytic->times_searched = 1;
+            $new_analytic->save();
+        }
+
         $map = Map::find(1);
 
         $parent_taxonomy = [];
@@ -136,23 +185,19 @@ class ExploreController extends Controller
         $checked_transportations = [];
         $checked_hours= [];
 
-        return view('frontEnd.near', compact('services','locations', 'chip_title', 'chip_address', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours'));
+        return view('frontEnd.services', compact('services','locations', 'chip_service', 'chip_address', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'search_results'));
 
     }
 
     public function filter(Request $request)
-    {
-
+    {   
+        $grandparents = $request->input('grandparents');
         $parents = $request->input('parents');
         $childs = $request->input('childs');
-        $checked = $request->input('organizations');
-        $details = $request->input('insurances');
-        $ages = $request->input('ages');
-        $languages = $request->input('languages');
-        $service_settings = $request->input('service_settings');
-        $culturals = $request->input('culturals');
-        $transportations = $request->input('transportations');
-        $hours = $request->input('hours');
+        $target_populations = $request->input('target_populations');
+
+        $checked_grandparents = $request->input('checked_grandparents');
+        $target_all = $request->input('target_all');
 
         $pdf = $request->input('pdf');
         $csv = $request->input('csv');
@@ -160,173 +205,245 @@ class ExploreController extends Controller
         $pagination = strval($request->input('paginate'));
 
         $sort = $request->input('sort');
-        // var_dump($sort);
-        // exit();
-
-        
-        $services = \App\Service::with('taxonomy');
-        $locations = \App\Location::with('services','organization');
+        $meta_status = $request->input('meta_status');
 
         $parent_taxonomy = [];
         $child_taxonomy = [];
-        $checked_organizations = [];
-        $checked_insurances = [];
-        $checked_ages = [];
-        $checked_languages = [];
-        $checked_settings = [];
-        $checked_culturals = [];
-        $checked_transportations = [];
-        $checked_hours= [];
 
-        $child_taxonomy_names = '';
-        $checked_organization_names ='';
-        $checked_insurance_names = '';
-        $checked_age_names = '';
-        $checked_language_names = '';
-        $checked_setting_names = '';
-        $checked_cultural_names = '';
-        $checked_transportation_names = [];
-        $checked_hour_names= [];
+        $chip_service = $request->input('find');
+        $chip_address = $request->input('search_address');
 
+        $source_data = Source_data::find(1);
+
+        $location_serviceids = Service::pluck('service_recordid');
+        $location_locationids = Location::with('services','organization')->pluck('location_recordid');
+        $service_locationids = [];
+
+        if($source_data->active == 1)
+
+            $services= Service::with(['organizations', 'taxonomy', 'details'])->where('service_name', 'like', '%'.$chip_service.'%')->orwhere('service_description', 'like', '%'.$chip_service.'%')->orwhere('service_airs_taxonomy_x', 'like', '%'.$chip_service.'%')->orwhereHas('organizations', function ($q)  use($chip_service){
+                    $q->where('organization_name', 'like', '%'.$chip_service.'%');
+                })->orwhereHas('taxonomy', function ($q)  use($chip_service){
+                    $q->where('taxonomy_name', 'like', '%'.$chip_service.'%');
+                })->orwhereHas('details', function ($q)  use($chip_service){
+                    $q->where('detail_value', 'like', '%'.$chip_service.'%');
+                })->select('services.*');
+        else{
+            $serviceids= Service::where('service_name', 'like', '%'.$chip_service.'%')->orwhere('service_description', 'like', '%'.$chip_service.'%')->orwhere('service_airs_taxonomy_x', 'like', '%'.$chip_service.'%')->pluck('service_recordid');
+
+            $organization_recordids = Organization::where('organization_name', 'like', '%'.$chip_service.'%')->pluck('organization_recordid');
+            $organization_serviceids = Serviceorganization::whereIn('organization_recordid', $organization_recordids)->pluck('service_recordid');
+            $taxonomy_recordids = Taxonomy::where('taxonomy_name', 'like', '%'.$chip_service.'%')->pluck('taxonomy_recordid');
+            $taxonomy_serviceids = Servicetaxonomy::whereIn('taxonomy_recordid', $taxonomy_recordids)->pluck('service_recordid');
+
+
+            $service_locationids = Servicelocation::whereIn('service_recordid', $serviceids)->pluck('location_recordid');
+        }
+
+        if($chip_address != null){
+            
+            $response = Geocode::make()->address($chip_address);
+
+
+            $lat =$response->latitude();
+            $lng =$response->longitude();
+
+            $locations = Location::with('services','organization')->select(DB::raw('*, ( 3959 * acos( cos( radians('.$lat.') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians('.$lng.') ) + sin( radians('.$lat.') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
+            ->having('distance', '<', 2)
+            ->orderBy('distance');
+
+            $location_locationids = $locations->pluck('location_recordid');
+
+            $location_serviceids = Servicelocation::whereIn('location_recordid', $location_locationids)->pluck('service_recordid');
+        }   
+
+        if($chip_service != null)
+        {
+
+            $service_ids = Service::whereIn('service_recordid', $serviceids)->orWhereIn('service_recordid', $organization_serviceids)->orWhereIn('service_recordid', $taxonomy_serviceids)->pluck('service_recordid');
+
+            $services = Service::whereIn('service_recordid', $serviceids)->whereIn('service_recordid', $location_serviceids)->orderBy('service_name');
+
+            $locations = Location::with('services','organization')->whereIn('location_recordid', $service_locationids)->whereIn('location_recordid', $location_locationids);
+        }
+        else{
+            $services = Service::WhereIn('service_recordid', $location_serviceids)->orderBy('service_name');
+            $locations = Location::with('services','organization')->whereIn('location_recordid', $service_locationids)->whereIn('location_recordid', $location_locationids);
+        }
+        if($chip_service == null && $chip_address == null){
+            $services = Service::orderBy('service_name');
+            $locations = Location::with('services','organization');
+        }
+
+
+        // var_dump($sort);
+        // exit();
+
+        $metas = Metafilter::all();
+        $count_metas = Metafilter::count();
+
+        if($meta_status == 'On' && $count_metas > 0){
+            $address_serviceids = Service::pluck('service_recordid')->toArray();
+            $taxonomy_serviceids = Service::pluck('service_recordid')->toArray();
+
+            foreach ($metas as $key => $meta) {
+                $values = explode(",", $meta->values);
+                if($meta->facet == 'Postal_code'){
+                    $address_serviceids = [];
+                    if($meta->operations == 'Include')
+                        $serviceids = Serviceaddress::whereIn('address_recordid', $values)->pluck('service_recordid')->toArray();
+                    if($meta->operations == 'Exclude')
+                        $serviceids = Serviceaddress::whereNotIn('address_recordid', $values)->pluck('service_recordid')->toArray();
+                    $address_serviceids = array_merge($serviceids, $address_serviceids);
+                    // var_dump($address_serviceids);
+                    // exit();
+                }
+                if($meta->facet == 'Taxonomy'){
+
+                    if($meta->operations == 'Include')
+                        $serviceids = Servicetaxonomy::whereIn('taxonomy_recordid', $values)->pluck('service_recordid')->toArray();
+                    if($meta->operations == 'Exclude')
+                        $serviceids = Servicetaxonomy::whereNotIn('taxonomy_recordid', $values)->pluck('service_recordid')->toArray();
+                    $taxonomy_serviceids = array_merge($serviceids, $taxonomy_serviceids);
+            
+                }
+            }
+            
+            $services = $services->whereIn('service_recordid', $address_serviceids)->whereIn('service_recordid', $taxonomy_serviceids);
+          
+            $services_ids = $services->pluck('service_recordid')->toArray();
+            $locations_ids = Servicelocation::whereIn('service_recordid', $services_ids)->pluck('location_recordid')->toArray();
+            $locations = $locations->whereIn('location_recordid', $locations_ids);
+
+        }
+
+        $grand_service_ids = [];
+        $parent_service_ids = [];
+        $child_service_ids = [];
+        $target_service_ids = [];
+
+        $grand_location_ids =[];
+        $parent_location_ids = [];
+        $child_location_ids = [];
+        $target_location_ids = [];
+
+        if($grandparents!=null){
+
+            $grandparent_taxonomy_names = Taxonomy::whereIn('taxonomy_grandparent_name', $grandparents)->pluck('taxonomy_grandparent_name')->toArray();
+
+            $parent_taxonomy_names = Taxonomy::whereIn('taxonomy_grandparent_name', $grandparents)->groupBy('taxonomy_parent_name')->pluck('taxonomy_parent_name')->toArray();
+
+            $checked_grandparents = $grandparents;
+
+            $child_taxonomy = Taxonomy::whereIn('taxonomy_grandparent_name', $grandparents)->pluck('taxonomy_recordid')->toArray();
+
+            $taxonomy = Taxonomy::whereIn('taxonomy_parent_name', $parent_taxonomy_names)->pluck('category_id')->toArray();
+            $grand_service_ids = Servicetaxonomy::whereIn('taxonomy_id', $taxonomy)->groupBy('service_recordid')->pluck('service_recordid')->toArray();
+ 
+            $grand_location_ids = Servicelocation::whereIn('service_recordid', $grand_service_ids)->groupBy('location_recordid')->pluck('location_recordid')->toArray();
+            // $services = $services->whereIn('service_recordid', $grand_service_ids);
+            // $locations = $locations->whereIn('location_recordid', $grand_location_ids)->with('services','organization');
+        }
 
         if($parents!=null){
 
-            $parent_taxonomy = Taxonomy::whereIn('taxonomy_recordid', $parents)->pluck('taxonomy_recordid');
-            $parent_taxonomy = json_decode(json_encode($parent_taxonomy));
+            $parent_taxonomy_names = Taxonomy::whereIn('taxonomy_parent_name', $parents)->whereIn('taxonomy_grandparent_name', $checked_grandparents)->groupBy('taxonomy_parent_name')->pluck('taxonomy_parent_name')->toArray();
 
-            $taxonomy = Taxonomy::whereIn('taxonomy_parent_name', $parents)->pluck('taxonomy_recordid');
+            if($grandparents!=null){
+                $parent_taxonomy_names_grand = Taxonomy::whereIn('taxonomy_grandparent_name', $grandparents)->groupBy('taxonomy_parent_name')->pluck('taxonomy_parent_name')->toArray();
+                $parent_taxonomy_names = array_merge($parent_taxonomy_names, $parent_taxonomy_names_grand);
 
-            $service_ids = Servicetaxonomy::whereIn('taxonomy_recordid', $taxonomy)->groupBy('service_recordid')->pluck('service_recordid');
+                $checked_grandparents = array_merge($grandparents, $checked_grandparents);
+            }
+
+
+            $child_taxonomy = Taxonomy::whereIn('taxonomy_parent_name', $parents)->whereIn('taxonomy_grandparent_name', $checked_grandparents)->pluck('taxonomy_recordid')->toArray();
+
+            $taxonomy = Taxonomy::whereIn('taxonomy_parent_name', $parents)->pluck('category_id');
+
+            $parent_service_ids = Servicetaxonomy::whereIn('taxonomy_id', $taxonomy)->groupBy('service_recordid')->pluck('service_recordid')->toArray();
  
-            $location_ids = Servicelocation::whereIn('service_recordid', $service_ids)->groupBy('location_recordid')->pluck('location_recordid');
-            $services = $services->whereIn('service_recordid', $service_ids);
-            $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
+            $parent_location_ids = Servicelocation::whereIn('service_recordid', $parent_service_ids)->groupBy('location_recordid')->pluck('location_recordid')->toArray();
+            // $services = $services->whereIn('service_recordid', $parent_service_ids);
+            // $locations = $locations->whereIn('location_recordid', $parent_location_ids)->with('services','organization');
 
         }
-
         if($childs!=null){
             $child_taxonomy = Taxonomy::whereIn('taxonomy_recordid', $childs)->pluck('taxonomy_recordid');
-            $child_taxonomy_names = Taxonomy::whereIn('taxonomy_recordid', $childs)->pluck('taxonomy_name');
-
             $child_taxonomy = json_decode(json_encode($child_taxonomy));
+
+            $parent_taxonomy_names = Taxonomy::whereIn('taxonomy_recordid', $childs)->pluck('taxonomy_parent_name')->toArray();
+
+            if($parents!=null){
+                $parent_taxonomy_names_parent = Taxonomy::whereIn('taxonomy_parent_name', $parents)->whereIn('taxonomy_grandparent_name', $checked_grandparents)->groupBy('taxonomy_parent_name')->pluck('taxonomy_parent_name')->toArray();
+                $child_taxonomy_parent = Taxonomy::whereIn('taxonomy_parent_name', $parents)->whereIn('taxonomy_grandparent_name', $checked_grandparents)->pluck('taxonomy_recordid')->toArray();
+                $parent_taxonomy_names = array_merge($parent_taxonomy_names, $parent_taxonomy_names_parent);
+                $child_taxonomy = array_merge($child_taxonomy, $child_taxonomy_parent);
+            }
+            if($grandparents!=null){
+                $parent_taxonomy_names_grand = Taxonomy::whereIn('taxonomy_grandparent_name', $grandparents)->groupBy('taxonomy_parent_name')->pluck('taxonomy_parent_name')->toArray();
+                $child_taxonomy_grand = Taxonomy::whereIn('taxonomy_grandparent_name', $grandparents)->pluck('taxonomy_recordid')->toArray();
+                // $checked_grandparents = array_merge($grandparents, $checked_grandparents);
+                $parent_taxonomy_names = array_merge($parent_taxonomy_names, $parent_taxonomy_names_grand);
+                $child_taxonomy = array_merge($child_taxonomy, $child_taxonomy_grand);
+
+            }
+
+
+            $child_taxonomy_names = Taxonomy::whereIn('taxonomy_recordid', $child_taxonomy)->pluck('taxonomy_name');
+            $child_taxonomy_ids = Taxonomy::whereIn('taxonomy_recordid', $child_taxonomy)->pluck('category_id');
             
-            $service_ids = Servicetaxonomy::whereIn('taxonomy_recordid', $childs)->groupBy('service_recordid')->pluck('service_recordid');
-            $location_ids = Servicelocation::whereIn('service_recordid', $service_ids)->groupBy('location_recordid')->pluck('location_recordid');
-            $services = $services->whereIn('service_recordid', $service_ids);
-            $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
+            $child_service_ids = Servicetaxonomy::whereIn('taxonomy_id', $child_taxonomy_ids)->groupBy('service_recordid')->pluck('service_recordid')->toArray();
+            $child_location_ids = Servicelocation::whereIn('service_recordid', $child_service_ids)->groupBy('location_recordid')->pluck('location_recordid')->toArray();
+            // $services = $services->whereIn('service_recordid', $child_service_ids);
+            // $locations = $locations->whereIn('location_recordid', $child_location_ids)->with('services','organization');
         }
 
-        if($checked!=null){
-            $checked_organizations = Organization::whereIn('organization_recordid', $checked)->pluck('organization_recordid');
-            $checked_organization_names = Organization::whereIn('organization_recordid', $checked)->pluck('organization_name');
+        if($target_populations!=null){
 
-            $checked_organizations = json_decode(json_encode($checked_organizations));
-            
-            $service_ids = Serviceorganization::whereIn('organization_recordid', $checked)->groupBy('service_recordid')->pluck('service_recordid');
-            $location_ids = Servicelocation::whereIn('service_recordid', $service_ids)->groupBy('location_recordid')->pluck('location_recordid');
-            $services = $services->whereIn('service_recordid', $service_ids);
-            $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
+            $target_populations_ids = Taxonomy::whereIn('taxonomy_recordid', $target_populations)->pluck('category_id')->toArray();
+
+            $target_service_ids = Servicetaxonomy::whereIn('taxonomy_id', $target_populations_ids)->groupBy('service_recordid')->pluck('service_recordid')->toArray();
+
+
+            $target_location_ids = Servicelocation::whereIn('service_recordid', $target_service_ids)->groupBy('location_recordid')->pluck('location_recordid')->toArray();
+            // $services = $services->whereIn('service_recordid', $target_service_ids);
+            // $locations = $locations->whereIn('location_recordid', $target_location_ids)->with('services','organization');
         }
 
-        if($details!=null){
-            $checked_insurances = Detail::whereIn('detail_recordid', $details)->pluck('detail_recordid');
-            $checked_insurance_names = Detail::whereIn('detail_recordid', $details)->pluck('detail_value');
+        if(isset($target_all) &&  $target_all == 'all'){
 
-            $checked_insurances = json_decode(json_encode($checked_insurances));
-            
-            $service_ids = Servicedetail::whereIn('detail_recordid', $details)->groupBy('service_recordid')->pluck('service_recordid');
-            $location_ids = Servicelocation::whereIn('service_recordid', $service_ids)->groupBy('location_recordid')->pluck('location_recordid');
-            $services = $services->whereIn('service_recordid', $service_ids);
-            $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
+            $target_populations_ids = Taxonomy::where('taxonomy_parent_name', '=', 'Target Populations')->pluck('category_id')->toArray();
+
+            $target_populations = Taxonomy::where('taxonomy_parent_name', '=', 'Target Populations')->pluck('taxonomy_recordid')->toArray();
+
+            $target_service_ids = Servicetaxonomy::whereIn('taxonomy_id', $target_populations_ids)->groupBy('service_recordid')->pluck('service_recordid')->toArray();
+
+
+            $target_location_ids = Servicelocation::whereIn('service_recordid', $target_service_ids)->groupBy('location_recordid')->pluck('location_recordid')->toArray();
+            // $services = $services->whereIn('service_recordid', $target_service_ids);
+            // $locations = $locations->whereIn('location_recordid', $target_location_ids)->with('services','organization');
         }
 
-        if($ages!=null){
-            $checked_ages = Detail::whereIn('detail_recordid', $ages)->pluck('detail_recordid');
-            $checked_age_names = Detail::whereIn('detail_recordid', $ages)->pluck('detail_value');
+        $total_service_ids = array_merge($grand_service_ids, $parent_service_ids, $child_service_ids, $target_service_ids);
+        $total_location_ids = array_merge($grand_location_ids, $parent_location_ids, $child_location_ids, $target_location_ids);
 
-            $checked_ages = json_decode(json_encode($checked_ages));
-            
-            $service_ids = Servicedetail::whereIn('detail_recordid', $ages)->groupBy('service_recordid')->pluck('service_recordid');
-            $location_ids = Servicelocation::whereIn('service_recordid', $service_ids)->groupBy('location_recordid')->pluck('location_recordid');
-            $services = $services->whereIn('service_recordid', $service_ids);
-            $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
+        if($total_service_ids){
+            $services = $services->whereIn('service_recordid',$total_service_ids);
+            $locations = $locations->whereIn('location_recordid', $total_location_ids)->with('services','organization');
         }
+        
+        // $services = $services->paginate(10);
 
-        if($languages!=null){
-            $checked_languages = Detail::whereIn('detail_recordid', $languages)->pluck('detail_recordid');
-            $checked_language_names = Detail::whereIn('detail_recordid', $languages)->pluck('detail_value');
+        // $locations = $locations->get();
 
-            $checked_languages = json_decode(json_encode($checked_languages));
-            
-            $service_ids = Servicedetail::whereIn('detail_recordid', $languages)->groupBy('service_recordid')->pluck('service_recordid');
-            $location_ids = Servicelocation::whereIn('service_recordid', $service_ids)->groupBy('location_recordid')->pluck('location_recordid');
-            $services = $services->whereIn('service_recordid', $service_ids);
-            $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
-        }
-
-        if($service_settings!=null){
-            $checked_settings = Detail::whereIn('detail_recordid', $service_settings)->pluck('detail_recordid');
-            $checked_setting_names = Detail::whereIn('detail_recordid', $service_settings)->pluck('detail_value');
-
-            $checked_settings = json_decode(json_encode($checked_settings));
-            
-            $service_ids = Servicedetail::whereIn('detail_recordid', $service_settings)->groupBy('service_recordid')->pluck('service_recordid');
-            $location_ids = Servicelocation::whereIn('service_recordid', $service_settings)->groupBy('location_recordid')->pluck('location_recordid');
-            $services = $services->whereIn('service_recordid', $service_ids);
-            $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
-        }
-
-        if($culturals!=null){
-            $checked_culturals = Detail::whereIn('detail_recordid', $culturals)->pluck('detail_recordid');
-            $checked_cultural_names = Detail::whereIn('detail_recordid', $culturals)->pluck('detail_value');
-
-            $checked_culturals = json_decode(json_encode($checked_culturals));
-            
-            $service_ids = Servicedetail::whereIn('detail_recordid', $culturals)->groupBy('service_recordid')->pluck('service_recordid');
-            $location_ids = Servicelocation::whereIn('service_recordid', $service_ids)->groupBy('location_recordid')->pluck('location_recordid');
-            $services = $services->whereIn('service_recordid', $service_ids);
-            $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
-        }
-
-        if($transportations!=null){
-            $checked_transportations = Detail::whereIn('detail_recordid', $transportations)->pluck('detail_recordid');
-            $checked_transportation_names = Detail::whereIn('detail_recordid', $transportations)->pluck('detail_value');
-
-            $checked_transportations = json_decode(json_encode($checked_transportations));
-            
-            $service_ids = Servicedetail::whereIn('detail_recordid', $transportations)->groupBy('service_recordid')->pluck('service_recordid');
-            $location_ids = Servicelocation::whereIn('service_recordid', $service_ids)->groupBy('location_recordid')->pluck('location_recordid');
-            $services = $services->whereIn('service_recordid', $service_ids);
-            $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
-        }
-
-        if($hours!=null){
-            $checked_hours = Detail::whereIn('detail_recordid', $hours)->pluck('detail_recordid');
-            $checked_hour_names = Detail::whereIn('detail_recordid', $hours)->pluck('detail_value');
-
-            $checked_hours = json_decode(json_encode($checked_hours));
-            
-            $service_ids = Servicedetail::whereIn('detail_recordid', $hours)->groupBy('service_recordid')->pluck('service_recordid');
-            $location_ids = Servicelocation::whereIn('service_recordid', $service_ids)->groupBy('location_recordid')->pluck('location_recordid');
-            $services = $services->whereIn('service_recordid', $service_ids);
-            $locations = $locations->whereIn('location_recordid', $location_ids)->with('services','organization');
-        }
-
-        if($sort == 'Service Name'){
-            $services = $services->orderBy('service_name');
-        }
-
-        if($sort == 'Organization Name'){
-            $services = $services->with(['organizations' => function($query) {
-                $query->orderBy('id');
-            }]);
-        }
+        $map = Map::find(1);      
 
         if($pdf == 'pdf'){
 
             $layout = Layout::find(1);
 
-            $services = $services->get();
+            $services = $services->paginate(10);                      
 
             $pdf = PDF::loadView('frontEnd.services_download', compact('services', 'layout'));
 
@@ -494,13 +611,50 @@ class ExploreController extends Controller
             return $csvExporter->build($services, ['service_name'=>'Service Name', 'service_alternate_name'=>'Service Alternate Name', 'taxonomies'=>'Category', 'organizations'=>'Organization', 'phones'=>'Phone', 'address1'=>'Address', 'contacts'=>'Contact', 'service_description'=>'Service Description', 'service_url'=>'URL','service_application_process'=>'Application Process', 'service_wait_time'=>'Wait Time', 'service_fees'=>'Fees', 'service_accreditations'=>'Accreditations', 'service_licenses'=>'Licenses', 'details'=>'Details'])->build($csv, ['name'=>'', 'description'=>''])->download();
         }
 
-    
+        $search_results = $services->count();
+
+        if($sort == 'Service Name'){
+            $services = $services->orderBy('service_name');
+        }
+
+        // if($sort == 'Organization Name'){
+        //     $services = $services->with(['organizations' => function($q) {
+        //         $q->orderBy('organization_name', 'asc');
+        //     }])->paginate($pagination);
+        // }
+
+        // if($sort == 'Organization Name'){
+        //     $services = Service::leftjoin('service_organization', 'service_organization.service_recordid', '=', 'services.service_recordid')->leftjoin('organizations', 'organizations.organization_recordid', 'service_organization.organization_recordid');
+        //     $services = $services->whereIn('services.service_recordid', $services_ids)->orderBy('organization_name')->paginate($pagination);
+        // }
+
+        if($sort == 'Organization Name'){
+            // $services = Service::whereIn('services.service_recordid', $services_ids);
+            $services = $services->leftjoin('organizations', 'services.service_organization', '=', 'organizations.organization_recordid')->orderBy('organization_name');
+        }
+
         $services = $services->paginate($pagination);
+
         $locations = $locations->get();
+
+        $analytic = Analytic::where('search_term', '=', $chip_service)->orWhere('search_term', '=', $chip_address)->first();
+        if(isset($analytic)){
+            $analytic->search_term = $chip_service;
+            $analytic->search_results = $search_results;
+            $analytic->times_searched = $analytic->times_searched + 1;
+            $analytic->save();
+        }
+        else{
+            $new_analytic = new Analytic();
+            $new_analytic->search_term = $chip_service;
+            $new_analytic->search_results = $search_results;
+            $new_analytic->times_searched = 1;
+            $new_analytic->save();
+        }  
        
         $map = Map::find(1);
 
-        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'pagination', 'sort'));
+        return view('frontEnd.services', compact('services','locations', 'chip_service', 'chip_address', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'search_results', 'pagination', 'sort', 'meta_status', 'parent_taxonomy_names', 'grandparent_taxonomy_names', 'target_populations', 'checked_grandparents'));
 
     }
     /**

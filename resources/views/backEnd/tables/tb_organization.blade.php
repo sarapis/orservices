@@ -30,7 +30,9 @@ Organizations
                     <th class="text-center">No</th>
                     <th class="text-center">Name</th>                                   
                     <th class="text-center">Alternate name</th>
-                    <th class="text-center">X-uid</th>                               
+                    @if($source_data->active == 1)
+                    <th class="text-center">X-uid</th>   
+                    @endif                            
                     <th class="text-center">Email</th>
                     <th class="text-center">Url</th>
                     <th class="text-center">Description</th>
@@ -42,19 +44,27 @@ Organizations
                     <th class="text-center">Phones</th>
                     <th class="text-center">Location</th>
                     <th class="text-center">Contact</th>
-                    <th class="text-center">Details</th>                   
+                    @if($source_data->active == 1)
+                    <th class="text-center">Details</th> 
+                    @endif                  
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
               @foreach($organizations as $key => $organization)
                 <tr id="organization{{$organization->id}}" class="{{$organization->flag}}">
+                   @if($source_data->active == 1 )
                   <td class="text-center">{{$key+1}}</td>
+                  @else
+                  <td>{{$organization->organization_recordid}}</td>
+                  @endif
                   <td class="">{{$organization->organization_name}}</td>
                   
                   <td class="text-center">{{$organization->organization_alternate_name}}</td>
+
+                  @if($source_data->active == 1)
                   <td class="text-center">{{$organization->organization_x_uid}}</td>
-                  
+                  @endif
 
                   <td class="text-center">{{$organization->organization_email}}</td>
 
@@ -70,14 +80,14 @@ Organizations
 
                   <td class="text-center">{{$organization->organization_year_incorporated}}</td>
 
-                  <td class="text-center">@if($organization->organization_services)
+                  <td class="text-center">@if(isset($organization->services))
                   @foreach($organization->services as $service)
                     <span class="badge bg-green">{{$service->service_name}}</span>
                   @endforeach
                   @endif
                   </td>
 
-                  <td class="text-center">@if($organization->organization_phones!='')
+                  <td class="text-center">@if(isset($organization->phones))
                   @foreach($organization->phones as $phone)
                     <span class="badge bg-blue">{{$phone->phone_number}}</span>
                   @endforeach
@@ -85,20 +95,22 @@ Organizations
                   </td>
 
 
-                  <td class="text-center">@if($organization->organization_locations!='')@foreach($organization->location as $location)
+                  <td class="text-center">@if(isset($organization->location))@foreach($organization->location as $location)
                     <span class="badge bg-blue">{{$location->location_name}}</span>
                   @endforeach
                   @endif
                   </td>
 
-                  <td class="text-center">@if($organization->organization_contact!='')
+                  <td class="text-center">@if(isset($organization->contact()->first()->contact_name))
                     <span class="badge bg-red">{{$organization->contact()->first()->contact_name}}</span>
                   @endif
                   </td>
 
+                  @if($source_data->active == 1)
                   <td class="text-center">@if($organization->organization_details!='')@foreach($organization->detail as $detail)
                     <span class="badge bg-purple">{{$detail->detail_value}}</span>
                   @endforeach
+                  @endif
                   @endif
                   </td>
 

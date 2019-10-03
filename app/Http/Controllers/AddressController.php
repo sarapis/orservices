@@ -6,19 +6,28 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Functions\Airtable;
 use App\Address;
+use App\Locationaddress;
+use App\Serviceaddress;
 use App\Airtables;
+use App\CSV_Source;
+use App\Source_data;
 use App\Services\Stringtoint;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AddressController extends Controller
 {
 
-    public function airtable()
+    public function airtable($api_key, $base_url)
     {
 
         Address::truncate();
+        // $airtable = new Airtable(array(
+        //     'api_key'   => env('AIRTABLE_API_KEY'),
+        //     'base'      => env('AIRTABLE_BASE_URL'),
+        // ));
         $airtable = new Airtable(array(
-            'api_key'   => env('AIRTABLE_API_KEY'),
-            'base'      => env('AIRTABLE_BASE_URL'),
+            'api_key'   => $api_key,
+            'base'      => $base_url,
         ));
 
         $request = $airtable->getContent( 'address' );
@@ -87,6 +96,84 @@ class AddressController extends Controller
         $airtable->syncdate = $date;
         $airtable->save();
     }
+
+    public function csv(Request $request)
+    {
+
+
+        $path = $request->file('csv_file')->getRealPath();
+
+        $data = Excel::load($path)->get();
+
+        $filename =  $request->file('csv_file')->getClientOriginalName();
+        $request->file('csv_file')->move(public_path('/csv/'), $filename);
+
+        if ($filename!='physical_addresses.csv') 
+        {
+            $response = array(
+                'status' => 'error',
+                'result' => 'This CSV is not correct.',
+            );
+            return $response;
+        }
+
+        if (count($data) > 0) {
+            $csv_header_fields = [];
+            foreach ($data[0] as $key => $value) {
+                $csv_header_fields[] = $key;
+            }
+            $csv_data = $data;
+        }
+
+
+        Address::truncate();
+        Locationaddress::truncate();
+        Serviceaddress::truncate();
+
+        foreach ($csv_data as $key => $row) {
+
+            $address = new Address();
+
+            $address->address_recordid = $row['id'];
+            $address->address_locations = $row['location_id'];
+            
+            if($row['location_id']){
+                $location_address = new Locationaddress();
+                $location_address->location_recordid = $row['location_id']!='NULL'?$row['location_id']:null;
+                $location_address->address_recordid = $address->address_recordid;
+                $location_address->save();
+
+            }
+
+            if($row['location_id']){
+                $service_address = new Serviceaddress();
+                $service_address->service_recordid = $row['location_id']!='NULL'?$row['location_id']:null;
+                $service_address->address_recordid = $address->address_recordid;
+                $service_address->save();
+
+            }
+
+            $address->address_1 = $row['address_1']!='NULL'?$row['address_1']:null;
+            $address->address_2 = $row['address_2']!='NULL'?$row['address_2']:null;
+            $address->address_city= $row['city']!='NULL'?$row['city']:null;
+            $address->address_postal_code = $row['postal_code']!='NULL'?$row['postal_code']:null;
+            $address->address_state_province = $row['state_province']!='NULL'?$row['state_province']:null;
+            $address->address_country = $row['country']!='NULL'?$row['country']:null;
+            $address->address_organization = $row['organization_id']!='NULL'?$row['organization_id']:null;
+            $address->address_attention = $row['attention']!='NULL'?$row['attention']:null;
+            $address->address_region = $row['region']!='NULL'?$row['region']:null;
+
+            $address ->save();
+
+           
+        }
+
+        $date = date("Y/m/d H:i:s");
+        $csv_source = CSV_Source::where('name', '=', 'Address')->first();
+        $csv_source->records = Address::count();
+        $csv_source->syncdate = $date;
+        $csv_source->save();
+    }
     /**
      * Display a listing of the resource.
      *
@@ -94,9 +181,10 @@ class AddressController extends Controller
      */
     public function index()
     {
-        $address = Address::orderBy('address_1')->get();
+        $addresses = Address::orderBy('address_recordid')->paginate(20);
+        $source_data = Source_data::find(1);
 
-        return view('backEnd.tables.tb_address', compact('address'));
+        return view('backEnd.tables.tb_address', compact('addresses', 'source_data'));
     }
 
     /**

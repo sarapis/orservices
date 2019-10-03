@@ -122,7 +122,7 @@ ul#ui-id-1 {
                    
             infoWindow: {
                 maxWidth: 250,
-                content: ('<a href="/service_'+value.service.service_recordid+'" style="color:#424242;font-weight:500;font-size:14px;">'+value.service.service_name+'<br>'+value.organization.organization_name+'</a>')
+                content: ('<a href="/service/'+value.service.service_recordid+'" style="color:#424242;font-weight:500;font-size:14px;">'+value.service.service_name+'<br>'+value.organization.organization_name+'</a>')
             }
         });
    });

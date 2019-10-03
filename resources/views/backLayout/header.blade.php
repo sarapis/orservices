@@ -12,6 +12,8 @@
   <link href="{{ URL::asset('/backend/vendors/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">
   <!-- Font Awesome -->
   <link href="{{ URL::asset('/backend/vendors/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+
+  <link href="{{ URL::asset('/backend/vendors/nprogress/nprogress.css') }}" rel="stylesheet">
   <link href="{{ URL::asset('/backend/vendors/iCheck/skins/flat/green.css') }}" rel="stylesheet">
   <!-- Datatables -->
   <link href="{{ URL::asset('/backend/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css') }}" rel="stylesheet">

@@ -29,13 +29,19 @@ Schedule
                 <tr>
                     <th class="text-center">No</th>
                     <th class="text-center">Services</th>                   
-                    <th class="text-center">Locations</th>                   
+                    <th class="text-center">Locations</th>
+                    @if($source_data->active == 1 )                   
                     <th class="text-center">X-phones</th>
+                    @endif
                     <th class="text-center">Days of Week</th>
                     <th class="text-center">Opens at</th>             
                     <th class="text-center">Closes at</th>
+                    @if($source_data->active == 0 )
+                    <th class="text-center">Orgiinal text</th>
+                    @else
                     <th class="text-center">Holiday</th>
                     <th class="text-center">Closed</th>
+                    @endif
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
@@ -44,7 +50,7 @@ Schedule
                 <tr id="schedule{{$schedule->id}}" class="{{$schedule->flag}}">
                   <td class="text-center">{{$key+1}}</td>
 
-                  <td>@if($schedule->schedule_services!=0)
+                  <td>@if(isset($schedule->services))
                         @foreach($schedule->services as $service)
                           <span class="badge bg-blue">{{$service->service_name}}</span>
                         @endforeach
@@ -52,27 +58,29 @@ Schedule
                   </td>
 
                   <td>
-                  @if($schedule->schedule_locations!='')
+                  @if(isset($schedule->locations()->first()->location_name))
                     <span class="badge bg-green">{{$schedule->locations()->first()->location_name}}</span>
                   @endif
                   </td>
-
+                  @if($source_data->active == 1 )
                   <td>@if($schedule->schedule_phone!='')
                     <span class="badge bg-red">{{$schedule->phone()->first()->phone_number}}</span>
                   @endif
                   </td>
-
+                  @endif
                   <td class="text-center">{{$schedule->schedule_days_of_week}}</td>
 
                   <td class="text-center">{{$schedule->schedule_opens_at}}</td>
 
                   <td class="text-center">{{$schedule->schedule_closes_at}}</td>
-
+                  @if($source_data->active == 0 )
+                  <td class="text-center">{{$schedule->schedule_description}}</td>
+                  @else
                   <td class="text-center">@if($schedule->schedule_holiday==1)<i class="icon fa fa-check"></i>@endif</td>
 
 
                   <td class="text-center">@if($schedule->schedule_closed==1)<i class="icon fa fa-check"></i>@endif</td>
-                  
+                  @endif
 
                   <td class="text-center">
                     <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$schedule->schedule_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button>
@@ -82,6 +90,7 @@ Schedule
               @endforeach             
             </tbody>
         </table>
+        {!! $schedules->links() !!}
       </div>
     </div>
   </div>
@@ -178,13 +187,13 @@ $(document).ready(function() {
                 }
             }
         },
-        "paging": true,
+        "paging": false,
         "pageLength": 20,
         "lengthChange": false,
         "searching": false,
         "ordering": true,
         "info": false,
-        "autoWidth": false
+        "autoWidth": true
     } );
 } );
 </script>

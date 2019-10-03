@@ -118,6 +118,18 @@ class EditlayoutController extends Controller
             $constraint->aspectRatio();})->save( public_path('/uploads/images/' . $filename ) );
             $layout->logo=$filename;
         }
+        if($request->hasFile('top_background')){
+            $top_background = $request->file('top_background');
+            $top_background_filename = time() . '.' . $top_background->getClientOriginalExtension();
+            Image::make($top_background)->save( public_path('/uploads/images/' . $top_background_filename ) );
+            $layout->top_background=$top_background_filename;
+        }
+        if($request->hasFile('bottom_background')){
+            $bottom_background = $request->file('bottom_background');
+            $bottom_background_filename = time() . '.' . $bottom_background->getClientOriginalExtension();
+            Image::make($bottom_background)->save( public_path('/uploads/images/' . $bottom_background_filename ) );
+            $layout->bottom_background=$bottom_background_filename;
+        }
         if ($request->input('logo_active') == 'checked')
         {
             $layout->logo_active = 1;
@@ -125,6 +137,15 @@ class EditlayoutController extends Controller
         else{
             $layout->logo_active = 0;
         }
+
+        if ($request->input('title_active') == 'checked')
+        {
+            $layout->title_active = 1;
+        }
+        else{
+            $layout->title_active = 0;
+        }
+
         $layout->site_name=$request->site_name;
         $layout->tagline=$request->tagline;
         $layout->sidebar_content=$request->sidebar_content;

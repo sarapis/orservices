@@ -27,6 +27,7 @@ $(document).ready(function(){
                 $('#taxonomy_name').val(data.taxonomy_name);
                 $('#taxonomy_vocabulary').val(data.taxonomy_vocabulary);
                 $('#taxonomy_x_description').val(data.taxonomy_x_description);
+                $('#taxonomy_grandparent_name').val(data.taxonomy_grandparent_name);
                 $('#taxonomy_x_notes').val(data.taxonomy_x_notes);
 
                 $('#btn-save').val("update");
@@ -41,7 +42,7 @@ $(document).ready(function(){
 
 
     //create new product / update existing product ***************************
-    $( "#myModal" ).submit(function(e) {
+    $( "#frmProducts" ).submit(function(e) {
     // $("#btn-save").click(function (e) {
         $.ajaxSetup({
             headers: {
@@ -54,6 +55,7 @@ $(document).ready(function(){
             taxonomy_name: $('#taxonomy_name').val(),
             taxonomy_vocabulary: $('#taxonomy_vocabulary').val(),
             taxonomy_x_description: $('#taxonomy_x_description').val(),
+            taxonomy_grandparent_name: $('#taxonomy_grandparent_name').val(),
             taxonomy_x_notes: $('#taxonomy_x_notes').val()
         }
 
@@ -80,8 +82,7 @@ $(document).ready(function(){
                 // product += ' <button class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill delete-product" title="Delete" value="' + data.bodystyleid + '"><i class="la la-trash"></i></button></td></tr>';
                 
                 if (state == "add"){ //if user added a new record
-                    $('#products-list').append(product);
-                    $('.m-portlet.m-portlet--mobile').before(add_alert);
+                    window.location.reload(); 
                    // $('.alert.alert-success.alert-dismissible.fade.show').hide(5000);
                 }else{ //if user updated an existing record
                     $('#frmProducts').trigger("reset");

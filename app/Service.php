@@ -15,12 +15,19 @@ class Service extends Model
     
 	public $timestamps = false;
 
+    // public function organizations()
+    // {
+    //     $this->primaryKey='service_recordid';
+
+    //     return $this->belongsToMany('App\Organization', 'service_organization', 'service_recordid', 'organization_recordid');
+
+    // }
+
     public function organizations()
     {
         $this->primaryKey='service_recordid';
-
-        return $this->belongsToMany('App\Organization', 'service_organization', 'service_recordid', 'organization_recordid');
-
+        return $this->belongsTo('App\Organization', 'service_organization', 'organization_recordid');
+        
     }
 
     public function locations()
@@ -39,8 +46,9 @@ class Service extends Model
 
     public function taxonomy()
     {
-
-        return $this->belongsToMany('App\Taxonomy', 'service_taxonomy', 'service_recordid', 'taxonomy_recordid');
+        $this->primaryKey='service_recordid';
+        
+        return $this->belongsToMany('App\Taxonomy', 'service_taxonomy', 'service_recordid', 'taxonomy_id');
 
     }
 
@@ -68,7 +76,10 @@ class Service extends Model
     }
 
 
-   
+    public function languages()
+    {
+        return $this->hasMany('App\Language', 'language_service', 'service_recordid');
+    }
 
     public function address()
     {

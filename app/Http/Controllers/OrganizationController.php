@@ -11,21 +11,28 @@ use App\Location;
 use App\Layout;
 use App\Map;
 use App\Airtables;
+use App\CSV_Source;
+use App\Source_data;
 use App\Services\Stringtoint;
+use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 
 class OrganizationController extends Controller
 {
 
-    public function airtable()
+    public function airtable($api_key, $base_url)
     {
 
         Organization::truncate();
         Organizationdetail::truncate();
 
+        // $airtable = new Airtable(array(
+        //     'api_key'   => env('AIRTABLE_API_KEY'),
+        //     'base'      => env('AIRTABLE_BASE_URL'),
+        // ));
         $airtable = new Airtable(array(
-            'api_key'   => env('AIRTABLE_API_KEY'),
-            'base'      => env('AIRTABLE_BASE_URL'),
+            'api_key'   => $api_key,
+            'base'      => $base_url,
         ));
 
         $request = $airtable->getContent( 'organizations' );
@@ -84,7 +91,7 @@ class OrganizationController extends Controller
                 $organization->organization_legal_status = isset($record['fields']['legal_status'])?$record['fields']['legal_status']:null;
                 $organization->organization_tax_status = isset($record['fields']['tax_status'])?$record['fields']['tax_status']:null;
                 $organization->organization_tax_id = isset($record['fields']['tax_id'])?$record['fields']['tax_id']:null;
-                $organization->organization_year_incorporated = isset($record['fields']['year_incorporated'])?$record['fields']['year_incoporated']:null;
+                $organization->organization_year_incorporated = isset($record['fields']['year_incorporated'])?$record['fields']['year_incorporated']:null;
 
                 if(isset($record['fields']['services'])){
                     $i = 0;
@@ -159,7 +166,7 @@ class OrganizationController extends Controller
                             $organization->organization_airs_taxonomy_x  = $value;
                         $i ++;
                     }
-                } 
+                }    
 
                 $organization ->save();
 
@@ -174,6 +181,67 @@ class OrganizationController extends Controller
         $airtable->syncdate = $date;
         $airtable->save();
     }
+
+    public function csv(Request $request)
+    {
+
+
+        $path = $request->file('csv_file')->getRealPath();
+
+        $data = Excel::load($path)->get();
+
+        $filename =  $request->file('csv_file')->getClientOriginalName();
+        $request->file('csv_file')->move(public_path('/csv/'), $filename);
+
+        if ($filename!='organizations.csv') 
+        {
+            $response = array(
+                'status' => 'error',
+                'result' => 'This CSV is not correct.',
+            );
+            return $response;
+        }
+
+        if (count($data) > 0) {
+            $csv_header_fields = [];
+            foreach ($data[0] as $key => $value) {
+                $csv_header_fields[] = $key;
+            }
+            $csv_data = $data;
+        }
+
+        Organization::truncate();
+        Organizationdetail::truncate();
+
+        foreach ($csv_data as $row) {
+            
+            $organization = new Organization();
+
+            $organization->organization_recordid = $row['id'];
+            $organization->organization_name = $row['name']!='NULL'?$row['name']:null;
+
+            $organization->organization_alternate_name = $row['alternate_name']!='NULL'?$row['alternate_name']:null;
+
+            $organization->organization_description = $row['description']!='NULL'?$row['description']:null;
+            $organization->organization_url = $row['url']!='NULL'?$row['url']:null;
+            $organization->organization_email = $row['email']!='NULL'?$row['email']:null;
+            $organization->organization_tax_status = $row['tax_status']!='NULL'?$row['tax_status']:null;
+            $organization->organization_tax_id = $row['tax_id']!='NULL'?$row['tax_id']:null;
+            $organization->organization_year_incorporated = $row['year_incorporated']!='NULL'?$row['year_incorporated']:null;
+            $organization->organization_legal_status = $row['legal_status']!='NULL'?$row['legal_status']:null;
+           
+                                     
+            $organization->save();
+
+           
+        }
+
+        $date = date("Y/m/d H:i:s");
+        $csv_source = CSV_Source::where('name', '=', 'Organizations')->first();
+        $csv_source->records = Organization::count();
+        $csv_source->syncdate = $date;
+        $csv_source->save();
+    }
     /**
      * Display a listing of the resource.
      *
@@ -181,9 +249,10 @@ class OrganizationController extends Controller
      */
     public function index()
     {
-        $organizations = Organization::orderBy('organization_name')->paginate(20);
+        $organizations = Organization::orderBy('organization_recordid')->paginate(20);
+        $source_data = Source_data::find(1);
 
-        return view('backEnd.tables.tb_organization', compact('organizations'));
+        return view('backEnd.tables.tb_organization', compact('organizations', 'source_data'));
     }
 
     public function organizations()
@@ -207,7 +276,7 @@ class OrganizationController extends Controller
     public function organization($id)
     {
         $organization = Organization::where('organization_recordid', '=', $id)->first();
-        $locations = Location::with('services', 'address')->where('location_organization', '=', $id)->get();
+        $locations = Location::with('services', 'address', 'phones')->where('location_organization', '=', $id)->get();
         $map = Map::find(1);
         $parent_taxonomy = [];
         $child_taxonomy = [];

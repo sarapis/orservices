@@ -14,6 +14,7 @@ class Organization extends Model
 
 	public function services()
     {
+        $this->primaryKey='organization_recordid';
         return $this->hasMany('App\Service', 'service_organization', 'organization_recordid');
         
     }

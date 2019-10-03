@@ -87,14 +87,14 @@ ul#ui-id-1 {
                     <div class="panel content-panel">
                         <div class="panel-body p-20">
                             
-                            <a class="panel-link" href="/service_{{$service->service_recordid}}">{{$service->service_name}}</a>
+                            <a class="panel-link" href="/service/{{$service->service_recordid}}">{{$service->service_name}}</a>
 
                             <h4><span class="badge bg-red">Category:</span> 
                                 @if($service->service_taxonomy!=0)
                                     @foreach($service->taxonomy as $key => $taxonomy)
                                         @if($loop->last)
-                                        <a class="panel-link" href="/category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>                                    @else
-                                        <a class="panel-link" href="/category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>,
+                                        <a class="panel-link" href="/category/{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>                                    @else
+                                        <a class="panel-link" href="/category/{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>,
                                         @endif
                                     @endforeach
                                 @endif    
@@ -103,9 +103,9 @@ ul#ui-id-1 {
                                 @if($service->service_organization!=0)                        
                                     @foreach($service->organizations as $organization)
                                         @if($loop->last)
-                                        <a class="panel-link" href="/organization_{{$organization->organization_recordid}}"> {{$organization->organization_name}}</a>
+                                        <a class="panel-link" href="/organization/{{$organization->organization_recordid}}"> {{$organization->organization_name}}</a>
                                         @else
-                                        <a class="panel-link" href="/organization_{{$organization->organization_recordid}}"> {{$organization->organization_name}}</a>,
+                                        <a class="panel-link" href="/organization/{{$organization->organization_recordid}}"> {{$organization->organization_name}}</a>,
                                         @endif
                                     @endforeach                       
                                 @endif
@@ -187,7 +187,7 @@ ul#ui-id-1 {
 
                 var content = "";
                 for(i = 0; i < value.services.length; i ++){
-                    content +=  '<a href="/service_'+value.services[i].service_recordid+'" style="color:#428bca;font-weight:500;font-size:14px;">'+value.services[i].service_name+'</a><br>';
+                    content +=  '<a href="/service/'+value.services[i].service_recordid+'" style="color:#428bca;font-weight:500;font-size:14px;">'+value.services[i].service_name+'</a><br>';
                 }
                 content += '<p>'+name+'</p>';
 

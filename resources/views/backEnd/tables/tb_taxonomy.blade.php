@@ -18,7 +18,7 @@ Taxonomy
   <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
       <div class="x_title">
-        <h2>Address</h2>
+        <h2>Taxonomy</h2>
         <div class="clearfix"></div>  
       </div>
       <div class="x_content" style="overflow: scroll;">
@@ -28,34 +28,46 @@ Taxonomy
             <thead>
                 <tr>
                     <th class="text-center">No</th>
+                    @if($source_data->active == 0 )
+                    <th class="text-center">ID</th> 
+                    @endif
                     <th class="text-center">Name</th>                   
-                    <th class="text-center">Parent name</th>                   
+                    <th class="text-center">Parent name</th>
+                    @if($source_data->active == 0 )
+                    <th class="text-center">Grandparent name</th>
+                    @endif                   
                     <th class="text-center">Vocabulary</th>
+                    @if($source_data->active == 1 )
                     <th class="text-center">X-description</th>
                     <th class="text-center">X-note</th>
-                    <th class="text-center">Services</th>             
+                    @endif
+           
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
               @foreach($taxonomies as $key => $taxonomy)
                 <tr id="taxonomy{{$taxonomy->id}}" class="{{$taxonomy->flag}}">
-                  <td class="text-center">{{$key+1}}</td>
+                  @if($source_data->active == 1 )
+                  <td class="text-center">{{$key}}+1</td>
+                  @elseif($source_data->active == 0)
+                  <td class="text-center">{{$taxonomy->taxonomy_recordid}}</td>
+                  <td class="text-center">{{$taxonomy->taxonomy_id}}</td>
+                  @endif
                   <td>{{$taxonomy->taxonomy_name}}</td>
 
-                  <td>@if($taxonomy->taxonomy_parent_name!='')
-                    <span class="badge bg-blue">{{$taxonomy->parent()->first()->taxonomy_name}}</span>
-                  @endif
+                  <td>
+                    <span class="badge bg-blue">{{$taxonomy->taxonomy_parent_name}}</span>
                   </td>
-                  
+             
+                  @if($source_data->active == 0 )
+                  <td class="text-center">{{$taxonomy->taxonomy_grandparent_name}}</td>
+                  @endif
                   <td class="text-center">{{$taxonomy->taxonomy_vocabulary}}</td>
+                  @if($source_data->active == 1 )
                   <td class="text-center">{{$taxonomy->taxonomy_x_description}}</td>
                   <td class="text-center">{{$taxonomy->taxonomy_x_notes}}</td>
-                  <td class="text-center">@if($taxonomy->taxonomy_services!='')@foreach($taxonomy->service as $service)
-                    <span class="badge bg-green">{{$service->service_name}}</span>
-                  @endforeach
                   @endif
-                  </td>
 
                   <td class="text-center">
                     <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$taxonomy->taxonomy_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button>
@@ -64,6 +76,7 @@ Taxonomy
               @endforeach             
             </tbody>
         </table>
+       <!--  -->
       </div>
     </div>
   </div>
@@ -97,6 +110,18 @@ Taxonomy
                         <input type="text" class="form-control" id="taxonomy_vocabulary" name="taxonomy_vocabulary" value="">
                       </div>
                     </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="email">Alt Taxonomy
+                        </label>
+                        <div class="col-sm-7">
+                            <select class="form-control" name="taxonomy_grandparent_name" id="taxonomy_grandparent_name"> 
+                              <option>Choose option</option>
+                              @foreach($alt_taxonomies as $alt_taxonomy)
+                              <option value="{{$alt_taxonomy->alt_taxonomy_name}}">{{$alt_taxonomy->alt_taxonomy_name}}</option>
+                              @endforeach
+                            </select>
+                        </div>
+                    </div>
 
                     <div class="form-group">
                       <label for="inputPassword3" class="col-sm-3 control-label">X-description</label>
@@ -119,7 +144,7 @@ Taxonomy
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary" id="btn-save" value="add">Save changes</button>
-                    <input type="hidden" id="id" name="taxonomy_id" value="0">
+                    <input type="hidden" id="id" name="id" value="0">
                 </div>
             </form>
         </div>
@@ -155,7 +180,7 @@ $(document).ready(function() {
         "paging": true,
         "pageLength": 20,
         "lengthChange": false,
-        "searching": false,
+        "searching": true,
         "ordering": true,
         "info": false,
         "autoWidth": true

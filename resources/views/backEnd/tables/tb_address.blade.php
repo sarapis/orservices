@@ -36,16 +36,23 @@ Address
                     <th class="text-center">Region</th>             
                     <th class="text-center">Country</th>
                     <th class="text-center">Attention</th>
+                    @if($source_data->active == 1 )
                     <th class="text-center">Address type</th>
+                    @endif
                     <th class="text-center">Locations</th>
                     <th class="text-center">Services</th>
+                    <th class="text-center">Organizations</th>
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
-              @foreach($address as $key => $address)
+              @foreach($addresses as $key => $address)
                 <tr id="address{{$address->id}}" class="{{$address->flag}}">
-                  <td class="text-center">{{$key+1}}</td>
+                  @if($source_data->active == 1 )
+                  <td class="text-center">{{$key}}+1</td>
+                  @elseif($source_data->active == 0)
+                  <td class="text-center">{{$address->address_recordid}}</td>
+                  @endif
                   <td>{{$address->address_1}}</td>
                   
                   <td>
@@ -61,11 +68,11 @@ Address
 
                   <td class="text-center">{{$address->address_attention}}
                   </td>
-
+                  @if($source_data->active == 1 )
                   <td class="text-center"><span class="badge bg-purple">{{$address->address_type}}</span></td>
-
+                  @endif
                   <td class="text-center"><span style="white-space:normal;">
-                  @if($address->address_locations!='')
+                  @if(isset($address->locations))
                     @foreach($address->locations as $location)
                       <span class="badge bg-red">{{ $location->location_name }}</span>
                     @endforeach
@@ -73,11 +80,14 @@ Address
                   </td>
 
                   <td class="text-center"><span style="white-space:normal;">
-                  @if($address->address_services!='')
+                  @if(isset($address->services))
                     @foreach($address->services as $service)
                       <span class="badge bg-blue">{{ $service->service_name }}</span>
                     @endforeach
                   @endif</span>
+                  </td>
+
+                  <td class="text-center">{{$address->address_organization}}
                   </td>
 
                   <td class="text-center">
@@ -87,6 +97,7 @@ Address
               @endforeach             
             </tbody>
         </table>
+       {!! $addresses->links() !!}
       </div>
     </div>
   </div>

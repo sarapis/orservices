@@ -115,6 +115,15 @@ Map Settings
                   <input id="occupation" type="text" name="long" class="optional form-control col-md-7 col-xs-12" value="{{$map->long}}" required="required" @if($map->active==0) disabled="disabled" @endif>
                 </div>
               </div>
+
+              <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Zoom
+                </label>
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                  <input type="text" name="zoom" class="form-control col-md-7 col-xs-12" value="{{$map->zoom}}" @if($map->active==0) disabled="disabled" @endif>
+                </div>
+              </div>
+
             </div>
             <div class="col-md-4">
               <div id="map"></div>
@@ -163,7 +172,7 @@ $(document).ready(function() {
           el: '#map',
           lat: locations.lat,
           lng: locations.long,
-          zoom:10
+          zoom: locations.zoom
         });
         map.addMarker({
           lat: locations.lat,

@@ -6,19 +6,28 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Functions\Airtable;
 use App\Schedule;
+use App\Serviceschedule;
+use App\Locationschedule;
 use App\Airtables;
+use App\CSV_Source;
+use App\Source_data;
 use App\Services\Stringtoint;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ScheduleController extends Controller
 {
 
-    public function airtable()
+    public function airtable($api_key, $base_url)
     {
 
         Schedule::truncate();
+        // $airtable = new Airtable(array(
+        //     'api_key'   => env('AIRTABLE_API_KEY'),
+        //     'base'      => env('AIRTABLE_BASE_URL'),
+        // ));
         $airtable = new Airtable(array(
-            'api_key'   => env('AIRTABLE_API_KEY'),
-            'base'      => env('AIRTABLE_BASE_URL'),
+            'api_key'   => $api_key,
+            'base'      => $base_url,
         ));
 
         $request = $airtable->getContent( 'schedule' );
@@ -98,11 +107,86 @@ class ScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function csv(Request $request)
+    {
+
+
+        $path = $request->file('csv_file')->getRealPath();
+
+        $data = Excel::load($path)->get();
+
+        $filename =  $request->file('csv_file')->getClientOriginalName();
+        $request->file('csv_file')->move(public_path('/csv/'), $filename);
+
+        if ($filename!='regular_schedules.csv') 
+        {
+            $response = array(
+                'status' => 'error',
+                'result' => 'This CSV is not correct.',
+            );
+            return $response;
+        }
+
+        if (count($data) > 0) {
+            $csv_header_fields = [];
+            foreach ($data[0] as $key => $value) {
+                $csv_header_fields[] = $key;
+            }
+            $csv_data = $data;
+        }
+
+
+        Schedule::truncate();
+        Serviceschedule::truncate();
+        Locationschedule::truncate();
+
+
+        foreach ($csv_data as $key => $row) {
+
+            $schedule = new Schedule();
+
+            $schedule->schedule_recordid= $key+1;
+            $schedule->schedule_services = $row['service_id']!='NULL'?$row['service_id']:null;
+
+            if($row['service_id']){
+                $service_schedule = new Serviceschedule();
+                $service_schedule->service_recordid = $row['service_id']!='NULL'?$row['service_id']:null;
+                $service_schedule->schedule_recordid = $schedule->schedule_recordid;
+                $service_schedule->save();
+
+            }
+
+            $schedule->schedule_days_of_week = $row['weekday']!='NULL'?$row['weekday']:null;
+            $schedule->schedule_opens_at = $row['opens_at']!='NULL'?$row['opens_at']:null;
+            $schedule->schedule_closes_at = $row['closes_at']!='NULL'?$row['closes_at']:null;
+            $schedule->schedule_description = $row['original_text']!='NULL'?$row['original_text']:null;
+            $schedule->schedule_locations = $row['location_id']!='NULL'?$row['location_id']:null;
+
+            if($row['location_id']){
+                $location_schedule = new Locationschedule();
+                $location_schedule->location_recordid = $row['location_id']!='NULL'?$row['location_id']:null;
+                $location_schedule->schedule_recordid = $schedule->schedule_recordid;
+                $location_schedule->save();
+
+            }
+                                     
+            $schedule ->save();
+          
+        }
+
+        $date = date("Y/m/d H:i:s");
+        $csv_source = CSV_Source::where('name', '=', 'Regular_schedules')->first();
+        $csv_source->records = Schedule::count();
+        $csv_source->syncdate = $date;
+        $csv_source->save();
+    }
+
     public function index()
     {
-        $schedules = Schedule::orderBy('id')->get();
+        $schedules = Schedule::orderBy('id')->paginate(20);
+        $source_data = Source_data::find(1); 
 
-        return view('backEnd.tables.tb_schedule', compact('schedules'));
+        return view('backEnd.tables.tb_schedule', compact('schedules', 'source_data'));
     }
 
     /**

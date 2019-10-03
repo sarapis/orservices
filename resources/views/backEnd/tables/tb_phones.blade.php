@@ -29,7 +29,10 @@ Phones
                 <tr>
                     <th class="text-center">No</th>
                     <th class="text-center">Number</th>                   
-                    <th class="text-center">Locations</th>                   
+                    <th class="text-center">Locations</th> 
+                    <th class="text-center">Services</th>  
+                    <th class="text-center">Organization</th>
+                    <th class="text-center">Contact</th>                 
                     <th class="text-center">Extension</th>             
                     <th class="text-center">Type</th>
                     <th class="text-center">Language</th>
@@ -40,11 +43,15 @@ Phones
             <tbody>
               @foreach($phones as $key => $phone)
                 <tr id="phone{{$phone->id}}" class="{{$phone->flag}}">
-                  <td class="text-center">{{$key+1}}</td>
-                  <td>{!! str_limit($phone->phone_number, 10) !!}</td>
+                  @if($source_data->active == 1 )
+                  <td class="text-center">{{$key}}+1</td>
+                  @elseif($source_data->active == 0)
+                  <td class="text-center">{{$phone->phone_recordid}}</td>
+                  @endif
+                  <td>{!! str_limit($phone->phone_number, 20) !!}</td>
 
                   <td>
-                    @if($phone->phone_locations!='') 
+                    @if(isset($phone->locations)) 
                   
                       @foreach($phone->locations as $location)
                         
@@ -53,6 +60,32 @@ Phones
                       @endforeach
                            
                     @endif
+                  </td>
+
+                  <td>
+                    @if(isset($phone->services)) 
+                  
+                      @foreach($phone->services as $service)
+                        
+                      <span class="badge bg-blue">{{$service->service_name}}</span>
+                      
+                      @endforeach
+                           
+                    @endif
+                  </td>
+
+                  <td>
+                    @if(isset($phone->organization()->first()->organization_name))
+                    <span class="badge bg-green">{{$phone->organization()->first()->organization_name}}</span>
+                    @endif
+                  </td>
+
+                  <td class="text-center">
+                  @if(isset($phone->contact)) @foreach($phone->contact as $contact)
+                    <span class="badge bg-red">{{$contact->contact_name}}</span>
+                  @endforeach
+                  @endif
+                  </td>
 
                   <td>{{$phone->phone_extension}}</td>
 
@@ -69,6 +102,7 @@ Phones
               @endforeach             
             </tbody>
         </table>
+        {!! $phones->links() !!}
       </div>
     </div>
   </div>
@@ -169,9 +203,16 @@ $(document).ready(function() {
                         false;
                 }
             }
-        }
-    } );
-} );
+        },
+        "paging": false,
+        "pageLength": 20,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": true,
+        "info": false,
+        "autoWidth": true
+    });
+});
 </script>
 <script src="{{asset('js/phone_ajaxscript.js')}}"></script>
 @endsection

@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use App\Map;
-use Image;
+use App\Source_data;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Session;
@@ -36,9 +35,9 @@ class DataController extends Controller
      */
     public function index()
     {
-        $map = Map::find(1);
+        $source_data = Source_data::find(1);
 
-        return view('backEnd.pages.data', compact('map'));
+        return view('backEnd.pages.data', compact('source_data'));
     }
 
     /**
@@ -70,7 +69,7 @@ class DataController extends Controller
         Session::flash('message', 'Map updated!');
         Session::flash('status', 'success');
 
-        return redirect('apis');
+        return redirect('data');
     }
 
     /**
@@ -112,7 +111,16 @@ class DataController extends Controller
      */
     public function update($id, Request $request)
     {
+        $source_data = Source_data::find(1);
+        // var_dump($request->input('active'));
+        // exit();
+        $source_data->active = $request->input('source_data');
 
+        
+        $source_data->save();
+
+
+        return redirect('import');
     }
 
     /**

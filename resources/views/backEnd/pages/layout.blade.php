@@ -71,6 +71,64 @@ Appearance
                   <input id="occupation" type="text" name="tagline" class="optional form-control col-md-7 col-xs-12" value="{{$layout->tagline}}">
                 </div>
               </div>
+              <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">
+                </label>
+                <div class="col-md-6">
+                  <span><b>Hide Title and Tagline </b>&nbsp;&nbsp;
+                    <input type="checkbox" class="js-switch" value="checked" name="title_active"  @if($layout->title_active==1) checked @endif/>&nbsp;&nbsp;<b>Show Title and Tagline </b></span>
+                </div>
+              </div>
+
+              <div class="form-group m-form__group row">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12">
+                    Top background Image
+                </label>
+                <div class="col-md-6 col-sm-12">
+                    
+                    <div class="row">
+                      <img src="/uploads/images/{{$layout->top_background}}" id="blah1" style="width: 100%;">
+                    </div>
+                    <div class="row" style="margin-top: 10px;">
+                      <div class="col-md-6">
+                        <label class="custom-file">
+                            <input type="file" id="file3" class="custom-file-input" onchange="readURL_top(this);" name="top_background">
+                            <span class="custom-file-control"></span>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <label>Recommended size 1200px wide.</label>
+                      </div>
+                    </div>
+                </div>
+              </div>
+
+              <div class="form-group m-form__group row">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12">
+                    Bottom background Image
+                </label>
+                <div class="col-md-6 col-sm-12">
+                    
+                    <div class="row">
+                      <img src="/uploads/images/{{$layout->bottom_background}}" id="blah2" style="width: 100%;">
+                    </div>
+                    <div class="row" style="margin-top: 10px;">
+                      <div class="col-md-6">
+                        <label class="custom-file">
+                            <input type="file" id="file4" class="custom-file-input" onchange="readURL_bottom(this);" name="bottom_background">
+                            <span class="custom-file-control"></span>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <label>Recommended size 1200px wide.</label>
+                      </div>
+                    </div>
+                </div>
+              </div>
 
               <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Sidebar Content
@@ -198,15 +256,39 @@ $(document).ready(function() {
 
 function readURL(input) {
     if (input.files && input.files[0]) {
-            var reader = new FileReader();
+        var reader = new FileReader();
 
-            reader.onload = function (e) {
-                $('#blah')
-                    .attr('src', e.target.result);
-            };
+        reader.onload = function (e) {
+            $('#blah')
+                .attr('src', e.target.result);
+        };
 
-            reader.readAsDataURL(input.files[0]);
-        }
+        reader.readAsDataURL(input.files[0]);
     }
+}
+function readURL_top(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#blah1')
+                .attr('src', e.target.result);
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+function readURL_bottom(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#blah2')
+                .attr('src', e.target.result);
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 </script>
 @endsection

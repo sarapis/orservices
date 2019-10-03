@@ -1,8 +1,8 @@
 $.fn.extend({
     treed: function (o) {
       
-      var openedClass = 'glyphicon-minus-sign';
-      var closedClass = 'glyphicon-plus-sign';
+      var openedClass = 'glyphicon-minus';
+      var closedClass = 'glyphicon-plus';
       
       if (typeof o != 'undefined'){
         if (typeof o.openedClass != 'undefined'){
@@ -54,4 +54,4 @@ $.fn.extend({
 
 //Initialization of treeviews
 
-$('#tree1').treed();
+$('.tree1').treed();

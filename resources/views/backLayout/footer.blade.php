@@ -13,6 +13,7 @@
     <script src="{{ URL::asset('/backend/vendors/jquery/dist/jquery.min.js') }}"></script>
     <!-- Bootstrap -->
     <script src="{{ URL::asset('/backend/vendors/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.5/jquery.csv.min.js" integrity="sha256-zGo0JbZ5Sn6wU76MyVL0TrUZUq5GLXaFnMQCe/hSwVI=" crossorigin="anonymous"></script>
 
     <script src="{{ URL::asset('/backend/vendors/switchery/dist/switchery.min.js')}}"></script>
 
@@ -23,6 +24,8 @@
     <script src="{{ URL::asset('/backend/vendors/fastclick/lib/fastclick.js') }}"></script>
     <!-- NProgress -->
     <script src="{{ URL::asset('/backend/vendors/nprogress/nprogress.js') }}"></script>
+
+    <script src="{{ URL::asset('/backend/vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js') }}"></script>
     <!-- iCheck -->
     <script src="{{ URL::asset('/backend/vendors/iCheck/icheck.min.js') }}"></script>
     

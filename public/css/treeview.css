@@ -1,7 +1,7 @@
 .tree, .tree ul {
     margin:0;
     padding:0;
-    list-style:none
+    list-style:none;
 }
 .tree ul {
     margin-left:1em;
@@ -11,7 +11,7 @@
     margin-left:.5em
 }
 .tree ul:before {
-    content:"";
+   /* content:"";*/
     display:block;
     width:0;
     position:absolute;
@@ -22,10 +22,10 @@
 }
 .tree li {
     margin:0;
-    padding:0 1em;
+    padding:0 2em;
     line-height:2em;
-    color:#369;
-    font-weight:700;
+    color:#3f51b5;
+    font-weight:400;
     position:relative
 }
 .tree ul li:before {
@@ -40,13 +40,13 @@
     left:0
 }
 .tree ul li:last-child:before {
-    background:#fff;
+    background: transparent;
     height:auto;
     top:1em;
     bottom:0
 }
 .indicator {
-    margin-right:5px;
+    margin-right: 15px;
 }
 .tree li a {
     text-decoration: none;
@@ -60,4 +60,9 @@
     margin:0px 0px 0px 0px;
     padding:0px 0px 0px 0px;
     outline: 0;
+}
+.home-category{
+    padding: 0 !important;
+    background: transparent;
+    font-size: 14px !important;
 }

@@ -36,6 +36,16 @@ class Location extends Model
         return $this->hasMany('App\Detail', 'detail_locations', 'location_recordid');
     }
 
+    public function languages()
+    {
+        return $this->hasMany('App\Language', 'language_location', 'location_recordid');
+    }
+
+    public function accessibilities()
+    {
+        return $this->hasMany('App\Accessibility', 'accessibility_location', 'location_recordid');
+    }
+
     public function schedules()
     {
         return $this->belongsToMany('App\Schedule', 'location_schedule', 'location_recordid', 'schedule_recordid');
