@@ -1,4 +1,4 @@
-This codebase allows you to pull data from this AirTable Template: https://airtable.com/universe/expTMdQFD5r9G6V9Y/open-referral-human-services-template 
+This codebase allows you to pull data from this AirTable Template: https://airtable.com/universe/expwt9yr65lFGUJAr/open-referral-social-services-directory-v20
 
 ... into a web app that looks like this: http://orservices.sarapis.org
 
