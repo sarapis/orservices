@@ -54,6 +54,8 @@ Route::get('/explore/cityagency_{id}', 'ExploreController@cityagency');
 Route::get('/download_service/{id}', 'ServiceController@download');
 Route::get('/download_organization/{id}', 'OrganizationController@download');
 
+Route::get('tb_alt_taxonomy/all_terms', 'AltTaxonomyController@get_all_terms');
+
 Route::post('/range', 'ExploreController@filterValues1');
 
 
@@ -78,6 +80,8 @@ Route::post('/range', 'ExploreController@filterValues1');
         Route::get('/logout', ['uses' => 'Auth\LoginController@logout']);
 
         Route::get('/sync_services/{api_key}/{base_url}', ['uses' => 'ServiceController@airtable']);  
+        Route::get('/sync_test/{api_key}/{base_url}', ['uses' => 'ServiceController@test_airtable']);      
+        
         Route::get('/sync_locations/{api_key}/{base_url}', ['uses' => 'LocationController@airtable']);
         Route::get('/sync_organizations/{api_key}/{base_url}', ['uses' => 'OrganizationController@airtable']);
         Route::get('/sync_contact/{api_key}/{base_url}', ['uses' => 'ContactController@airtable']);
@@ -87,6 +91,7 @@ Route::post('/range', 'ExploreController@filterValues1');
         Route::get('/sync_taxonomy/{api_key}/{base_url}', ['uses' => 'TaxonomyController@airtable']);
         Route::get('/sync_details/{api_key}/{base_url}', ['uses' => 'DetailController@airtable']);
 
+        Route::get('/cron_datasync', ['uses' => 'CronController@cron_datasync']);
 
         Route::post('/csv_services', ['uses' => 'ServiceController@csv']);  
         Route::post('/csv_locations', ['uses' => 'LocationController@csv']);
@@ -122,6 +127,7 @@ Route::post('/range', 'ExploreController@filterValues1');
         Route::resource('tb_taxonomy', 'TaxonomyController');
         Route::resource('tb_alt_taxonomy', 'AltTaxonomyController');
         Route::get('tb_alt_taxonomy/terms/{id}', 'AltTaxonomyController@open_terms');
+
         Route::post('/tb_alt_taxonomy', 'AltTaxonomyController@operation');
         Route::resource('tb_details', 'DetailController');
         Route::resource('tb_languages', 'LanguageController');

@@ -11,6 +11,8 @@ class Taxonomy extends Model
     protected $primaryKey = 'taxonomy_id';
 
     public $fillable = ['name','parent_name'];
+    public $incrementing = false;
+
 
     public $timestamps = false;
 
@@ -30,8 +32,6 @@ class Taxonomy extends Model
 
     public function service()
     {
-        $this->primaryKey='taxonomy_id';
-        
         return $this->belongsToMany('App\Service', 'service_taxonomy', 'taxonomy_id', 'service_recordid');
     }
 

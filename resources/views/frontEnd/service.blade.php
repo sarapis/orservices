@@ -65,7 +65,7 @@ ul#ui-id-1 {
                             @endif
                         </h4>
 
-                        <h4 style="line-height: inherit;">{!! $service->service_description !!}</h4>
+                        <h4 class="service-description" style="line-height: inherit;"></h4>
 
                         @if(isset($service->service_phones))                            
                             @if(isset($service->phone()->first()->phone_number))  
@@ -83,19 +83,15 @@ ul#ui-id-1 {
                             @endif
                         @endif
 
-                        @if(isset($service->phone()->first()->phone_extension)) 
-                        <h4 style="line-height: inherit;">
-                            <span><i class="icon md-phone font-size-24 vertical-align-top  mr-5 pr-10"></i>
-                            @foreach($service->phone as $phone) {!! $phone->phone_extension !!} @endforeach 
-                            </span> 
-                        </h4>
-                        @endif 
+                        <h4><span><i class="icon md-phone font-size-24 vertical-align-top  mr-5 pr-10"></i> @foreach($service->phone as $phone) {!! $phone->phone_number !!} @endforeach</span></h4>
+
                         <h4 style="line-height: inherit;">
                             <span>  
                             <i class="icon md-globe font-size-24 vertical-align-top  mr-5 pr-10"></i>
                                  @if($service->service_url!=NULL)<a href="{!! $service->service_url !!}">{!! $service->service_url !!}</a> @endif
                             </span>        
                         </h4>
+
 
                         @if($service->service_email!=NULL) 
                         <h4 style="line-height: inherit;">
@@ -207,35 +203,14 @@ ul#ui-id-1 {
                                 @endphp
                                 @if($service->taxonomy->sortBy('taxonomy_name') != null)
                                     @foreach($service->taxonomy->sortBy('taxonomy_name') as $key => $taxonomy)
-                                        @if(!in_array($taxonomy->taxonomy_grandparent_name, $names))
-                                            @if($taxonomy->taxonomy_grandparent_name && $taxonomy->taxonomy_parent_name != 'Target Populations')
-                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}" at="{{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}">{{$taxonomy->taxonomy_grandparent_name}}</a>
-                                                @php
-                                                $names[] = $taxonomy->taxonomy_grandparent_name;
-                                                @endphp
-                                            @endif
-                                        @endif
-                                        @if(!in_array($taxonomy->taxonomy_parent_name, $names))
-                                            @if($taxonomy->taxonomy_parent_name && $taxonomy->taxonomy_parent_name != 'Target Populations')
-                                                @if($taxonomy->taxonomy_parent_name == 'Target Populations')
-                                                <a class="{{str_replace(' ', '_', $taxonomy->taxonomy_parent_name)}} panel-link target-population-link">{{$taxonomy->taxonomy_parent_name}}</a>
-                                                @elseif($taxonomy->taxonomy_grandparent_name)
-                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_parent_name)}}" at="{{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}_{{str_replace(' ', '_', $taxonomy->taxonomy_parent_name)}}">{{$taxonomy->taxonomy_parent_name}}</a>
-                                                @endif
-                                                @php
-                                                $names[] = $taxonomy->taxonomy_parent_name;
-                                                @endphp
-                                            @endif
-                                        @endif
                                         @if(!in_array($taxonomy->taxonomy_name, $names))
                                             @if($taxonomy->taxonomy_name && $taxonomy->taxonomy_parent_name != 'Target Populations')
-                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_name)}}" at="{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>
+                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_name)}}" at="{{$taxonomy->taxonomy_id}}">{{$taxonomy->taxonomy_name}}</a>
                                                 @php
                                                 $names[] = $taxonomy->taxonomy_name;
                                                 @endphp
                                             @endif
                                         @endif                                                    
-                                       
                                     @endforeach
                                 @endif
                             @endif
@@ -277,10 +252,14 @@ ul#ui-id-1 {
                                         <h4><span><i class="icon fa-clock-o font-size-24 vertical-align-top "></i> {{$location->location_hours}}</span></h4>
                                         <h4><span><i class="icon fa-truck font-size-24 vertical-align-top "></i> {{$location->location_transportation}}</span></h4>
                                         <h4><span><i class="icon md-phone font-size-24 vertical-align-top "></i>
-                                            @if(isset($location->location_phones))
-                                                @if($location->location_phones != null)
-                                                    @if(is_array($location->location_phones))
-                                                        @foreach($location->location_phones as $phone)
+
+                                            @if(isset($location->phones))
+
+                                                @if($location->phones != null)
+                                                    
+                                                    @if(count($location->phones) > 0)
+
+                                                        @foreach($location->phones as $phone)
                                                         @php 
                                                         $phones ='';
                                                         $phones = $phones.$phone->phone_number.','; @endphp
@@ -360,7 +339,6 @@ $(document).ready(function(){
           zoom: zoom
         });
 
-
         
           $.each( locations, function(index, value ){
               mymap.addMarker({
@@ -374,13 +352,19 @@ $(document).ready(function(){
         
     }, 2000);
 
+    var description = "{{ $service->service_description }}";
+    replaced_description = description.replace(/\n/g, "<br />");    
+    $('.service-description').html(replaced_description);
+
     $('.panel-link').on('click', function(e){
         if($(this).hasClass('target-population-link') || $(this).hasClass('target-population-child'))
             return;
         var id = $(this).attr('at');
         console.log(id);
-        $("#category_" +  id).prop( "checked", true );
-        $("#checked_" +  id).prop( "checked", true );
+        // $("#category_" +  id).prop( "checked", true );
+        // $("#checked_" +  id).prop( "checked", true );
+        selected_taxonomy_ids = id.toString();
+        $("#selected_taxonomies").val(selected_taxonomy_ids);
         $("#filter").submit();
     });
     

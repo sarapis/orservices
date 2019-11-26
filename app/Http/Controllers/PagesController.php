@@ -14,6 +14,7 @@ use App\Taxonomy;
 use App\Address;
 use App\Area;
 use App\Metafilter;
+use App\AutoSyncAirtable;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Session;
@@ -154,8 +155,9 @@ class PagesController extends Controller
         $airtables = Airtables::all();
         $csvs = CSV_Source::all();
         $source_data = Source_data::find(1);
+        $autosync = AutoSyncAirtable::find(1);
 
-        return view('backEnd.datasync', compact('airtables', 'csvs', 'source_data'));
+        return view('backEnd.datasync', compact('airtables', 'csvs', 'source_data', 'autosync'));
     }
 
     public function export()

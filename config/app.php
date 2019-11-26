@@ -198,6 +198,7 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,
 
         Chumper\Zipper\ZipperServiceProvider::class,
+
     ],
 
     /*

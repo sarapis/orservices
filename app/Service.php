@@ -46,16 +46,13 @@ class Service extends Model
 
     public function taxonomy()
     {
-        $this->primaryKey='service_recordid';
-        
         return $this->belongsToMany('App\Taxonomy', 'service_taxonomy', 'service_recordid', 'taxonomy_id');
 
     }
 
     public function phone()
     {
-        $this->primaryKey='service_recordid';
-
+       
         return $this->belongsToMany('App\Phone', 'service_phone', 'service_recordid', 'phone_recordid');
 
     }
@@ -70,7 +67,7 @@ class Service extends Model
     public function contact()
     {
 
-        $this->primaryKey='service_recordid';
+        // $this->primaryKey='service_recordid';
 
         return $this->belongsToMany('App\Contact', 'service_contact', 'service_recordid', 'contact_recordid');
     }

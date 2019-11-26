@@ -139,6 +139,7 @@ Alt Taxonomy
                           <div class="table-responsive" id="list_tb_open_term" style="overflow-y: scroll;height: 50%;">
                           </div>
                           <input type="hidden" id="alt_taxonomy_id" name="alt_taxonomy_id">
+                          <input type="hidden" id="checked_terms" name="checked_terms">
                       </div>                      
 
                       <div class="modal-footer">
@@ -182,10 +183,16 @@ $(document).ready(function() {
         "searching": false,
         "ordering": true,
         "info": false,
-        "autoWidth": true
+        "autoWidth": true,
+        "stateSave": true
     } );
 } );
 </script>
+
+<link type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.16/sl-1.2.5/datatables.min.css" rel="stylesheet" />
+<link type="text/css" href="https://gyrocode.github.io/jquery-datatables-checkboxes/1.2.11/css/dataTables.checkboxes.css" rel="stylesheet" />
+<script src="https://cdn.datatables.net/v/dt/dt-1.10.16/sl-1.2.5/datatables.min.js"></script>
+<script type="text/javascript" src="https://gyrocode.github.io/jquery-datatables-checkboxes/1.2.11/js/dataTables.checkboxes.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.10.16/sorting/custom-data-source/dom-checkbox.js"></script>
 <script src="{{asset('js/alt_taxonomy_ajaxscript.js')}}"></script>
 @endsection

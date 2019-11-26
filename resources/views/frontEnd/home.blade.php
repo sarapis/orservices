@@ -24,6 +24,17 @@ Home
         font-family: "Material Design Iconic" !important;
         font-size: 16px;
     }
+    .glyphicon-plus:before {
+        display: inline-block;
+        text-align: center;
+        width: 20px;
+        height: 20px;
+        border: solid 1px #fff;
+        border-radius: 50%;
+        background-color: orange;
+        color: white;
+    }
+
 </style>
 
 <link href="{{asset('css/treeview.css')}}" rel="stylesheet">
@@ -75,56 +86,92 @@ Home
                     <div class="col-lg-2 col-md-2"></div>
                     <div class="col-lg-8 col-md-8 col-sm-12 col-12">
                         <div id="accordion">
+                            <input type="hidden" id="selected_taxonomies" name="selected_taxonomies">
                             <div class="row">
                             @php
                                 $c = 0;
                             @endphp
-                            @if(count($grandparent_taxonomies) > 0)
-                                @foreach(array_chunk($grandparent_taxonomies, count($grandparent_taxonomies) / 2) as  $key1 => $chunk)
-                                    <div class="col-12 col-md-6 col-lg-6 col-sm-12">
-                                        @foreach($chunk as $key2 => $grandparent_taxonomy)
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <a class="card-link @if($c != 0) collapsed @endif " data-toggle="collapse" href="#collapse{{$c}}"></a>
-                                                <a class="card-link taxonomy-link" at="{{str_replace(' ', '_', $grandparent_taxonomy)}}">{{$grandparent_taxonomy}}</a>
-                                            </div>
-                                            <div id="collapse{{$c}}" class="collapse @if($c++ == 0) show @endif" data-parent="#accordion">
-                                                <div class="card-body">
-                                                    <ul class="tree1">
-                                                        @foreach($parent_taxonomies as $parent_taxonomy)
-                                                            @php $flag = 'false'; @endphp
-                                                            @foreach($taxonomies->sortBy('taxonomy_name') as $key => $child)
-                                                                @if($parent_taxonomy == $child->taxonomy_parent_name && $grandparent_taxonomy == $child->taxonomy_grandparent_name)
-                                                                @if($flag == 'false')                               
+                            @if(count($taxonomy_tree) > 0)
+                                <div class="col-12 col-md-6 col-lg-6 col-sm-12">
+                                    @foreach($taxonomy_tree as $key2 => $grandparent_taxonomy)
+                                        @php $grand_parentscount = $grandparent_taxonomy['service_count']; @endphp
+                                        @if ($key2 % 2 == 0)
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <a class="card-link @if($c != 0) collapsed @endif " data-toggle="collapse" href="#collapse{{$c}}"></a>
+                                                    <a class="grand_taxonomy card-link taxonomy-link" href="javascript:void(0);">{{$grandparent_taxonomy['alt_taxonomy_name']}}  ({{$grand_parentscount}})</a>
+                                                </div>
+                                                <div id="collapse{{$c}}" class="collapse @if($c++ == 0) show @endif" data-parent="#accordion">
+                                                    <div class="card-body">
+                                                        <ul class="tree1">
+                                                            @foreach($grandparent_taxonomy['parent_taxonomies'] as $key3 => $parent_taxonomy)
+                                                                @if ($parent_taxonomy['child_taxonomies'] != "")
                                                                 <li>
-                                                                    <a at="{{str_replace(' ', '_', $grandparent_taxonomy)}}_{{str_replace(' ', '_', $parent_taxonomy)}}" class="home-category">{{$parent_taxonomy}}</a>
+                                                                    <a class="parent_taxonomy" href="javascript:void(0);">{{$parent_taxonomy['parent_taxonomy']}}</a>
                                                                     
-                                                                    <ul>
-                                                                    @php $flag = 'true'; @endphp
-                                                                    @endif
-                                                                        @if($grandparent_taxonomy == $child->taxonomy_grandparent_name && $parent_taxonomy == $child->taxonomy_parent_name)
-                                                                        <li>
-                                                                            <a at="{{$child->taxonomy_recordid}}" class="home-category">{{ $child->taxonomy_name }}</a>
-                                                                        </li>
-                                                                        @endif
+                                                                        <ul>
+                                                                            @foreach($parent_taxonomy['child_taxonomies'] as $key4 => $child_taxonomy)
+                                                                                <li>
+                                                                                    <a class="child_node" href="javascript:void(0);"  value="alt_{{$key2}}_parent_{{$key3}}_child_{{$child_taxonomy->taxonomy_id}}">{{$child_taxonomy->taxonomy_name}}</a>
+                                                                                </li>
+                                                                            @endforeach
+                                                                        </ul>
+                                                                    
+                                                                </li>
+                                                                @else
+                                                                <li>
+                                                                    <a class="child_node" href="javascript:void(0);" value="alt_{{$key2}}_child_{{$parent_taxonomy['parent_taxonomy']->taxonomy_id}}">{{$parent_taxonomy['parent_taxonomy']->taxonomy_name}}</a>
+                                                                </li>
                                                                 @endif
                                                             @endforeach
-                                                                @if ($flag == 'true')
-                                                                    </ul>
-
-                                                                </li>
-                                                                @endif   
-                                                        @endforeach
-                                                    </ul>
+                                                        </ul>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        @endforeach
-                                    </div>
-                                @endforeach
+                                        @endif
+                                    @endforeach
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-6 col-sm-12">
+                                    @foreach($taxonomy_tree as $key2 => $grandparent_taxonomy)
+                                        @php $grand_parentscount = $grandparent_taxonomy['service_count']; @endphp
+                                        @if ($key2 % 2 == 1)
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <a class="card-link @if($c != 0) collapsed @endif " data-toggle="collapse" href="#collapse{{$c}}"></a>
+                                                    <a class="grand_taxonomy card-link taxonomy-link" href="javascript:void(0);">{{$grandparent_taxonomy['alt_taxonomy_name']}}  ({{$grand_parentscount}})</a>
+                                                </div>
+                                                <div id="collapse{{$c}}" class="collapse @if($c++ == 0) show @endif" data-parent="#accordion">
+                                                    <div class="card-body">
+                                                        <ul class="tree1">
+                                                            @foreach($grandparent_taxonomy['parent_taxonomies'] as $key3 => $parent_taxonomy)
+                                                                @if ($parent_taxonomy['child_taxonomies'] != "")
+                                                                <li>
+                                                                    <a class="parent_taxonomy" href="javascript:void(0);">{{$parent_taxonomy['parent_taxonomy']}}</a>
+                                                                    
+                                                                        <ul>
+                                                                            @foreach($parent_taxonomy['child_taxonomies'] as $key4 => $child_taxonomy)
+                                                                                <li>
+                                                                                    <a class="child_node" href="javascript:void(0);"  value="alt_{{$key2}}_parent_{{$key3}}_child_{{$child_taxonomy->taxonomy_id}}">{{$child_taxonomy->taxonomy_name}}</a>
+                                                                                </li>
+                                                                            @endforeach
+                                                                        </ul>
+                                                                    
+                                                                </li>
+                                                                @else
+                                                                <li>
+                                                                    <a class="child_node" href="javascript:void(0);" value="alt_{{$key2}}_child_{{$parent_taxonomy['parent_taxonomy']->taxonomy_id}}">{{$parent_taxonomy['parent_taxonomy']->taxonomy_name}}</a>
+                                                                </li>
+                                                                @endif
+                                                            @endforeach
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
                             @endif
                             </div>
-
                         </div>  
                     </div>
                 </div>
@@ -213,19 +260,44 @@ Home
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
 $(document).ready(function(){
-    $('.home-category').on('click', function(e){
-        var id = $(this).attr('at');
-        console.log(id);
-        $("#category_" +  id).prop( "checked", true );
-        $("#checked_" +  id).prop( "checked", true );
+    $('.grand_taxonomy').on('click', function(e){
+        var childs = $('.child_node', $(this).parent().parent());
+        console.log(childs.length);
+        var selected_taxonomy_ids = [];
+        for (var i = 0; i < childs.length; i ++) {
+            selected_taxonomy_ids.push(childs.eq(i).attr('value'));
+        }
+        $('#selected_taxonomies').val(selected_taxonomy_ids.toString());
         $("#filter").submit();
     });
-    $('.card-link.taxonomy-link').on('click', function(e){
-        var id = $(this).attr('at');
-        console.log(id);
-        $("#category_" +  id).prop( "checked", true );
+    $('.parent_taxonomy').on('click', function(e){
+        var childs = $('.child_node', $(this).parent().parent());
+        console.log(childs.length);
+        var selected_taxonomy_ids = [];
+        for (var i = 0; i < childs.length; i ++) {
+            selected_taxonomy_ids.push(childs.eq(i).attr('value'));
+        }
+        $('#selected_taxonomies').val(selected_taxonomy_ids.toString());
         $("#filter").submit();
     });
+    $('.child_node').on('click', function(e){
+        selected_taxonomy_ids = $(this).attr('value');
+        $('#selected_taxonomies').val(selected_taxonomy_ids);       
+        $("#filter").submit();
+    });
+    // $('.card-link.taxonomy-link').on('click', function(e){
+    //     console.log($(this).attr('at'));
+    //     var id = $(this).attr('at').replace('/', 'AAA').replace('(', 'BBB').replace(')', 'CCC');
+    //     console.log(id);        
+
+    //     $("#category_" +  id).prop( "checked", true );
+    //     $("#filter").submit();
+    // });
+    // $('.child-link').on('click', function(e){
+    //     var id = $(this).attr('at');
+    //     $('#category_'+id).prop('checked', true);
+    //     $("#filter").submit();
+    // });
     // $('.branch').each(function(){
     //     if($('ul li', $(this)).length == 0)
     //         $(this).hide();
