@@ -1,0 +1,93 @@
+// Name:            Card-Well
+//
+// Component:       `Card-well`
+//
+// Modifiers:       `well-primary`
+//                  `well-success`
+//                  `well-info`
+//                  `well-warning`
+//                  `well-danger`
+//
+// Markup:
+//
+// <!-- well -->
+// <div class="well">...</div>
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+$well-primary-color: $color-white !default;
+$well-primary-bg: $brand-primary !default;
+
+$well-success-color: $color-white !default;
+$well-success-bg: $brand-success !default;
+
+$well-info-color: $color-white !default;
+$well-info-bg: $brand-info !default;
+
+$well-warning-color: $color-white !default;
+$well-warning-bg: $brand-warning !default;
+
+$well-danger-color: $color-white !default;
+$well-danger-bg: $brand-danger !default;
+
+// Mixins
+// ========================================================================
+
+@mixin card-well-styles-variant($color, $bg){
+  color: $color;
+  background-color: $bg;
+}
+
+// Component: Well
+// ========================================================================
+.card-well {
+  background-color: $gray-lightest;
+  border: 1px solid $well-border;
+}
+
+.card-well-lg {
+  border-radius: $border-radius-large;
+}
+
+// Color Modifier
+// ========================================================================
+
+// Modifier: `well-primary`
+// -------------------------
+
+.card-well-primary {
+  @include card-well-styles-variant($well-primary-color, $well-primary-bg);
+}
+
+// Modifier: `well-success`
+// -------------------------
+
+.card-well-success {
+  @include card-well-styles-variant($well-success-color, $well-success-bg);
+}
+
+// Modifier: `well-info`
+// -------------------------
+
+.card-well-info {
+  @include card-well-styles-variant($well-info-color, $well-info-bg);
+}
+
+// Modifier: `well-warning`
+// -------------------------
+
+.card-well-warning {
+  @include card-well-styles-variant($well-warning-color, $well-warning-bg);
+}
+
+// Modifier: `well-danger`
+// -------------------------
+
+.card-well-danger {
+  @include card-well-styles-variant($well-danger-color, $well-danger-bg);
+}
+
+

@@ -1,0 +1,12 @@
+<ul class="child-ul">
+@foreach($childs->sortBy('taxonomy_name') as $child)
+	@if($grandparent_taxonomy == $child->taxonomy_grandparent_name)
+	<li class="nobranch">
+          <input type="checkbox" id="category_{{$child->taxonomy_recordid}}" name="childs[]" value="{{$child->taxonomy_recordid}}"  class="regular-checkbox" @if( ( isset($parent_taxonomy_names) && in_array($child->taxonomy_parent_name, $parent_taxonomy_names)) || in_array($child->taxonomy_recordid, $child_taxonomy)) checked @endif/> <span class="inputChecked">{{$child->taxonomy_name}}</span>
+		@if(count($child->childs))
+            @include('layouts.manageChild1',['childs' => $child->childs])
+        @endif
+	</li>
+	@endif
+@endforeach
+</ul>

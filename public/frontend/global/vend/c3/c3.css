@@ -1,0 +1,244 @@
+.c3 svg
+{
+    font: 10px sans-serif;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+.c3 path,
+.c3 line
+{
+    fill: none;
+    stroke: #9e9e9e;
+}
+
+.c3 text
+{
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+.c3-legend-item-tile,
+.c3-xgrid-focus,
+.c3-ygrid,
+.c3-event-rect,
+.c3-bars path
+{
+    shape-rendering: crispEdges;
+}
+
+.c3-chart-arc path
+{
+    stroke: #fff;
+}
+
+.c3-chart-arc text
+{
+    font-size: 13px; 
+
+    fill: #fff;
+}
+
+.c3-grid line
+{
+    stroke: #9e9e9e;
+}
+
+.c3-grid text
+{
+    fill: #aaa;
+}
+
+.c3-xgrid,
+.c3-ygrid
+{
+    stroke-dasharray: 3 3;
+}
+
+.c3-text.c3-empty
+{
+    font-size: 2em; 
+
+    fill: #757575;
+}
+
+.c3-line
+{
+    stroke-width: 1px;
+}
+
+.c3-circle._expanded_
+{
+    stroke-width: 1px;
+    stroke: white;
+}
+
+.c3-selected-circle
+{
+    fill: white;
+    stroke-width: 2px;
+}
+
+.c3-bar
+{
+    stroke-width: 0;
+}
+
+.c3-bar._expanded_
+{
+    fill-opacity: .75;
+}
+
+.c3-target.c3-focused
+{
+    opacity: 1;
+}
+
+.c3-target.c3-focused path.c3-line,
+.c3-target.c3-focused path.c3-step
+{
+    stroke-width: 2px;
+}
+
+.c3-target.c3-defocused
+{
+    opacity: .3 !important;
+}
+
+.c3-region
+{
+    fill: steelblue;
+    fill-opacity: .1;
+}
+
+.c3-brush .extent
+{
+    fill-opacity: .1;
+}
+
+.c3-legend-item
+{
+    font-size: 12px;
+}
+
+.c3-legend-item-hidden
+{
+    opacity: .15;
+}
+
+.c3-legend-background
+{
+    opacity: .75;
+
+    fill: white;
+    stroke: lightgray;
+    stroke-width: 1;
+}
+
+.c3-title
+{
+    font: 14px sans-serif;
+}
+
+.c3-tooltip-container
+{
+    z-index: 10;
+}
+
+.c3-tooltip
+{
+    empty-cells: show;
+    border-spacing: 0;
+    border-collapse: collapse;
+
+    opacity: .95; 
+    background-color: #fff;
+    -webkit-box-shadow: 0 2px 6px rgba(0, 0, 0, .05);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .05);
+}
+
+.c3-tooltip tr
+{
+    border: 1px solid rgba(189, 189, 189, .8);
+}
+
+.c3-tooltip th
+{
+    font-size: 14px;
+    font-weight: 400;
+
+    padding: 2px 5px;
+
+    text-align: left; 
+
+    background-color: #eee;
+}
+
+.c3-tooltip td
+{
+    font-size: 13px;
+
+    padding: 3px 6px;
+
+    border-left: 1px dotted rgba(189, 189, 189, .8); 
+    background-color: #fff;
+}
+
+.c3-tooltip td > span
+{
+    display: inline-block;
+
+    width: 10px;
+    height: 10px;
+    margin-right: 6px;
+}
+
+.c3-tooltip td.value
+{
+    text-align: right;
+}
+
+.c3-area
+{
+    opacity: .2; 
+
+    stroke-width: 0;
+}
+
+.c3-chart-arcs-title
+{
+    font-size: 1.3em; 
+
+    dominant-baseline: middle;
+}
+
+.c3-chart-arcs .c3-chart-arcs-background
+{
+    fill: #bdbdbd;
+    stroke: none;
+}
+
+.c3-chart-arcs .c3-chart-arcs-gauge-unit
+{
+    font-size: 16px; 
+
+    fill: #000;
+}
+
+.c3-chart-arcs .c3-chart-arcs-gauge-max
+{
+    fill: #757575;
+}
+
+.c3-chart-arcs .c3-chart-arcs-gauge-min
+{
+    fill: #757575;
+}
+
+.c3-chart-arc .c3-gauge-value
+{
+    fill: #000;
+    /*  font-size: 28px !important;*/
+}

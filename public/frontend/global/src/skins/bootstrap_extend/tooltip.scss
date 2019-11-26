@@ -1,0 +1,108 @@
+// Name:            Tooltip
+//
+// Component:       `tooltip`
+//
+// Modifiers:       `tooltip-primary`
+//                  `tooltip-success`
+//                  `tooltip-info`
+//                  `tooltip-warning`
+//                  `tooltip-danger`
+//                  `tooltip-rotate`
+//                  `tooltip-scale`
+//
+// Markup:
+//
+// <!-- tooltip -->
+// <div class="tooltip">
+//   <div class="tooltip-arrow"></div>
+//   <div class="tooltip-inner"></div>
+// </div>
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$tooltip-primary-color:                $inverse !default;
+$tooltip-primary-bg:                   $brand-primary !default;
+
+$tooltip-success-color:                $inverse !default;
+$tooltip-success-bg:                   $brand-success !default;
+
+$tooltip-info-color:                   $inverse !default;
+$tooltip-info-bg:                      $brand-info !default;
+
+$tooltip-warning-color:                $inverse !default;
+$tooltip-warning-bg:                   $brand-warning !default;
+
+$tooltip-danger-color:                 $inverse !default;
+$tooltip-danger-bg:                    $brand-danger !default;
+
+// // Mixins
+// // ========================================================================
+
+// @mixin tooltip-variant($color, $bg){
+//   .tooltip-inner {
+//     color: $color;
+//     background-color: $bg;
+//   }
+
+//   &.bs-tether-element-attached-top .tooltip-arrow,
+//   &.tooltip-top .tooltip-arrow {
+//     border-bottom-color: $bg;
+//   }
+
+//   &.bs-tether-element-attached-right .tooltip-arrow,
+//   &.tooltip-right .tooltip-arrow {
+//     border-left-color: $bg;
+//   }
+
+//   &.bs-tether-element-attached-bottom .tooltip-arrow,
+//   &.tooltip-bottom .tooltip-arrow {
+//     border-top-color: $bg;
+//   }
+
+//   &.bs-tether-element-attached-left .tooltip-arrow,
+//   &.tooltip-left .tooltip-arrow {
+//     border-right-color: $bg;
+//   }
+// }
+
+// Color Modifier
+// ========================================================================
+
+// Modifier: `tooltip-primary`
+// -------------------------
+
+.tooltip-primary {
+  @include tooltip-variant($tooltip-primary-color, $tooltip-primary-bg);
+}
+
+// Modifier: `tooltip-success`
+// -------------------------
+
+.tooltip-success {
+  @include tooltip-variant($tooltip-success-color, $tooltip-success-bg);
+}
+
+// Modifier: `tooltip-info`
+// -------------------------
+
+.tooltip-info {
+  @include tooltip-variant($tooltip-info-color, $tooltip-info-bg);
+}
+
+// Modifier: `tooltip-warning`
+// -------------------------
+
+.tooltip-warning {
+  @include tooltip-variant($tooltip-warning-color, $tooltip-warning-bg);
+}
+
+// Modifier: `tooltip-danger`
+// -------------------------
+
+.tooltip-danger {
+  @include tooltip-variant($tooltip-danger-color, $tooltip-danger-bg);
+}
+
+

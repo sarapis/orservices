@@ -1,0 +1,12 @@
+.cover-quote {
+  border-left: none;
+}
+
+.cover-quote.blockquote-reverse {
+  border-right: none;
+}
+
+.cover-iframe {
+  border: 0 none;
+}
+/*# sourceMappingURL=cover.css.map */

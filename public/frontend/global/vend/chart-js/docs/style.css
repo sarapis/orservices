@@ -1,0 +1,17 @@
+a.anchorjs-link {
+  z-index: 999;
+  font-weight: 400;
+  color: rgba(65, 131, 196, .1);
+  text-decoration: none;
+  -webkit-transition: color 100ms ease-out;
+       -o-transition: color 100ms ease-out;
+          transition: color 100ms ease-out;
+}
+
+a.anchorjs-link:hover {
+  color: rgba(65, 131, 196, 1);
+}
+
+sup {
+  font-size: .75em !important;
+}

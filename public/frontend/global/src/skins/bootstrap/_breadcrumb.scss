@@ -1,0 +1,14 @@
+.breadcrumb {
+  background-color: $breadcrumb-bg;
+
+  > li {
+    
+    + li::before {
+      color: $breadcrumb-divider-color;
+    }
+  }
+
+  > .active {
+    color: $breadcrumb-active-color;
+  }
+}
