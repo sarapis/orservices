@@ -135,11 +135,12 @@ Meta Filter
                                         <option value="Taxonomy">Taxonomy</option>
                                         <option value="Postal_code">Postal code</option>
                                         <option value="Service_area">Service area</option>
+                                        <option value="Service_status">Service status</option>
                                       </select>
                                     </div>
                                   </div>
                                   <div class="form-group">
-                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Select Method</label>
+                                    <label id="select_mothod_label" class="control-label col-md-3 col-sm-3 col-xs-12">Select Method</label>
                                     <div class="col-md-6 col-sm-6 col-xs-12" id="method">
                                       <select class="form-control" name="method">
                                         <option value="Checklist">Checklist</option>
@@ -292,4 +293,15 @@ Meta Filter
 @section('scripts')
 
 <script src="{{asset('js/operation_ajaxscript.js')}}"></script>
+<script>
+  $('select[name="facet"]').on('change', function(e) {
+    var value = e.target.value;
+    if (value == "Service_status") {
+      $('select[name="method"]').val('Checklist');
+      $('div[id="method"]').hide();
+      $('label[id="select_mothod_label"]').hide();
+      $('#step-3').hide();
+    }
+  });
+ </script> 
 @endsection

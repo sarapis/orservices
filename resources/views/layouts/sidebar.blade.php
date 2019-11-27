@@ -1,5 +1,3 @@
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<!-- <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> -->
 <style>
     .pac-logo:after{
       display: none;
@@ -82,6 +80,9 @@
     .select2-container{
         width: 100% !important;
     }
+    .select2-search__field {
+        width: 100% !important;
+    }
     @media (max-width: 768px) {
         .mobile-btn{
             display: block;
@@ -90,7 +91,26 @@
             display: none;
         }
     }
+
+    @media (max-width: 375px) {
+        .navbar-brand-text{
+            display: block;
+        }
+        .navbar-header{
+            height: 90px;
+        }
+    }
+
+    .jstree-themeicon {
+        display: none !important;
+    } 
+
+    #mCSB_1_container {
+        overflow: scroll !important;
+    }
+
 </style>
+
 <nav id="sidebar">
     <ul class="list-unstyled components pt-0 mb-0 sidebar-menu"> 
         <li class="option-side">
@@ -104,76 +124,35 @@
         </li>
     </ul>
 
-       <ul class="list-unstyled components pt-0"> 
-
+       <ul class="list-unstyled components pt-0">
+            
+            @if ((Request::path() == 'services') || (Request::segment(1) == 'search') || (Request::segment(1) == 'service') || (Request::segment(1) == 'organization') || (Request::segment(1) == 'organizations'))
             <li class="option-side">
                 <a href="#target_populations" class="text-side" data-toggle="collapse" aria-expanded="false">Types of People</a>
                 <ul class="collapse list-unstyled option-ul" id="target_populations">
                     <li>
-                        <select class="js-example-basic-multiple form-control" multiple data-plugin="select2" id="target_multiple" name="target_populations[]">
-                           @foreach($target_taxonomies as $child)
-                              
-                                    <option value="{{$child->taxonomy_recordid}}" @if((isset($target_populations) && in_array($child->taxonomy_recordid, $target_populations))) selected @endif>{{$child->taxonomy_name}}</option>
-                               
+                        <select class="js-example-basic-multiple js-example-placeholder-multiple form-control" multiple data-plugin="select2" id="target_multiple" name="target_populations[]">                                                  
+                            @foreach($target_taxonomies as $child)
+                                <option value="{{$child->taxonomy_recordid}}" @if((isset($target_populations) && in_array($child->taxonomy_recordid, $target_populations))) selected @endif>{{$child->taxonomy_name}}</option>
                             @endforeach
-                           
-                            
                         </select>
                     </li>
                 </ul>
             </li>
             <li class="option-side">
-                <a href="#projectcategory" class="text-side" data-toggle="collapse" aria-expanded="true">Types of Services</a>
-                 
+                <a href="#projectcategory" class="text-side" data-toggle="collapse" aria-expanded="false">Types of Services</a>
+                
                 <ul class="collapse list-unstyled option-ul show" id="projectcategory">
-                    @foreach($grandparent_taxonomies as $key => $grandparent_taxonomy) 
-                    <ul class="tree2">
-                        <li class="altbranch">
-                            <input type="checkbox" id="category_{{str_replace(' ', '_', $grandparent_taxonomy)}}" class="regular-checkbox" name="grandparents[]" value="{{$grandparent_taxonomy}}" @if(  isset($grandparent_taxonomy_names) && in_array($grandparent_taxonomy, $grandparent_taxonomy_names)) checked @endif> <span class="inputChecked">{{$grandparent_taxonomy}}</span>
-                            <ul class="tree2">
-                               
-                                    @foreach($parent_taxonomies as $parent_taxonomy)
-                                        @php $flag = 'false'; @endphp
-                                        @foreach($taxonomies->sortBy('taxonomy_name') as $key => $child)
-                                            @if($parent_taxonomy == $child->taxonomy_parent_name && $grandparent_taxonomy == $child->taxonomy_grandparent_name)
-                                             @if($flag == 'false')                               
-                                                <li>
-                                                        <input type="checkbox" class="regular-checkbox" name="checked_grandparents[]" value="{{$grandparent_taxonomy}}" @if( isset($parent_taxonomy_names) && in_array($parent_taxonomy, $parent_taxonomy_names) && isset($checked_grandparents) && in_array($grandparent_taxonomy, $checked_grandparents)) checked @endif style="display: none;" id="checked_{{str_replace(' ', '_', $grandparent_taxonomy)}}_{{str_replace(' ', '_', $parent_taxonomy)}}">
-
-                                                        <input type="checkbox" class="regular-checkbox" name="parents[]" value="{{$parent_taxonomy}}" @if( isset($parent_taxonomy_names) && in_array($parent_taxonomy, $parent_taxonomy_names) && isset($checked_grandparents) && in_array($grandparent_taxonomy, $checked_grandparents)) checked @endif id="category_{{str_replace(' ', '_', $grandparent_taxonomy)}}_{{str_replace(' ', '_', $parent_taxonomy)}}">
-                                                        <span class="inputChecked">{{$parent_taxonomy}}</span>
-                                                    
-                                                    <ul class="child-ul">
-                                                    @php $flag = 'true'; @endphp
-                                                    @endif
-                                                        @if($grandparent_taxonomy == $child->taxonomy_grandparent_name && $parent_taxonomy == $child->taxonomy_parent_name)
-                                                        <li class="nobranch">
-                                                              <input type="checkbox" id="category_{{$child->taxonomy_recordid}}" name="childs[]" value="{{$child->taxonomy_recordid}}"  class="regular-checkbox" @if( isset($parent_taxonomy_names) && in_array($child->taxonomy_parent_name, $parent_taxonomy_names) && in_array($child->taxonomy_recordid, $child_taxonomy)) checked @endif/> <span class="inputChecked">{{$child->taxonomy_name}}</span>
-                                                        </li>
-                                                        @endif
-                                                     
-                                                @endif
-                                        @endforeach
-                                            @if ($flag == 'true')
-                                                </ul>
-
-                                            </li>
-                                             @endif   
-                                    @endforeach
-                                
-                            </ul>
-                        </li>
-                    </ul>
-                    @endforeach
+                    <div id="sidebar_tree">
+                    </div>
                 </ul>
             </li>
-            
             <li class="option-side mobile-btn">
-                <a href="#export" class="text-side" data-toggle="collapse" aria-expanded="false">Print/Export</a>
+                <a href="#export" class="text-side" data-toggle="collapse" aria-expanded="false">Download CSV/PDF</a>
                 <ul class="collapse list-unstyled option-ul" id="export">
                     <li class="nobranch">
-                        <a class="dropdown-item" href="javascript:void(0)" role="menuitem">Expert CSV</a>
-                        <a class="dropdown-item" href="javascript:void(0)" role="menuitem">Print PDF action</a>
+                        <a class="dropdown-item download_csv" href="javascript:void(0)" role="menuitem">Export CSV</a>
+                        <a class="dropdown-item download_pdf" href="javascript:void(0)" role="menuitem">Download PDF</a>
                     </li>   
                 </ul>
             </li>
@@ -197,6 +176,7 @@
                     </li>   
                 </ul>
             </li>
+            @endif
             <input type="hidden" name="paginate" id="paginate" @if(isset($pagination)) value="{{$pagination}}" @else value="10" @endif>
             <input type="hidden" name="sort" id="sort" @if(isset($sort)) value="{{$sort}}" @endif>
 
@@ -205,15 +185,133 @@
             <input type="hidden" name="pdf" id="pdf">
 
             <input type="hidden" name="csv" id="csv">
-
+            <input type="hidden" id="selected_taxonomies" name="selected_taxonomies">
           
     </ul>
 
 </nav>
 </form>
 <script src="{{asset('js/treeview2.js')}}"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/jstree.min.js"></script>
+
 <script>
 $(document).ready(function(){
+    
+    var tree_data_list = [];
+    
+    var taxonomy_tree = <?php print_r(json_encode($taxonomy_tree)) ?>;
+    var alt_key;
+    var urlParams = new URLSearchParams(window.location.search);
+    var selected_taxonomies = [];
+    if(urlParams.has('selected_taxonomies')) {
+        selected_taxonomies = urlParams.get('selected_taxonomies').split(',');
+    }
+
+    
+    if (typeof taxonomy_tree == 'array') {
+        for (alt_key = 0; alt_key < taxonomy_tree.length; alt_key++) {
+            var alt_data = {};
+            var alt_tree = taxonomy_tree[alt_key];
+            alt_data.text = alt_tree.alt_taxonomy_name;
+            alt_data.state = {};
+            alt_data.id = 'alt_' + alt_key;
+            var alt_tree_parent_taxonomies = [];
+            if (alt_tree.parent_taxonomies != undefined) {
+                alt_tree_parent_taxonomies = alt_tree.parent_taxonomies;
+            }
+
+            var parent_data_list = [];
+            for (parent_key = 0; parent_key < alt_tree_parent_taxonomies.length; parent_key++) {
+                var parent_tree = alt_tree_parent_taxonomies[parent_key];
+                var parent_data = {};
+                
+                if (parent_tree.parent_taxonomy != undefined) {
+                    if (typeof(parent_tree.parent_taxonomy) == "string") {
+                        parent_data.text = parent_tree.parent_taxonomy;
+                        parent_data.id = alt_data.id + '_parent_' + parent_key;
+                    }
+                    else {
+                        parent_data.text = parent_tree.parent_taxonomy.taxonomy_name;
+                        parent_data.id = alt_data.id + '_child_' + parent_tree.parent_taxonomy.taxonomy_recordid;
+                        parent_data.state = {};
+                        if (selected_taxonomies.indexOf(parent_data.id) > -1) {
+                            parent_data.state.selected = true;
+                        }
+                    }
+                    var parent_tree_child_taxonomies = [];
+                    if (parent_tree.child_taxonomies != undefined) {
+                        parent_tree_child_taxonomies = parent_tree.child_taxonomies;
+                    }
+                    var child_data_list = [];
+                    for (child_key = 0; child_key < parent_tree_child_taxonomies.length; child_key++) {
+                        var child_tree = parent_tree_child_taxonomies[child_key];
+                        var child_data = {};
+                        if (child_tree != undefined) {
+                            child_data.text = child_tree.taxonomy_name;
+                            child_data.state = {};
+                            child_data.id = parent_data.id + '_child_' + child_tree.taxonomy_recordid;
+
+                            if (selected_taxonomies.indexOf(child_data.id) > -1) {
+                                child_data.state.selected = true;
+                            }
+                            child_data_list.push(child_data);
+                        }
+                    }
+                    if (child_data_list.length != 0) {
+                        parent_data.children = child_data_list;
+                    }
+                    parent_data_list.push(parent_data);
+                }
+            }   
+            if (parent_data_list.length != 0) {
+                alt_data.children = parent_data_list;
+            }
+            tree_data_list[alt_key] = alt_data;
+        }
+    } else {
+
+        for (parent_key = 0; parent_key < taxonomy_tree.parent_taxonomies.length; parent_key ++) {
+            var parent_data = {};
+            parent_data.id = 'child_' + taxonomy_tree.parent_taxonomies[parent_key].taxonomy_recordid;
+            parent_data.text = taxonomy_tree.parent_taxonomies[parent_key].taxonomy_name;
+            parent_data.state = {};
+            if (selected_taxonomies.indexOf(parent_data.id) > -1) {
+                parent_data.state.selected = true;
+            }
+            // var parent_tree_child_taxonomies = taxonomy_tree.parent_taxonomies[parent_key].child_taxonomies;
+            // var child_data_list = [];
+            // for (child_key = 0; child_key < parent_tree_child_taxonomies.length; child_key++) {
+            //     var child_tree = parent_tree_child_taxonomies[child_key];
+            //     var child_data = {};
+            //     if (child_tree != undefined) {
+            //         child_data.text = child_tree.taxonomy_name;
+            //         child_data.state = {};
+            //         child_data.id = parent_data.id + '_child_' + child_tree.taxonomy_recordid;
+
+            //         if (selected_taxonomies.indexOf(child_data.id) > -1) {
+            //             child_data.state.selected = true;
+            //         }
+            //         child_data_list.push(child_data);
+            //     }
+            // }
+            // if (child_data_list.length != 0) {
+            //     parent_data.children = child_data_list;
+            // }
+            tree_data_list[parent_key] = parent_data;
+        }
+    }
+    
+
+     $('#sidebar_tree').jstree({
+        'plugins': ["checkbox", "wholerow"],
+        'core': {
+            select_node: 'sidebar_taxonomy_tree',
+            data: tree_data_list
+        }
+    });
+
+    
+
     $('.regular-checkbox').on('click', function(e){
         $(this).prev().trigger('click');
         $('input', $(this).next().next()).prop('checked',0);
@@ -227,12 +325,12 @@ $(document).ready(function(){
         $("#sort").val($(this).text());
         $("#filter").submit();
     });
-    $('#download_csv').on('click', function(){
+    $('.download_csv').on('click', function(){
         $("#csv").val('csv');
         $("#filter").submit();
         $("#csv").val('');
     });
-    $('#download_pdf').on('click', function(){
+    $('.download_pdf').on('click', function(){
         $("#pdf").val('pdf');
         $("#filter").submit();
         $("#pdf").val('');
@@ -241,39 +339,7 @@ $(document).ready(function(){
 
         $("#filter").submit();
     });
-
-    $('.regular-checkbox').each(function(){
-        if($(this).prop('checked') && $('li', $(this).next().next()).length != 0 && $(this).parent().parent().parent().attr('id') != 'projectcategory'){
-            if($('.indicator', $(this).parent().parent().parent()).eq(0).hasClass('glyphicon-triangle-right'))
-                $('.indicator', $(this).parent().parent().parent()).eq(0).trigger('click');
-            if(!$('.regular-checkbox', $(this).parent().parent().parent()).eq(0).prop('checked'))
-                $('.regular-checkbox', $(this).parent().parent().parent()).eq(0).addClass('minus-checkbox');
-        }
-        if($(this).prop('checked') && $(this).parent().hasClass('nobranch') ){
-            if($('.indicator', $(this).parent().parent().parent()).eq(0).hasClass('glyphicon-triangle-right'))
-                $('.indicator', $(this).parent().parent().parent()).eq(0).trigger('click');
-            if($('.indicator', $(this).parent().parent().parent().parent().parent().parent()).eq(0).hasClass('glyphicon-triangle-right'))
-                $('.indicator', $(this).parent().parent().parent().parent().parent().parent()).eq(0).trigger('click');
-            if(!$('.regular-checkbox', $(this).parent().parent().parent()).eq(1).prop('checked'))
-                $('.regular-checkbox', $(this).parent().parent().parent()).eq(1).addClass('minus-checkbox');
-            if(!$('.regular-checkbox', $(this).parent().parent().parent().parent().parent().parent()).eq(1).prop('checked'))
-                $('.regular-checkbox', $(this).parent().parent().parent().parent().parent().parent()).eq(0).addClass('minus-checkbox');
-        }
-    });
-    // $('.branch').each(function(){
-    //         if($('ul li', $(this)).length == 0)
-    //             $(this).hide();
-    //     }); 
-    // if($('input[checked]', $('#projectcategory')).length > 0){
-    //     $('#projectcategory').prev().trigger('click');
-    // }
-    // $('.indicator').click(function(){
-    //     $('.branch').each(function(){
-    //         if($('ul li', $(this)).length == 0)
-    //             $(this).hide();
-    //     });    
-    // });
-
+  
     function matchCustom(params, data) {
     // If there are no search terms, return all of the data
         if ($.trim(params.term) === '') {
@@ -302,10 +368,22 @@ $(document).ready(function(){
 
     $(document).ready(function() {
         $('.js-example-basic-multiple').select2({
-            matcher: matchCustom
+            matcher: matchCustom,
+            placeholder: "Search here"
         });
     });
-    
+
+    $('#sidebar_tree').on("select_node.jstree deselect_node.jstree", function (e, data) {
+        var all_selected_ids = $('#sidebar_tree').jstree("get_checked");
+        var selected_taxonomy_ids = all_selected_ids.filter(function(id) {
+            return id.indexOf('child_') > -1;
+        });
+        console.log(selected_taxonomy_ids);
+        selected_taxonomy_ids = selected_taxonomy_ids.toString();
+        $("#selected_taxonomies").val(selected_taxonomy_ids);
+        $("#filter").submit();
+    });
+
 });
 </script>
 <style>

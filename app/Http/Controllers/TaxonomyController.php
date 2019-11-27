@@ -8,6 +8,7 @@ use App\Functions\Airtable;
 use App\Taxonomy;
 use App\Servicetaxonomy;
 use App\Alt_taxonomy;
+use App\Airtablekeyinfo;
 use App\Airtables;
 use App\CSV_Source;
 use App\Source_data;
@@ -19,6 +20,14 @@ class TaxonomyController extends Controller
 
     public function airtable($api_key, $base_url)
     {
+
+        $airtable_key_info = Airtablekeyinfo::find(1);
+        if (!$airtable_key_info){
+            $airtable_key_info = new Airtablekeyinfo;
+        }
+        $airtable_key_info->api_key = $api_key;
+        $airtable_key_info->base_url = $base_url;
+        $airtable_key_info->save();
 
         Taxonomy::truncate();
         // $airtable = new Airtable(array(
@@ -45,6 +54,7 @@ class TaxonomyController extends Controller
                 $strtointclass = new Stringtoint();
 
                 $taxonomy->taxonomy_recordid = $strtointclass->string_to_int($record[ 'id' ]);
+                $taxonomy->taxonomy_id = $record[ 'id' ];
                  // $taxonomy->taxonomy_recordid = $record[ 'id' ];
                 $taxonomy->taxonomy_name = isset($record['fields']['name'])?$record['fields']['name']:null;
                 $taxonomy->taxonomy_parent_name = isset($record['fields']['parent_name'])? implode(",", $record['fields']['parent_name']):null;

@@ -117,10 +117,18 @@ Map Settings
               </div>
 
               <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Zoom
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="zoom">Browse Zoom Level
                 </label>
                 <div class="col-md-4 col-sm-4 col-xs-12">
                   <input type="text" name="zoom" class="form-control col-md-7 col-xs-12" value="{{$map->zoom}}" @if($map->active==0) disabled="disabled" @endif>
+                </div>
+              </div>
+
+              <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="zoom">Profile Zoom
+                </label>
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                  <input type="text" name="profile_zoom" class="form-control col-md-7 col-xs-12" value="{{$map->zoom_profile}}" @if($map->active==0) disabled="disabled" @endif>
                 </div>
               </div>
 
@@ -144,11 +152,100 @@ Map Settings
       </div>
     </div>
 
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Geocode</h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+              </li>
+              <li><a class="close-link"><i class="fa fa-close"></i></a>
+              </li>
+            </ul>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <div class="row">              
+              <div class="col-md-8"> 
+                <div class="item form-group">
+                  <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Scan database for geocodable locations
+                  </label>
+                  <div class="col-md-4 col-sm-4 col-xs-12">
+                    <a class="btn btn-primary open-td" href="/scan_ungeocoded_location/" id="scan-btn" style="color: white;">Scan</a>                    
+                  </div>
+                </div> 
+              </div>
+
+              <div class="col-md-8"> 
+                <div class="item form-group">
+                  <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Output number of records with addresses but without latitude/longitude:
+                  </label>
+                  <div class="col-md-4 col-sm-4 col-xs-12">
+                    <h5 id="invalid_location_numbers" style="color: blue; font-style: italic;">
+                      {{$invalid_location_info_count}} locations are invalid.
+                    </h5>
+                    @if ($invalid_location_info_count == $ungeocoded_location_numbers)
+                    <h5 id="ungeocoded_location_numbers" style="color: blue; font-style: italic;">
+                      All valid locations have already been geocoded.
+                    </h5>
+                    @else
+                    <h6 id="ungeocoded_location_numbers" style="color: blue; font-style: italic;">
+                      {{$ungeocoded_location_numbers}} locations have not been geocoded.
+                    </h6>
+                    @endif
+                  </div>
+                </div> 
+              </div>
+
+              <div class="col-md-8"> 
+                <div class="item form-group">
+                  <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Geocode
+                  </label>
+                  <div class="col-md-4 col-sm-4 col-xs-12">
+                    <a class="btn btn-danger open-td" href="/apply_geocode/" id="apply-btn" style="color: white;">Geocode</a>                    
+                  </div>
+                </div> 
+              </div>
+
+              <div class="col-md-8"> 
+                <div class="item form-group">
+                  <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Output Status of Geocoding
+                  </label>
+                  <div class="col-md-4 col-sm-4 col-xs-12">
+                    @if ($recently_geocoded_numbers != 0)
+                    <h5 id="recent_geocoded_number" style="color: blue; font-style: italic;">
+                      {{$recently_geocoded_numbers}} locations have just been geocoded.
+                    </h5>
+                    @else
+                    <h5 id="recent_geocoded_number" style="color: blue; font-style: italic;">
+                      All valid locations have already been geocoded before.
+                    </h5> 
+                    @endif
+                  </div>
+                </div> 
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
 @endsection
 @section('scripts')
 <script src="https://maps.googleapis.com/maps/api/js?key={{$map->api_key}}&callback=initMap"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gmaps.js/0.4.9/gmaps.min.js"></script>
 <script>
+$('#scan-btn').on('click', function(e){
+  e.preventDefault();
+  $("#ungeocoded_location_numbers").css('color', 'forestgreen');
+  $("#invalid_location_numbers").css('color', 'forestgreen');
+});
+// $('#apply-btn').on('click', function(e){
+//   e.preventDefault();
+//   $("#recent_geocoded_number").css('color', 'forestgreen');
+// });
 $(document).ready(function() {
     $('.js-switch').change(function(){
       var on = $('.js-switch').prop('checked');

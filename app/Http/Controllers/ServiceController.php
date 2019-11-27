@@ -13,12 +13,15 @@ use App\Serviceaddress;
 use App\Serviceorganization;
 use App\Servicecontact;
 use App\Servicetaxonomy;
+use App\Alt_taxonomy;
 use App\Serviceschedule;
 use App\Location;
 use App\Airtables;
 use App\CSV_Source;
 use App\Source_data;
 use App\Taxonomy;
+use App\Airtablekeyinfo;
+use App\Detail;
 use App\Map;
 use App\Layout;
 use App\Metafilter;
@@ -33,10 +36,29 @@ class ServiceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    
+
+    public function test_airtable($api_key, $base_url)
+    {
+        // var_dump($api_key);
+        // var_dump($base_url);
+        // var_dump("this is test function for auto sync");
+        var_dump($api_key);
+        var_dump($base_url);
+        $response_text = "this is test function for auto sync";
+        echo $response_text;
+
+        return $response_text;
+    }
 
     public function airtable($api_key, $base_url)
     {
+        $airtable_key_info = Airtablekeyinfo::find(1);
+        if (!$airtable_key_info){
+            $airtable_key_info = new Airtablekeyinfo;
+        }
+        $airtable_key_info->api_key = $api_key;
+        $airtable_key_info->base_url = $base_url;
+        $airtable_key_info->save();
 
         Service::truncate();
         Servicelocation::truncate();
@@ -384,10 +406,12 @@ class ServiceController extends Controller
 
     public function services()
     {
-        $services = Service::with('locations')->orderBy('service_name');  
+        $service_state_filter = 'Verified';
+        $services = Service::with('locations')->orderBy('service_name')->where('service_status', '=', $service_state_filter); 
 
         $locations = Location::with('services','organization');
-
+        
+        $sort_by_distance_clickable = false;
         $map = Map::find(1);
         $parent_taxonomy = [];
         $child_taxonomy = [];
@@ -431,25 +455,121 @@ class ServiceController extends Controller
                     $taxonomy_serviceids = array_merge($serviceids, $taxonomy_serviceids);
 
                 }
+                if($meta->facet == 'Service_status'){
+
+                    if($meta->operations == 'Include')
+                        $serviceids = Service::whereIn('service_recordid', $values)->pluck('service_recordid')->toArray();
+                    if($meta->operations == 'Exclude')
+                        $serviceids = Service::whereNotIn('service_recordid', $values)->pluck('service_recordid')->toArray();
+                    $taxonomy_serviceids = array_merge($serviceids, $taxonomy_serviceids);
+                }
             }
-            // $services = $services->whereIn('service_recordid', $taxonomy_serviceids);
-            $services = $services->whereIn('service_recordid', $address_serviceids)->whereIn('service_recordid', $taxonomy_serviceids);
-          
+
+            // $services = $services->whereIn('service_recordid', $address_serviceids)->whereIn('service_recordid', $taxonomy_serviceids);
+
+            if ($address_serviceids) {
+                $services = $services->whereIn('service_recordid', $address_serviceids);
+            }
+            if ($taxonomy_serviceids) {
+                $services = $services->whereIn('service_recordid', $taxonomy_serviceids);
+            }
+
             $services_ids = $services->pluck('service_recordid')->toArray();
             $locations_ids = Servicelocation::whereIn('service_recordid', $services_ids)->pluck('location_recordid')->toArray();
             $locations = $locations->whereIn('location_recordid', $locations_ids);
 
         }
 
-        $services = $services->paginate(10);         
+        $services = $services->paginate(10); 
+
+        $service_taxonomy_info_list = []; 
+        foreach ($services as $key => $service) {
+            $service_taxonomy_recordid_list = explode(',', $service->service_taxonomy);
+            foreach ($service_taxonomy_recordid_list as $key => $service_taxonomy_recordid) {
+                $taxonomy = Taxonomy::where('taxonomy_recordid', '=', (int)($service_taxonomy_recordid))->first();
+                if(isset($taxonomy)){
+                    $service_taxonomy_name = $taxonomy->taxonomy_name;
+                    $service_taxonomy_info_list[$service_taxonomy_recordid] = $service_taxonomy_name;    
+                }
+            }
+        }
+
         $locations = $locations->get();
 
-        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'meta_status'));
+        //======================updated alt taxonomy tree======================
+
+        $grandparent_taxonomies = Alt_taxonomy::all();
+        
+        $taxonomy_tree = [];
+        if (count($grandparent_taxonomies) > 0)
+        {
+            foreach ($grandparent_taxonomies as $key => $grandparent) {
+                $taxonomy_data['alt_taxonomy_name'] = $grandparent->alt_taxonomy_name;
+                $terms = $grandparent->terms()->get();
+                $taxonomy_parent_name_list = [];
+                foreach ($terms as $term_key => $term) {
+                    array_push($taxonomy_parent_name_list, $term->taxonomy_parent_name);
+                }
+
+                $taxonomy_parent_name_list = array_unique($taxonomy_parent_name_list);
+
+                $parent_taxonomy = [];
+                $grandparent_service_count = 0;
+                foreach ($taxonomy_parent_name_list as $term_key => $taxonomy_parent_name) {
+                    $parent_count = Taxonomy::where('taxonomy_parent_name', '=', $taxonomy_parent_name)->count();
+                    $term_count = $grandparent->terms()->where('taxonomy_parent_name', '=', $taxonomy_parent_name)->count();
+                    if ($parent_count == $term_count) {
+                        $child_data['parent_taxonomy'] = $taxonomy_parent_name;
+                        $child_taxonomies = Taxonomy::where('taxonomy_parent_name', '=', $taxonomy_parent_name)->get(['taxonomy_name', 'taxonomy_id']);
+                        $child_data['child_taxonomies'] = $child_taxonomies;
+                        array_push($parent_taxonomy, $child_data);
+                    } else {
+                        foreach($grandparent->terms()->where('taxonomy_parent_name', '=', $taxonomy_parent_name)->get() as $child_key => $child_term) {
+                            $child_data['parent_taxonomy'] = $child_term;
+                            $child_data['child_taxonomies'] = "";
+                            array_push($parent_taxonomy, $child_data);
+                        }
+                    }
+                }
+                $taxonomy_data['parent_taxonomies'] = $parent_taxonomy;
+                array_push($taxonomy_tree, $taxonomy_data);
+            }
+        }
+        else {
+            $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name')->whereNotNull('taxonomy_services')->get();
+            // $parent_taxonomy_data = [];
+            // foreach($parent_taxonomies as $parent_taxonomy) {
+            //     $child_data['parent_taxonomy'] = $parent_taxonomy->taxonomy_name;
+            //     $child_data['child_taxonomies'] = $parent_taxonomy->childs;
+            //     array_push($parent_taxonomy_data, $child_data);
+            // }
+            $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies;
+        }
+
+        return view('frontEnd.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'meta_status', 'grandparent_taxonomies', 'sort_by_distance_clickable', 'service_taxonomy_info_list'))->with('taxonomy_tree', $taxonomy_tree);  
     }
 
     public function service($id)
     {
-        $service = Service::where('service_recordid', '=', $id)->first();         
+        $service = Service::where('service_recordid', '=', $id)->first();
+
+        $service_taxonomy_recordid_list = explode(',', $service->service_taxonomy);
+        $service_taxonomy_info_list = [];
+        foreach ($service_taxonomy_recordid_list as $key => $service_taxonomy_recordid) {
+            $service_taxonomy_info = (object)[];
+            $service_taxonomy_info->taxonomy_recordid = $service_taxonomy_recordid;
+            
+            $taxonomy = Taxonomy::where('taxonomy_recordid', '=', (int)($service_taxonomy_recordid))->first();
+            if(isset($taxonomy)){
+                $service_taxonomy_name = $taxonomy->taxonomy_name;
+                $service_taxonomy_info->taxonomy_name = $service_taxonomy_name;    
+            }
+            
+            array_push($service_taxonomy_info_list, $service_taxonomy_info);
+        }
+
+            
+
         $location = Location::with('organization', 'address')->where('location_services', 'like', '%'.$id.'%')->get();         
 
         $map = Map::find(1);
@@ -464,7 +584,57 @@ class ServiceController extends Controller
         $checked_transportations = [];
         $checked_hours= [];
 
-        return view('frontEnd.service', compact('service', 'location', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours'));
+        //======================updated alt taxonomy tree======================
+
+        $grandparent_taxonomies = Alt_taxonomy::all();
+        
+        $taxonomy_tree = [];
+        if (count($grandparent_taxonomies) > 0)
+        {
+            foreach ($grandparent_taxonomies as $key => $grandparent) {
+                $taxonomy_data['alt_taxonomy_name'] = $grandparent->alt_taxonomy_name;
+                $terms = $grandparent->terms()->get();
+                $taxonomy_parent_name_list = [];
+                foreach ($terms as $term_key => $term) {
+                    array_push($taxonomy_parent_name_list, $term->taxonomy_parent_name);
+                }
+
+                $taxonomy_parent_name_list = array_unique($taxonomy_parent_name_list);
+
+                $parent_taxonomy = [];
+                $grandparent_service_count = 0;
+                foreach ($taxonomy_parent_name_list as $term_key => $taxonomy_parent_name) {
+                    $parent_count = Taxonomy::where('taxonomy_parent_name', '=', $taxonomy_parent_name)->count();
+                    $term_count = $grandparent->terms()->where('taxonomy_parent_name', '=', $taxonomy_parent_name)->count();
+                    if ($parent_count == $term_count) {
+                        $child_data['parent_taxonomy'] = $taxonomy_parent_name;
+                        $child_taxonomies = Taxonomy::where('taxonomy_parent_name', '=', $taxonomy_parent_name)->get(['taxonomy_name', 'taxonomy_id']);
+                        $child_data['child_taxonomies'] = $child_taxonomies;
+                        array_push($parent_taxonomy, $child_data);
+                    } else {
+                        foreach($grandparent->terms()->where('taxonomy_parent_name', '=', $taxonomy_parent_name)->get() as $child_key => $child_term) {
+                            $child_data['parent_taxonomy'] = $child_term;
+                            $child_data['child_taxonomies'] = "";
+                            array_push($parent_taxonomy, $child_data);
+                        }
+                    }
+                }
+                $taxonomy_data['parent_taxonomies'] = $parent_taxonomy;
+                array_push($taxonomy_tree, $taxonomy_data);
+            }
+        }
+        else {
+            $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name')->whereNotNull('taxonomy_services')->get();
+            // $parent_taxonomy_data = [];
+            // foreach($parent_taxonomies as $parent_taxonomy) {
+            //     $child_data['parent_taxonomy'] = $parent_taxonomy->taxonomy_name;
+            //     $child_data['child_taxonomies'] = $parent_taxonomy->childs;
+            //     array_push($parent_taxonomy_data, $child_data);
+            // }
+            $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies;
+        }
+
+        return view('frontEnd.service', compact('service', 'location', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'service_taxonomy_info_list'));
     }
 
     public function taxonomy($id)

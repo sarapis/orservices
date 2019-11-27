@@ -94,17 +94,44 @@ class AltTaxonomyController extends Controller
     {
         $alt_taxonomy = Alt_taxonomy::find($id);
         $alt_taxonomy_name = $alt_taxonomy->alt_taxonomy_name;
-        $terms = AltTaxonomiesTermRelation::where('alt_taxonomy_id','=',$id)->get();
-        $all_terms = Taxonomy::all()->toArray();
-        return response()->json(array('all_terms' => $all_terms, 'terms' => $terms, 'alt_taxonomy_name' => $alt_taxonomy_name));
+        $terms = $alt_taxonomy->terms;
+        $selected_ids = [];
+        foreach ($terms as $key => $value) {
+            array_push($selected_ids, $value->taxonomy_recordid);
+        }
+        return response()->json(array('terms' => $selected_ids, 'alt_taxonomy_name' => $alt_taxonomy_name));
 
+    }
+
+    public function get_all_terms() {
+        // $all_terms =  Taxonomy::select('taxonomy_recordid', 'taxonomy_name', 'taxonomy_parent_name', 'category_id')->get();
+        $all_terms =  Taxonomy::select('taxonomy_recordid', 'taxonomy_name', 'taxonomy_parent_name')->whereNull('taxonomy_parent_name')->whereNotNull('taxonomy_services')->get();
+        $result = [];
+        $term_info = [];
+        foreach ($all_terms as $term) {
+            $term_info[0] = $term->taxonomy_recordid;
+            $term_info[1] = $term->taxonomy_name;
+            $term_info[2] = $term->parent['taxonomy_name'];
+            array_push($result, $term_info);
+        }
+        return response()->json(array('data'=>$result));
     }
 
     public function operation(Request $request){
         $checked_terms_list = $request->input("checked_terms");
-        $id = $request->input("alt_taxonomy_id");             
+        $checked_terms_list = explode(',', $checked_terms_list);
+        $checked_taxonomy_id_list = [];
+
+        foreach ($checked_terms_list as $key => $value) {
+            $taxonomy = Taxonomy::where('taxonomy_recordid', '=', intval($value))->first();
+            array_push($checked_taxonomy_id_list, $taxonomy->taxonomy_id);
+        }
+
+        $id = $request->input("alt_taxonomy_id");
+
         $alt_taxonomy = Alt_taxonomy::find($id);
-        $alt_taxonomy->terms()->sync($checked_terms_list);
+        
+        $alt_taxonomy->terms()->sync($checked_taxonomy_id_list);
         return redirect('tb_alt_taxonomy');
     }
 

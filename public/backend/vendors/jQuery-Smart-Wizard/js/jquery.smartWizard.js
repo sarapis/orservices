@@ -283,7 +283,11 @@ function SmartWizard(target, options) {
                 if ($this.curStepIdx == 1) {
                     $($this.buttons.finish).show()                
                     $($this.buttons.previous).show();
-                    $($this.buttons.next).show();
+                    if (facet != "Service_status") {
+                        $($this.buttons.next).show();
+                    } else {
+                        $($this.buttons.next).hide();
+                    }
                     $($this.buttons.finish).text("Save");
 
                     if(method == 'Checklist'){
@@ -346,6 +350,27 @@ function SmartWizard(target, options) {
                               var url = 'meta_filter/'+id;
                             else
                               var url = '/postal_code_filter';
+
+                            $.ajax({
+                              type: 'POST',
+                              url: url.toLowerCase(),
+                              success: function(data){
+                                  $('#step-2 #list_tb_2').html(data);
+                              }
+                            });
+                        }
+
+                        if(facet == 'Service_status'){
+                            $.ajaxSetup({
+                              headers: {
+                                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                              }
+                            })
+
+                            if(original_facet == facet)
+                              var url = 'meta_filter/'+id;
+                            else
+                              var url = '/service_status_filter';
 
                             $.ajax({
                               type: 'POST',
@@ -453,6 +478,27 @@ function SmartWizard(target, options) {
                               var url = 'meta_filter/'+id;
                             else
                               var url = '/postal_code_filter';
+
+                            $.ajax({
+                              type: 'POST',
+                              url: url.toLowerCase(),
+                              success: function(data){
+                                  $('#step-3 #list_tb_3').html(data);
+                              }
+                            });
+                        }
+
+                        if(facet == 'Service_status'){
+                            $.ajaxSetup({
+                              headers: {
+                                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                              }
+                            })
+
+                            if(original_facet == facet)
+                              var url = 'meta_filter/'+id;
+                            else
+                              var url = '/service_status_filter';
 
                             $.ajax({
                               type: 'POST',

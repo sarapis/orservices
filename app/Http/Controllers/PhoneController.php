@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Functions\Airtable;
 use App\Phone;
 use App\Servicephone;
+use App\Airtablekeyinfo;
 use App\Locationphone;
 use App\Airtables;
 use App\CSV_Source;
@@ -19,6 +20,14 @@ class PhoneController extends Controller
 
     public function airtable($api_key, $base_url)
     {
+
+        $airtable_key_info = Airtablekeyinfo::find(1);
+        if (!$airtable_key_info){
+            $airtable_key_info = new Airtablekeyinfo;
+        }
+        $airtable_key_info->api_key = $api_key;
+        $airtable_key_info->base_url = $base_url;
+        $airtable_key_info->save();
 
         Phone::truncate();
         // $airtable = new Airtable(array(

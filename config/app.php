@@ -193,11 +193,14 @@ return [
 
         Jcf\Geocode\GeocodeServiceProvider::class,
 
+        Spatie\Geocoder\GeocoderServiceProvider::class,
+
         Barryvdh\DomPDF\ServiceProvider::class,
 
         Maatwebsite\Excel\ExcelServiceProvider::class,
 
         Chumper\Zipper\ZipperServiceProvider::class,
+
     ],
 
     /*
@@ -254,6 +257,7 @@ return [
         'Image' => Intervention\Image\Facades\Image::class,
         'Geolocation' => Stevebauman\Location\Facades\Location::class,        
         'Geocode' => Jcf\Geocode\Facades\Geocode::class,
+        'Geocoder' => Spatie\Geocoder\Facades\Geocoder::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Zipper' => Chumper\Zipper\Zipper::class,

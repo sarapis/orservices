@@ -36,6 +36,7 @@ ul#ui-id-1 {
         width: 100% !important;
     }
 }
+
 </style>
 
 @section('content')
@@ -52,8 +53,8 @@ ul#ui-id-1 {
                     Download
                 </button>
                 <div class="dropdown-menu bullet" aria-labelledby="exampleBulletDropdown1" role="menu">
-                    <a class="dropdown-item" href="javascript:void(0)" role="menuitem" id="download_csv">Download CSV</a>
-                    <a class="dropdown-item" href="javascript:void(0)" role="menuitem" id="download_pdf">Download PDF</a>
+                    <a class="dropdown-item download_csv" href="javascript:void(0)" role="menuitem">Download CSV</a>
+                    <a class="dropdown-item download_pdf" href="javascript:void(0)" role="menuitem">Download PDF</a>
                 </div>
             </div>
             <div class="btn-group dropdown btn-feature">
@@ -71,9 +72,12 @@ ul#ui-id-1 {
                     Sort
                 </button>
                 <div class="dropdown-menu bullet" aria-labelledby="exampleSizingDropdown2" role="menu">
-                    <a @if(isset($sort) && $sort == 'Service Name') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Service Name</a>
+                    <a @if(isset($sort) && $sort == 'Service Name') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Service Name</a>                    
                     <a @if(isset($sort) && $sort == 'Organization Name') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Organization Name</a>
-                    <a @if(isset($sort) && $sort == 'Distance from Address') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Distance from Address</a>
+                    @if($sort_by_distance_clickable)
+                    <a @if(isset($sort) && $sort == 'Distance from Address') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem" >Distance from Address</a>
+                    @endif
+
                 </div>
             </div>
 
@@ -101,8 +105,7 @@ ul#ui-id-1 {
                         <b>{{ session('address') }}</b>
                         </div>
                     @endif
-
-                    @if(count($services) != 0)
+                    @if(count($services) != 0)                        
                         @if(isset($sort) && $sort ="Organization Name")
                             @foreach($services->sortBy('organization_name') as $service)
                                 @if($service->service_name != null)
@@ -116,7 +119,7 @@ ul#ui-id-1 {
                                                 <a class="panel-link" class="notranslate" href="/organization/{{$service->organizations()->first()->organization_recordid}}"> {{$service->organizations()->first()->organization_name}}</a>                    
                                             @endif
                                         </h4>
-                                        <h4  style="line-height: inherit;">{!! str_limit($service->service_description, 200) !!}</h4>
+                                        <h4  style="line-height: inherit;">{!! str_limit(str_replace(array('\n', '/n', '*'), array(' ', ' ', ' '), $service->service_description), 200) !!}</h4>
                                         <h4><span><i class="icon md-phone font-size-24 vertical-align-top  mr-5 pr-10"></i> @foreach($service->phone as $phone) {!! $phone->phone_number !!} @endforeach</span></h4>
                                         <h4><span><i class="icon md-pin font-size-24 vertical-align-top mr-5 pr-10"></i>
                                             @if(isset($service->address))
@@ -204,7 +207,7 @@ ul#ui-id-1 {
                                                 <a class="panel-link" class="notranslate" href="/organization/{{$service->organizations()->first()->organization_recordid}}"> {{$service->organizations()->first()->organization_name}}</a>                    
                                             @endif
                                         </h4>
-                                        <h4  style="line-height: inherit;">{!! str_limit($service->service_description, 200) !!}</h4>
+                                        <h4  style="line-height: inherit;">{!! str_limit(str_replace(array('\n', '/n', '*'), array(' ', ' ', ' '), $service->service_description), 200) !!}</h4>
                                         <h4><span><i class="icon md-phone font-size-24 vertical-align-top  mr-5 pr-10"></i> @foreach($service->phone as $phone) {!! $phone->phone_number !!} @endforeach</span></h4>
                                         <h4><span><i class="icon md-pin font-size-24 vertical-align-top mr-5 pr-10"></i>
                                             @if(isset($service->address))
@@ -215,65 +218,19 @@ ul#ui-id-1 {
                                             </span>
                                         </h4>
                                         <h4>
-                                            <span class="pl-0 category_badge"><b>Types of People:</b>
-                                                @if($service->service_taxonomy!=0 || $service->service_taxonomy==null)
-                                                    @php 
-                                                        $names = [];
-                                                    @endphp
-                                                    @foreach($service->taxonomy->sortBy('taxonomy_name') as $key => $taxonomy)
-                                                        
-                                                        @if($taxonomy->taxonomy_parent_name == 'Target Populations')
-                                                            @if(!in_array($taxonomy->taxonomy_name, $names))
-                                                                @if($taxonomy->taxonomy_name)
-                                                                    <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_name)}}" at="{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>
-                                                                    @php
-                                                                    $names[] = $taxonomy->taxonomy_name;
-                                                                    @endphp
-                                                                @endif
-                                                            @endif                                                    
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                            </span> 
-                                            <br>
                                             <span class="pl-0 category_badge"><b>Types of Services:</b>
-                                                @if($service->service_taxonomy!=0 || $service->service_taxonomy==null)
-                                                    @php 
-                                                        $names = [];
+                                                @if($service->service_taxonomy != null)
+                                                    @php $service_taxonomy_recordid_list = explode(',', $service->service_taxonomy);
                                                     @endphp
-                                                    @foreach($service->taxonomy->sortBy('taxonomy_name') as $key => $taxonomy)
-                                                        @if(!in_array($taxonomy->taxonomy_grandparent_name, $names))
-                                                            @if($taxonomy->taxonomy_grandparent_name && $taxonomy->taxonomy_parent_name != 'Target Populations')
-                                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}" at="{{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}">{{$taxonomy->taxonomy_grandparent_name}}</a>
-                                                                @php
-                                                                $names[] = $taxonomy->taxonomy_grandparent_name;
-                                                                @endphp
-                                                            @endif
+                                                    @foreach($service_taxonomy_recordid_list as $key => $service_taxonomy_recordid)
+                                                        @php $taxonomy_name = $service_taxonomy_info_list[$service_taxonomy_recordid]; 
+                                                        @endphp
+                                                        @if($taxonomy_name)
+                                                            <a class="panel-link {{str_replace(' ', '_', $taxonomy_name)}}" at="{{$service_taxonomy_recordid}}">{{$taxonomy_name}}</a>
                                                         @endif
-                                                        @if(!in_array($taxonomy->taxonomy_parent_name, $names))
-                                                            @if($taxonomy->taxonomy_parent_name && $taxonomy->taxonomy_parent_name != 'Target Populations')
-                                                                @if($taxonomy->taxonomy_parent_name == 'Target Populations')
-                                                                <a class="{{str_replace(' ', '_', $taxonomy->taxonomy_parent_name)}} panel-link target-population-link">{{$taxonomy->taxonomy_parent_name}}</a>
-                                                                @elseif($taxonomy->taxonomy_grandparent_name)
-                                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_parent_name)}}" at="{{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}_{{str_replace(' ', '_', $taxonomy->taxonomy_parent_name)}}">{{$taxonomy->taxonomy_parent_name}}</a>
-                                                                @endif
-                                                                @php
-                                                                $names[] = $taxonomy->taxonomy_parent_name;
-                                                                @endphp
-                                                            @endif
-                                                        @endif
-                                                        @if(!in_array($taxonomy->taxonomy_name, $names))
-                                                            @if($taxonomy->taxonomy_name && $taxonomy->taxonomy_parent_name != 'Target Populations')
-                                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_name)}}" at="{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>
-                                                                @php
-                                                                $names[] = $taxonomy->taxonomy_name;
-                                                                @endphp
-                                                            @endif
-                                                        @endif                                                    
-                                                       
                                                     @endforeach
                                                 @endif
-                                            </span> 
+                                            </span>
                                         </h4>
                                     </div>
                                 </div>
@@ -281,10 +238,18 @@ ul#ui-id-1 {
                             @endforeach
                         @endif
                     @else
-                        <div class="alert dark alert-warning ml-15" role="alert">
-                        <p style="color: #ffffff;">
-                            <b>There are no results.</b>
-                        </p>
+                        <div class="alert dark alert-warning ml-15" role="alert" style="background-color: lightblue; border-color: lightblue;">
+                            <span style="color: #ffffff;">
+                                <b>We’re unable to find any services based on your search.</b>
+                            </span>
+                            <p style="color: #ffffff;">
+                                <b>To improve the search results, we suggest:</b>
+                            </p>
+                            <ul>
+                                <li style="color: #ffffff; list-style: disc;">Remove any location filters</li>
+                                <li style="color: #ffffff; list-style: disc;">Use more general terms in the search bar</li>
+                                <li style="color: #ffffff; list-style: disc;">Click on Types of Services on the left side of the screen instead of using the search field</li>                            
+                            </ul>
                         </div>
                     @endif
                     <div class="example">
@@ -373,8 +338,8 @@ ul#ui-id-1 {
                 return;
             var id = $(this).attr('at');
             console.log(id);
-            $("#category_" +  id).prop( "checked", true );
-            $("#checked_" +  id).prop( "checked", true );
+            selected_taxonomy_ids = id.toString();
+            $("#selected_taxonomies").val(selected_taxonomy_ids);
             $("#filter").submit();
         });
         

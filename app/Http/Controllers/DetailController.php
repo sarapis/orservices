@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Functions\Airtable;
 use App\Detail;
 use App\Airtables;
+use App\Airtablekeyinfo;
 use App\Services\Stringtoint;
 
 class DetailController extends Controller
@@ -14,6 +15,14 @@ class DetailController extends Controller
 
     public function airtable($api_key, $base_url)
     {
+
+        $airtable_key_info = Airtablekeyinfo::find(1);
+        if (!$airtable_key_info){
+            $airtable_key_info = new Airtablekeyinfo;
+        }
+        $airtable_key_info->api_key = $api_key;
+        $airtable_key_info->base_url = $base_url;
+        $airtable_key_info->save();
 
         Detail::truncate();
         // $airtable = new Airtable(array(

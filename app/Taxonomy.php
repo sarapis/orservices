@@ -11,6 +11,8 @@ class Taxonomy extends Model
     protected $primaryKey = 'taxonomy_id';
 
     public $fillable = ['name','parent_name'];
+    public $incrementing = false;
+
 
     public $timestamps = false;
 
@@ -20,18 +22,16 @@ class Taxonomy extends Model
      * @return string
     */
     public function childs() {
-        return $this->hasMany('App\Taxonomy','taxonomy_parent_name','taxonomy_name') ;
+        return $this->hasMany('App\Taxonomy','taxonomy_parent_name','taxonomy_recordid') ;
     }
 
     public function parent()
     {
-        return $this->belongsTo('App\Taxonomy', 'taxonomy_parent_name', 'taxonomy_name');
+        return $this->belongsTo('App\Taxonomy', 'taxonomy_parent_name', 'taxonomy_recordid');
     }
 
     public function service()
     {
-        $this->primaryKey='taxonomy_id';
-        
         return $this->belongsToMany('App\Service', 'service_taxonomy', 'taxonomy_id', 'service_recordid');
     }
 

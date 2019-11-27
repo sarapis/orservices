@@ -65,7 +65,7 @@ ul#ui-id-1 {
                             @endif
                         </h4>
 
-                        <h4 style="line-height: inherit;">{!! $service->service_description !!}</h4>
+                        <h4 class="service-description" style="line-height: inherit;"></h4>
 
                         @if(isset($service->service_phones))                            
                             @if(isset($service->phone()->first()->phone_number))  
@@ -83,19 +83,15 @@ ul#ui-id-1 {
                             @endif
                         @endif
 
-                        @if(isset($service->phone()->first()->phone_extension)) 
-                        <h4 style="line-height: inherit;">
-                            <span><i class="icon md-phone font-size-24 vertical-align-top  mr-5 pr-10"></i>
-                            @foreach($service->phone as $phone) {!! $phone->phone_extension !!} @endforeach 
-                            </span> 
-                        </h4>
-                        @endif 
+                        <h4><span><i class="icon md-phone font-size-24 vertical-align-top  mr-5 pr-10"></i> @foreach($service->phone as $phone) {!! $phone->phone_number !!} @endforeach</span></h4>
+
                         <h4 style="line-height: inherit;">
                             <span>  
                             <i class="icon md-globe font-size-24 vertical-align-top  mr-5 pr-10"></i>
                                  @if($service->service_url!=NULL)<a href="{!! $service->service_url !!}">{!! $service->service_url !!}</a> @endif
                             </span>        
                         </h4>
+
 
                         @if($service->service_email!=NULL) 
                         <h4 style="line-height: inherit;">
@@ -120,28 +116,6 @@ ul#ui-id-1 {
                             @endif
                             </span>
                         </h4>
-                        @if($service->service_details!=NULL)
-                            @php
-                                $show_details = [];
-                            @endphp
-                            @foreach($service->details->sortBy('detail_type') as $detail)
-                            @php
-                                for($i = 0; $i < count($show_details); $i ++){
-                                    if($show_details[$i]['detail_type'] == $detail->detail_type)
-                                        break;
-                                }
-                                if($i == count($show_details)){
-                                    $show_details[$i] = array('detail_type'=> $detail->detail_type, 'detail_value'=> $detail->detail_value);
-                                }
-                                else{
-                                    $show_details[$i]['detail_value'] = $show_details[$i]['detail_value'].', '.$detail->detail_value;
-                                }
-                            @endphp                                
-                            @endforeach
-                            @foreach($show_details as $detail)
-                            <h4><span class="badge bg-red"><b>{{ $detail['detail_type'] }}:</b></span> {!! $detail['detail_value'] !!}</h4>  
-                            @endforeach
-                        @endif
                                 
                         @if($service->service_application_process)
                         <h4 class="py-10" style="line-height: inherit;"><span class="mb-10"><b>Application</b></span><br/>  {!! $service->service_application_process !!}
@@ -176,71 +150,37 @@ ul#ui-id-1 {
                             @endforeach  
                         </h4>
                         @endif
-                        <h4 class="py-10" style="line-height: inherit;"><span class="pl-0 category_badge"><b>Types of People:</b>
-                            @if($service->service_taxonomy!=0 || $service->service_taxonomy==null)
-                                @php 
-                                    $names = [];
-                                @endphp
-
-                                @if($service->taxonomy->sortBy('taxonomy_name') != null)
-                                    @foreach($service->taxonomy->sortBy('taxonomy_name') as $key => $taxonomy)
-                                        
-                                        @if($taxonomy->taxonomy_parent_name == 'Target Populations')
-                                            @if(!in_array($taxonomy->taxonomy_name, $names))
-                                                @if($taxonomy->taxonomy_name)
-                                                    <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_name)}}" at="{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>
-                                                    @php
-                                                    $names[] = $taxonomy->taxonomy_name;
-                                                    @endphp
-                                                @endif
-                                            @endif                                                    
-                                        @endif
+                        <h4 class="py-10" style="line-height: inherit;">
+                            <span class="pl-0 category_badge"><b>Types of Services:</b>
+                                @if($service->service_taxonomy != null)
+                                    @foreach($service_taxonomy_info_list as $key => $service_taxonomy_info)
+                                        <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}" at="{{$service_taxonomy_info->taxonomy_recordid}}">{{$service_taxonomy_info->taxonomy_name}}</a>
                                     @endforeach
                                 @endif
-                            @endif
-                        </span> 
-                        <br>
-                        <span class="pl-0 category_badge"><b>Types of Services:</b>
-                            @if($service->service_taxonomy!=0 || $service->service_taxonomy==null)
-                                @php 
-                                    $names = [];
-                                @endphp
-                                @if($service->taxonomy->sortBy('taxonomy_name') != null)
-                                    @foreach($service->taxonomy->sortBy('taxonomy_name') as $key => $taxonomy)
-                                        @if(!in_array($taxonomy->taxonomy_grandparent_name, $names))
-                                            @if($taxonomy->taxonomy_grandparent_name && $taxonomy->taxonomy_parent_name != 'Target Populations')
-                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}" at="{{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}">{{$taxonomy->taxonomy_grandparent_name}}</a>
-                                                @php
-                                                $names[] = $taxonomy->taxonomy_grandparent_name;
-                                                @endphp
-                                            @endif
-                                        @endif
-                                        @if(!in_array($taxonomy->taxonomy_parent_name, $names))
-                                            @if($taxonomy->taxonomy_parent_name && $taxonomy->taxonomy_parent_name != 'Target Populations')
-                                                @if($taxonomy->taxonomy_parent_name == 'Target Populations')
-                                                <a class="{{str_replace(' ', '_', $taxonomy->taxonomy_parent_name)}} panel-link target-population-link">{{$taxonomy->taxonomy_parent_name}}</a>
-                                                @elseif($taxonomy->taxonomy_grandparent_name)
-                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_parent_name)}}" at="{{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}_{{str_replace(' ', '_', $taxonomy->taxonomy_parent_name)}}">{{$taxonomy->taxonomy_parent_name}}</a>
-                                                @endif
-                                                @php
-                                                $names[] = $taxonomy->taxonomy_parent_name;
-                                                @endphp
-                                            @endif
-                                        @endif
-                                        @if(!in_array($taxonomy->taxonomy_name, $names))
-                                            @if($taxonomy->taxonomy_name && $taxonomy->taxonomy_parent_name != 'Target Populations')
-                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_name)}}" at="{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>
-                                                @php
-                                                $names[] = $taxonomy->taxonomy_name;
-                                                @endphp
-                                            @endif
-                                        @endif                                                    
-                                       
-                                    @endforeach
-                                @endif
-                            @endif
-                        </span> 
+                            </span>                            
                         </h4>
+                        @if($service->service_details!=NULL)
+                            @php
+                                $show_details = [];
+                            @endphp
+                            @foreach($service->details->sortBy('detail_type') as $detail)
+                            @php
+                                for($i = 0; $i < count($show_details); $i ++){
+                                    if($show_details[$i]['detail_type'] == $detail->detail_type)
+                                        break;
+                                }
+                                if($i == count($show_details)){
+                                    $show_details[$i] = array('detail_type'=> $detail->detail_type, 'detail_value'=> $detail->detail_value);
+                                }
+                                else{
+                                    $show_details[$i]['detail_value'] = $show_details[$i]['detail_value'].', '.$detail->detail_value;
+                                }
+                            @endphp                                
+                            @endforeach
+                            @foreach($show_details as $detail)
+                            <h4><span class="badge bg-red"><b>{{ $detail['detail_type'] }}:</b></span> {!! $detail['detail_value'] !!}</h4>  
+                            @endforeach
+                        @endif
                     </div>
                 </div>
             </div>
@@ -259,9 +199,11 @@ ul#ui-id-1 {
                             @if(isset($service->locations))
                                 @if($service->locations != null)
                                     @foreach($service->locations as $location)
+                                        @if($location->location_name)
                                         <h4>
                                             <span><i class="icon fas fa-building font-size-24 vertical-align-top  "></i>{{$location->location_name}}</span> 
                                         </h4>
+                                        @endif
                                         <h4>
                                             <span><i class="icon md-pin font-size-24 vertical-align-top "></i>
                                                 @if(isset($location->address))
@@ -273,25 +215,29 @@ ul#ui-id-1 {
                                                 @endif
                                             </span>
                                         </h4>
-                                        
+                                        @if($location->location_hours)
                                         <h4><span><i class="icon fa-clock-o font-size-24 vertical-align-top "></i> {{$location->location_hours}}</span></h4>
+                                        @endif
+                                        @if($location->location_transportation)
                                         <h4><span><i class="icon fa-truck font-size-24 vertical-align-top "></i> {{$location->location_transportation}}</span></h4>
-                                        <h4><span><i class="icon md-phone font-size-24 vertical-align-top "></i>
-                                            @if(isset($location->location_phones))
-                                                @if($location->location_phones != null)
-                                                    @if(is_array($location->location_phones))
-                                                        @foreach($location->location_phones as $phone)
-                                                        @php 
-                                                        $phones ='';
-                                                        $phones = $phones.$phone->phone_number.','; @endphp
-                                                        @endforeach
-                                                        {{ rtrim($phones, ',') }}
-                                                    @endif
-                                                @endif 
+                                        @endif
+                                        @if(isset($location->phones))
+                                            @if($location->phones != null)
+                                                @if(count($location->phones) > 0)
+                                                    <h4>
+                                                        <span>
+                                                            <i class="icon md-phone font-size-24 vertical-align-top "></i>
+                                                    @foreach($location->phones as $phone)
+                                                    @php 
+                                                    $phones ='';
+                                                    $phones = $phones.$phone->phone_number.','; @endphp
+                                                    @endforeach
+                                                    {{ rtrim($phones, ',') }}
+                                                        </span>
+                                                    </h4>  
+                                                @endif
                                             @endif 
-                                            </span>
-                                        </h4>  
-                                        <!-- <h4 style="line-height:inherit">{{$location->location_description}}</h4> -->
+                                        @endif 
                                         @if(isset($location->accessibilities()->first()->accessibility)) 
                                         <h4><span><b>Accessibility for disabilities:</b></span> <br/>
                                             {{$location->accessibilities()->first()->accessibility}}
@@ -310,6 +256,7 @@ ul#ui-id-1 {
                                             @endif                     
                                         </h4>
                                         @endif
+                                        <hr/>
                                     @endforeach
                                 @endif
                             @endif
@@ -336,7 +283,7 @@ $(document).ready(function(){
         if(maplocation.active == 1){
             avglat = maplocation.lat;
             avglng = maplocation.long;
-            zoom = maplocation.zoom;
+            zoom = maplocation.zoom_profile;
         }
         else
         {
@@ -360,7 +307,6 @@ $(document).ready(function(){
           zoom: zoom
         });
 
-
         
           $.each( locations, function(index, value ){
               mymap.addMarker({
@@ -374,13 +320,19 @@ $(document).ready(function(){
         
     }, 2000);
 
+    var description = "";
+    replaced_description = description.replace(/\n/g, "<br />");    
+    $('.service-description').html(replaced_description);
+
     $('.panel-link').on('click', function(e){
         if($(this).hasClass('target-population-link') || $(this).hasClass('target-population-child'))
             return;
         var id = $(this).attr('at');
         console.log(id);
-        $("#category_" +  id).prop( "checked", true );
-        $("#checked_" +  id).prop( "checked", true );
+        // $("#category_" +  id).prop( "checked", true );
+        // $("#checked_" +  id).prop( "checked", true );
+        selected_taxonomy_ids = id.toString();
+        $("#selected_taxonomies").val(selected_taxonomy_ids);
         $("#filter").submit();
     });
     

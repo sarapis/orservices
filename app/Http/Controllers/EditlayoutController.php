@@ -145,6 +145,13 @@ class EditlayoutController extends Controller
         else{
             $layout->title_active = 0;
         }
+        if ($request->input('bottom_section_active') == 'checked')
+        {
+            $layout->bottom_section_active = 1;
+        }
+        else{
+            $layout->bottom_section_active = 0;
+        }
 
         $layout->site_name=$request->site_name;
         $layout->tagline=$request->tagline;

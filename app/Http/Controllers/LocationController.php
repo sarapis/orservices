@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Functions\Airtable;
 use App\Location;
+use App\Airtablekeyinfo;
 use App\Locationaddress;
 use App\Locationphone;
 use App\Locationschedule;
@@ -21,6 +22,14 @@ class LocationController extends Controller
 
     public function airtable($api_key, $base_url)
     {
+
+        $airtable_key_info = Airtablekeyinfo::find(1);
+        if (!$airtable_key_info){
+            $airtable_key_info = new Airtablekeyinfo;
+        }
+        $airtable_key_info->api_key = $api_key;
+        $airtable_key_info->base_url = $base_url;
+        $airtable_key_info->save();
 
         Location::truncate();
         Locationaddress::truncate();

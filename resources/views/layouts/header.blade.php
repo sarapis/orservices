@@ -9,7 +9,7 @@
 							<img class="navbar-brand-logo navbar-brand-logo-special" src="./uploads/images/{{$layout->logo}}" title="{{$layout->site_name}}" style="height: auto;">
 						@endif
 						@if($layout->title_active == 1)
-						<span class="navbar-brand-text hidden-xs-down">{{$layout->site_name}}</span>
+						<span class="navbar-brand-text">{{$layout->site_name}}</span>
 						@endif
 					</a>
 				</div>

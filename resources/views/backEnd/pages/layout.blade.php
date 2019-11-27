@@ -76,7 +76,8 @@ Appearance
                 </label>
                 <div class="col-md-6">
                   <span><b>Hide Title and Tagline </b>&nbsp;&nbsp;
-                    <input type="checkbox" class="js-switch" value="checked" name="title_active"  @if($layout->title_active==1) checked @endif/>&nbsp;&nbsp;<b>Show Title and Tagline </b></span>
+                    <input type="checkbox" class="js-switch" value="checked" name="title_active"  @if($layout->title_active==1) checked @endif/>&nbsp;&nbsp;<b>Show Title and Tagline </b>
+                  </span>
                 </div>
               </div>
 
@@ -102,6 +103,16 @@ Appearance
                         <label>Recommended size 1200px wide.</label>
                       </div>
                     </div>
+                </div>
+              </div>
+
+              <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">
+                </label>
+                <div class="col-md-6">
+                  <span><b>Hide Bottom Section </b>&nbsp;&nbsp;
+                    <input type="checkbox" class="js-switch" value="checked" name="bottom_section_active"  @if($layout->bottom_section_active==1) checked @endif/>&nbsp;&nbsp;<b>Show Bottom Section </b>
+                  </span>
                 </div>
               </div>
 
@@ -131,7 +142,7 @@ Appearance
               </div>
 
               <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Sidebar Content
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Bottom Section Content
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <textarea id="summernote1" type="text" name="sidebar_content" class="optional form-control col-md-7 col-xs-12">{{$layout->sidebar_content}}</textarea>

@@ -20,6 +20,9 @@ Import
     .badge{
         width: 100px;
     }
+    #airtable_auto_sync_period {
+        display: inline-block;
+    }
 </style>
 <div class="row">
   <div class="col-md-12 col-sm-12 col-xs-12">
@@ -63,20 +66,63 @@ Import
         @if($source_data->active == 1)
         <div class="x_content">
             <div class="form-group">
-                <label for="airtable_api_key_input">Airtable Key</label>
-                <input class="form-control" type="text" name="airtable_api_key_input" id="airtable_api_key_input" required />                
+                <h5>
+                    You can import data organized in the <a href="https://airtable.com/universe/expwt9yr65lFGUJAr/open-referral-directory-v20" style="color: #027bff;">Open Referral Airtable Template</a> into this software by filling our the following information and clicking “Sync All”
+
+                    Find your Airtable ID and API Key by clicking the “Help” menu item in your base and selecting the “API documentation” option. 
+
+                    The Base ID is in the top section entitled “introduction”. 
+
+                    The API Key is accessible by clicking “show API key” on the top right of the page. The key will then be displayed on the right side in the Authentication section of the docs.
+                </h5>
             </div>
             <div class="form-group">
-                <label for="airtable_base_url_input">Airtable Base Url</label>
-                <input class="form-control" type="text" name="airtable_base_url_input" id="airtable_base_url_input" required />
+                <label for="airtable_api_key_input">Airtable API Key</label>
+                <input class="form-control" type="text" name="airtable_api_key_input" id="airtable_api_key_input" value="{{$airtable_key_info->api_key}}" required />                
             </div>
+            <div class="form-group">
+                <label for="airtable_base_url_input">Airtable Base ID</label>
+                <input class="form-control" type="text" name="airtable_base_url_input" id="airtable_base_url_input" value="{{$airtable_key_info->base_url}}" required />
+            </div>
+            <div class="form-group">                 
+                <label for="airtable_enable_auto_sync">Enable auto-sync: </label>
+                <div class="row">
+                    <form action="/cron_datasync" method="GET" id="cron_airtable">
+                        {!! Form::token() !!}
+                        <div class="col-sm-4">
+                            @if ($autosync->option == 'no')
+                            <input class="form-control" type="checkbox" name="airtable_enable_auto_sync" id="airtable_enable_auto_sync" onclick="airtable_enable_autosync_Function()" >
+                            @endif
+                            @if ($autosync->option == 'yes')
+                            <input class="form-control" type="checkbox" name="airtable_enable_auto_sync" id="airtable_enable_auto_sync" onclick="airtable_enable_autosync_Function()" checked>
+                            @endif
+                        </div>   
+                        <div class="col-sm-4">
+                            <div class="form-group" id="auto_sync_div">
+                                <label for="airtable_auto_sync_period">Sync every</label>
+                                <input class="form-control" type="text" name="airtable_auto_sync_period" id="airtable_auto_sync_period" value="{{$autosync->days}}" style="width: 75px;" required />
+                                <label for="airtable_auto_sync_period">number of days</label>
+                            </div>
+                        </div> 
+                        <div class="col-sm-4">
+                            @if ($autosync->option == 'yes')
+                                @if ($autosync->working_status == 'no')
+                                <button type="submit" name="btn_submit" class="btn btn-primary btn-start autosyncbtn" value="autosyncbtn-start" id="autosyncbtn-start">Start</button>
+                                @endif
+                                @if ($autosync->working_status == 'yes')
+                                <button type="submit" name="btn_submit" class="btn btn-warning btn-stop autosyncbtn" value="autosyncbtn-stop" id="autosyncbtn-stop">Stop</button>
+                                @endif
+                            @endif
+                        </div>
+                    </form>   
+                </div>
+            </div>
+           
             <div class="alert alert-danger alert-dismissible field-invalid">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                 <strong>Either of these infos is invalid or empty. Retype valid Airtable Key and Airtable Base Url.</strong> 
             </div> 
             
-            
-
             <table class="table table-striped jambo_table bulk_action" id="tblUsers">
                 <thead>
                     <tr>
@@ -108,6 +154,25 @@ Import
 
         @else
         <div class="x_content">
+            <div class="form-group">
+                <h5>
+                    You can upload individual CSVs that follow the Open Referral Human Services Data (HSDS) format.
+                    You can also import an entire dataset by uploading an HSDS Zip File.</br>
+                    You can automate the import of an HSDS Zip File by filling out the following info:
+                </h5>
+            </div>
+            <div class="form-group">
+                <label for="import_csv_url_path_input">URL Path</label>
+                <input class="form-control" type="text" name="import_csv_url_path_input" id="import_csv_url_path_input" required />                
+            </div>
+            <div class="form-group">
+                <label for="import_csv_username_input">Username</label>
+                <input class="form-control" type="text" name="import_csv_username_input" id="import_csv_username_input" required />
+            </div>
+            <div class="form-group">
+                <label for="import_csv_key_input">Key</label>
+                <input class="form-control" type="text" name="import_csv_key_input" id="import_csv_key_input" required />
+            </div>
 
             <table class="table table-striped jambo_table bulk_action" id="tbcsv">
                 <thead>
@@ -135,11 +200,9 @@ Import
                         <button class="badge" style="background: #9B59B6;"><a href="/csv/{{$csv->source}}" style="color: white;" download>Download CSV</a></button>
                       </td>
                     </tr>
-                    
                   @endforeach             
                 </tbody>
             </table>
-
         </div>
         @endif
     </div>
@@ -151,7 +214,9 @@ Import
 
 
 <script type="text/javascript">
+
     $(document).ready(function() {
+
         var $img = $('<img class="probar titleimage" id="title" src="images/xpProgressBar.gif" alt="Loading..." />');   
         var field_invalid= $('.field-invalid');
         field_invalid.hide();
@@ -323,6 +388,19 @@ Import
                 }
             });
         });
+        
     });
+
+    function airtable_enable_autosync_Function() {
+        var checkBox = document.getElementById("airtable_enable_auto_sync");
+        if (checkBox.checked == true){
+            $("#auto_sync_div").show();
+            $(".autosyncbtn").show();
+          } else {
+            $("#auto_sync_div").hide();
+            $(".autosyncbtn").hide();
+          }
+    }
+    
 </script>
 @endsection

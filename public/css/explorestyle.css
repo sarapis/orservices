@@ -53,18 +53,19 @@ body{
   touch-action: none;
 }
 #sidebar {
-    min-width: 270px;
-    max-width: 270px;
+    min-width: 450px;
+    max-width: 450px;
     background: #f3f3f3;
     color: #424242;
     z-index: 2;
     transition: all 0.3s;
     box-shadow: 0 1px 6px rgba(57,73,76,.35);
+    overflow: auto;
 
 }
 
 #sidebar.active {
-    margin-left: -270px;
+    margin-left: -450px;
 }
 
 #sidebar .sidebar-header {
@@ -81,7 +82,7 @@ body{
     padding: 10px;
 }
 
-#sidebar ul li a {
+#sidebar ul li a.text-side {
     padding: 10px;
     padding-left: 20px;
     font-size: 1.1em;
@@ -89,7 +90,7 @@ body{
     color: #fff;
     font-weight: 400;
 }
-#sidebar ul li a:hover {
+#sidebar ul li a.text-side:hover {
     color: #7386D5;
     background: #fff;
 }
@@ -246,7 +247,9 @@ li.status-side:hover {
 ----------------------------------------------------- */
 @media (max-width: 768px) {
     #sidebar {
-        margin-left: -270px;
+        margin-left: -100vw;
+        min-width: 100vw;
+        max-width: 100vw;
     }
     #sidebar.active {
         margin-left: 0;
@@ -778,21 +781,32 @@ a[aria-expanded="false"]::before, a[aria-expanded="true"]::before {
   -o-transition: all .3s linear 0s;
   transition: all .3s linear 0s;
   content: '';
-  color: #fff;    right: auto;
-  display: inline;
+  color: #fff;    
+  right: auto;  
+  display: inline-block;
+  text-align: center;
+  width: 22px;
+  height: 22px;
+  border: solid 1px #fff;
+  border-radius: 50%;
+  background-color: sienna;
   
 }
 .browse_category .card .card-link.collapsed:before { content: '';
   position: relative;
   top: 0px;
-  left: 0px;right: auto;color: #3f51b5;
+  left: 0px;
+  right: auto;
+  /*color: #3f51b5;*/
   font-family: "Material Design Iconic";
   -webkit-transition: all .3s linear 0s;
   -o-transition: all .3s linear 0s;
-  transition: all .3s linear 0s;-webkit-transform: rotate(-180deg);
+  transition: all .3s linear 0s;
+  -webkit-transform: rotate(-180deg);
   -ms-transform: rotate(-180deg);
   -o-transform: rotate(-180deg);
-  transform: rotate(-180deg);}
+  transform: rotate(-180deg);
+}
 .browse_category .card-link.collapsed { background:#f0f0f0;color: #555555;}
 .browse_category .card-body {padding:20px;background: #f0f0f0;
   font-weight: 400;
