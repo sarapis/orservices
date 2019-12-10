@@ -1,0 +1,13 @@
+{
+    "version": 3,
+    "mappings": "",
+    "sources": [
+        "utilities.scss",
+        "utilities/_vertical-align.scss",
+        "utilities/_display.scss",
+        "utilities/_text.scss",
+        "utilities/_spacing.scss"
+    ],
+    "names": [],
+    "file": "utilities.css"
+}

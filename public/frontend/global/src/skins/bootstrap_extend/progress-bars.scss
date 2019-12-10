@@ -1,0 +1,136 @@
+// Name:            Progress
+//
+// Component:       `progress`
+//
+// Modifiers:       `progress-bar-indicating`
+//                  `progress-skill`
+//                  `progress-lg`
+//                  `progress-sm`
+//                  `progress-xs`
+//                  `progress-square`
+//                  `progress-circle`
+//                  `contextual-progress`
+//
+// Markup:
+//
+// <!-- progress -->
+// <div class="progress">
+//   <div class="progress-bar"></div>
+// </div>
+//
+// ========================================================================
+
+// add from---v3
+//
+// Progress bars
+// --------------------------------------------------
+
+// progress-bar mixin 
+
+@mixin progress-bar-variant($color) {
+  background-color: $color;
+}
+
+
+// Bar itself
+// -------------------------
+
+// Outer container
+.progress {
+  background-color: $progress-bg;
+}
+
+// Bar of progress
+.progress-bar {
+  color: $progress-bar-color;
+  background-color: $progress-bar-bg;
+}
+
+// Variations
+// -------------------------
+
+.progress-bar-success {
+  @include progress-bar-variant($progress-bar-success-bg);
+}
+
+.progress-bar-info {
+  @include progress-bar-variant($progress-bar-info-bg);
+}
+
+.progress-bar-warning {
+  @include progress-bar-variant($progress-bar-warning-bg);
+}
+
+.progress-bar-danger {
+  @include progress-bar-variant($progress-bar-danger-bg);
+}
+// add end
+
+
+// Variables
+// ========================================================================
+
+$progress-bar-indicating-active-bg: $inverse !default;
+
+$progress-skill-color:              $subtitle-color !default;
+
+
+// Modifier: `progress-bar-indicating`
+// -------------------------
+
+.progress-bar-indicating {
+  &.active {
+    &:before {
+      background-color: $progress-bar-indicating-active-bg;
+    }
+  }
+}
+
+// Modifier: `progress-skill`
+// ========================================================================
+
+.progress-skill {
+
+  .progress-bar {
+    > span {
+      color: $progress-skill-color;
+    }
+  }
+}
+
+
+// add from---v4
+// Progress bars Mixin
+
+@mixin progress-variant($color) {
+  &[value]::-webkit-progress-value {
+    background-color: $color;
+  }
+
+  &[value]::-moz-progress-bar {
+    background-color: $color;
+  }
+
+  // IE9
+  @media screen and (min-width:0\0) {
+    .progress-bar {
+      background-color: $color;
+    }
+  }
+}
+
+progress.progress {
+  @include progress-variant($progress-bar-bg);
+}
+progress.progress-success {
+  @include progress-variant($progress-bar-success-bg);
+}
+progress.progress-info {
+  @include progress-variant($progress-bar-info-bg);
+}
+progress.progress-warning {
+  @include progress-variant($progress-bar-warning-bg);
+}
+progress.progress-danger {
+  @include progress-variant($progress-bar-danger-bg);
+}

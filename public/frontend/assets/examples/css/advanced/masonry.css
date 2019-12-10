@@ -1,0 +1,7 @@
+.page-content .blocks > li {
+  margin-bottom: 30px;
+}
+
+.page-content .blocks > li > .card {
+  margin-bottom: 0;
+}

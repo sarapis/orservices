@@ -1,0 +1,15 @@
+// Embedded icons from Open Iconic.
+// Released under MIT and copyright 2014 Waybury.
+// http://useiconic.com/open
+
+// Select
+//
+// Replaces the browser default select with a custom one, mostly pulled from
+// http://primercss.io.
+//
+// Includes IE9-specific hacks (noted by ` \9`).
+
+.c-select {
+  color: $input-color;
+  border: $input-btn-border-width solid $input-border-color;
+}

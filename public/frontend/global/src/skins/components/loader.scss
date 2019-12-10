@@ -1,0 +1,121 @@
+// Name:            Loader
+//
+// Component:       `loader`
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+$animsition-loading-spinner-bg: $gray !default;
+$index-loader-color: #fff !default;
+
+@function loaderdelay($interval, $count, $index) {
+  @return ($index * $interval) - ($interval * $count);
+}
+// Component: Loader
+// ========================================================================
+
+// Modifier: `loader-default`
+// -------------------------
+.loader-default {
+  background-color: $animsition-loading-spinner-bg;
+}
+
+// Modifier: `loader-grill`
+// -------------------------
+.loader-grill {
+  background: $animsition-loading-spinner-bg;
+
+  &:before,
+  &:after {
+    background: $animsition-loading-spinner-bg;
+  }
+}
+
+// Modifier: `loader-circle`
+// -------------------------
+.loader-circle {
+  border-top: .125em solid rgba($animsition-loading-spinner-bg, (50/100));
+  border-right: .125em solid rgba($animsition-loading-spinner-bg, (50/100));
+  border-bottom: .125em solid rgba($animsition-loading-spinner-bg, (50/100));
+  border-left: .125em solid $animsition-loading-spinner-bg;
+}
+
+// Modifier: `loader-round-circle`
+// -------------------------
+
+// Modifier: `loader-tadpole`
+// -------------------------
+
+// Modifier: `loader-ellipsis`
+// -------------------------
+
+// Modifier: `loader-dot`
+// -------------------------
+.loader-dot {
+  &:before,
+  &:after {
+    background: $animsition-loading-spinner-bg;
+  }
+}
+
+// Modifier: `loader-bounce`
+// -------------------------
+.loader-bounce {
+
+  &:before,
+  &:after {
+    background: $animsition-loading-spinner-bg;
+  }
+}
+
+// Modifier: `loader-cube`
+// -------------------------
+.loader-cube {
+  &:before,
+  &:after {
+    background: $animsition-loading-spinner-bg;
+  }
+}
+
+// Modifier: `loader-rotate-plane`
+// -------------------------
+.loader-rotate-plane {
+  background: $animsition-loading-spinner-bg;
+}
+
+// Modifier: `loader-folding-cube`
+// -------------------------
+.loader-folding-cube {
+  &:before,
+  &:after {
+    background: $animsition-loading-spinner-bg;
+  }
+}
+
+// Modifier: `loader-cube-grid`
+// -------------------------
+
+// Modifier: `site-panel-loading`
+// ========================================================================
+
+// Modifier: `index loading`
+// ========================================================================
+
+.loader-overlay {
+  background:$color-primary-600;
+}
+
+.loader-content {
+  h2 {
+    color: $index-loader-color;
+  }
+}
+
+.loader-index {
+
+  > div {
+    background:$index-loader-color;
+  }
+}

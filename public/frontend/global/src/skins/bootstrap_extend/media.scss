@@ -1,0 +1,20 @@
+// Name:            Media
+//
+// Component:       `media`
+//
+// Modifiers:       `media-lg`
+//                  `media-sm`
+//                  `media-xs`
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+// @media-border:             $divider-color-base;
+$media-meta-color:         $text-muted;
+
+
+.media-meta {
+    color: $media-meta-color;
+}

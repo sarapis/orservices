@@ -1,0 +1,90 @@
+// Name:            Forms
+//
+// Component:       `form`
+//
+// ========================================================================
+
+// Component: Form
+// ========================================================================
+
+.form-control {
+  border-color: $input-border;  // add from---v3
+}
+
+select[multiple].form-control {
+  background: $input-bg;
+}
+
+// states
+.has-success {
+  @include form-control-extend-validation($form-success-text, $form-success-text, $form-success-bg);
+}
+
+.has-warning {
+  @include form-control-extend-validation($form-warning-text, $form-warning-text, $form-warning-bg);
+}
+
+// .has-error class was replace by .has-danger(v4)
+.has-danger {
+  @include form-control-extend-validation($form-danger-text, $form-danger-text, $form-danger-bg);
+}
+
+// Modifier: `input-group-file`
+// ----------------------------
+
+.input-group-file {
+  input[type="text"] {
+    background-color: $input-bg;
+  }
+}
+
+// Modifier: `help-block` 
+// "help-block" was replace by "text-help"
+// ----------------------
+.text-help {
+  color: lighten($text-color, 25%);  // add v3
+}
+
+
+// Input Search
+// ========================================================================
+
+.input-search-close {
+  color: $close-color;
+  text-shadow: $close-text-shadow;
+  
+  &:hover,
+  &:focus {
+    color: $close-color;
+  }
+}
+
+button.input-search-close {
+  background: transparent;
+  border: 0;
+
+}
+
+.input-search {
+  .input-search-icon {
+    color: $input-color-placeholder;
+  }
+}
+
+.input-search-btn {
+  background: transparent;
+}
+
+.input-search-dark {
+  .input-search-icon {
+    color: $gray-dark;
+  }
+
+  .form-control {
+    background: $gray-lightest;
+    &:focus {
+      background-color: transparent;
+    }
+  }
+}
+

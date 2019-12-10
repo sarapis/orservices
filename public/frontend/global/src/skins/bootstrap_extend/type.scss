@@ -1,0 +1,96 @@
+
+// Variables
+// ========================================================================
+$blockquote-color:                 $gray-darker;
+
+$blockquote-success-border:        $brand-success;
+$blockquote-info-border:           $brand-info;
+$blockquote-warning-border:        $brand-warning;
+$blockquote-danger-border:         $brand-danger;
+
+// Component: Typography
+// ========================================================================
+
+// Emphasis & misc
+// -------------------------
+
+mark,
+.mark {
+  color: $state-warning-text;
+}
+
+// Drop Cap
+// -------------------------
+
+.drop-cap {
+  color: $gray-base;
+
+  &-reversed {
+    color: $inverse;
+    background-color: $gray-base;
+  }
+}
+
+// Component: Blockquote
+// ========================================================================
+
+blockquote {
+  color: $blockquote-color;
+  border-left: 2px solid $blockquote-border-color;
+}
+
+.blockquote-reverse {
+  border-right-width: 2px;
+}
+
+// @mixin blockquote-variant($border){
+//   // font-size: $font-size-base;
+//   background-color: rgba($border, (10/100));
+//   border-color: $border;
+// } 
+
+.blockquote {
+  &-success {
+    @include blockquote-variant($blockquote-success-border);
+  }
+  &-info {
+    @include blockquote-variant($blockquote-info-border);
+  }
+  &-warning {
+    @include blockquote-variant($blockquote-warning-border);
+  }
+  &-danger {
+    @include blockquote-variant($blockquote-danger-border);
+  }
+}
+
+
+// Component: Horizontal description lists (from--v3)
+// ========================================================================
+// Defaults to being stacked without any of the below styles applied, until the
+// grid breakpoint is reached (default of ~768px).
+
+// .dl-horizontal {
+//   margin: 0 0 22px;
+
+//   dd {
+//     @extend clearfix(all); // Clear the floated `dt` if an empty `dd` is present
+//   }
+
+//   @include media-breakpoint-up(md) {
+//     dt {
+//       float: left;
+//       width: ($dl-horizontal-offset - 20px);
+//       clear: left;
+//       text-align: right;
+//       overflow: hidden;
+//     }
+
+//     dd {
+//       margin-left: $dl-horizontal-offset;
+//     }
+//   }
+// }
+
+
+

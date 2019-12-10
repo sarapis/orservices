@@ -1,0 +1,30 @@
+{
+  "destination": {
+    "js": "js",
+    "css": "css",
+    "fonts": "fonts",
+    "vendor": "vendor"
+  },
+  "source": {
+    "path": "src",
+    "js": "src/js",
+    "sass": "src/scss",
+    "fonts": "src/fonts",
+    "vendor": "src/vendor",
+    "es": "src/es"
+  },
+  "bootstrap": {
+    "sass": "src/scss/bootstrap",
+    "mixins": "src/scss/mixins"
+  },
+  "autoprefixerBrowsers": [
+    "Android 2.3",
+    "Android >= 4",
+    "Chrome >= 20",
+    "Firefox >= 24",
+    "Explorer >= 8",
+    "iOS >= 6",
+    "Opera >= 12",
+    "Safari >= 6"
+  ]
+}
