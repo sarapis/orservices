@@ -1,8 +1,0 @@
-.close {
-  color: $close-color;
-  text-shadow: $close-text-shadow;
-
-  @include hover-focus {
-    color: $close-color;
-  }
-}
