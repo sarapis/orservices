@@ -226,7 +226,7 @@ ul#ui-id-1 {
                                                         @php $taxonomy_name = $service_taxonomy_info_list[$service_taxonomy_recordid]; 
                                                         @endphp
                                                         @if($taxonomy_name)
-                                                            <a class="panel-link {{str_replace(' ', '_', $taxonomy_name)}}" at="{{$service_taxonomy_recordid}}">{{$taxonomy_name}}</a>
+                                                            <a class="panel-link {{str_replace(' ', '_', $taxonomy_name)}}" at="child_{{$service_taxonomy_recordid}}">{{$taxonomy_name}}</a>
                                                         @endif
                                                     @endforeach
                                                 @endif

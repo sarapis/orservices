@@ -154,7 +154,7 @@ ul#ui-id-1 {
                             <span class="pl-0 category_badge"><b>Types of Services:</b>
                                 @if($service->service_taxonomy != null)
                                     @foreach($service_taxonomy_info_list as $key => $service_taxonomy_info)
-                                        <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}" at="{{$service_taxonomy_info->taxonomy_recordid}}">{{$service_taxonomy_info->taxonomy_name}}</a>
+                                        <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}" at="child_{{$service_taxonomy_info->taxonomy_recordid}}">{{$service_taxonomy_info->taxonomy_name}}</a>
                                     @endforeach
                                 @endif
                             </span>                            
