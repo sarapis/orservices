@@ -176,7 +176,6 @@ Home
                                         @if ($key2 % 2 == 0)
                                             <div class="card">
                                                 <div class="card-header">
-                                                    <a class="card-link @if($c != 0) collapsed @endif " data-toggle="collapse" href="#collapse{{$c}}"></a>
                                                     <a class="child_node card-link taxonomy-link" href="javascript:void(0);" value="child_{{$parent_taxonomy->taxonomy_recordid}}">{{$parent_taxonomy->taxonomy_name}}</a>
                                                 </div>
                                             </div>
@@ -188,7 +187,6 @@ Home
                                         @if ($key2 % 2 == 1)
                                             <div class="card">
                                                 <div class="card-header">
-                                                    <a class="card-link @if($c != 0) collapsed @endif " data-toggle="collapse" href="#collapse{{$c}}"></a>
                                                     <a class="child_node card-link taxonomy-link" href="javascript:void(0);" value="child_{{$parent_taxonomy->taxonomy_recordid}}">{{$parent_taxonomy->taxonomy_name}}</a>
                                                 </div>
                                             </div>
