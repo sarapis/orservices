@@ -57,6 +57,13 @@ Import
             @else     
             <div class="col-md-2">
                 <div class="clearfix text-right">
+                    <button class="btn btn-danger" id="get_zip_from_api"><label for="get_zip_from_api">Import via API</label></button>
+                    <p id="zipping" style="font-style: italic;  color: blue;"> downloading zip file ... </p>
+                    <p id="zipped" style="color: blue;"> downloaded. </p>
+                    <p id="zip-fail" style="color: red;"> download failed.</p>
+                    <p id="zip-alert" style="color: green;"> Your api url or header info is invalid.</p>
+                </div>
+                <div class="clearfix text-right">
                     <input type="file" name="file_zip" id="file_zip" class="inputfile-zip" />
                         <button class="btn btn-primary"><label for="file_zip" class="choose-csv">Upload HSDS ZIP File</label></button>
                 </div>
@@ -78,11 +85,11 @@ Import
             </div>
             <div class="form-group">
                 <label for="airtable_api_key_input">Airtable API Key</label>
-                <input class="form-control" type="text" name="airtable_api_key_input" id="airtable_api_key_input" value="{{$airtable_key_info->api_key}}" required />                
+                <input class="form-control" type="text" name="airtable_api_key_input" id="airtable_api_key_input" required />                
             </div>
             <div class="form-group">
                 <label for="airtable_base_url_input">Airtable Base ID</label>
-                <input class="form-control" type="text" name="airtable_base_url_input" id="airtable_base_url_input" value="{{$airtable_key_info->base_url}}" required />
+                <input class="form-control" type="text" name="airtable_base_url_input" id="airtable_base_url_input" required />
             </div>
             <div class="form-group">                 
                 <label for="airtable_enable_auto_sync">Enable auto-sync: </label>
@@ -157,23 +164,22 @@ Import
             <div class="form-group">
                 <h5>
                     You can upload individual CSVs that follow the Open Referral Human Services Data (HSDS) format.
-                    You can also import an entire dataset by uploading an HSDS Zip File.</br>
-                    You can automate the import of an HSDS Zip File by filling out the following info:
+                    You can also import an entire dataset by uploading an HSDS Zip File.</br>                    
+                    You can automate the import of an HSDS Zip File by filling out the following info and then clicking the Import via API button.
                 </h5>
             </div>
             <div class="form-group">
-                <label for="import_csv_url_path_input">URL Path</label>
-                <input class="form-control" type="text" name="import_csv_url_path_input" id="import_csv_url_path_input" required />                
+                <label for="import_csv_url_path_input">API URL</label>
+                <p for="import_csv_url_path_example" style="font-style: italic; color: grey;">   Example: http://52.188.77.23:3000/datapackages</p>
+                <input class="form-control" type="text" name="import_csv_api_url" id="import_csv_api_url" required />
+                <p id="validation-csv-api-url" style="font-style: italic; color: blue;">API url is required.</p>                
             </div>
             <div class="form-group">
-                <label for="import_csv_username_input">Username</label>
-                <input class="form-control" type="text" name="import_csv_username_input" id="import_csv_username_input" required />
+                <label for="import_csv_api_header_input">Authorization in Header</label>
+                <p for="import_csv_api_header_example" style="font-style: italic; color: grey;">   Example: Bearer cwpr9HS5o8nZNBly6l2A0A</p>
+                <input class="form-control" type="text" name="import_csv_api_header" id="import_csv_api_header" required />
+                <p id="validation-csv-api-header" style="font-style: italic; color: blue;">Authorization in Header is required.</p>
             </div>
-            <div class="form-group">
-                <label for="import_csv_key_input">Key</label>
-                <input class="form-control" type="text" name="import_csv_key_input" id="import_csv_key_input" required />
-            </div>
-
             <table class="table table-striped jambo_table bulk_action" id="tbcsv">
                 <thead>
                     <tr>
@@ -224,6 +230,13 @@ Import
             sync_all_now(this, 0);
         });
 
+        $('#zipping').hide();
+        $('#zipped').hide();
+        $('#zip-fail').hide();
+        $('#zip-alert').hide();
+        $('#validation-csv-api-url').hide();
+        $('#validation-csv-api-header').hide();
+
         function sync_all_now(parent, c){
 
             current = $('.sync_now').eq(c);
@@ -263,6 +276,77 @@ Import
                 }
             });
         }
+
+        $('#get_zip_from_api').click(function(){
+            var origin_api_url = $('#import_csv_api_url').val();
+            var origin_api_header_authorization = $('#import_csv_api_header').val();
+            
+            if ((origin_api_url != '') && (origin_api_header_authorization != '')) {
+
+                var api_url = 'https://cors-anywhere.herokuapp.com/' + origin_api_url;
+                var api_header_authorization = origin_api_header_authorization;            
+
+                // var api_url = 'https://cors-anywhere.herokuapp.com/http://52.188.77.23:3000/datapackages';
+                // var api_header_authorization = 'Bearer cwpr9HS5o8nZNBly6l2A0A';
+
+                $('#zipping').show();
+                $.ajax({
+                    type: "POST",   
+                    headers: {
+                        'Authorization': api_header_authorization,
+                    },
+                    url: api_url,
+                    success: function(result) {
+                        var id = result.data[0].id;
+                        var request_url = api_url + '/' + id;     
+                        $.ajax({
+                            type: "GET",
+                            url: request_url,
+                            headers: {
+                                'Authorization': api_header_authorization
+                            },
+                            success: function (data) {
+                                var date_time = data.data.attributes.created_at;
+                                var file_name = data.data.attributes.name;
+                                var downloaded_date = date_time.split("T")[0];
+                                var downloaded_time = date_time.split("T")[1];
+                                var downloaded_file_name = 'datapackage' + '_' + downloaded_date + '_' + downloaded_time.replace(/:/g, '_').split(".")[0] + '.zip';
+                                console.log(downloaded_file_name);
+
+                                var download_request_url = 'http://52.188.77.23:3000' + data.data.attributes.url;
+                                console.log(download_request_url);
+                                window.location.href = download_request_url;                            
+
+                                $('#zipped').show();
+                                $('#zipping').hide();
+                            },
+                            error: function(e){
+                                console.log('data packages download error!');
+                                $('#zip-fail').show();
+                                $('#zipping').hide();
+                            }
+                        });
+                    },
+                    error: function(e){
+                        console.log('data packages download error!');
+                        $('#zip-fail').show();
+                        $('#zip-alert').show();
+                        $('#zipping').hide();
+                    }
+                });
+
+            }
+
+            if ((origin_api_url == '') && (origin_api_header_authorization != '')) {
+                $('#validation-csv-api-url').show();
+            }
+
+            if ((origin_api_url != '') && (origin_api_header_authorization == '')) {
+                $('#validation-csv-api-header').show();
+            }
+            
+
+        });
 
 
         $('.sync_now').click(function(){

@@ -65,7 +65,7 @@ ul#ui-id-1 {
                             @endif
                         </h4>
 
-                        <h4 class="service-description" style="line-height: inherit;"></h4>
+                        <h4  class="service-description" style="line-height: inherit;">{{ $service->service_description }}</h4>
 
                         @if(isset($service->service_phones))                            
                             @if(isset($service->phone()->first()->phone_number))  
@@ -83,7 +83,7 @@ ul#ui-id-1 {
                             @endif
                         @endif
 
-                        <h4><span><i class="icon md-phone font-size-24 vertical-align-top  mr-5 pr-10"></i> @foreach($service->phone as $phone) {!! $phone->phone_number !!} @endforeach</span></h4>
+                      <!--   <h4><span><i class="icon md-phone font-size-24 vertical-align-top  mr-5 pr-10"></i> @foreach($service->phone as $phone) {!! $phone->phone_number !!} @endforeach</span></h4> -->
 
                         <h4 style="line-height: inherit;">
                             <span>  
@@ -159,7 +159,7 @@ ul#ui-id-1 {
                                 @endif
                             </span>                            
                         </h4>
-                        @if($service->service_details!=NULL)
+                        <!-- @if($service->service_details!=NULL)
                             @php
                                 $show_details = [];
                             @endphp
@@ -180,11 +180,32 @@ ul#ui-id-1 {
                             @foreach($show_details as $detail)
                             <h4><span class="badge bg-red"><b>{{ $detail['detail_type'] }}:</b></span> {!! $detail['detail_value'] !!}</h4>  
                             @endforeach
+                        @endif -->
+                    </div>
+                </div>
+                @if($contact_info)
+                <div class="card page-project">
+                    <div class="card-block">
+                        @if($contact_info->contact_name)
+                        <h4><span><b>Name:</b></span> {{$contact_info->contact_name}}</h4>
+                        @endif
+                        @if($contact_info->contact_title)
+                        <h4><span><b>Title:</b></span> {{$contact_info->contact_title}}</h4>
+                        @endif
+                        @if($contact_info->contact_department)
+                        <h4><span><b>Department:</b></span> {{$contact_info->contact_department}}</h4>
+                        @endif
+                        @if($contact_info->contact_email)
+                        <h4><span><b>Email:</b></span> {{$contact_info->contact_email}}</h4>
+                        @endif
+                        @if($contact_phone)
+                        <h4><span><b>Phone:</b></span> {{$contact_phone->phone_number}}</h4>
                         @endif
                     </div>
                 </div>
+                @endif
             </div>
-            
+
             <div class="col-md-4 property">
                 <div class="pt-10 pb-10 pl-0 btn-download">
                     <a href="/download_service/{{$service->service_recordid}}" class="btn btn-primary btn-button">Download PDF</a>
@@ -323,9 +344,6 @@ $(document).ready(function(){
         
     }, 2000);
 
-    var description = "";
-    replaced_description = description.replace(/\n/g, "<br />");    
-    $('.service-description').html(replaced_description);
 
     $('.panel-link').on('click', function(e){
         if($(this).hasClass('target-population-link') || $(this).hasClass('target-population-child'))

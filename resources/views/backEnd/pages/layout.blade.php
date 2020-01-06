@@ -81,32 +81,7 @@ Appearance
                 </div>
               </div>
 
-              <div class="form-group m-form__group row">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12">
-                    Top background Image
-                </label>
-                <div class="col-md-6 col-sm-12">
-                    
-                    <div class="row">
-                      <img src="/uploads/images/{{$layout->top_background}}" id="blah1" style="width: 100%;">
-                    </div>
-                    <div class="row" style="margin-top: 10px;">
-                      <div class="col-md-6">
-                        <label class="custom-file">
-                            <input type="file" id="file3" class="custom-file-input" onchange="readURL_top(this);" name="top_background">
-                            <span class="custom-file-control"></span>
-                        </label>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-12">
-                        <label>Recommended size 1200px wide.</label>
-                      </div>
-                    </div>
-                </div>
-              </div>
-
-              <div class="item form-group">
+              <!-- <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">
                 </label>
                 <div class="col-md-6">
@@ -114,9 +89,9 @@ Appearance
                     <input type="checkbox" class="js-switch" value="checked" name="bottom_section_active"  @if($layout->bottom_section_active==1) checked @endif/>&nbsp;&nbsp;<b>Show Bottom Section </b>
                   </span>
                 </div>
-              </div>
+              </div> -->
 
-              <div class="form-group m-form__group row">
+              <!-- <div class="form-group m-form__group row">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12">
                     Bottom background Image
                 </label>
@@ -139,15 +114,15 @@ Appearance
                       </div>
                     </div>
                 </div>
-              </div>
+              </div> -->
 
-              <div class="item form-group">
+              <!-- <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Bottom Section Content
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <textarea id="summernote1" type="text" name="sidebar_content" class="optional form-control col-md-7 col-xs-12">{{$layout->sidebar_content}}</textarea>
                 </div>
-              </div>
+              </div> -->
 
               <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Contact Text 

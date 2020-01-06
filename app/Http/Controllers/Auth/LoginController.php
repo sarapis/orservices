@@ -41,7 +41,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/dashboard';
+    protected $redirectTo = '/home';
 
     /**
      * Create a new controller instance.
@@ -76,7 +76,7 @@ class LoginController extends Controller
             $remember = (Input::get('remember') == 'on') ? true : false;
             if ($user = Sentinel::authenticate($request->all(), $remember)) {
                 
-                   return redirect('dashboard'); 
+                   return redirect('home'); 
                 
             }
 

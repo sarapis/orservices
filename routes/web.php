@@ -11,55 +11,58 @@
 |
 */
 Route::auth();
-Route::get('/', ['uses' => 'HomeController@home']);
+
 Route::get('/home', function () {
     //return view('welcome');
     return redirect('/');
 });
-Route::get('/admin', function () {
-    //return view('welcome');
-    return redirect('/login');
+// Route::get('/admin', function () {
+//     //return view('welcome');
+//     return redirect('/login');
+// });
+
+Route::group(['middleware' => ['web', 'auth' ] ], function () {
+    Route::get('/', ['uses' => 'HomeController@home']);
+    Route::match(['get', 'post'], '/search', [
+        'uses'          => 'ExploreController@filter'
+    ]);
+
+    Route::get('/about', ['uses' => 'HomeController@about']);
+    Route::get('/feedback', ['uses' => 'HomeController@feedback']);
+
+    Route::get('/services', 'ServiceController@services');
+    Route::get('/service/{id}', 'ServiceController@service');
+
+    Route::get('/organizations', 'OrganizationController@organizations');
+    Route::get('/organization/{id}', 'OrganizationController@organization');
+
+    Route::get('/category/{id}', 'ServiceController@taxonomy');
+
+    Route::get('/services_near_me', 'ExploreController@geolocation');
+
+    Route::post('/filter', 'ExploreController@filter');
+    Route::get('/filter', 'ExploreController@filter');
+
+    Route::get('/datapackages', 'PagesController@datapackages');
+
+    // Route::post('/explore', 'ExploreController@index');
+    Route::get('/profile/{id}', 'ExploreController@profile');
+    Route::get('/explore/status_{id}', 'ExploreController@status');
+    Route::get('/explore/district_{id}', 'ExploreController@district');
+    Route::get('/explore/category_{id}', 'ExploreController@category');
+    Route::get('/explore/cityagency_{id}', 'ExploreController@cityagency');
+
+
+    //download pdf
+    Route::get('/download_service/{id}', 'ServiceController@download');
+    Route::get('/download_organization/{id}', 'OrganizationController@download');
+
+    Route::get('tb_alt_taxonomy/all_terms', 'AltTaxonomyController@get_all_terms');
+
+    Route::post('/range', 'ExploreController@filterValues1');
 });
 
-
-Route::match(['get', 'post'], '/search', [
-    'uses'          => 'ExploreController@filter'
-]);
-
-Route::get('/about', ['uses' => 'HomeController@about']);
-Route::get('/feedback', ['uses' => 'HomeController@feedback']);
-
-Route::get('/services', 'ServiceController@services');
-Route::get('/service/{id}', 'ServiceController@service');
-
-Route::get('/organizations', 'OrganizationController@organizations');
-Route::get('/organization/{id}', 'OrganizationController@organization');
-
-Route::get('/category/{id}', 'ServiceController@taxonomy');
-
-Route::get('/services_near_me', 'ExploreController@geolocation');
-
-Route::post('/filter', 'ExploreController@filter');
-Route::get('/filter', 'ExploreController@filter');
-
-
-
-// Route::post('/explore', 'ExploreController@index');
-Route::get('/profile/{id}', 'ExploreController@profile');
-Route::get('/explore/status_{id}', 'ExploreController@status');
-Route::get('/explore/district_{id}', 'ExploreController@district');
-Route::get('/explore/category_{id}', 'ExploreController@category');
-Route::get('/explore/cityagency_{id}', 'ExploreController@cityagency');
-
-
-//download pdf
-Route::get('/download_service/{id}', 'ServiceController@download');
-Route::get('/download_organization/{id}', 'OrganizationController@download');
-
-Route::get('tb_alt_taxonomy/all_terms', 'AltTaxonomyController@get_all_terms');
-
-Route::post('/range', 'ExploreController@filterValues1');
-
+Route::resource('login_register_edit', 'EditLoginRegisterController');
 
  Route::group(['middleware' => ['web', 'auth', 'permission'] ], function () {
         Route::get('dashboard', ['uses' => 'HomeController@dashboard', 'as' => 'home.dashboard']);
@@ -161,8 +164,11 @@ Route::post('/range', 'ExploreController@filterValues1');
         
         Route::get('/import', ['uses' => 'PagesController@import']);
         Route::get('/export', ['uses' => 'PagesController@export']);
+        Route::get('/export_hsds_zip_file', ['uses' => 'PagesController@export_hsds_zip_file']);
+        
         Route::get('/meta_filter', ['uses' => 'PagesController@metafilter']);
         Route::post('/meta/{id}', 'PagesController@metafilter_save');
+        Route::post('/update_hsds_api_key', 'PagesController@update_hsds_api_key');
 
         Route::post('/taxonomy_filter', 'PagesController@taxonomy_filter');
         Route::post('/postal_code_filter', 'PagesController@postal_filter');

@@ -1,6 +1,6 @@
 @extends('backLayout.app')
 @section('title')
-Edit About
+Edit Login/Register Page
 @stop
 
 @section('content')
@@ -9,7 +9,7 @@ Edit About
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
           <div class="x_title">
-            <h2>Edit About</h2>
+            <h2>Edit Login/Register Page</h2>
             <ul class="nav navbar-right panel_toolbox">
               <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
               </li>
@@ -21,7 +21,7 @@ Edit About
           <div class="x_content">
 
         {!! Form::model($page, [
-            'url' => ['about_edit', 2],
+            'url' => ['login_register_edit', 5],
             'class' => 'form-horizontal', 'method' => 'put'
         ]) !!}
         
@@ -39,21 +39,30 @@ Edit About
                     {!! $errors->first('title', '<p class="help-block">:message</p>') !!}
                 </div>
             </div>
-            <div class="form-group {{ $errors->has('body') ? 'has-error' : ''}}">
+            <!-- <div class="form-group {{ $errors->has('body') ? 'has-error' : ''}}">
                 {!! Form::label('body', 'Body: ', ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-6">
                     {!! Form::textarea('body',null, array('form-control','id'=>'summernote') ) !!}
                     {!! $errors->first('body', '<p class="help-block">:message</p>') !!}
                 </div>
-            </div>
+            </div> -->
 
-            <div class="form-group">
-                {!! Form::label('body', '   ', ['class' => 'col-sm-3 control-label']) !!}
-                <div class="col-sm-6">
-                    <span><b>Hide About Page</b>&nbsp;&nbsp;
-                      <input type="checkbox" class="js-switch" value="checked" name="about_active"  @if($layout->about_active==1) checked @endif/>&nbsp;&nbsp;<b>Show About Page</b></span>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Register Page Content
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <textarea id="summernote_register" type="text" name="register_content" class="optional form-control col-md-7 col-xs-12">{{$layout->register_content}}</textarea>
                 </div>
             </div>
+
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Login Page Content
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <textarea id="summernote_login" type="text" name="login_content" class="optional form-control col-md-7 col-xs-12">{{$layout->login_content}}</textarea>
+                </div>
+            </div>
+
 
             <div class="form-group">
                 <div class="col-sm-offset-3 col-sm-3">
@@ -61,9 +70,6 @@ Edit About
                     {!! Form::close() !!}
                 </div>
             </div>
-
-            
-
         {!! Form::close() !!}
         </div>
     </div>
@@ -74,9 +80,15 @@ Edit About
 @section('scripts')
 <script>
     $(document).ready(function() {
-    $('#summernote').summernote({
-        height: 300
-    });
+        $('#summernote').summernote({
+            height: 300
+        });
+        $('#summernote_register').summernote({
+            height: 200
+        });
+        $('#summernote_login').summernote({
+            height: 200
+        });
     });
   </script>
 @endsection

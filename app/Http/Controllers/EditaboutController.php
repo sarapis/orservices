@@ -9,6 +9,7 @@ use App\Page;
 use App\Airtables;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Layout;
 use Session;
 use Validator;
 use Sentinel;
@@ -32,8 +33,9 @@ class EditaboutController extends Controller
     public function index()
     {
         $page = Page::findOrFail(2);
+        $layout = Layout::find(1);
 
-        return view('backEnd.pages.edit_about', compact('page'));
+        return view('backEnd.pages.edit_about', compact('page', 'layout'));
     }
 
     /**
@@ -114,6 +116,17 @@ class EditaboutController extends Controller
         
         $page = Page::findOrFail($id);
         $page->update($request->all());
+
+        $layout = Layout::find(1);
+        
+        if ($request->input('about_active') == 'checked')
+        {
+            $layout->about_active = 1;
+        }
+        else{
+            $layout->about_active = 0;
+        }
+        $layout->save();
 
         Session::flash('message', 'Page updated!');
         Session::flash('status', 'success');

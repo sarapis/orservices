@@ -303,7 +303,7 @@ $(document).ready(function(){
     
 
      $('#sidebar_tree').jstree({
-        'plugins': ["checkbox", "wholerow"],
+        'plugins': ["checkbox", "wholerow", "sort"],
         'core': {
             select_node: 'sidebar_taxonomy_tree',
             data: tree_data_list
