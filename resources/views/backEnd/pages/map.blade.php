@@ -45,66 +45,6 @@ Map Settings
                 </div>
               </div>
 
-              <!-- <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">USA State 
-                </label>
-                <div class="col-md-8 col-sm-8 col-xs-12">
-                  <select class="select2-search form-control usa-state" name="state" @if($map->active==0) disabled="disabled" @endif>
-                    <option value="AL">Alabama</option>
-                    <option value="AK">Alaska</option>
-                    <option value="AZ">Arizona</option>
-                    <option value="AR">Arkansas</option>
-                    <option value="CA">California</option>
-                    <option value="CO">Colorado</option>
-                    <option value="CT">Connecticut</option>
-                    <option value="DE">Delaware</option>
-                    <option value="DC">District Of Columbia</option>
-                    <option value="FL">Florida</option>
-                    <option value="GA">Georgia</option>
-                    <option value="HI">Hawaii</option>
-                    <option value="ID">Idaho</option>
-                    <option value="IL">Illinois</option>
-                    <option value="IN">Indiana</option>
-                    <option value="IA">Iowa</option>
-                    <option value="KS">Kansas</option>
-                    <option value="KY">Kentucky</option>
-                    <option value="LA">Louisiana</option>
-                    <option value="ME">Maine</option>
-                    <option value="MD">Maryland</option>
-                    <option value="MA">Massachusetts</option>
-                    <option value="MI">Michigan</option>
-                    <option value="MN">Minnesota</option>
-                    <option value="MS">Mississippi</option>
-                    <option value="MO">Missouri</option>
-                    <option value="MT">Montana</option>
-                    <option value="NE">Nebraska</option>
-                    <option value="NV">Nevada</option>
-                    <option value="NH">New Hampshire</option>
-                    <option value="NJ">New Jersey</option>
-                    <option value="NM">New Mexico</option>
-                    <option value="NY">New York</option>
-                    <option value="NC">North Carolina</option>
-                    <option value="ND">North Dakota</option>
-                    <option value="OH">Ohio</option>
-                    <option value="OK">Oklahoma</option>
-                    <option value="OR">Oregon</option>
-                    <option value="PA">Pennsylvania</option>
-                    <option value="RI">Rhode Island</option>
-                    <option value="SC">South Carolina</option>
-                    <option value="SD">South Dakota</option>
-                    <option value="TN">Tennessee</option>
-                    <option value="TX">Texas</option>
-                    <option value="UT">Utah</option>
-                    <option value="VT">Vermont</option>
-                    <option value="VA">Virginia</option>
-                    <option value="WA">Washington</option>
-                    <option value="WV">West Virginia</option>
-                    <option value="WI">Wisconsin</option>
-                    <option value="WY">Wyoming</option>
-                  </select>
-                </div>
-              </div> -->
-
               <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Map Center Lat/Long <span class="required">*</span>
                 </label>
@@ -213,15 +153,9 @@ Map Settings
                   <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Output Status of Geocoding
                   </label>
                   <div class="col-md-4 col-sm-4 col-xs-12">
-                    @if ($recently_geocoded_numbers != 0)
                     <h5 id="recent_geocoded_number" style="color: blue; font-style: italic;">
-                      {{$recently_geocoded_numbers}} locations have just been geocoded.
-                    </h5>
-                    @else
-                    <h5 id="recent_geocoded_number" style="color: blue; font-style: italic;">
-                      All valid locations have already been geocoded before.
+                      {{$geocode_status_text}}
                     </h5> 
-                    @endif
                   </div>
                 </div> 
               </div>
@@ -231,6 +165,71 @@ Map Settings
         </div>
       </div>
     </div>
+
+    <!-- <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Enrich</h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+              </li>
+              <li><a class="close-link"><i class="fa fa-close"></i></a>
+              </li>
+            </ul>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <div class="row">              
+              <div class="col-md-8"> 
+                <div class="item form-group">
+                  <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Scan database for enrichable locations
+                  </label>
+                  <div class="col-md-4 col-sm-4 col-xs-12">
+                    <a class="btn btn-primary open-td" href="/scan_enrichable_location/" id="scan-enrich-btn" style="color: white;">Scan</a>                    
+                  </div>
+                </div> 
+              </div>
+
+              <div class="col-md-8"> 
+                <div class="item form-group">
+                  <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Output number of fields without additional NYC data fields
+                  </label>
+                  <div class="col-md-4 col-sm-4 col-xs-12">
+                    <h5 id="unenriched_location_numbers" style="color: blue; font-style: italic;">
+                      {{$unenriched_location_count}}
+                    </h5>
+                  </div>
+                </div> 
+              </div>
+
+              <div class="col-md-8"> 
+                <div class="item form-group">
+                  <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Enrich these locations
+                  </label>
+                  <div class="col-md-4 col-sm-4 col-xs-12">
+                    <a class="btn btn-danger open-td" href="/apply_enrich/" id="enrich-btn" style="color: white;">Enrich</a>                    
+                  </div>
+                </div> 
+              </div>
+
+              <div class="col-md-8"> 
+                <div class="item form-group">
+                  <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Output status of the enrichment
+                  </label>
+                  <div class="col-md-4 col-sm-4 col-xs-12">
+                    <h5 id="recent_enriched_number" style="color: blue; font-style: italic;">
+                      {{$enrich_status_text}}                      
+                    </h5> 
+                  </div>
+                </div> 
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
 
 @endsection
 @section('scripts')
@@ -242,10 +241,11 @@ $('#scan-btn').on('click', function(e){
   $("#ungeocoded_location_numbers").css('color', 'forestgreen');
   $("#invalid_location_numbers").css('color', 'forestgreen');
 });
-// $('#apply-btn').on('click', function(e){
-//   e.preventDefault();
-//   $("#recent_geocoded_number").css('color', 'forestgreen');
-// });
+$('#scan-enrich-btn').on('click', function(e){
+  e.preventDefault();
+  $("#unenriched_location_numbers").css('color', 'forestgreen');
+});
+
 $(document).ready(function() {
     $('.js-switch').change(function(){
       var on = $('.js-switch').prop('checked');

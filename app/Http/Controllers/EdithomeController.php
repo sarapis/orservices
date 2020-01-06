@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+
 use App\Page;
+use App\Layout;
 use App\Airtables;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Image;
 use Session;
 use Validator;
 use Sentinel;
@@ -32,8 +35,9 @@ class EdithomeController extends Controller
     public function index()
     {
         $page = Page::findOrFail(1);
+        $layout = Layout::find(1);
 
-        return view('backEnd.pages.edit_home', compact('page'));
+        return view('backEnd.pages.edit_home', compact('page', 'layout'));
     }
 
     /**
@@ -105,6 +109,20 @@ class EdithomeController extends Controller
      */
     public function update($id, Request $request)
     {
+        $layout = Layout::find(1);
+        $layout->sidebar_content = $request->sidebar_content;
+
+        // var_dump($request->hasFile('top_background'));
+        // exit;
+       
+        if($request->hasFile('top_background')){
+            $top_background = $request->file('top_background');
+            $top_background_filename = time() . '.' . $top_background->getClientOriginalExtension();
+            Image::make($top_background)->save( public_path('/uploads/images/' . $top_background_filename ) );
+            $layout->top_background=$top_background_filename;
+        }
+        $layout->save();
+
         if ($this->validator($request,Sentinel::getUser()->id)->fails()) {
             
             return redirect()->back()

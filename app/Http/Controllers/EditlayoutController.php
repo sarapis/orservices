@@ -6,6 +6,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Layout;
+use App\Page;
 use Image;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -118,18 +119,22 @@ class EditlayoutController extends Controller
             $constraint->aspectRatio();})->save( public_path('/uploads/images/' . $filename ) );
             $layout->logo=$filename;
         }
-        if($request->hasFile('top_background')){
-            $top_background = $request->file('top_background');
-            $top_background_filename = time() . '.' . $top_background->getClientOriginalExtension();
-            Image::make($top_background)->save( public_path('/uploads/images/' . $top_background_filename ) );
-            $layout->top_background=$top_background_filename;
-        }
-        if($request->hasFile('bottom_background')){
-            $bottom_background = $request->file('bottom_background');
-            $bottom_background_filename = time() . '.' . $bottom_background->getClientOriginalExtension();
-            Image::make($bottom_background)->save( public_path('/uploads/images/' . $bottom_background_filename ) );
-            $layout->bottom_background=$bottom_background_filename;
-        }
+        
+        // var_dump($request->hasFile('top_background'));
+        // exit;
+
+        // if($request->hasFile('top_background')){
+        //     $top_background = $request->file('top_background');
+        //     $top_background_filename = time() . '.' . $top_background->getClientOriginalExtension();
+        //     Image::make($top_background)->save( public_path('/uploads/images/' . $top_background_filename ) );
+        //     $layout->top_background=$top_background_filename;
+        // }
+        // if($request->hasFile('bottom_background')){
+        //     $bottom_background = $request->file('bottom_background');
+        //     $bottom_background_filename = time() . '.' . $bottom_background->getClientOriginalExtension();
+        //     Image::make($bottom_background)->save( public_path('/uploads/images/' . $bottom_background_filename ) );
+        //     $layout->bottom_background=$bottom_background_filename;
+        // }
         if ($request->input('logo_active') == 'checked')
         {
             $layout->logo_active = 1;

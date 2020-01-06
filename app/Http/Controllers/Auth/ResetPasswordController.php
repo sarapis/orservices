@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
+use App\Layout;
 use Redirect;
 use Validator;
 use DB;
@@ -41,6 +42,15 @@ class ResetPasswordController extends Controller
     {
         $this->middleware('guest');
     }
+
+    public function showResetForm(Request $request, $token = null)
+    {
+        $layout = Layout::first();
+        return view('auth.passwords.reset', compact('layout'))->with(
+            ['token' => $token, 'email' => $request->email]
+        );
+    }
+
     public function reset(Request $request)
     {
         $validation = Validator::make($request->all(), [

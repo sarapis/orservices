@@ -171,12 +171,18 @@ Home
                                     @endforeach
                                 </div>
                             @else
+                                @php 
+                                    function cmp($a, $b){
+                                        return strcmp($a->taxonomy_name, $b->taxonomy_name);
+                                    }
+                                    $taxonomy_tree['parent_taxonomies'] = json_decode(json_encode($taxonomy_tree['parent_taxonomies']));
+                                    usort($taxonomy_tree['parent_taxonomies'], "cmp");
+                                @endphp
                                 <div class="col-12 col-md-6 col-lg-6 col-sm-12">
                                     @foreach($taxonomy_tree['parent_taxonomies'] as $key2 => $parent_taxonomy)
                                         @if ($key2 % 2 == 0)
                                             <div class="card">
                                                 <div class="card-header">
-                                                    <a class="card-link @if($c != 0) collapsed @endif " data-toggle="collapse" href="#collapse{{$c}}"></a>
                                                     <a class="child_node card-link taxonomy-link" href="javascript:void(0);" value="child_{{$parent_taxonomy->taxonomy_recordid}}">{{$parent_taxonomy->taxonomy_name}}</a>
                                                 </div>
                                             </div>
@@ -188,7 +194,6 @@ Home
                                         @if ($key2 % 2 == 1)
                                             <div class="card">
                                                 <div class="card-header">
-                                                    <a class="card-link @if($c != 0) collapsed @endif " data-toggle="collapse" href="#collapse{{$c}}"></a>
                                                     <a class="child_node card-link taxonomy-link" href="javascript:void(0);" value="child_{{$parent_taxonomy->taxonomy_recordid}}">{{$parent_taxonomy->taxonomy_name}}</a>
                                                 </div>
                                             </div>

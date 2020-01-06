@@ -1,4 +1,4 @@
-This codebase allows you to pull data from this AirTable Template: https://airtable.com/universe/expwt9yr65lFGUJAr/open-referral-social-services-directory-v20
+This codebase allows you to pull data from this AirTable Template: https://airtable.com/universe/expTMdQFD5r9G6V9Y/open-referral-human-services-template 
 
 ... into a web app that looks like this: http://orservices.sarapis.org
 
@@ -22,4 +22,4 @@ The result is an online directory app that is responsive, can deliver full searc
 8. From the projects root folder run `php artisan migrate`
 9. From the projects root folder run `php artisan db:seed`
 10. From the projects root folder run `composer dump-autoload`
-11. After login in admin panel, go to Datasync > Import and select whether you'd like to import data either from an Airtable following the Open Referral template, or from an HSDS Zip file. More information on the HSDS zip file coming soon.
+11. After login in admin panel, try synchronize of Data from Airtable.

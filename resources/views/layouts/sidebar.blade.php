@@ -126,8 +126,8 @@
 
        <ul class="list-unstyled components pt-0">
             
-            @if ((Request::path() == 'services') || (Request::segment(1) == 'search') || (Request::segment(1) == 'service') || (Request::segment(1) == 'organization') || (Request::segment(1) == 'organizations'))
-            <li class="option-side">
+            @if ((Request::path() == 'services') || (Request::segment(1) == 'search') || (Request::segment(1) == 'service') || (Request::segment(1) == 'organization') || (Request::segment(1) == 'services_near_me') || (Request::segment(1) == 'organizations'))
+            <!-- <li class="option-side">
                 <a href="#target_populations" class="text-side" data-toggle="collapse" aria-expanded="false">Types of People</a>
                 <ul class="collapse list-unstyled option-ul" id="target_populations">
                     <li>
@@ -138,7 +138,7 @@
                         </select>
                     </li>
                 </ul>
-            </li>
+            </li> -->
             <li class="option-side">
                 <a href="#projectcategory" class="text-side" data-toggle="collapse" aria-expanded="false">Types of Services</a>
                 
@@ -303,7 +303,7 @@ $(document).ready(function(){
     
 
      $('#sidebar_tree').jstree({
-        'plugins': ["checkbox", "wholerow"],
+        'plugins': ["checkbox", "wholerow", "sort"],
         'core': {
             select_node: 'sidebar_taxonomy_tree',
             data: tree_data_list
@@ -326,11 +326,25 @@ $(document).ready(function(){
         $("#filter").submit();
     });
     $('.download_csv').on('click', function(){
+        var all_selected_ids = $('#sidebar_tree').jstree("get_checked");
+        var selected_taxonomy_ids = all_selected_ids.filter(function(id) {
+            return id.indexOf('child_') > -1;
+        });
+        console.log(selected_taxonomy_ids);
+        selected_taxonomy_ids = selected_taxonomy_ids.toString();
+        $("#selected_taxonomies").val(selected_taxonomy_ids); 
         $("#csv").val('csv');
         $("#filter").submit();
         $("#csv").val('');
     });
     $('.download_pdf').on('click', function(){
+        var all_selected_ids = $('#sidebar_tree').jstree("get_checked");
+        var selected_taxonomy_ids = all_selected_ids.filter(function(id) {
+            return id.indexOf('child_') > -1;
+        });
+        console.log(selected_taxonomy_ids);
+        selected_taxonomy_ids = selected_taxonomy_ids.toString();
+        $("#selected_taxonomies").val(selected_taxonomy_ids); 
         $("#pdf").val('pdf');
         $("#filter").submit();
         $("#pdf").val('');

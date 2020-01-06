@@ -40,12 +40,16 @@
 					<li class="nav-item responsive_menu">
 						<a class="nav-link waves-effect waves-light waves-round" href="/organizations">Organizations</a>
 					</li>
+					@if($layout->about_active == 1)
 					<li class="nav-item responsive_menu">
 						<a class="nav-link waves-effect waves-light waves-round" href="/about">About</a>
 					</li>
-				
+					@endif
 					<li class="nav-item">
 						<a id="google_translate_element" class="nav-link waves-effect waves-light waves-round"></a>
+					</li>
+					<li class="nav-item responsive_menu">
+						<a class="nav-link waves-effect waves-light waves-round" href="/logout">Logout</a>
 					</li>
 					
 				</ul>

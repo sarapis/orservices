@@ -47,6 +47,13 @@ Edit About
                 </div>
             </div>
 
+            <div class="form-group">
+                {!! Form::label('body', '   ', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-sm-6">
+                    <span><b>Hide About Page</b>&nbsp;&nbsp;
+                      <input type="checkbox" class="js-switch" value="checked" name="about_active"  @if($layout->about_active==1) checked @endif/>&nbsp;&nbsp;<b>Show About Page</b></span>
+                </div>
+            </div>
 
             <div class="form-group">
                 <div class="col-sm-offset-3 col-sm-3">
@@ -54,6 +61,9 @@ Edit About
                     {!! Form::close() !!}
                 </div>
             </div>
+
+            
+
         {!! Form::close() !!}
         </div>
     </div>

@@ -1,0 +1,3 @@
+ID,schedule_recordid,schedule_id,service_id,location_id,schedule_x_phones,weekday,opens_at,closes_at,holiday,start_date,end_date,original_text,Schedule_closed,flag
+1,815266508963097,5,"885401816965082,867670607442498",,,,"8:00 am","4:00 pm",,,,,,
+2,850923458887269,4,,,,,,,,,,,,

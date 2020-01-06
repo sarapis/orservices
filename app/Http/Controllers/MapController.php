@@ -10,6 +10,7 @@ use Geolocation;
 use Geocode;
 use Spatie\Geocoder\Geocoder;
 use App\Location;
+use App\Address;
 use Image;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -43,9 +44,20 @@ class MapController extends Controller
         $map = Map::find(1);
         $ungeocoded_location_numbers = Location::whereNull('location_latitude')->count();
         $invalid_location_info_count = Location::whereNull('location_name')->count();
-        $recently_geocoded_numbers = 0;
 
-        return view('backEnd.pages.map', compact('map', 'ungeocoded_location_numbers', 'invalid_location_info_count', 'recently_geocoded_numbers'));
+        $geocode_status_text = '';
+        $enrich_status_text = '';
+        if ($ungeocoded_location_numbers == $invalid_location_info_count) {
+            $geocode_status_text = 'All valid locations have already been geocoded.';
+        }
+
+        $location_count = Location::whereNotNull('location_name')->count();
+        $unenriched_location_count = Location::whereNotNull('location_name')->whereNull('enrich_flag')->count();
+        if ($unenriched_location_count == 0) {
+            $enrich_status_text = 'All valid locations have already been enriched before.';
+        }
+
+        return view('backEnd.pages.map', compact('map', 'ungeocoded_location_numbers', 'invalid_location_info_count', 'location_count', 'unenriched_location_count', 'geocode_status_text', 'enrich_status_text'));
     }
 
     /**
@@ -177,25 +189,52 @@ class MapController extends Controller
         echo url('/uploads/'. $fileName);
     }
 
-    public function scan_ungeocoded_location(Request $request) {
+    public function scan_ungeocoded_location(Request $request) 
+    {
         $map = Map::find(1);
-        $geocoding_status = 'Not Started';
+        $geocode_status_text = 'Not Started';
+        $enrich_status_text = '';
         $ungeocoded_location_numbers = Location::whereNull('location_latitude')->count();
-        return view('backEnd.pages.map', compact('map', 'ungeocoded_location_numbers', 'geocoding_status'));
+        $invalid_location_info_count = Location::whereNull('location_name')->count();
+        if ($ungeocoded_location_numbers == $invalid_location_info_count) {
+            $geocode_status_text = 'All valid locations have already been geocoded.';
+        }
+        $location_count = Location::whereNotNull('location_name')->count();
+        $unenriched_location_count = Location::whereNotNull('location_name')->whereNull('enrich_flag')->count();
+        if ($unenriched_location_count == 0) {
+            $enrich_status_text = 'All valid locations have already been enriched before.';
+        }
+
+        return view('backEnd.pages.map', compact('map', 'ungeocoded_location_numbers', 'invalid_location_info_count', 'geocode_status_text', 'location_count', 'unenriched_location_count', 'enrich_status_text'));
     }
 
-    public function apply_geocode(Request $request) {
-        $map = Map::find(1);
-        
-        $ungeocoded_location_info_list = Location::whereNull('location_latitude')->get();
-        $invalid_location_info_count = Location::whereNull('location_name')->count();
 
+    public function scan_enrichable_location(Request $request) 
+    {
+        $map = Map::find(1);
+        $geocode_status_text = '';
+        $enrich_status_text = 'Not Started';
+        $ungeocoded_location_numbers = Location::whereNull('location_latitude')->count();
+        $invalid_location_info_count = Location::whereNull('location_name')->count();
+        if ($ungeocoded_location_numbers == $invalid_location_info_count) {
+            $geocode_status_text = 'All valid locations have already been geocoded.';
+        }
+        $location_count = Location::whereNotNull('location_name')->count();
+        $unenriched_location_count = Location::whereNotNull('location_name')->whereNull('enrich_flag')->count();
+        if ($unenriched_location_count == 0) {
+            $enrich_status_text = 'All valid locations have already been enriched before.';
+        }
+
+        return view('backEnd.pages.map', compact('map', 'ungeocoded_location_numbers', 'invalid_location_info_count', 'geocode_status_text', 'location_count', 'unenriched_location_count', 'enrich_status_text'));
+    }
+
+    public function apply_geocode(Request $request) 
+    {
+        $ungeocoded_location_info_list = Location::whereNull('location_latitude')->get();
         $client = new \GuzzleHttp\Client();
         $geocoder = new Geocoder($client);
-        
         $geocode_api_key = env('GEOCODE_GOOGLE_APIKEY');
         $geocoder->setApiKey($geocode_api_key);
-        $recently_geocoded_numbers = 0;
 
         foreach ($ungeocoded_location_info_list as $key => $location_info) {
             $location_name = $location_info->location_name;
@@ -206,12 +245,53 @@ class MapController extends Controller
                 $location_info->location_latitude = $latitude;
                 $location_info->location_longitude = $longitude;
                 $location_info->save();
-                $recently_geocoded_numbers = $recently_geocoded_numbers + 1;
             }
         }
-
-        $ungeocoded_location_numbers = Location::whereNull('location_latitude')->count();
-        $recently_geocoded_numbers = $ungeocoded_location_numbers - $invalid_location_info_count;
-        return view('backEnd.pages.map', compact('map', 'ungeocoded_location_numbers', 'invalid_location_info_count', 'recently_geocoded_numbers'));
+        return redirect('map');
     }
+
+    public function apply_enrich(Request $request) 
+    {
+        $valid_location_list = Location::whereNotNull('location_address')->get();
+        $unenriched_location_list = Location::whereNotNull('location_name')->whereNull('enrich_flag')->get();
+        set_time_limit(0);
+        foreach ($unenriched_location_list as $key => $unenriched_location) {
+            $address = Address::where('address_recordid', '=', $unenriched_location->location_address)->first();
+            $borough = $address->address_city;
+            $house_address_info = explode(' ', $address->address_1);
+            $house_number = '';
+            if (isset($house_address_info[0])) {
+                $house_number = $house_address_info[0];
+            }
+            $street = '';
+            if (isset($house_address_info[1])) {
+                $street = $house_address_info[1];
+            }
+            $app_id = 'b985eb41';
+            $app_key = '9e7522143dca2c6347306d73882b6e3f';
+
+            $response = \Curl::to('https://api.cityofnewyork.us/geoclient/v1/address.json')
+                ->withData(['houseNumber' => $house_number, 'street' => $street, 'borough' => $borough, 'app_id' => $app_id, 'app_key' => $app_key])
+                ->get();
+            $data = json_decode($response);
+            if ($data) {
+                if (isset($data->address)) {
+                    $address_info = $data->address;
+                    if (isset($address_info->cityCouncilDistrict)) {
+                        $address->address_city_council_district = $address_info->cityCouncilDistrict;
+                        $unenriched_location->location_city_council_district = $address_info->cityCouncilDistrict;
+                    }
+                    if (isset($address_info->communityDistrict)) {
+                        $address->address_community_district = $address_info->communityDistrict;
+                        $unenriched_location->location_community_district = $address_info->communityDistrict;                
+                    }
+                }
+            }            
+            $unenriched_location->enrich_flag = 'modified';
+            $address->save();
+            $unenriched_location->save();
+        }
+        return redirect('map');
+    }
+
 }
