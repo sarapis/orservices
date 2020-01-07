@@ -289,7 +289,6 @@ $(document).ready(function(){
     //     console.log($(this).attr('at'));
     //     var id = $(this).attr('at').replace('/', 'AAA').replace('(', 'BBB').replace(')', 'CCC');
     //     console.log(id);        
-
     //     $("#category_" +  id).prop( "checked", true );
     //     $("#filter").submit();
     // });

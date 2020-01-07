@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->call('App\Http\Controllers\ServiceController@test_airtable', ['keyIvQZcMYmjNbtUO', 'appPeL7kL29MLnxOk'])->daily();
+        $schedule->call('App\Http\Controllers\UploadController@zip_cron')->everyMinute();
         // $schedule->command('inspire')
         //          ->hourly();
     }

@@ -104,157 +104,157 @@
       "primaryKey": "id"
     }
   },{
-      "name": "service",
-      "description": "Services are provided by organizations to a range of different groups. Details on where each service is delivered are contained in the services_at_location table.",
-      "path": "services.csv",
-      "format": "csv",
-      "mediatype": "text/csv",
-      "schema": {
-        "fields": [{
-          "name": "id",
+    "name": "service",
+    "description": "Services are provided by organizations to a range of different groups. Details on where each service is delivered are contained in the services_at_location table.",
+    "path": "services.csv",
+    "format": "csv",
+    "mediatype": "text/csv",
+    "schema": {
+      "fields": [{
+        "name": "id",
+        "type": "string",
+        "description": "Each service must have a unique identifier.",
+        "constraints": {
+          "required": true,
+          "unique": true
+        }
+      },
+        {
+          "name": "organization_id",
           "type": "string",
-          "description": "Each service must have a unique identifier.",
+          "description": "The identifier of the organization that provides this service.",
           "constraints": {
-            "required": true,
-            "unique": true
+            "required": true
+          }
+
+        },
+        {
+          "name": "program_id",
+          "description": "The identifier of the program this service is delivered under.",
+          "type": "string",
+          "constraints": {
+            "required": false
           }
         },
-          {
-            "name": "organization_id",
-            "type": "string",
-            "description": "The identifier of the organization that provides this service.",
-            "constraints": {
-              "required": true
-            }
-
-          },
-          {
-            "name": "program_id",
-            "description": "The identifier of the program this service is delivered under.",
-            "type": "string",
-            "constraints": {
-              "required": false
-            }
-          },
-          {
-            "name": "name",
-            "description": "The official or public name of the service.",
-            "type": "string",
-            "constraints": {
-              "required": true
-            }
-          },
-          {
-            "name": "alternate_name",
-            "description": "Alternative or commonly used name for a service.",
-            "type": "string",
-            "constraints": {
-              "required": false
-            }
-
-          },
-          {
-            "name": "description",
-            "description": "A description of the service.",
-            "type": "string",
-            "constraints": {
-              "required": false
-            }
-          },
-          {
-            "name": "url",
-            "description": "URL of the service",
-            "type": "string",
-            "format": "url",
-            "constraints": {
-              "required": false
-            }
-          },
-          {
-            "name": "email",
-            "description": "Email address for the service",
-            "type": "string",
-            "format": "email",
-            "constraints": {
-              "required": false
-            }
-          },
-          {
-            "name": "status",
-            "description": "The current status of the service.",
-            "type": "string",
-            "constraints": {
-              "enum": ["active", "inactive", "defunct", "temporarily closed"],
-              "required": true
-            }
-          },
-          {
-            "name": "interpretation_services",
-            "description": "A description of any interpretation services available for accessing this service.",
-            "type": "string",
-            "constraints": {
-              "required": false
-            }
-          },
-          {
-            "name": "application_process",
-            "description": "The steps needed to access the service.",
-            "type": "string",
-            "constraints": {
-              "required": false
-            }
-          },
-          {
-            "name": "wait_time",
-            "description": "Time a client may expect to wait before receiving a service.",
-            "type": "string",
-            "constraints": {
-              "required": false
-            }
-          },
-          {
-            "name": "fees",
-            "description": "Details of any charges for service users to access this service.",
-            "type": "string",
-            "constraints": {
-              "required": false
-            }
-          },
-          {
-            "name": "accreditations",
-            "description": "Details of any accreditations. Accreditation is the formal evaluation of an organization or program against best practice standards set by an accrediting organization.",
-            "type": "string",
-            "constraints": {
-              "required": false
-            }
-          },
-          {
-            "name": "licenses",
-            "description": "An organization may have a license issued by a government entity to operate legally. A list of any such licenses can be provided here.",
-            "type": "string",
-            "constraints": {
-              "required": false
-            }
+        {
+          "name": "name",
+          "description": "The official or public name of the service.",
+          "type": "string",
+          "constraints": {
+            "required": true
           }
-        ],
-        "primaryKey": "id",
-        "foreignKeys": [{
-          "fields": "organization_id",
+        },
+        {
+          "name": "alternate_name",
+          "description": "Alternative or commonly used name for a service.",
+          "type": "string",
+          "constraints": {
+            "required": false
+          }
+
+        },
+        {
+          "name": "description",
+          "description": "A description of the service.",
+          "type": "string",
+          "constraints": {
+            "required": false
+          }
+        },
+        {
+          "name": "url",
+          "description": "URL of the service",
+          "type": "string",
+          "format": "url",
+          "constraints": {
+            "required": false
+          }
+        },
+        {
+          "name": "email",
+          "description": "Email address for the service",
+          "type": "string",
+          "format": "email",
+          "constraints": {
+            "required": false
+          }
+        },
+        {
+          "name": "status",
+          "description": "The current status of the service.",
+          "type": "string",
+          "constraints": {
+            "enum": ["active", "inactive", "defunct", "temporarily closed"],
+            "required": true
+          }
+        },
+        {
+          "name": "interpretation_services",
+          "description": "A description of any interpretation services available for accessing this service.",
+          "type": "string",
+          "constraints": {
+            "required": false
+          }
+        },
+        {
+          "name": "application_process",
+          "description": "The steps needed to access the service.",
+          "type": "string",
+          "constraints": {
+            "required": false
+          }
+        },
+        {
+          "name": "wait_time",
+          "description": "Time a client may expect to wait before receiving a service.",
+          "type": "string",
+          "constraints": {
+            "required": false
+          }
+        },
+        {
+          "name": "fees",
+          "description": "Details of any charges for service users to access this service.",
+          "type": "string",
+          "constraints": {
+            "required": false
+          }
+        },
+        {
+          "name": "accreditations",
+          "description": "Details of any accreditations. Accreditation is the formal evaluation of an organization or program against best practice standards set by an accrediting organization.",
+          "type": "string",
+          "constraints": {
+            "required": false
+          }
+        },
+        {
+          "name": "licenses",
+          "description": "An organization may have a license issued by a government entity to operate legally. A list of any such licenses can be provided here.",
+          "type": "string",
+          "constraints": {
+            "required": false
+          }
+        }
+      ],
+      "primaryKey": "id",
+      "foreignKeys": [{
+        "fields": "organization_id",
+        "reference": {
+          "resource": "organization",
+          "fields": "id"
+        }
+      },
+        {
+          "fields": "program_id",
           "reference": {
-            "resource": "organization",
+            "resource": "program",
             "fields": "id"
           }
-        },
-          {
-            "fields": "program_id",
-            "reference": {
-              "resource": "program",
-              "fields": "id"
-            }
-          }
-        ]
-      }
-    },
+        }
+      ]
+    }
+  },
     {
       "name": "service_taxonomy",
       "path": "services_taxonomy.csv",

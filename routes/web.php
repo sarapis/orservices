@@ -39,8 +39,10 @@ Route::get('/category/{id}', 'ServiceController@taxonomy');
 
 Route::get('/services_near_me', 'ExploreController@geolocation');
 
-Route::post('/filter', 'ExploreController@filter');
+Route::post('/filter', 'ExploreControtller@filter');
 Route::get('/filter', 'ExploreController@filter');
+
+Route::get('/datapackages', 'PagesController@datapackages');
 
 // Route::post('/explore', 'ExploreController@index');
 Route::get('/profile/{id}', 'ExploreController@profile');
@@ -108,6 +110,7 @@ Route::post('/range', 'ExploreController@filterValues1');
         Route::post('/csv_service_areas', ['uses' => 'AreaController@csv']);
 
         Route::post('/csv_zip', ['uses' => 'UploadController@zip']);
+        // Route::post('/csv_zip', ['uses' => 'UploadController@zip_cron']);
 
         //Route::get('/tb_projects', ['uses' => 'ProjectController@index']);
         Route::resource('tb_services', 'ServiceController');
@@ -155,8 +158,11 @@ Route::post('/range', 'ExploreController@filterValues1');
         
         Route::get('/import', ['uses' => 'PagesController@import']);
         Route::get('/export', ['uses' => 'PagesController@export']);
+        Route::get('/export_hsds_zip_file', ['uses' => 'PagesController@export_hsds_zip_file']);
+
         Route::get('/meta_filter', ['uses' => 'PagesController@metafilter']);
         Route::post('/meta/{id}', 'PagesController@metafilter_save');
+        Route::post('/update_hsds_api_key', 'PagesController@update_hsds_api_key');
 
         Route::post('/taxonomy_filter', 'PagesController@taxonomy_filter');
         Route::post('/postal_code_filter', 'PagesController@postal_filter');
