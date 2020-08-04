@@ -1,24 +1,24 @@
 .page-register:before {
-  background-image: url("../../images/login.jpg");
+    background-image: url("../../images/login.jpg");
 }
 
 .page-register a {
-  color: #9fa8da;
+    color: #9fa8da;
 }
 
 .page-register form {
-  width: 340px;
-  margin: 22px auto;
+    width: 90%;
+    margin: 50px 0 0;
 }
 
 .page-register .form-control,
 .page-register .floating-label,
 .page-register .form-control:focus + .floating-label {
-  color: #bdbdbd;
+    color: #bdbdbd;
 }
 
 @media (max-width: 479px) {
-  .page-register form {
-    width: auto;
-  }
+    .page-register form {
+        width: auto;
+    }
 }

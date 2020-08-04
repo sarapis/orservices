@@ -12,10 +12,11 @@
   <link rel="shortcut icon" href="../../frontend/assets/images/favicon.ico">
   <!-- Stylesheets -->
    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+   <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="Stylesheet">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.css" />
    <!-- <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/
     jquery-ui.css"> -->
-    
+
   <link rel="stylesheet" href="../../frontend/global/css/bootstrap.min.css">
   <link rel="stylesheet" href="../../frontend/global/css/bootstrap-extend.min.css">
   <link type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.16/sl-1.2.5/datatables.min.css" rel="stylesheet" />
@@ -31,7 +32,13 @@
   <link rel="stylesheet" href="../../frontend/global/vend/waves/waves.css">
   <link rel="stylesheet" href="../../frontend/assets/examples/css/uikit/dropdowns.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css" rel="stylesheet" />
-  
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+
+
+  <link href="http://sliptree.github.io/bootstrap-tokenfield/dist/css/tokenfield-typeahead.css" rel="stylesheet">
+  <link href="http://sliptree.github.io/bootstrap-tokenfield/dist/css/bootstrap-tokenfield.css" rel="stylesheet">
+
   <!-- Fonts -->
   <link rel="stylesheet" href="../../../../frontend/global/fonts/web-icons/web-icons.css">
    <link rel="stylesheet" href="../../../../frontend/global/fonts/font-awesome/font-awesome.css">
@@ -42,13 +49,21 @@
   <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
   <link rel="stylesheet" href="../../../css/explorestyle.css">
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/themes/default/style.min.css" />
-  
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
   <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
 
   <link rel="stylesheet" href="../../frontend/assets/examples/css/pages/register.css">
-  
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+ <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> -->
+ <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+<script
+  src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+  crossorigin="anonymous"></script>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.jticker.js"></script>
 <script type="text/javascript">
@@ -71,19 +86,19 @@ $(function () {
             "https://geosearch.planninglabs.nyc/v1/autocomplete?text=" + request.term,
             function (data) {
                 response(data.features);
-                
+
                 var label = new Object();
                 for(i = 0; i < data.features.length; i++)
                     label[i] = data.features[i].properties.label;
                 response(label);
             });
     };
- 
+
     var selectItem = function (event, ui) {
         $("#location").val(ui.item.value);
         return false;
     }
- 
+
     $("#location").autocomplete({
         source: getData,
         select: selectItem,
@@ -98,7 +113,7 @@ $(function () {
         $('#search_location').submit();
     });
 
-  
+
 });
 </script>
 @else
@@ -126,7 +141,7 @@ $(function () {
 
 
             autocomplete.addListener('place_changed', function() {
-            
+
               marker.setVisible(false);
               var place = autocomplete.getPlace();
               if (!place.geometry) {
@@ -191,7 +206,7 @@ $(function () {
 
 
                 autocomplete1.addListener('place_changed', function() {
-                  
+
                   marker.setVisible(false);
                   var place = autocomplete1.getPlace();
                   if (!place.geometry) {
@@ -244,7 +259,7 @@ $(function () {
 
 
                 autocomplete2.addListener('place_changed', function() {
-                  
+
                   marker.setVisible(false);
                   var place = autocomplete1.getPlace();
                   if (!place.geometry) {
@@ -279,12 +294,64 @@ $(function () {
                   infowindow.open(map, marker);
                 });
             }
+            var searchAddress = document.getElementById('searchAddress');
+            // var countries = document.getElementById('country-selector');
+
+            // map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
+            if(searchAddress){
+                var autocomplete1 = new google.maps.places.Autocomplete(searchAddress);
+
+                // Set initial restrict to the greater list of countries.
+                autocomplete1.setComponentRestrictions(
+                    {'country': ['us']});
+
+                // Specify only the data fields that are needed.
+                autocomplete1.setFields(
+                    ['address_components', 'geometry', 'icon', 'name']);
+
+
+                autocomplete1.addListener('place_changed', function() {
+
+                    marker.setVisible(false);
+                    var place = autocomplete1.getPlace();
+                    if (!place.geometry) {
+                    // User entered the name of a Place that was not suggested and
+                    // pressed the Enter key, or the Place Details request failed.
+                    window.alert("No details available for input: '" + place.name + "'");
+                    return;
+                    }
+
+                    // If the place has a geometry, then present it on a map.
+                    if (place.geometry.viewport) {
+                    map.fitBounds(place.geometry.viewport);
+                    } else {
+                    map.setCenter(place.geometry.location);
+                    map.setZoom(17);  // Why 17? Because it looks good.
+                    }
+                    marker.setPosition(place.geometry.location);
+                    marker.setVisible(true);
+
+                    var address = '';
+                    if (place.address_components) {
+                    address = [
+                        (place.address_components[0] && place.address_components[0].short_name || ''),
+                        (place.address_components[1] && place.address_components[1].short_name || ''),
+                        (place.address_components[2] && place.address_components[2].short_name || '')
+                    ].join(' ');
+                    }
+
+                    infowindowContent.children['place-icon'].src = place.icon;
+                    infowindowContent.children['place-name'].textContent = place.name;
+                    infowindowContent.children['place-address'].textContent = address;
+                    infowindow.open(map, marker);
+                });
+            }
               },1000);
-            
-            
+
+
           }
 //      });
-      
+
     </script>
 
 
@@ -301,7 +368,7 @@ $(function () {
   }
   #google_translate_element{
     padding-top: 21px;
-    width: 140px;
+    width: 160px;
   }
   .goog-te-banner-frame.skiptranslate{
     display: none;
@@ -321,7 +388,7 @@ $(function () {
   .goog-te-menu-value span{
     font-family: 'Poppins', sans-serif !important;
   }
-  
+
   .goog-te-menu-value span:nth-child(3){
     display: none;
   }
@@ -329,7 +396,7 @@ $(function () {
     display: none;
   }
   .goog-te-menu-value span:nth-child(1){
-    
+
   }
   .goog-te-gadget-simple .goog-te-menu-value span:nth-of-type(1) {
     font-family: 'Font Awesome' !important;
@@ -351,8 +418,9 @@ $(function () {
   .goog-te-gadget-simple .goog-te-menu-value span:before {
     content: "Select Language";
     visibility: visible;
-    font-family: Roboto,sans-serif;
-    font-size: 1rem;
+    font-family: "Neue Haas Grotesk Display Medium" !important;
+    font-weight: 500;
+    font-size: 16px;
   }
   .goog-te-menu-value {
     max-width: 22px;

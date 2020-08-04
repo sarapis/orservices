@@ -1,4 +1,3 @@
-
 @extends('backLayout.app')
 @section('title')
 Login
@@ -11,16 +10,15 @@ Login
 
 
 
-          <div class="row">
-            <div class="col-md-12 col-sm-12 col-xs-12">
-              <div class="dashboard_graph">
+<div class="row">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="dashboard_graph">
+      <h2>Welcome To {{$layout->site_name}}!</h2>
+    </div>
+  </div>
 
-                <h2>Welcome To {{$layout->site_name}}!</h2>
-              </div>
-            </div>
-
-          </div>
-          <br />
+</div>
+<br />
 
 
 @endsection

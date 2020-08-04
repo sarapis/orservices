@@ -13,7 +13,7 @@ Map Settings
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
           <div class="x_title">
-            <h2>Map Settings</h2>
+            <h2>Map</h2>
             <ul class="nav navbar-right panel_toolbox">
               <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
               </li>
@@ -24,21 +24,21 @@ Map Settings
           </div>
           <div class="x_content">
 
-          
+
             {{ Form::open(array('url' => ['map', 1], 'class' => 'form-horizontal form-label-left', 'method' => 'put', 'enctype'=> 'multipart/form-data')) }}
             <div class="row">
-            <div class="col-md-8"> 
+            <div class="col-md-8">
               <div class="form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+                <label class="control-label col-md-3 col-sm-3 col-xs-12">Apply Unique NYC Map Settings</label>
                 <div class="col-md-8 col-sm-8 col-xs-12">
-                    <label>NYC&nbsp;&nbsp;
-                      <input type="checkbox" class="js-switch" value="checked" name="active"  @if($map->active==1) checked @endif/>&nbsp;&nbsp;Out NYC
+                    <label>On&nbsp;&nbsp;
+                      <input type="checkbox" class="js-switch" value="checked" name="active"  @if($map->active==1) checked @endif/>&nbsp;&nbsp;Off
                     </label>
                 </div>
               </div>
 
               <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Google Maps API Key 
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Google Maps API Key
                 </label>
                 <div class="col-md-8 col-sm-8 col-xs-12">
                   <input type="text" name="api_key" class="form-control col-md-7 col-xs-12" value="{{$map->api_key}}" @if($map->active==0) disabled="disabled" @endif>
@@ -85,8 +85,8 @@ Map Settings
               </div>
 
              {!! Form::close() !!}
-          
-          
+
+
           </div>
         </div>
       </div>
@@ -106,18 +106,18 @@ Map Settings
             <div class="clearfix"></div>
           </div>
           <div class="x_content">
-            <div class="row">              
-              <div class="col-md-8"> 
+            <div class="row">
+              <div class="col-md-8">
                 <div class="item form-group">
-                  <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Scan database for geocodable locations
+                  <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Scan database to add NYC specific information to locations
                   </label>
                   <div class="col-md-4 col-sm-4 col-xs-12">
-                    <a class="btn btn-primary open-td" href="/scan_ungeocoded_location/" id="scan-btn" style="color: white;">Scan</a>                    
+                    <a class="btn btn-primary open-td" href="/scan_ungeocoded_location/" id="scan-btn" style="color: white;">Scan</a>
                   </div>
-                </div> 
+                </div>
               </div>
 
-              <div class="col-md-8"> 
+              <div class="col-md-8">
                 <div class="item form-group">
                   <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Output number of records with addresses but without latitude/longitude:
                   </label>
@@ -135,29 +135,29 @@ Map Settings
                     </h6>
                     @endif
                   </div>
-                </div> 
+                </div>
               </div>
 
-              <div class="col-md-8"> 
+              <div class="col-md-8">
                 <div class="item form-group">
                   <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Geocode
                   </label>
                   <div class="col-md-4 col-sm-4 col-xs-12">
-                    <a class="btn btn-danger open-td" href="/apply_geocode/" id="apply-btn" style="color: white;">Geocode</a>                    
+                    <a class="btn btn-danger open-td" href="/apply_geocode/" id="apply-btn" style="color: white;">Geocode</a>
                   </div>
-                </div> 
+                </div>
               </div>
 
-              <div class="col-md-8"> 
+              <div class="col-md-8">
                 <div class="item form-group">
                   <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Output Status of Geocoding
                   </label>
                   <div class="col-md-4 col-sm-4 col-xs-12">
                     <h5 id="recent_geocoded_number" style="color: blue; font-style: italic;">
                       {{$geocode_status_text}}
-                    </h5> 
+                    </h5>
                   </div>
-                </div> 
+                </div>
               </div>
 
             </div>
@@ -180,18 +180,18 @@ Map Settings
             <div class="clearfix"></div>
           </div>
           <div class="x_content">
-            <div class="row">              
-              <div class="col-md-8"> 
+            <div class="row">
+              <div class="col-md-8">
                 <div class="item form-group">
                   <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Scan database for enrichable locations
                   </label>
                   <div class="col-md-4 col-sm-4 col-xs-12">
-                    <a class="btn btn-primary open-td" href="/scan_enrichable_location/" id="scan-enrich-btn" style="color: white;">Scan</a>                    
+                    <a class="btn btn-primary open-td" href="/scan_enrichable_location/" id="scan-enrich-btn" style="color: white;">Scan</a>
                   </div>
-                </div> 
+                </div>
               </div>
 
-              <div class="col-md-8"> 
+              <div class="col-md-8">
                 <div class="item form-group">
                   <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Output number of fields without additional NYC data fields
                   </label>
@@ -200,29 +200,29 @@ Map Settings
                       {{$unenriched_location_count}}
                     </h5>
                   </div>
-                </div> 
+                </div>
               </div>
 
-              <div class="col-md-8"> 
+              <div class="col-md-8">
                 <div class="item form-group">
                   <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Enrich these locations
                   </label>
                   <div class="col-md-4 col-sm-4 col-xs-12">
-                    <a class="btn btn-danger open-td" href="/apply_enrich/" id="enrich-btn" style="color: white;">Enrich</a>                    
+                    <a class="btn btn-danger open-td" href="/apply_enrich/" id="enrich-btn" style="color: white;">Enrich</a>
                   </div>
-                </div> 
+                </div>
               </div>
 
-              <div class="col-md-8"> 
+              <div class="col-md-8">
                 <div class="item form-group">
                   <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Output status of the enrichment
                   </label>
                   <div class="col-md-4 col-sm-4 col-xs-12">
                     <h5 id="recent_enriched_number" style="color: blue; font-style: italic;">
-                      {{$enrich_status_text}}                      
-                    </h5> 
+                      {{$enrich_status_text}}
+                    </h5>
                   </div>
-                </div> 
+                </div>
               </div>
 
             </div>
@@ -233,8 +233,10 @@ Map Settings
 
 @endsection
 @section('scripts')
-<script src="https://maps.googleapis.com/maps/api/js?key={{$map->api_key}}&callback=initMap"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{$map->api_key}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gmaps.js/0.4.9/gmaps.min.js"></script>
+<script src='//cdn.jsdelivr.net/gmaps4rails/2.1.2/gmaps4rails.js'> </script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js'> </script>
 <script>
 $('#scan-btn').on('click', function(e){
   e.preventDefault();
@@ -254,7 +256,7 @@ $(document).ready(function() {
         $('.usa-state').removeAttr('disabled');
       }
       else{
-        $('.item input').attr('disabled','disabled'); 
+        $('.item input').attr('disabled','disabled');
         $('.usa-state').attr('disabled','disabled');
       }
 

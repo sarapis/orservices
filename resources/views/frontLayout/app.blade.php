@@ -9,11 +9,24 @@
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.5/flatly/bootstrap.min.css" rel="stylesheet">
 	<link href="//cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
-	<link href="css/style.css" rel="stylesheet">
+	<link href="/css/style.css" rel="stylesheet">
 	<style>
 		body {
 			padding-top: 70px;
-		}
+        }
+        .navbar-default  {
+            background:{{ $layout->secondary_color }};
+
+        }
+        .forget_password ,.form-signin-heading{
+            color:{{ $layout->secondary_color }};
+        }
+        .form-signin{
+            border-color:{{ $layout->secondary_color }};
+        }
+        .btn-primary {
+            background: {{ $layout->secondary_color }};
+        }
 	</style>
 	@yield('style')
 </head>
@@ -54,7 +67,7 @@
 
 	<footer class="site-footer" style="padding-left: 40px;">
     	<div class="site-footer-legal">{!! $layout->footer !!}</div>
-    
+
   	</footer>
 
 	<!-- Scripts -->

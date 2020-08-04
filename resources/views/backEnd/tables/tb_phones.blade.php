@@ -19,7 +19,7 @@ Phones
     <div class="x_panel">
       <div class="x_title">
         <h2>Phones</h2>
-        <div class="clearfix"></div>  
+        <div class="clearfix"></div>
       </div>
       <div class="x_content" style="overflow: scroll;">
 
@@ -28,49 +28,90 @@ Phones
             <thead>
                 <tr>
                     <th class="text-center">No</th>
-                    <th class="text-center">Number</th>                   
-                    <th class="text-center">Locations</th> 
-                    <th class="text-center">Services</th>  
-                    <th class="text-center">Organization</th>
-                    <th class="text-center">Contact</th>                 
-                    <th class="text-center">Extension</th>             
+                    <th class="text-center">Number</th>
+                    <th class="text-center">Extension</th>
                     <th class="text-center">Type</th>
+                    <th class="text-center">Office phone</th>
+                    <th class="text-center">Office fax</th>
+                    <th class="text-center">Emergency phone</th>
+                    <th class="text-center">Contacts</th>
                     <th class="text-center">Language</th>
                     <th class="text-center">Description</th>
+                    <th class="text-center">id</th>
+                    <th class="text-center">Location</th>
+                    <th class="text-center">Services</th>
+                    <th class="text-center">Organization</th>
+                    <th class="text-center">Details</th>
+                    <th class="text-center">Schedule</th>
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
               @foreach($phones as $key => $phone)
                 <tr id="phone{{$phone->id}}" class="{{$phone->flag}}">
-                  @if($source_data->active == 1 )
-                  <td class="text-center">{{$key}}+1</td>
-                  @elseif($source_data->active == 0)
-                  <td class="text-center">{{$phone->phone_recordid}}</td>
-                  @endif
-                  <td>{!! str_limit($phone->phone_number, 20) !!}</td>
+                  <td class="text-center">{{$key+1}}</td>
+                  <td>{!! Str::limit($phone->phone_number, 20) !!}</td>
+                  <td>{{$phone->phone_extension}}</td>
 
+                  @php $types = explode(",",$phone->phone_type) @endphp
+                  <td>@foreach($types as $type)
+                      <span class="badge bg-red">{{$type}}</span>
+                    @endforeach
+                  </td>
+
+                  <td class="text-center"><span style="white-space:normal;">
+                  @if(isset($phone->officephones))
+                    @foreach($phone->officephones as $officephone)
+                      <span class="badge bg-blue">{{ $officephone->contact_id }}</span>
+                    @endforeach
+                  @endif</span>
+                  </td>
+                  <td class="text-center"><span style="white-space:normal;">
+                  @if(isset($phone->officefaxs))
+                    @foreach($phone->officefaxs as $officefax)
+                      <span class="badge bg-blue">{{ $officefax->contact_id }}</span>
+                    @endforeach
+                  @endif</span>
+                  </td>
+                  <td class="text-center"><span style="white-space:normal;">
+                  @if(isset($phone->emerygencyphones))
+                    @foreach($phone->emerygencyphones as $emerygencyphone)
+                      <span class="badge bg-blue">{{ $emerygencyphone->contact_id }}</span>
+                    @endforeach
+                  @endif</span>
+                  </td>
+
+                  <td class="text-center">
+                  @if(isset($phone->contact)) @foreach($phone->contact as $contact)
+                    <span class="badge bg-red">{{$contact->contact_id}}</span>
+                  @endforeach
+                  @endif
+                  </td>
+
+                  <td>{{$phone->phone_language}}</td>
+                  <td>{{$phone->phone_description}}</td>
+                  <td>{{$phone->phone_id}}</td>
                   <td>
-                    @if(isset($phone->locations)) 
-                  
+                    @if(isset($phone->locations))
+
                       @foreach($phone->locations as $location)
-                        
+
                       <span class="badge bg-purple">{{$location->location_name}}</span>
-                      
+
                       @endforeach
-                           
+
                     @endif
                   </td>
 
                   <td>
-                    @if(isset($phone->services)) 
-                  
+                    @if(isset($phone->services))
+
                       @foreach($phone->services as $service)
-                        
+
                       <span class="badge bg-blue">{{$service->service_name}}</span>
-                      
+
                       @endforeach
-                           
+
                     @endif
                   </td>
 
@@ -80,26 +121,15 @@ Phones
                     @endif
                   </td>
 
-                  <td class="text-center">
-                  @if(isset($phone->contact)) @foreach($phone->contact as $contact)
-                    <span class="badge bg-red">{{$contact->contact_name}}</span>
-                  @endforeach
-                  @endif
-                  </td>
+                  <td>{{$phone->phone_details}}</td>
 
-                  <td>{{$phone->phone_extension}}</td>
-
-                  <td>{{$phone->phone_type}}</td>
-
-                  <td>{{$phone->phone_language}}</td>
-
-                  <td>{{$phone->phone_description}}</td>
+                  <td>{{$phone->phone_schedule}}</td>
 
                   <td class="text-center">
-                    <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$phone->phone_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button>
+                    {{-- <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$phone->phone_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button> --}}
                   </td>
                 </tr>
-              @endforeach             
+              @endforeach
             </tbody>
         </table>
         {!! $phones->links() !!}
@@ -140,12 +170,14 @@ Phones
                     <div class="form-group">
                         <label for="inputPassword3" class="col-sm-3 control-label">Type</label>
                         <div class="col-sm-7">
-                            <select class="form-control" id="phone_type">
+                            <select class="js-example-basic-multiple form-control" id="phone_type">
                                 <option></option>
-                                <option value="voice">voice</option>
-                                <option value="textphone">textphone</option>
                                 <option value="cell">cell</option>
                                 <option value="fax">fax</option>
+                                <option value="office fax">office fax</option>
+                                <option value="office phone">office phone</option>
+                                <option value="textphone">textphone</option>
+                                <option value="voice">voice</option>
                             </select>
                         </div>
                     </div>
@@ -166,12 +198,20 @@ Phones
                       </div>
                     </div>
 
+                    <div class="form-group">
+                      <label for="inputPassword3" class="col-sm-3 control-label">id</label>
+
+                      <div class="col-sm-7">
+                        <input type="text" class="form-control" id="phone_id" name="phone_id" value="">
+                      </div>
+                    </div>
+
                   </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary" id="btn-save" value="add">Save changes</button>
-                    <input type="hidden" id="id" name="phone_id" value="0">
+                    <input type="hidden" id="id" name="id" value="0">
                 </div>
             </form>
         </div>
@@ -182,7 +222,6 @@ Phones
 @endsection
 
 @section('scripts')
-
 <script type="text/javascript">
 $(document).ready(function() {
     $('#example').DataTable( {
@@ -197,7 +236,7 @@ $(document).ready(function() {
                             '</tr>' :
                             '';
                     } ).join('');
- 
+
                     return data ?
                         $('<table/>').append( data ) :
                         false;
@@ -212,6 +251,7 @@ $(document).ready(function() {
         "info": false,
         "autoWidth": true
     });
+
 });
 </script>
 <script src="{{asset('js/phone_ajaxscript.js')}}"></script>

@@ -5,15 +5,12 @@ use Illuminate\Database\Seeder;
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Seed the application's database.
      *
      * @return void
      */
     public function run()
     {
-          $this->call(UsersGenerate::class);
-          $this->call(AirtableGenerate::class);
-          $this->call(LayoutGenerate::class);
-          $this->call(PagesGenerate::class);
+        $this->call(UserSeeder::class);
     }
 }

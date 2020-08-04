@@ -1,51 +1,50 @@
 @extends('backLayout.app')
 @section('title')
-Show user  {{$user->first_name}}
+Show user {{$user->first_name}}
 @stop
 
 @section('content')
-<div class="panel panel-default">
-        <div class="panel-heading">The user :  {{$user->first_name}}</div>
 
-        <div class="panel-body">
-  
- <ul>
-        <div class="row">
-             {!! Form::label('first_name','First name', ['class' => 'col-md-4 control-label']) !!}
-            <div class="col-sm-6">
-                {{$user->first_name}}
+<div class="row">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<div class="x_panel">
+			<div class="x_title">
+				<h2>The user : {{$user->first_name}}</h2>
+				<div class="clearfix"></div>
+			</div>
+			<div class="x_content">
+                <div class="row form-group">
+                    {!! Form::label('first_name','First name:', ['class' => 'col-md-3 text-right control-label']) !!}
+                    <div class="col-sm-6">
+                        <label>{{$user->first_name}}</label>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    {!! Form::label('last_name', 'Last name:', ['class' => 'col-md-3 text-right control-label']) !!}
+                    <div class="col-sm-6">
+                        <label>{{$user->last_name}}</label>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    {!! Form::label('email', 'Email:', ['class' => 'col-md-3 text-right control-label']) !!}
+                    <div class="col-sm-6">
+                        <label>{{$user->email}}</label>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    {!! Form::label('role', 'Role:', ['class' => 'col-md-3 text-right control-label']) !!}
+                    <div class="col-sm-6">
+                        <label>{{$user->roles ? $user->roles->name : ''}}</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3">
+                        <a href="{{route('user.index')}}" class="btn btn-primary">Return to all users</a>
+                    </div>
+                </div>
             </div>
         </div>
-       
-       <div class="row">
-             {!! Form::label('last_name', 'Last name', ['class' => 'col-md-4 control-label']) !!}
-            <div class="col-sm-6">
-               {{$user->last_name}}
-            </div>
-        </div>
-
-        <div class="row">
-             {!! Form::label('email', 'Email', ['class' => 'col-md-4 control-label']) !!}
-            <div class="col-sm-6">
-               {{$user->email}}
-            </div>
-        </div>
-
-         <div class="row">
-             {!! Form::label('role', 'Role', ['class' => 'col-md-4 control-label']) !!}
-            <div class="col-sm-6">
-                {{$user->roles->first()->name}}
-            </div>
-        </div>
-    
-        <div class="row">
-        <br>
-        <div class="col-md-6 col-md-offset-4">
-            <a href="{{route('user.index')}}" class="btn btn-default">Return to  all users</a>
-            </div>
-        </div>
-    </ul>
     </div>
-    </div>                
+</div>
 
 @stop

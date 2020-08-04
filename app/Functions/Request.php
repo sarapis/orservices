@@ -44,7 +44,7 @@ class Request implements \ArrayAccess
      * @param array $data Request data
      * @param bool|string $is_post Is it a POST request?
      */
-    public function __construct( $airtable, $content_type, $data = [], $is_post = false, $relations = false )
+    public function __construct($airtable, $content_type, $data = [], $is_post = false, $relations = false)
     {
 
         $this->airtable = $airtable;
@@ -57,17 +57,15 @@ class Request implements \ArrayAccess
 
     private function init()
     {
-
         $headers = array(
             'Content-Type: application/json',
-            sprintf('Authorization: Bearer %s', $this->airtable->getKey())
+            sprintf('Authorization: Bearer %s', $this->airtable->getKey()),
         );
 
         $request = $this->content_type;
 
-        if( ! $this->is_post )
-        {
-            if (!empty($this->data)){
+        if (!$this->is_post) {
+            if (!empty($this->data)) {
                 $data = http_build_query($this->data);
                 $request .= "?" . $data;
             }
@@ -78,18 +76,14 @@ class Request implements \ArrayAccess
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-        if( $this->is_post )
-        {
-            if( strtolower( $this->is_post ) == 'patch' )
-            {
+        if ($this->is_post) {
+            if (strtolower($this->is_post) == 'patch') {
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PATCH');
-            }
-            else if( strtolower( $this->is_post ) == 'delete' )
-            {
+            } else if (strtolower($this->is_post) == 'delete') {
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
             }
-            curl_setopt($curl,CURLOPT_POST, count($this->data));
-            curl_setopt($curl,CURLOPT_POSTFIELDS, json_encode($this->data));
+            curl_setopt($curl, CURLOPT_POST, count($this->data));
+            curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($this->data));
         }
 
         $this->curl = $curl;
@@ -104,49 +98,46 @@ class Request implements \ArrayAccess
 
         $this->init();
 
-        $response_string = curl_exec( $this->curl );
+        $response_string = curl_exec($this->curl);
 
-        return new Response( $this->airtable, $this, $response_string, $this->relations );
+        return new Response($this->airtable, $this, $response_string, $this->relations);
 
     }
 
-    public function __set( $key, $value )
+    public function __set($key, $value)
     {
-        if( ! is_array( $this->data ) )
-        {
+        if (!is_array($this->data)) {
             $this->data = [];
         }
 
-        $this->data[ $key ] = $value;
+        $this->data[$key] = $value;
     }
 
     public function offsetExists($offset)
     {
-        return is_array( $this->data) && isset( $this->data[ $offset ] );
+        return is_array($this->data) && isset($this->data[$offset]);
     }
 
     public function offsetGet($offset)
     {
-        return is_array( $this->data ) && isset( $this->data[ $offset ] )
-            ? $this->data[ $offset ]
-            : null;
+        return is_array($this->data) && isset($this->data[$offset])
+        ? $this->data[$offset]
+        : null;
     }
 
     public function offsetSet($offset, $value)
     {
-        if( ! is_array( $this->data ) )
-        {
+        if (!is_array($this->data)) {
             $this->data = [];
         }
 
-        $this->data[ $offset ] = $value;
+        $this->data[$offset] = $value;
     }
 
     public function offsetUnset($offset)
     {
-        if( is_array( $this->data ) && isset( $this->data[ $offset ] ) )
-        {
-            unset( $this->data[ $offset ] );
+        if (is_array($this->data) && isset($this->data[$offset])) {
+            unset($this->data[$offset]);
         }
     }
 

@@ -19,7 +19,7 @@ Address
     <div class="x_panel">
       <div class="x_title">
         <h2>Address</h2>
-        <div class="clearfix"></div>  
+        <div class="clearfix"></div>
       </div>
       <div class="x_content" style="overflow: scroll;">
 
@@ -28,49 +28,46 @@ Address
             <thead>
                 <tr>
                     <th class="text-center">No</th>
-                    <th class="text-center">Address 1</th>                   
-                    <th class="text-center">Address 2</th>                   
+                    <th class="text-center">Address</th>
+                    <th class="text-center">Address 1</th>
                     <th class="text-center">City</th>
-                    <th class="text-center">State province</th>
-                    <th class="text-center">Postal code</th>
-                    <th class="text-center">Region</th>             
+                    <th class="text-center">State</th>
+                    <th class="text-center">Zip code</th>
+                    <th class="text-center">id</th>
+                    <th class="text-center">Region</th>
                     <th class="text-center">Country</th>
                     <th class="text-center">Attention</th>
-                    @if($source_data->active == 1 )
                     <th class="text-center">Address type</th>
-                    @endif
                     <th class="text-center">Locations</th>
-                    <th class="text-center">Services</th>
-                    <th class="text-center">Organizations</th>
+                    <th class="text-center">Contact</th>
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
               @foreach($addresses as $key => $address)
                 <tr id="address{{$address->id}}" class="{{$address->flag}}">
-                  @if($source_data->active == 1 )
-                  <td class="text-center">{{$key}}+1</td>
-                  @elseif($source_data->active == 0)
-                  <td class="text-center">{{$address->address_recordid}}</td>
-                  @endif
-                  <td>{{$address->address_1}}</td>
-                  
+
+                  <td class="text-center">{{$key+1}}</td>
+
+                  <td>{{$address->address}}</td>
+
                   <td>
-                    {{$address->address_2}}
+                    {{$address->address_1}}
                   </td>
-                  
+
                   <td class="text-center">{{$address->address_city}}</td>
-                  <td class="text-center">{{$address->address_state_province}}</td>
-                  <td class="text-center">{{$address->address_postal_code}}</td>
+                  <td class="text-center">{{$address->address_state}}</td>
+                  <td class="text-center">{{$address->address_id}}</td>
+                  <td class="text-center">{{$address->address_zip_code}}</td>
                   <td class="text-center">{{$address->address_region}}</td>
 
                   <td class="text-center">{{$address->address_country}}</td>
 
                   <td class="text-center">{{$address->address_attention}}
                   </td>
-                  @if($source_data->active == 1 )
+
                   <td class="text-center"><span class="badge bg-purple">{{$address->address_type}}</span></td>
-                  @endif
+
                   <td class="text-center"><span style="white-space:normal;">
                   @if(isset($address->locations))
                     @foreach($address->locations as $location)
@@ -80,21 +77,18 @@ Address
                   </td>
 
                   <td class="text-center"><span style="white-space:normal;">
-                  @if(isset($address->services))
-                    @foreach($address->services as $service)
-                      <span class="badge bg-blue">{{ $service->service_name }}</span>
+                  @if(isset($address->contacts))
+                    @foreach($address->contacts as $contact)
+                      <span class="badge bg-blue">{{ $contact->contact_id }}</span>
                     @endforeach
                   @endif</span>
                   </td>
 
-                  <td class="text-center">{{$address->address_organization}}
-                  </td>
-
                   <td class="text-center">
-                    <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$address->address_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button>
+                    {{-- <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$address->address_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button> --}}
                   </td>
                 </tr>
-              @endforeach             
+              @endforeach
             </tbody>
         </table>
        {!! $addresses->links() !!}
@@ -117,18 +111,18 @@ Address
                 <div class="row modal-body">
                   <div class="col-md-12">
                     <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Address 1</label>
+                      <label for="inputPassword3" class="col-sm-3 control-label">Address</label>
 
                       <div class="col-sm-7">
-                        <input type="text" class="form-control" id="address_1" name="address_1" value="">
+                        <input type="text" class="form-control" id="address" name="address" value="">
                       </div>
                     </div>
 
                     <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Address 2</label>
+                      <label for="inputPassword3" class="col-sm-3 control-label">Address 1</label>
 
                       <div class="col-sm-7">
-                        <input type="text" class="form-control" id="address_2" name="address_2" value="">
+                        <input type="text" class="form-control" id="address_1" name="address_1" value="">
                       </div>
                     </div>
 
@@ -144,20 +138,28 @@ Address
                       <label for="inputPassword3" class="col-sm-3 control-label">State province</label>
 
                       <div class="col-sm-7">
-                        <input type="text" class="form-control" id="address_state_province" name="address_state_province" value="">
+                        <input type="text" class="form-control" id="address_state" name="address_state_province" value="">
                       </div>
                     </div>
 
                     <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Postal code</label>
+                      <label for="inputPassword3" class="col-sm-3 control-label">Zip code</label>
 
                       <div class="col-sm-7">
-                        <input type="text" class="form-control" id="address_postal_code" name="address_postal_code" value="">
+                        <input type="text" class="form-control" id="address_zip_code" name="address_postal_code" value="">
                       </div>
                     </div>
-                  
+
                     <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Postal Region</label>
+                      <label for="inputPassword3" class="col-sm-3 control-label">id</label>
+
+                      <div class="col-sm-7">
+                        <input type="text" class="form-control" id="address_id" name="address_id" value="">
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="inputPassword3" class="col-sm-3 control-label">Region</label>
 
                       <div class="col-sm-7">
                         <input type="text" class="form-control" id="address_region" name="address_region" value="">
@@ -165,7 +167,7 @@ Address
                     </div>
 
                     <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Postal Country</label>
+                      <label for="inputPassword3" class="col-sm-3 control-label">Country</label>
 
                       <div class="col-sm-7">
                         <input type="text" class="form-control" id="address_country" name="address_country" value="">
@@ -185,8 +187,10 @@ Address
                         <div class="col-sm-7">
                             <select class="form-control" id="address_type">
                                 <option></option>
-                                <option value="physical_address">Physical address</option>
-                                <option value="postal_address">Postal address</option>
+                                <option value="Main Address">Main Address</option>
+                                <option value="Mailing Address">Mailing Address</option>
+                                <option value="Physical Address">Physical Address</option>
+                                <option value="Postal Address">Postal Address</option>
                             </select>
                         </div>
                     </div>
@@ -196,7 +200,7 @@ Address
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary" id="btn-save" value="add">Save changes</button>
-                    <input type="hidden" id="id" name="address_id" value="0">
+                    <input type="hidden" id="id" name="id" value="0">
                 </div>
             </form>
         </div>
@@ -222,7 +226,7 @@ $(document).ready(function() {
                             '</tr>' :
                             '';
                     } ).join('');
- 
+
                     return data ?
                         $('<table/>').append( data ) :
                         false;

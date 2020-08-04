@@ -31,7 +31,7 @@ Export
               </div>
             </div>
 
-            <div class="form-horizontal form-label-left">              
+            <div class="form-horizontal form-label-left">
               <form class="edit-hsds-api-key" action="/update_hsds_api_key" method="POST">
                 {{ csrf_field() }}
                 <div class="item form-group">
@@ -47,10 +47,10 @@ Export
               <div class="item form-group">
                 <h6>
                   <b>
-                    You can use a GET request and the following endpoint to access the data: 
+                    You can use a GET request and the following endpoint to access the data:
                   </b>
                 </h6>
-                <p for="datapackages_url_example" style="font-style: italic; color: grey;"> 
+                <p for="datapackages_url_example" style="font-style: italic; color: grey;">
                   <a href="{{$url_path}}" style="color: #027bff;"> {{$url_path}}</a>
                   </p>
               </div>
@@ -69,10 +69,10 @@ Export
                     </h6>
                     <h6>
                       <b>Username:</b> NA - leave this field blank
-                    </h6>  
+                    </h6>
                     <h6>
                       <b>Key:</b> {{$hsds_api_key->hsds_api_key}}
-                    </h6>      
+                    </h6>
                   </div>
                 </div>
               </div>

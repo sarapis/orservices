@@ -1,4 +1,4 @@
-  <head>
+<head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <!-- Meta, title, CSS, favicons, etc. -->
   <meta charset="utf-8">
@@ -17,14 +17,19 @@
   <link href="{{ URL::asset('/backend/vendors/iCheck/skins/flat/green.css') }}" rel="stylesheet">
   <!-- Datatables -->
   <link href="{{ URL::asset('/backend/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css') }}" rel="stylesheet">
-  <link href="{{ URL::asset('/backend/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css') }}" rel="stylesheet">
-  <link href="{{ URL::asset('/backend/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css') }}" rel="stylesheet">
-  <link href="{{ URL::asset('/backend/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css') }}" rel="stylesheet">
-  <link href="{{ URL::asset('/backend/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css') }}" rel="stylesheet">
-  
+  <link href="{{ URL::asset('/backend/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css') }}"
+    rel="stylesheet">
+  <link href="{{ URL::asset('/backend/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css') }}"
+    rel="stylesheet">
+  <link href="{{ URL::asset('/backend/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css') }}"
+    rel="stylesheet">
+  <link href="{{ URL::asset('/backend/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css') }}"
+    rel="stylesheet">
+    <script src="/frontend/global/vend/moment/moment.min.js"></script>
   <!-- Datatables -->
   <link rel="stylesheet" href="{{ URL::asset('/backend/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
-  <link rel="stylesheet" href="{{ URL::asset('/backend/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css') }}">
+  <link rel="stylesheet"
+    href="{{ URL::asset('/backend/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css') }}">
   <link href="{{ URL::asset('/backend/summernote/css/summernote.css')}}" rel="stylesheet" type="text/css" />
 
   <link href="{{ URL::asset('/backend/vendors/switchery/dist/switchery.min.css') }}" rel="stylesheet">
@@ -34,9 +39,8 @@
   <!-- Custom Theme Style -->
   <link href="{{ URL::asset('/backend/build/css/custom.min.css') }}" rel="stylesheet">
   @yield('style')
-  </head>
+</head>
 
-  <body class="nav-md">
-    <div class="container body">
-      <div class="main_container">
-      
+<body class="nav-md">
+  <div class="container body">
+    <div class="main_container">

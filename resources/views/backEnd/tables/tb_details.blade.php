@@ -19,7 +19,7 @@ Details
     <div class="x_panel">
       <div class="x_title">
         <h2>Details</h2>
-        <div class="clearfix"></div>  
+        <div class="clearfix"></div>
       </div>
       <div class="x_content" style="overflow: scroll;">
 
@@ -28,11 +28,11 @@ Details
             <thead>
                 <tr>
                     <th class="text-center">No</th>
-                    <th class="text-center">Value</th>                   
-                    <th class="text-center">Detail Type</th>                   
+                    <th class="text-center">Value</th>
+                    <th class="text-center">Detail Type</th>
                     <th class="text-center">Description</th>
                     <th class="text-center">Organizations</th>
-                    <th class="text-center">Locations</th>             
+                    <th class="text-center">Locations</th>
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
@@ -55,14 +55,14 @@ Details
                     <span class="badge bg-blue">{{$detail->location()->first()->location_name}}</span>
                   @endif
                   </td>
-                  
+
 
                   <td class="text-center">
                     <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$detail->id}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button>
                   </td>
 
                 </tr>
-              @endforeach             
+              @endforeach
             </tbody>
         </table>
       </div>
@@ -151,7 +151,7 @@ $(document).ready(function() {
                             '</tr>' :
                             '';
                     } ).join('');
- 
+
                     return data ?
                         $('<table/>').append( data ) :
                         false;

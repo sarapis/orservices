@@ -19,7 +19,7 @@ Locations
     <div class="x_panel">
       <div class="x_title">
         <h2>Locations</h2>
-        <div class="clearfix"></div>  
+        <div class="clearfix"></div>
       </div>
       <div class="x_content" style="overflow: scroll;">
 
@@ -28,121 +28,72 @@ Locations
             <thead>
                 <tr>
                     <th class="text-center">No</th>
-                    <th class="text-center">Name</th>                   
-                    <th class="text-center">Organizations</th>                   
-                    <th class="text-center">Alternate name</th>
-                    <th class="text-center">Description</th>
-                    <th class="text-center">Latitude</th>
-                    <th class="text-center">Longitude</th>             
-                    <th class="text-center">Transportation</th>
-                    <th class="text-center">Services</th>
-                    <th class="text-center">Phones</th>
-                    @if($source_data->active == 1 )
-                    <th class="text-center">Details</th>
-                    @endif
-                    <th class="text-center">Schedule</th>
-                    
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Organizations</th>
+                    <th class="text-center">id</th>
+                    <th class="text-center">Type</th>
                     <th class="text-center">Address</th>
-                    @if($source_data->active == 0 )
-                    <th class="text-center">Languages</th>
-                    <th class="text-center">Accessibility</th>
-                    @endif
+                    <th class="text-center"># Congregations</th>
+                    <th class="text-center">Building Status</th>
+                    <th class="text-center">Call</th>
+                    <th class="text-center">Description</th>
+                    <th class="text-center">Services</th>
+                    <th class="text-center">Contact</th>
+                    <th class="text-center">Details</th>
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
               @foreach($locations as $key => $location)
                 <tr id="location{{$location->id}}" class="{{$location->flag}}">
-                  @if($source_data->active == 1 )
                   <td class="text-center">{{$key+1}}</td>
-                  @else
-                  <td>{{$location->location_recordid}}</td>
-                  @endif
                   <td>{{$location->location_name}}</td>
-                  
+
                   <td>
                     @if(isset($location->organization()->first()->organization_name))
                     <span class="badge bg-green">{{$location->organization()->first()->organization_name}}</span>
                     @endif
                   </td>
-                  
-                  <td class="text-center">{{$location->location_alternate_name}}</td>
-                  <td class="text-center"><span style="white-space:normal;">{!! $location->location_description !!}</span></td>
-                  <td class="text-center">{{$location->location_latitude}}</td>
-                  <td class="text-center">{{$location->location_longitude}}</td>
-                  <td class="text-center">{{$location->location_transportation}}</td>
-                  
 
-                  <td class="text-center">
-                      @foreach($location->services as $service)
-                        
-                        <span class="badge bg-purple">{{$service->service_name}}</span>
-                      
-                      @endforeach
-                  </td>
-
-                  <td class="text-center">
-
-                      @foreach($location->phones as $phone)
-                        
-                      <span class="badge bg-blue">{{$phone->phone_number}}</span>
-                      
-                      @endforeach
-                           
-                  </td>
+                  <td class="text-center">{{$location->location_id}}</td>
+                  <td class="text-center"><span style="white-space:normal;">{!! $location->location_type !!}</span></td>
 
                   <td class="text-center">
                   @if($location->location_address!='')
                     @foreach($location->address as $address)
-                      <span class="badge bg-red">{{ $address->address_1 }}</span>
+                      <span class="badge bg-red">{{ $address->address }}</span>
                     @endforeach
                   @endif
                   </td>
 
-                  @if($source_data->active == 1 )
+                  <td class="text-center">{{$location->location_congregation}}</td>
+                  <td class="text-center">{{$location->location_building_status}}</td>
+                  <td class="text-center">{{$location->location_call}}</td>
+                  <td class="text-center">{{$location->location_description}}</td>
+
+                  <td class="text-center">
+                      @foreach($location->services as $service)
+
+                        <span class="badge bg-purple">{{$service->service_name}}</span>
+
+                      @endforeach
+                  </td>
+
+                  <td class="text-center">{{$location->location_contact}}</td>
+
                   <td class="text-center">@if($location->location_details!='') @foreach($location->detail as $detail)
                     <span class="badge bg-red">{{$detail->detail_value}}</span>
                   @endforeach
                   @endif
                   </td>
 
-                  <td class="text-center">
-                  @if($location->location_schedule!='')
-                    @foreach($location->schedules as $schedule)
-                      <span class="badge bg-red">{{$schedule->schedule_days_of_week}} {{$schedule->schedule_opens_at}} {{$schedule->schedule_closes_at}}</span>
-                    @endforeach
-                  @endif
-                  </td>
-                  @endif
+
 
                   <td class="text-center">
-                    @foreach($location->address as $address)
-                      <span class="badge bg-red">{{ $address->address_1 }} {{ $address->address_2 }}, {{ $address->address_city }}, {{ $address->address_state_province }}, {{ $address->address_postal_code }}</span>
-                    @endforeach
-                  </td>
-
-                  @if($source_data->active == 0 )
-                  <td class="text-center">@if(isset($location->languages)) @foreach($location->languages as $language)
-                    <span class="badge bg-green">{{$language->language}}</span>
-                  @endforeach
-                  @endif
-                  </td>
-                  @endif
-
-                  @if($source_data->active == 0 )
-                  <td class="text-center">
-                  @if(isset($location->accessibilities()->first()->accessibility))
-                    <span class="badge bg-green">{{$location->accessibilities()->first()->accessibility}}</span>
-                    @endif
-                  </td>
-                  @endif
-                  
-
-                  <td class="text-center">
-                    <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$location->location_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button>
+                    {{-- <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$location->location_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button> --}}
                   </td>
                 </tr>
-              @endforeach             
+              @endforeach
             </tbody>
         </table>
         {!! $locations->links() !!}
@@ -173,42 +124,66 @@ Locations
                     </div>
 
                     <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Alternate name</label>
+                      <label for="inputPassword3" class="col-sm-3 control-label">id</label>
 
                       <div class="col-sm-7">
-                        <input type="text" class="form-control" id="location_alternate_name" name="location_alternate_name" value="">
+                        <input type="text" class="form-control" id="location_id" name="location_id" value="">
                       </div>
                     </div>
 
                     <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Transportation</label>
+                        <label for="inputPassword3" class="col-sm-3 control-label">Type</label>
+                        <div class="col-sm-7">
+                            <select class="form-control" id="location_type">
+                                <option value="-">-</option>
+                                <option value="Faith-Based Service Provider">Faith-Based Service Provider</option>
+                                <option value="Faith-Based Service Provider, House of Worship">Faith-Based Service Provider, House of Worship</option>
+                                <option value="House of Worship">House of Worship</option>
+
+                                <option value="Religious School">Religious School</option>
+                                <option value="Religious School, House of Worship">Religious School, House of Worship</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="inputPassword3" class="col-sm-3 control-label"># Congregations</label>
 
                       <div class="col-sm-7">
-                        <input type="text" class="form-control" id="location_transportation" name="location_transportation" value="">
+                        <input type="text" class="form-control" id="location_congregation" name="location_congregation" value="">
                       </div>
                     </div>
 
                     <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Latitude</label>
+                      <label for="inputPassword3" class="col-sm-3 control-label">Building Status</label>
 
                       <div class="col-sm-7">
-                        <input type="text" class="form-control" id="location_latitude" name="location_latitude" value="">
+                        <input type="text" class="form-control" id="location_building_status" name="location_building_status" value="">
                       </div>
                     </div>
 
                     <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Longitude</label>
+                      <label for="inputPassword3" class="col-sm-3 control-label">Call</label>
 
                       <div class="col-sm-7">
-                        <input type="text" class="form-control" id="location_longitude" name="location_longitude" value="">
+                        <input type="text" class="form-control" id="location_call" name="location_call" value=""></textarea>
                       </div>
                     </div>
-                  
+
                     <div class="form-group">
                       <label for="inputPassword3" class="col-sm-3 control-label">Description</label>
 
                       <div class="col-sm-7">
-                        <textarea type="text" class="form-control" id="location_description" name="location_description" value="" rows="5"></textarea>
+                        <input type="text" class="form-control" id="location_description" name="location_description" value=""></textarea>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="inputPassword3" class="col-sm-3 control-label">Contact</label>
+
+                      <div class="col-sm-7">
+                        <input type="text" class="form-control" id="location_contact" name="location_contact" value=""></textarea>
                       </div>
                     </div>
 
@@ -217,7 +192,7 @@ Locations
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary" id="btn-save" value="add">Save changes</button>
-                    <input type="hidden" id="id" name="location_id" value="0">
+                    <input type="hidden" id="id" name="id" value="0">
                 </div>
             </form>
         </div>
@@ -243,7 +218,7 @@ $(document).ready(function() {
                             '</tr>' :
                             '';
                     } ).join('');
- 
+
                     return data ?
                         $('<table/>').append( data ) :
                         false;

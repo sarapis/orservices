@@ -1,46 +1,194 @@
-.wrapper {    
-	margin-top: 80px;
-	margin-bottom: 20px;
+
+@font-face {
+  font-family: "Neue Haas Grotesk Display Medium";
+  src: url("fonts/NeueHaasDisplay-Mediu.eot");
+  src: url("fonts/NeueHaasDisplay-Mediu.eot?#iefix") format("embedded-opentype"),
+    url("fonts/NeueHaasDisplay-Mediu.woff") format("woff"),
+    url("fonts/NeueHaasDisplay-Mediu.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Neue Haas Grotesk Display Roman";
+  src: url("fonts/NeueHaasDisplay-Roman.eot");
+  src: url("fonts/NeueHaasDisplay-Roman.eot?#iefix") format("embedded-opentype"),
+    url("fonts/NeueHaasDisplay-Roman.woff") format("woff"),
+    url("fonts/NeueHaasDisplay-Roman.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
 }
 
+body{
+  background-color: #f4f7fb;
+  font-family: "Neue Haas Grotesk Display Roman";
+}
+
+.wrapper {
+  margin-top: 80px;
+  margin-bottom: 20px;
+}
+
+.navbar-default {
+  background: #5051db;
+}
+
+.navbar-default .navbar-header .navbar-brand {
+  font-family: "Neue Haas Grotesk Display Medium";
+  cursor: pointer;
+  color: #fff;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 24px;
+  height: auto;
+  padding: 30px 10px;
+}
+.navbar-default .navbar-nav {
+  padding: 20px 0;
+}
+.navbar-default .navbar-nav>li>a{
+  font-weight: 500;
+  font-size: 16px;
+  padding: 10px 20px;
+  font-family: "Neue Haas Grotesk Display Roman";
+  border-radius: 6px;
+  background: #1b1b1b;
+  margin-left: 7px;
+}
+.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus  {
+  color: #ffffff;
+  background: #323232;
+}
+
+.login_register {
+  height: calc(100vh - 150px);
+  vertical-align: middle;
+  display: table-cell;
+  margin: 0 auto;
+  text-align: center;
+  width: 100vw;
+}
+.form-horizontal .form-group {
+  margin-left: 0;
+  margin-right: 0;
+  text-align: left;
+}
 .form-signin {
   max-width: 420px;
-  padding: 30px 38px 66px;
+  padding: 30px;
   margin: 0 auto;
-  background-color: #eee;
-  border: 3px dotted rgba(0,0,0,0.1);  
-  }
-
+  background-color: #fff;
+  border: 2px solid rgb(80, 81, 219);
+  border-radius: 15px;
+}
+.form-signin.register_form{
+  max-width: inherit;
+  float: left;
+  width: 100%;
+}
 .form-signin-heading {
-  text-align:center;
-  margin-bottom: 30px;
+  text-align: center;
+  margin: 0;
+  font-weight: 500;
+  font-size: 25px;
+  color: #5051db;
+  font-family: "Neue Haas Grotesk Display Medium";
+  margin-bottom: 40px;
 }
 
 .form-control {
   position: relative;
+  background: #ffffff;
+  border: 1px solid #a4a8b8;
+  border-radius: 12px;
+  padding: 10px 16px;
+  color: #1b1b1b;
+  font-size: 15px;
+  height: 55px;
+  font-weight: 300;
+  width: 100% !important;
+  box-shadow: none;
+}
+.form-control:focus {
+  transition-duration: 0.3s;
+  border: 2px solid #1b1b1b !important;
+}
+.btn-primary{
+  background: #5051db;
+  box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 22.5px 40px;
+  color: #fff;
+  font-weight: 500;
   font-size: 16px;
-  height: auto;
-  padding: 10px;
+  line-height: 19px;
+  border: 1px solid transparent;
+}
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary.disabled_btn {
+  background: #6262df;
+  border: 1px solid transparent;
+  outline: none;
 }
 
-
-input[type="password"] {
-    width: 100%;
-    font-size: 16px;
-    height: auto;
-    padding: 10px;
+.forget_password {
+  color: #5051db;
+  font-family: "Neue Haas Grotesk Display Medium";
+  margin-bottom: 12px;
 }
-
-.colorgraph {
-  height: 7px;
-  border-top: 0;
-  background: #c4e17f;
-  border-radius: 5px;
-  background-image: -webkit-linear-gradient(left, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
-  background-image: -moz-linear-gradient(left, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
-  background-image: -o-linear-gradient(left, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
-  background-image: linear-gradient(to right, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+a:hover{
+  color: #7575e3; text-decoration: none;
 }
 .navbar-toggler {
   float: left;
+}
+.site-footer {
+  color: rgba(27, 27, 27, 0.4);
+  font-weight: 500;
+  font-size: 14px;
+}
+.form-control.bootstrap-select .dropdown-toggle {
+  box-shadow: none;
+  background: #ffffff;
+  border: 1px solid #a4a8b8;
+  border-radius: 12px;
+  padding: 10px 16px;
+  color: #1b1b1b;
+  font-size: 15px;
+  height: 55px;
+  font-weight: 300;
+  width: 100% !important;
+}
+.form-control.bootstrap-select .dropdown-toggle:focus {
+  transition-duration: 0.3s;
+  border: 2px solid #1b1b1b !important;
+  outline: none !important;
+}
+
+.btn-default:active:hover, .btn-default.active:hover, .open>.dropdown-toggle.btn-default:hover, .btn-default:active:focus, .btn-default.active:focus, .open>.dropdown-toggle.btn-default:focus, .btn-default:active.focus, .btn-default.active.focus, .open>.dropdown-toggle.btn-default.focus {
+    color: #000;
+    background-color: #fff;
+}
+.bootstrap-select .dropdown-menu{
+  width: 100% !important;
+  min-width: 100% !important;
+  max-height: 300px !important;
+}
+
+.dropdown-menu>.active>a, .dropdown-menu>.active>a:hover, .dropdown-menu>.active>a:focus, .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus{
+  background-color: #5051db;
+}
+
+.dropdown-menu>li>a{
+  padding: 8px 20px;
+}
+
+
+
+
+
+@media (min-width: 1600px) {
+  .container {
+    width: 1340px;
+  }
 }
