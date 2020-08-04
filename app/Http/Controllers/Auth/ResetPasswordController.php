@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Model\Layout;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
-use App\Layout;
-use Redirect;
-use Validator;
-use DB;
-use Hash;
-use Session;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
+
 class ResetPasswordController extends Controller
 {
     /*
@@ -24,24 +26,14 @@ class ResetPasswordController extends Controller
     |
     */
 
-    use ResetsPasswords;
+    // use ResetsPasswords;
 
     /**
      * Where to redirect users after resetting their password.
      *
      * @var string
      */
-    protected $redirectTo = '/';
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('guest');
-    }
+    protected $redirectTo = RouteServiceProvider::HOME;
 
     public function showResetForm(Request $request, $token = null)
     {
@@ -57,25 +49,23 @@ class ResetPasswordController extends Controller
             'token' => 'required',
             'email' => 'required|email',
             'password' => 'required|confirmed|min:6',
-            ]);
-          if ($validation->fails()) {
-                return Redirect::back()->withErrors($validation)->withInput();
-         }
-         $CheckUserRequest=DB::table('password_resets')->where('email',$request->email)->first();
-         if ($CheckUserRequest &&  Hash::check($request->token, $CheckUserRequest->token)) {
-    
-              DB::table('users')->where('email',$request->email)->update(['password' =>  Hash::make($request->password)] );
-              DB::table('password_resets')->where('email',$request->email)->delete();
-              Session::flash('message', 'Your password is changed sucesfully ,Please login with yor new password.');
-              Session::flash('status', 'success');
-              return redirect('login'); 
-         }
+        ]);
+        if ($validation->fails()) {
+            return Redirect::back()->withErrors($validation)->withInput();
+        }
+        $CheckUserRequest = DB::table('password_resets')->where('email', $request->email)->first();
+        if ($CheckUserRequest &&  Hash::check($request->token, $CheckUserRequest->token)) {
 
-         Session::flash('message', 'There was something wrong with your request ,please tray again later ');
-         Session::flash('status', 'error');
-       
-       return redirect()->back();
+            DB::table('users')->where('email', $request->email)->update(['password' =>  Hash::make($request->password)]);
+            DB::table('password_resets')->where('email', $request->email)->delete();
+            Session::flash('message', 'Your password is changed sucesfully ,Please login with yor new password.');
+            Session::flash('status', 'success');
+            return redirect('login');
+        }
 
+        Session::flash('message', 'There was something wrong with your request ,please tray again later ');
+        Session::flash('status', 'error');
+
+        return redirect()->back();
     }
-   
 }

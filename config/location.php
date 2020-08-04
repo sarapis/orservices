@@ -11,7 +11,7 @@ return [
     |
     */
 
-    'driver' => Stevebauman\Location\Drivers\IpInfo::class,
+    'driver' => Stevebauman\Location\Drivers\IpApi::class,
 
     /*
     |--------------------------------------------------------------------------
@@ -27,13 +27,26 @@ return [
 
     'fallbacks' => [
 
-        Stevebauman\Location\Drivers\FreeGeoIp::class,
+        Stevebauman\Location\Drivers\IpInfo::class,
 
         Stevebauman\Location\Drivers\GeoPlugin::class,
 
         Stevebauman\Location\Drivers\MaxMind::class,
 
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Position
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure the position instance that is created
+    | and returned from the above drivers. The instance you
+    | create must extend the built-in Position class.
+    |
+    */
+
+    'position' => Stevebauman\Location\Position::class,
 
     /*
     |--------------------------------------------------------------------------
@@ -72,6 +85,36 @@ return [
             'path' => database_path('maxmind/GeoLite2-City.mmdb')
 
         ],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | IP API Pro Configuration
+    |--------------------------------------------------------------------------
+    |
+    | The configuration for the IP API Pro driver.
+    |
+    */
+
+    'ip_api' => [
+
+        'token' => env('IP_API_TOKEN'),
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | IPInfo Configuration
+    |--------------------------------------------------------------------------
+    |
+    | The configuration for the IPInfo driver.
+    |
+    */
+
+    'ipinfo' => [
+
+        'token' => env('IPINFO_TOKEN'),
 
     ],
 

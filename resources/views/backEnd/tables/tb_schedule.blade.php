@@ -19,7 +19,7 @@ Schedule
     <div class="x_panel">
       <div class="x_title">
         <h2>Details</h2>
-        <div class="clearfix"></div>  
+        <div class="clearfix"></div>
       </div>
       <div class="x_content" style="overflow: scroll;">
 
@@ -28,13 +28,13 @@ Schedule
             <thead>
                 <tr>
                     <th class="text-center">No</th>
-                    <th class="text-center">Services</th>                   
+                    <th class="text-center">Services</th>
                     <th class="text-center">Locations</th>
-                    @if($source_data->active == 1 )                   
+                    @if($source_data->active == 1 )
                     <th class="text-center">X-phones</th>
                     @endif
                     <th class="text-center">Days of Week</th>
-                    <th class="text-center">Opens at</th>             
+                    <th class="text-center">Opens at</th>
                     <th class="text-center">Closes at</th>
                     @if($source_data->active == 0 )
                     <th class="text-center">Orgiinal text</th>
@@ -83,11 +83,11 @@ Schedule
                   @endif
 
                   <td class="text-center">
-                    <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$schedule->schedule_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button>
+                    {{-- <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$schedule->schedule_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button> --}}
                   </td>
 
                 </tr>
-              @endforeach             
+              @endforeach
             </tbody>
         </table>
         {!! $schedules->links() !!}
@@ -180,7 +180,7 @@ $(document).ready(function() {
                             '</tr>' :
                             '';
                     } ).join('');
- 
+
                     return data ?
                         $('<table/>').append( data ) :
                         false;

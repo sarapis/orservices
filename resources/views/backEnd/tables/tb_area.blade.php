@@ -19,7 +19,7 @@ Service Area
     <div class="x_panel">
       <div class="x_title">
         <h2>Service Area</h2>
-        <div class="clearfix"></div>  
+        <div class="clearfix"></div>
       </div>
       <div class="x_content" style="overflow: scroll;">
 
@@ -27,33 +27,33 @@ Service Area
         <table id="example" class="display nowrap table-striped jambo_table table-bordered table-responsive" cellspacing="0" width="100%">
             <thead>
                 <tr>
-                    <th class="text-center">No</th> 
-                    <th class="text-center">Service Area</th>  
-                    <th class="text-center">Services</th> 
-                    <th class="text-center">Description</th> 
-                    <th class="text-center">Date Added</th>  
+                    <th class="text-center">No</th>
+                    <th class="text-center">Service Area</th>
+                    <th class="text-center">Services</th>
+                    <th class="text-center">Description</th>
+                    <th class="text-center">Date Added</th>
                     <th class="text-center">Multiple Counties</th>
-                    <th class="text-center">Actions</th>         
+                    <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
               @foreach($areas as $key => $area)
                 <tr id="area{$area->id}}" class="{{$area->flag}}">
                   <td class="text-center">{{$key+1}}</td>
-                 
+
                   <td class="text-center">{{$area->area_recordid}}</td>
                   <td class="text-center">@if(isset($area->area_service))
-                      <span class="badge bg-green">{{$area->services()->first()->service_name}}</span>
+                      <span class="badge bg-green">{{$area->services()->first() ? $area->services()->first()->service_name : ''}}</span>
                   @endif
                   </td>
                   <td class="text-center">{{$area->area_description}}</td>
                   <td class="text-center">{{$area->area_date_added}}</td>
                   <td class="text-center">{{$area->area_multiple_counties}}</td>
                   <td class="text-center">
-                    <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$area->area_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button>
+                    {{-- <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$area->area_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button> --}}
                   </td>
                 </tr>
-              @endforeach             
+              @endforeach
             </tbody>
         </table>
         {!! $areas->links() !!}
@@ -114,7 +114,7 @@ $(document).ready(function() {
                             '</tr>' :
                             '';
                     } ).join('');
- 
+
                     return data ?
                         $('<table/>').append( data ) :
                         false;

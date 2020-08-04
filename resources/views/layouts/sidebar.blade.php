@@ -40,7 +40,7 @@
     }
     .regular-checkbox:checked {
         background-color: #2196F3;
-       
+
       /*  box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);*/
         color: #ffffff;
     }
@@ -103,7 +103,7 @@
 
     .jstree-themeicon {
         display: none !important;
-    } 
+    }
 
     #mCSB_1_container {
         overflow: scroll !important;
@@ -111,8 +111,9 @@
 
 </style>
 
-<nav id="sidebar">
-    <ul class="list-unstyled components pt-0 mb-0 sidebar-menu"> 
+{{-- <nav id="sidebar"> --}}
+<nav id="">
+    <ul class="list-unstyled components pt-0 mb-0 sidebar-menu">
         <li class="option-side">
             <button class="btn btn-block waves-effect waves-classic" style="padding: 0;background: #A2E9FF;"><a href="/services" style="display: block;padding-left: 10px;">Services</a></button>
         </li>
@@ -125,13 +126,12 @@
     </ul>
 
        <ul class="list-unstyled components pt-0">
-            
-            @if ((Request::path() == 'services') || (Request::segment(1) == 'search') || (Request::segment(1) == 'service') || (Request::segment(1) == 'organization') || (Request::segment(1) == 'services_near_me') || (Request::segment(1) == 'organizations'))
+            @if ((Request::path() == 'services') || (Request::segment(1) == 'search') || (Request::segment(1) == 'services') || (Request::segment(1) == 'organizations') || (Request::segment(1) == 'services_near_me') || (Request::segment(1) == 'organizations'))
             <!-- <li class="option-side">
                 <a href="#target_populations" class="text-side" data-toggle="collapse" aria-expanded="false">Types of People</a>
                 <ul class="collapse list-unstyled option-ul" id="target_populations">
                     <li>
-                        <select class="js-example-basic-multiple js-example-placeholder-multiple form-control" multiple data-plugin="select2" id="target_multiple" name="target_populations[]">                                                  
+                        <select class="js-example-basic-multiple js-example-placeholder-multiple form-control" multiple data-plugin="select2" id="target_multiple" name="target_populations[]">
                             @foreach($target_taxonomies as $child)
                                 <option value="{{$child->taxonomy_recordid}}" @if((isset($target_populations) && in_array($child->taxonomy_recordid, $target_populations))) selected @endif>{{$child->taxonomy_name}}</option>
                             @endforeach
@@ -139,21 +139,21 @@
                     </li>
                 </ul>
             </li> -->
-            <li class="option-side">
+            {{-- <li class="option-side">
                 <a href="#projectcategory" class="text-side" data-toggle="collapse" aria-expanded="false">Types of Services</a>
-                
+
                 <ul class="collapse list-unstyled option-ul show" id="projectcategory">
                     <div id="sidebar_tree">
                     </div>
                 </ul>
-            </li>
+            </li> --}}
             <li class="option-side mobile-btn">
                 <a href="#export" class="text-side" data-toggle="collapse" aria-expanded="false">Download CSV/PDF</a>
                 <ul class="collapse list-unstyled option-ul" id="export">
                     <li class="nobranch">
                         <a class="dropdown-item download_csv" href="javascript:void(0)" role="menuitem">Export CSV</a>
                         <a class="dropdown-item download_pdf" href="javascript:void(0)" role="menuitem">Download PDF</a>
-                    </li>   
+                    </li>
                 </ul>
             </li>
             <li class="option-side mobile-btn">
@@ -163,7 +163,7 @@
                         <a @if(isset($pagination) && $pagination == '10') class="dropdown-item drop-paginate active" @else class="dropdown-item drop-paginate" @endif href="javascript:void(0)" role="menuitem" >10</a>
                         <a @if(isset($pagination) && $pagination == '25') class="dropdown-item drop-paginate active" @else class="dropdown-item drop-paginate" @endif href="javascript:void(0)" role="menuitem">25</a>
                         <a @if(isset($pagination) && $pagination == '50') class="dropdown-item drop-paginate active" @else class="dropdown-item drop-paginate" @endif href="javascript:void(0)" role="menuitem">50</a>
-                    </li>   
+                    </li>
                 </ul>
             </li>
             <li class="option-side mobile-btn">
@@ -173,7 +173,7 @@
                         <a @if(isset($sort) && $sort == 'Service Name') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Service Name</a>
                         <a @if(isset($sort) && $sort == 'Organization Name') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Organization Name</a>
                         <a @if(isset($sort) && $sort == 'Distance from Address') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Distance from Address</a>
-                    </li>   
+                    </li>
                 </ul>
             </li>
             @endif
@@ -186,7 +186,7 @@
 
             <input type="hidden" name="csv" id="csv">
             <input type="hidden" id="selected_taxonomies" name="selected_taxonomies">
-          
+
     </ul>
 
 </nav>
@@ -196,9 +196,9 @@
 
 <script>
 $(document).ready(function(){
-    
+
     var tree_data_list = [];
-    
+
     var taxonomy_tree = <?php print_r(json_encode($taxonomy_tree)) ?>;
     var alt_key;
     var urlParams = new URLSearchParams(window.location.search);
@@ -207,7 +207,7 @@ $(document).ready(function(){
         selected_taxonomies = urlParams.get('selected_taxonomies').split(',');
     }
 
-    
+
     if (typeof taxonomy_tree == 'array') {
         for (alt_key = 0; alt_key < taxonomy_tree.length; alt_key++) {
             var alt_data = {};
@@ -224,7 +224,7 @@ $(document).ready(function(){
             for (parent_key = 0; parent_key < alt_tree_parent_taxonomies.length; parent_key++) {
                 var parent_tree = alt_tree_parent_taxonomies[parent_key];
                 var parent_data = {};
-                
+
                 if (parent_tree.parent_taxonomy != undefined) {
                     if (typeof(parent_tree.parent_taxonomy) == "string") {
                         parent_data.text = parent_tree.parent_taxonomy;
@@ -262,7 +262,7 @@ $(document).ready(function(){
                     }
                     parent_data_list.push(parent_data);
                 }
-            }   
+            }
             if (parent_data_list.length != 0) {
                 alt_data.children = parent_data_list;
             }
@@ -300,7 +300,7 @@ $(document).ready(function(){
             tree_data_list[parent_key] = parent_data;
         }
     }
-    
+
 
      $('#sidebar_tree').jstree({
         'plugins': ["checkbox", "wholerow", "sort"],
@@ -310,7 +310,7 @@ $(document).ready(function(){
         }
     });
 
-    
+
 
     $('.regular-checkbox').on('click', function(e){
         $(this).prev().trigger('click');
@@ -330,9 +330,9 @@ $(document).ready(function(){
         var selected_taxonomy_ids = all_selected_ids.filter(function(id) {
             return id.indexOf('child_') > -1;
         });
-        console.log(selected_taxonomy_ids);
+        // console.log(selected_taxonomy_ids);
         selected_taxonomy_ids = selected_taxonomy_ids.toString();
-        $("#selected_taxonomies").val(selected_taxonomy_ids); 
+        $("#selected_taxonomies").val(selected_taxonomy_ids);
         $("#csv").val('csv');
         $("#filter").submit();
         $("#csv").val('');
@@ -342,9 +342,9 @@ $(document).ready(function(){
         var selected_taxonomy_ids = all_selected_ids.filter(function(id) {
             return id.indexOf('child_') > -1;
         });
-        console.log(selected_taxonomy_ids);
+        // console.log(selected_taxonomy_ids);
         selected_taxonomy_ids = selected_taxonomy_ids.toString();
-        $("#selected_taxonomies").val(selected_taxonomy_ids); 
+        $("#selected_taxonomies").val(selected_taxonomy_ids);
         $("#pdf").val('pdf');
         $("#filter").submit();
         $("#pdf").val('');
@@ -353,7 +353,7 @@ $(document).ready(function(){
 
         $("#filter").submit();
     });
-  
+
     function matchCustom(params, data) {
     // If there are no search terms, return all of the data
         if ($.trim(params.term) === '') {

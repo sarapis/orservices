@@ -19,7 +19,7 @@ Organizations
     <div class="x_panel">
       <div class="x_title">
         <h2>Organizations</h2>
-        <div class="clearfix"></div>  
+        <div class="clearfix"></div>
       </div>
       <div class="x_content" style="overflow: scroll;">
 
@@ -28,11 +28,11 @@ Organizations
             <thead>
                 <tr>
                     <th class="text-center">No</th>
-                    <th class="text-center">Name</th>                                   
+                    <th class="text-center">Name</th>
                     <th class="text-center">Alternate name</th>
                     @if($source_data->active == 1)
-                    <th class="text-center">X-uid</th>   
-                    @endif                            
+                    <th class="text-center">X-uid</th>
+                    @endif
                     <th class="text-center">Email</th>
                     <th class="text-center">Url</th>
                     <th class="text-center">Description</th>
@@ -45,8 +45,8 @@ Organizations
                     <th class="text-center">Location</th>
                     <th class="text-center">Contact</th>
                     @if($source_data->active == 1)
-                    <th class="text-center">Details</th> 
-                    @endif                  
+                    <th class="text-center">Details</th>
+                    @endif
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
@@ -59,7 +59,7 @@ Organizations
                   <td>{{$organization->organization_recordid}}</td>
                   @endif
                   <td class="">{{$organization->organization_name}}</td>
-                  
+
                   <td class="text-center">{{$organization->organization_alternate_name}}</td>
 
                   @if($source_data->active == 1)
@@ -107,7 +107,7 @@ Organizations
                   </td>
 
                   @if($source_data->active == 1)
-                  <td class="text-center">@if($organization->organization_details!='')@foreach($organization->detail as $detail)
+                  <td class="text-center">@if($organization->organization_details!='')@foreach($organization->details as $detail)
                     <span class="badge bg-purple">{{$detail->detail_value}}</span>
                   @endforeach
                   @endif
@@ -116,10 +116,10 @@ Organizations
 
 
                   <td class="text-center">
-                    <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$organization->organization_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button>
+                    {{-- <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$organization->organization_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button> --}}
                   </td>
                 </tr>
-              @endforeach             
+              @endforeach
             </tbody>
         </table>
         {!! $organizations->links() !!}
@@ -180,7 +180,7 @@ Organizations
                         <input type="text" class="form-control" id="organization_email" name="organization_email" value="">
                       </div>
                     </div>
-                    
+
                     <div class="form-group">
                       <label for="inputPassword3" class="col-sm-3 control-label">Url</label>
 
@@ -223,7 +223,7 @@ Organizations
                     </div>
 
                     <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Year incorporated</label>  
+                      <label for="inputPassword3" class="col-sm-3 control-label">Year incorporated</label>
                       <div class="col-sm-7">
                         <input type="text" class="form-control" id="organization_year_incorporated" name="organization_year_incorporated" value="">
                       </div>
@@ -260,7 +260,7 @@ $(document).ready(function() {
                             '</tr>' :
                             '';
                     } ).join('');
- 
+
                     return data ?
                         $('<table/>').append( data ) :
                         false;

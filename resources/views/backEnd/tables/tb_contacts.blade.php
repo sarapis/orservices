@@ -19,7 +19,7 @@ Contacts
     <div class="x_panel">
       <div class="x_title">
         <h2>Contacts</h2>
-        <div class="clearfix"></div>  
+        <div class="clearfix"></div>
       </div>
       <div class="x_content" style="overflow: scroll;">
 
@@ -58,7 +58,7 @@ Contacts
                   </td>
                   <td class="text-center">
                     @if($contact->contact_services!=0)
-                    <span class="badge bg-blue">{{$contact->service()->first()->service_name}}</span>
+                    <span class="badge bg-blue">{{$contact->service()->first() ? $contact->service()->first()->service_name : ''}}</span>
                     @endif
                   </td>
                   <td class="text-center">{{$contact->contact_title}}</td>
@@ -74,10 +74,10 @@ Contacts
                   <td class="text-center">{{$contact->contact_phone_extension}}</td>
                   @endif
                   <td>
-                    <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$contact->contact_recordid}}"><i class="fa fa-fw fa-edit"></i>Edit</button>
+                    {{-- <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$contact->contact_recordid}}"><i class="fa fa-fw fa-edit"></i>Edit</button> --}}
                   </td>
                 </tr>
-              @endforeach             
+              @endforeach
             </tbody>
         </table>
         {!! $contacts->links() !!}
@@ -126,7 +126,7 @@ Contacts
                         <input type="text" class="form-control" id="contact_email" name="contact_email" value="">
                       </div>
                     </div>
-                    
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
@@ -156,7 +156,7 @@ $(document).ready(function() {
                             '</tr>' :
                             '';
                     } ).join('');
- 
+
                     return data ?
                         $('<table/>').append( data ) :
                         false;

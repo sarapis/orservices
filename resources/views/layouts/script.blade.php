@@ -1,5 +1,5 @@
 <!-- Core  -->
-   
+
 <script src="../../frontend/global/vend/babel-external-helpers/babel-external-helpers.js"></script>
   <script src="../../frontend/global/vend/tether/tether.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -11,12 +11,14 @@
   <script src="../../frontend/global/vend/asscrollable/jquery-asScrollable.js"></script>
   <script src="../../frontend/global/vend/ashoverscroll/jquery-asHoverScroll.js"></script>
   <script src="../../frontend/global/vend/waves/waves.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
   <!-- Plugins -->
 <script src="../../frontend/global/vend/switchery/switchery.min.js"></script>
   <script src="../../frontend/global/vend/intro-js/intro.js"></script>
   <script src="../../frontend/global/vend/screenfull/screenfull.js"></script>
   <script src="../../frontend/global/vend/slidepanel/jquery-slidePanel.js"></script>
-  {{-- <script src="../../frontend/global/vend/moment/moment.min.js"></script> --}}
+  <script src="../../frontend/global/vend/moment/moment.min.js"></script>
   <script src="../../frontend/global/vend/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js"></script>
 
   <!-- Scripts -->
@@ -163,7 +165,7 @@ $('#widget').draggable();
           //     sendfilter();
           // });
 
-          
+
 
           // $('#projectstatus li').click(function(){
           //     var value = $('span',this).html();
@@ -175,7 +177,7 @@ $('#widget').draggable();
           //     var value = $(this).html();
 
           //     $('#btn-category span').html("Category: "+value);
-              
+
 
           //     $('#btn-category').show();
           //     sendfilter();
@@ -228,19 +230,19 @@ $('#widget').draggable();
     //   values: [ 0, 1500000 ],
     //   slide: function( event, ui ) {
     //     $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
-      
+
     //     var value1 = ui.values[0]; var value2 = ui.values[1];
     //     $( "#btn-cost span" ).html("Cost: " + $("#amount").val());
     //     $('#btn-cost').show();
-        
+
     //   }
     // });
 
-    
+
     // $( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
     //   " - $" + $( "#slider-range" ).slider( "values", 1 ) );
 
-    
+
     // // $( "#slider-range-year" ).slider({
     // //   range: true,
     // //   min: 2012,
@@ -256,23 +258,23 @@ $('#widget').draggable();
     //     sendfilter();
     // });
 
-    //  $( "#slider-range-year" ).slider({ 
-    //   range: true, 
-    //   min: 2012, 
-    //   max: 2018, 
-    //   values: [ 2012, 2018 ], 
-    //   slide: function( event, ui ) { 
+    //  $( "#slider-range-year" ).slider({
+    //   range: true,
+    //   min: 2012,
+    //   max: 2018,
+    //   values: [ 2012, 2018 ],
+    //   slide: function( event, ui ) {
     //     $( "#amount-year" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
     //     var value1 = ui.values[0]; var value2 = ui.values[1];
     //     $( "#btn-year span" ).html("Year of Vote: " + $("#amount-year").val());
     //     $('#btn-year').show();
-    //      } }); 
+    //      } });
 
 
 
     // $( "#amount-year" ).val(  $( "#slider-range-year" ).slider( "values", 0 ) +
     //   " - " + $( "#slider-range-year" ).slider( "values", 1 ) );
-   
+
     // $( "#slider-range-vote" ).slider({
     //   range: true,
     //   min: 0,
@@ -288,14 +290,14 @@ $('#widget').draggable();
 
     // $( "#amount-vote" ).val(  $( "#slider-range-vote" ).slider( "values", 0 ) +
     //   " - " + $( "#slider-range-vote" ).slider( "values", 1 ) );
-    
+
     // $('.ui-slider-handle.ui-corner-all.ui-state-default').mouseup(function(){
-    //       sendfilter();      
+    //       sendfilter();
     //   });
 
           // function sendfilter(){
-           
-          //   var form_data = new FormData();    
+
+          //   var form_data = new FormData();
           //   // var form_data = [];
           //   // var form_name = [];
           //   form_data.append('price_min',$( "#slider-range" ).slider( "values", 0 ));
@@ -309,13 +311,13 @@ $('#widget').draggable();
           //   form_data.append('is_ajax',1);
           //   form_data.append('address',$('#location').val());
           //   $('#filter_buttons button').each(function(index){
-                
+
           //       if($(this).css('display') != 'none')
           //       {
           //         var values = $('span', $(this)).html();
 
           //         value_array = values.split(':');
-          //         value_array[1] = value_array[1].replace('&amp;','&');    
+          //         value_array[1] = value_array[1].replace('&amp;','&');
           //         value_array[1] = value_array[1].slice(1);
           //         form_data.append(value_array[0],value_array[1]);
           //         //form_data[] = value_array[1];
@@ -331,12 +333,12 @@ $('#widget').draggable();
           //     loadingInner: '\n      <div class="loader-content">\n        <div class="loader-index">\n          <div></div>\n          <div></div>\n          <div></div>\n          <div></div>\n          <div></div>\n          <div></div>\n        </div>\n      </div>',
           //     onLoadEvent: true
           //   });
-            
+
           //   $.ajaxSetup({
           //     headers: {
           //       'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
           //     }
-          //   })    
+          //   })
           //   $.ajax({
           //     type: 'POST',
           //     url: "/range",
@@ -345,13 +347,13 @@ $('#widget').draggable();
           //     cache: false, // To unable request pages to be cached
           //     processData: false,
           //     success: function(data) {
-                  
+
           //       $('.loader-overlay').remove();
-                
+
           //       $('#content').html(data);
           //     },
           //     error: function(errResponse) {
-              
+
           //     }
           //   });
           // }
@@ -364,7 +366,7 @@ $('#widget').draggable();
  <script>
     (function(document, window, $){
       'use strict';
-  
+
       var Site = window.Site;
       $(document).ready(function(){
         Site.run();

@@ -32,7 +32,7 @@ Appearance
                     Logo
                 </label>
                 <div class="col-md-6 col-sm-12">
-                    
+
                     <div class="row">
                       <img src="/uploads/images/{{$layout->logo}}" id="blah">
                     </div>
@@ -54,10 +54,10 @@ Appearance
                       </div>
                     </div>
                 </div>
-            </div>           
+            </div>
 
               <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Site Name 
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Site Name
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <input type="name" id="email" name="site_name" class="form-control col-md-7 col-xs-12" value="{{$layout->site_name}}">
@@ -65,13 +65,13 @@ Appearance
               </div>
 
               <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Tagline 
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Tagline
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <input id="occupation" type="text" name="tagline" class="optional form-control col-md-7 col-xs-12" value="{{$layout->tagline}}">
                 </div>
               </div>
-              <div class="item form-group">
+              <!-- <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">
                 </label>
                 <div class="col-md-6">
@@ -79,7 +79,7 @@ Appearance
                     <input type="checkbox" class="js-switch" value="checked" name="title_active"  @if($layout->title_active==1) checked @endif/>&nbsp;&nbsp;<b>Show Title and Tagline </b>
                   </span>
                 </div>
-              </div>
+              </div> -->
 
               <!-- <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">
@@ -96,7 +96,7 @@ Appearance
                     Bottom background Image
                 </label>
                 <div class="col-md-6 col-sm-12">
-                    
+
                     <div class="row">
                       <img src="/uploads/images/{{$layout->bottom_background}}" id="blah2" style="width: 100%;">
                     </div>
@@ -123,9 +123,8 @@ Appearance
                   <textarea id="summernote1" type="text" name="sidebar_content" class="optional form-control col-md-7 col-xs-12">{{$layout->sidebar_content}}</textarea>
                 </div>
               </div> -->
-
               <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Contact Text 
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Contact Text
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <input id="occupation" type="text" name="contact_text" class="optional form-control col-md-7 col-xs-12" value="{{$layout->contact_text}}">
@@ -141,7 +140,7 @@ Appearance
               </div>
 
               <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="website">Contact Button Link 
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="website">Contact Button Link
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <input type="url" id="website" name="contact_btn_link" placeholder="www.website.com" class="form-control col-md-7 col-xs-12" value="{{$layout->contact_btn_link}}">
@@ -209,6 +208,41 @@ Appearance
                 </label>
                 <div class="col-md-2 col-sm-6 col-xs-12">
                     <input type="color" name="button_hover_color" value="{{$layout->button_hover_color}}" class="color-pick form-control col-md-5 col-xs-5">
+                </div>
+              </div>
+              <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Title & Link Color
+                </label>
+                <div class="col-md-2 col-sm-6 col-xs-12">
+                    <input type="color" name="title_link_color" value="{{$layout->title_link_color}}" class="color-pick form-control col-md-5 col-xs-5">
+                </div>
+              </div>
+              <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Top Menu Color
+                </label>
+                <div class="col-md-2 col-sm-6 col-xs-12">
+                    <input type="color" name="top_menu_color" value="{{$layout->top_menu_color}}" class="color-pick form-control col-md-5 col-xs-5">
+                </div>
+              </div>
+              <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Top Menu link Color
+                </label>
+                <div class="col-md-2 col-sm-6 col-xs-12">
+                    <input type="color" name="top_menu_link_color" value="{{$layout->top_menu_link_color}}" class="color-pick form-control col-md-5 col-xs-5">
+                </div>
+              </div>
+              <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Top Menu Link Hover Color
+                </label>
+                <div class="col-md-2 col-sm-6 col-xs-12">
+                    <input type="color" name="top_menu_link_hover_color" value="{{$layout->top_menu_link_hover_color}}" class="color-pick form-control col-md-5 col-xs-5">
+                </div>
+              </div>
+              <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Menu Title Color
+                </label>
+                <div class="col-md-2 col-sm-6 col-xs-12">
+                    <input type="color" name="menu_title_color" value="{{$layout->menu_title_color}}" class="color-pick form-control col-md-5 col-xs-5">
                 </div>
               </div>
 

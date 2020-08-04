@@ -33,7 +33,7 @@ Meta Filter
                     <label class="control-label col-md-2 col-sm-2 col-xs-12" style="padding-top: 2px; margin-right: 10px;">Activate</label>
                     <input type="checkbox" class="js-switch" value="checked" name="meta_filter_activate" @if($meta->meta_filter_activate==1) checked @endif />
                 </div>
-              
+
                 <div class="form-group">
                   <label class="control-label col-md-2 col-sm-2 col-xs-12">Off Label</label>
                   <div class="col-md-6 col-sm-9 col-xs-12">
@@ -57,7 +57,7 @@ Meta Filter
               </div>
               <div class="col-md-6">
                 <h1>Filtered Services: {{$service_count}}</h1>
-              </div> 
+              </div>
               @if($meta->meta_filter_activate==1)
               <div class="col-md-12">
                 <div class="x_title">
@@ -113,7 +113,7 @@ Meta Filter
                                   </a>
                                 </li>
                               </ul>
-                              
+
                               <div id="step-1">
                                   <input type="hidden" id="status" name="status" value="0">
                                   <div class="form-group">
@@ -221,7 +221,7 @@ Meta Filter
                                   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                   <button type="submit" class="btn btn-success btn-save">Save</button>
                                 </div>
-                            </form>                         
+                            </form>
                             <!-- End SmartWizard Content -->
 
                           </div>
@@ -240,10 +240,10 @@ Meta Filter
                               <h4 class="modal-title" id="myModalLabel">Delete Meta filter</h4>
                             </div>
                             <div class="modal-body">
-                              
+
                                 <input type="hidden" id="id" name="id" value="0">
                                 <h4>Are you sure delete this meta filter?</h4>
-                              
+
                             </div>
                             <div class="modal-footer">
                               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -255,7 +255,7 @@ Meta Filter
                     </div>
 
                   </div>
-                  <div class="clearfix"></div>  
+                  <div class="clearfix"></div>
                 </div>
                 <table class="table table-striped jambo_table bulk_action" id="tblUsers">
                   <thead>
@@ -278,7 +278,7 @@ Meta Filter
                         <td class="text-center"><button class="btn btn-block btn-primary btn-sm edit-meta" value="{{$metafilter->id}}" data-toggle="modal" data-target=".bs-edit-modal-lg"><i class="fa fa-fw fa-edit"></i>Edit</button></td>
                         <td class="text-center"><button class="btn btn-block btn-danger btn-sm delete-meta" value="{{$metafilter->id}}" data-toggle="modal" data-target=".bs-delete-modal-lg"><i class="fa fa-fw fa-remove"></i>Delete</button></td>
                       </tr>
-                      @endforeach 
+                      @endforeach
                   </tbody>
                 </table>
               </div>
@@ -303,5 +303,5 @@ Meta Filter
       $('#step-3').hide();
     }
   });
- </script> 
+ </script>
 @endsection

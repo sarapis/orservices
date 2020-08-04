@@ -1,6 +1,7 @@
 <body>
-	<nav class="site-navbar navbar navbar-inverse navbar-fixed-top navbar-mega bg-primary-color" role="navigation">
-		<div class="container-fluid">
+
+	<nav class="site-navbar navbar navbar-inverse navbar-fixed-top navbar-mega {{ Request::Segment(1) != null ? 'inner_navstyle' : '' }} " role="navigation">
+		<div class="container">
 			<div class="navbar-header">
 				<div class="navbar-brand-center site-gridmenu-toggle" data-toggle="gridmenu">
 					<a class="navbar-brand" href="/">
@@ -23,35 +24,69 @@
 							<b>{{$layout->tagline}}</b>
 						</label>
 					</div>
-				@endif  
+				@endif
 				<button type="button" class="navbar-toggler collapsed float-right" data-target="#site-navbar-collapse" data-toggle="collapse">
 					<i class="icon wb-more-horizontal" aria-hidden="true"></i>
 				</button>
 			</div>
-			
-			<div class="navbar-collapse navbar-collapse-toolbar collapse " id="site-navbar-collapse">
+
+			<div id="site-navbar-collapse">
 				<ul class="nav navbar-toolbar navbar-right navbar-toolbar-right">
 					<li class="nav-item responsive_menu">
-						<a class="nav-link waves-effect waves-light waves-round" href="/services">Services</a>
+						<a class="nav-link" href="/services">Services</a>
 					</li>
 					<li class="nav-item responsive_menu">
-						<a class="nav-link waves-effect waves-light waves-round" href="/#category">Categories</a>
+						<a class="nav-link" href="/#category">Categories</a>
 					</li>
 					<li class="nav-item responsive_menu">
-						<a class="nav-link waves-effect waves-light waves-round" href="/organizations">Organizations</a>
-					</li>
-					@if($layout->about_active == 1)
+						<a class="nav-link" href="/organizations">Organizations</a>
+                    </li>
+                    @if (Auth::user() && Auth::user()->roles)
+                    @if (Auth::user() && Auth::user()->roles->name != 'Organization Admin' || Auth::user() && Auth::user()->roles->name == 'System Admin' )
 					<li class="nav-item responsive_menu">
-						<a class="nav-link waves-effect waves-light waves-round" href="/about">About</a>
+						<a class="nav-link" href="/contacts">Contacts</a>
+					</li>
+					<li class="nav-item responsive_menu">
+						<a class="nav-link" href="{{ route('facilities.index') }}">Facilities</a>
 					</li>
 					@endif
-					<li class="nav-item">
-						<a id="google_translate_element" class="nav-link waves-effect waves-light waves-round"></a>
-					</li>
+					@endif
+					@if($layout->about_active == 1)
 					<li class="nav-item responsive_menu">
-						<a class="nav-link waves-effect waves-light waves-round" href="/logout">Logout</a>
+						<a class="nav-link" href="/about">About</a>
 					</li>
-					
+					@endif
+					<li class="nav-item responsive_menu">
+                        <a class="nav-link" href="{{ route('suggest.create') }}">Suggest</a>
+					</li>
+					<li class="nav-item">
+						<a id="google_translate_element" class="nav-link"></a>
+                    </li>
+                    @if (Auth::user() && Auth::user()->roles)
+                    <li class="nav-item responsive_menu">
+						<div class="dropdown">
+							<button class="dropbtn" style="color: {{$layout->top_menu_link_color}}">(+)</button>
+							<div class="dropdown-content">
+								@if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin' || Auth::user() && Auth::user()->roles &&  Auth::user()->roles->name == 'System Admin')
+								<a href="{{ route('organizations.create') }}">New Organization</a>
+								@endif
+								<a href="{{ route('contacts.create') }}">New Contact</a>
+								<a href="{{ route('services.create') }}">New Service</a>
+								<a href="{{ route('facilities.create') }}">New Facility</a>
+							</div>
+						</div>
+					</li>
+                    @endif
+					<li class="nav-item responsive_menu">
+						@if (Auth::user())
+						<li class="nav-item responsive_menu">
+							<a class="nav-link" href="/account/{{Auth::user()->id}}">My account</a>
+						</li>
+						<a class="nav-link" href="/logout">Logout</a>
+						@else
+						<a class="nav-link" href="/login">Login</a>
+						@endif
+					</li>
 				</ul>
 			</div>
 		</div>
@@ -71,26 +106,122 @@
 	  color: #424242;
 	  font-weight: 400;
 	}
+	.color_blue,.card-block .card-title p {
+		color:  {{$layout->primary_color}};
+	}
+	.category_icon:hover {
+		color: #fff;
+		background: {{$layout->primary_color}};
+	}
 	.bg-primary-color {
 	  background-color: {{$layout->primary_color}};
 	}
 	.bg-secondary{
 	  background-color: {{$layout->secondary_color}} !important;
 	}
-	.btn-button {
+	.top_header_blank {
+		height: 50px;
+		background: {{$layout->secondary_color}} ;
+	}
+	.card-block .card-title a,.card-block .card-title a.title_org,.detail_services .card-block .card-title a,.card-block .organization_services .card-title a,.table a,.card-block .panel-link{
+		  color: {{$layout->title_link_color}};
+	}
+	.site-navbar .navbar-header .navbar-brand{
+		color: {{$layout->menu_title_color}};
+	}
+	.navbar-inverse.inner_navstyle .navbar-toolbar .nav-link:hover{
+		color: {{$layout->top_menu_link_hover_color}};
+	}
+	.inner_navstyle .goog-te-gadget-simple .goog-te-menu-value span:hover {
+		color: {{$layout->top_menu_link_hover_color}};
+	}
+	.all_form_field .card-title{
+		border-bottom: 4px solid {{$layout->secondary_color}} ;
+    }
+    .navbar-fixed-bottom, .navbar-fixed-top{
+        background-color: {{$layout->top_menu_color}}
+    }
+    .navbar-inverse .navbar-toolbar .nav-link, .goog-te-gadget-simple .goog-te-menu-value span {
+        color: {{$layout->top_menu_link_color}}
+    }
+	.btn-button, .btn-primary, .btn_darkblack {
 	  border-color: {{$layout->button_color}};
 	  background-color: {{$layout->button_color}};
 	  color: white;
 	}
-	.btn-button:hover {
+	.btn-button:hover , .btn-primary:hover, .btn-primary:focus, .btn-primary.disabled_btn, .btn_darkblack:hover, .btn_darkblack:focus{
 	  border-color: {{$layout->button_hover_color}};
 	  background-color: {{$layout->button_hover_color}};
-	  color: {{$layout->button_color}};
+	  color: white;
+	}
+	.example .pagination li.active span {
+		color: #fff;
+		background-color: {{$layout->primary_color}};
+		border-color: {{$layout->primary_color}};
+	}
+	.example .pagination li:hover a {
+		color: #fff;
+		background-color: {{$layout->primary_color}};
+		border-color: {{$layout->primary_color}};
+	}
+	table.dataTable thead th, table.dataTable thead td {
+		background:  {{$layout->secondary_color}};
+		border-bottom: 1px solid  {{$layout->secondary_color}};
 	}
 	.after_serach{
 		background-image: url(../uploads/images/{{$layout->bottom_background}});
 	}
-	.page-register:before{
-		background-image: url(../uploads/images/{{$layout->top_background}});
+	.page-register{
+		background-image: url(../uploads/images/{{$layout->homepage_background}});
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center;
 	}
+	.dataTables_wrapper .dataTables_paginate .paginate_button.disabled, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active, .dataTables_wrapper .dataTables_paginate .paginate_button:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.active {
+	    color: {{$layout->primary_color}};
+	    background: {{$layout->primary_color}};
+	    border: 1px solid {{$layout->primary_color}};
+	}
+	.dropbtn {
+		background: transparent;
+		color: white;
+		font-style: normal;
+		font-weight: 500;
+		font-size: 16px;
+		padding: 10px 20px;
+		border: none;
+	}
+	.dropdown:hover .dropbtn {
+		color: #fff;
+		background-color: #5051DB;
+		border-radius: 4px;
+	}
+	.dropdown {
+		position: relative;
+		display: inline-block;
+	}
+	.dropdown-content {
+		display: none;
+		position: absolute;
+		background-color: #f1f1f1;
+		min-width: 160px;
+		box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+		z-index: 1;
+	}
+	.dropdown-content a {
+		color: white;
+		padding: 12px 16px;
+		text-decoration: none;
+		display: block;
+		background: darkgreen;
+	}
+	.dropdown-content a:hover {
+		background-color: yellow;
+		color: black;
+	}
+	/* Show the dropdown menu on hover */
+	.dropdown:hover .dropdown-content {
+		display: block;
+	}
+
   </style>

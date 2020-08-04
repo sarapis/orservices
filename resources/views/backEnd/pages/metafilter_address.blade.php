@@ -38,7 +38,7 @@
       'columnDefs': [{
          'targets': 0,
          'searchable':false,
-         'searching': true,
+         'searching': false,
          'orderable':false,
          'className': 'dt-body-center',
       }],
@@ -46,7 +46,7 @@
         "paging": false,
         "pageLength": 20,
         "lengthChange": false,
-        "searching": true,
+        "searching": false,
         "ordering": true,
         "info": false,
         "autoWidth": true

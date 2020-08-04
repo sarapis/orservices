@@ -19,7 +19,7 @@ Services
     <div class="x_panel">
       <div class="x_title">
         <h2>Services</h2>
-        <div class="clearfix"></div>  
+        <div class="clearfix"></div>
       </div>
       <div class="x_content" style="overflow: scroll;">
 
@@ -28,14 +28,14 @@ Services
             <thead>
                 <tr>
                     <th class="text-center">No</th>
-                    <th class="text-center">Name</th>                   
-                    <th class="text-center">Organizations</th>                   
-                    <th class="text-center">Alternate name</th> 
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Organizations</th>
+                    <th class="text-center">Alternate name</th>
                     <th class="text-center">Url</th>
-                    <th class="text-center">Email</th>                
+                    <th class="text-center">Email</th>
                     <th class="text-center">Description</th>
                     <th class="text-center">Locations</th>
-                    
+
                     <th class="text-center">Status</th>
                     <th class="text-center">Taxonomy</th>
                     <th class="text-center">Application Process</th>
@@ -65,37 +65,37 @@ Services
                   <td class="text-center">{{$service->service_recordid}}</td>
                   @endif
                   <td>{{$service->service_name}}</td>
-                  
-                  
+
+
                   <td class="text-center">
                   @if(isset($service->organizations()->first()->organization_name))
                     <span class="badge bg-green">{{$service->organizations()->first()->organization_name}}</span>
                   @endif
                   </td>
-                 
+
                   <td class="text-center">{{$service->service_alternate_name}}</td>
 
                   <td class="text-center">{{$service->service_url}}</td>
                   <td class="text-center">{{$service->service_email}}</td>
-          
-                  
+
+
                   <td class="text-center"><span style="white-space:normal;">{!! $service->service_description !!}</span></td>
 
                   <td class="text-center">
-              
-                      
+
+
                       @foreach($service->locations as $location)
-                        
+
                       <span class="badge bg-purple">{{$location->location_name}}</span>
-                      
+
                       @endforeach
-                           
-                 
+
+
                   </td>
 
                   <td class="text-center">{{$service->service_status}}</td>
-          
-                  
+
+
                   <td class="text-center">
                     @if($service->service_taxonomy!=0 || $service->service_taxonomy==null)
                       @foreach($service->taxonomy as $taxonomy)
@@ -103,7 +103,7 @@ Services
                       @endforeach
                     @endif
                   </td>
-                
+
                   <td class="text-center"><span style="white-space:normal;">{!! $service->service_application_process !!}</span></td>
                   <td class="text-center">{{$service->service_wait_time}}</td>
                   <td class="text-center">{{$service->service_fees}}</td>
@@ -114,22 +114,22 @@ Services
                   @endforeach</td>
 
                   <td class="text-center">
-                  
-                  
+
+
                       @foreach($service->schedules as $schedule)
-                        
+
                       <span class="badge bg-purple">{{$schedule->schedule_days_of_week}} {{$schedule->schedule_opens_at}} {{$schedule->schedule_closes_at}}</span>
-                      
+
                       @endforeach
-                           
-                 
+
+
                   </td>
 
                   <td class="text-center"><span class="badge bg-blue">@if(isset($service->contact()->first()->contact_name))
                   {{$service->contact()->first()->contact_name}}</span>
 
                   @endif</td>
-                  
+
                   @if($source_data->active == 1 )
                   <td class="text-center">
                     @if($service->service_details != null )
@@ -156,12 +156,12 @@ Services
                   @endif
                   </td>
                   @endif
-                  
+
                   <td class="text-center">
-                    <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$service->service_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button>
+                    {{-- <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$service->service_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button> --}}
                   </td>
                 </tr>
-              @endforeach             
+              @endforeach
             </tbody>
         </table>
         {!! $services->links() !!}
@@ -198,7 +198,7 @@ Services
                         <input type="text" class="form-control" id="service_alternate_name" name="service_alternate_name" value="">
                       </div>
                     </div>
-                  
+
                     <div class="form-group">
                       <label for="inputPassword3" class="col-sm-3 control-label">Description</label>
 
@@ -258,7 +258,7 @@ Services
                       </div>
                     </div>
 
-                    
+
 
                     <div class="form-group">
                       <label for="inputPassword3" class="col-sm-3 control-label">Accreditations</label>
@@ -315,7 +315,7 @@ $(document).ready(function() {
                             '</tr>' :
                             '';
                     } ).join('');
- 
+
                     return data ?
                         $('<table/>').append( data ) :
                         false;

@@ -8,7 +8,7 @@
         @endif
         <th class="column-title">Name</th>                   
         <th class="column-title">Parent name</th>                   
-       
+        <th class="column-title">Vocabulary</th>
         @if($source_data->active == 1 )
         <th class="column-title">X-description</th>
         <th class="column-title">X-note</th>
@@ -32,7 +32,7 @@
         @endif
         </td>
         
-
+        <td class="text-center">{{$taxonomy->taxonomy_vocabulary}}</td>
         @if($source_data->active == 1 )
         <td class="text-center">{{$taxonomy->taxonomy_x_description}}</td>
         <td class="text-center">{{$taxonomy->taxonomy_x_notes}}</td>
@@ -48,7 +48,7 @@
       'columnDefs': [{
          'targets': 0,
          'searchable':false,
-         'searching': true,
+         'searching': false,
          'orderable':false,
          'className': 'dt-body-center',
       }],
@@ -56,7 +56,7 @@
         "paging": false,
         "pageLength": 20,
         "lengthChange": false,
-        "searching": true,
+        "searching": false,
         "ordering": true,
         "info": false,
         "autoWidth": true

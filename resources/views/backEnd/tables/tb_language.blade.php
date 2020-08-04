@@ -19,7 +19,7 @@ Languages
     <div class="x_panel">
       <div class="x_title">
         <h2>Languages</h2>
-        <div class="clearfix"></div>  
+        <div class="clearfix"></div>
       </div>
       <div class="x_content" style="overflow: scroll;">
 
@@ -28,8 +28,8 @@ Languages
             <thead>
                 <tr>
                     <th class="text-center">No</th>
-                    <th class="text-center">Location</th>                   
-                    <th class="text-center">Service</th>                   
+                    <th class="text-center">Location</th>
+                    <th class="text-center">Service</th>
                     <th class="text-center">Language</th>
                     <th class="text-center">Actions</th>
                 </tr>
@@ -49,22 +49,22 @@ Languages
                     @endif
 
                   </td>
-                  
+
                   <td>
                     @if(isset($language->location()->first()->location_name))
                       <span class="badge bg-purple">{{$language->location()->first()->location_name}}</span>
                     @endif
                   </td>
-                  
+
 
                   <td class="text-center">{{$language->language}}
                   </td>
 
                   <td class="text-center">
-                    <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$language->language_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button>
+                    {{-- <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$language->language_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button> --}}
                   </td>
                 </tr>
-              @endforeach             
+              @endforeach
             </tbody>
         </table>
        {!! $languages->links() !!}
@@ -125,7 +125,7 @@ Languages
                         <input type="text" class="form-control" id="address_postal_code" name="address_postal_code" value="">
                       </div>
                     </div>
-                  
+
                     <div class="form-group">
                       <label for="inputPassword3" class="col-sm-3 control-label">Postal Region</label>
 
@@ -192,7 +192,7 @@ $(document).ready(function() {
                             '</tr>' :
                             '';
                     } ).join('');
- 
+
                     return data ?
                         $('<table/>').append( data ) :
                         false;

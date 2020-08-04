@@ -18,8 +18,8 @@ Taxonomy
   <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
       <div class="x_title">
-        <h2>Taxonomy</h2>
-        <div class="clearfix"></div>  
+        <h2>Service Taxonomy</h2>
+        <div class="clearfix"></div>
       </div>
       <div class="x_content" style="overflow: scroll;">
 
@@ -29,19 +29,19 @@ Taxonomy
                 <tr>
                     <th class="text-center">No</th>
                     @if($source_data->active == 0 )
-                    <th class="text-center">ID</th> 
+                    <th class="text-center">ID</th>
                     @endif
-                    <th class="text-center">Name</th>                   
+                    <th class="text-center">Name</th>
                     <th class="text-center">Parent name</th>
                     @if($source_data->active == 0 )
                     <th class="text-center">Grandparent name</th>
-                    @endif                   
+                    @endif
                     <th class="text-center">Vocabulary</th>
                     @if($source_data->active == 1 )
                     <th class="text-center">X-description</th>
                     <th class="text-center">X-note</th>
                     @endif
-           
+
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
@@ -59,7 +59,7 @@ Taxonomy
                   <td>
                     <span class="badge bg-blue">{{$taxonomy->taxonomy_parent_name}}</span>
                   </td>
-             
+
                   @if($source_data->active == 0 )
                   <td class="text-center">{{$taxonomy->taxonomy_grandparent_name}}</td>
                   @endif
@@ -73,7 +73,7 @@ Taxonomy
                     <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$taxonomy->taxonomy_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button>
                   </td>
                 </tr>
-              @endforeach             
+              @endforeach
             </tbody>
         </table>
        <!--  -->
@@ -92,7 +92,8 @@ Taxonomy
                 <span aria-hidden="true">×</span></button>
                 <h4 class="modal-title">Taxonomy</h4>
             </div>
-            <form class=" form-horizontal user" id="frmProducts" name="frmProducts"  novalidate="" style="margin-bottom: 0;">
+            <form class=" form-horizontal user" id="frmProducts" name="frmProducts" action="{{route('tb_taxonomy.taxonommyUpdate')}}" method="post" enctype="multipart/form-data"  novalidate="" style="margin-bottom: 0;">
+              @csrf
                 <div class="row modal-body">
                   <div class="col-md-12">
                     <div class="form-group">
@@ -114,7 +115,7 @@ Taxonomy
                         <label class="control-label col-sm-3" for="email">Alt Taxonomy
                         </label>
                         <div class="col-sm-7">
-                            <select class="form-control" name="taxonomy_grandparent_name" id="taxonomy_grandparent_name"> 
+                            <select class="form-control" name="taxonomy_grandparent_name" id="taxonomy_grandparent_name">
                               <option>Choose option</option>
                               @foreach($alt_taxonomies as $alt_taxonomy)
                               <option value="{{$alt_taxonomy->alt_taxonomy_name}}">{{$alt_taxonomy->alt_taxonomy_name}}</option>
@@ -138,7 +139,24 @@ Taxonomy
                         <input type="text" class="form-control" id="taxonomy_x_notes" name="taxonomy_x_notes" value="">
                       </div>
                     </div>
-
+                    <div class="form-group">
+                      <label for="inputPassword3" class="col-sm-3 control-label">Category logo</label>
+                      <div class="col-sm-7">
+                        <input type="file" class="form-control" id="category_logo" name="category_logo">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <img src="" id="category_logo_image" width="100px">
+                    </div>
+                    <div class="form-group">
+                      <label for="inputPassword3" class="col-sm-3 control-label">Category logo White</label>
+                      <div class="col-sm-7">
+                        <input type="file" class="form-control" id="category_logo_white" name="category_logo_white">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <img src="" width="100px" id="white_logo_image">
+                    </div>
                   </div>
                 </div>
                 <div class="modal-footer">
@@ -170,7 +188,7 @@ $(document).ready(function() {
                             '</tr>' :
                             '';
                     } ).join('');
- 
+
                     return data ?
                         $('<table/>').append( data ) :
                         false;

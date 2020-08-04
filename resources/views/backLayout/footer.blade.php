@@ -13,7 +13,6 @@
     <script src="{{ URL::asset('/backend/vendors/jquery/dist/jquery.min.js') }}"></script>
     <!-- Bootstrap -->
     <script src="{{ URL::asset('/backend/vendors/bootstrap/dist/js/bootstrap.min.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.5/jquery.csv.min.js" integrity="sha256-zGo0JbZ5Sn6wU76MyVL0TrUZUq5GLXaFnMQCe/hSwVI=" crossorigin="anonymous"></script>
 
     <script src="{{ URL::asset('/backend/vendors/switchery/dist/switchery.min.js')}}"></script>
 
@@ -28,11 +27,11 @@
     <script src="{{ URL::asset('/backend/vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js') }}"></script>
     <!-- iCheck -->
     <script src="{{ URL::asset('/backend/vendors/iCheck/icheck.min.js') }}"></script>
-    
+
     <!-- datatables -->
     <script src="{{ URL::asset('/backend/vendors/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ URL::asset('/backend/vendors/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
-    
+
     <script src="{{ URL::asset('/backend/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
     <script src="{{ URL::asset('/backend/vendors/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
     <script src="{{ URL::asset('/backend/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js') }}"></script>
@@ -48,7 +47,8 @@
 
     <!-- Custom Theme Scripts -->
     <script src="{{ URL::asset('/backend/build/js/custom.min.js ') }}"></script>
-
+    <link rel="stylesheet" href="/css/bootstrap-datetimepicker.min.css">
+  <script  src="/js/bootstrap-datetimepicker.js"></script>
     <script type="text/javascript">
       $.ajaxSetup({
           headers: {
@@ -56,6 +56,21 @@
           }
         });
     </script>
+    <!-- jQuery Smart Wizard -->
+    <script>
+      $(document).ready(function() {
+        $('#wizard').smartWizard();
+
+        $('#wizard_verticle').smartWizard({
+          transitionEffect: 'slide'
+        });
+
+        $('.buttonNext').addClass('btn btn-success');
+        $('.buttonPrevious').addClass('btn btn-primary');
+        $('.buttonFinish').addClass('btn btn-warning');
+      });
+    </script>
+    <!-- /jQuery Smart Wizard -->
     <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,es', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, multilanguagePage: true}, 'google_translate_element');
