@@ -149,12 +149,11 @@ Session Profile Page
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card-title mb-30 ">
-                            <p>Interaction Log
-                            </p>
-                            {!! Form::open(['route'=>'interactionExport']) !!}
+                            <p class="d-inline">Interaction Log </p>
+                            {!! Form::open(['route'=>'interactionExport', 'class' => 'd-inline']) !!}
                             <input type="hidden" name="session_recordid" value="{{ $id }}">
-                            <button type="submit" class="btn btn-info pull-right mb-10">export</a>
-                            {!! Form::close() !!}
+                            <button type="submit" class="btn_download"><img src="/frontend/assets/images/download.png" alt="" title="" class="mr-10"></a>
+                            {!! Form::close() !!}                            
                         </h4>
                         <div class="table-responsive">
                             <table class="table dataTable " id="tbl-session-log">

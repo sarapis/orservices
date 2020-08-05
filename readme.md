@@ -70,7 +70,7 @@ location / {
 ```
 
 **👉Configuration**
-   * Run git clone https://github.com/d9it/larable.git
+   * Run git clone https://github.com/sarapis/orservices.git
    * Create a MySQL database for the project
    * mysql -u root -p, if using Vagrant: mysql -u homestead -psecret    
    * From the projects root run cp .env.example .env

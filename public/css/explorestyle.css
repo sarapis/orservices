@@ -1945,3 +1945,6 @@ table.dataTable.no-footer {
   font-size: 16px !important;
   line-height: 30px;
 }
+
+.btn_download {border: none;background: transparent;cursor: pointer;}
+.btn_download:focus{outline: 0px;}
