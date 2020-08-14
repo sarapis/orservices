@@ -77,11 +77,15 @@ location / {
    * Configure your .env file
    * Run composer update from the projects root folder
    * Run npm install & npm run dev from the projects root folder
-   * From the projects root folder run sudo chmod -R 755 ../larable
+   * From the projects root folder run sudo chmod 777 -R .env 
+   * From the projects root folder run sudo chmod 777 -R bootstrap/cache/
+   * From the projects root folder run sudo chmod 777 -R storage
    * From the projects root folder run php artisan key:generate
    * From the projects root folder run php artisan migrate
    * From the projects root folder run php artisan db:seed
    * From the projects root folder run composer dump-autoload
+   * Run sudo a2enmod rewrite
+   * Run sudo service apache2 restart
     
 **👉Database upload**
    * Create database and upload sql dump file from database/dump/latest_date.sql
