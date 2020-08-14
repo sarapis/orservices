@@ -36,6 +36,18 @@ The Laravel framework has a few system requirements. You will need to make sure 
 * Tokenizer PHP Extension
 * XML PHP Extension
 
+```bash
+sudo add-apt-repository ppa:ondrej/php
+sudo apt-get update
+sudo apt-get install php7.4
+sudo apt-get install php7.4-mysql php7.4-curl php7.4-json php7.4-cgi php7.4-xsl
+sudo apt-get install php7.4-gd
+sudo apt-get install php7.4-mbstring
+sudo apt-get install curl php7.4-cli php7.4-mbstring git unzip
+sudo apt-get install php7.4-zip
+sudo apt-get install php7.4-mailparse
+```
+
 
 **👉 Web Server Configuration:**
 
