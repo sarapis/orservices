@@ -162,7 +162,7 @@ class ContactController extends Controller
 
 
         $map = Map::find(1);
-        $contacts = Contact::query();
+        $contacts = Contact::whereNotNull('contact_name');
         $locations = Location::with('services', 'address', 'phones')->distinct()->get();
 
 
@@ -182,15 +182,33 @@ class ContactController extends Controller
 
                 return $link;
             })
+            ->addColumn('contact_service',function($row){
+                $link = '';
+                if($row->service){
+                    foreach ($row->service as $key => $value) {
+                        $link .= '<a href="/services/'.$value->service_recordid.'" ><span class="badge badge-pill badge-primary m-1" style="color:#fff;">'.$value->service_name.'</span></a>';
+                    }
+                }
+                return $link;
+            })
+            ->addColumn('contact_facility',function($row){
+                $link = '';
+                if($row->organization && $row->organization->location){
+                    foreach ($row->organization->location as $key => $value) {
+                        $link .= '<a href="/facilities/'.$value->location_recordid.'" >'.$value->location_name.'</a>';
+                    }
+                }
+                return $link;
+            })
             ->editColumn('contact_name', function ($row) {
                 $link = '';
                 if ($row->contact_name) {
-                    $link = '<a id="contact_profile_link" style="color: #3949ab; text-decoration: underline;" href="/contacts/' . $row->contact_recordid . '">' . $row->contact_name . '</a>';
+                    $link .= '<a id="contact_profile_link" style="color: #3949ab; text-decoration: underline;" href="/contacts/' . $row->contact_recordid . '">' . $row->contact_name . '</a>';
                 }
 
                 return $link;
             })
-            ->rawColumns(['contact_organizations', 'contact_name'])
+            ->rawColumns(['contact_organizations', 'contact_name','contact_facility','contact_service'])
             ->make(true);
     }
 
@@ -313,14 +331,13 @@ class ContactController extends Controller
     public function create()
     {
         $map = Map::find(1);
-        if(Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin')
-        {
+        if (Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin') {
             $organization_recordid = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_recordid') : [];
-            $organization_names = Organization::select("organization_name")->whereIn('organization_recordid',$organization_recordid)->distinct()->get();
-        }else{
+            $organization_names = Organization::select("organization_name")->whereIn('organization_recordid', $organization_recordid)->distinct()->get();
+        } else {
             $organization_names = Organization::select("organization_name")->distinct()->get();
         }
-        
+
         $organization_name_list = [];
         foreach ($organization_names as $key => $value) {
             $org_names = explode(", ", trim($value->organization_name));
@@ -659,17 +676,22 @@ class ContactController extends Controller
         // return response()->json($contact);
         try {
             $contact = Contact::where('contact_recordid', '=', $id)->first();
+            if ($contact) {
+                $phone_recordid = $contact->contact_phones;
+                $phone_info = Phone::where('phone_recordid', '=', $phone_recordid)->select('phone_number')->first();
+                if ($phone_info) {
+                    $phone_number = $phone_info->phone_number;
+                } else {
+                    $phone_number = '';
+                }
+                $map = Map::find(1);
 
-            $phone_recordid = $contact->contact_phones;
-            $phone_info = Phone::where('phone_recordid', '=', $phone_recordid)->select('phone_number')->first();
-            if ($phone_info) {
-                $phone_number = $phone_info->phone_number;
+                return view('frontEnd.contacts.show', compact('contact', 'map', 'phone_number'));
             } else {
-                $phone_number = '';
+                Session::flash('message', 'This record has been deleted.');
+                Session::flash('status', 'warning');
+                return redirect('contacts');
             }
-            $map = Map::find(1);
-
-            return view('frontEnd.contacts.show', compact('contact', 'map', 'phone_number'));
         } catch (\Throwable $th) {
 
             Session::flash('message', $th->getMessage());
@@ -687,25 +709,32 @@ class ContactController extends Controller
     public function edit($id)
     {
         $contact = Contact::where('contact_recordid', '=', $id)->first();
-        $organization_info_list = Organization::pluck('organization_name', 'organization_recordid');
-        $service_info_list = Service::pluck('service_name', 'service_recordid');
-        $contact_services = [];
-        foreach ($contact->service as $key => $value) {
-            array_push($contact_services, $value->service_recordid);
-        }
-        $phone_recordid = $contact->contact_phones;
-        if ($phone_recordid) {
-            $contact_phone = Phone::where('phone_recordid', '=', $phone_recordid)->select('phone_recordid', 'phone_number')->first();
-        } else {
-            $contact_phone = null;
-        }
-        $contact_service_recordid_list = [];
-        if ($contact->contact_services) {
-            $contact_service_recordid_list = explode(',', $contact->contact_services);
-        }
+        if($contact){
 
-        $map = Map::find(1);
-        return view('frontEnd.contacts.edit', compact('contact', 'map', 'organization_info_list', 'service_info_list', 'contact_services', 'contact_phone', 'contact_service_recordid_list'));
+            $organization_info_list = Organization::pluck('organization_name', 'organization_recordid');
+            $service_info_list = Service::pluck('service_name', 'service_recordid');
+            $contact_services = [];
+            foreach ($contact->service as $key => $value) {
+                array_push($contact_services, $value->service_recordid);
+            }
+            $phone_recordid = $contact->contact_phones;
+            if ($phone_recordid) {
+                $contact_phone = Phone::where('phone_recordid', '=', $phone_recordid)->select('phone_recordid', 'phone_number')->first();
+            } else {
+                $contact_phone = null;
+            }
+            $contact_service_recordid_list = [];
+            if ($contact->contact_services) {
+                $contact_service_recordid_list = explode(',', $contact->contact_services);
+            }
+    
+            $map = Map::find(1);
+            return view('frontEnd.contacts.edit', compact('contact', 'map', 'organization_info_list', 'service_info_list', 'contact_services', 'contact_phone', 'contact_service_recordid_list'));
+        }else{
+            Session::flash('message', 'This record has been deleted.');
+            Session::flash('status', 'warning');
+            return redirect('contacts');
+        }
     }
 
     /**
@@ -717,60 +746,72 @@ class ContactController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $contact = Contact::find($id);
-        $contact->contact_name = $request->contact_name;
-        $contact->contact_title = $request->contact_title;
-        $contact->contact_department = $request->contact_department;
-        $contact->contact_email = $request->contact_email;
-        // $contact->contact_phone_extension = $request->contact_phone_extension;
-        $contact->contact_organizations = $request->contact_organizations;
+        $this->validate($request,[
+            'contact_name' => 'required'
+        ]);
+        try {
+            $contact = Contact::find($id);
+            $contact->contact_name = $request->contact_name;
+            $contact->contact_title = $request->contact_title;
+            $contact->contact_department = $request->contact_department;
+            $contact->contact_email = $request->contact_email;
+            // $contact->contact_phone_extension = $request->contact_phone_extension;
+            $contact->contact_organizations = $request->contact_organizations;
 
-        if ($request->contact_services) {
-            $contact->contact_services = join(',', $request->contact_services);
-            $contact->service()->sync($request->contact_services);
-        } else {
-            $contact->contact_services = '';
-        }
+            if ($request->contact_services) {
+                $contact->contact_services = join(',', $request->contact_services);
+                $contact->service()->sync($request->contact_services);
+            } else {
+                $contact->contact_services = '';
+            }
 
-        $phone_recordids = Phone::select("phone_recordid")->distinct()->get();
-        $phone_recordid_list = array();
-        foreach ($phone_recordids as $key => $value) {
-            $phone_recordid = $value->phone_recordid;
-            array_push($phone_recordid_list, $phone_recordid);
-        }
-        $phone_recordid_list = array_unique($phone_recordid_list);
+            $phone_recordids = Phone::select("phone_recordid")->distinct()->get();
+            $phone_recordid_list = array();
+            foreach ($phone_recordids as $key => $value) {
+                $phone_recordid = $value->phone_recordid;
+                array_push($phone_recordid_list, $phone_recordid);
+            }
+            $phone_recordid_list = array_unique($phone_recordid_list);
 
-        $contact->contact_phones = '';
-        $phone_recordid_list = [];
-        if ($request->contact_phones) {
-            $contact_phone_number_list = $request->contact_phones;
-            foreach ($contact_phone_number_list as $key => $contact_phone_number) {
-                $phone_info = Phone::where('phone_number', '=', $contact_phone_number)->select('phone_recordid')->first();
-                if ($phone_info) {
-                    $contact->contact_phones = $contact->contact_phones . $phone_info->phone_recordid . ',';
-                    array_push($phone_recordid_list, $phone_info->phone_recordid);
-                } else {
-                    $new_phone = new Phone;
-                    $new_phone_recordid = Phone::max('phone_recordid') + 1;
-                    $new_phone->phone_recordid = $new_phone_recordid;
-                    $new_phone->phone_number = $contact_phone_number;
-                    $new_phone->save();
-                    $contact->contact_phones = $contact->contact_phones . $new_phone_recordid . ',';
-                    array_push($phone_recordid_list, $new_phone_recordid);
+            $contact->contact_phones = '';
+            $phone_recordid_list = [];
+            if ($request->contact_phones) {
+                $contact_phone_number_list = $request->contact_phones;
+                foreach ($contact_phone_number_list as $key => $contact_phone_number) {
+                    $phone_info = Phone::where('phone_number', '=', $contact_phone_number)->select('phone_recordid')->first();
+                    if ($phone_info) {
+                        $contact->contact_phones = $contact->contact_phones . $phone_info->phone_recordid . ',';
+                        array_push($phone_recordid_list, $phone_info->phone_recordid);
+                    } else {
+                        $new_phone = new Phone;
+                        $new_phone_recordid = Phone::max('phone_recordid') + 1;
+                        $new_phone->phone_recordid = $new_phone_recordid;
+                        $new_phone->phone_number = $contact_phone_number;
+                        $new_phone->save();
+                        $contact->contact_phones = $contact->contact_phones . $new_phone_recordid . ',';
+                        array_push($phone_recordid_list, $new_phone_recordid);
+                    }
                 }
             }
+            $contact->phone()->sync($phone_recordid_list);
+
+            $contact->flag = 'modified';
+            $contact->save();
+
+            $contact_organization = $request->contact_organizations;
+            $organization = Organization::where('organization_recordid', '=', $contact_organization)->select('organization_recordid', 'updated_at')->first();
+            if ($organization) {
+                $organization->updated_at = date("Y-m-d H:i:s");
+                $organization->save();
+            }
+            Session::flash('message', 'Contact updated successfully!');
+            Session::flash('status', 'success');
+            return redirect('contacts/' . $id);
+        } catch (\Throwable $th) {
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
+            return redirect('contacts')->back();
         }
-        $contact->phone()->sync($phone_recordid_list);
-
-        $contact->flag = 'modified';
-        $contact->save();
-
-        $contact_organization = $request->contact_organizations;
-        $organization = Organization::where('organization_recordid', '=', $contact_organization)->select('organization_recordid', 'updated_at')->first();
-        $organization->updated_at = date("Y-m-d H:i:s");
-        $organization->save();
-
-        return redirect('contacts/' . $id);
     }
 
     /**
@@ -800,26 +841,24 @@ class ContactController extends Controller
     {
         $map = Map::find(1);
         $service_recordid = $id;
-        $service = Service::where('service_recordid',$service_recordid)->first();
-        
+        $service = Service::where('service_recordid', $service_recordid)->first();
+
         $organization_recordid = $service->organizations ? $service->organizations->organization_recordid : '';
         // $organization_names = Organization::select("organization_name")->distinct()->get();
-        if(Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin')
-        {
-            $organizations = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_name','organization_recordid') : [];
-            
-        }else{
-            $organizations = Organization::pluck("organization_name",'organization_recordid')->unique();
+        if (Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin') {
+            $organizations = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_name', 'organization_recordid') : [];
+        } else {
+            $organizations = Organization::pluck("organization_name", 'organization_recordid')->unique();
         }
         // $organizations = Organization::pluck("organization_name",'organization_recordid')->unique();
-        
+
         // $organization_name_list = [];
         // foreach ($organization_names as $key => $value) {
         //     $org_names = explode(", ", trim($value->organization_name));
         //     $organization_name_list = array_merge($organization_name_list, $org_names);
         // }
         // $organization_name_list = array_unique($organization_name_list);
-        return view('frontEnd.contacts.contact-create-in-service',compact('service_recordid','organization_recordid','map','organizations'));
+        return view('frontEnd.contacts.contact-create-in-service', compact('service_recordid', 'organization_recordid', 'map', 'organizations'));
     }
     public function add_new_contact_in_service(Request $request)
     {

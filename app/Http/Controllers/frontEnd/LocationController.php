@@ -278,7 +278,7 @@ class LocationController extends Controller
     public function index(Request $request)
     {
         try {
-            $facilities = Location::query();
+            $facilities = Location::whereNotNull('location_name');
             $map = Map::find(1);
 
             if (!$request->ajax()) {
@@ -294,6 +294,24 @@ class LocationController extends Controller
                     $link = '<a class=" open-td" href="/facilities/' . $row->location_recordid . '" style="color: #007bff;">' . $row->location_name . '</a>';
                     return $link;
                 })
+                ->addColumn('location_contact', function ($row) {
+                    $link = '';
+                    if($row->organization && $row->organization->contact){
+                        foreach ($row->organization->contact as $key => $value) {
+                            $link .= '<a class=" open-td" href="/contacts/' . $value->contact_recordid . '" style="color: #007bff;">' . $value->contact_name . '</a>';
+                        }
+                    }
+                    return $link;
+                })
+                ->addColumn('location_service', function ($row) {
+                    $link = '';
+                    if($row->services){
+                        foreach ($row->services as $key => $value) {
+                            $link .= '<a class=" open-td" href="/services/' . $value->service_recordid . '" style="color: #007bff;">' . $value->service_name . '</a>';
+                        }
+                    }
+                    return $link;
+                })
                 ->editColumn('location_organization', function ($row) {
                     return $row->organization ? $row->organization->organization_name : '';
                 })
@@ -301,7 +319,7 @@ class LocationController extends Controller
 
                     return isset($row->address[0]) ? $row->address[0]['address_1'] : '';
                 })
-                ->rawColumns(['location_name'])
+                ->rawColumns(['location_name','location_contact','location_service'])
                 ->make(true);
         } catch (\Throwable $th) {
             dd($th);
@@ -309,11 +327,11 @@ class LocationController extends Controller
     }
     public function tb_location()
     {
-        try{
+        try {
             $locations = Location::paginate(20);
             $map = Map::find(1);
-            return view('backEnd.tables.tb_location',compact('locations','map'));
-        }catch(\Throwable $th){
+            return view('backEnd.tables.tb_location', compact('locations', 'map'));
+        } catch (\Throwable $th) {
             dd($th);
         }
     }
@@ -495,11 +513,10 @@ class LocationController extends Controller
     public function create()
     {
         $map = Map::find(1);
-        if(Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin')
-        {
+        if (Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin') {
             $organization_recordid = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_recordid') : [];
-            $organization_names = Organization::select("organization_name")->whereIn('organization_recordid',$organization_recordid)->distinct()->get();
-        }else{
+            $organization_names = Organization::select("organization_name")->whereIn('organization_recordid', $organization_recordid)->distinct()->get();
+        } else {
             $organization_names = Organization::select("organization_name")->distinct()->get();
         }
         $organization_name_list = [];
@@ -832,27 +849,41 @@ class LocationController extends Controller
         // return response()->json($process);
 
         $facility = Location::where('location_recordid', '=', $id)->first();
+        
+        $locations = Location::where('location_recordid', '=', $id)->get();
+        if ($facility) {
+            $locations = $locations->filter(function ($value) {
+                $value->organization_name = $value->organization ? $value->organization->organization_name : '';
+                $value->organization_recordid = $value->organization ? $value->organization->organization_recordid : '';
+                $value->address_name = $value->address && count($value->address) > 0 ? $value->address[0]->address_1 : '';
+                $value->services = $value->services;
+                return true;
+            });
 
-        $locations = Location::with('services', 'address', 'phones')->where('location_recordid', '=', $id)->get();
-        $map = Map::find(1);
+            $map = Map::find(1);
 
-        $facility_organization_recordid_list = explode(',', $facility->location_organization);
-        $facility_organizations = Organization::whereIn('organization_recordid', $facility_organization_recordid_list)->orderBy('organization_name')->paginate(10);
+            $facility_organization_recordid_list = explode(',', $facility->location_organization);
+            $facility_organizations = Organization::whereIn('organization_recordid', $facility_organization_recordid_list)->orderBy('organization_name')->paginate(10);
 
-        $comment_list = Comment::where('comments_location', '=', $id)->get();
+            $comment_list = Comment::where('comments_location', '=', $id)->get();
 
-        $existing_tag_element_list = Location::whereNotNull('location_tag')->get()->pluck('location_tag');
-        $existing_tags = [];
-        foreach ($existing_tag_element_list as $key => $existing_tag_element) {
-            $existing_tag_list = explode(", ", $existing_tag_element);
-            foreach ($existing_tag_list as $key => $existing_tag) {
-                if (!in_array($existing_tag, $existing_tags, true)) {
-                    array_push($existing_tags, $existing_tag);
+            $existing_tag_element_list = Location::whereNotNull('location_tag')->get()->pluck('location_tag');
+            $existing_tags = [];
+            foreach ($existing_tag_element_list as $key => $existing_tag_element) {
+                $existing_tag_list = explode(", ", $existing_tag_element);
+                foreach ($existing_tag_list as $key => $existing_tag) {
+                    if (!in_array($existing_tag, $existing_tags, true)) {
+                        array_push($existing_tags, $existing_tag);
+                    }
                 }
             }
-        }
 
-        return view('frontEnd.locations.show', compact('facility', 'map', 'locations', 'facility_organizations', 'comment_list', 'existing_tags'));
+            return view('frontEnd.locations.show', compact('facility', 'map', 'locations', 'facility_organizations', 'comment_list', 'existing_tags'));
+        } else {
+            Session::flash('message', 'This record has been deleted.');
+            Session::flash('status', 'warning');
+            return redirect('facilities');
+        }
     }
 
     /**
@@ -1071,14 +1102,14 @@ class LocationController extends Controller
     }
     public function delete_facility(Request $request)
     {
-        try{
-            Location::where('location_recordid',$request->facility_recordid)->delete();
-            Session::flash('message','Facility deleted successfully!');
-            Session::flash('status','success');
+        try {
+            Location::where('location_recordid', $request->facility_recordid)->delete();
+            Session::flash('message', 'Facility deleted successfully!');
+            Session::flash('status', 'success');
             return redirect('facilities');
-        }catch(\Throwable $th){
-            Session::flash('message',$th->getMessage());
-            Session::flash('status','error');
+        } catch (\Throwable $th) {
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
             return redirect()->back();
         }
     }
@@ -1086,7 +1117,7 @@ class LocationController extends Controller
     {
         $service_recordid = $id;
         $map = Map::find(1);
-        $service = Service::where('service_recordid',$service_recordid)->first();
+        $service = Service::where('service_recordid', $service_recordid)->first();
         $organization_recordid = $service->organizations ? $service->organizations->organization_recordid : '';
 
         // $organization_names = Organization::select("organization_name")->distinct()->get();
@@ -1096,14 +1127,12 @@ class LocationController extends Controller
         //     $organization_name_list = array_merge($organization_name_list, $org_names);
         // }
         // $organization_name_list = array_unique($organization_name_list);
-        if(Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin')
-        {
-            $organizations = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_name','organization_recordid') : [];
-            
-        }else{
-            $organizations = Organization::pluck("organization_name",'organization_recordid')->unique();
+        if (Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin') {
+            $organizations = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_name', 'organization_recordid') : [];
+        } else {
+            $organizations = Organization::pluck("organization_name", 'organization_recordid')->unique();
         }
-        
+
 
         $service_info_list = Service::select('service_recordid', 'service_name')->orderBy('service_recordid')->distinct()->get();
         $schedule_info_list = Schedule::select('schedule_recordid', 'schedule_opens_at', 'schedule_closes_at')->whereNotNull('schedule_opens_at')->orderBy('schedule_opens_at')->distinct()->get();
@@ -1127,8 +1156,7 @@ class LocationController extends Controller
         }
         $address_city_list = array_unique($address_city_list);
 
-        return view('frontEnd.locations.facility-create-in-service',compact('service_recordid','map', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list','organization_recordid','organizations'));
-
+        return view('frontEnd.locations.facility-create-in-service', compact('service_recordid', 'map', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'organization_recordid', 'organizations'));
     }
     public function add_new_facility_in_service(Request $request)
     {
@@ -1272,5 +1300,4 @@ class LocationController extends Controller
             return redirect('facilities');
         }
     }
-    
 }

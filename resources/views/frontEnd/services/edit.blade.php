@@ -44,6 +44,7 @@ Edit Service
                                 <div class="form-group">
                                     <label>Organization Name: </label>
                                     <select class="form-control selectpicker" data-live-search="true" id="service_organization" data-size="5" name="service_organization">
+                                        <option value="">Select organization</option>
                                         @foreach($service_organization_list as $key => $service_org)
                                             <option value="{{$service_org->organization_recordid}}" @if ($service->service_organization == $service_org->organization_recordid) selected @endif>{{$service_org->organization_name}}</option>
                                         @endforeach
@@ -88,10 +89,6 @@ Edit Service
                                     <input class="form-control selectpicker"  type="text" id="service_status" name="service_status" value="{{$service->service_status}}">
                                 </div>
                             </div>
-
-
-                            
-
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Taxonomy: </label>
@@ -132,7 +129,7 @@ Edit Service
                                     <input class="form-control selectpicker"  type="text" id="service_licenses" name="service_licenses" value="{{$service->service_licenses}}">
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            {{-- <!-- <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Service Schedule: </label>
                                     <select class="form-control selectpicker" multiple data-live-search="true" id="service_schedules"
@@ -142,7 +139,7 @@ Edit Service
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
+                            </div> --> --}}
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Service Details: </label>
@@ -166,6 +163,193 @@ Edit Service
                                     {!! Form::text('service_airs_taxonomy_x',null,['class' => 'form-control selectpicker','id' => 'service_airs_taxonomy_x']) !!}
                                 </div>
                             </div> --}}
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Service Schedule: </label>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <th colspan="4" class="text-center">Regular Schedule</th>
+                                            </thead>
+                                            <thead>
+                                                <th>Weekday</th>
+                                                <th>Opens</th>
+                                                <th>Closes</th>
+                                                <th>Closed</th>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        Monday
+                                                        <input type="hidden" name="schedule_days_of_week[]" value="monday">
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::time('schedule_opens_at[]', $monday ? $monday->schedule_opens_at : null, ['class' => 'form-control']) !!}
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::time('schedule_closes_at[]', $monday ? $monday->schedule_closes_at : null, ['class' => 'form-control']) !!}
+                                                    </td>
+                                                    <td>
+                                                        <input type="checkbox" name="schedule_closed[]" id="" value="1" {{ $monday && $monday->schedule_closed == 1 ? 'checked' : '' }}>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Tuesday
+                                                        <input type="hidden" name="schedule_days_of_week[]" value="tuesday">
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::time('schedule_opens_at[]', $tuesday ? $tuesday->schedule_opens_at : null, ['class' => 'form-control']) !!}
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::time('schedule_closes_at[]', $tuesday ? $tuesday->schedule_closes_at : null, ['class' => 'form-control']) !!}
+                                                    </td>
+                                                    <td>
+                                                        <input type="checkbox" name="schedule_closed[]" id="" value="2" {{ $tuesday && $tuesday->schedule_closed == 2 ? 'checked' : '' }}>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Wednesday
+                                                        <input type="hidden" name="schedule_days_of_week[]" value="wednesday">
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::time('schedule_opens_at[]', $wednesday ? $wednesday->schedule_opens_at : null, ['class' => 'form-control']) !!}
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::time('schedule_closes_at[]', $wednesday ? $wednesday->schedule_closes_at : null, ['class' => 'form-control']) !!}
+                                                    </td>
+                                                    <td>
+                                                        <input type="checkbox" name="schedule_closed[]" id="" value="3" {{ $wednesday && $wednesday->schedule_closed == 3 ? 'checked' : '' }}>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Thursday
+                                                        <input type="hidden" name="schedule_days_of_week[]" value="thursday">
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::time('schedule_opens_at[]', $thursday ? $thursday->schedule_opens_at : null, ['class' => 'form-control']) !!}
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::time('schedule_closes_at[]', $thursday ? $thursday->schedule_closes_at : null, ['class' => 'form-control']) !!}
+                                                    </td>
+                                                    <td>
+                                                        <input type="checkbox" name="schedule_closed[]" id="" value="4" {{ $thursday && $thursday->schedule_closed == 4 ? 'checked' : '' }}>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Friday
+                                                        <input type="hidden" name="schedule_days_of_week[]" value="friday">
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::time('schedule_opens_at[]', $friday ? $friday->schedule_opens_at : null, ['class' => 'form-control']) !!}
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::time('schedule_closes_at[]', $friday ? $friday->schedule_closes_at : null, ['class' => 'form-control']) !!}
+                                                    </td>
+                                                    <td>
+                                                        <input type="checkbox" name="schedule_closed[]" id="" value="5" {{ $friday &&$friday->schedule_closed == 5 ? 'checked' : '' }}>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Saturday
+                                                        <input type="hidden" name="schedule_days_of_week[]" value="saturday">
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::time('schedule_opens_at[]', $saturday ? $saturday->schedule_opens_at : null, ['class' => 'form-control']) !!}
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::time('schedule_closes_at[]', $saturday ? $saturday->schedule_closes_at : null, ['class' => 'form-control']) !!}
+                                                    </td>
+                                                    <td>
+                                                        <input type="checkbox" name="schedule_closed[]" id="" value="6" {{ $saturday &&$saturday->schedule_closed == 6 ? 'checked' : '' }}>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Sunday
+                                                        <input type="hidden" name="schedule_days_of_week[]" value="sunday">
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::time('schedule_opens_at[]', $sunday ? $sunday->schedule_opens_at : null, ['class' => 'form-control']) !!}
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::time('schedule_closes_at[]', $sunday ? $sunday->schedule_closes_at : null, ['class' => 'form-control']) !!}
+                                                    </td>
+
+                                                    <td>
+                                                        <input type="checkbox" name="schedule_closed[]" id="" value="7" {{ $sunday &&$sunday->schedule_closed == 7 ? 'checked' : '' }}>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Holiday Schedule: </label>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="myTable">
+                                            <thead>
+                                                <th>Start</th>
+                                                <th>End</th>
+                                                <th>Opens</th>
+                                                <th>Closes</th>
+                                                <th>Closed</th>
+                                                <th>Remove</th>
+                                            </thead>
+                                            <tbody>
+                                                @if (count($holiday_schedules) > 0)
+                                                @foreach ($holiday_schedules as $key => $value)
+                                                    <tr>
+                                                        <td>
+                                                            <input type="date" name="holiday_start_date[]" id="" value="{{ $value->schedule_start_date }}">
+                                                        </td>
+                                                        <td>
+                                                            <input type="date" name="holiday_end_date[]" id="" value="{{ $value->schedule_end_date }}">
+                                                        </td>
+                                                        <td>
+                                                            <input type="time" name="holiday_open_at[]" id="" value="{{ $value->schedule_opens_at }}">
+                                                        </td>
+                                                        <td>
+                                                            <input type="time" name="holiday_close_at[]" id="" value="{{ $value->schedule_closes_at }}">
+                                                        </td>
+                                                        <td>
+                                                            <input type="checkbox" name="holiday_closed[]" id="" value="{{ $key + 1 }}" {{ $value->schedule_closed == ($key + 1) ? 'checked' : '' }}>
+                                                        </td>
+                                                        <td></td>
+                                                    </tr>
+                                                @endforeach
+                                                @else
+                                                <tr>
+                                                    <td>
+                                                        <input type="date" name="holiday_start_date[]" id="">
+                                                    </td>
+                                                    <td>
+                                                        <input type="date" name="holiday_end_date[]" id="">
+                                                    </td>
+                                                    <td>
+                                                        <input type="time" name="holiday_open_at[]" id="">
+                                                    </td>
+                                                    <td>
+                                                        <input type="time" name="holiday_close_at[]" id="">
+                                                    </td>
+                                                    <td>
+                                                        <input type="checkbox" name="holiday_closed[]" id="" value="1">
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                                @endif
+
+                                                <tr id="addTr">
+                                                    <td colspan="6" class="text-center">
+                                                        <a href="javascript:void(0)" id="addData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Locations: </label>
@@ -220,7 +404,7 @@ Edit Service
                                 </div>
                             </div> -->
                             <div class="col-md-12 text-center">
-                                
+
                                 <a href="/services/{{$service->service_recordid}}" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn" id="view-service-btn"> Close</a>
                                 <button type="button" class="btn btn-danger btn-lg btn_delete waves-effect waves-classic waves-effect waves-classic delete-td red_btn" id="delete-service-btn" value="{{$service->service_recordid}}" data-toggle="modal" data-target=".bs-delete-modal-lg"> Delete</button>
                                 <button type="submit" class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic green_btn" id="save-service-btn"> Save</button>
@@ -265,7 +449,14 @@ Edit Service
         $("#service_taxonomy").selectpicker("");
         $("#service_details").selectpicker("");
     });
-
+    $(document).on('click', '.removeData', function(){
+            $(this).closest('tr').remove()
+        });
+    let i = {{ count($holiday_schedules) > 0 ? (count($holiday_schedules) + 1) : 2 }};
+    $('#addData').click(function(){
+            $('#myTable tr:last').before('<tr><td><input type="date" name="holiday_start_date[]" id=""></td><td><input type="date" name="holiday_end_date[]" id=""></td><td><input type="time" name="holiday_open_at[]" id=""></td><td><input type="time" name="holiday_close_at[]" id=""></td><td><input type="checkbox" name="holiday_closed[]" id="" value="'+i+'" ></td><td class="text-center"><a href="javascript:void(0)" class="removeData" style="color:red;"> <i class="fa fa-minus-circle" aria-hidden="true"></i> </a></td></tr>');
+            i++;
+        });
     $('button.delete-td').on('click', function() {
         var value = $(this).val();
         $('input#service_recordid').val(value);

@@ -5,9 +5,11 @@ namespace App\Http\Controllers\backend;
 use App\Http\Controllers\Controller;
 use App\Model\Map;
 use App\Model\Source_data;
+use App\Model\Address;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
+use DB;
 
 class DataController extends Controller
 {
@@ -128,5 +130,23 @@ class DataController extends Controller
         $this->post->find($id)->delete();
 
         return Redirect::route('admin.posts.index');
+    }
+    public function add_country()
+    {
+        $countries = DB::table('countries')->pluck('name','sortname');
+
+        return view('backEnd.settings.add_country',compact('countries'));
+    }
+    public function save_country(Request $request)
+    {
+        try {
+            Address::whereNULL('address_country')->update([
+                'address_country' => $request->country
+            ]);
+            DB::commit();
+            return redirect()->back()->with('success','Address updated successfully!');
+        } catch (Exception $e) {
+            dd($e);
+        }
     }
 }

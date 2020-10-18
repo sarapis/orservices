@@ -61,6 +61,7 @@ $('#widget').draggable();
   {{-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> --}}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
   <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=5d162f2d55a8b200110cde49&product=inline-share-buttons"></script>
+  {{-- <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=5f55fb3cd449570011d2b2dd&product=inline-share-buttons' async='async'></script> --}}
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,es,ht', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, multilanguagePage: true}, 'google_translate_element');

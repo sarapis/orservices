@@ -201,9 +201,16 @@ Organization Edit
                             </button>
                             <h4 class="modal-title" id="myModalLabel">Delete Organization</h4>
                         </div>
-                        <div class="modal-body text-center">
+                        <div class="modal-body text-left">
+                            <label class="form-check-label">
+                                <input type="radio" name="detele_type" value="only_organization" checked><b> &nbsp; &nbsp; &nbsp;Delete only this organization</b>
+                            </label>
+                            <label class="form-check-label">
+                                <input type="radio" name="detele_type" value="delete_all"> &nbsp; &nbsp; &nbsp;Delete this organization as well as all of its services, locations and contacts
+                            </label>
+
                             <input type="hidden" id="organization_recordid" name="organization_recordid">
-                            <h4>Are you sure to delete this organization?</h4>
+                            <!-- <h4 class="text-center">Are you sure to delete this organization?</h4> -->
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-raised btn-lg btn_danger waves-effect waves-classic waves-effect waves-classic">Delete</button>

@@ -33,6 +33,9 @@ Contact Edit
                                     <div class="form-group">
                                     <label>Contact Name: </label>
                                         {!! Form::text('contact_name',null,['class' => 'form-control','id' => 'contact_name']) !!}
+                                        @error('contact_name')
+                                            <span class="error-message"><strong>{{ $message }}</strong></span>
+                                        @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-6">

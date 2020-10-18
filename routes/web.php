@@ -63,6 +63,7 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::resource('services', 'frontEnd\ServiceController');
     // Route::get('/services', 'frontEnd\ServiceController@services');
     Route::get('/download_service/{id}', 'frontEnd\ServiceController@download');
+    Route::get('/download_service_csv/{id}', 'frontEnd\ServiceController@download_csv');
     // Route::get('/service/{id}', 'frontEnd\ServiceController@service');
     // Route::get('/service/{id}/edit', 'frontEnd\ServiceController@edit');
     // Route::get('/service/{id}/update', 'frontEnd\ServiceController@update');
@@ -185,6 +186,11 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::get('/sync_taxonomy', ['uses' => 'TaxonomyController@airtable']);
     Route::get('/sync_details', ['uses' => 'DetailController@airtable']);
     Route::get('/sync_service_area', ['uses' => 'AreaController@airtable']);
+
+    // add country
+    Route::get('/add_country', 'backend\DataController@add_country')->name('add_country.add_country');
+    Route::post('/save_country', 'backend\DataController@save_country')->name('add_country.save_country');
+    // close
 
     Route::get('/contact_form', 'backend\ContactFormController@index')->name('contact_form.index');
     Route::post('/email_delete_filter', 'backend\ContactFormController@delete_email')->name('contact_form.delete_email');

@@ -121,9 +121,11 @@
                                         <!-- <th class="default-inactive">Id</th> -->
                                         <th>Name</th>
                                         <th>Contact Title</th>
-                                        <th>Contact Department</th>
+                                        {{-- <th>Contact Department</th> --}}
                                         <th>Contact Email</th>
                                         <th>Organization</th>
+                                        <th>Facility</th>
+                                        <th>Services</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -196,11 +198,11 @@
                     // { data: 'action', name: 'action' },
                     { data: 'contact_name', name: 'contact_name' },
                     { data: 'contact_title', name: 'contact_title' },
-                    { data: 'contact_department', name: 'contact_department' },
+                    // { data: 'contact_department', name: 'contact_department' },
                     { data: 'contact_email', name: 'contact_email' },
                     { data: 'contact_organizations', name: 'contact_organizations' },
-                    // { data: 'political_party', name: 'political_party' },
-                    // { data: 'date_last_voted', name: 'date_last_voted' },
+                    { data: 'contact_facility', name: 'contact_facility' },
+                    { data: 'contact_service', name: 'contact_service' },
                 ],
 
             columnDefs : [
@@ -229,11 +231,11 @@
                         "orderable": false,
                         "class": "text-left"
                     },
-                    // {
-                    //     "targets": 5,
-                    //     "orderable": true,
-                    //     "class": "text-left"
-                    // },
+                    {
+                        "targets": 5,
+                        "orderable": true,
+                        "class": "text-left"
+                    },
                     // {
                     //     "targets": 6,
                     //     "orderable": true,

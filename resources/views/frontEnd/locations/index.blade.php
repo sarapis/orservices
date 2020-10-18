@@ -119,7 +119,9 @@ Locations
                                         <th class="default-active">Facility Name</th>
                                         <th class="default-active">Organization</th>
                                         <th class="default-active">Address</th>
-                                        <th class="default-active">Facility Description</th>
+                                        <th class="default-active">Contacts</th>
+                                        <th class="default-active">Services</th>
+                                        {{-- <th class="default-active">Facility Description</th> --}}
                                     </tr>
                                 </thead>
                             </table>
@@ -253,7 +255,8 @@ Locations
                     { data: 'location_name', name: 'location_name' },
                     { data: 'location_organization', name: 'location_organization' },
                     { data: 'location_address', name: 'location_address' },
-                    { data: 'location_description', name: 'location_description' },
+                    { data: 'location_contact', name: 'location_contact' },
+                    { data: 'location_service', name: 'location_service' },
                     // { data: 'contact_organizations', name: 'contact_organizations' },
                     // { data: 'political_party', name: 'political_party' },
                     // { data: 'date_last_voted', name: 'date_last_voted' },
@@ -277,6 +280,11 @@ Locations
                     },
                     {
                         "targets": 3,
+                        "orderable": true,
+                        "class": "text-left"
+                    },
+                    {
+                        "targets": 4,
                         "orderable": true,
                         "class": "text-left"
                     },

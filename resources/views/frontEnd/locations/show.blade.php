@@ -102,7 +102,8 @@ Facility
 							<span class="subtitle"><b>Address: </b></span>
 							@if(isset($facility->address))
 								@foreach($facility->address as $address)
-								{{ $address->address_1 }} {{ $address->address_2 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }} {{ $address->address_region }} {{ $address->address_country }}
+                                <a href="https://www.google.com/maps/dir/?api=1&destination={{ $address->address_1 }} {{ $address->address_2 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }} {{ $address->address_region }} {{ $address->address_country }}" target="_blank">{{ $address->address_1 }} {{ $address->address_2 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }} {{ $address->address_region }} {{ $address->address_country }}</a>
+								
 								@endforeach
 							@endif
                         </h4>
@@ -119,7 +120,8 @@ Facility
                         <h4>
 							<span class="subtitle"><b>Phones: </b></span>
 							@foreach($facility->phones as $key => $phone)
-                                {{$phone->phone_number}} {{ count($facility->phones) > $key+1 ? ',' : '' }}
+                                <a href="tel:{{$phone->phone_number}}">{{$phone->phone_number}}</a>
+                                 {{ count($facility->phones) > $key+1 ? ',' : '' }}
                             @endforeach
                         </h4>
                         @endif
@@ -157,14 +159,21 @@ Facility
                                         </h4>
                                         <h4 style="line-height: inherit;">{!! Str::limit($service->service_description, 200) !!}</h4>
                                         <h4 style="line-height: inherit;">
-                                            <span><i class="icon md-phone font-size-18 vertical-align-top pr-10  m-0"></i>
-                                            @foreach($service->phone as $phone) {!! $phone->phone_number !!} @endforeach</span>
+                                            <span>
+                                                <i class="icon md-phone font-size-18 vertical-align-top pr-10  m-0"></i>
+                                                @foreach($service->phone as $phone) 
+                                                <a href="tel:{!! $phone->phone_number !!}">{!! $phone->phone_number !!}</a>
+                                                @endforeach
+                                            </span>
                                         </h4>
                                         <h4>
                                             <span><i class="icon md-pin font-size-18 vertical-align-top pr-10  m-0"></i>
                                             @if(isset($service->address))
                                                 @foreach($service->address as $address)
-                                                {{ $address->address_1 }} {{ $address->address_2 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
+                                                <a href="https://www.google.com/maps/dir/?api=1&destination={{ $address->address_1 .' '. $address->address_2 .' '. $address->address_city .' '. $address->address_state_province .' '. $address->address_postal_code }}" target="_blank">
+                                                    {{ $address->address_1 .' '. $address->address_2 .' '. $address->address_city .' '. $address->address_state_province .' '. $address->address_postal_code }}
+                                                </a>
+                                                
                                                 @endforeach
                                             @endif
                                             </span>
@@ -474,15 +483,23 @@ Facility
 
         $.each( locations, function(index, value ){
                 // console.log(locations);
-                var name = value.organization==null?'':value.organization.organization_name;
-                var serviceid = value.services.length == 0?'':value.services[0].service_recordid;
-                var service_name = value.services.length == 0?'':value.services[0].service_name;
 
-                var content = "";
+                var content = '<div id="iw-container">';
                 for(i = 0; i < value.services.length; i ++){
-                    content +=  '<a href="/services/'+value.services[i].service_recordid+'" style="color:#428bca;font-weight:500;font-size:14px;">'+value.services[i].service_name+'</a><br>';
+                    content +=  '<div class="iw-title"> <a href="/services/'+value.services[i].service_recordid+'">'+value.services[i].service_name+'</a></div>';
                 }
-                content += '<p>'+name+'</p>';
+                if(value.organization){
+
+                content += '<div class="iw-content">' +
+                            '<div class="iw-subTitle">Organization Name</div>' +
+                            '<a href="/organizations/' + value.organization.organization_recordid + '">' + value.organization.organization_name +'</a>';
+                }
+                for(i = 0; i < value.address.length; i ++){
+                    content +=  '<div class="iw-subTitle">Address</div>' +'<a href="https://www.google.com/maps/dir/?api=1&destination=' + value.address[i].address_1 + '" target="_blank">' + value.address[i].address_1 +'</a>';
+                }
+                content += '</div>' +
+                        '<div class="iw-bottom-gradient"></div>' +
+                        '</div>';
 
                 if(value.location_latitude){
                     mymap.addMarker({
@@ -503,9 +520,9 @@ Facility
 
 </script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key={{$map->api_key}}&libraries=places&callback=initMap" async
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key={{$map->api_key}}&libraries=places&callback=initMap" async
     defer>
-</script>
+</script> -->
 
 @endsection
 

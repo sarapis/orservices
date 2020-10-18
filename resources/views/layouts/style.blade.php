@@ -7,6 +7,13 @@
 <!--   <meta name="description" content="bootstrap admin template"> -->
   <meta name="author" content="">
   <meta name="_token" content="{!! csrf_token() !!}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta property="og:title" content="Join the best company in the world!" />
+<meta property="og:url" content="http://www.sharethis.com" />
+<meta property="og:image" content="http://sharethis.com/images/logo.jpg" />
+<meta property="og:description" content="ShareThis is its people. It's imperative that we hire smart,innovative people who can work intelligently as we continue to disrupt the very category we created. Come join us!" />
+<meta property="og:site_name" content="ShareThis" />
+{{-- <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=5f572e846b5d9900194e2a53&product=sop' async='async'></script> --}}
   <title>@yield('title')| {{ $layout->site_name }}</title>
   <link rel="apple-touch-icon" href="../../frontend/assets/images/apple-touch-icon.png">
   <link rel="shortcut icon" href="../../frontend/assets/images/favicon.ico">
@@ -48,14 +55,15 @@
   <link rel="stylesheet" href="../../../frontend/global/vend/asrange/asRange.css">
   <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
   <link rel="stylesheet" href="../../../css/explorestyle.css">
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/themes/default/style.min.css" />
-
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/themes/default/style.min.css" />
+  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
   <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
-
+  
   <link rel="stylesheet" href="../../frontend/assets/examples/css/pages/register.css">
-
- <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> -->
+  
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> -->
+  <link rel="stylesheet" href="../../../css/responsive.css">
  <script
   src="https://code.jquery.com/jquery-3.4.1.min.js"
   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
@@ -368,7 +376,7 @@ $(function () {
   }
   #google_translate_element{
     padding-top: 21px;
-    width: 160px;
+    width: 140px;
   }
   .goog-te-banner-frame.skiptranslate{
     display: none;

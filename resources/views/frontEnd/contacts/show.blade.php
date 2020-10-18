@@ -133,7 +133,7 @@ Contact
                         <h4>
                             <span class="subtitle"><b>Organization: </b></span>
 
-                            @if (Auth::user())
+                            @if (Auth::user() && $contact->organization)
                                 <a class="panel-link" href="/organizations/{{$contact->organization->organization_recordid}}">{{ $contact->organization->organization_name }}</a>                                
                             @endif
                         </h4>

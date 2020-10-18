@@ -12,9 +12,12 @@
 					<div class="form-group text-left form-material m-0" data-plugin="formMaterial">
 						<img src="/frontend/assets/images/location.png" alt="" title="" class="form_icon_img">
 						<input type="text" class="form-control pr-50" id="searchAddress" name="search_address" placeholder="Search Location..." value="{{ isset($chip_address) ? $chip_address : '' }}">
+						<a href="javascript:void(0)" class="input-search-btn" style="z-index: 100;" onclick="getLocation()" ><img src="/frontend/assets/examples/images/location.png" style="width: 20px;margin: 22px 0;"></a>
+						<input type="hidden" name="lat" id="lat">
+						<input type="hidden" name="long" id="long">
 					</div>
 				</div>
-				<div class="col-md-2">
+				<div class="col-md-2 col-sm-2">
 					<button class="btn btn-raised btn-lg btn_darkblack search_btn" title="Search" style="line-height: 31px;">Search</button>
 				</div>
 				<!-- <div class="col-md-2">
@@ -42,13 +45,54 @@
 			</div>
 		</div>
 	</div>
-<style>
-@media (max-width: 768px){
-  .filter-bar{
-    display: none;
-  }
-}
-</style>
+
+<script type="text/javascript">
+	function getLocation() {
+	  if (navigator.geolocation) {
+
+	      navigator.geolocation.getCurrentPosition(showPosition);
+	  } else {
+
+	      alert("Geolocation is not supported by this browser.");
+
+	    }
+	}
+
+
+	 function showPosition(position) {
+	 	$('#lat').val(position.coords.latitude)
+	 	$('#long').val(position.coords.longitude)
+	 	const geocoder = new google.maps.Geocoder();
+	 	const latlng = {
+					    lat: parseFloat(position.coords.latitude),
+					    lng: parseFloat(position.coords.longitude)
+					  };
+		geocoder.geocode(
+    { location: latlng },
+    (results) => {
+        if (results[0]) {
+          // map.setZoom(11);
+          // const marker = new google.maps.Marker({
+          //   position: latlng,
+          //   map: map
+          // });
+          // infowindow.setContent(results[0].formatted_address);
+          // infowindow.open(map, marker);
+          $('#searchAddress').val(results[0].formatted_address)
+	 	$("#filter").submit();
+        } else {
+          window.alert("No results found");
+        }
+      });
+	 // 	var link = document.createElement('a');
+		// link.href = '/services_near_me';
+		// // document.body.appendChild(link);
+		// link.click();  
+	//   x.innerHTML = "Latitude: " + position.coords.latitude + 
+	//   "<br>Longitude: " + position.coords.longitude; 
+
+	 }
+</script>
 <script type="text/javascript">
 $(document).ready(function(){
 	$('.dropdown-status').click(function(){
@@ -59,5 +103,4 @@ $(document).ready(function(){
 		$("#filter").submit();
 	});
 });
-
 </script>

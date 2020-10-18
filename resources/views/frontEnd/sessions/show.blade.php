@@ -90,12 +90,12 @@ Session Profile Page
                 </div>
             </div>
             <div class="col-md-6">
-            	<div class="card all_form_field">
+            	<div class="card all_form_field ">
                     <div class="card-block">
                     	<h4 class="card-title mb-30 ">
                             <p>Add Interaction</p>
                         </h4>
-                        <div id="facility-create-content">
+                        <div id="facility-create-content" class="sesion_form">
                             <form action="/add_interaction" method="POST">
                             {{ csrf_field() }}
                                 <div class="row">
@@ -110,7 +110,7 @@ Session Profile Page
                                         </div>
                                         <input type="hidden" id="session_recordid" name="session_recordid" value="{{$session->session_recordid}}">
                                     </div>
-                                    <div class="col-md-4 p-0">
+                                    <div class="col-md-4 p-0 ">
                                         <div class="form-group">
                                             <label>Interaction Disposition: </label>
                                             <select class="form-control selectpicker" data-live-search="true" id="interaction_disposition"
