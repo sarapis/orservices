@@ -4,69 +4,6 @@
 @stop
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
-{{--
-<style type="text/css">
-    .dropdown-menu.show {
-        max-height: 300px !important;
-        width: 100% !important;
-    }
-
-    .table a {
-        text-decoration: none !important;
-        color: rgba(40, 53, 147, .9);
-        white-space: normal;
-    }
-
-    .footable.breakpoint>tbody>tr>td>span.footable-toggle {
-        position: absolute;
-        right: 25px;
-        font-size: 25px;
-        color: #000000;
-    }
-
-    .ui-menu .ui-menu-item .ui-state-active {
-        padding-left: 0 !important;
-    }
-
-    ul#ui-id-1 {
-        width: 260px !important;
-    }
-
-    #map {
-        position: relative !important;
-        z-index: 0 !important;
-    }
-
-    @media (max-width: 768px) {
-        .property {
-            padding-left: 30px !important;
-        }
-
-        #map {
-            display: block !important;
-            width: 100% !important;
-        }
-    }
-
-    .morecontent span {
-        display: none;
-
-    }
-
-    .morelink {
-        color: #428bca;
-    }
-
-    #tagging-div {
-        width: 100% !important;
-    }
-
-    .comment-author {
-        color: #3949ab !important;
-        font-size: 18px !important;
-    }
-</style> --}}
-
 @section('content')
 @include('layouts.filter_organization')
 @include('layouts.sidebar_organization')
@@ -131,7 +68,8 @@
                             <span><i class="icon md-phone font-size-18 vertical-align-top pr-10  m-0"></i>
                                 @foreach($organization->phones as $phone)
                                 @if ($phone->phone_number)
-                                {{$phone->phone_number}}
+                                <a href="tel:{{$phone->phone_number}}">{{$phone->phone_number}}
+                                </a>
                                 @endif
                                 @endforeach
                             </span>
@@ -173,7 +111,12 @@
                             <h4 style="line-height: inherit;">{!! Str::limit($service->service_description, 200) !!}</h4>
                             <h4 style="line-height: inherit;">
                                 <span><i class="icon md-phone font-size-18 vertical-align-top pr-10  m-0"></i>
-                                    @foreach($service->phone as $phone) {!! $phone->phone_number !!} @endforeach</span>
+                                    @foreach($service->phone as $phone)
+                                    <a href="tel:{{$phone->phone_number}}">
+                                        {!! $phone->phone_number !!}
+                                    </a>
+                                      @endforeach
+                                  </span>
                             </h4>
                             <h4>
                                 <span>
@@ -393,13 +336,17 @@
                                     </h4>
                                     <h4>
                                         <span><i class="icon md-phone font-size-18 vertical-align-top  "></i>
+                                            @php
+                                                $phones = '';
+                                            @endphp
                                             @foreach($location->phones as $phone)
                                             @php
-                                            $phones ='';
-                                            $phones = $phones.$phone->phone_number.','; @endphp
+                                            $phoneNo = '<a href="tel:'.$phone->phone_number.'">'.$phone->phone_number.' , ' .'</a>';
+                                            $phones .= $phoneNo;
+                                            @endphp
                                             @endforeach
                                             @if(isset($phones))
-                                            {{ rtrim($phones, ',') }}
+                                            {!! rtrim($phones, ',') !!}
                                             @endif
                                         </span>
                                     </h4>
@@ -494,7 +441,9 @@
                                                     <td>
                                                         <h4 class="m-0"><span>
                                                             @foreach($contact_info->phone as $phone_info)
+                                                            <a href="tel:'.$phone_info->phone_number.'">
                                                                 {{$phone_info->phone_number}},
+                                                            </a>
                                                             @endforeach
                                                         </span></h4>
                                                     </td>
@@ -622,11 +571,32 @@
           var latlong = new google.maps.LatLng(position.lat, position.lng);
           latlongbounds.extend(latlong);
 
+           var content = '<div id="iw-container">';
+                   for(i = 0; i < location.services.length; i ++){
+                            content +=  '<div class="iw-title"> <a href="/services/'+location.services[i].service_recordid+'">'+location.services[i].service_name+'</a></div>';
+                        }
+                        // '<div class="iw-title"> <a href="/services/'+ location.service_recordid +'">' + location.service_name + '</a> </div>' +
+                        content += '<div class="iw-content">' +
+                            '<div class="iw-subTitle">Organization Name</div>' +
+                            '<a href="/organizations/' + location.organization_recordid + '">' + location.organization_name +'</a>'+
+                            '<div class="iw-subTitle">Address</div>' +
+                            '<a href="https://www.google.com/maps/dir/?api=1&destination=' + location.address_name + '" target="_blank">' + location.address_name +'</a>'+
+                        '</div>' +
+                        '<div class="iw-bottom-gradient"></div>' +
+                        '</div>';
+
+            var infowindow = new google.maps.InfoWindow({
+                content: content
+            });
+
           var marker = new google.maps.Marker({
               position: position,
               map: map,
               title: location.location_name,
           });
+          marker.addListener('click', function() {
+                infowindow.open(map, marker);
+            });
           return marker;
       });
 

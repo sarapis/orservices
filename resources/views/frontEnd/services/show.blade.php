@@ -2,54 +2,13 @@
 @section('title')
 {{$service->service_name}}
 @stop
-{{-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"> --}}
-
-
-<style type="text/css">
-    /* .table a {
-        text-decoration: none !important;
-        color: rgba(40, 53, 147, .9);
-        white-space: normal;
-    }
-
-    .footable.breakpoint>tbody>tr>td>span.footable-toggle {
-        position: absolute;
-        right: 25px;
-        font-size: 25px;
-        color: #000000;
-    }
-
-    .ui-menu .ui-menu-item .ui-state-active {
-        padding-left: 0 !important;
-    }
-
-    ul#ui-id-1 {
-        width: 260px !important;
-    }
-
-    #map {
-        position: relative !important;
-        z-index: 0 !important;
-    }
-
-    @media (max-width: 768px) {
-        .property {
-            padding-left: 30px !important;
-        }
-
-        #map {
-            display: block !important;
-            width: 100% !important;
-        }
-    } */
-</style>
 
 @section('content')
 @include('layouts.filter')
 <div>
 
     <!-- Page Content Holder -->
-    <div class="top_services_filter">
+    <div class="top_services_filter" style="display: inline-block;width: 100%;">
         <div class="container">
             @include('layouts.sidebar')
             <!-- Types Of Services -->
@@ -64,18 +23,22 @@
             <!--end  Types Of Services -->
 
             <!-- download -->
-            {{-- <div class="btn_download float-right">
-                <a href="/download_service/{{$service->service_recordid}}" class="float-right btn_share_download">
-                    <img src="/frontend/assets/images/download.png" alt="" title="" class="mr-10"> Download PDF
-                </a>
-            </div> --}}
+            <div class="dropdown btn_download float-right">
+                <button type="button" class="float-right btn_share_download dropdown-toggle" id="" data-toggle="dropdown" aria-expanded="false">
+                    <img src="/frontend/assets/images/download.png" alt="" title="" class="mr-10"> Download
+                </button>
+                <div class="dropdown-menu bullet" aria-labelledby="exampleBulletDropdown4" role="menu">
+                    <a class="dropdown-item" href="/download_service_csv/{{$service->service_recordid}}" role="menuitem">Download CSV</a>
+                    <a class="dropdown-item " href="/download_service/{{$service->service_recordid}}" role="menuitem">Download PDF</a>
+                </div>
+            </div>
             <!--end download -->
 
             <!-- share btn -->
-            {{-- <button type="button" class="float-right btn_share_download">
+            <button type="button" class="float-right btn_share_download">
                 <img src="/frontend/assets/images/share.png" alt="" title="" class="mr-10 share_image">
                 <div class="sharethis-inline-share-buttons"></div>
-            </button> --}}
+            </button>
             <!--end share btn -->
         </div>
     </div>
@@ -120,7 +83,7 @@
                             @if(isset($service->service_phones))
                             <h4 style="line-height: inherit;">
                                 <span><i class="icon md-phone font-size-18 vertical-align-top mr-0 pr-10"></i>
-                                    {{$phone_number_info}}
+                                    <a href="tel:{{$phone_number_info}}">{{$phone_number_info}}</a>
                                 </span>
                             </h4>
                             @endif
@@ -187,7 +150,7 @@
 
                             @if(isset($service->schedules()->first()->schedule_days_of_week))
                             <h4><span class="subtitle"><b>Schedules</b></span><br />
-                                @foreach($service->schedules as $schedule)
+                                {{-- @foreach($service->schedules as $schedule)
                                 @if($loop->last)
                                 {{$schedule->schedule_days_of_week}} {{$schedule->schedule_opens_at}}
                                 {{$schedule->schedule_closes_at}}
@@ -195,8 +158,48 @@
                                 {{$schedule->schedule_days_of_week}} {{$schedule->schedule_opens_at}}
                                 {{$schedule->schedule_closes_at}},
                                 @endif
-                                @endforeach
+                                @endforeach --}}
+
                             </h4>
+
+                            @foreach($service->schedules as $schedule)
+                            
+                            @if ($schedule->schedule_holiday)
+                                @php
+                                $holidayScheduleData[] = 1;
+                                @endphp
+                            @endif
+                            @if ($schedule->schedule_days_of_week)
+                            <h4 style="color:{{ strtolower(\Carbon\Carbon::now()->format('l')) == $schedule->schedule_days_of_week ? 'blue' : '' }}">
+                                <b style="font-weight: 600;color: #000; letter-spacing: 0.5px;">{{ ucfirst($schedule->schedule_days_of_week) }} :</b>
+                                @if ($schedule->schedule_closed == null)
+                                {{ $schedule->schedule_opens_at }} - {{ $schedule->schedule_closes_at }}
+                                @else
+                                Closed
+                                @endif
+                            </h4>
+                            @endif
+                            @endforeach
+                            @if (isset($holidayScheduleData))
+                            <span style="margin-bottom: 20px;display: inline-block;font-weight: 600;text-decoration: underline; color: #5051db;cursor: pointer;" id="showHolidays"><a>Show holidays</a></span>
+                            @endif
+                            <div style="display: none;" id="holidays">
+                                <span class="subtitle"><b>Holidays</b></span><br />
+                                @foreach($service->schedules as $schedule)
+                                @if ($schedule->schedule_holiday)
+
+                                <h4 style="color: #000;" >
+                                    {{ $schedule->schedule_start_date }} to {{ $schedule->schedule_start_date }}  :
+                                    @if ($schedule->schedule_closed == null)
+                                    {{ $schedule->schedule_opens_at }} - {{ $schedule->schedule_closes_at }}
+                                    @else
+                                    Closed
+                                    @endif
+                                </h4>
+                                @endif
+                                @endforeach
+                                <span style="margin-bottom: 20px;display: inline-block;font-weight: 600;text-decoration: underline; color: #5051db;cursor: pointer;" id="hideHolidays"><a>Hide holidays</a></span> <br>
+                            </div>                           
                             @endif
                             <h4>
                                 <span class="pl-0 category_badge subtitle"><b>Types of Services:</b>
@@ -210,9 +213,6 @@
                             </h4>
                         </div>
                     </div>
-
-
-
                 </div>
 
                 <div class="col-md-4 property">
@@ -257,6 +257,7 @@
                                     @if(isset($service->locations))
                                         @if($service->locations != null)
                                             @foreach($service->locations as $location)
+
                                                 <div class="location_border">
                                                     <h4>
                                                         @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
@@ -306,12 +307,18 @@
                                                                 <h4>
                                                                     <span>
                                                                         <i class="icon md-phone font-size-18 vertical-align-top "></i>
+                                                                        @php
+                                                                        $phones = '';
+                                                                        @endphp
                                                                         @foreach($location->phones as $phone)
                                                                         @php
-                                                                        $phones ='';
-                                                                        $phones = $phones.$phone->phone_number.','; @endphp
+
+                                                                        $phoneNo = '<a href="tel:'.$phone->phone_number.'">'.$phone->phone_number.' , ' .'</a>';
+                                                                        $phones .= $phoneNo;
+
+                                                                        @endphp
                                                                         @endforeach
-                                                                        {{ rtrim($phones, ',') }}
+                                                                        {!! rtrim($phones, ',') !!}
                                                                     </span>
                                                                 </h4>
                                                                 @endif
@@ -428,14 +435,15 @@
         </div>
     </div>
 </div>
-
 <script>
     $(document).ready(function(){
-    setTimeout(function(){
-        var locations = <?php print_r(json_encode($service->locations)) ?>;
-        var maplocation = <?php print_r(json_encode($map)) ?>;
+        // navigator.geolocation.getCurrentPosition(showPosition)
 
-        // console.log(locations);
+    setTimeout(function(){
+        var locations = <?php print_r(json_encode($locations)) ?>;
+        var maplocation = <?php print_r(json_encode($map)) ?>;
+        
+        
         var show = 1;
         if(locations.length == 0){
           show = 0;
@@ -460,7 +468,6 @@
             latitude = locations[0].location_latitude;
             longitude = locations[0].location_longitude;
         }
-
         if(latitude == null){
             latitude = avglat;
             longitude = avglng;
@@ -471,19 +478,38 @@
             center: {lat: parseFloat(latitude), lng: parseFloat(longitude)}
         });
 
-        var latlongbounds = new google.maps.LatLngBounds();
+        // var latlongbounds = new google.maps.LatLngBounds();
         var markers = locations.map(function(location, i) {
+
             var position = {
                 lat: location.location_latitude,
                 lng: location.location_longitude
             }
-            var latlong = new google.maps.LatLng(position.lat, position.lng);
-            latlongbounds.extend(latlong);
+            // var latlong = new google.maps.LatLng(position.lat, position.lng);
+            // latlongbounds.extend(latlong);
+
+            var content = '<div id="iw-container">' +
+                        '<div class="iw-title"> <a href="#">' + location.service + '</a> </div>' +
+                        '<div class="iw-content">' +
+                            '<div class="iw-subTitle">Organization Name</div>' +
+                            '<a href="/organizations/' + location.organization_recordid + '">' + location.organization_name +'</a>'+
+                            '<div class="iw-subTitle">Address</div>' +
+                            '<a href="https://www.google.com/maps/dir/?api=1&destination=' + location.address_name + '" target="_blank">' + location.address_name +'</a>'+
+                        '</div>' +
+                        '<div class="iw-bottom-gradient"></div>' +
+                        '</div>';
+
+            var infowindow = new google.maps.InfoWindow({
+                content: content
+            });
 
             var marker = new google.maps.Marker({
                 position: position,
                 map: map,
                 title: location.location_name,
+            });
+            marker.addListener('click', function() {
+                infowindow.open(map, marker);
             });
             return marker;
         });
@@ -517,7 +543,16 @@
 
     });
 });
-
+$('#showHolidays').click(function(){
+    $('#holidays').show();
+    $('#hideHolidays').show();
+    $(this).hide()
+})
+$('#hideHolidays').click(function(){
+    $('#holidays').hide();
+    $('#showHolidays').show();
+    $(this).hide()
+})
 
 </script>
 @endsection

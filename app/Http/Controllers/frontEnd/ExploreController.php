@@ -34,10 +34,11 @@ class ExploreController extends Controller
 
     public function geolocation(Request $request)
     {
+        dd($request);
         $ip = $request->ip();
-
+        // $ip = '38.125.59.248';
         $data = FacadesLocation::get($ip);
-
+        
         $chip_title = "";
         $chip_name = "Search Near Me";
         // $auth = new Location();
@@ -48,14 +49,14 @@ class ExploreController extends Controller
 
         $lat = floatval($data->latitude);
         $lng = floatval($data->longitude);
+        
+        // $lat = 38.9327313;
+        // $lng = -77.0373987;
 
-        // $lat =37.3422;
-        // $lng = -121.905;
-
-        $locations = Location::with('services', 'organization')->select(DB::raw('*, ( 3959 * acos( cos( radians(' . $lat . ') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians(' . $lng . ') ) + sin( radians(' . $lat . ') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
+        $locations = Location::with('services', 'organization','address')->select(DB::raw('*, ( 3959 * acos( cos( radians(' . $lat . ') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians(' . $lng . ') ) + sin( radians(' . $lat . ') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
             ->having('distance', '<', 2)
             ->orderBy('distance');
-
+            
         $locationids = $locations->pluck('location_recordid')->toArray();
 
         $location_serviceids = ServiceLocation::whereIn('location_recordid', $locationids)->pluck('service_recordid')->toArray();
@@ -67,7 +68,15 @@ class ExploreController extends Controller
         $services = $services->paginate(10);
 
         $locations = $locations->get();
-
+        // if($locations){
+        //     $locations->filter(function($value,$key){
+        //         $value->service = $service->service_name;
+        //         $value->service_recordid = $service->service_recordid;
+        //         $value->organization_name = $value->organization ? $value->organization->organization_name : '';
+        //         $value->organization_recordid = $value->organization ? $value->organization->organization_recordid : '';
+        //         $value->address_name = $value->address && count($value->address) > 0 ? $value->address[0]->address_1 : '';
+        //     });
+        // }
         $map = Map::find(1);
 
         $parent_taxonomy = [];
@@ -305,11 +314,18 @@ class ExploreController extends Controller
         $service_locationids = ServiceLocation::whereIn('service_recordid', $serviceids)->pluck('location_recordid');
         $avarageLatitude = '';
         $avarageLongitude = '';
-        if ($chip_address != null) {
+        if ($chip_address != null || ($request->lat && $request->long)) {
             $sort = $sort == null ? 'Distance from Address' : $sort;
-            $response = Geocode::make()->address($chip_address);
-            $lat = $response->latitude();
-            $lng = $response->longitude();
+            if(($request->lat && $request->long)){
+                $lat = floatval($request->lat);
+                $lng = floatval($request->long);
+                // $chip_address = 'search near by';
+                // $chip_service = 'search near by';
+            }else{
+                $response = Geocode::make()->address($chip_address);
+                $lat = $response->latitude();
+                $lng = $response->longitude();
+            }
             // $client = new \GuzzleHttp\Client();
             // $geocoder = new Geocoder($client);
             // $geocode_api_key = env('GEOCODE_GOOGLE_APIKEY');
@@ -322,14 +338,14 @@ class ExploreController extends Controller
             $avarageLongitude = $lng;
 
 
-            $locations = Location::with('services', 'organization')->select(DB::raw('*, ( 3959 * acos( cos( radians(' . $lat . ') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians(' . $lng . ') ) + sin( radians(' . $lat . ') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
+            $locations = Location::with('services', 'organization','address')->select(DB::raw('*, ( 3959 * acos( cos( radians(' . $lat . ') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians(' . $lng . ') ) + sin( radians(' . $lat . ') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
                 ->having('distance', '<', 5)
                 ->orderBy('distance');
 
             $location_locationids = $locations->pluck('location_recordid');
-
             $location_serviceids = ServiceLocation::whereIn('location_recordid', $location_locationids)->pluck('service_recordid');
             $sort_by_distance_clickable = true;
+            
         }
 
         if ($chip_service != null && isset($serviceids)) {
@@ -345,12 +361,26 @@ class ExploreController extends Controller
                 $services = Service::whereIn('service_recordid', $location_serviceids)->orderBy('service_name');
             }
 
-            $locations = Location::with('services', 'organization')->whereIn('location_recordid', $service_locationids)->whereIn('location_recordid', $location_locationids);
+            $locations = Location::with('services', 'organization','address')->whereIn('location_recordid', $service_locationids)->whereIn('location_recordid', $location_locationids);
         }
         if ($chip_service == null && $chip_address == null) {
             $services = Service::orderBy('service_name');
-            $locations = Location::with('services', 'organization');
+            $locations = Location::with('services', 'organization','address');
         }
+
+        // if($request->lat && $request->long){
+        //     $lat = floatval($request->lat);
+        //     $lng = floatval($request->long);
+        
+        // // $lat = 38.9327313;
+        // // $lng = -77.0373987;
+        //     $chip_service = 'search near by';
+        //     $avarageLatitude = $lat;
+        //     $avarageLongitude = $lng;
+        // $locations = Location::with('services', 'organization','address')->select(DB::raw('*, ( 3959 * acos( cos( radians(' . $lat . ') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians(' . $lng . ') ) + sin( radians(' . $lat . ') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
+        //     ->having('distance', '<', 2)
+        //     ->orderBy('distance');
+        // }
 
         // var_dump($sort);
         // exit();
@@ -453,13 +483,12 @@ class ExploreController extends Controller
         }
 
         $map = Map::find(1);
-
         if ($pdf == 'pdf') {
-
+            
             $layout = Layout::find(1);
-
-            $services = $services->paginate(10);
-
+            
+            $services = $services->get();
+            
             $pdf = PDF::loadView('frontEnd.services.services_download', compact('services', 'layout'));
 
             return $pdf->download('services.pdf');
@@ -720,6 +749,17 @@ class ExploreController extends Controller
         }
 
         $locations = $locations->get();
+
+            // if($locations){
+            //     $locations->filter(function($value,$key){
+            //         $value->service = $service->service_name;
+            //         $value->service_recordid = $service->service_recordid;
+            //         $value->organization_name = $value->organization ? $value->organization->organization_name : '';
+            //         $value->organization_recordid = $value->organization ? $value->organization->organization_recordid : '';
+            //         $value->address_name = $value->address && count($value->address) > 0 ? $value->address[0]->address_1 : '';
+            //         return true;
+            //     });
+            // }
 
         $analytic = Analytic::where('search_term', '=', $chip_service)->orWhere('search_term', '=', $chip_address)->first();
         if (isset($analytic)) {

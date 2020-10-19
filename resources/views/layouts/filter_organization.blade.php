@@ -1,27 +1,11 @@
 <style type="text/css">
-	/* button[data-id="organization_tag"] {
-        height: 45px;
-        border: 1px solid #ddd;
-    }
-    .bootstrap-select .dropdown-toggle .filter-option {
-    	display: flex;
-    	align-items: center;
-    	font-size: 12px;
-    }
-    .organization-tags-div {
-    	height: 45px;
-    }
-    li.disabled  {
-		display: none;
-	} */
-
 </style>
 <form action="/search_organization" method="GET" id="filter_organization" class="m-0">
   	<div class="filter-bar container-fluid bg-primary-color home_serach_form filter_serach">
 		<div class="container">
 			<div class="row">
 				<input type="hidden" name="meta_status" id="status" @if(isset($meta_status)) value="{{$meta_status}}" @else value="On" @endif>
-				<div class="col-md-5 col-sm-5">
+				<div class="col-md-5 col-sm-8">
 					<div class="form-group text-left form-material m-0" data-plugin="formMaterial">
 						<img src="/frontend/assets/images/search.png" alt="" title="" class="form_icon_img">
 						<input type="text" class="form-control search-form" name="find" placeholder="Search for Organization" id="search_organization" @if(isset($chip_organization)) value="{{$chip_organization}}" @endif>
@@ -33,7 +17,7 @@
 						<input type="text" class="form-control pr-50" id="location1" name="search_address" placeholder="Search Location...">
 					</div>
 				</div> -->
-				<div class="col-md-2">
+				<div class="col-md-2 col-sm-4">
 					<button class="btn btn-raised btn-lg btn_darkblack search_btn" title="Search" style="line-height: 31px;">Search</button>
 				</div>
 			</div>
@@ -138,18 +122,18 @@
             </div>
             <input type="hidden" name="organization_pdf" id="organization_pdf" value="">
             <input type="hidden" name="organization_csv" id="organization_csv" value="">
-         <button type="button" class="float-right btn_share_download">
+            <button type="button" class="float-right btn_share_download">
                 <img src="/frontend/assets/images/share.png" alt="" title="" class="mr-10 share_image">
                 <div class="sharethis-inline-share-buttons"></div>
             </button>
 	</div>
 </div>
 <style>
-@media (max-width: 768px){
+/* @media (max-width: 768px){
   .filter-bar{
     display: none;
   }
-}
+} */
 </style>
 
 <script type="text/javascript">

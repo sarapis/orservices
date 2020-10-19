@@ -1,9 +1,9 @@
 <body>
 
-	<nav class="site-navbar navbar navbar-inverse navbar-fixed-top navbar-mega {{ Request::Segment(1) != null ? 'inner_navstyle' : '' }} " role="navigation">
+	<nav class="site-navbar navbar navbar-inverse navbar-fixed-top navbar navbar-expand-lg navbar-mega {{ Request::Segment(1) != null ? 'inner_navstyle' : '' }} " role="navigation">
 		<div class="container">
 			<div class="navbar-header">
-				<div class="navbar-brand-center site-gridmenu-toggle" data-toggle="gridmenu">
+				<div class="site-gridmenu-toggle" data-toggle="gridmenu">
 					<a class="navbar-brand" href="/">
 						@if($layout->logo_active == 1)
 							<img class="navbar-brand-logo navbar-brand-logo-normal" src="../uploads/images/{{$layout->logo}}" title="{{$layout->site_name}}" style="height: auto;">
@@ -14,9 +14,13 @@
 						@endif
 					</a>
 				</div>
-				<button type="button" id="sidebarCollapse" class="navbar-toggler hamburger hamburger-close navbar-toggler-center hided" data-toggle="menubar">
+				{{-- <button type="button" data-target="#sidebarCollapse"  id="" class="navbar-toggler hamburger hamburger-close navbar-toggler-center hided" data-toggle="collapse">
 						<span class="sr-only">Toggle navigation</span>
 						<span class="hamburger-bar"></span>
+				</button> --}}
+				<button class="navbar-toggler hamburger hamburger-close navbar-toggler-center hided" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="hamburger-bar"></span>
 				</button>
 				@if($layout->tagline!=null && $layout->title ==1)
 					<div class="navbar-brand ticker well ml-10 mr-10">
@@ -25,45 +29,46 @@
 						</label>
 					</div>
 				@endif
-				<button type="button" class="navbar-toggler collapsed float-right" data-target="#site-navbar-collapse" data-toggle="collapse">
+				
+				{{-- <button type="button" class="navbar-toggler collapsed float-right" data-target="#site-navbar-collapse" data-toggle="collapse">
 					<i class="icon wb-more-horizontal" aria-hidden="true"></i>
-				</button>
+				</button> --}}
 			</div>
 
-			<div id="site-navbar-collapse">
-				<ul class="nav navbar-toolbar navbar-right navbar-toolbar-right">
-					<li class="nav-item responsive_menu">
+			<div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+				<ul class="nav navbar-toolbar float-right navbar-toolbar-right">
+					<li class="nav-item">
 						<a class="nav-link" href="/services">Services</a>
 					</li>
-					<li class="nav-item responsive_menu">
+					<li class="nav-item">
 						<a class="nav-link" href="/#category">Categories</a>
 					</li>
-					<li class="nav-item responsive_menu">
+					<li class="nav-item">
 						<a class="nav-link" href="/organizations">Organizations</a>
                     </li>
                     @if (Auth::user() && Auth::user()->roles)
                     @if (Auth::user() && Auth::user()->roles->name != 'Organization Admin' || Auth::user() && Auth::user()->roles->name == 'System Admin' )
-					<li class="nav-item responsive_menu">
+					<li class="nav-item">
 						<a class="nav-link" href="/contacts">Contacts</a>
 					</li>
-					<li class="nav-item responsive_menu">
+					<li class="nav-item">
 						<a class="nav-link" href="{{ route('facilities.index') }}">Facilities</a>
 					</li>
 					@endif
 					@endif
 					@if($layout->about_active == 1)
-					<li class="nav-item responsive_menu">
+					<li class="nav-item">
 						<a class="nav-link" href="/about">About</a>
 					</li>
 					@endif
-					<li class="nav-item responsive_menu">
+					<li class="nav-item">
                         <a class="nav-link" href="{{ route('suggest.create') }}">Suggest</a>
 					</li>
 					<li class="nav-item">
 						<a id="google_translate_element" class="nav-link"></a>
                     </li>
                     @if (Auth::user() && Auth::user()->roles)
-                    <li class="nav-item responsive_menu">
+                    <li class="nav-item">
 						<div class="dropdown">
 							<button class="dropbtn" style="color: {{$layout->top_menu_link_color}}">(+)</button>
 							<div class="dropdown-content">
@@ -77,16 +82,18 @@
 						</div>
 					</li>
                     @endif
-					<li class="nav-item responsive_menu">
-						@if (Auth::user())
-						<li class="nav-item responsive_menu">
-							<a class="nav-link" href="/account/{{Auth::user()->id}}">My account</a>
-						</li>
-						<a class="nav-link" href="/logout">Logout</a>
-						@else
-						<a class="nav-link" href="/login">Login</a>
-						@endif
+					@if (Auth::user())
+					<li class="nav-item">
+						<a class="nav-link" href="/account/{{Auth::user()->id}}">My account</a>
 					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/logout">Logout</a>
+					</li>
+					@else
+					<li class="nav-item">
+						<a class="nav-link" href="/login">Login</a>
+					</li>
+					@endif
 				</ul>
 			</div>
 		</div>

@@ -3,13 +3,20 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="Join the best company in the world!" />
+    <meta property="og:url" content="http://www.sharethis.com" />
+    <meta property="og:image" content="http://sharethis.com/images/logo.jpg" />
+    <meta property="og:description" content="ShareThis is its people. It's imperative that we hire smart,innovative people who can work intelligently as we continue to disrupt the very category we created. Come join us!" />
+    <meta property="og:site_name" content="ShareThis" />
 	<title>@yield('title')</title>
 	<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.5/flatly/bootstrap.min.css" rel="stylesheet">
 	<link href="//cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
 	<link href="/css/style.css" rel="stylesheet">
+	<link rel="stylesheet" href="/css/responsive.css">
+	{{-- <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=5f572e846b5d9900194e2a53&product=sop' async='async'></script> --}}
 	<style>
 		body {
 			padding-top: 70px;
@@ -45,7 +52,7 @@
 	        </div>
 
 			<div class="collapse navbar-collapse" id="navbar-collapse-1">
-				<ul class="nav navbar-nav navbar-right">
+				<ul class="nav navbar-nav navbar-right login_register_nav">
 					@if (Auth::guest())
 						<li><a href="{{ url('login') }}">Login</a></li>
 						<li><a href="{{ url('register') }}">Register</a></li>
@@ -74,6 +81,7 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/js/bootstrap.min.js"></script>
 	<script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+	<!-- <script src="{{asset('js/markerclusterer.js')}}"></script> -->
 	@yield('scripts')
 </body>
 </html>

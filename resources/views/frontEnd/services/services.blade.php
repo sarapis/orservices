@@ -4,41 +4,6 @@ Services
 @stop
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
-
-<style type="text/css">
-/* .table a{
-    text-decoration:none !important;
-    color: rgba(40,53,147,.9);
-    white-space: normal;
-}
-.footable.breakpoint > tbody > tr > td > span.footable-toggle{
-    position: absolute;
-    right: 25px;
-    font-size: 25px;
-    color: #000000;
-}
-.ui-menu .ui-menu-item .ui-state-active {
-    padding-left: 0 !important;
-}
-ul#ui-id-1 {
-    width: 260px !important;
-} */
-
-/*#map{
-    position: fixed !important;
-}*/
-/* @media (max-width: 768px) {
-    .property{
-        padding-left: 30px !important;
-    }
-    #map{
-        display: block !important;
-        width: 100% !important;
-    }
-} */
-
-</style>
-
 @section('content')
 @include('layouts.filter')
 <div>
@@ -135,54 +100,60 @@ ul#ui-id-1 {
                         </div>
                     @endif
                     @if(count($services) != 0)
-                            @foreach($services as $service)
-                                @if($service->service_name != null)
-                                <div class="card">
-                                    <div class="card-block">
-                                        <h4 class="card-title">
-                                            <a href="/services/{{$service->service_recordid}}">{{$service->service_name}}</a>
-                                            <p style="float: right;">{{ isset($service->miles)  ? floatval(number_format($service->miles,2)) .' miles'  : '' }}</p>
-                                        </h4>
-                                        <h4 class="org_title"><span class="subtitle"><b>Organization:</b></span>
-                                            @if(isset($service->organizations))
-                                                <a class="panel-link" class="notranslate" href="/organizations/{{$service->organizations()->first()->organization_recordid}}"> {{$service->organizations()->first()->organization_name}}</a>
-                                            @endif
-                                        </h4>
-                                        <h4  style="line-height: inherit;">{!! Str::limit(str_replace(array('\n', '/n', '*'), array(' ', ' ', ' '), $service->service_description), 200) !!}</h4>
-                                        <h4><span><i class="icon md-phone font-size-18 vertical-align-top  mr-5 pr-10"></i> @foreach($service->phone as $phone) {!! $phone->phone_number !!} @endforeach</span></h4>
-                                        <h4><span><i class="icon md-pin font-size-18 vertical-align-top mr-5 pr-10"></i>
-                                            @if(isset($service->address))
-                                                @foreach($service->address as $address)
-                                                {{ $address->address_1 }} {{ $address->address_2 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
-                                                @endforeach
-                                            @endif
-                                            {{-- @if(isset($service->address))
-                                                @foreach($service->locations()->first()->address as $address)
-                                                {{ $address->address_1 }} {{ $address->address_2 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
-                                                @endforeach
-                                            @endif --}}
+                        @foreach($services as $service)
+                            @if($service->service_name != null)
+                            <div class="card">
+                                <div class="card-block">
+                                    <h4 class="card-title">
+                                        <a href="/services/{{$service->service_recordid}}">{{$service->service_name}}</a>
+                                        <p style="float: right;">{{ isset($service->miles)  ? floatval(number_format($service->miles,2)) .' miles'  : '' }}</p>
+                                    </h4>
+                                    <h4 class="org_title"><span class="subtitle"><b>Organization:</b></span>
+                                        @if(isset($service->organizations))
+                                            <a class="panel-link" class="notranslate" href="/organizations/{{$service->organizations()->first()->organization_recordid}}"> {{$service->organizations()->first()->organization_name}}</a>
+                                        @endif
+                                    </h4>
+                                    <h4  style="line-height: inherit;">{!! Str::limit(str_replace(array('\n', '/n', '*'), array(' ', ' ', ' '), $service->service_description), 200) !!}</h4>
+                                    <h4>
+                                        <span><i class="icon md-phone font-size-18 vertical-align-top  mr-5 pr-10"></i> @foreach($service->phone as $phone)
+                                            <a href="tel:{{$phone->phone_number}}">
+                                                {!! $phone->phone_number !!} @endforeach
+                                            </a>
+                                        </span>
+                                    </h4>
+                                    <h4><span><i class="icon md-pin font-size-18 vertical-align-top mr-5 pr-10"></i>
+                                        @if(isset($service->address))
+                                            @foreach($service->address as $address)
+                                            {{ $address->address_1 }} {{ $address->address_2 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
+                                            @endforeach
+                                        @endif
+                                        {{-- @if(isset($service->address))
+                                            @foreach($service->locations()->first()->address as $address)
+                                            {{ $address->address_1 }} {{ $address->address_2 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
+                                            @endforeach
+                                        @endif --}}
 
-                                            </span>
-                                        </h4>
-                                        <h4>
-                                            <span class="pl-0 category_badge subtitle"><b>Types of Services:</b>
-                                                @if($service->service_taxonomy != null)
-                                                    @php $service_taxonomy_recordid_list = explode(',', $service->service_taxonomy);
+                                        </span>
+                                    </h4>
+                                    <h4>
+                                        <span class="pl-0 category_badge subtitle"><b>Types of Services:</b>
+                                            @if($service->service_taxonomy != null)
+                                                @php $service_taxonomy_recordid_list = explode(',', $service->service_taxonomy);
+                                                @endphp
+                                                @foreach($service_taxonomy_recordid_list as $key => $service_taxonomy_recordid)
+                                                    @php $taxonomy_name = $service_taxonomy_info_list[$service_taxonomy_recordid];
                                                     @endphp
-                                                    @foreach($service_taxonomy_recordid_list as $key => $service_taxonomy_recordid)
-                                                        @php $taxonomy_name = $service_taxonomy_info_list[$service_taxonomy_recordid];
-                                                        @endphp
-                                                        @if($taxonomy_name)
-                                                            <a class="panel-link {{str_replace(' ', '_', $taxonomy_name)}}" at="child_{{$service_taxonomy_recordid}}">{{$taxonomy_name}}</a>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                            </span>
-                                        </h4>
-                                    </div>
+                                                    @if($taxonomy_name)
+                                                        <a class="panel-link {{str_replace(' ', '_', $taxonomy_name)}}" at="child_{{$service_taxonomy_recordid}}">{{$taxonomy_name}}</a>
+                                                    @endif
+                                                @endforeach
+                                            @endif
+                                        </span>
+                                    </h4>
                                 </div>
-                                @endif
-                            @endforeach
+                            </div>
+                            @endif
+                        @endforeach
                     @else
                         <div class="alert dark alert-warning ml-15" role="alert" style="background-color: lightblue; border-color: lightblue;">
                             <span style="color: #ffffff;">
@@ -266,20 +237,36 @@ ul#ui-id-1 {
             });
             let checkunKnownAddress = [];
             $.each( locations, function(index, value ){
+
                 var name = value.organization==null?'':value.organization.organization_name;
 
 
-                var content = "";
+                var content = '<div id="iw-container">';
                 for(i = 0; i < value.services.length; i ++){
-                    content +=  '<a href="/services/'+value.services[i].service_recordid+'" style="color:#428bca;font-weight:500;font-size:14px;">'+value.services[i].service_name+'</a><br>';
+                    content +=  '<div class="iw-title"> <a href="/services/'+value.services[i].service_recordid+'">'+value.services[i].service_name+'</a></div>';
                 }
-                content += '<p>'+name+'</p>';
+                if(value.organization){
+
+                content += '<div class="iw-content">' +
+                            '<div class="iw-subTitle">Organization Name</div>' +
+                            '<a href="/organizations/' + value.organization.organization_recordid + '">' + value.organization.organization_name +'</a>';
+                }
+                if(value.address){
+                    for(i = 0; i < value.address.length; i ++){
+                        content +=  '<div class="iw-subTitle">Address</div>'+
+                                '<a href="https://www.google.com/maps/dir/?api=1&destination=' + value.address[i].address_1 + '" target="_blank">' + value.address[i].address_1 +'</a>';
+                    }
+                }
+                content += '</div>' +
+                        '<div class="iw-bottom-gradient"></div>' +
+                        '</div>';
+
 
                 if(value.location_latitude){
 
                     if(chip_address != '0' && avarageLatitude != '0' && avarageLongitude != '0' && value.location_latitude == avarageLatitude && value.location_longitude == avarageLongitude){
                         checkunKnownAddress.push(1)
-                        let url = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
+                        let url = "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png";
                         mymap.addMarker({
 
                             lat: value.location_latitude,
@@ -310,8 +297,13 @@ ul#ui-id-1 {
                     }
                 }
             });
+            let content = '';
+            if(chip_address != '0'){
+                content =  '<div class="iw-content"><div class="iw-subTitle">Address</div>'+
+                            '<a href="https://www.google.com/maps/dir/?api=1&destination=' + chip_address + '" target="_blank">' + chip_address +'</a></div>';
+            }
             if(chip_address != '0' && avarageLatitude != '0' && avarageLongitude != '0' && checkunKnownAddress.length == 0){
-                let url = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
+                let url = "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png";
                 mymap.addMarker({
 
                     lat: avarageLatitude,

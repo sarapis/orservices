@@ -114,6 +114,8 @@ Home
                                 <div class="row m-0">
                                     <div class="col-md-9 pl-0">
                                         <img src="/frontend/assets/images/location.png" alt="" title="" class="form_icon_img">
+                                        {{-- <input type="text" class="form-control pr-50" id="location1" name="search_address" placeholder="Search Location..."> --}}
+                                        <a href="javascript:void(0)" class="input-search-btn" style="z-index: 100;" onclick="getLocation()" ><img src="/frontend/assets/examples/images/location.png" style="width: 20px;margin: 22px 0;"></a>
                                         <input type="text" class="form-control pr-50" id="location1" name="search_address" placeholder="Search Location...">
                                     </div>
                                     <div class="col-md-3 p-0">
@@ -420,8 +422,6 @@ Home
                                         </div> --}}
                                     @endif
                                 @endforeach
-                            </div>
-                            <div class="row">
                                 @foreach($taxonomy_tree['parent_taxonomies'] as $key2 => $parent_taxonomy)
                                     @if ($key2 % 2 == 1)
                                     <div class="col-lg-2 col-md-2">
@@ -466,7 +466,7 @@ Home
                     {{-- <div class="col-md-2">
                         <img src="{{$home->part_1_image}}" alt="" title="" class="">
                     </div> --}}
-                    <div class="col-md-8 text-left p-0">
+                    <div class="col-md-12 col-lg-8 text-left p-0">
                        <!--  <p>The purpose of this system is to provide a searchable and filterable directory of organizations, contacts and facilities to signed in users. Users can export any data about those three elements from the directory.</p> -->
                        {!! $home->sidebar_content !!}
                     </div>

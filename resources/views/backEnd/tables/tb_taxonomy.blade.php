@@ -140,22 +140,30 @@ Taxonomy
                       </div>
                     </div>
                     <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Category logo</label>
+                      <label for="inputPassword3" class="col-sm-3 control-label">Category Logo</label>
                       <div class="col-sm-7">
                         <input type="file" class="form-control" id="category_logo" name="category_logo">
+                        <p>Recommended image size is 60px x 60px</p>
                       </div>
                     </div>
                     <div class="form-group">
-                      <img src="" id="category_logo_image" width="100px">
+                      <label for="inputPassword3" class="col-sm-3 control-label">&nbsp;</label>
+                      <div class="col-sm-7">
+                        <img src="" id="category_logo_image" width="100px">
+                      </div>
                     </div>
                     <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Category logo White</label>
+                      <label for="inputPassword3" class="col-sm-3 control-label">Category Logo (White)</label>
                       <div class="col-sm-7">
                         <input type="file" class="form-control" id="category_logo_white" name="category_logo_white">
+                        <p>Recommended image size is 60px x 60px</p>
                       </div>
                     </div>
                     <div class="form-group">
-                      <img src="" width="100px" id="white_logo_image">
+                      <label for="inputPassword3" class="col-sm-3 control-label">&nbsp;</label>
+                      <div class="col-sm-7">
+                        <img src="" width="100px" id="white_logo_image" style="background: #c1c1c1;padding: 10px;border-radius: 12px;">
+                      </div>
                     </div>
                   </div>
                 </div>

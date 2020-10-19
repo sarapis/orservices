@@ -409,7 +409,7 @@ class OrganizationController extends Controller
 
     public function organization($id)
     {
-        dd('organizationController->organization');
+        // dd('organizationController->organization');
         // $organization = Organization::where('organization_recordid', '=', $id)->first();
         // $locations = Location::with('services', 'address', 'phones')->where('location_organization', '=', $id)->get();
 
@@ -647,94 +647,103 @@ class OrganizationController extends Controller
         // return response()->json($organization);
         $organization = Organization::where('organization_recordid', '=', $id)->first();
         $locations = Location::with('services', 'address', 'phones')->where('location_organization', '=', $id)->get();
-        // dd($organization);
+        // dd($locations);
+        if ($organization) {
+            if ($locations) {
+                $locations->filter(function ($value, $key) {
+                    // $value->service_name = $value->services && count($value->services) > 0 ? $value->services->service_name : '';
+                    // $value->service_recordid = $value->services && count($value->services) > 0 ? $value->services->service_recordid : '';
+                    $value->organization_name = $value->organization ? $value->organization->organization_name : '';
+                    $value->organization_recordid = $value->organization ? $value->organization->organization_recordid : '';
+                    $value->address_name = $value->address && count($value->address) > 0 ? $value->address[0]->address_1 : '';
+                    return true;
+                });
+            }
+            $organization_services = $organization->services() ? $organization->services()->orderBy('service_name')->paginate(10) : [];
+            if (count($organization->services) == 0) {
+                $organization_services = $organization->getServices()->orderBy('service_name')->paginate(10);
+            }
+            $map = Map::find(1);
+            $parent_taxonomy = [];
+            $child_taxonomy = [];
+            $checked_organizations = [];
+            $checked_insurances = [];
+            $checked_ages = [];
+            $checked_languages = [];
+            $checked_settings = [];
+            $checked_culturals = [];
+            $checked_transportations = [];
+            $checked_hours = [];
 
-        $organization_services = $organization->services()->orderBy('service_name')->paginate(10);
+            $organization_contacts_recordid_list = explode(',', $organization->organization_contact);
+            $contact_info_list = Contact::whereIn('contact_recordid', $organization_contacts_recordid_list)->get();
 
-        if (count($organization->services) == 0) {
-            $organization_services = $organization->getServices()->orderBy('service_name')->paginate(10);
-        }
-        $map = Map::find(1);
-        $parent_taxonomy = [];
-        $child_taxonomy = [];
-        $checked_organizations = [];
-        $checked_insurances = [];
-        $checked_ages = [];
-        $checked_languages = [];
-        $checked_settings = [];
-        $checked_culturals = [];
-        $checked_transportations = [];
-        $checked_hours = [];
+            $organization_locations_recordid_list = explode(',', $organization->organization_locations);
+            $location_info_list = Location::whereIn('location_recordid', $organization_locations_recordid_list)->orderBy('location_recordid')->paginate(10);
 
-        $organization_contacts_recordid_list = explode(',', $organization->organization_contact);
-        $contact_info_list = Contact::whereIn('contact_recordid', $organization_contacts_recordid_list)->get();
+            //=====================updated tree==========================//
 
-        $organization_locations_recordid_list = explode(',', $organization->organization_locations);
-        $location_info_list = Location::whereIn('location_recordid', $organization_locations_recordid_list)->orderBy('location_recordid')->paginate(10);
-
-        //=====================updated tree==========================//
-
-        $grandparent_taxonomies = Alt_taxonomy::all();
-
-        $taxonomy_tree = [];
-        if (count($grandparent_taxonomies) > 0) {
-            foreach ($grandparent_taxonomies as $key => $grandparent) {
-                $taxonomy_data['alt_taxonomy_name'] = $grandparent->alt_taxonomy_name;
-                $terms = $grandparent->terms()->get();
-                $taxonomy_parent_name_list = [];
-                foreach ($terms as $term_key => $term) {
-                    array_push($taxonomy_parent_name_list, $term->taxonomy_parent_name);
-                }
-
-                $taxonomy_parent_name_list = array_unique($taxonomy_parent_name_list);
-
-                $parent_taxonomy = [];
-                $grandparent_service_count = 0;
-                foreach ($taxonomy_parent_name_list as $term_key => $taxonomy_parent_name) {
-                    $parent_count = Taxonomy::where('taxonomy_parent_name', '=', $taxonomy_parent_name)->count();
-                    $term_count = $grandparent->terms()->where('taxonomy_parent_name', '=', $taxonomy_parent_name)->count();
-                    if ($parent_count == $term_count) {
-                        $child_data['parent_taxonomy'] = $taxonomy_parent_name;
-                        $child_taxonomies = Taxonomy::where('taxonomy_parent_name', '=', $taxonomy_parent_name)->get(['taxonomy_name', 'taxonomy_id']);
-                        $child_data['child_taxonomies'] = $child_taxonomies;
-                        array_push($parent_taxonomy, $child_data);
-                    } else {
-                        foreach ($grandparent->terms()->where('taxonomy_parent_name', '=', $taxonomy_parent_name)->get() as $child_key => $child_term) {
-                            $child_data['parent_taxonomy'] = $child_term;
-                            $child_data['child_taxonomies'] = "";
+            $grandparent_taxonomies = Alt_taxonomy::all();
+            $taxonomy_tree = [];
+            if (count($grandparent_taxonomies) > 0) {
+                foreach ($grandparent_taxonomies as $key => $grandparent) {
+                    $taxonomy_data['alt_taxonomy_name'] = $grandparent->alt_taxonomy_name;
+                    $terms = $grandparent->terms()->get();
+                    $taxonomy_parent_name_list = [];
+                    foreach ($terms as $term_key => $term) {
+                        array_push($taxonomy_parent_name_list, $term->taxonomy_parent_name);
+                    }
+                    $taxonomy_parent_name_list = array_unique($taxonomy_parent_name_list);
+                    $parent_taxonomy = [];
+                    $grandparent_service_count = 0;
+                    foreach ($taxonomy_parent_name_list as $term_key => $taxonomy_parent_name) {
+                        $parent_count = Taxonomy::where('taxonomy_parent_name', '=', $taxonomy_parent_name)->count();
+                        $term_count = $grandparent->terms()->where('taxonomy_parent_name', '=', $taxonomy_parent_name)->count();
+                        if ($parent_count == $term_count) {
+                            $child_data['parent_taxonomy'] = $taxonomy_parent_name;
+                            $child_taxonomies = Taxonomy::where('taxonomy_parent_name', '=', $taxonomy_parent_name)->get(['taxonomy_name', 'taxonomy_id']);
+                            $child_data['child_taxonomies'] = $child_taxonomies;
                             array_push($parent_taxonomy, $child_data);
+                        } else {
+                            foreach ($grandparent->terms()->where('taxonomy_parent_name', '=', $taxonomy_parent_name)->get() as $child_key => $child_term) {
+                                $child_data['parent_taxonomy'] = $child_term;
+                                $child_data['child_taxonomies'] = "";
+                                array_push($parent_taxonomy, $child_data);
+                            }
                         }
                     }
+                    $taxonomy_data['parent_taxonomies'] = $parent_taxonomy;
+                    array_push($taxonomy_tree, $taxonomy_data);
                 }
-                $taxonomy_data['parent_taxonomies'] = $parent_taxonomy;
-                array_push($taxonomy_tree, $taxonomy_data);
+            } else {
+                $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name')->whereNotNull('taxonomy_services')->get();
+                // $parent_taxonomy_data = [];
+                // foreach($parent_taxonomies as $parent_taxonomy) {
+                //     $child_data['parent_taxonomy'] = $parent_taxonomy->taxonomy_name;
+                //     $child_data['child_taxonomies'] = $parent_taxonomy->childs;
+                //     array_push($parent_taxonomy_data, $child_data);
+                // }
+                $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies;
             }
+            $existing_tag_element_list = Organization::whereNotNull('organization_tag')->get()->pluck('organization_tag');
+            $existing_tags = [];
+            foreach ($existing_tag_element_list as $key => $existing_tag_element) {
+                $existing_tag_list = explode(", ", $existing_tag_element);
+                foreach ($existing_tag_list as $key => $existing_tag) {
+                    if (!in_array($existing_tag, $existing_tags, true)) {
+                        array_push($existing_tags, $existing_tag);
+                    }
+                }
+            }
+            $comment_list = Comment::where('comments_organization', '=', $id)->get();
+            $session_list = SessionData::where('session_organization', '=', $id)->select('session_recordid', 'session_edits', 'session_performed_at', 'session_verification_status')->get();
+
+            return view('frontEnd.organizations.show', compact('organization', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'contact_info_list', 'organization_services', 'location_info_list', 'existing_tags', 'comment_list', 'session_list'));
         } else {
-            $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name')->whereNotNull('taxonomy_services')->get();
-            // $parent_taxonomy_data = [];
-            // foreach($parent_taxonomies as $parent_taxonomy) {
-            //     $child_data['parent_taxonomy'] = $parent_taxonomy->taxonomy_name;
-            //     $child_data['child_taxonomies'] = $parent_taxonomy->childs;
-            //     array_push($parent_taxonomy_data, $child_data);
-            // }
-            $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies;
+            Session::flash('message', 'This record has been deleted.');
+            Session::flash('status', 'warning');
+            return redirect('organizations');
         }
-
-        $existing_tag_element_list = Organization::whereNotNull('organization_tag')->get()->pluck('organization_tag');
-        $existing_tags = [];
-        foreach ($existing_tag_element_list as $key => $existing_tag_element) {
-            $existing_tag_list = explode(", ", $existing_tag_element);
-            foreach ($existing_tag_list as $key => $existing_tag) {
-                if (!in_array($existing_tag, $existing_tags, true)) {
-                    array_push($existing_tags, $existing_tag);
-                }
-            }
-        }
-
-        $comment_list = Comment::where('comments_organization', '=', $id)->get();
-        $session_list = SessionData::where('session_organization', '=', $id)->select('session_recordid', 'session_edits', 'session_performed_at', 'session_verification_status')->get();
-
-        return view('frontEnd.organizations.show', compact('organization', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'contact_info_list', 'organization_services', 'location_info_list', 'existing_tags', 'comment_list', 'session_list'));
     }
 
     /**
@@ -747,36 +756,42 @@ class OrganizationController extends Controller
     {
         $map = Map::find(1);
         $organization = Organization::where('organization_recordid', '=', $id)->first();
+        if ($organization) {
 
-        // $organization_service_list = explode(',', $organization->services());
-        $services_info_list = Service::select('service_recordid', 'service_name')->get();
+            // $organization_service_list = explode(',', $organization->services());
+            $services_info_list = Service::select('service_recordid', 'service_name')->get();
 
-        $organization_service_list = [];
-        if(isset($organization->services) && count($organization->services) > 0){
-            foreach ($organization->services as $key => $value) {
-                $organization_service_list[] = $value->service_recordid;
-            }    
+            $organization_service_list = [];
+            if (isset($organization->services) && count($organization->services) > 0) {
+                foreach ($organization->services as $key => $value) {
+                    $organization_service_list[] = $value->service_recordid;
+                }
+            }
+
+            $organization_contacts_list = Contact::select('contact_recordid', 'contact_name')->get();
+            $organization_contact_info_list = Contact::where('contact_organizations', '=', $id)->select('contact_recordid')->get();
+
+            $contact_info_list = [];
+            foreach ($organization_contact_info_list as $key => $value) {
+                array_push($contact_info_list, $value->contact_recordid);
+            }
+
+            $organization_phones_list = Phone::select('phone_recordid', 'phone_number')->get();
+            $phone_info_list = explode(',', $organization->organization_phones);
+            $organization_locations_list = Location::select('location_recordid', 'location_name')->get();
+            $location_info_list = explode(',', $organization->organization_locations);
+            $organization_services_recordid_list = explode(',', $organization->organization_services);
+            $organization_services = Service::whereIn('service_recordid', $organization_services_recordid_list)->orderBy('service_name')->paginate(10);
+
+            $rating_info_list = ['1', '2', '3', '4', '5'];
+
+
+            return view('frontEnd.organizations.edit', compact('organization', 'map', 'services_info_list', 'organization_service_list', 'organization_contacts_list', 'contact_info_list', 'organization_phones_list', 'phone_info_list', 'organization_locations_list', 'location_info_list', 'organization_services', 'rating_info_list'));
+        } else {
+            Session::flash('message', 'This record has been deleted.');
+            Session::flash('status', 'warning');
+            return redirect('organizations');
         }
-
-        $organization_contacts_list = Contact::select('contact_recordid', 'contact_name')->get();
-        $organization_contact_info_list = Contact::where('contact_organizations', '=', $id)->select('contact_recordid')->get();
-
-        $contact_info_list = [];
-        foreach ($organization_contact_info_list as $key => $value) {
-            array_push($contact_info_list, $value->contact_recordid);
-        }
-
-        $organization_phones_list = Phone::select('phone_recordid', 'phone_number')->get();
-        $phone_info_list = explode(',', $organization->organization_phones);
-        $organization_locations_list = Location::select('location_recordid', 'location_name')->get();
-        $location_info_list = explode(',', $organization->organization_locations);
-        $organization_services_recordid_list = explode(',', $organization->organization_services);
-        $organization_services = Service::whereIn('service_recordid', $organization_services_recordid_list)->orderBy('service_name')->paginate(10);
-
-        $rating_info_list = ['1', '2', '3', '4', '5'];
-
-
-        return view('frontEnd.organizations.edit', compact('organization', 'map', 'services_info_list', 'organization_service_list', 'organization_contacts_list', 'contact_info_list', 'organization_phones_list', 'phone_info_list', 'organization_locations_list', 'location_info_list', 'organization_services', 'rating_info_list'));
     }
 
     /**
@@ -821,7 +836,7 @@ class OrganizationController extends Controller
             }
             $oldOrganizationContact = Contact::where('contact_organizations', '=', $id)->get();
 
-            foreach($oldOrganizationContact as $contact){
+            foreach ($oldOrganizationContact as $contact) {
                 $contact->contact_organizations = '';
                 $contact->save();
             }
@@ -951,16 +966,32 @@ class OrganizationController extends Controller
     {
         try {
             $organization_recordid = $request->input('organization_recordid');
-            $organization = Organization::where('organization_recordid', '=', $organization_recordid)->first();
-            if ($organization != null) {
-                $organization->delete();
+            if ($request->detele_type == 'only_organization') {
+                $organization = Organization::where('organization_recordid', '=', $organization_recordid)->first();
+                if ($organization != null) {
+                    $organization->delete();
+                }
+                Session::flash('message', 'Organization deleted successfully!');
+                Session::flash('status', 'success');
+                return redirect('organizations');
+            } else {
+                $organization = Organization::where('organization_recordid', '=', $organization_recordid)->first();
+
+                if ($organization != null) {
+                    $organization_contact_info_list = Contact::where('contact_organizations', '=', $organization_recordid)->delete();
+                    $location_info_list = explode(',', $organization->organization_locations);
+                    $organization_locations_list = Location::whereIn('location_recordid', $location_info_list)->delete();
+                    $organization_services_recordid_list = explode(',', $organization->organization_services);
+                    $organization_services = Service::whereIn('service_recordid', $organization_services_recordid_list)->delete();
+                    $organization->delete();
+                }
+                Session::flash('message', 'The organization and its services, contacts & facilities have been successfully deleted.');
+                Session::flash('status', 'success');
+                return redirect('organizations');
             }
-            Session::flash('message', 'Organization deleted successfully!');
-            Session::flash('status', 'success');
-            return redirect('organizations');
         } catch (\Throwable $th) {
-            Session::flash('message', 'Organization deleted successfully!');
-            Session::flash('status', 'success');
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
             return redirect()->back();
         }
     }

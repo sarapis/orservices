@@ -4,35 +4,6 @@ Organizations
 @stop
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
-
-<style type="text/css">
-/* .table a{
-    text-decoration:none !important;
-    color: rgba(40,53,147,.9);
-    white-space: normal;
-}
-.footable.breakpoint > tbody > tr > td > span.footable-toggle{
-    position: absolute;
-    right: 25px;
-    font-size: 25px;
-    color: #000000;
-}
-.ui-menu .ui-menu-item .ui-state-active {
-    padding-left: 0 !important;
-}
-ul#ui-id-1 {
-    width: 260px !important;
-}
-#map{
-    position: fixed !important;
-}
-.card-columns {
-    -webkit-column-count: 2;
-    column-count: 4 !important;
-} */
-
-</style>
-
 @section('content')
 @include('layouts.filter_organization')
 @include('layouts.sidebar_organization')
