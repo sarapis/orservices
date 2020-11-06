@@ -52,7 +52,7 @@ Contact Form
                   <td class="text-center">{{$key+1}}</td>
                   <td class="text-center">{{$suggest->created_at}}</td>
                   <td class="text-center">@if($suggest->suggest_organization)
-                    <span class="badge bg-blue">{{$suggest->organization->organization_name}}</span>
+                    <span class="badge bg-blue">{{$suggest->organization ? $suggest->organization->organization_name : ''}}</span>
                   @endif
                   </td>
                   <td><span style="white-space:normal;">{{$suggest->suggest_content}}</span></td>

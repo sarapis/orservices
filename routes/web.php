@@ -140,7 +140,7 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     // message
     Route::get('messagesSetting', 'frontEnd\MessageController@messagesSetting')->name('messagesSetting');
     Route::post('saveMessageCredential', 'frontEnd\MessageController@saveMessageCredential')->name('saveMessageCredential');
-
+      
     Route::post('/checkSendgrid', 'HomeController@checkSendgrid')->name('checkSendgrid');
     Route::post('/checkTwillio', 'HomeController@checkTwillio')->name('checkTwillio');
 });
