@@ -75,21 +75,25 @@ class MessageController extends Controller
 
     public function messagesSetting()
     {
-        $twillioSid = env('TWILIO_SID');
-        $twillioKey = env('TWILIO_TOKEN');
-        $twllioNumber = env('TWILIO_FROM');
+        // $twillioSid = env('TWILIO_SID');
+        // $twillioKey = env('TWILIO_TOKEN');
+        // $twllioNumber = env('TWILIO_FROM');
         $sendgridKey = env('SENDGRID_API_KEY');
-        return view('backEnd.messages.messageSetting', compact('twillioSid', 'twillioKey', 'twllioNumber', 'sendgridKey'));
+        $sendgridMailFromName = env('MAIL_FROM_NAME');
+        $sendgridMailFromAddress = env('MAIL_FROM_ADDRESS');
+        return view('backEnd.messages.messageSetting', compact('sendgridKey', 'sendgridMailFromName', 'sendgridMailFromAddress'));
     }
 
 
     public function saveMessageCredential(Request $request)
     {
         $this->validate($request, [
-            'twillioSid' => 'required',
-            'twillioKey' => 'required',
-            'twillioNumber' => 'required',
+            // 'twillioSid' => 'required',
+            // 'twillioKey' => 'required',
+            // 'twillioNumber' => 'required',
             'sendgridApiKey' => 'required',
+            'sendgridMailFromName' => 'required',
+            'sendgridMailFromName' => 'required',
         ]);
 
         try {
@@ -102,6 +106,8 @@ class MessageController extends Controller
                 "TWILIO_FROM" => $request->get('twillioNumber'),
                 "SENDGRID_API_KEY" => $request->get('sendgridApiKey'),
                 "MAIL_PASSWORD" => $request->get('sendgridApiKey'),
+                "MAIL_FROM_ADDRESS" => $request->get('sendgridMailFromAddress'),
+                "MAIL_FROM_NAME" => '"' . $request->get('sendgridMailFromName') . '"',
             ];
 
             if (count($values) > 0) {
