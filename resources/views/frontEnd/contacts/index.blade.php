@@ -106,11 +106,11 @@
                 <input type="hidden" id="checked_terms" name="checked_terms">
             </div> -->
             <div class="col-md-12">
+                <h4 class="card-title title_edit mb-30">
+                    Contacts
+                </h4>
                 <div class="card">
                     <div class="card-block">
-                        <h4 class="card-title mb-30 ">
-                            <p>Contacts</p>
-                        </h4>
                         <div class="table-responsive">
                             <table class="table" id="table">
                                 <thead>
@@ -124,7 +124,7 @@
                                         {{-- <th>Contact Department</th> --}}
                                         <th>Contact Email</th>
                                         <th>Organization</th>
-                                        <th>Facility</th>
+                                        <th>Location</th>
                                         <th>Services</th>
                                     </tr>
                                 </thead>

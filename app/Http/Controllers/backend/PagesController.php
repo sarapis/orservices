@@ -6,6 +6,7 @@ use App\Exports\ContactsExport;
 use App\Http\Controllers\Controller;
 use App\Model\Accessibility;
 use App\Model\Address;
+use App\Model\Airtable_v2;
 use App\Model\Airtablekeyinfo;
 use App\Model\Airtables;
 use App\Model\AutoSyncAirtable;
@@ -22,6 +23,7 @@ use App\Model\Phone;
 use App\Model\Schedule;
 use App\Model\Service;
 use App\Model\ServiceLocation;
+use App\Model\ServiceOrganization;
 use App\Model\ServiceTaxonomy;
 use App\Model\Source_data;
 use App\Model\Taxonomy;
@@ -30,6 +32,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
+use PHPUnit\Framework\Constraint\FileExists;
 
 class PagesController extends Controller
 {
@@ -160,20 +163,37 @@ class PagesController extends Controller
     public function import()
     {
         $airtables = Airtables::all();
+        $airtables_v2 = Airtable_v2::all();
         $airtablekeyinfo = Airtablekeyinfo::find(1);
+        $airtablekeyinfo_v2 = Airtablekeyinfo::find(2);
         $csvs = CSV_Source::all();
         $source_data = Source_data::find(1);
         $autosync = AutoSyncAirtable::find(1);
 
-        return view('backEnd.datasync', compact('airtables', 'csvs', 'source_data', 'autosync', 'airtablekeyinfo'));
+        return view('backEnd.datasync', compact('airtables', 'csvs', 'source_data', 'autosync', 'airtablekeyinfo', 'airtables_v2', 'airtablekeyinfo_v2'));
     }
 
     public function export(Request $request)
     {
         try {
             $hsds_api_key = HsdsApiKey::find(1);
-            $url_path = 'http://34.222.120.131/datapackages?auth_key=' . $hsds_api_key->hsds_api_key;
-            return view('backEnd.pages.export', compact('hsds_api_key', 'url_path'));
+            $download_all =  ['download_all' => 'Download All'];
+            // $organization_tags = Organization::whereNotNull('organization_tag')->pluck('organization_tag', 'organization_tag')->unique()->toArray();
+            $organization_tags_list = Organization::whereNotNull('organization_tag')->select("organization_tag")->distinct()->get();
+
+            $tag_list = ['download_all' => 'Download All'];
+            foreach ($organization_tags_list as $key => $value) {
+                $tags = explode(",", trim($value->organization_tag));
+                $tag_list = array_merge($tag_list, $tags);
+            }
+            $tag_list = array_unique($tag_list);
+            $organization_tags = [];
+            foreach ($tag_list as $key => $value) {
+                $organization_tags[$value] = $value;
+            }
+            // $organization_tags = array_merge($download_all, $organization_tags);
+            $url_path = url('/datapackages?auth_key=' . $hsds_api_key->hsds_api_key);
+            return view('backEnd.pages.export', compact('hsds_api_key', 'url_path', 'organization_tags'));
         } catch (\Throwable $th) {
             dd($th);
         }
@@ -189,38 +209,59 @@ class PagesController extends Controller
         return redirect('export');
     }
 
-    public function export_hsds_zip_file()
+    public function export_hsds_zip_file(Request $request)
     {
-
         $path_csv_export = public_path('csv_export/datapackage/');
         $public_path = public_path('/');
-
-        $table_service = Service::all();
+        $organization_ids = [];
+        if ($request->has('organization_tags')) {
+            if (in_array('download_all', $request->organization_tags)) {
+                $organization_ids = Organization::pluck('organization_recordid')->toArray();
+            } else {
+                $organization_tags = $request->organization_tags;
+                $organization_ids = Organization::where(function ($query) use ($organization_tags) {
+                    foreach ($organization_tags as $keyword) {
+                        $query = $query->orWhere('organization_tag', 'LIKE', "%$keyword%");
+                    }
+                    return $query;
+                })->pluck('organization_recordid')->toArray();
+            }
+        }
+        if (!empty($organization_ids)) {
+            $organization_service_recordid = ServiceOrganization::whereIn('organization_recordid', $organization_ids)->pluck('service_recordid');
+            $table_service = Service::whereIn('service_recordid', $organization_service_recordid)->get();
+        } else {
+            $table_service = Service::all();
+        }
+        // if (file_exists(public_path('datapackage.zip'))) {
+        //     unlink(public_path('datapackage.zip'));
+        // }
         $file_service = fopen('services.csv', 'w');
-        fputcsv($file_service, array('id', 'organization_id', 'program_id', 'name', 'alternate_name', 'description', 'url', 'email', 'status', 'interpretation_services', 'application_process', 'wait_time', 'fees', 'accreditations', 'licenses', 'taxonomy_ids'));
+        fputcsv($file_service, array('id', 'organization_id', 'program_id', 'name', 'alternate_name', 'description', 'url', 'email', 'status', 'interpretation_services', 'application_process', 'wait_time', 'fees', 'accreditations', 'licenses'));
         // fputcsv($file_service, array('ID', 'id', 'name', 'alternate_name', 'organization_id', 'description', 'service_locations', 'url', 'program_id', 'email', 'status', 'service_taxonomy', 'application_process', 'wait_time', 'fees', 'accreditations', 'licenses', 'service_phones'));
         foreach ($table_service as $row) {
-            // if ($row->organization_id) {
-            $serviceArray = [
-                'id' => $row->id,
-                'organization_id' => $row->service_organization,
-                'program_id' => $row->service_program,
-                'name' => $row->service_name,
-                'alternate_name' => $row->service_alternate_name,
-                'description' => $row->service_description,
-                'url' => $row->service_url,
-                'email' => $row->service_email,
-                'status' => $row->service_status == 'Verified' ? 'active' : 'inactive',
-                'interpretation_services' => '',
-                'application_process' => $row->service_application_process,
-                'wait_time' => $row->service_wait_time,
-                'fees' => $row->service_fees,
-                'accreditations' => $row->service_accreditations,
-                'licenses' => $row->service_licenses,
-                'taxonomy_ids' => $row->service_taxonomy,
-            ];
-            fputcsv($file_service, $serviceArray);
-            // }
+
+            if ($row->service_organization) {
+                $serviceArray = [
+                    'id' => $row->id,
+                    'organization_id' => $row->service_organization,
+                    'program_id' => $row->service_program,
+                    'name' => $row->service_name,
+                    'alternate_name' => $row->service_alternate_name,
+                    'description' => $row->service_description,
+                    'url' => $row->service_url,
+                    'email' => $row->service_email,
+                    'status' => $row->service_status == 'Verified' ? 'active' : 'inactive',
+                    'interpretation_services' => '',
+                    'application_process' => $row->service_application_process,
+                    'wait_time' => $row->service_wait_time,
+                    'fees' => $row->service_fees,
+                    'accreditations' => $row->service_accreditations,
+                    'licenses' => $row->service_licenses,
+                    // 'taxonomy_ids' => $row->service_taxonomy,
+                ];
+                fputcsv($file_service, $serviceArray);
+            }
         }
         fclose($file_service);
         if (file_exists($path_csv_export . 'services.csv')) {
@@ -228,8 +269,11 @@ class PagesController extends Controller
         }
         rename($public_path . 'services.csv', $path_csv_export . 'services.csv');
 
-
-        $table_location = Location::all();
+        if (!empty($organization_ids)) {
+            $table_location = Location::whereIn('location_organization', $organization_ids)->get();
+        } else {
+            $table_location = Location::all();
+        }
         $file_location = fopen('locations.csv', 'w');
         fputcsv($file_location, array('id', 'organization_id', 'name', 'alternate_name', 'description', 'transportation', 'latitude', 'longitude'));
 
@@ -256,7 +300,11 @@ class PagesController extends Controller
         }
         rename($public_path . 'locations.csv', $path_csv_export . 'locations.csv');
 
-        $table_organization = Organization::all();
+        if (!empty($organization_ids)) {
+            $table_organization = Organization::whereIn('organization_recordid', $organization_ids)->get();
+        } else {
+            $table_organization = Organization::all();
+        }
         $file_organization = fopen('organizations.csv', 'w');
 
         fputcsv($file_organization, array('id', 'name', 'alternate_name', 'description', 'email', 'url', 'tax_status', 'tax_id', 'year_incorporated', 'legal_status'));
@@ -286,7 +334,11 @@ class PagesController extends Controller
         }
         rename($public_path . 'organizations.csv', $path_csv_export . 'organizations.csv');
 
-        $table_contact = Contact::all();
+        if (!empty($organization_ids)) {
+            $table_contact = Contact::whereIn('contact_organizations', $organization_ids)->get();
+        } else {
+            $table_contact = Contact::all();
+        }
         $file_contact = fopen('contacts.csv', 'w');
         fputcsv($file_contact, array('id', 'organization_id', 'service_id', 'service_at_location_id', 'name', 'title', 'department', 'email'));
         // fputcsv($file_contact, array('ID', 'id', 'name', 'organization_id', 'service_id', 'title', 'department', 'email', 'phone_number', 'phone_areacode', 'phone_extension', 'flag'));
@@ -310,29 +362,32 @@ class PagesController extends Controller
             unlink($path_csv_export . 'contacts.csv');
         }
         rename($public_path . 'contacts.csv', $path_csv_export . 'contacts.csv');
-
-        $table_phone = Phone::all();
+        if (!empty($organization_ids)) {
+            $table_phone = Phone::whereIn('phone_organizations', $organization_ids)->get();
+        } else {
+            $table_phone = Phone::all();
+        }
         $file_phone = fopen('phones.csv', 'w');
         fputcsv($file_phone, array('id', 'location_id', 'service_id', 'organization_id', 'contact_id', 'service_at_location_id', 'number', 'extension', 'type', 'language', 'description', 'department'));
         // fputcsv($file_phone, array('ID', 'id', 'number', 'location_id', 'service_id', 'organization_id', 'contact_id', 'extension', 'type', 'language', 'description', 'phone_schedule', 'flag'));
         foreach ($table_phone as $row) {
-            // if ($row->phone_number) {
-            $phoneArray = [
-                'id' => $row->id,
-                'location_id' => $row->phone_locations,
-                'service_id' => $row->phone_services,
-                'organization_id' => $row->phone_organizations,
-                'contact_id' => $row->phone_contacts,
-                'service_at_location_id' => '',
-                'number' => $row->phone_number,
-                'extension' => $row->phone_extension,
-                'type' => $row->phone_type,
-                'language' => $row->phone_language,
-                'description' => $row->phone_description,
-                'department' => '',
-            ];
-            fputcsv($file_phone, $phoneArray);
-            // }
+            if ($row->phone_number) {
+                $phoneArray = [
+                    'id' => $row->id,
+                    'location_id' => $row->phone_locations,
+                    'service_id' => $row->phone_services,
+                    'organization_id' => $row->phone_organizations,
+                    'contact_id' => $row->phone_contacts,
+                    'service_at_location_id' => '',
+                    'number' => $row->phone_number,
+                    'extension' => $row->phone_extension,
+                    'type' => $row->phone_type,
+                    'language' => $row->phone_language,
+                    'description' => $row->phone_description,
+                    'department' => '',
+                ];
+                fputcsv($file_phone, $phoneArray);
+            }
             // fputcsv($file_phone, $row->toArray());
         }
         fclose($file_phone);
@@ -346,24 +401,24 @@ class PagesController extends Controller
         fputcsv($file_address, array('id', 'location_id', 'attention', 'address_1', 'address_2', 'address_3', 'address_4', 'city', 'region', 'state_province', 'postal_code', 'country'));
         // fputcsv($file_address, array('ID', 'id', 'address_1', 'address_2', 'city', 'state_province', 'postal_code', 'region', 'country', 'attention', 'address_type', 'location_id', 'address_services', 'organization_id', 'flag'));
         foreach ($table_address as $row) {
-            // if ($row->address_1) {
-            $addressArray = [
-                'id' => $row->id,
-                'location_id' => $row->address_locations,
-                'attention' => $row->address_attention,
-                'address_1' => $row->address_1,
-                'address_2' => $row->address_2,
-                'address_3' => '',
-                'address_4' => '',
-                'city' => $row->address_city,
-                'region' => $row->address_region,
-                'state_province' => $row->address_state_province,
-                'postal_code' => $row->address_postal_code,
-                'country' => $row->address_country,
-            ];
-            // fputcsv($file_address, $row->toArray());
-            fputcsv($file_address, $addressArray);
-            // }
+            if ($row->address_1 && $row->address_city && $row->address_state_province && $row->address_postal_code && $row->address_country) {
+                $addressArray = [
+                    'id' => $row->id,
+                    'location_id' => $row->address_locations,
+                    'attention' => $row->address_attention,
+                    'address_1' => $row->address_1,
+                    'address_2' => $row->address_2,
+                    'address_3' => '',
+                    'address_4' => '',
+                    'city' => $row->address_city,
+                    'region' => $row->address_region,
+                    'state_province' => $row->address_state_province,
+                    'postal_code' => $row->address_postal_code,
+                    'country' => $row->address_country,
+                ];
+                // fputcsv($file_address, $row->toArray());
+                fputcsv($file_address, $addressArray);
+            }
         }
         fclose($file_address);
         if (file_exists($path_csv_export . 'physical_addresses.csv')) {
@@ -393,47 +448,51 @@ class PagesController extends Controller
         rename($public_path . 'languages.csv', $path_csv_export . 'languages.csv');
 
         $table_taxonomy = Taxonomy::all();
-        $file_taxonomy = fopen('taxonomy.csv', 'w');
+        $file_taxonomy = fopen('taxonomy_terms.csv', 'w');
         // fputcsv($file_taxonomy, array('ID', 'id', 'name', 'parent_name', 'taxonomy_grandparent_name', 'vocabulary', 'taxonomy_x_description', 'taxonomy_x_notes', 'taxonomy_services', 'parent_id', 'taxonomy_facet', 'category_id', 'taxonomy_id', 'flag'));
-        fputcsv($file_taxonomy, array('id', 'name', 'parent_id', 'parent_name', 'vocabulary'));
+        fputcsv($file_taxonomy, array('id', 'term', 'description', 'parent_id', 'taxonomy', 'language'));
         foreach ($table_taxonomy as $row) {
-
-            $taxonomyArray = [
-                'id' => $row->id,
-                'name' => $row->taxonomy_name,
-                'parent_id' => $row->taxonomy_parent_recordid,
-                'parent_name' => $row->taxonomy_parent_name,
-                'vocabulary' => $row->taxonomy_vocabulary,
-            ];
-            fputcsv($file_taxonomy, $taxonomyArray);
-            // fputcsv($file_taxonomy, $row->toArray());
+            if ($row->taxonomy_name && $row->taxonomy_x_description) {
+                $taxonomyArray = [
+                    'id' => $row->id,
+                    'term' => $row->taxonomy_name,
+                    'description' => $row->taxonomy_x_description,
+                    'parent_id' => $row->taxonomy_parent_recordid,
+                    'taxonomy' => '',
+                    'language' => '',
+                    // 'vocabulary' => $row->taxonomy_vocabulary,
+                ];
+                fputcsv($file_taxonomy, $taxonomyArray);
+                // fputcsv($file_taxonomy, $row->toArray());
+            }
         }
         fclose($file_taxonomy);
-        if (file_exists($path_csv_export . 'taxonomy.csv')) {
-            unlink($path_csv_export . 'taxonomy.csv');
+        if (file_exists($path_csv_export . 'taxonomy_terms.csv')) {
+            unlink($path_csv_export . 'taxonomy_terms.csv');
         }
-        rename($public_path . 'taxonomy.csv', $path_csv_export . 'taxonomy.csv');
+        rename($public_path . 'taxonomy_terms.csv', $path_csv_export . 'taxonomy_terms.csv');
 
         $table_servicetaxonomy = ServiceTaxonomy::all();
-        $file_servicetaxonomy = fopen('services_taxonomy.csv', 'w');
-        fputcsv($file_servicetaxonomy, array('id', 'service_id', 'taxonomy_id', 'taxonomy_detail'));
+        $file_servicetaxonomy = fopen('service_attributes.csv', 'w');
+        fputcsv($file_servicetaxonomy, array('id', 'service_id', 'taxonomy_term_id'));
         // fputcsv($file_servicetaxonomy, array('ID', 'service_id', 'taxonomy_recordid', 'taxonomy_id', 'taxonomy_detail'));
         foreach ($table_servicetaxonomy as $row) {
-
-            $ServiceTaxonomyArray = [
-                'id' => $row->id,
-                'service_id' => $row->service_recordid,
-                'taxonomy_id' => $row->taxonomy_recordid,
-                'taxonomy_detail' => $row->taxonomy_detail,
-            ];
-            fputcsv($file_servicetaxonomy, $ServiceTaxonomyArray);
-            // fputcsv($file_servicetaxonomy, $row->toArray());
+            if ($row->service_recordid) {
+                $ServiceTaxonomyArray = [
+                    'id' => $row->id,
+                    'service_id' => $row->service_recordid,
+                    'taxonomy_term_id' => $row->taxonomy_recordid,
+                    // 'taxonomy_detail' => $row->taxonomy_detail,
+                ];
+                fputcsv($file_servicetaxonomy, $ServiceTaxonomyArray);
+                // fputcsv($file_servicetaxonomy, $row->toArray());
+            }
         }
         fclose($file_servicetaxonomy);
-        if (file_exists($path_csv_export . 'services_taxonomy.csv')) {
-            unlink($path_csv_export . 'services_taxonomy.csv');
+        if (file_exists($path_csv_export . 'service_attributes.csv')) {
+            unlink($path_csv_export . 'service_attributes.csv');
         }
-        rename($public_path . 'services_taxonomy.csv', $path_csv_export . 'services_taxonomy.csv');
+        rename($public_path . 'service_attributes.csv', $path_csv_export . 'service_attributes.csv');
 
         $table_servicelocation = ServiceLocation::all();
         $file_servicelocation = fopen('services_at_location.csv', 'w');
@@ -469,19 +528,28 @@ class PagesController extends Controller
         rename($public_path . 'accessibility_for_disabilities.csv', $path_csv_export . 'accessibility_for_disabilities.csv');
 
         $table_schedule = Schedule::all();
-        $file_schedule = fopen('regular_schedules.csv', 'w');
+        $file_schedule = fopen('schedules.csv', 'w');
         // fputcsv($file_schedule, array('ID', 'schedule_recordid', 'schedule_id', 'service_id', 'location_id', 'schedule_x_phones', 'weekday', 'opens_at', 'closes_at', 'holiday', 'start_date', 'end_date', 'original_text', 'Schedule_closed', 'flag'));
-        fputcsv($file_schedule, array('id', 'service_id', 'location_id', 'service_at_location_id', 'weekday', 'opens_at', 'closes_at'));
+        fputcsv($file_schedule, array('id', 'service_id', 'location_id', 'service_at_location_id', 'valid_from', 'valid_to', 'dtstart', 'until', 'wkst', 'freq', 'interval', 'byday', 'byweekno', 'bymonthday', 'byyearday', 'description'));
         foreach ($table_schedule as $row) {
             // if ($row->weekday) {
             $scheduleArray = [
                 'id' => $row->id,
                 'service_id' => $row->schedule_services,
                 'location_id' => $row->schedule_locations,
-                'service_at_location_id' => '',
-                'weekday' => $row->schedule_days_of_week,
-                'opens_at' => $row->schedule_opens_at,
-                'closes_at' => $row->schedule_closes_at,
+                'service_at_location_id' => $row->service_at_location,
+                'valid_from' => $row->valid_from,
+                'valid_to' => $row->valid_to,
+                'dtstart' => $row->schedule_start_date,
+                'until' => $row->schedule_end_date,
+                'wkst' => $row->wkst,
+                'freq' => $row->freq,
+                'interval' => $row->interval,
+                'byday' => $row->byday,
+                'byweekno' => $row->byweekno,
+                'bymonthday' => $row->bymonthday,
+                'byyearday' => $row->byyearday,
+                'description' => $row->description,
             ];
 
             fputcsv($file_schedule, $scheduleArray);
@@ -489,10 +557,10 @@ class PagesController extends Controller
             // fputcsv($file_schedule, $row->toArray());
         }
         fclose($file_schedule);
-        if (file_exists($path_csv_export . 'regular_schedules.csv')) {
-            unlink($path_csv_export . 'regular_schedules.csv');
+        if (file_exists($path_csv_export . 'schedules.csv')) {
+            unlink($path_csv_export . 'schedules.csv');
         }
-        rename($public_path . 'regular_schedules.csv', $path_csv_export . 'regular_schedules.csv');
+        rename($public_path . 'schedules.csv', $path_csv_export . 'schedules.csv');
         $zip_file = 'datapackage.zip';
         $zip = new \ZipArchive();
         $zip->open($zip_file, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
@@ -517,14 +585,36 @@ class PagesController extends Controller
         $hsds_api_key = Hsdsapikey::find(1);
         $auth_key = $hsds_api_key->hsds_api_key;
         if ($request->input('auth_key') == $auth_key) {
-            $path_csv_export = public_path('/csv_export/datapackage/');
+            $path_csv_export = public_path('csv_export/datapackage/');
             $public_path = public_path('/');
 
             $table_service = Service::all();
             $file_service = fopen('services.csv', 'w');
-            fputcsv($file_service, array('ID', 'id', 'name', 'alternate_name', 'organization_id', 'description', 'service_locations', 'url', 'program_id', 'email', 'status', 'service_taxonomy', 'application_process', 'wait_time', 'fees', 'accreditations', 'licenses', 'service_phones'));
+            fputcsv($file_service, array('id', 'organization_id', 'program_id', 'name', 'alternate_name', 'description', 'url', 'email', 'status', 'interpretation_services', 'application_process', 'wait_time', 'fees', 'accreditations', 'licenses'));
+            // fputcsv($file_service, array('ID', 'id', 'name', 'alternate_name', 'organization_id', 'description', 'service_locations', 'url', 'program_id', 'email', 'status', 'service_taxonomy', 'application_process', 'wait_time', 'fees', 'accreditations', 'licenses', 'service_phones'));
             foreach ($table_service as $row) {
-                fputcsv($file_service, $row->toArray());
+
+                if ($row->service_organization) {
+                    $serviceArray = [
+                        'id' => $row->id,
+                        'organization_id' => $row->service_organization,
+                        'program_id' => $row->service_program,
+                        'name' => $row->service_name,
+                        'alternate_name' => $row->service_alternate_name,
+                        'description' => $row->service_description,
+                        'url' => $row->service_url,
+                        'email' => $row->service_email,
+                        'status' => $row->service_status == 'Verified' ? 'active' : 'inactive',
+                        'interpretation_services' => '',
+                        'application_process' => $row->service_application_process,
+                        'wait_time' => $row->service_wait_time,
+                        'fees' => $row->service_fees,
+                        'accreditations' => $row->service_accreditations,
+                        'licenses' => $row->service_licenses,
+                        // 'taxonomy_ids' => $row->service_taxonomy,
+                    ];
+                    fputcsv($file_service, $serviceArray);
+                }
             }
             fclose($file_service);
             if (file_exists($path_csv_export . 'services.csv')) {
@@ -535,9 +625,24 @@ class PagesController extends Controller
 
             $table_location = Location::all();
             $file_location = fopen('locations.csv', 'w');
-            fputcsv($file_location, array('ID', 'id', 'name', 'organization_id', 'alternate_name', 'transportation', 'latitude', 'longitude', 'description', 'location_services', 'location_phones', 'location_details', 'location_schedule', 'location_address', 'flag'));
+            fputcsv($file_location, array('id', 'organization_id', 'name', 'alternate_name', 'description', 'transportation', 'latitude', 'longitude'));
+
+            // fputcsv($file_location, array('ID', 'id', 'name', 'organization_id', 'alternate_name', 'transportation', 'latitude', 'longitude', 'description', 'location_services', 'location_phones', 'location_details', 'location_schedule', 'location_address', 'flag'));
+
             foreach ($table_location as $row) {
-                fputcsv($file_location, $row->toArray());
+
+                $locationArray = [
+                    'id' => $row->id,
+                    'organization_id' => $row->location_organization,
+                    'name' => $row->location_name,
+                    'alternate_name' => $row->location_alternate_name,
+                    'description' => $row->location_description,
+                    'transportation' => $row->location_transportation,
+                    'latitude' => $row->location_latitude,
+                    'longitude' => $row->location_longitude,
+                ];
+                // fputcsv($file_location, $row->toArray());
+                fputcsv($file_location, $locationArray);
             }
             fclose($file_location);
             if (file_exists($path_csv_export . 'locations.csv')) {
@@ -547,9 +652,27 @@ class PagesController extends Controller
 
             $table_organization = Organization::all();
             $file_organization = fopen('organizations.csv', 'w');
-            fputcsv($file_organization, array('ID', 'id', 'name', 'alternate_name', 'organization_logo_x', 'organization_x_uid', 'description', 'email', 'organization_forms_x_filename', 'organization_forms_x_url', 'url', 'organization_status_x', 'organization_status_sort', 'legal_status', 'tax_status', 'tax_id', 'year_incorporated', 'organization_services', 'organization_phones', 'organization_locations', 'organization_contact', 'organization_details', 'organization_airs_taxonomy_x', 'flag'));
+
+            fputcsv($file_organization, array('id', 'name', 'alternate_name', 'description', 'email', 'url', 'tax_status', 'tax_id', 'year_incorporated', 'legal_status'));
+
+            // fputcsv($file_organization, array('ID', 'id', 'name', 'alternate_name', 'organization_logo_x', 'organization_x_uid', 'description', 'email', 'organization_forms_x_filename', 'organization_forms_x_url', 'url', 'organization_status_x', 'organization_status_sort', 'legal_status', 'tax_status', 'tax_id', 'year_incorporated', 'organization_services', 'organization_phones', 'organization_locations', 'organization_contact', 'organization_details', 'organization_airs_taxonomy_x', 'flag'));
             foreach ($table_organization as $row) {
-                fputcsv($file_organization, $row->toArray());
+                // if ($row->organization_description) {
+                $organizationArray = [
+                    'id' => strval($row->id),
+                    'name' => $row->organization_name,
+                    'alternate_name' => $row->organization_alternate_name,
+                    'description' => $row->organization_description,
+                    'email' => $row->organization_email,
+                    'url' => $row->organization_url,
+                    'tax_status' => $row->organization_tax_status,
+                    'tax_id' => $row->organization_tax_id,
+                    'year_incorporated' => $row->organization_year_incorporated,
+                    'legal_status' => $row->organization_legal_status,
+                ];
+                fputcsv($file_organization, $organizationArray);
+                // }
+                // fputcsv($file_organization, $row->toArray());
             }
             fclose($file_organization);
             if (file_exists($path_csv_export . 'organizations.csv')) {
@@ -559,9 +682,22 @@ class PagesController extends Controller
 
             $table_contact = Contact::all();
             $file_contact = fopen('contacts.csv', 'w');
-            fputcsv($file_contact, array('ID', 'id', 'name', 'organization_id', 'service_id', 'title', 'department', 'email', 'phone_number', 'phone_areacode', 'phone_extension', 'flag'));
+            fputcsv($file_contact, array('id', 'organization_id', 'service_id', 'service_at_location_id', 'name', 'title', 'department', 'email'));
+            // fputcsv($file_contact, array('ID', 'id', 'name', 'organization_id', 'service_id', 'title', 'department', 'email', 'phone_number', 'phone_areacode', 'phone_extension', 'flag'));
             foreach ($table_contact as $row) {
-                fputcsv($file_contact, $row->toArray());
+
+                $locationArray = [
+                    'id' => $row->id,
+                    'organization_id' => $row->contact_organizations,
+                    'service_id' => $row->contact_services,
+                    'service_at_location_id' => '',
+                    'name' => $row->contact_name,
+                    'title' => $row->contact_title,
+                    'department' => $row->contact_department,
+                    'email' => trim($row->contact_email),
+                ];
+                fputcsv($file_contact, $locationArray);
+                // fputcsv($file_contact, $row->toArray());
             }
             fclose($file_contact);
             if (file_exists($path_csv_export . 'contacts.csv')) {
@@ -571,9 +707,27 @@ class PagesController extends Controller
 
             $table_phone = Phone::all();
             $file_phone = fopen('phones.csv', 'w');
-            fputcsv($file_phone, array('ID', 'id', 'number', 'location_id', 'service_id', 'organization_id', 'contact_id', 'extension', 'type', 'language', 'description', 'phone_schedule', 'flag'));
+            fputcsv($file_phone, array('id', 'location_id', 'service_id', 'organization_id', 'contact_id', 'service_at_location_id', 'number', 'extension', 'type', 'language', 'description', 'department'));
+            // fputcsv($file_phone, array('ID', 'id', 'number', 'location_id', 'service_id', 'organization_id', 'contact_id', 'extension', 'type', 'language', 'description', 'phone_schedule', 'flag'));
             foreach ($table_phone as $row) {
-                fputcsv($file_phone, $row->toArray());
+                if ($row->phone_number) {
+                    $phoneArray = [
+                        'id' => $row->id,
+                        'location_id' => $row->phone_locations,
+                        'service_id' => $row->phone_services,
+                        'organization_id' => $row->phone_organizations,
+                        'contact_id' => $row->phone_contacts,
+                        'service_at_location_id' => '',
+                        'number' => $row->phone_number,
+                        'extension' => $row->phone_extension,
+                        'type' => $row->phone_type,
+                        'language' => $row->phone_language,
+                        'description' => $row->phone_description,
+                        'department' => '',
+                    ];
+                    fputcsv($file_phone, $phoneArray);
+                }
+                // fputcsv($file_phone, $row->toArray());
             }
             fclose($file_phone);
             if (file_exists($path_csv_export . 'phones.csv')) {
@@ -583,9 +737,27 @@ class PagesController extends Controller
 
             $table_address = Address::all();
             $file_address = fopen('physical_addresses.csv', 'w');
-            fputcsv($file_address, array('ID', 'id', 'address_1', 'address_2', 'city', 'state_province', 'postal_code', 'region', 'country', 'attention', 'address_type', 'location_id', 'address_services', 'organization_id', 'flag'));
+            fputcsv($file_address, array('id', 'location_id', 'attention', 'address_1', 'address_2', 'address_3', 'address_4', 'city', 'region', 'state_province', 'postal_code', 'country'));
+            // fputcsv($file_address, array('ID', 'id', 'address_1', 'address_2', 'city', 'state_province', 'postal_code', 'region', 'country', 'attention', 'address_type', 'location_id', 'address_services', 'organization_id', 'flag'));
             foreach ($table_address as $row) {
-                fputcsv($file_address, $row->toArray());
+                if ($row->address_1 && $row->address_city && $row->address_state_province && $row->address_postal_code && $row->address_country) {
+                    $addressArray = [
+                        'id' => $row->id,
+                        'location_id' => $row->address_locations,
+                        'attention' => $row->address_attention,
+                        'address_1' => $row->address_1,
+                        'address_2' => $row->address_2,
+                        'address_3' => '',
+                        'address_4' => '',
+                        'city' => $row->address_city,
+                        'region' => $row->address_region,
+                        'state_province' => $row->address_state_province,
+                        'postal_code' => $row->address_postal_code,
+                        'country' => $row->address_country,
+                    ];
+                    // fputcsv($file_address, $row->toArray());
+                    fputcsv($file_address, $addressArray);
+                }
             }
             fclose($file_address);
             if (file_exists($path_csv_export . 'physical_addresses.csv')) {
@@ -595,9 +767,18 @@ class PagesController extends Controller
 
             $table_language = Language::all();
             $file_language = fopen('languages.csv', 'w');
-            fputcsv($file_language, array('ID', 'id', 'location_id', 'service_id', 'language', 'flag'));
+            fputcsv($file_language, array('id', 'service_id', 'location_id', 'language'));
+            // fputcsv($file_language, array('ID', 'id', 'location_id', 'service_id', 'language', 'flag'));
             foreach ($table_language as $row) {
-                fputcsv($file_language, $row->toArray());
+
+                $langaugeArray = [
+                    'id' => $row->id,
+                    'service_id' => $row->language_service,
+                    'location_id' => $row->language_location,
+                    'language' => $row->language,
+                ];
+                fputcsv($file_language, $langaugeArray);
+                // fputcsv($file_language, $row->toArray());
             }
             fclose($file_language);
             if (file_exists($path_csv_export . 'languages.csv')) {
@@ -606,34 +787,66 @@ class PagesController extends Controller
             rename($public_path . 'languages.csv', $path_csv_export . 'languages.csv');
 
             $table_taxonomy = Taxonomy::all();
-            $file_taxonomy = fopen('taxonomy.csv', 'w');
-            fputcsv($file_taxonomy, array('ID', 'id', 'name', 'parent_name', 'taxonomy_grandparent_name', 'vocabulary', 'taxonomy_x_description', 'taxonomy_x_notes', 'taxonomy_services', 'parent_id', 'taxonomy_facet', 'category_id', 'taxonomy_id', 'flag'));
+            $file_taxonomy = fopen('taxonomy_terms.csv', 'w');
+            // fputcsv($file_taxonomy, array('ID', 'id', 'name', 'parent_name', 'taxonomy_grandparent_name', 'vocabulary', 'taxonomy_x_description', 'taxonomy_x_notes', 'taxonomy_services', 'parent_id', 'taxonomy_facet', 'category_id', 'taxonomy_id', 'flag'));
+            fputcsv($file_taxonomy, array('id', 'term', 'description', 'parent_id', 'taxonomy', 'language'));
             foreach ($table_taxonomy as $row) {
-                fputcsv($file_taxonomy, $row->toArray());
+                if ($row->taxonomy_name && $row->taxonomy_x_description) {
+                    $taxonomyArray = [
+                        'id' => $row->id,
+                        'term' => $row->taxonomy_name,
+                        'description' => $row->taxonomy_x_description,
+                        'parent_id' => $row->taxonomy_parent_recordid,
+                        'taxonomy' => '',
+                        'language' => '',
+                        // 'vocabulary' => $row->taxonomy_vocabulary,
+                    ];
+                    fputcsv($file_taxonomy, $taxonomyArray);
+                    // fputcsv($file_taxonomy, $row->toArray());
+                }
             }
             fclose($file_taxonomy);
-            if (file_exists($path_csv_export . 'taxonomy.csv')) {
-                unlink($path_csv_export . 'taxonomy.csv');
+            if (file_exists($path_csv_export . 'taxonomy_terms.csv')) {
+                unlink($path_csv_export . 'taxonomy_terms.csv');
             }
-            rename($public_path . 'taxonomy.csv', $path_csv_export . 'taxonomy.csv');
+            rename($public_path . 'taxonomy_terms.csv', $path_csv_export . 'taxonomy_terms.csv');
 
             $table_servicetaxonomy = Servicetaxonomy::all();
-            $file_servicetaxonomy = fopen('services_taxonomy.csv', 'w');
-            fputcsv($file_servicetaxonomy, array('ID', 'service_id', 'taxonomy_recordid', 'taxonomy_id', 'taxonomy_detail'));
+            $file_servicetaxonomy = fopen('service_attributes.csv', 'w');
+            fputcsv($file_servicetaxonomy, array('id', 'service_id', 'taxonomy_term_id'));
+            // fputcsv($file_servicetaxonomy, array('ID', 'service_id', 'taxonomy_recordid', 'taxonomy_id', 'taxonomy_detail'));
             foreach ($table_servicetaxonomy as $row) {
-                fputcsv($file_servicetaxonomy, $row->toArray());
+                if ($row->service_recordid) {
+                    $ServiceTaxonomyArray = [
+                        'id' => $row->id,
+                        'service_id' => $row->service_recordid,
+                        'taxonomy_term_id' => $row->taxonomy_recordid,
+                        // 'taxonomy_detail' => $row->taxonomy_detail,
+                    ];
+                    fputcsv($file_servicetaxonomy, $ServiceTaxonomyArray);
+                    // fputcsv($file_servicetaxonomy, $row->toArray());
+                }
             }
             fclose($file_servicetaxonomy);
-            if (file_exists($path_csv_export . 'services_taxonomy.csv')) {
-                unlink($path_csv_export . 'services_taxonomy.csv');
+            if (file_exists($path_csv_export . 'service_attributes.csv')) {
+                unlink($path_csv_export . 'service_attributes.csv');
             }
-            rename($public_path . 'services_taxonomy.csv', $path_csv_export . 'services_taxonomy.csv');
+            rename($public_path . 'service_attributes.csv', $path_csv_export . 'service_attributes.csv');
 
             $table_servicelocation = Servicelocation::all();
             $file_servicelocation = fopen('services_at_location.csv', 'w');
-            fputcsv($file_servicelocation, array('ID', 'location_id', 'service_id'));
+            fputcsv($file_servicelocation, array('id', 'service_id', 'location_id', 'description'));
+            // fputcsv($file_servicelocation, array('ID', 'location_id', 'service_id'));
             foreach ($table_servicelocation as $row) {
-                fputcsv($file_servicelocation, $row->toArray());
+
+                $ServiceLocationArray = [
+                    'id' => $row->id,
+                    'service_id' => $row->service_recordid,
+                    'location_id' => $row->location_recordid,
+                    'description' => '',
+                ];
+                // fputcsv($file_servicelocation, $row->toArray());
+                fputcsv($file_servicelocation, $ServiceLocationArray);
             }
             fclose($file_servicelocation);
             if (file_exists($path_csv_export . 'services_at_location.csv')) {
@@ -654,16 +867,39 @@ class PagesController extends Controller
             rename($public_path . 'accessibility_for_disabilities.csv', $path_csv_export . 'accessibility_for_disabilities.csv');
 
             $table_schedule = Schedule::all();
-            $file_schedule = fopen('regular_schedules.csv', 'w');
-            fputcsv($file_schedule, array('ID', 'schedule_recordid', 'schedule_id', 'service_id', 'location_id', 'schedule_x_phones', 'weekday', 'opens_at', 'closes_at', 'holiday', 'start_date', 'end_date', 'original_text', 'Schedule_closed', 'flag'));
+            $file_schedule = fopen('schedules.csv', 'w');
+            // fputcsv($file_schedule, array('ID', 'schedule_recordid', 'schedule_id', 'service_id', 'location_id', 'schedule_x_phones', 'weekday', 'opens_at', 'closes_at', 'holiday', 'start_date', 'end_date', 'original_text', 'Schedule_closed', 'flag'));
+            fputcsv($file_schedule, array('id', 'service_id', 'location_id', 'service_at_location_id', 'valid_from', 'valid_to', 'dtstart', 'until', 'wkst', 'freq', 'interval', 'byday', 'byweekno', 'bymonthday', 'byyearday', 'description'));
             foreach ($table_schedule as $row) {
-                fputcsv($file_schedule, $row->toArray());
+                // if ($row->weekday) {
+                $scheduleArray = [
+                    'id' => $row->id,
+                    'service_id' => $row->schedule_services,
+                    'location_id' => $row->schedule_locations,
+                    'service_at_location_id' => $row->service_at_location,
+                    'valid_from' => $row->valid_from,
+                    'valid_to' => $row->valid_to,
+                    'dtstart' => $row->schedule_start_date,
+                    'until' => $row->schedule_end_date,
+                    'wkst' => $row->wkst,
+                    'freq' => $row->freq,
+                    'interval' => $row->interval,
+                    'byday' => $row->byday,
+                    'byweekno' => $row->byweekno,
+                    'bymonthday' => $row->bymonthday,
+                    'byyearday' => $row->byyearday,
+                    'description' => $row->description,
+                ];
+
+                fputcsv($file_schedule, $scheduleArray);
+                // }
+                // fputcsv($file_schedule, $row->toArray());
             }
             fclose($file_schedule);
-            if (file_exists($path_csv_export . 'regular_schedules.csv')) {
-                unlink($path_csv_export . 'regular_schedules.csv');
+            if (file_exists($path_csv_export . 'schedules.csv')) {
+                unlink($path_csv_export . 'schedules.csv');
             }
-            rename($public_path . 'regular_schedules.csv', $path_csv_export . 'regular_schedules.csv');
+            rename($public_path . 'schedules.csv', $path_csv_export . 'schedules.csv');
 
             $zip_file = 'datapackage.zip';
             $zip = new \ZipArchive();
@@ -676,6 +912,8 @@ class PagesController extends Controller
                 if (!$file->isDir()) {
                     $filePath     = $file->getRealPath();
                     $relativePath = 'datapackage/' . substr($filePath, strlen($path));
+                    // $relativePath = substr($filePath, strlen($path));
+                    // dd($relativePath, $filePath, $path);
                     $zip->addFile($filePath, $relativePath);
                 }
             }

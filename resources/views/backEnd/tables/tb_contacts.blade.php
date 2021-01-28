@@ -45,7 +45,7 @@ Contacts
             <tbody>
               @foreach($contacts as $key => $contact)
                 <tr id="contact{{$contact->id}}" class="{{$contact->flag}}">
-                  @if($source_data->active == 1 )
+                  @if($source_data->active == 1 || $source_data->active == 3 )
                   <td class="text-center">{{$key}}+1</td>
                   @elseif($source_data->active == 0)
                   <td class="text-center">{{$contact->contact_recordid}}</td>

@@ -20,12 +20,12 @@ Contact Create
                 <input type="hidden" id="checked_terms" name="checked_terms">
             </div> -->
             <div class="col-md-12">
-                <div class="card all_form_field">
-                    <div class="card-block">
-                        <h4 class="card-title mb-30 ">
-                            <p>Create New Contact</p>
-                        </h4>
-                        <form action="/add_new_contact_in_service" method="GET">
+                <h4 class="card-title title_edit mb-30">
+                    Create New Contact
+                </h4>
+                <form action="/add_new_contact_in_service" method="GET">
+                    <div class="card all_form_field">
+                        <div class="card-block">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -48,8 +48,8 @@ Contact Create
                                             <option value="{{$org_name}}" {{ strpos($organization_name,$org_name) !== false ? 'selected' : '' }} >{{$org_name}}</option>
                                             @endforeach
                                         </select> --}}
-                                        {!! Form::select('contact_organization_name',$organizations,$organization_recordid,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5']) !!}
-                                        @error('contact_organization_name')
+                                        {!! Form::select('contact_organization',$organizations,$organization_recordid,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','placeholder' => 'Select organization']) !!}
+                                        @error('contact_organization')
                                             <span class="error-message"><strong>{{ $message }}</strong></span>
                                         @enderror
                                     </div>
@@ -75,7 +75,7 @@ Contact Create
                                             name="contact_email" value="">
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                                {{-- <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Phones: <a id="add-phone-input"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a></label>
                                         <ol id="phones-ul" class="row p-0 m-0" style="list-style: none;">
@@ -84,16 +84,86 @@ Contact Create
                                             </li>
                                         </ol>
                                     </div>
-                                </div>
-
-                                <div class="col-md-12 text-center">
-                                    <button type="button"  class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn" id="back-contact-btn"> Back</button>
-                                    <button type="submit" class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic green_btn" id="save-contact-btn"> Save</button>
-                                </div>
+                                </div> --}}
                             </div>
-                        </form>
+                        </div>
                     </div>
-                </div>
+                    <div class="card all_form_field">
+                        <div class="card-block">
+                            <h4 class="title_edit text-left mb-25 mt-10">
+                                Phones
+                                <div class="d-inline float-right" id="addPhoneTr">
+                                    <a href="javascript:void(0)" id="addData" class="plus_delteicon bg-primary-color">
+                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                    </a>
+                                </div>
+                            </h4>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="">
+                                            <table class="table table_border_none" id="PhoneTable">
+                                                <thead>
+                                                    <th>Number</th>
+                                                    <th>extension</th>
+                                                    <th style="width:200px;position:relative;">Type
+                                                        <div class="help-tip" style="top:8px;">
+                                                            <div><p>Select “Main” if this is the organization's primary phone number (or leave blank)
+                                                            </p></div>
+                                                        </div>
+                                                    </th>
+                                                    <th style="width:200px;">Language(s)</th>
+                                                    <th style="width:200px;position:relative;">Description
+                                                        <div class="help-tip" style="top:8px;">
+                                                            <div><p>A description providing extra information about the phone service (e.g. any special arrangements for accessing, or details of availability at particular times).
+                                                            </p></div>
+                                                        </div>
+                                                    </th>
+                                                    <th style="width:60px">&nbsp;</th>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <input type="text" class="form-control" name="contact_phones[]" id="">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" name="phone_extension[]" id="">
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::select('phone_type[]',$phone_type,[],['class' => 'form-control selectpicker','data-live-search' => 'true','id' => 'phone_type','data-size' => 5,'placeholder' => 'select phone type'])!!}
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::select('phone_language[]',$phone_languages,[],['class' => 'form-control selectpicker phone_language','data-size' => 5,' data-live-search' => 'true',"multiple" => true,"id" => "phone_language_0"]) !!}
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" name="phone_description[]" id="">
+                                                        </td>
+                                                        <td style="vertical-align: middle">
+                                                            <a href="#" class="plus_delteicon btn-button">
+                                                                <img src="/frontend/assets/images/delete.png" alt="" title="">
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    <tr></tr>
+                                                    {{-- <tr id="addPhoneTr">
+                                                        <td colspan="6" class="text-center">
+                                                            <a href="javascript:void(0)" id="addData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
+                                                        </td>
+                                                    </tr> --}}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="phone_language_data" id="phone_language_data">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 text-center">
+                        <button type="button"  class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn" id="back-contact-btn"> Back</button>
+                        <button type="submit" class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic green_btn" id="save-contact-btn"> Save</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -107,6 +177,24 @@ Contact Create
     });
     $(document).ready(function() {
         $('select#contact_service').val([]).change();
+    });
+    let phone_language_data = []
+    $(document).on('change','div > .phone_language',function () {
+        let value = $(this).val()
+        let id = $(this).attr('id')
+        let idsArray = id ? id.split('_') : []
+        let index = idsArray.length > 0 ? idsArray[2] : ''
+        phone_language_data[index] = value
+        $('#phone_language_data').val(JSON.stringify(phone_language_data))
+    })
+    pt = 1
+    $('#addPhoneTr').click(function(){
+        $('#PhoneTable tr:last').before('<tr><td><input type="text" class="form-control" name="contact_phones[]" id=""></td><td><input type="text" class="form-control" name="phone_extension[]" id=""></td><td>{!! Form::select("phone_type[]",$phone_type,[],["class" => "form-control selectpicker","data-live-search" => "true","id" => "phone_type","data-size" => 5,"placeholder" => "select phone type"])!!}</td><td><select name="phone_language[]" id="phone_language_'+pt+'" class="form-control selectpicker phone_language" data-size="5" data-live-search="true" multiple> @foreach ($phone_languages as $key=>$value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id=""></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('.selectpicker').selectpicker();
+        pt++;
+    })
+    $(document).on('click', '.removePhoneData', function(){
+        $(this).closest('tr').remove()
     });
 
     $("#add-phone-input").click(function(){

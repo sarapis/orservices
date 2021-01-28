@@ -22,6 +22,8 @@ class CreateDetailsTable extends Migration
             $table->text('detail_organizations')->nullable();
             $table->text('detail_services')->nullable();
             $table->text('detail_locations')->nullable();
+            $table->text('phones')->nullable();
+            $table->text('contacts')->nullable();
             $table->string('flag', 45)->nullable();
             $table->timestamps();
         });

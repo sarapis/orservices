@@ -126,10 +126,11 @@ class ComposerServiceProvider extends ServiceProvider
 
             $tag_list = [];
             foreach ($organization_tags as $key => $value) {
-                $tags = explode(", ", trim($value->organization_tag));
+                $tags = explode(",", trim($value->organization_tag));
                 $tag_list = array_merge($tag_list, $tags);
             }
             $tag_list = array_unique($tag_list);
+
             $organization_tagsArray = [];
             foreach ($tag_list as $key => $value) {
                 $organization_tagsArray[$value] = $value;

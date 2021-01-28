@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Model\Alt_taxonomy;
 use App\Model\Layout;
 use App\Model\Map;
+use App\Model\Page;
 use App\Model\Taxonomy;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -82,8 +84,11 @@ class HomeController extends Controller
             // }
             $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies;
         }
-
-        return view('frontEnd.home', compact('home', 'map', 'grandparent_taxonomies', 'layout'))->with('taxonomy_tree', $taxonomy_tree);
+        if ($layout && $layout->activate_login_home == 1 && !Auth::check()) {
+            return redirect('/login');
+        } else {
+            return view('frontEnd.home', compact('home', 'map', 'grandparent_taxonomies', 'layout'))->with('taxonomy_tree', $taxonomy_tree);
+        }
     }
     public function dashboard($value = '')
     {

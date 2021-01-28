@@ -32,7 +32,7 @@
 			<div class="col-md-6">
 				<div class="form-group  {{ $errors->has('first_name') ? 'has-error' : ''}}">
 					<label for="first_name">First Name</label>
-					{!! Form::text('first_name', null, ['class' => 'form-control','placeholder '=>'Enter your firtst name']) !!}
+					{!! Form::text('first_name', null, ['class' => 'form-control','placeholder '=>'Enter your first name']) !!}
 					{!! $errors->first('first_name', '<p class="help-block">:message</p>') !!}
 				</div>
 			</div>
@@ -43,25 +43,41 @@
 					{!! $errors->first('last_name', '<p class="help-block">:message</p>') !!}
 				</div>
 			</div>
+
 			<div class="col-md-12">
 				<div class="form-group  {{ $errors->has('email') ? 'has-error' : ''}}">
 					<label for="email">Your Email</label>
-					{!! Form::email('email', null, ['class' => 'form-control','placeholder '=>'E-mail']) !!}
+					{!! Form::text('email', null, ['class' => 'form-control','placeholder '=>'E-mail']) !!}
 					{!! $errors->first('email', '<p class="help-block">:message</p>') !!}
+				</div>
+            </div>
+
+            <div class="col-md-12">
+				<div class="form-group  {{ $errors->has('phone_number') ? 'has-error' : ''}}">
+					<label for="phone_number">Your Phone Number</label>
+					{!! Form::text('phone_number', null, ['class' => 'form-control','placeholder '=>'Phone Number']) !!}
+					{!! $errors->first('phone_number', '<p class="help-block">:message</p>') !!}
 				</div>
 			</div>
 			<div class="col-md-12">
 				<div class="form-group  {{ $errors->has('organization') ? 'has-error' : ''}}">
 					<label for="organization">Organization</label>
-					<select class="form-control selectpicker" data-live-search="true" id="organization" name="organization[]">
-						<option value=" " selected></option>
+					<select class="form-control selectpicker" data-live-search="true" id="organization" name="organization">
+						<option value="" selected>Select Organization</option>
 					@foreach($organization_info_list as $key => $organization_info)
 						<option value="{{$organization_info->organization_recordid}}">{{$organization_info->organization_name}}</option>
 					@endforeach
 					</select>
 					{!! $errors->first('organization', '<p class="help-block">:message</p>') !!}
 				</div>
-			</div>
+            </div>
+            <div class="col-md-12">
+				<div class="form-group  {{ $errors->has('message') ? 'has-error' : ''}}">
+					<label for="message">Your Message</label>
+					{!! Form::textarea('message', null, ['class' => 'form-control','placeholder '=>'Message']) !!}
+					{!! $errors->first('message', '<p class="help-block">:message</p>') !!}
+				</div>
+            </div>
 			<div class="col-md-6">
 				<div class="form-group  {{ $errors->has('password') ? 'has-error' : ''}}">
 					<label for="password">Password</label>
@@ -77,11 +93,16 @@
 				</div>
 			</div>
 			<div class="col-md-12 ">
-				<div class="text-center {{ $errors->has('password') ? 'has-error' : ''}} ">
+				<div class="text-center">
 					<button class="btn btn-primary btn-lg btn-block register-button" type="submit" >Register</button>
 				</div>
 			</div>
-			<a class="forget_password" style="margin-top: 15px;display: inline-block;margin-bottom: 0;" href="{{url('login')}}">Login</a>
+			<div class="col-md-12 ">
+				<div class="text-center">
+					<a class="forget_password" style="margin-top: 15px;display: inline-block;margin-bottom: 0;" href="{{url('login')}}">Login</a>
+				</div>
+			</div>
+
 			@if ($errors->has('global'))
 				<span class="help-block danger">
 					<strong style="color:red" >{{ $errors->first('global') }}</strong>

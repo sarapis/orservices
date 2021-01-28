@@ -26,11 +26,10 @@ Organizations
                                 $organization_services = $organization->getServices->count();
                             }
                         @endphp
-                        @if(isset($organization->services) )
+                        @if(isset($organization->services) && count($organization->services) != 0)
                             {{$organization->services->count()}}
-                        {{-- @elseif(isset($organization_services))
-                            {{ dd($organization) }}
-                            {{ $organization_services }} --}}
+                        @elseif(count($organization->services) == 0)
+                            {{ $organization->getServices->count() }}
                         @else
                             0
                         @endif

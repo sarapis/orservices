@@ -51,15 +51,31 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::post('/update_password/{id}', 'AccountController@update_password')->name('update_password');
     Route::get('/sync_services/{api_key}/{base_url}', ['uses' => 'frontEnd\ServiceController@airtable']);
     Route::get('/sync_test/{api_key}/{base_url}', ['uses' => 'frontEnd\ServiceController@test_airtable']);
-
     Route::get('/sync_locations/{api_key}/{base_url}', ['uses' => 'frontEnd\LocationController@airtable']);
     Route::get('/sync_organizations/{api_key}/{base_url}', ['uses' => 'frontEnd\OrganizationController@airtable']);
     Route::get('/sync_contact/{api_key}/{base_url}', ['uses' => 'frontEnd\ContactController@airtable']);
     Route::get('/sync_phones/{api_key}/{base_url}', ['uses' => 'frontEnd\PhoneController@airtable']);
     Route::get('/sync_address/{api_key}/{base_url}', ['uses' => 'frontEnd\AddressController@airtable']);
+    Route::get('/sync_physical_address/{api_key}/{base_url}', ['uses' => 'frontEnd\AddressController@airtable']);
     Route::get('/sync_schedule/{api_key}/{base_url}', ['uses' => 'frontEnd\ScheduleController@airtable']);
     Route::get('/sync_taxonomy/{api_key}/{base_url}', ['uses' => 'frontEnd\TaxonomyController@airtable']);
     Route::get('/sync_details/{api_key}/{base_url}', ['uses' => 'frontEnd\DetailController@airtable']);
+
+
+    Route::get('/sync_v2_locations/{api_key}/{base_url}', ['uses' => 'frontEnd\LocationController@airtable_v2']);
+    Route::get('/sync_v2_organizations/{api_key}/{base_url}', ['uses' => 'frontEnd\OrganizationController@airtable_v2']);
+    Route::get('/sync_v2_contacts/{api_key}/{base_url}', ['uses' => 'frontEnd\ContactController@airtable_v2']);
+    Route::get('/sync_v2_phones/{api_key}/{base_url}', ['uses' => 'frontEnd\PhoneController@airtable_v2']);
+    // Route::get('/sync_v2_address/{api_key}/{base_url}', ['uses' => 'frontEnd\AddressController@airtable_v2']);
+    Route::get('/sync_v2_physical_address/{api_key}/{base_url}', ['uses' => 'frontEnd\AddressController@airtable_v2']);
+    Route::get('/sync_v2_schedule/{api_key}/{base_url}', ['uses' => 'frontEnd\ScheduleController@airtable_v2']);
+    Route::get('/sync_v2_taxonomy_term/{api_key}/{base_url}', ['uses' => 'frontEnd\TaxonomyController@airtable_v2']);
+    Route::get('/sync_v2_x_details/{api_key}/{base_url}', ['uses' => 'frontEnd\DetailController@airtable_v2']);
+    Route::get('/sync_v2_services/{api_key}/{base_url}', ['uses' => 'frontEnd\ServiceController@airtable_v2']);
+    Route::get('/sync_v2_programs/{api_key}/{base_url}', ['uses' => 'backend\ProgramController@airtable_v2']);
+
+
+
     Route::resource('services', 'frontEnd\ServiceController');
     // Route::get('/services', 'frontEnd\ServiceController@services');
     Route::get('/download_service/{id}', 'frontEnd\ServiceController@download');
@@ -72,6 +88,8 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::get('/service_create', 'frontEnd\ServiceController@create');
     // Route::get('/add_new_service', 'frontEnd\ServiceController@add_new_service');
     Route::post('/add_new_service_in_organization', 'frontEnd\ServiceController@add_new_service_in_organization')->name('add_new_service_in_organization');
+    Route::get('/getDetailTerm', 'frontEnd\ServiceController@getDetailTerm')->name('getDetailTerm');
+    Route::get('/getTaxonomyTerm', 'frontEnd\ServiceController@getTaxonomyTerm')->name('getTaxonomyTerm');
     // Route::get('/add_new_service_in_facility', 'frontEnd\ServiceController@add_new_service_in_facility');
 
     Route::match(['get', 'post'], '/search', [
@@ -140,7 +158,7 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     // message
     Route::get('messagesSetting', 'frontEnd\MessageController@messagesSetting')->name('messagesSetting');
     Route::post('saveMessageCredential', 'frontEnd\MessageController@saveMessageCredential')->name('saveMessageCredential');
-      
+
     Route::post('/checkSendgrid', 'HomeController@checkSendgrid')->name('checkSendgrid');
     Route::post('/checkTwillio', 'HomeController@checkTwillio')->name('checkTwillio');
 });
@@ -193,6 +211,7 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     // close
 
     Route::get('/contact_form', 'backend\ContactFormController@index')->name('contact_form.index');
+    Route::get('/registrations', 'backend\RegistrationController@index')->name('registrations.index');
     Route::post('/email_delete_filter', 'backend\ContactFormController@delete_email')->name('contact_form.delete_email');
     Route::post('/email_create_filter', 'backend\ContactFormController@create_email')->name('contact_form.create_email');
 
@@ -201,8 +220,10 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::get('tb_locations', 'frontEnd\LocationController@tb_location')->name('tables.tb_locations');
     Route::get('tb_organizations', 'frontEnd\OrganizationController@tb_organizations')->name('tables.tb_organizations');
     Route::get('tb_contact', 'frontEnd\ContactController@tb_contact')->name('tables.tb_contact');
+    Route::get('tb_contacts', 'frontEnd\ContactController@tb_contact')->name('tables.tb_contact');
     Route::get('tb_phones', 'frontEnd\PhoneController@index')->name('tables.tb_phones');
     Route::get('tb_address', 'frontEnd\AddressController@index')->name('tables.tb_address');
+    Route::get('tb_physical_address', 'frontEnd\AddressController@index')->name('tables.tb_address');
     Route::get('tb_schedule', 'frontEnd\ScheduleController@index')->name('tables.tb_schedule');
     Route::get('tb_service_areas', 'frontEnd\AreaController@index')->name('tables.tb_service_area');
     // Route::get('tb_services', 'frontEnd\ServiceController@tb_services')->name('tables.tb_services');
@@ -219,10 +240,19 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     // });
 
     Route::resource('tb_taxonomy', 'frontEnd\TaxonomyController');
+    Route::resource('tb_taxonomy_term', 'frontEnd\TaxonomyController');
+    Route::resource('service_attributes', 'backend\ServiceAttributeController');
+    Route::resource('other_attributes', 'backend\OtherAttributesController');
+    Route::resource('XDetails', 'backend\XDetailsController');
     Route::post('taxonommyUpdate', 'frontEnd\TaxonomyController@taxonommyUpdate')->name('tb_taxonomy.taxonommyUpdate');
+    Route::post('saveLanguage', 'frontEnd\TaxonomyController@saveLanguage')->name('tb_taxonomy.saveLanguage');
+    Route::post('save_vocabulary', 'frontEnd\TaxonomyController@save_vocabulary')->name('tb_taxonomy.save_vocabulary');
     Route::resource('tb_details', 'frontEnd\DetailController');
+    Route::resource('programs', 'backend\ProgramController');
+    Route::resource('tb_x_details', 'frontEnd\DetailController');
     Route::resource('tb_languages', 'LanguageController');
     Route::resource('tb_accessibility', 'AccessibilityController');
+    Route::resource('system_emails', 'backend\EmailController');
     // Route::resource('tb_deTaxonomyControllertails', 'DetailController');
     // Route::resource('tb_languages', 'LanguageController');
     // Route::resource('tb_accessibility', 'AccessibilityController');
@@ -287,7 +317,10 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
 
     Route::get('/import', ['uses' => 'backend\PagesController@import'])->name('dataSync.import');
     Route::get('/export', ['uses' => 'backend\PagesController@export'])->name('dataSync.export');
-    Route::get('/export_hsds_zip_file', ['uses' => 'backend\PagesController@export_hsds_zip_file'])->name('dataSync.export_hsds_zip_file');
+    Route::post('/export_hsds_zip_file', ['uses' => 'backend\PagesController@export_hsds_zip_file'])->name('dataSync.export_hsds_zip_file');
+
+    Route::get('/datapackages', 'backend\PagesController@datapackages')->name('dataSync.datapackages');
+
     Route::get('/meta_filter', ['uses' => 'backend\PagesController@metafilter'])->name('meta_filter.showMeta');
     Route::post('/meta/{id}', 'backend\PagesController@metafilter_save')->name('meta_filter.metafilter_save');
 
@@ -306,11 +339,15 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     // Route::post('/contact_delete_filter', 'frontEnd\ContactController@delete_contact');
     // Route::post('/group_delete_filter', 'GroupController@delete_group');
 
+    Route::resource('phone_types', 'backend\PhoneTypeController');
+    Route::resource('detail_types', 'backend\DetailTypeController');
     Route::resource('religions', 'backend\ReligionsController');
     Route::resource('organizationTypes', 'backend\OrganizationTypeController');
     Route::resource('ContactTypes', 'backend\ContactTypeController');
     Route::resource('FacilityTypes', 'backend\FacilityTypeController');
     Route::resource('languages', 'backend\LanguageController');
+    Route::resource('service_categories', 'backend\ServiceCategoryController');
+    Route::resource('service_eligibilities', 'backend\ServiceEligibilityController');
     // Route::get('import', 'backend\ExcelImportController@importContact')->name('dataSync.import');
     // Route::get('importOrganization', 'backend\ExcelImportController@importOrganization');
     // Route::get('importFacility', 'backend\ExcelImportController@importFacility');
@@ -318,3 +355,4 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     // Route::post('ImportOrganizationExcel', 'backend\ExcelImportController@ImportOrganizationExcel')->name('ImportOrganizationExcel');
 
 });
+Route::post('/update_hsds_api_key', ['uses' => 'backend\PagesController@update_hsds_api_key'])->name('dataSync.update_hsds_api_key');

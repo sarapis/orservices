@@ -27,34 +27,38 @@ Details
         <table id="example" class="display nowrap table-striped jambo_table table-bordered table-responsive" cellspacing="0" width="100%">
             <thead>
                 <tr>
-                    <th class="text-center">No</th>
-                    <th class="text-center">Value</th>
-                    <th class="text-center">Detail Type</th>
-                    <th class="text-center">Description</th>
-                    <th class="text-center">Organizations</th>
-                    <th class="text-center">Locations</th>
+                    <th class="text-center">X-Id</th>
+                    {{-- <th class="text-center">Value</th> --}}
+                    <th class="text-center">X-Type</th>
+                    <th class="text-center">X-Description</th>
+                    <th class="text-center">X-Organizations</th>
+                    <th class="text-center">X-Services</th>
+                    <th class="text-center">X-Locations</th>
+                    <th class="text-center">Y-Phones</th>
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
               @foreach($details as $key => $detail)
                 <tr id="detail{{$detail->id}}" class="{{$detail->flag}}">
-                  <td class="text-center">{{$key+1}}</td>
-                  <td><span style="white-space:normal;">{!! $detail->detail_value !!}</span></td>
+                  <td class="text-center">{{ $detail->detail_recordid }}</td>
+                  {{-- <td><span style="white-space:normal;">{!! $detail->detail_value !!}</span></td> --}}
 
                   <td class="text-center">{{$detail->detail_type}}</td>
 
                   <td class="text-center">{{$detail->detail_description}}</td>
 
                   <td>@if($detail->detail_organizations!='')
-                    <span class="badge bg-blue">{{$detail->organization()->first()->organization_name}}</span>
-                  @endif
-                  </td>
+                    <span class="badge bg-blue">{{$detail->organization ? $detail->organization()->first()->organization_name : ''}}</span>
+                    @endif
+                 </td>
+                 <td class="text-center">{{$detail->detail_services}}</td>
 
                   <td>@if($detail->detail_locations!='')
-                    <span class="badge bg-blue">{{$detail->location()->first()->location_name}}</span>
+                    <span class="badge bg-blue">{{$detail->location && $detail->location()->first() ? $detail->location()->first()->location_name : ''}}</span>
                   @endif
                   </td>
+                  <td class="text-center">{{$detail->phones}}</td>
 
 
                   <td class="text-center">

@@ -56,9 +56,9 @@ Address
                   </td>
 
                   <td class="text-center">{{$address->address_city}}</td>
-                  <td class="text-center">{{$address->address_state}}</td>
+                  <td class="text-center">{{$address->address_state_province}}</td>
+                  <td class="text-center">{{$address->address_postal_code}}</td>
                   <td class="text-center">{{$address->address_id}}</td>
-                  <td class="text-center">{{$address->address_zip_code}}</td>
                   <td class="text-center">{{$address->address_region}}</td>
 
                   <td class="text-center">{{$address->address_country}}</td>

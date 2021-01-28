@@ -22,8 +22,8 @@ class ScheduleImport implements ToModel, WithHeadingRow
             'schedule_recordid' => $schedule,
             'schedule_services' => $row['service_id'],
             'schedule_days_of_week' => $row['weekday'],
-            'schedule_opens_at' => $row['opens_at'],
-            'schedule_closes_at' => $row['closes_at'],
+            'opens_at' => $row['opens_at'],
+            'closes_at' => $row['closes_at'],
             'schedule_description' => $row['original_text'],
             'schedule_locations' => $row['location_id'],
         ];

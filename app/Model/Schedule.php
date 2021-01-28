@@ -9,10 +9,10 @@ class Schedule extends Model
     protected $primaryKey = 'schedule_recordid';
 
     protected $fillable = [
-        'schedule_recordid', 'schedule_id', 'schedule_services', 'schedule_locations', 'schedule_x_phones', 'schedule_days_of_week', 'schedule_opens_at', 'schedule_closes_at', 'schedule_holiday', 'schedule_start_date', 'schedule_end_date', 'address_locations', 'schedule_closed', 'flag', 'schedule_description',
+        'schedule_recordid', 'name', 'services', 'phones', 'locations', 'weekday', 'byday', 'opens_at', 'opens', 'closes_at', 'closes', 'dtstart', 'until', 'special', 'closed', 'service_at_location', 'freq', 'valid_from', 'valid_to', 'wkst', 'interval', 'count', 'byweekno', 'bymonthday', 'byyearday', 'description', 'timezone', 'schedule_services', 'schedule_locations', 'schedule_holiday', 'schedule_closed'
     ];
 
-    public function services()
+    public function get_services()
     {
         $this->primaryKey = 'schedule_recordid';
 
@@ -27,6 +27,6 @@ class Schedule extends Model
 
     public function phone()
     {
-        return $this->belongsTo('App\Model\Phone', 'schedule_x_phones', 'phone_recordid');
+        return $this->belongsTo('App\Model\Phone', 'phones', 'phone_recordid');
     }
 }

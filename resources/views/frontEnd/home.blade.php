@@ -40,7 +40,6 @@ Home
     @include('layouts.filter')
     @include('layouts.sidebar')
 </div>
-
 @if ($home->home_page_style == 'Alerts (ex. hc.flospaces.org)')
 <div class="page-register layout-full page-dark">
     <div class="page vertical-align" data-animsition-in="fade-in" data-animsition-out="fade-out">

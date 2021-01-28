@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\AccountPage;
 use App\Model\Layout;
 use App\Model\Map;
 use App\Model\Organization;
@@ -31,7 +32,8 @@ class AccountController extends Controller
 
     public function index()
     {
-        //
+        $account = AccountPage::whereId(1)->first();
+        return view('backEnd.account.index', compact('account'));
     }
 
     /**
@@ -52,7 +54,26 @@ class AccountController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $account = AccountPage::whereId(1)->first();
+            if ($account) {
+                $account->top_content = $request->top_content;
+                $account->sidebar_widget = $request->sidebar_widget;
+                $account->save();
+            } else {
+                $account = new AccountPage();
+                $account->top_content = $request->top_content;
+                $account->sidebar_widget = $request->sidebar_widget;
+                $account->save();
+            }
+            Session::flash('message', 'Account updated successfully!');
+            Session::flash('status', 'success');
+            return redirect('account');
+        } catch (\Throwable $th) {
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
+            return redirect('account');
+        }
     }
 
     /**
@@ -66,10 +87,10 @@ class AccountController extends Controller
         $layout = Layout::first();
         $map = Map::find(1);
         $user = Auth::user();
+        $account = AccountPage::whereId(1)->first();
         $user_organizationid_list = $user->user_organization ? explode(',', $user->user_organization) : [];
-        $organization_list = Organization::whereIn('organization_recordid', $user_organizationid_list)->select('organization_recordid', 'organization_name')->orderby('organization_recordid')->get();
-        return view('frontEnd.account.account', compact('map', 'user', 'organization_list', 'layout'));
-
+        $organization_list = Organization::whereIn('organization_recordid', $user_organizationid_list)->orderby('organization_recordid')->get();
+        return view('frontEnd.account.account', compact('map', 'user', 'organization_list', 'layout', 'account'));
     }
 
     /**
@@ -86,7 +107,6 @@ class AccountController extends Controller
         $account_organization_list = explode(',', $user_info->user_organization);
 
         return view('frontEnd.account.edit', compact('user_info', 'map', 'organization_list', 'account_organization_list'));
-
     }
 
     /**
@@ -150,14 +170,12 @@ class AccountController extends Controller
             $user->password = Hash::make($request->password);
             $user->save();
             Session::flash('message', 'Password changed successfully!');
-            Session::flash('status', 'error');
+            Session::flash('status', 'success');
             return redirect('account/' . $id);
-
         } catch (\Throwable $th) {
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
             return redirect('account/' . $id . '/change_password');
         }
-
     }
 }

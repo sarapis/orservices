@@ -6,6 +6,9 @@ Export
   .color-pick{
     padding: 0 !important;
   }
+  select[multiple], select[size] {
+    height: 0px !important;
+}
 </style>
 @section('content')
 
@@ -23,16 +26,29 @@ Export
             <div class="clearfix"></div>
           </div>
           <div class="x_content">
-            <div class="form-horizontal form-label-left">
-              <div class="item form-group">
-                <h4><b>HSDS Zip File</b></h4>
-                <h6><b>Download all your directory service data into the Open Referral Human Services Datsa Standard by clicking the button below.</b></h6>
-                <a class="btn btn-primary" href="/export_hsds_zip_file">Download HSDS Zip File</a>
-              </div>
-            </div>
+            {!! Form::open(['route' => 'dataSync.export_hsds_zip_file']) !!}
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="">Organization Tags</label>
+                            {!! Form::select('organization_tags[]',$organization_tags,null,['class' => 'form-control  select','multiple' => 'true']) !!}
+                        </div>
+                        <div class="col-md-6">
+                            <h4><b>HSDS Zip File</b></h4>
+                            <h6><b>Download all your directory service data into the Open Referral Human Services Data Standard by clicking the button below.</b></h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-horizontal form-label-left">
+                <div class="item form-group">
+                    {{-- <a class="btn btn-primary" href="/export_hsds_zip_file">Download HSDS Zip File</a> --}}
+                    <button type="submit" class="btn btn-primary">Download HSDS Zip File</button>
+                </div>
+                </div>
+            {!! Form::close() !!}
 
             <div class="form-horizontal form-label-left">
-              <form class="edit-hsds-api-key" action="/update_hsds_api_key" method="POST">
+              <form class="edit-hsds-api-key" action="{{ route('dataSync.update_hsds_api_key') }}" method="POST">
                 {{ csrf_field() }}
                 <div class="item form-group">
                   <h4><b>HSDS Zip API</b></h4>
@@ -84,7 +100,12 @@ Export
 
 @endsection
 @section('scripts')
+<script src="{{ URL::asset('/backend/vendors/sumoselect/jquery.sumoselect.js') }}"></script>
+<link href="{{ URL::asset('/backend/vendors/sumoselect/sumoselect.css') }}" rel="stylesheet" />
 
+<script type="text/javascript">
+    $('.select').SumoSelect({ selectAll: true, placeholder: 'Nothing selected' });
+</script>
 <script type="text/javascript">
   $(document).ready(function() {
     $('#validation-hsds-api-key').hide();

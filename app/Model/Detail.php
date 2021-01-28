@@ -9,7 +9,7 @@ class Detail extends Model
     protected $primaryKey = 'detail_recordid';
 
     protected $fillable = [
-        'detail_recordid', 'detail_value', 'detail_type', 'detail_description', 'detail_organizations', 'detail_services', 'detail_locations', 'flag',
+        'detail_recordid', 'detail_value', 'detail_type', 'detail_description', 'detail_organizations', 'detail_services', 'detail_locations', 'flag', 'phones', 'contacts'
     ];
 
     public function organization()

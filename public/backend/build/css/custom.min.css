@@ -17,3 +17,15 @@
 .site_title{
   font-size: 20px;
 }
+
+.SumoSelect{
+    width: 100% !important;
+}
+.SumoSelect > .optWrapper > .options li.opt.selected{
+    background: #ededed;
+    color: #000;
+}
+
+.SumoSelect .select-all{
+    height: auto !important;
+}

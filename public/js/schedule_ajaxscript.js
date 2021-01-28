@@ -16,7 +16,7 @@ $(document).ready(function(){
     //display modal form for product EDIT ***************************
     $(document).on('click','.open_modal',function(e){
         var id = $(this).val();
-        e.preventDefault(); 
+        e.preventDefault();
 
         // Populate Data in Edit Modal Form
         $.ajax({
@@ -26,8 +26,8 @@ $(document).ready(function(){
                 // console.log(data);
                 $('#id').val(data.schedule_recordid);
                 $('#schedule_days_of_week').val(data.schedule_days_of_week);
-                $('#schedule_opens_at').val(data.schedule_opens_at);
-                $('#schedule_closes_at').val(data.schedule_closes_at);
+                $('#opens_at').val(data.opens_at);
+                $('#closes_at').val(data.closes_at);
                 if(data.schedule_holiday == 1)
                 {
                     $('#schedule_holiday').prop('checked',true);
@@ -35,7 +35,7 @@ $(document).ready(function(){
                 }
                 if(data.schedule_closed == 1){
                     $('#schedule_closed').prop('checked',true);
-                    $('#schedule_holiday').prop('checked',false);   
+                    $('#schedule_holiday').prop('checked',false);
                 }
                 $('#btn-save').val("update");
                 $('#myModal').modal('show');
@@ -57,7 +57,7 @@ $(document).ready(function(){
             }
         })
 
-        e.preventDefault(); 
+        e.preventDefault();
 
         var holiday = 0;
         var closed = 0;
@@ -66,12 +66,12 @@ $(document).ready(function(){
 
         if($('#schedule_closed').prop('checked') == true)
             closed = 1;
- 
+
 
         var formData = {
             schedule_days_of_week: $('#schedule_days_of_week').val(),
-            schedule_opens_at: $('#schedule_opens_at').val(),
-            schedule_closes_at: $('#schedule_closes_at').val(),
+            opens_at: $('#opens_at').val(),
+            closes_at: $('#closes_at').val(),
             schedule_holiday: holiday,
             schedule_closed: closed
         }
@@ -97,7 +97,7 @@ $(document).ready(function(){
                 // var product = '<tr id="project' + data.id + '"><td class="text-center">' + data.project_projectid + '</td><td class="text-center">' + data.project_managingagency + '</td>';
                 // product += '<td class="text-center"><button class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill open_modal" title="Edit details" value="' + data.bodystyleid + '"><i class="la la-edit"></i></button>';
                 // product += ' <button class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill delete-product" title="Delete" value="' + data.bodystyleid + '"><i class="la la-trash"></i></button></td></tr>';
-                
+
                 if (state == "add"){ //if user added a new record
                     //$('#products-list').append(product);
                     //$('.m-portlet.m-portlet--mobile').before(add_alert);
@@ -105,12 +105,12 @@ $(document).ready(function(){
                 }else{ //if user updated an existing record
                     $('#frmProducts').trigger("reset");
                     $('#myModal').modal('hide');
-                    window.location.reload(); 
+                    window.location.reload();
                     // $("#project" + project_id).replaceWith( product );
                    // $('.m-portlet.m-portlet--mobile').before(edit_alert);
                     //$('.alert.alert-brand.alert-dismissible.fade.show').hide(5000);
                 }
-                
+
             },
             error: function (data) {
                 console.log('Error:', data);
@@ -121,7 +121,7 @@ $(document).ready(function(){
      //display modal form for product EDIT ***************************
     $(document).on('click','.delete-product',function(){
         var product_id = $(this).val();
-       
+
         // Populate Data in Edit Modal Form
         $.ajax({
             type: "GET",
@@ -165,5 +165,5 @@ $(document).ready(function(){
             }
         });
     });
-    
+
 });

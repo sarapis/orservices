@@ -66,6 +66,14 @@
         <!-- Types Of Services -->
             @auth
             @if (Auth::user()->roles && Auth::user()->roles->name == 'System Admin' || (Auth::user() && Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin'))
+            @php
+                $org_activate = [];
+                if(isset($organization_tags) && $organization_tags != null){
+
+                    $org_activate = json_decode($organization_tags);
+                }
+
+            @endphp
 			<div class="dropdown">
 				<button type="button" class="btn dropdown-toggle"  id="exampleSizingDropdown1" data-toggle="dropdown" aria-expanded="false">
 					Organization Tags
@@ -73,7 +81,7 @@
 				<div class="dropdown-menu bullet" aria-labelledby="exampleSizingDropdown1" role="menu" >
                     {{-- {!! Form::select('organization_tags',$organization_tagsArray,'',['class' => 'btn dropdown-toggle']) !!} --}}
                     @foreach ($organization_tagsArray as $value)
-                        <a class="dropdown-item drop-tags{{ isset($organization_tags) && strpos($organization_tags,$value) !== false  ? ' active' : '' }}" href="javascript:void(0)" role="menuitem">{{ $value }}</a>
+                        <a class="dropdown-item drop-tags{{ isset($organization_tags) && in_array($value,$org_activate)  ? ' active' : '' }}" href="javascript:void(0)" role="menuitem">{{ $value }}</a>
                     @endforeach
                     {{-- <select class="form-control selectpicker" multiple data-live-search="true" id="organization_tag" data-size="3" name="organization_tag[]">
                         <option value="" selected disabled hidden>Filter by Tags</option>
@@ -284,14 +292,26 @@ $(document).ready(function(){
         $("#sort").val($(this).text());
         $("#filter_organization").submit();
     });
-    let organization_tags = "{{ isset($organization_tags) ? $organization_tags : '' }}"
+    // let organization_tags = "{{ isset($organization_tags) ? $organization_tags : '' }}"
 
-    if(organization_tags == ""){
-        organization_tags = []
-    }else{
-        organization_tags = organization_tags.split(',')
-    }
+    // if(organization_tags == ""){
+    //     organization_tags = []
+    // }else{
+    //     organization_tags = organization_tags.split(',')
+    // }
 
+    // $('.drop-tags').on('click', function(){
+    //     let text = $(this).text();
+    //     if($.inArray(text,organization_tags) == -1){
+    //         organization_tags.push(text)
+    //     }else{
+    //         organization_tags.splice(organization_tags.indexOf(text),1)
+    //     }
+    //     $("#organization_tags").val(organization_tags);
+    //     $("#filter_organization").submit();
+    // });
+
+    let organization_tags = $('#organization_tags').val() != '' ? JSON.parse($('#organization_tags').val()) : [];
     $('.drop-tags').on('click', function(){
         let text = $(this).text();
         if($.inArray(text,organization_tags) == -1){
@@ -299,9 +319,11 @@ $(document).ready(function(){
         }else{
             organization_tags.splice(organization_tags.indexOf(text),1)
         }
-        $("#organization_tags").val(organization_tags);
+        $("#organization_tags").val(JSON.stringify(organization_tags));
+        // $("#organization_tags").val($(this).text());
         $("#filter_organization").submit();
     });
+
     $('#sidebar_tree').on("select_node.jstree deselect_node.jstree", function (e, data) {
         var all_selected_ids = $('#sidebar_tree').jstree("get_checked");
         var selected_taxonomy_ids = all_selected_ids.filter(function(id) {

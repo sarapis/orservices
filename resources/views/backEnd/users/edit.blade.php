@@ -73,7 +73,7 @@ Edit User
                     <div id="role" class="form-group {{ $errors->has('role') ? 'has-error' : ''}}">
                         {!! Form::label('role','User role', ['class' => 'col-md-3 control-label']) !!}
                         <div class="col-sm-6">
-                            {!! Form::select('role', $roles, $user->role_id, ['class' => 'form-control']) !!}
+                            {!! Form::select('role', $roles, $user->role_id, ['class' => 'form-control','placeholder' => 'Select user role']) !!}
                             {!! $errors->first('role', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
