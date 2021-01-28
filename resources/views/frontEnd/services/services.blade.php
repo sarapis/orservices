@@ -21,7 +21,32 @@ Services
                     </div>
                 </div>
             <!--end  Types Of Services -->
+            @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin' || (Auth::user() && Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin'))
+            @php
+                $org_activate = [];
+                if(isset($selected_organization)){
+                    $org_activate = json_decode($selected_organization);
+                }
+            @endphp
+			<div class="dropdown">
+				<button type="button" class="btn dropdown-toggle"  id="exampleSizingDropdown1" data-toggle="dropdown" aria-expanded="false">
+					Organization Tags
+                </button>
+				<div class="dropdown-menu bullet" aria-labelledby="exampleSizingDropdown1" role="menu" >
+                    {{-- {!! Form::select('organization_tags',$organization_tagsArray,'',['class' => 'btn dropdown-toggle']) !!} --}}
+                    @foreach ($organization_tagsArray as $value)
+                        <a class="dropdown-item drop-tags{{ isset($selected_organization) && in_array($value,$org_activate) ? ' active' : '' }}" href="javascript:void(0)" role="menuitem">{{ $value }}</a>
+                    @endforeach
+                    {{-- <select class="form-control selectpicker" multiple data-live-search="true" id="organization_tag" data-size="3" name="organization_tag[]">
+                        <option value="" selected disabled hidden>Filter by Tags</option>
+                        @foreach($organization_tag_list as $key => $organization_tag)
+                            <option value="{{$organization_tag}}">{{$organization_tag}}</option>
+                        @endforeach
+                    </select> --}}
 
+                </div>
+            </div>
+            @endif
             <!-- Sort By -->
                 <div class="dropdown">
                     <button type="button" class="btn dropdown-toggle"  id="exampleSizingDropdown2" data-toggle="dropdown" aria-expanded="false">
@@ -136,7 +161,7 @@ Services
                                         </span>
                                     </h4>
                                     <h4>
-                                        <span class="pl-0 category_badge subtitle"><b>Types of Services:</b>
+                                        {{-- <span class="pl-0 category_badge subtitle"><b>Types of Services:</b>
                                             @if($service->service_taxonomy != null)
                                                 @php $service_taxonomy_recordid_list = explode(',', $service->service_taxonomy);
                                                 @endphp
@@ -144,10 +169,32 @@ Services
                                                     @php $taxonomy_name = $service_taxonomy_info_list[$service_taxonomy_recordid];
                                                     @endphp
                                                     @if($taxonomy_name)
-                                                        <a class="panel-link {{str_replace(' ', '_', $taxonomy_name)}}" at="child_{{$service_taxonomy_recordid}}">{{$taxonomy_name}}</a>
+                                                        <a class="panel-link {{str_replace(' ', '_', $taxonomy_name)}}" at="child_{{$service_taxonomy_recordid}}" style="background-color: {{ isset($service_taxonomy_badge_color_list[$service_taxonomy_recordid]) ? $service_taxonomy_badge_color_list[$service_taxonomy_recordid] : '#000' }} !important; color:#fff !important;">{{$taxonomy_name}}</a>
                                                     @endif
                                                 @endforeach
                                             @endif
+                                        </span> --}}
+                                        <span class="pl-0 category_badge subtitle"><b>Service Category:</b>
+                                            @foreach ($service->taxonomy as $service_taxonomy_info)
+                                            @if ($service_taxonomy_info->taxonomy_vocabulary == 'Service Category')
+                                            @if($service->service_taxonomy != null)
+                                            <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
+                                                at="child_{{$service_taxonomy_info->taxonomy_recordid}}" style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>
+                                            @endif
+                                            @endif
+                                            @endforeach
+                                        </span>
+                                    </h4>
+                                    <h4>
+                                        <span class="pl-0 category_badge subtitle"><b>Service Eligibility:</b>
+                                        @foreach ($service->taxonomy as $service_taxonomy_info)
+                                        @if ($service_taxonomy_info->taxonomy_vocabulary == 'Service Eligibility')
+                                        @if($service->service_taxonomy != null)
+                                        <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
+                                            at="child_{{$service_taxonomy_info->taxonomy_recordid}}" style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>
+                                        @endif
+                                        @endif
+                                        @endforeach
                                         </span>
                                     </h4>
                                 </div>
@@ -202,6 +249,7 @@ Services
             var maplocation = <?php print_r(json_encode($map)) ?>;
             // var chip_address = <?php if(isset($chip_address)){print_r(json_encode($chip_address));}else{echo '0';} ?>;
             var chip_address = "{{isset($chip_address) ? $chip_address : '0'}}"
+            var chip_service = "{{isset($chip_service) ? $chip_service : '0'}}"
             // var avarageLatitude = <?php if(isset($avarageLatitude)){print_r(json_encode($avarageLatitude));}else{echo '0';} ?>;
             var avarageLatitude = "{{ isset($avarageLatitude) ? $avarageLatitude : '0'  }}"
             // var avarageLongitude = <?php if(isset($avarageLongitude)){print_r(json_encode($avarageLongitude));}else{echo '0';} ?>;
@@ -236,14 +284,26 @@ Services
               zoom: zoom
             });
             let checkunKnownAddress = [];
-            $.each( locations, function(index, value ){
-
-                var name = value.organization==null?'':value.organization.organization_name;
-
-
+            $.each(locations, function(index, value ){
+                var name = value.organization == null? '' :value.organization.organization_name;
                 var content = '<div id="iw-container">';
-                for(i = 0; i < value.services.length; i ++){
-                    content +=  '<div class="iw-title"> <a href="/services/'+value.services[i].service_recordid+'">'+value.services[i].service_name+'</a></div>';
+                let first_service = []
+                if(chip_service != '0' && chip_service != ''){
+                value.services.map(function(v,i){
+                            // console.log(v,v.service_name.toLowerCase().includes(chip_service),chip_service)
+                        if(v.service_name.toLowerCase().includes(chip_service)  && first_service.length == 0){
+                            return first_service.push(i)
+                        }
+                    })
+                }
+                if(value.services.length > 0){
+                    let indexValue
+                    if(first_service.length > 0){
+                        indexValue = first_service[0]
+                    }else{
+                        indexValue = 0
+                    }
+                    content +=  '<div class="iw-title"> <a href="/services/'+value.services[indexValue].service_recordid+'">'+value.services[indexValue].service_name+'</a></div>';
                 }
                 if(value.organization){
 
@@ -254,9 +314,26 @@ Services
                 if(value.address){
                     for(i = 0; i < value.address.length; i ++){
                         content +=  '<div class="iw-subTitle">Address</div>'+
-                                '<a href="https://www.google.com/maps/dir/?api=1&destination=' + value.address[i].address_1 + '" target="_blank">' + value.address[i].address_1 +'</a>';
+                                '<a href="https://www.google.com/maps/dir/?api=1&destination=' + value.address[i].address_1 + '" target="_blank">' + value.address[i].address_1+ ', '+value.address[i].address_city+','+value.address[i].address_state_province+','+value.address[i].address_postal_code +'</a>';
                     }
                 }
+                if(value.services.length > 1){
+                    content += '<div class="iw-subTitle">Other Services</div>';
+                }
+                content += '<ul>'
+                    if(first_service.length > 0){
+                        let indexValue = first_service[0]
+                        for(i = 0; i < value.services.length; i ++){
+                            if(i != indexValue)
+                                content +=  '<li><a href="/services/'+value.services[i].service_recordid+'">'+value.services[i].service_name+'</a></li>';
+                            }
+                    }else{
+                        for(i = 1; i < value.services.length; i ++){
+                            content +=  '<li><a href="/services/'+value.services[i].service_recordid+'">'+value.services[i].service_name+'</a></li>';
+                        }
+                    }
+
+                content += '</ul>'
                 content += '</div>' +
                         '<div class="iw-bottom-gradient"></div>' +
                         '</div>';

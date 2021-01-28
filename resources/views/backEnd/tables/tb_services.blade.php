@@ -46,7 +46,7 @@ Services
                     <th class="text-center">Phones</th>
                     <th class="text-center">Schedule</th>
                     <th class="text-center">Contacts</th>
-                    @if($source_data->active == 1 )
+                    @if($source_data->active == 1 || $source_data->active == 3)
                     <th class="text-center">Details</th>
                     @endif
                     <th class="text-center">Address</th>
@@ -59,7 +59,7 @@ Services
             <tbody>
               @foreach($services as $key => $service)
                 <tr id="service{{$service->id}}" class="{{$service->flag}}">
-                  @if($source_data->active == 1 )
+                  @if($source_data->active == 1 || $source_data->active == 3)
                   <td class="text-center">{{$key}}+1</td>
                   @elseif($source_data->active == 0)
                   <td class="text-center">{{$service->service_recordid}}</td>
@@ -118,7 +118,7 @@ Services
 
                       @foreach($service->schedules as $schedule)
 
-                      <span class="badge bg-purple">{{$schedule->schedule_days_of_week}} {{$schedule->schedule_opens_at}} {{$schedule->schedule_closes_at}}</span>
+                      <span class="badge bg-purple">{{$schedule->schedule_days_of_week}} {{$schedule->opens_at}} {{$schedule->closes_at}}</span>
 
                       @endforeach
 
@@ -130,7 +130,7 @@ Services
 
                   @endif</td>
 
-                  @if($source_data->active == 1 )
+                  @if($source_data->active == 1 || $source_data->active == 3)
                   <td class="text-center">
                     @if($service->service_details != null )
                       @foreach($service->details as $deta)

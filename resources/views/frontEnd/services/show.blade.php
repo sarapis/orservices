@@ -152,18 +152,18 @@
                             <h4><span class="subtitle"><b>Schedules</b></span><br />
                                 {{-- @foreach($service->schedules as $schedule)
                                 @if($loop->last)
-                                {{$schedule->schedule_days_of_week}} {{$schedule->schedule_opens_at}}
-                                {{$schedule->schedule_closes_at}}
+                                {{$schedule->schedule_days_of_week}} {{$schedule->opens_at}}
+                                {{$schedule->closes_at}}
                                 @else
-                                {{$schedule->schedule_days_of_week}} {{$schedule->schedule_opens_at}}
-                                {{$schedule->schedule_closes_at}},
+                                {{$schedule->schedule_days_of_week}} {{$schedule->opens_at}}
+                                {{$schedule->closes_at}},
                                 @endif
                                 @endforeach --}}
 
                             </h4>
 
                             @foreach($service->schedules as $schedule)
-                            
+
                             @if ($schedule->schedule_holiday)
                                 @php
                                 $holidayScheduleData[] = 1;
@@ -173,7 +173,7 @@
                             <h4 style="color:{{ strtolower(\Carbon\Carbon::now()->format('l')) == $schedule->schedule_days_of_week ? 'blue' : '' }}">
                                 <b style="font-weight: 600;color: #000; letter-spacing: 0.5px;">{{ ucfirst($schedule->schedule_days_of_week) }} :</b>
                                 @if ($schedule->schedule_closed == null)
-                                {{ $schedule->schedule_opens_at }} - {{ $schedule->schedule_closes_at }}
+                                {{ $schedule->opens_at }} - {{ $schedule->closes_at }}
                                 @else
                                 Closed
                                 @endif
@@ -191,7 +191,7 @@
                                 <h4 style="color: #000;" >
                                     {{ $schedule->schedule_start_date }} to {{ $schedule->schedule_start_date }}  :
                                     @if ($schedule->schedule_closed == null)
-                                    {{ $schedule->schedule_opens_at }} - {{ $schedule->schedule_closes_at }}
+                                    {{ $schedule->opens_at }} - {{ $schedule->closes_at }}
                                     @else
                                     Closed
                                     @endif
@@ -199,18 +199,84 @@
                                 @endif
                                 @endforeach
                                 <span style="margin-bottom: 20px;display: inline-block;font-weight: 600;text-decoration: underline; color: #5051db;cursor: pointer;" id="hideHolidays"><a>Hide holidays</a></span> <br>
-                            </div>                           
+                            </div>
+                            @endif
+                            @if ($service->program && count($service->program) > 0)
+                            <h4>
+                                <span class="pl-0 category_badge subtitle"><b>Service Grouping:</b>
+                                    <span class="">{!! $service->program[0]->name !!}</span>
+                                </span>
+                            </h4>
+                            <h4>
+                                <span class="pl-0 category_badge subtitle"><b>Service Grouping Description:</b>
+                                    <span class="">{!! $service->program[0]->alternate_name !!}</span>
+                                </span>
+                            </h4>
                             @endif
                             <h4>
-                                <span class="pl-0 category_badge subtitle"><b>Types of Services:</b>
+                                <span class="pl-0 category_badge subtitle"><b>Service Status:</b>
+                                    <span class="">{!! $service->service_status !!}</span>
+                                </span>
+                            </h4>
+                            <h4>
+                                {{-- @if ($service_taxonomy_info->taxonomy_vocabulary == 'Service Category') --}}
+                                {{-- <span class="pl-0 category_badge subtitle"><b>Types of Services:</b>
                                     @if($service->service_taxonomy != null)
                                     @foreach($service_taxonomy_info_list as $key => $service_taxonomy_info)
                                     <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
-                                        at="child_{{$service_taxonomy_info->taxonomy_recordid}}">{{$service_taxonomy_info->taxonomy_name}}</a>
+                                        at="child_{{$service_taxonomy_info->taxonomy_recordid}}" style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>
                                     @endforeach
                                     @endif
+                                </span> --}}
+                                <span class="pl-0 category_badge subtitle"><b>Service Category:</b>
+                                @foreach ($service->taxonomy as $service_taxonomy_info)
+                                @if ($service_taxonomy_info->taxonomy_vocabulary == 'Service Category')
+                                @if($service->service_taxonomy != null)
+                                <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
+                                    at="child_{{$service_taxonomy_info->taxonomy_recordid}}" style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>
+                                @endif
+                                @endif
+                                @endforeach
                                 </span>
                             </h4>
+                            <h4>
+                                <span class="pl-0 category_badge subtitle"><b>Service Eligibility:</b>
+                                @foreach ($service->taxonomy as $service_taxonomy_info)
+                                @if ($service_taxonomy_info->taxonomy_vocabulary == 'Service Eligibility')
+                                @if($service->service_taxonomy != null)
+                                <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
+                                    at="child_{{$service_taxonomy_info->taxonomy_recordid}}" style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>
+                                @endif
+                                @endif
+                                @endforeach
+                                </span>
+                            </h4>
+
+                            @if($service->service_details!=NULL)
+                                @php
+                                $show_details = [];
+                                @endphp
+                                @foreach($service->details->sortBy('detail_type') as $detail)
+                                @php
+                                for($i = 0; $i < count($show_details); $i ++){ if($show_details[$i]['detail_type']==$detail->
+                                detail_type)
+                                break;
+                                }
+                                if($i == count($show_details)){
+                                $show_details[$i] = array('detail_type'=> $detail->detail_type, 'detail_value'=>
+                                $detail->detail_value);
+                                }
+                                else{
+                                $show_details[$i]['detail_value'] = $show_details[$i]['detail_value'].',
+                                '.$detail->detail_value;
+                                }
+                                @endphp
+                                @endforeach
+                                @foreach($show_details as $detail)
+                                <h4><span class="subtitle"><b>{{ $detail['detail_type'] }}:</b></span> {!!
+                                    $detail['detail_value'] !!}</h4>
+                                @endforeach
+                                @endif
                         </div>
                     </div>
                 </div>
@@ -223,7 +289,7 @@
                             <div class="sharethis-inline-share-buttons"></div>
                         </button>
                     </div> --}}
-                     @if ((Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,$service->organizations()->first()->organization_recordid) && Auth::user()->roles->name == 'Organization Admin') || Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
+                     @if ((Auth::user() && Auth::user()->roles && Auth::user()->user_organization && (Auth::user()->user_organization == ($service->organizations ? $service->organizations()->first()->organization_recordid : '')) && Auth::user()->roles->name == 'Organization Admin') || Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
                     <div style="display: flex;" class="mb-20">
                         <div class="dropdown add_new_btn" style="width: 100%; float: right;">
                             <button class="btn btn-primary dropdown-toggle btn-block" type="button" id="dropdownMenuButton-group"
@@ -233,7 +299,7 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton-new">
                                 {{-- <a href="/service_create/{{$service->service_recordid}}" id="add-new-services">Add New Service</a> --}}
                                 <a href="/contact_create/{{$service->service_recordid}}/service" id="add-new-services">Add New Contact</a>
-                                <a href="/facility_create/{{$service->service_recordid}}/service" id="add-new-services">Add New Facility</a>
+                                <a href="/facility_create/{{$service->service_recordid}}/service" id="add-new-services">Add New Location</a>
                             </div>
                         </div>
                     </div>
@@ -244,6 +310,8 @@
                             <div id="map" style="width: 100%; height: 60vh;border-radius:12px;box-shadow: none;">
                             </div>
                             <div class="p-25">
+                                @if(isset($service->locations))
+                                @if($service->locations != null && count($service->locations) > 0)
                                 <h4 class="card_services_title">
                                     <b>Locations</b>
                                     @if (Auth::user() && Auth::user()->roles && $organization && Auth::user()->user_organization &&
@@ -253,6 +321,8 @@
                                     </a>
                                     @endif
                                 </h4>
+                                @endif
+                                @endif
                                 <div>
                                     @if(isset($service->locations))
                                         @if($service->locations != null)
@@ -310,12 +380,15 @@
                                                                         @php
                                                                         $phones = '';
                                                                         @endphp
-                                                                        @foreach($location->phones as $phone)
+                                                                        @foreach($location->phones as $k => $phone)
                                                                         @php
 
-                                                                        $phoneNo = '<a href="tel:'.$phone->phone_number.'">'.$phone->phone_number.' , ' .'</a>';
+                                                                        if($k == 0){
+                                                                            $phoneNo = '<a href="tel:'.$phone->phone_number.'">'.$phone->phone_number.'</a>';
+                                                                        }else{
+                                                                            $phoneNo = ', '.'<a href="tel:'.$phone->phone_number.'">'.$phone->phone_number .'</a>';
+                                                                        }
                                                                         $phones .= $phoneNo;
-
                                                                         @endphp
                                                                         @endforeach
                                                                         {!! rtrim($phones, ',') !!}
@@ -337,11 +410,11 @@
                                                             @if($location->schedules != null)
                                                                 @foreach($location->schedules as $schedule)
                                                                     @if($loop->last)
-                                                                        {{$schedule->schedule_days_of_week}} {{$schedule->schedule_opens_at}}
-                                                                        {{$schedule->schedule_closes_at}}
+                                                                        {{$schedule->schedule_days_of_week}} {{$schedule->opens_at}}
+                                                                        {{$schedule->closes_at}}
                                                                     @else
-                                                                        {{$schedule->schedule_days_of_week}} {{$schedule->schedule_opens_at}}
-                                                                        {{$schedule->schedule_closes_at}},
+                                                                        {{$schedule->schedule_days_of_week}} {{$schedule->opens_at}}
+                                                                        {{$schedule->closes_at}},
                                                                     @endif
                                                                 @endforeach
                                                             @endif
@@ -442,8 +515,8 @@
     setTimeout(function(){
         var locations = <?php print_r(json_encode($locations)) ?>;
         var maplocation = <?php print_r(json_encode($map)) ?>;
-        
-        
+
+
         var show = 1;
         if(locations.length == 0){
           show = 0;

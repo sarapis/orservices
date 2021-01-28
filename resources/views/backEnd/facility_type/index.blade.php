@@ -1,6 +1,6 @@
 @extends('backLayout.app')
 @section('title')
-Facility type
+Location type
 @stop
 
 @section('content')
@@ -9,9 +9,9 @@ Facility type
   <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
       <div class="x_title">
-        <h2>FacilityTypes</h2>
+        <h2>Loaction Types</h2>
         <div class="nav navbar-right panel_toolbox">
-          <a href="{{route('FacilityTypes.create')}}" class="btn btn-success">New FacilityType</a>
+          <a href="{{route('FacilityTypes.create')}}" class="btn btn-success">New Location Type</a>
 
         </div>
         <div class="clearfix"></div>
@@ -35,7 +35,7 @@ Facility type
               {{-- <th>Select All <input name="select_all" value="1" id="example-select-all" type="checkbox" /> --}}
               </th>
               <th>ID</th>
-              <th>facility type</th>
+              <th>Location type</th>
               <th>Note</th>
               <th>Created At</th>
               <th>Actions</th>

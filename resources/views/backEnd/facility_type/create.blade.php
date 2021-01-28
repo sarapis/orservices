@@ -1,6 +1,6 @@
 @extends('backLayout.app')
 @section('title')
-create facility type
+create location type
 @stop
 
 @section('content')
@@ -8,13 +8,13 @@ create facility type
 	<div class="col-md-12 col-sm-12 col-xs-12">
 		<div class="x_panel">
 			<div class="x_title">
-				<h2>Create new facility type</h2>
+				<h2>Create new location type</h2>
 				<div class="clearfix"></div>
 			</div>
 			<div class="x_content">
                 {!! Form::open(['route' => 'FacilityTypes.store', 'class' => 'form-horizontal']) !!}
                     <div class="form-group {{ $errors->has('facility_type') ? 'has-error' : ''}}">
-                        {!! Form::label('facility_type', 'Facility type', ['class' => 'col-sm-3 control-label']) !!}
+                        {!! Form::label('facility_type', 'Location type', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-6">
                             {!! Form::text('facility_type', null, ['class' => 'form-control']) !!}
                             {!! $errors->first('facility_type', '<p class="help-block">:message</p>') !!}

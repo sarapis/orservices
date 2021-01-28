@@ -36,39 +36,31 @@ Languages
               </th>
               <th>ID</th>
               <th>language name</th>
-              <th>Note</th>
-              <th>Created At</th>
+              <th>Service Id</th>
+              <th>Location Id</th>
+              {{-- <th>Created At</th> --}}
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            @foreach($languages as $language)
+            {{-- @foreach($languages as $language)
             <tr>
-              {{-- <td>{{ Form::checkbox('sel', $language->id, null, ['class' => ''])}}</td> --}}
               <td>{{$language->id}}</td>
-              <td>{{$language->language_name}}</td>
-              <td>{{$language->note}}</td>
+              <td>{{$language->language}}</td>
+              <td>{{$language->language_service}}</td>
+              <td>{{$language->language_location}}</td>
               <td>{{$language->created_at}}</td>
               <td>
-                {{-- <a href="{{route('languages.show', $language->id)}}" class="btn btn-info btn-xs"><i
-                  class="fa fa-search" data-toggle="tooltip" data-placement="top" title=""
-                  data-original-title="View"></i></a> --}}
                 <a href="{{route('languages.edit', $language->id)}}" class="btn btn-primary btn-xs"><i
                     class="fa fa-pencil" data-toggle="tooltip" data-placement="top" title="Edit"></i></a>
-
-
                 {!! Form::open(['method'=>'DELETE', 'route' => ['languages.destroy', $language->id],
                 'style' =>
                 'display:inline']) !!}
                 {{Form::button('<i class="fa fa-trash"></i>', array('type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'data-placement' => 'top', 'data-original-title' => 'Delete', 'onclick'=>'confirm(Are you sure to delete this language)'))}}
                 {!! Form::close() !!}
-
-
-
-
               </td>
             </tr>
-            @endforeach
+            @endforeach --}}
           </tbody>
         </table>
         {{-- @if (Sentinel::getUser()->hasAccess(['language.destroy']))
@@ -82,38 +74,51 @@ Languages
 
 @section('scripts')
 <script type="text/javascript">
+    let tbllanguages;
+    let ajaxUrl = "{{ route('languages.index') }}";
   $(document).ready(function(){
-        table = $('#tbllanguages').DataTable({
-          'columnDefs': [{
-            'targets': 0,
-            'searchable':false,
-            'orderable':false,
-          }],
-          'order': [0, 'asc'],
-          dom: "Blfrtip",
-            buttons: [
-            {
-              extend: "copy",
-              className: "btn-sm"
-            },
-            {
-              extend: "csv",
-              className: "btn-sm"
-            },
-            {
-              extend: "excel",
-              className: "btn-sm"
-            },
-            {
-              extend: "pdfHtml5",
-              className: "btn-sm"
-            },
-            {
-              extend: "print",
-              className: "btn-sm"
-            },
+    tbllanguages = $('#tbllanguages').DataTable({
+            ajax: {
+                url: ajaxUrl,
+                method : "get",
+                headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    },
+                },
+            columns: [
+                { data: 'id', name: 'id' },
+                { data: 'language', name: 'language' },
+                { data: 'language_service', name: 'language_service' },
+                { data: 'language_location', name: 'language_location' },
+                { data: 'action', name: 'action' },
             ],
-            responsive: true
+            columnDefs : [
+                {
+                    "targets": 0,
+                    "orderable": false,
+                    "class": "text-left",
+                },
+                {
+                    "targets": 1,
+                    "orderable": true,
+                    "class": "text-left"
+                },
+                {
+                    "targets": 2,
+                    "orderable": true,
+                    "class": "text-left"
+                },
+                {
+                    "targets": 3,
+                    "orderable": true,
+                    "class": "text-left"
+                },
+                {
+                    "targets": 4,
+                    "orderable": true,
+                    "class": "text-left"
+                },
+            ],
         });
     });
       // Handle click on "Select all" control

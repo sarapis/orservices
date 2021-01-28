@@ -1,6 +1,6 @@
 @extends('backLayout.app')
 @section('title')
-Edit Facility type : {{$FacilityType->facility_type}}
+Edit Location type : {{$FacilityType->facility_type}}
 @stop
 
 @section('content')
@@ -8,13 +8,13 @@ Edit Facility type : {{$FacilityType->facility_type}}
 	<div class="col-md-12 col-sm-12 col-xs-12">
 		<div class="x_panel">
 			<div class="x_title">
-				<h2>Edit Facility Type</h2>
+				<h2>Edit Location Type</h2>
 				<div class="clearfix"></div>
 			</div>
 			<div class="x_content">
                 {!! Form::model($FacilityType,['route' => array('FacilityTypes.update',$FacilityType->id), 'class' => 'form-horizontal','method' => 'PUT']) !!}
                     <div class="form-group {{ $errors->has('facility_type') ? 'has-error' : ''}}">
-                        {!! Form::label('facility_type', 'Facility Type', ['class' => 'col-sm-3 control-label']) !!}
+                        {!! Form::label('facility_type', 'Location Type', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-6">
                             {!! Form::text('facility_type', null, ['class' => 'form-control']) !!}
                             {!! $errors->first('facility_type', '<p class="help-block">:message</p>') !!}

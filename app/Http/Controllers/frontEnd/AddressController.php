@@ -6,6 +6,7 @@ use App\Functions\Airtable;
 use App\Http\Controllers\Controller;
 use App\Imports\AddressImport;
 use App\Model\Address;
+use App\Model\Airtable_v2;
 use App\Model\Airtablekeyinfo;
 use App\Model\Airtables;
 use App\Model\CSV_Source;
@@ -103,6 +104,93 @@ class AddressController extends Controller
 
         $date = date("Y/m/d H:i:s");
         $airtable = Airtables::where('name', '=', 'Address')->first();
+        $airtable->records = Address::count();
+        $airtable->syncdate = $date;
+        $airtable->save();
+    }
+    public function airtable_v2($api_key, $base_url)
+    {
+
+        $airtable_key_info = Airtablekeyinfo::find(1);
+        if (!$airtable_key_info) {
+            $airtable_key_info = new Airtablekeyinfo;
+        }
+        $airtable_key_info->api_key = $api_key;
+        $airtable_key_info->base_url = $base_url;
+        $airtable_key_info->save();
+
+        Address::truncate();
+        // $airtable = new Airtable(array(
+        //     'api_key'   => env('AIRTABLE_API_KEY'),
+        //     'base'      => env('AIRTABLE_BASE_URL'),
+        // ));
+        $airtable = new Airtable(array(
+            'api_key' => $api_key,
+            'base' => $base_url,
+        ));
+
+        $request = $airtable->getContent('physical_addresses');
+
+        do {
+
+            $response = $request->getResponse();
+
+            $airtable_response = json_decode($response, true);
+
+            foreach ($airtable_response['records'] as $record) {
+
+                $address = new Address();
+                $strtointclass = new Stringtoint();
+
+                $address->address_recordid = $strtointclass->string_to_int($record['id']);
+
+                $address->address_1 = isset($record['fields']['address_1']) ? $record['fields']['address_1'] : null;
+                $address->address_2 = isset($record['fields']['address_2']) ? $record['fields']['address_2'] : null;
+                $address->address_city = isset($record['fields']['city']) ? $record['fields']['city'] : null;
+                $address->address_state_province = isset($record['fields']['state_province']) ? $record['fields']['state_province'] : null;
+                $address->address_postal_code = isset($record['fields']['postal_code']) ? $record['fields']['postal_code'] : null;
+                $address->address_region = isset($record['fields']['region']) ? $record['fields']['region'] : null;
+                $address->address_country = isset($record['fields']['country']) ? $record['fields']['country'] : null;
+                $address->address_attention = isset($record['fields']['attention']) ? $record['fields']['attention'] : null;
+                $address->address_type = isset($record['fields']['x-type'])  ? $record['fields']['x-type'] : null;
+
+                if (isset($record['fields']['locations'])) {
+                    $i = 0;
+                    foreach ($record['fields']['locations'] as $value) {
+
+                        $addresslocation = $strtointclass->string_to_int($value);
+
+                        if ($i != 0) {
+                            $address->address_locations = $address->address_locations . ',' . $addresslocation;
+                        } else {
+                            $address->address_locations = $addresslocation;
+                        }
+
+                        $i++;
+                    }
+                }
+
+                if (isset($record['fields']['services'])) {
+                    $i = 0;
+                    foreach ($record['fields']['services'] as $value) {
+
+                        $addressservice = $strtointclass->string_to_int($value);
+
+                        if ($i != 0) {
+                            $address->address_services = $address->address_services . ',' . $addressservice;
+                        } else {
+                            $address->address_services = $addressservice;
+                        }
+
+                        $i++;
+                    }
+                }
+                $address->save();
+            }
+        } while ($request = $response->next());
+
+        $date = date("Y/m/d H:i:s");
+        $airtable = Airtable_v2::where('name', '=', 'Physical_Address')->first();
         $airtable->records = Address::count();
         $airtable->syncdate = $date;
         $airtable->save();

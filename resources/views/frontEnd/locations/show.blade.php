@@ -1,78 +1,8 @@
 @extends('layouts.app')
 @section('title')
-Facility
+Location
 @stop
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-
-{{-- <style type="text/css">
-    .dropdown-menu.show {
-        max-height: 300px !important;
-        width: 100% !important;
-    }
-    .table a{
-        text-decoration:none !important;
-        color: rgba(40,53,147,.9);
-        white-space: normal;
-    }
-    .footable.breakpoint > tbody > tr > td > span.footable-toggle{
-        position: absolute;
-        right: 25px;
-        font-size: 25px;
-        color: #000000;
-    }
-    .ui-menu .ui-menu-item .ui-state-active {
-        padding-left: 0 !important;
-    }
-    ul#ui-id-1 {
-        width: 260px !important;
-    }
-    #map{
-        position: relative !important;
-        z-index: 0 !important;
-    }
-    @media (max-width: 768px) {
-        .property{
-            padding-left: 30px !important;
-        }
-        #map{
-            display: block !important;
-            width: 100% !important;
-        }
-    }
-    .morecontent span {
-    display: none;
-
-    }
-    .morelink{
-    color: #428bca;
-    }
-    button.dt-button {
-        display: none !important;
-    }
-    div#tbl-location-profile-history_filter {
-        margin-left: 10px;
-    }
-    table#tbl-location-profile-history {
-        width: 100% !important;
-        display: block;
-        border-bottom: 0px;
-    }
-    #tbl-location-profile-history_wrapper {
-        overflow-x: scroll;
-    }
-
-    #tagging-div {
-        width: 100% !important;
-    }
-
-    #content-location-profile {
-        width: calc(80% - 270px);
-        padding: 0px;
-        transition: all 0.3s;
-        background: white;
-        min-height: calc(80% - 134px);
-    }
-</style> --}}
 
 @section('content')
 <div class="top_header_blank"></div>
@@ -97,13 +27,13 @@ Facility
                                 <br>
                             @endforeach
                         </h4>
-                        @if(isset($facility->address))
+                        {{-- @if(isset($facility->address))
                         <h4>
 							<span class="subtitle"><b>Address: </b></span>
 							@if(isset($facility->address))
 								@foreach($facility->address as $address)
                                 <a href="https://www.google.com/maps/dir/?api=1&destination={{ $address->address_1 }} {{ $address->address_2 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }} {{ $address->address_region }} {{ $address->address_country }}" target="_blank">{{ $address->address_1 }} {{ $address->address_2 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }} {{ $address->address_region }} {{ $address->address_country }}</a>
-								
+
 								@endforeach
 							@endif
                         </h4>
@@ -124,23 +54,55 @@ Facility
                                  {{ count($facility->phones) > $key+1 ? ',' : '' }}
                             @endforeach
                         </h4>
-                        @endif
+                        @endif --}}
+                        @if($facility->location_alternate_name)
                         <h4>
                             <span class="subtitle"><b>Alternative Name: </b></span>
                             {{$facility->location_alternate_name}}
                         </h4>
+                        @endif
+                        @if($facility->location_description)
                         <h4>
                             <span class="subtitle"><b>Description: </b></span>
                             {{$facility->location_description}}
                         </h4>
+                        @endif
+                        @if($facility->location_transportation)
                         <h4>
                             <span class="subtitle"><b>Transportation: </b></span>
                             {{$facility->location_transportation}}
                         </h4>
+                        @endif
+                        {{-- @if($facility->location_details)
                         <h4>
                             <span class="subtitle"><b>Details: </b></span>
                             {{$facility->location_details}}
                         </h4>
+                        @endif --}}
+                        @if($locationDetails)
+                            @php
+                                $show_details = [];
+                            @endphp
+                            @foreach($locationDetails as $detail)
+                                @php
+                                    for($i = 0; $i < count($show_details); $i ++){
+                                        if($show_details[$i]['detail_type'] == $detail->detail_type)
+                                            break;
+                                    }
+                                    if($i == count($show_details)){
+                                        $show_details[$i] = array('detail_type'=> $detail->detail_type, 'detail_value'=> $detail->detail_value);
+                                    }
+                                    else{
+                                        $show_details[$i]['detail_value'] = $show_details[$i]['detail_value'].', '.$detail->detail_value;
+                                    }
+                                @endphp
+                            @endforeach
+                            @foreach($show_details as $detail)
+                                <h4>
+                                    <span class="subtitle"><b>{{ $detail['detail_type'] }}:</b></span> {!! $detail['detail_value'] !!}
+                                </h4>
+                            @endforeach
+                        @endif
                     </div>
                 </div>
 
@@ -161,7 +123,7 @@ Facility
                                         <h4 style="line-height: inherit;">
                                             <span>
                                                 <i class="icon md-phone font-size-18 vertical-align-top pr-10  m-0"></i>
-                                                @foreach($service->phone as $phone) 
+                                                @foreach($service->phone as $phone)
                                                 <a href="tel:{!! $phone->phone_number !!}">{!! $phone->phone_number !!}</a>
                                                 @endforeach
                                             </span>
@@ -173,7 +135,7 @@ Facility
                                                 <a href="https://www.google.com/maps/dir/?api=1&destination={{ $address->address_1 .' '. $address->address_2 .' '. $address->address_city .' '. $address->address_state_province .' '. $address->address_postal_code }}" target="_blank">
                                                     {{ $address->address_1 .' '. $address->address_2 .' '. $address->address_city .' '. $address->address_state_province .' '. $address->address_postal_code }}
                                                 </a>
-                                                
+
                                                 @endforeach
                                             @endif
                                             </span>
@@ -203,7 +165,7 @@ Facility
                                             @endforeach
                                         @endif
                                         <h4>
-                                            <span class="pl-0 category_badge subtitle"><b>Types of Services:</b>
+                                            {{-- <span class="pl-0 category_badge subtitle"><b>Types of Services:</b>
                                                 @if($service->service_taxonomy != 0 || $service->service_taxonomy==null)
                                                     @php
                                                         $names = [];
@@ -212,7 +174,7 @@ Facility
 
                                                         @if(!in_array($taxonomy->taxonomy_grandparent_name, $names))
                                                             @if($taxonomy->taxonomy_grandparent_name && $taxonomy->taxonomy_parent_name != 'Target Populations')
-                                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}" at="{{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}">{{$taxonomy->taxonomy_grandparent_name}}</a>
+                                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}" at="{{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}" style="background-color: {{ $taxonomy->badge_color ? '#'.$taxonomy->badge_color : '#000' }} !important; color:#fff !important;">{{$taxonomy->taxonomy_grandparent_name}}</a>
                                                                 @php
                                                                 $names[] = $taxonomy->taxonomy_grandparent_name;
                                                                 @endphp
@@ -221,7 +183,7 @@ Facility
                                                         @if(!in_array($taxonomy->taxonomy_parent_name, $names))
                                                             @if($taxonomy->taxonomy_parent_name && $taxonomy->taxonomy_parent_name != 'Target Populations')
                                                                 @if($taxonomy->taxonomy_grandparent_name)
-                                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_parent_name)}}" at="{{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}_{{str_replace(' ', '_', $taxonomy->taxonomy_parent_name)}}">{{$taxonomy->taxonomy_parent_name}}</a>
+                                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_parent_name)}}" at="{{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}_{{str_replace(' ', '_', $taxonomy->taxonomy_parent_name)}}" style="background-color: {{ $taxonomy->badge_color ? '#'.$taxonomy->badge_color : '#000' }} !important; color:#fff !important;">{{$taxonomy->taxonomy_parent_name}}</a>
                                                                 @endif
                                                                 @php
                                                                 $names[] = $taxonomy->taxonomy_parent_name;
@@ -230,7 +192,7 @@ Facility
                                                         @endif
                                                         @if(!in_array($taxonomy->taxonomy_name, $names))
                                                             @if($taxonomy->taxonomy_name && $taxonomy->taxonomy_parent_name != 'Target Populations')
-                                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_name)}}" at="{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>
+                                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_name)}}" at="{{$taxonomy->taxonomy_recordid}}" style="background-color: {{ $taxonomy->badge_color ? '#'.$taxonomy->badge_color : '#000' }} !important; color:#fff !important;">{{$taxonomy->taxonomy_name}}</a>
                                                                 @php
                                                                 $names[] = $taxonomy->taxonomy_name;
                                                                 @endphp
@@ -238,6 +200,28 @@ Facility
                                                         @endif
                                                     @endforeach
                                                 @endif
+                                            </span> --}}
+                                            <span class="pl-0 category_badge subtitle"><b>Service Category:</b>
+                                                @foreach ($service->taxonomy as $service_taxonomy_info)
+                                                @if ($service_taxonomy_info->taxonomy_vocabulary == 'Service Category')
+                                                @if($service->service_taxonomy != null)
+                                                <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
+                                                    at="child_{{$service_taxonomy_info->taxonomy_recordid}}" style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>
+                                                @endif
+                                                @endif
+                                                @endforeach
+                                            </span>
+                                        </h4>
+                                        <h4>
+                                            <span class="pl-0 category_badge subtitle"><b>Service Eligibility:</b>
+                                            @foreach ($service->taxonomy as $service_taxonomy_info)
+                                            @if ($service_taxonomy_info->taxonomy_vocabulary == 'Service Eligibility')
+                                            @if($service->service_taxonomy != null)
+                                            <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
+                                                at="child_{{$service_taxonomy_info->taxonomy_recordid}}" style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>
+                                            @endif
+                                            @endif
+                                            @endforeach
                                             </span>
                                         </h4>
                                     </div>
@@ -338,6 +322,42 @@ Facility
                     </div>
                 </div>
                 <!-- Locations area design -->
+
+                <div class="card">
+                    <div class="card-block">
+                        {{-- <h4 class="card_services_title">Comments</h4> --}}
+                        <div class="comment-body media-body">
+                            @if(isset($facility->address))
+                                <h4>
+                                    <span class="subtitle"><b>Address: </b></span>
+                                    @if(isset($facility->address))
+                                        @foreach($facility->address as $address)
+                                        <a href="https://www.google.com/maps/dir/?api=1&destination={{ $address->address_1 }} {{ $address->address_2 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }} {{ $address->address_region }} {{ $address->address_country }}" target="_blank">{{ $address->address_1 }} {{ $address->address_2 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }} {{ $address->address_region }} {{ $address->address_country }}</a>
+
+                                        @endforeach
+                                    @endif
+                                </h4>
+                                {{-- <h4>
+                                    <span class="subtitle"><b>Latitude: </b></span>
+                                    {{$facility->location_latitude}}
+                                </h4>
+                                <h4>
+                                    <span class="subtitle"><b>Longitude: </b></span>
+                                    {{$facility->location_longitude}}
+                                </h4> --}}
+                                @endif
+                                @if(isset($facility->phones))
+                                <h4>
+                                    <span class="subtitle"><b>Phones: </b></span>
+                                    @foreach($facility->phones as $key => $phone)
+                                        <a href="tel:{{$phone->phone_number}}">{{$phone->phone_number}}</a>
+                                        {{ count($facility->phones) > $key+1 ? ',' : '' }}
+                                    @endforeach
+                                </h4>
+                            @endif
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Contact area design -->
                 @if($facility->organization)

@@ -182,6 +182,7 @@
             <input type="hidden" name="target_all" id="target_all">
             <input type="hidden" name="pdf" id="pdf">
             <input type="hidden" name="csv" id="csv">
+            <input type="hidden" name="organization_tags" id="organization_tags" value="{{ isset($selected_organization) ? $selected_organization : '' }}">
             <input type="hidden" id="selected_taxonomies" name="selected_taxonomies">
         </ul>
     </nav>
@@ -318,6 +319,24 @@ $(document).ready(function(){
     });
     $('.drop-sort').on('click', function(){
         $("#sort").val($(this).text());
+        $("#filter").submit();
+    });
+    let organization_tags = $('#organization_tags').val() != '' ? JSON.parse($('#organization_tags').val()) : [];
+
+    // if(organization_tags == ""){
+    //     organization_tags = []
+    // }else{
+    //     organization_tags = JSON.parse(organization_tags)
+    // }
+    $('.drop-tags').on('click', function(){
+        let text = $(this).text();
+        if($.inArray(text,organization_tags) == -1){
+            organization_tags.push(text)
+        }else{
+            organization_tags.splice(organization_tags.indexOf(text),1)
+        }
+        $("#organization_tags").val(JSON.stringify(organization_tags));
+        // $("#organization_tags").val($(this).text());
         $("#filter").submit();
     });
     $('.download_csv').on('click', function(){

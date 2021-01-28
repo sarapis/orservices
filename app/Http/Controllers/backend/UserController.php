@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\backEnd;
 
 use App\Http\Controllers\Controller;
+use App\Model\EmailTemplate;
 use App\Model\Layout;
 use App\Model\Organization;
 use App\Model\Role;
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use SendGrid;
+use SendGrid\Mail\Mail;
 
 class UserController extends Controller
 {
@@ -91,6 +94,93 @@ class UserController extends Controller
             $user->role_id = $request->role;
             $user->created_by = Auth::id();
             $user->save();
+            $EmailTemplate = EmailTemplate::whereId(1)->where('status', 1)->first();
+
+            if ($EmailTemplate) {
+                $from = env('MAIL_FROM_ADDRESS');
+                $name = env('MAIL_FROM_NAME');
+                $email = new Mail();
+                $email->setFrom($from, $name);
+                // $subject = 'A Suggested Change was Submitted at ' . $site_name;
+                $subject = $EmailTemplate->subject;
+
+                $email->setSubject($subject);
+
+                // $body = $request->message;
+                $data = array(
+                    '{first_name}' => $request->get('first_name') . ' ' . $request->get('last_name'),
+                    '{password}' => $request->get('password'),
+                );
+                $body = $EmailTemplate->body;
+
+                foreach ($data as $key => $value) {
+                    //replace the email template body string to user detail
+                    $body = str_replace($key, $value, $body);
+                }
+
+                $message = '<html><body>';
+                $message .= $body;
+                $message .= '</body></html>';
+
+                $email->addContent("text/html", $message);
+                $sendgrid = new SendGrid(getenv('SENDGRID_API_KEY'));
+
+                $error = '';
+
+                $username = 'Larable Team';
+                // $contact_email_list = Email::select('email_info')->pluck('email_info')->toArray();
+
+                // foreach ($contact_email_list as $key => $contact_email) {
+                $email->addTo($request->email, $username);
+                // }
+                $response = $sendgrid->send($email);
+                if ($response->statusCode() == 401) {
+                    $error = json_decode($response->body());
+                }
+            }
+            $ActivationEmail = EmailTemplate::whereId(2)->where('status', 1)->first();
+            if ($ActivationEmail && $request->role) {
+                $from = env('MAIL_FROM_ADDRESS');
+                $name = env('MAIL_FROM_NAME');
+                $email = new Mail();
+                $email->setFrom($from, $name);
+                // $subject = 'A Suggested Change was Submitted at ' . $site_name;
+                $subject = $ActivationEmail->subject;
+
+                $email->setSubject($subject);
+
+                // $body = $request->message;
+                $data = array(
+                    '{first_name}' => $request->get('first_name') . ' ' . $request->get('last_name'),
+                    '{password}' => $request->get('password'),
+                );
+                $body = $ActivationEmail->body;
+
+                foreach ($data as $key => $value) {
+                    //replace the email template body string to user detail
+                    $body = str_replace($key, $value, $body);
+                }
+
+                $message = '<html><body>';
+                $message .= $body;
+                $message .= '</body></html>';
+
+                $email->addContent("text/html", $message);
+                $sendgrid = new SendGrid(getenv('SENDGRID_API_KEY'));
+
+                $error = '';
+
+                $username = 'Larable Team';
+                // $contact_email_list = Email::select('email_info')->pluck('email_info')->toArray();
+
+                // foreach ($contact_email_list as $key => $contact_email) {
+                $email->addTo($request->email, $username);
+                // }
+                $response = $sendgrid->send($email);
+                if ($response->statusCode() == 401) {
+                    $error = json_decode($response->body());
+                }
+            }
             Session::flash('message', 'Success! User is created successfully.');
             Session::flash('status', 'success');
             return redirect()->route('user.index');
@@ -146,7 +236,7 @@ class UserController extends Controller
         $roles = Role::get()->pluck('name', 'id');
         $organization_list = Organization::select('organization_recordid', 'organization_name')->get();
         $account_organization_list = explode(',', $user->user_organization);
-        return View('backEnd.users.edit', compact('user', 'roles', 'layout','organization_list','account_organization_list'));
+        return View('backEnd.users.edit', compact('user', 'roles', 'layout', 'organization_list', 'account_organization_list'));
     }
 
     /**
@@ -183,8 +273,8 @@ class UserController extends Controller
                 $user->email = $request->email;
             }
             if ($request->user_organizations) {
-              $user->user_organization = join(',', $request->user_organizations);
-              }
+                $user->user_organization = join(',', $request->user_organizations);
+            }
             if ($request->new_password && $request->new_password_confirmation) {
                 if ($request->new_password == $request->new_password_confirmation) {
                     $user->password = Hash::make($request->new_password);
@@ -196,9 +286,54 @@ class UserController extends Controller
             }
             if ($request->role) {
                 $user->role_id = $request->role;
+                $ActivationEmail = EmailTemplate::whereId(2)->where('status', 1)->first();
+                $userData = User::whereId($id)->first();
+
+                if ($ActivationEmail && $request->role && $userData && $request->role != $userData->role_id) {
+                    $from = env('MAIL_FROM_ADDRESS');
+                    $name = env('MAIL_FROM_NAME');
+                    $email = new Mail();
+                    $email->setFrom($from, $name);
+                    // $subject = 'A Suggested Change was Submitted at ' . $site_name;
+                    $subject = $ActivationEmail->subject;
+
+                    $email->setSubject($subject);
+
+                    // $body = $request->message;
+                    $data = array(
+                        '{first_name}' => $request->get('first_name') . ' ' . $request->get('last_name'),
+                        '{password}' => $request->get('password'),
+                    );
+                    $body = $ActivationEmail->body;
+
+                    foreach ($data as $key => $value) {
+                        //replace the email template body string to user detail
+                        $body = str_replace($key, $value, $body);
+                    }
+
+                    $message = '<html><body>';
+                    $message .= $body;
+                    $message .= '</body></html>';
+
+                    $email->addContent("text/html", $message);
+                    $sendgrid = new SendGrid(getenv('SENDGRID_API_KEY'));
+
+                    $error = '';
+
+                    $username = 'Larable Team';
+                    // $contact_email_list = Email::select('email_info')->pluck('email_info')->toArray();
+
+                    // foreach ($contact_email_list as $key => $contact_email) {
+                    $email->addTo($request->email, $username);
+                    // }
+                    $response = $sendgrid->send($email);
+                    if ($response->statusCode() == 401) {
+                        $error = json_decode($response->body());
+                    }
+                }
             }
             if ($request->user_organizations) {
-              $user->organizations()->sync($request->user_organizations);
+                $user->organizations()->sync($request->user_organizations);
             }
             $user->update();
             Session::flash('message', 'Success! User is updated successfully.');

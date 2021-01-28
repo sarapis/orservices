@@ -53,9 +53,12 @@
 
 			<div class="collapse navbar-collapse" id="navbar-collapse-1">
 				<ul class="nav navbar-nav navbar-right login_register_nav">
-					@if (Auth::guest())
+
+                    @if (Auth::guest())
+                        @if (Request::segment(1) != 'login' && Request::segment(1) != 'register')
 						<li><a href="{{ url('login') }}">Login</a></li>
 						<li><a href="{{ url('register') }}">Register</a></li>
+                        @endif
 					@else
 						<li><a href="#">{{ Auth::user()->name }}</a></li>
 						<li><a href="{{ url('logout') }}">Logout</a></li>

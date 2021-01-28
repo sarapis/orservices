@@ -106,22 +106,22 @@ Locations
                 <input type="hidden" id="checked_terms" name="checked_terms">
             </div> -->
             <div class="col-md-12">
+                <h4 class="card-title title_edit mb-30">
+                    Location
+                </h4>
                 <div class="card">
                     <div class="card-block">
-                        <h4 class="card-title mb-30 ">
-                            <p>Facility</p>
-                        </h4>
                         <div class="table-responsive">
                             <table class="table jambo_table bulk_action" id="tbl-location">
                                 <thead>
                                     <tr>
                                         {{-- <th class="default-active"></th> --}}
-                                        <th class="default-active">Facility Name</th>
+                                        <th class="default-active">Location Name</th>
                                         <th class="default-active">Organization</th>
                                         <th class="default-active">Address</th>
                                         <th class="default-active">Contacts</th>
                                         <th class="default-active">Services</th>
-                                        {{-- <th class="default-active">Facility Description</th> --}}
+                                        {{-- <th class="default-active">Location Description</th> --}}
                                     </tr>
                                 </thead>
                             </table>

@@ -127,14 +127,14 @@ Contact
                             @endif
                         </h4>
                         <h4>
-                            <span class="subtitle"><b>Contact Title: </b></span>
+                            <span class="subtitle"><b>Title: </b></span>
                             {{$contact->contact_title}}
                         </h4>
                         <h4>
                             <span class="subtitle"><b>Organization: </b></span>
 
                             @if (Auth::user() && $contact->organization)
-                                <a class="panel-link" href="/organizations/{{$contact->organization->organization_recordid}}">{{ $contact->organization->organization_name }}</a>                                
+                                <a class="panel-link" href="/organizations/{{$contact->organization->organization_recordid}}">{{ $contact->organization->organization_name }}</a>
                             @endif
                         </h4>
                         <h4>
@@ -149,17 +149,19 @@ Contact
                         <h4 style="line-height: inherit;">
                             <span class="subtitle"><b>Phone Number: </b></span>
                             @foreach($contact->phone as $key => $phone)
-                                {{$phone->phone_number}} {{ count($contact->phone) > $key+1 ? ',' : '' }}
+                                {{$phone->phone_number}} {{ $phone->phone_number && count($contact->phone) > $key+1 ? ',' : '' }}
                             @endforeach
                         </h4>
                         @endif
-                        <h4>
+                        {{-- <h4>
                             <span class="subtitle"><b>Phone Area Code: </b></span>
                             {{$contact->contact_phone_areacode}}
-                        </h4>
+                        </h4> --}}
                         <h4>
                             <span class="subtitle"><b>Phone Extension: </b></span>
-                            {{$contact->contact_phone_extension}}
+                            @foreach($contact->phone as $key => $phone)
+                                {{$phone->phone_extension}} {{ $phone->phone_extension && count($contact->phone) > $key+1 ? ',' : '' }}
+                            @endforeach
                         </h4>
                     </div>
                 </div>
@@ -218,7 +220,7 @@ Contact
                             @endforeach
                                   @endif
                             <h4>
-                                <span class="pl-0 category_badge subtitle"><b>Types of Services:</b>
+                                {{-- <span class="pl-0 category_badge subtitle"><b>Types of Services:</b>
                                 @if($service->service_taxonomy!=0 || $service->service_taxonomy==null)
                                     @php
                                         $names = [];
@@ -226,7 +228,7 @@ Contact
                                     @foreach($service->taxonomy->sortBy('taxonomy_name') as $key => $taxonomy)
                                         @if(!in_array($taxonomy->taxonomy_grandparent_name, $names))
                                             @if($taxonomy->taxonomy_grandparent_name && $taxonomy->taxonomy_parent_name != 'Target Populations')
-                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}" at="{{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}">{{$taxonomy->taxonomy_grandparent_name}}</a>
+                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}" at="{{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}" style="background-color: {{ $taxonomy->badge_color ? '#'.$taxonomy->badge_color : '#000' }} !important; color:#fff !important;">{{$taxonomy->taxonomy_grandparent_name}}</a>
                                                 @php
                                                 $names[] = $taxonomy->taxonomy_grandparent_name;
                                                 @endphp
@@ -235,7 +237,7 @@ Contact
                                         @if(!in_array($taxonomy->taxonomy_parent_name, $names))
                                             @if($taxonomy->taxonomy_parent_name && $taxonomy->taxonomy_parent_name != 'Target Populations')
                                                 @if($taxonomy->taxonomy_grandparent_name)
-                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_parent_name)}}" at="{{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}_{{str_replace(' ', '_', $taxonomy->taxonomy_parent_name)}}">{{$taxonomy->taxonomy_parent_name}}</a>
+                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_parent_name)}}" at="{{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}_{{str_replace(' ', '_', $taxonomy->taxonomy_parent_name)}}" style="background-color: {{ $taxonomy->badge_color ? '#'.$taxonomy->badge_color : '#000' }} !important; color:#fff !important;">{{$taxonomy->taxonomy_parent_name}}</a>
                                                 @endif
                                                 @php
                                                 $names[] = $taxonomy->taxonomy_parent_name;
@@ -244,7 +246,7 @@ Contact
                                         @endif
                                         @if(!in_array($taxonomy->taxonomy_name, $names))
                                             @if($taxonomy->taxonomy_name && $taxonomy->taxonomy_parent_name != 'Target Populations')
-                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_name)}}" at="{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>
+                                                <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_name)}}" at="{{$taxonomy->taxonomy_recordid}}" style="background-color: {{ $taxonomy->badge_color ? '#'.$taxonomy->badge_color : '#000' }} !important; color:#fff !important;">{{$taxonomy->taxonomy_name}}</a>
                                                 @php
                                                 $names[] = $taxonomy->taxonomy_name;
                                                 @endphp
@@ -252,6 +254,28 @@ Contact
                                         @endif
                                     @endforeach
                                 @endif
+                                </span> --}}
+                                <span class="pl-0 category_badge subtitle"><b>Service Category:</b>
+                                    @foreach ($service->taxonomy as $service_taxonomy_info)
+                                    @if ($service_taxonomy_info->taxonomy_vocabulary == 'Service Category')
+                                    @if($service->service_taxonomy != null)
+                                    <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
+                                        at="child_{{$service_taxonomy_info->taxonomy_recordid}}" style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>
+                                    @endif
+                                    @endif
+                                    @endforeach
+                                </span>
+                            </h4>
+                            <h4>
+                                <span class="pl-0 category_badge subtitle"><b>Service Eligibility:</b>
+                                @foreach ($service->taxonomy as $service_taxonomy_info)
+                                @if ($service_taxonomy_info->taxonomy_vocabulary == 'Service Eligibility')
+                                @if($service->service_taxonomy != null)
+                                <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
+                                    at="child_{{$service_taxonomy_info->taxonomy_recordid}}" style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>
+                                @endif
+                                @endif
+                                @endforeach
                                 </span>
                             </h4>
                         </div>

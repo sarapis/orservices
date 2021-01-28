@@ -13,11 +13,11 @@ Edit Service
                 <input type="hidden" id="checked_terms" name="checked_terms">
             </div> -->
             <div class="col-md-6 m-auto">
+                <h4 class="card-title title_edit mb-30">
+                    Change Password
+                </h4>
                 <div class="card all_form_field">
                     <div class="card-block">
-                        <h4 class="card-title mb-30 ">
-                            <p>Change Password</p>
-                        </h4>
                         {!! Form::open(['route' => ['update_password',$user_info->id]]) !!}
                         <div class="row">
                             <div class="col-md-12">

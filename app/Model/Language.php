@@ -12,4 +12,12 @@ class Language extends Model
     protected $fillable = [
         'language_recordid', 'language_location', 'language_service', 'language', 'flag',
     ];
+    public function service()
+    {
+        return $this->belongsTo('App\Model\Service', 'language_service', 'service_recordid');
+    }
+    public function location()
+    {
+        return $this->belongsTo('App\Model\Location', 'language_location', 'location_recordid');
+    }
 }

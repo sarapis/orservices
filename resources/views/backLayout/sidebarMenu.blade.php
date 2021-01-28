@@ -31,9 +31,10 @@
             <ul class="nav side-menu">
                 <li><a><i class="fa fa-windows"></i> Pages <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                        <li><a href="/home_edit">Home Page</a></li>
-                        <li><a href="/about_edit">About Page</a></li>
-                        <li><a href="/login_register_edit">Login/Register Page</a></li>
+                        <li><a href="/home_edit">Home</a></li>
+                        <li><a href="/about_edit">About</a></li>
+                        <li><a href="/login_register_edit">Login/Register</a></li>
+                        <li><a href="/account">Account</a></li>
                     </ul>
                 </li>
                 <li><a><i class="fa fa-table"></i> Settings <span class="fa fa-chevron-down"></span></a>
@@ -42,6 +43,7 @@
                         <li><a href="/map">Map</a></li>
                         <li><a href="/add_country">Add Country in Address</a></li>
                         <li><a href="/messagesSetting">APIs</a></li>
+                        <li><a href="/system_emails">System Emails</a></li>
                         {{-- <li><a href="/sections">Sections</a></li>
                         --}}
                         {{-- <li><a href="/meta_filter">Meta Filter</a></li>
@@ -64,7 +66,7 @@
               <li><a href="/languages">Languages</a></li>
               <li><a href="/organizationTypes">Organization Type</a></li>
               <li><a href="/ContactTypes">Contact Type</a></li>
-              <li><a href="/FacilityTypes">Facility Type</a></li>
+              <li><a href="/FacilityTypes">Location Type</a></li>
             </ul>
           </li> -->
                 {{-- <li><a href="/analytics"><i class="fa fa-line-chart"></i>
@@ -74,15 +76,30 @@
                         <li><a href="/import">Import</a></li>
                         {{-- <li><a href="/importContact">Import Contact</a></li>
                         <li><a href="/importOrganization">Import Organization</a></li>
-                        <li><a href="/importFacility">Import Facility</a></li> --}}
+                        <li><a href="/importFacility">Import Loaction</a></li> --}}
                         <!-- <li><a href="/home_edit">Home</a></li> -->
                         <li><a href="/export">Export</a></li>
                     </ul>
                 </li>
                 </li>
-                <li><a><i class="fa fa-envelope"></i> Contact Form <span class="fa fa-chevron-down"></span></a>
+                <li><a><i class="fa fa-envelope"></i> Inbox <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                         <li><a href="/contact_form">Contact Form</a></li>
+                        <li><a href="/registrations">Registrations</a></li>
+                    </ul>
+                </li>
+                <li><a><i class="fa fa-envelope"></i> Taxonomies <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                        <li><a href="/tb_taxonomy">Services</a></li>
+                        <li><a href="{{ route('service_attributes.index') }}">Service Attributes</a></li>
+                        <li><a href="{{ route('other_attributes.index') }}">Other Attributes</a></li>
+                        <li><a href="{{ route('languages.index') }}">Language</a></li>
+                        <li><a href="{{ route('XDetails.index') }}">Details</a></li>
+                        <li><a href="{{ route('phone_types.index') }}">Phone Type</a></li>
+                        <li><a href="{{ route('detail_types.index') }}">Detail Type</a></li>
+                        <li><a href="{{ route('programs.index') }}">Programs</a></li>
+                        {{-- <li><a href="{{ route('service_categories.index') }}">Service Category</a></li>
+                        <li><a href="{{ route('service_eligibilities.index') }}">Service Eligibility</a></li> --}}
                     </ul>
                 </li>
                 <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
@@ -94,7 +111,7 @@
                         <li><a href="/tb_phones">Phones</a></li>
                         <li><a href="/tb_address">Address</a></li>
                         <li><a href="/tb_schedule">Schedule</a></li>
-                        <li><a href="/tb_taxonomy">Taxonomy</a></li>
+                        {{-- <li><a href="/tb_taxonomy">Taxonomy</a></li> --}}
                         @if ($source_data->active == 1)
                             <li><a href="/tb_details">Details</a></li>
                         @endif

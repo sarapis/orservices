@@ -3,16 +3,21 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Model\Email;
+use App\Model\EmailTemplate;
 use App\Model\Layout;
 use App\Model\Organization;
 use App\Providers\RouteServiceProvider;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use SendGrid;
+use SendGrid\Mail\Mail;
 
 class RegisterController extends Controller
 {
@@ -87,7 +92,12 @@ class RegisterController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'phone_number' => 'required|min:10',
+            'organization' => 'required',
             'password' => 'required|string|min:6|confirmed',
+        ], [
+            // 'required'  => 'Please enter a valid :attribute',
+            'email.required'  => 'Please enter a valid email address',
         ]);
         // dd($request);
         try {
@@ -97,15 +107,108 @@ class RegisterController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'user_organization' =>  $request->organization,
+                'phone_number' =>  $request->phone_number,
+                'message' =>  $request->message,
                 // 'role_id' => '2'
             ]);
-
+            $organizations = [];
+            $organizationIds = [];
+            if ($request->organization) {
+                $organizationIds[] = $request->organization;
+            }
             if ($user) {
-                $user->user_organization = join(',', $request->organization);
+                $user->user_organization = join(',', $organizationIds);
                 $user->save();
-                $user->organizations()->sync($request->organization);
+                $user->organizations()->sync($organizationIds);
+                if ($request->organization) {
+                    $organizations = Organization::whereIn('organization_recordid', $organizationIds)->pluck('organization_name')->toArray();
+                }
+
+                $from = env('MAIL_FROM_ADDRESS');
+                $name = env('MAIL_FROM_NAME');
+                // $from_phone = env('MAIL_FROM_PHONE');
+
+                $email = new Mail();
+                $email->setFrom($from, $name);
+                // $subject = 'A Suggested Change was Submitted at ' . $site_name;
+                $subject = 'Registraion';
+                $email->setSubject($subject);
+
+                $body = $request->message;
+
+                $message = '<html><body>';
+                $message .= '<h1 style="color:#424242;">New user registration!</h1>';
+                // $message .= '<p style="color:#424242;font-size:18px;">The following change was suggested at  ' . $site_name . ' website.</p>';
+                $message .= '<p style="color:#424242;font-size:12px;">ID: ' . $user->id . '</p>';
+                $message .= '<p style="color:#424242;font-size:12px;">Timestamp: ' . Carbon::now() . '</p>';
+                $message .= '<p style="color:#424242;font-size:12px;">Organization: ' . implode(',', $organizations) . '</p>';
+                $message .= '<p style="color:#424242;font-size:12px;">Message: ' . $body . '</p>';
+                $message .= '<p style="color:#424242;font-size:12px;">From: ' . $request->first_name . ' ' . $request->last_name . '</p>';
+                $message .= '<p style="color:#424242;font-size:12px;">Email: ' . $request->email . '</p>';
+                $message .= '<p style="color:#424242;font-size:12px;">Phone: ' . $request->phone_number . '</p>';
+                // $message .= '<p style="color:#424242;font-size:12px;">Phone: '. $from_phone .'</p>';
+                $message .= '</body></html>';
+
+                $email->addContent("text/html", $message);
+                $sendgrid = new SendGrid(getenv('SENDGRID_API_KEY'));
+
+                $error = '';
+
+                $username = 'Larable Team';
+                $contact_email_list = Email::select('email_info')->pluck('email_info')->toArray();
+
+                foreach ($contact_email_list as $key => $contact_email) {
+                    $email->addTo($contact_email, $username);
+                }
+                $response = $sendgrid->send($email);
+                if ($response->statusCode() == 401) {
+                    $error = json_decode($response->body());
+                }
+
+                $EmailTemplate = EmailTemplate::whereId(1)->where('status', 1)->first();
+
+                if ($EmailTemplate) {
+                    $email = new Mail();
+                    $email->setFrom($from, $name);
+                    // $subject = 'A Suggested Change was Submitted at ' . $site_name;
+                    $subject = $EmailTemplate->subject;
+
+                    $email->setSubject($subject);
+
+                    // $body = $request->message;
+                    $data = array(
+                        '{first_name}' => $request->get('first_name') . ' ' . $request->get('last_name'),
+                        '{password}' => $request->get('password'),
+                    );
+                    $body = $EmailTemplate->body;
+
+                    foreach ($data as $key => $value) {
+                        //replace the email template body string to user detail
+                        $body = str_replace($key, $value, $body);
+                    }
+
+                    $message = '<html><body>';
+                    $message .= $body;
+                    $message .= '</body></html>';
+
+                    $email->addContent("text/html", $message);
+                    $sendgrid = new SendGrid(getenv('SENDGRID_API_KEY'));
+
+                    $error = '';
+
+                    $username = 'Larable Team';
+                    // $contact_email_list = Email::select('email_info')->pluck('email_info')->toArray();
+
+                    // foreach ($contact_email_list as $key => $contact_email) {
+                    $email->addTo($request->email, $username);
+                    // }
+                    $response = $sendgrid->send($email);
+                    if ($response->statusCode() == 401) {
+                        $error = json_decode($response->body());
+                    }
+                }
                 // $user->roles()->sync([2]); // 2 = client
-                Session::flash('message', 'Registration is completed');
+                Session::flash('message', 'Thank you for submitting a registration request. Our team is evaluating it and will contact you with further instructions.');
                 Session::flash('status', 'success');
             }
             return redirect('/');

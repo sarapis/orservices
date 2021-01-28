@@ -34,11 +34,10 @@ class ExploreController extends Controller
 
     public function geolocation(Request $request)
     {
-        dd($request);
         $ip = $request->ip();
         // $ip = '38.125.59.248';
         $data = FacadesLocation::get($ip);
-        
+
         $chip_title = "";
         $chip_name = "Search Near Me";
         // $auth = new Location();
@@ -49,14 +48,14 @@ class ExploreController extends Controller
 
         $lat = floatval($data->latitude);
         $lng = floatval($data->longitude);
-        
+
         // $lat = 38.9327313;
         // $lng = -77.0373987;
 
-        $locations = Location::with('services', 'organization','address')->select(DB::raw('*, ( 3959 * acos( cos( radians(' . $lat . ') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians(' . $lng . ') ) + sin( radians(' . $lat . ') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
+        $locations = Location::with('services', 'organization', 'address')->select(DB::raw('*, ( 3959 * acos( cos( radians(' . $lat . ') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians(' . $lng . ') ) + sin( radians(' . $lat . ') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
             ->having('distance', '<', 2)
             ->orderBy('distance');
-            
+
         $locationids = $locations->pluck('location_recordid')->toArray();
 
         $location_serviceids = ServiceLocation::whereIn('location_recordid', $locationids)->pluck('service_recordid')->toArray();
@@ -91,6 +90,7 @@ class ExploreController extends Controller
         $checked_hours = [];
 
         $service_taxonomy_info_list = [];
+        $service_taxonomy_badge_color_list = [];
         foreach ($services as $key => $service) {
             $service_taxonomy_recordid_list = explode(',', $service->service_taxonomy);
 
@@ -100,6 +100,7 @@ class ExploreController extends Controller
                 if (isset($taxonomy)) {
                     $service_taxonomy_name = $taxonomy->taxonomy_name;
                     $service_taxonomy_info_list[$service_taxonomy_recordid] = $service_taxonomy_name;
+                    $service_taxonomy_badge_color_list[$service_taxonomy_recordid] = $taxonomy->badge_color;
                 }
             }
         }
@@ -284,6 +285,7 @@ class ExploreController extends Controller
 
         $chip_address = $request->input('search_address');
 
+
         $source_data = Source_data::find(1);
 
         $location_serviceids = Service::pluck('service_recordid');
@@ -303,10 +305,14 @@ class ExploreController extends Controller
 
         //     $service_locationids = ServiceLocation::whereIn('service_recordid', $serviceids)->pluck('location_recordid');
         // }
+        $organization_tags = $request->get('organization_tags');
+
 
         $serviceids = Service::where('service_name', 'like', '%' . $chip_service . '%')->orwhere('service_description', 'like', '%' . $chip_service . '%')->orwhere('service_airs_taxonomy_x', 'like', '%' . $chip_service . '%')->pluck('service_recordid');
 
         $organization_recordids = Organization::where('organization_name', 'like', '%' . $chip_service . '%')->pluck('organization_recordid');
+        // $organizations = Organization::where('organization_name', 'like', '%' . $chip_service . '%');
+
         $organization_serviceids = ServiceOrganization::whereIn('organization_recordid', $organization_recordids)->pluck('service_recordid');
         $taxonomy_recordids = Taxonomy::where('taxonomy_name', 'like', '%' . $chip_service . '%')->pluck('taxonomy_recordid');
         $taxonomy_serviceids = ServiceTaxonomy::whereIn('taxonomy_recordid', $taxonomy_recordids)->pluck('service_recordid');
@@ -316,12 +322,12 @@ class ExploreController extends Controller
         $avarageLongitude = '';
         if ($chip_address != null || ($request->lat && $request->long)) {
             $sort = $sort == null ? 'Distance from Address' : $sort;
-            if(($request->lat && $request->long)){
+            if (($request->lat && $request->long)) {
                 $lat = floatval($request->lat);
                 $lng = floatval($request->long);
                 // $chip_address = 'search near by';
                 // $chip_service = 'search near by';
-            }else{
+            } else {
                 $response = Geocode::make()->address($chip_address);
                 $lat = $response->latitude();
                 $lng = $response->longitude();
@@ -338,14 +344,13 @@ class ExploreController extends Controller
             $avarageLongitude = $lng;
 
 
-            $locations = Location::with('services', 'organization','address')->select(DB::raw('*, ( 3959 * acos( cos( radians(' . $lat . ') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians(' . $lng . ') ) + sin( radians(' . $lat . ') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
+            $locations = Location::with('services', 'organization', 'address')->select(DB::raw('*, ( 3959 * acos( cos( radians(' . $lat . ') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians(' . $lng . ') ) + sin( radians(' . $lat . ') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
                 ->having('distance', '<', 5)
                 ->orderBy('distance');
 
             $location_locationids = $locations->pluck('location_recordid');
             $location_serviceids = ServiceLocation::whereIn('location_recordid', $location_locationids)->pluck('service_recordid');
             $sort_by_distance_clickable = true;
-            
         }
 
         if ($chip_service != null && isset($serviceids)) {
@@ -361,17 +366,34 @@ class ExploreController extends Controller
                 $services = Service::whereIn('service_recordid', $location_serviceids)->orderBy('service_name');
             }
 
-            $locations = Location::with('services', 'organization','address')->whereIn('location_recordid', $service_locationids)->whereIn('location_recordid', $location_locationids);
+            $locations = Location::with('services', 'organization', 'address')->whereIn('location_recordid', $service_locationids)->whereIn('location_recordid', $location_locationids);
         }
         if ($chip_service == null && $chip_address == null) {
             $services = Service::orderBy('service_name');
-            $locations = Location::with('services', 'organization','address');
+            $locations = Location::with('services', 'organization', 'address');
+        }
+
+        $organization_tags = $request->organization_tags != null ? json_decode($organization_tags) : [];
+        if ($request->organization_tags && count($organization_tags) > 0) {
+            $organizations_tags_ids = [];
+            if ($organization_tags) {
+                // $organizations_tags_ids = Organization::whereIn('organization_tag', $organization_tags)->pluck('organization_recordid')->toArray();
+                $organizations_tags_ids = Organization::where(function ($query) use ($organization_tags) {
+                    foreach ($organization_tags as $keyword) {
+                        $query = $query->orWhere('organization_tag', 'LIKE', "%$keyword%");
+                    }
+                    return $query;
+                })->pluck('organization_recordid')->toArray();
+            }
+            $organization_service_recordid = ServiceOrganization::whereIn('organization_recordid', $organizations_tags_ids)->pluck('service_recordid');
+
+            $services = Service::whereIn('service_recordid', $organization_service_recordid)->whereIn('service_recordid', $location_serviceids)->orderBy('service_name');
         }
 
         // if($request->lat && $request->long){
         //     $lat = floatval($request->lat);
         //     $lng = floatval($request->long);
-        
+
         // // $lat = 38.9327313;
         // // $lng = -77.0373987;
         //     $chip_service = 'search near by';
@@ -484,11 +506,11 @@ class ExploreController extends Controller
 
         $map = Map::find(1);
         if ($pdf == 'pdf') {
-            
+
             $layout = Layout::find(1);
-            
+
             $services = $services->get();
-            
+
             $pdf = PDF::loadView('frontEnd.services.services_download', compact('services', 'layout'));
 
             return $pdf->download('services.pdf');
@@ -723,6 +745,7 @@ class ExploreController extends Controller
         $services = $services->setCollection($services1);
 
         $service_taxonomy_info_list = [];
+        $service_taxonomy_badge_color_list = [];
         foreach ($services as $key => $service) {
             $service_taxonomy_recordid_list = explode(',', $service->service_taxonomy);
 
@@ -732,6 +755,7 @@ class ExploreController extends Controller
                 if (isset($taxonomy)) {
                     $service_taxonomy_name = $taxonomy->taxonomy_name;
                     $service_taxonomy_info_list[$service_taxonomy_recordid] = $service_taxonomy_name;
+                    $service_taxonomy_badge_color_list[$service_taxonomy_recordid] = $taxonomy->badge_color;
                 }
             }
         }
@@ -750,16 +774,16 @@ class ExploreController extends Controller
 
         $locations = $locations->get();
 
-            // if($locations){
-            //     $locations->filter(function($value,$key){
-            //         $value->service = $service->service_name;
-            //         $value->service_recordid = $service->service_recordid;
-            //         $value->organization_name = $value->organization ? $value->organization->organization_name : '';
-            //         $value->organization_recordid = $value->organization ? $value->organization->organization_recordid : '';
-            //         $value->address_name = $value->address && count($value->address) > 0 ? $value->address[0]->address_1 : '';
-            //         return true;
-            //     });
-            // }
+        // if($locations){
+        //     $locations->filter(function($value,$key){
+        //         $value->service = $service->service_name;
+        //         $value->service_recordid = $service->service_recordid;
+        //         $value->organization_name = $value->organization ? $value->organization->organization_name : '';
+        //         $value->organization_recordid = $value->organization ? $value->organization->organization_recordid : '';
+        //         $value->address_name = $value->address && count($value->address) > 0 ? $value->address[0]->address_1 : '';
+        //         return true;
+        //     });
+        // }
 
         $analytic = Analytic::where('search_term', '=', $chip_service)->orWhere('search_term', '=', $chip_address)->first();
         if (isset($analytic)) {
@@ -824,14 +848,27 @@ class ExploreController extends Controller
             // }
             $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies;
         }
-
+        // $selected_organization = join(',', $organization_tags);
+        $selected_organization = json_encode($organization_tags);
+        $organization_tags = Organization::whereNotNull('organization_tag')->select("organization_tag")->distinct()->get();
+        // dd($selected_organization);
+        $tag_list = [];
+        foreach ($organization_tags as $key => $value) {
+            $tags = explode(",", trim($value->organization_tag));
+            $tag_list = array_merge($tag_list, $tags);
+        }
+        $tag_list = array_unique($tag_list);
+        $organization_tagsArray = [];
+        foreach ($tag_list as $key => $value) {
+            $organization_tagsArray[$value] = $value;
+        }
         // var_dump('============parents============');
         // var_dump($parents);
         // var_dump('============grandparents============');
         // var_dump($grandparents);
         // var_dump('============$childs============');
         // var_dump($childs);
-        return view('frontEnd.services.services', compact('services', 'locations', 'chip_service', 'chip_address', 'map', 'parent_taxonomy', 'child_taxonomy', 'search_results', 'pagination', 'sort', 'meta_status', 'target_populations', 'grandparent_taxonomies', 'sort_by_distance_clickable', 'service_taxonomy_info_list', 'service_details_info_list', 'avarageLatitude', 'avarageLongitude'))->with('taxonomy_tree', $taxonomy_tree);
+        return view('frontEnd.services.services', compact('services', 'locations', 'chip_service', 'chip_address', 'map', 'parent_taxonomy', 'child_taxonomy', 'search_results', 'pagination', 'sort', 'meta_status', 'target_populations', 'grandparent_taxonomies', 'sort_by_distance_clickable', 'service_taxonomy_info_list', 'service_details_info_list', 'avarageLatitude', 'avarageLongitude', 'service_taxonomy_badge_color_list', 'organization_tagsArray', 'selected_organization'))->with('taxonomy_tree', $taxonomy_tree);
     }
 
     public function filter_organization(Request $request)
@@ -841,14 +878,23 @@ class ExploreController extends Controller
         $sort = $request->input('sort');
         $organization_tags = $request->get('organization_tags');
 
+
         $checked_taxonomies = $request->input('selected_taxonomies');
         // $organizations = Organization::where('organization_name', 'like', '%'.$chip_organization.'%')->orwhere('organization_description', 'like', '%'.$chip_organization.'%');
         $organizations = Organization::where('organization_name', 'like', '%' . $chip_organization . '%');
+        $organization_tags = $organization_tags != null ?  json_decode($organization_tags) : [];
 
-        if ($organization_tags) {
-            $organization_tags = explode(',', $organization_tags);
-            $organizations = $organizations->whereIn('organization_tag', $organization_tags);
+        if ($request->organization_tags && count($organization_tags) > 0) {
+            // $organization_tags = explode(',', $organization_tags);
+            // $organizations = $organizations->whereIn('organization_tag', $organization_tags);
+            $organizations = $organizations->where(function ($query) use ($organization_tags) {
+                foreach ($organization_tags as $keyword) {
+                    $query = $query->orWhere('organization_tag', 'LIKE', "%$keyword%");
+                }
+                return $query;
+            });
         }
+
         $selected_taxonomies = [];
         if ($checked_taxonomies != null) {
             $assert_selected_taxonomies = explode(',', $checked_taxonomies);
@@ -880,7 +926,6 @@ class ExploreController extends Controller
 
 
         $search_results = $organizations->count();
-
         $pagination = strval($request->input('paginate'));
 
         if ($sort == 'Most Recently Updated') {
@@ -902,6 +947,7 @@ class ExploreController extends Controller
                         if (isset($taxonomy)) {
                             $service_taxonomy_name = $taxonomy->taxonomy_name;
                             $service_taxonomy_info_list[$service_taxonomy_recordid] = $service_taxonomy_name;
+                            $service_taxonomy_badge_color_list[$service_taxonomy_recordid] = $taxonomy->badge_color;
                         }
                     }
                 }
@@ -909,9 +955,9 @@ class ExploreController extends Controller
         }
 
         $map = Map::find(1);
-        if ($organization_tags != '') {
-            $organization_tags = implode(',', $organization_tags);
-        }
+        // if ($organization_tags != '') {
+        //     $organization_tags = implode(',', $organization_tags);
+        // }
         if ($request->organization_csv == 'csv') {
             return Excel::download(new OrganizationExport($request), 'Organization.csv');
         }
@@ -922,10 +968,14 @@ class ExploreController extends Controller
             if ($chip_organization) {
                 $organizations = Organization::where('organization_name', 'like', '%' . $chip_organization . '%');
             }
-            if ($organization_tags) {
-                $organization_tags = explode(',', $organization_tags);
+            if ($request->organization_tags && count($organization_tags) > 0) {
+                // $organization_tags = explode(',', $organization_tags);
                 $organizations = $organizations->whereIn('organization_tag', $organization_tags);
             }
+            // if ($organization_tags) {
+            //     $organization_tags = explode(',', $organization_tags);
+            //     $organizations = $organizations->whereIn('organization_tag', $organization_tags);
+            // }
             if (strpos(url()->previous(), '/organizations/') !== false) {
                 $url = url()->previous();
                 $recordedId = explode('organizations/', $url);
@@ -945,6 +995,7 @@ class ExploreController extends Controller
 
             return $pdf->download('organizations.pdf');
         }
+        $organization_tags = json_encode($organization_tags);
         return view('frontEnd.organizations.index', compact('map', 'organizations', 'chip_organization', 'search_results', 'organization_tag_list', 'pagination', 'sort', 'organization_tags'));
     }
 

@@ -94,7 +94,7 @@
 	   	<ul class="list-unstyled components pt-0">
 	        <input type="hidden" name="paginate" id="paginate" @if(isset($pagination)) value="{{$pagination}}" @else value="10" @endif>
 	        <input type="hidden" name="sort" id="sort" @if(isset($sort)) value="{{$sort}}" @endif>
-	        <input type="hidden" name="organization_tags" id="organization_tags" @if(isset($organization_tags)) value="{{($organization_tags)}}" @endif>
+	        <input type="hidden" name="organization_tags" id="organization_tags" value="{{ isset($organization_tags) ? $organization_tags : '' }}">
 		</ul>
     </nav>
             <input type="hidden" id="selected_taxonomies" name="selected_taxonomies">

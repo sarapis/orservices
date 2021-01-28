@@ -79,6 +79,7 @@ body{
   background-color: #fff;
   border: 2px solid rgb(80, 81, 219);
   border-radius: 15px;
+  margin-top: 40px;
 }
 .form-signin.register_form{
   max-width: inherit;
@@ -183,9 +184,34 @@ a:hover{
   padding: 8px 20px;
 }
 
+/* tooltip section */
 
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+  }
 
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
 
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: -5px;
+    left: 105%;
+  }
+
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }
+/* end */
 
 @media (min-width: 1600px) {
   .container {

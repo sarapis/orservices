@@ -29,7 +29,7 @@
 						</label>
 					</div>
 				@endif
-				
+
 				{{-- <button type="button" class="navbar-toggler collapsed float-right" data-target="#site-navbar-collapse" data-toggle="collapse">
 					<i class="icon wb-more-horizontal" aria-hidden="true"></i>
 				</button> --}}
@@ -48,11 +48,14 @@
                     </li>
                     @if (Auth::user() && Auth::user()->roles)
                     @if (Auth::user() && Auth::user()->roles->name != 'Organization Admin' || Auth::user() && Auth::user()->roles->name == 'System Admin' )
-					<li class="nav-item">
-						<a class="nav-link" href="/contacts">Contacts</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="{{ route('facilities.index') }}">Facilities</a>
+                    <li class="nav-item">
+						<div class="dropdown">
+							<button class="dropbtn" style="color: {{$layout->top_menu_link_color}}">More</button>
+							<div class="dropdown-content">
+								<a href="/contacts">Contacts</a>
+								<a href="{{ route('facilities.index') }}">Locations</a>
+							</div>
+						</div>
 					</li>
 					@endif
 					@endif
@@ -77,7 +80,7 @@
 								@endif
 								<a href="{{ route('contacts.create') }}">New Contact</a>
 								<a href="{{ route('services.create') }}">New Service</a>
-								<a href="{{ route('facilities.create') }}">New Facility</a>
+								<a href="{{ route('facilities.create') }}">New Location</a>
 							</div>
 						</div>
 					</li>

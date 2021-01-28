@@ -6,16 +6,19 @@ use App\Functions\Airtable;
 use App\Http\Controllers\Controller;
 use App\Imports\ServiceTaxonomyImport;
 use App\Imports\TaxonomyImport;
+use App\Model\Airtable_v2;
 use App\Model\Airtablekeyinfo;
 use App\Model\Airtables;
 use App\Model\Alt_taxonomy;
 use App\Model\CSV_Source;
+use App\Model\Layout;
 use App\Model\Servicetaxonomy;
 use App\Model\Source_data;
 use App\Model\Taxonomy;
 use App\Services\Stringtoint;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -90,6 +93,92 @@ class TaxonomyController extends Controller
 
         $date = date("Y/m/d H:i:s");
         $airtable = Airtables::where('name', '=', 'Taxonomy')->first();
+        $airtable->records = Taxonomy::count();
+        $airtable->syncdate = $date;
+        $airtable->save();
+    }
+    public function airtable_v2($api_key, $base_url)
+    {
+
+        $airtable_key_info = Airtablekeyinfo::find(1);
+        if (!$airtable_key_info) {
+            $airtable_key_info = new Airtablekeyinfo;
+        }
+        $airtable_key_info->api_key = $api_key;
+        $airtable_key_info->base_url = $base_url;
+        $airtable_key_info->save();
+
+        Taxonomy::truncate();
+        // $airtable = new Airtable(array(
+        //     'api_key'   => env('AIRTABLE_API_KEY'),
+        //     'base'      => env('AIRTABLE_BASE_URL'),
+        // ));
+        $airtable = new Airtable(array(
+            'api_key' => $api_key,
+            'base' => $base_url,
+        ));
+
+        $request = $airtable->getContent('taxonomy_term');
+
+        do {
+
+            $response = $request->getResponse();
+
+            $airtable_response = json_decode($response, true);
+
+            foreach ($airtable_response['records'] as $record) {
+
+                $taxonomy = new Taxonomy();
+                $strtointclass = new Stringtoint();
+
+                $taxonomy->taxonomy_recordid = $strtointclass->string_to_int($record['id']);
+                $taxonomy->taxonomy_id = $record['id'];
+                // $taxonomy->taxonomy_recordid = $record[ 'id' ];
+                $taxonomy->taxonomy_name = isset($record['fields']['term']) ? $record['fields']['term'] : null;
+                // $taxonomy->taxonomy_parent_name = isset($record['fields']['parent_name']) ? implode(",", $record['fields']['parent_name']) : null;
+                $parent_names = isset($record['fields']['parent_name']) ? $record['fields']['parent_name'] : [];
+                $parent_name_ids = null;
+                foreach ($parent_names as $key => $parent_name) {
+                    if ($key == 0) {
+                        $parent_name_ids = $strtointclass->string_to_int($parent_name);
+                    } else {
+
+                        $parent_name_ids = $parent_name_ids . ',' . $strtointclass->string_to_int($parent_name);
+                    }
+                }
+                $taxonomy->taxonomy_parent_name = $parent_name_ids;
+                // if ($taxonomy->taxonomy_parent_name != null) {
+                //     $taxonomy->taxonomy_parent_name = $strtointclass->string_to_int($taxonomy->taxonomy_parent_name);
+                // }
+                // $taxonomy->taxonomy_vocabulary = isset($record['fields']['vocabulary']) ? $record['fields']['vocabulary'] : null;
+                $taxonomy->taxonomy_vocabulary = isset($record['fields']['taxonomy']) ? $record['fields']['taxonomy'] : null;
+                $taxonomy->taxonomy_x_description = isset($record['fields']['description']) ? $record['fields']['description'] : null;
+                $taxonomy->taxonomy_x_notes = isset($record['fields']['x-notes']) ? $record['fields']['x-notes'] : null;
+
+                $color = substr(str_shuffle('AABBCCDDEEFF00112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF00112233445566778899'), 0, 6);
+                $taxonomy->badge_color = $color;
+                if (isset($record['fields']['services'])) {
+                    $i = 0;
+                    foreach ($record['fields']['services'] as $value) {
+
+                        $taxonomyservice = $strtointclass->string_to_int($value);
+
+                        if ($i != 0) {
+                            $taxonomy->taxonomy_services = $taxonomy->taxonomy_services . ',' . $taxonomyservice;
+                        } else {
+                            $taxonomy->taxonomy_services = $taxonomyservice;
+                        }
+
+                        $i++;
+                    }
+                }
+
+                $taxonomy->save();
+            }
+        } while ($request = $response->next());
+
+        $date = date("Y/m/d H:i:s");
+        $airtable = Airtable_v2::where('name', '=', 'Taxonomy_Term')->first();
         $airtable->records = Taxonomy::count();
         $airtable->syncdate = $date;
         $airtable->save();
@@ -197,11 +286,13 @@ class TaxonomyController extends Controller
      */
     public function index()
     {
-        $taxonomies = Taxonomy::orderBy('taxonomy_recordid')->get();
+        $taxonomies = Taxonomy::get();
         $source_data = Source_data::find(1);
+        $layout = Layout::find(1);
         $alt_taxonomies = Alt_taxonomy::all();
+        $taxonomy_parent_name = Taxonomy::whereNull('taxonomy_parent_name')->pluck('taxonomy_name', 'taxonomy_recordid');
 
-        return view('backEnd.tables.tb_taxonomy', compact('taxonomies', 'source_data', 'alt_taxonomies'));
+        return view('backEnd.tables.tb_taxonomy', compact('taxonomies', 'source_data', 'alt_taxonomies', 'taxonomy_parent_name', 'layout'));
     }
 
     /**
@@ -262,22 +353,25 @@ class TaxonomyController extends Controller
         $taxonomy->taxonomy_vocabulary = $request->taxonomy_vocabulary;
         $taxonomy->taxonomy_x_description = $request->taxonomy_x_description;
         $taxonomy->taxonomy_grandparent_name = $request->taxonomy_grandparent_name;
+        $taxonomy->taxonomy_parent_name = $request->taxonomy_parent_name;
+        $taxonomy->language = $request->language;
+        $taxonomy->badge_color = $request->badge_color;
         $taxonomy->taxonomy_x_notes = $request->taxonomy_x_notes;
         $taxonomy->flag = 'modified';
 
-        if($request->hasFile('category_logo')){
+        if ($request->hasFile('category_logo')) {
             $category_logo = $request->file('category_logo');
-            $name = time().'category_logo_'.$id.$category_logo->getClientOriginalExtension();
+            $name = time() . 'category_logo_' . $id . $category_logo->getClientOriginalExtension();
             $path = public_path('uploads/images');
-            $category_logo->move($path,$name);
-            $taxonomy->category_logo = '/uploads/images'.$name;
+            $category_logo->move($path, $name);
+            $taxonomy->category_logo = '/uploads/images' . $name;
         }
-        if($request->hasFile('category_logo_white')){
+        if ($request->hasFile('category_logo_white')) {
             $category_logo_white = $request->file('category_logo_white');
-            $name = time().'category_logo_white_'.$id.$category_logo_white->getClientOriginalExtension();
+            $name = time() . 'category_logo_white_' . $id . $category_logo_white->getClientOriginalExtension();
             $path = public_path('uploads/images');
-            $category_logo_white->move($path,$name);
-            $taxonomy->category_logo_white = '/uploads/images'.$name;
+            $category_logo_white->move($path, $name);
+            $taxonomy->category_logo_white = '/uploads/images' . $name;
         }
 
 
@@ -307,32 +401,68 @@ class TaxonomyController extends Controller
             $taxonomy->taxonomy_x_description = $request->taxonomy_x_description;
             $taxonomy->taxonomy_grandparent_name = $request->taxonomy_grandparent_name;
             $taxonomy->taxonomy_x_notes = $request->taxonomy_x_notes;
+            $taxonomy->taxonomy_parent_name = $request->taxonomy_parent_name;
+            $taxonomy->language = $request->language;
+            $taxonomy->order = $request->order;
+            $taxonomy->badge_color = $request->badge_color;
+            $taxonomy->exclude_vocabulary = $request->exclude_vocabulary;
             $taxonomy->flag = 'modified';
 
-            if($request->hasFile('category_logo')){
+            if ($request->hasFile('category_logo')) {
                 $category_logo = $request->file('category_logo');
-                $name = time().'category_logo_'.$id.'.'.$category_logo->getClientOriginalExtension();
+                $name = time() . 'category_logo_' . $id . '.' . $category_logo->getClientOriginalExtension();
                 $path = public_path('uploads/images/');
-                $category_logo->move($path,$name);
-                $taxonomy->category_logo = '/uploads/images/'.$name;
+                $category_logo->move($path, $name);
+                $taxonomy->category_logo = '/uploads/images/' . $name;
             }
-            if($request->hasFile('category_logo_white')){
+            if ($request->hasFile('category_logo_white')) {
                 $category_logo_white = $request->file('category_logo_white');
-                $name = time().'category_logo_white_'.$id.'.'.$category_logo_white->getClientOriginalExtension();
+                $name = time() . 'category_logo_white_' . $id . '.' . $category_logo_white->getClientOriginalExtension();
                 $path = public_path('uploads/images/');
-                $category_logo_white->move($path,$name);
-                $taxonomy->category_logo_white = '/uploads/images/'.$name;
+                $category_logo_white->move($path, $name);
+                $taxonomy->category_logo_white = '/uploads/images/' . $name;
             }
 
 
 
             $taxonomy->save();
-            Session::flash('message','Taxonomy update successfully!');
-            Session::flash('status','success');
+            Session::flash('message', 'Taxonomy update successfully!');
+            Session::flash('status', 'success');
             return redirect()->back();
         } catch (\Throwable $th) {
-            Session::flash('message',$th->getMessage());
-            Session::flash('status','error');
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
+            return redirect()->back();
+        }
+    }
+    public function saveLanguage(Request $request)
+    {
+        try {
+            $id = $request->id;
+            $taxonomy = Taxonomy::whereId($id)->first();
+            $taxonomy->language = $request->value;
+            $taxonomy->save();
+            return response()->json([
+                'success' => true
+            ], 200);
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+    }
+    public function save_vocabulary(Request $request)
+    {
+        try {
+            $layout = Layout::whereId(1)->first();
+            if ($layout) {
+                $layout->exclude_vocabulary = $request->exclude_vocabulary;
+                $layout->save();
+            }
+            Session::flash('message', 'Vocabulary saved successfully!');
+            Session::flash('status', 'success');
+            return redirect('tb_taxonomy');
+        } catch (\Throwable $th) {
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
             return redirect()->back();
         }
     }

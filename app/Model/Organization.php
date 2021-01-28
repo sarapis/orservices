@@ -20,7 +20,7 @@ class Organization extends Model
     public function getServices()
     {
         $this->primaryKey = 'organization_recordid';
-        return $this->belongsToMany('App\Model\Service', 'service_organizations','organization_recordid','service_recordid');
+        return $this->belongsToMany('App\Model\Service', 'service_organizations', 'organization_recordid', 'service_recordid');
     }
     public function phones()
     {
@@ -45,5 +45,11 @@ class Organization extends Model
     public function owner()
     {
         return $this->belongsToMany('App\Model\User', 'organizations_users', 'organization_recordid', 'user_id');
+    }
+    public function program()
+    {
+        $this->primaryKey = 'organization_recordid';
+
+        return $this->belongsToMany('App\Model\Program', 'organization_programs', 'organization_recordid', 'program_recordid');
     }
 }

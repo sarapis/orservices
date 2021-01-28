@@ -30,11 +30,11 @@ Suggest a Change
                 <input type="hidden" id="checked_terms" name="checked_terms">
             </div> -->
             <div class="col-md-6 m-auto">
+                <h4 class="card-title title_edit mb-30">
+                    Suggest A Change
+                </h4>
                 <div class="card all_form_field">
                     <div class="card-block">
-                        <h4 class="card-title mb-30 ">
-                            <p>Suggest A Change</p>
-                        </h4>
                         {{-- <form action="/add_new_suggestion" method="GET"> --}}
                             {!! Form::open(['route' => 'suggest.store']) !!}
                             <div class="row">

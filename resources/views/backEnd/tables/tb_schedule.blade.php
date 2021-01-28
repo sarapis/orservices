@@ -24,13 +24,13 @@ Schedule
       <div class="x_content" style="overflow: scroll;">
 
         <!-- <table class="table table-striped jambo_table bulk_action table-responsive"> -->
-        <table id="example" class="display nowrap table-striped jambo_table table-bordered table-responsive" cellspacing="0" width="100%">
+        <table id="example" class="display  table-striped jambo_table table-bordered table-responsive" cellspacing="0" width="100%">
             <thead>
                 <tr>
                     <th class="text-center">No</th>
                     <th class="text-center">Services</th>
                     <th class="text-center">Locations</th>
-                    @if($source_data->active == 1 )
+                    @if($source_data->active == 1 || $source_data->active == 3)
                     <th class="text-center">X-phones</th>
                     @endif
                     <th class="text-center">Days of Week</th>
@@ -49,9 +49,8 @@ Schedule
               @foreach($schedules as $key => $schedule)
                 <tr id="schedule{{$schedule->id}}" class="{{$schedule->flag}}">
                   <td class="text-center">{{$key+1}}</td>
-
-                  <td>@if(isset($schedule->services))
-                        @foreach($schedule->services as $service)
+                  <td>@if(isset($schedule->get_services))
+                        @foreach($schedule->get_services as $service)
                           <span class="badge bg-blue">{{$service->service_name}}</span>
                         @endforeach
                       @endif
@@ -62,7 +61,7 @@ Schedule
                     <span class="badge bg-green">{{$schedule->locations()->first()->location_name}}</span>
                   @endif
                   </td>
-                  @if($source_data->active == 1 )
+                  @if($source_data->active == 1 || $source_data->active == 3)
                   <td>@if($schedule->schedule_phone!='')
                     <span class="badge bg-red">{{$schedule->phone()->first()->phone_number}}</span>
                   @endif
@@ -70,9 +69,9 @@ Schedule
                   @endif
                   <td class="text-center">{{$schedule->schedule_days_of_week}}</td>
 
-                  <td class="text-center">{{$schedule->schedule_opens_at}}</td>
+                  <td class="text-center">{{$schedule->opens_at}}</td>
 
-                  <td class="text-center">{{$schedule->schedule_closes_at}}</td>
+                  <td class="text-center">{{$schedule->closes_at}}</td>
                   @if($source_data->active == 0 )
                   <td class="text-center">{{$schedule->schedule_description}}</td>
                   @else
@@ -121,7 +120,7 @@ Schedule
                       <label for="inputPassword3" class="col-sm-3 control-label">Open at</label>
 
                       <div class="col-sm-7">
-                        <input type="text" class="form-control" id="schedule_opens_at" name="schedule_opens_at" value="">
+                        <input type="text" class="form-control" id="opens_at" name="opens_at" value="">
                       </div>
                     </div>
 
@@ -129,7 +128,7 @@ Schedule
                       <label for="inputPassword3" class="col-sm-3 control-label">Closes at</label>
 
                       <div class="col-sm-7">
-                        <input type="text" class="form-control" id="schedule_closes_at" name="schedule_closes_at" value=""></input>
+                        <input type="text" class="form-control" id="closes_at" name="closes_at" value=""></input>
                       </div>
                     </div>
 

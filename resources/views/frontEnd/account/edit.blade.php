@@ -16,11 +16,11 @@ Edit Service
     <div id="contacts-content" class="container">
         <div class="row">
             <div class="col-md-6 m-auto">
+                <h4 class="card-title title_edit mb-30">
+                    Edit Account Info
+                </h4>
                 <div class="card all_form_field">
                     <div class="card-block">
-                        <h4 class="card-title mb-30 ">
-                            <p>Edit Account Info</p>
-                        </h4>
                         {!! Form::model($user_info,['route'=>['account.update',$user_info->id],'method' => 'PUT']) !!}
                         <div class="row">
                             <div class="col-md-12">
@@ -41,7 +41,7 @@ Edit Service
                                     {!! Form::email('email',null,['class' => 'form-control','readonly' => 'readonly']) !!}
                                 </div>
                             </div>
-                            @if ($user_info->role_id != 1)
+                            {{-- @if ($user_info->role_id != 1)
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Organizations: </label>
@@ -55,7 +55,7 @@ Edit Service
                                     </select>
                                 </div>
                             </div>
-                            @endif
+                            @endif --}}
                             <div class="col-md-12 text-center">
                                 <button type="submit" class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic" id="save-service-btn"> Save</button>
                                 <a href="{{ route('account.show',$user_info->id) }}" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic" id="view-service-btn"> Close</a>

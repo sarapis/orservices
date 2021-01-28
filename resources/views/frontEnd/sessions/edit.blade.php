@@ -20,11 +20,11 @@ Add Interaction
                 <input type="hidden" id="checked_terms" name="checked_terms">
             </div> -->
             <div class="col-md-6 m-auto">
+                <h4 class="card-title title_edit mb-30">
+                    Edit Session Info
+                </h4>
                 <div class="card all_form_field">
                     <div class="card-block">
-                        <h4 class="card-title mb-30 ">
-                            <p>Edit Session Info</p>
-                        </h4>
                         <form action="/session_info/{{$session->session_recordid}}/update" method="GET">
                             <div class="row">
                                 <div class="col-md-12">

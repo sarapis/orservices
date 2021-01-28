@@ -1,6 +1,6 @@
 @extends('backLayout.app')
 @section('title')
-Import Facility
+Import Location
 @stop
 
 @section('content')
@@ -22,13 +22,13 @@ Import Facility
 	<div class="col-md-12 col-sm-12 col-xs-12">
 		<div class="x_panel">
 			<div class="x_title">
-				<h2>Import Facility</h2>
+				<h2>Import Location</h2>
 				<div class="clearfix"></div>
 			</div>
 			<div class="x_content">
                 {!! Form::open(['route' => 'ImportFacilityExcel','enctype' => 'multipart/form-data']) !!}
                     <div class="form-group {{ $errors->has('import_facility') ? 'has-error' : ''}}">
-                        <label class="col-sm-3 control-label text-right">Import Facility</label>
+                        <label class="col-sm-3 control-label text-right">Import Location</label>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <input type="file" name="import_facility" class="form-control">
