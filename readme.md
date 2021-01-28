@@ -36,18 +36,6 @@ The Laravel framework has a few system requirements. You will need to make sure 
 * Tokenizer PHP Extension
 * XML PHP Extension
 
-```bash
-sudo add-apt-repository ppa:ondrej/php
-sudo apt-get update
-sudo apt-get install php7.4
-sudo apt-get install php7.4-mysql php7.4-curl php7.4-json php7.4-cgi php7.4-xsl
-sudo apt-get install php7.4-gd
-sudo apt-get install php7.4-mbstring
-sudo apt-get install curl php7.4-cli php7.4-mbstring git unzip
-sudo apt-get install php7.4-zip
-sudo apt-get install php7.4-mailparse
-```
-
 
 **👉 Web Server Configuration:**
 
@@ -82,22 +70,18 @@ location / {
 ```
 
 **👉Configuration**
-   * Run git clone https://github.com/sarapis/orservices.git
+   * Run git clone https://github.com/d9it/larable.git
    * Create a MySQL database for the project
    * mysql -u root -p, if using Vagrant: mysql -u homestead -psecret    
    * From the projects root run cp .env.example .env
    * Configure your .env file
    * Run composer update from the projects root folder
    * Run npm install & npm run dev from the projects root folder
-   * From the projects root folder run sudo chmod 777 -R .env 
-   * From the projects root folder run sudo chmod 777 -R bootstrap/cache/
-   * From the projects root folder run sudo chmod 777 -R storage
+   * From the projects root folder run sudo chmod -R 755 ../larable
    * From the projects root folder run php artisan key:generate
    * From the projects root folder run php artisan migrate
    * From the projects root folder run php artisan db:seed
    * From the projects root folder run composer dump-autoload
-   * Run sudo a2enmod rewrite
-   * Run sudo service apache2 restart
     
 **👉Database upload**
    * Create database and upload sql dump file from database/dump/latest_date.sql

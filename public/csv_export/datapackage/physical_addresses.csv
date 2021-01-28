@@ -395,4 +395,10 @@ id,location_id,attention,address_1,address_2,address_3,address_4,city,region,sta
 394,,,"Street Address:2134",,,,Rockville,,AR,10011,US
 395,,,"Facility Alternate Name:",,,,Rockville,,DC,"Facility Alternate Name:",US
 396,,,"357 Empire Boulevard",,,,Rockville,,DC,11225,US
-397,,,"near pvr cinema,chandkheda",,,,Washington,,DC,11225,US
+397,,,"12 Sample Road",,,,,,,,
+398,,,"555 H st NW",,,,Washington,,DC,20002,
+399,,,"1818 New York Ave NE Washington DC 20018",,,,Washington,,DC,20002,
+400,,,"123 Main Street",,,,"Anytown USA 55515",,,,
+401,,,"1234 Main Street",,,,Anytown,,DC,11555,
+402,,,"12 Sample Road",,,,,,",",,
+403,,,"12 Sample Road",,,,,,",,",,
