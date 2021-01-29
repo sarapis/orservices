@@ -104,13 +104,16 @@ Service Create
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="form-group">
+                                    <div class="form-group {{ $errors->has('service_email') ? 'has-error' : ''}}">
                                         <label>Service Email: </label>
                                         <div class="help-tip">
                                         <div><p>Email address for the service, if any.</p></div>
                                         </div>
                                         <input class="form-control selectpicker" type="text" id="service_email"
                                             name="service_email" value="">
+                                        @error('service_email')
+                                            <span class="error-message"><strong>{{ $message }}</strong></span>
+                                        @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -146,13 +149,17 @@ Service Create
                                     </button>
                                 </div>
                                 <div id="demo" class="collapse row m-0">
+
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Service Grouping: </label>
-                                            <input class="form-control selectpicker" type="text" id="service_program" name="service_program" value="">
+                                            <label>Licenses: </label>
+                                            <div class="help-tip">
+                                                <div><p>An organization may have a license issued by a government entity to operate legally. A list of any such licenses can be provided here.</p></div>
+                                            </div>
+                                            <input class="form-control selectpicker" type="text" id="service_licenses"
+                                                name="service_licenses" value="">
                                         </div>
                                     </div>
-
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Application Process: </label>
@@ -195,12 +202,11 @@ Service Create
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Licenses: </label>
+                                            <label>Service Grouping: </label>
                                             <div class="help-tip">
-                                                <div><p>An organization may have a license issued by a government entity to operate legally. A list of any such licenses can be provided here.</p></div>
+                                                <div><p>Some organizations organize their services into service groupings (e.g., Senior Services).. A service grouping brings together a number of related services.</p></div>
                                             </div>
-                                            <input class="form-control selectpicker" type="text" id="service_licenses"
-                                                name="service_licenses" value="">
+                                            <input class="form-control selectpicker" type="text" id="service_program" name="service_program" value="">
                                         </div>
                                     </div>
                                     <div class="col-md-12">

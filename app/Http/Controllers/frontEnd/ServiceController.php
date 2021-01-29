@@ -329,7 +329,8 @@ class ServiceController extends Controller
     {
         $this->validate($request, [
             'service_name' => 'required',
-            'service_organization' => 'required'
+            'service_organization' => 'required',
+            'service_email' => 'required|email'
         ]);
 
         try {
@@ -1693,6 +1694,11 @@ class ServiceController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->validate($request, [
+            'service_name' => 'required',
+            'service_organization' => 'required',
+            'service_email' => 'required|email'
+        ]);
         try {
             $service = Service::where('service_recordid', $id)->first();
             $service->service_name = $request->service_name;
