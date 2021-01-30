@@ -7,9 +7,9 @@ use App\Model\Map;
 use App\Model\Source_data;
 use App\Model\Address;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
-use DB;
 
 class DataController extends Controller
 {
@@ -133,9 +133,19 @@ class DataController extends Controller
     }
     public function add_country()
     {
-        $countries = DB::table('countries')->pluck('name','sortname');
+        $countries = DB::table('countries')->pluck('name', 'sortname');
 
-        return view('backEnd.settings.add_country',compact('countries'));
+        $zones_array = array();
+        $timestamp = time();
+        foreach (timezone_identifiers_list() as $key => $zone) {
+            // date_default_timezone_set($zone);
+            // $zones_array[$key]['zone'] = $zone;
+            // $zones_array[$key]['offset'] = (int) ((int) date('O', $timestamp)) / 100;
+            // $zones_array[$key]['diff_from_GMT'] = 'UTC/GMT ' . date('P', $timestamp);
+            $zones_array[$zone] = ('UTC/GMT ' . date('P', $timestamp)) . ' ' . $zone;
+        }
+
+        return view('backEnd.settings.add_country', compact('countries', 'zones_array'));
     }
     public function save_country(Request $request)
     {
@@ -144,9 +154,42 @@ class DataController extends Controller
                 'address_country' => $request->country
             ]);
             DB::commit();
-            return redirect()->back()->with('success','Address updated successfully!');
-        } catch (Exception $e) {
-            dd($e);
+
+            $envFile = app()->environmentFilePath();
+            $str = file_get_contents($envFile);
+            $values = [
+                "TIME_ZONE" => $request->get('timezone') ? $request->get('timezone') : 'UTC',
+            ];
+
+            if (count($values) > 0) {
+                foreach ($values as $envKey => $envValue) {
+
+                    $str .= "\n"; // In case the searched variable is in the last line without \n
+                    $keyPosition = strpos($str, "{$envKey}=");
+                    $endOfLinePosition = strpos($str, "\n", $keyPosition);
+                    $oldLine = substr($str, $keyPosition, $endOfLinePosition - $keyPosition);
+
+                    // If key does not exist, add it
+                    if (!$keyPosition || !$endOfLinePosition || !$oldLine) {
+                        $str .= "{$envKey}={$envValue}\n";
+                    } else {
+                        $str = str_replace($oldLine, "{$envKey}={$envValue}", $str);
+                    }
+                }
+            }
+
+            $str = substr($str, 0, -1);
+            if (!file_put_contents($envFile, $str)) {
+                return false;
+            }
+
+            Session::flash('message', 'Data saved successfully!');
+            Session::flash('status', 'success');
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
+            return redirect()->back();
         }
     }
 }
