@@ -87,12 +87,15 @@ Edit Service
                                 </div>
                             </div> --}}
                             <div class="col-md-4">
-                                <div class="form-group">
+                                <div class="form-group {{ $errors->has('service_email') ? 'has-error' : ''}}">
                                     <label>Service Email: </label>
                                     <div class="help-tip">
                                         <div><p>Email address for the service, if any.</p></div>
                                     </div>
                                     <input class="form-control selectpicker"  type="text" id="service_email" name="service_email" value="{{$service->service_email}}">
+                                    @error('service_email')
+                                        <span class="error-message"><strong>{{ $message }}</strong></span>
+                                    @enderror
                                 </div>
                             </div>
                             {{-- <div class="col-md-4">
@@ -153,13 +156,14 @@ Edit Service
                                 </button>
                             </div>
                             <div id="demo" class="collapse row m-0">
+
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Service Grouping: </label>
-                                        <input class="form-control selectpicker" type="text" id="service_program" name="service_program" value="{{ $program ? $program->name : '' }}">
-                                            @if ($program)
-                                            <input type="hidden" name="program_recordid" value="{{ $program->program_recordid }}">
-                                            @endif
+                                        <label>Licenses: </label>
+                                        <div class="help-tip">
+                                            <div><p>An organization may have a license issued by a government entity to operate legally. A list of any such licenses can be provided here.</p></div>
+                                        </div>
+                                        <input class="form-control selectpicker"  type="text" id="service_licenses" name="service_licenses" value="{{$service->service_licenses}}">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -200,14 +204,29 @@ Edit Service
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Licenses: </label>
-                                        <input class="form-control selectpicker"  type="text" id="service_licenses" name="service_licenses" value="{{$service->service_licenses}}">
+                                        <label>Service Grouping: </label>
+                                        <div class="help-tip">
+                                            <div><p>Some organizations organize their services into service groupings (e.g., Senior Services).. A service grouping brings together a number of related services.</p></div>
+                                        </div>
+                                        <input class="form-control selectpicker" type="text" id="service_program" name="service_program" value="{{ $program ? $program->name : '' }}">
+                                            @if ($program)
+                                            <input type="hidden" name="program_recordid" value="{{ $program->program_recordid }}">
+                                            @endif
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Service Grouping Description: </label>
                                         <textarea name="program_alternate_name" id="program_alternate_name" cols="30" rows="10" class="form-control">{{ $program ? $program->alternate_name : '' }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Last Modified: </label>
+                                        {{-- <div class="help-tip">
+                                            <div><p></p></div>
+                                        </div> --}}
+                                        <input class="form-control selectpicker"  type="text" id="last_modified" name="last_modified" readonly value="{{$service->updated_at}}">
                                     </div>
                                 </div>
 

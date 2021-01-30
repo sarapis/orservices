@@ -329,8 +329,13 @@ class ServiceController extends Controller
     {
         $this->validate($request, [
             'service_name' => 'required',
-            'service_organization' => 'required'
+            'service_organization' => 'required',
         ]);
+        if ($request->service_email) {
+            $this->validate($request, [
+                'service_email' => 'email'
+            ]);
+        }
 
         try {
             $service = new Service;
@@ -1693,6 +1698,16 @@ class ServiceController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->validate($request, [
+            'service_name' => 'required',
+            'service_organization' => 'required',
+
+        ]);
+        if ($request->service_email) {
+            $this->validate($request, [
+                'service_email' => 'email'
+            ]);
+        }
         try {
             $service = Service::where('service_recordid', $id)->first();
             $service->service_name = $request->service_name;
