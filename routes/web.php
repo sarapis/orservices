@@ -206,7 +206,7 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::get('/sync_service_area', ['uses' => 'AreaController@airtable']);
 
     // add country
-    Route::get('/add_country', 'backend\DataController@add_country')->name('add_country.add_country');
+    Route::get('/localization', 'backend\DataController@add_country')->name('add_country.add_country');
     Route::post('/save_country', 'backend\DataController@save_country')->name('add_country.save_country');
     // close
 

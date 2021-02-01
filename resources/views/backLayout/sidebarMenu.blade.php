@@ -41,7 +41,7 @@
                     <ul class="nav child_menu">
                         <li><a href="/layout_edit">Appearance</a></li>
                         <li><a href="/map">Map</a></li>
-                        <li><a href="/add_country">Add Country in Address</a></li>
+                        <li><a href="/localization">Localization</a></li>
                         <li><a href="/messagesSetting">APIs</a></li>
                         <li><a href="/system_emails">System Emails</a></li>
                         {{-- <li><a href="/sections">Sections</a></li>

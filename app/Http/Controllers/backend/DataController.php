@@ -7,6 +7,7 @@ use App\Model\Map;
 use App\Model\Source_data;
 use App\Model\Address;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
@@ -144,7 +145,6 @@ class DataController extends Controller
             // $zones_array[$key]['diff_from_GMT'] = 'UTC/GMT ' . date('P', $timestamp);
             $zones_array[$zone] = ('UTC/GMT ' . date('P', $timestamp)) . ' ' . $zone;
         }
-
         return view('backEnd.settings.add_country', compact('countries', 'zones_array'));
     }
     public function save_country(Request $request)
@@ -182,7 +182,8 @@ class DataController extends Controller
             if (!file_put_contents($envFile, $str)) {
                 return false;
             }
-
+            Artisan::call('config:cache');
+            Artisan::call('config:clear');
             Session::flash('message', 'Data saved successfully!');
             Session::flash('status', 'success');
             return redirect()->back();

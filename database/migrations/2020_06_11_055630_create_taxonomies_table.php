@@ -22,7 +22,7 @@ class CreateTaxonomiesTable extends Migration
             $table->string('category_logo')->nullable();
             $table->string('category_logo_white')->nullable();
             $table->string('taxonomy_vocabulary')->nullable();
-            $table->string('taxonomy_x_description')->nullable();
+            $table->longText('taxonomy_x_description')->nullable();
             $table->string('taxonomy_x_notes')->nullable();
             $table->string('exclude_vocabulary')->nullable();
             $table->text('taxonomy_services')->nullable();
