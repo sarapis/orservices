@@ -22,14 +22,14 @@ Add Country
 	<div class="col-md-12 col-sm-12 col-xs-12">
 		<div class="x_panel">
 			<div class="x_title">
-				<h2>Add Country</h2>
+				<h2>Localization</h2>
 				<div class="clearfix"></div>
 			</div>
 			<div class="x_content">
                 {!! Form::open(['route' => 'add_country.save_country','enctype' => 'multipart/form-data']) !!}
                     <div class="row">
                         <div class="form-group {{ $errors->has('country') ? 'has-error' : ''}}">
-                            <label class="col-sm-3 control-label text-right">Add country</label>
+                            <label class="col-sm-3 control-label text-right">Select County</label>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     {!! Form::select('country',$countries,'US',['class' => 'form-control']) !!}
@@ -40,11 +40,20 @@ Add Country
                     </div>
                     <div class="row">
                         <div class="form-group {{ $errors->has('country') ? 'has-error' : ''}}">
-                            <label class="col-sm-3 control-label text-right">Add country</label>
+                            <label class="col-sm-3 control-label text-right">Select Timezone</label>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     {!! Form::select('timezone',$zones_array,env('TIME_ZONE') ? env('TIME_ZONE') : 'UTC' ,['class' => 'form-control selectpicker','data-live-search' => 'true']) !!}
                                     {!! $errors->first('country', '<p class="help-block">:message</p>') !!}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group {{ $errors->has('country') ? 'has-error' : ''}}">
+                            <label class="col-sm-3 control-label text-right">Current Time</label>
+                            <div class="col-sm-6">
+                                <div class="form-group" id="currentDate">
                                 </div>
                             </div>
                         </div>
@@ -59,7 +68,6 @@ Add Country
                             </div>
                         </div>
                     </div>
-                    {{ date('d/m/y H:i:s') }}
                 {!! Form::close() !!}
             </div>
         </div>
@@ -72,8 +80,15 @@ Add Country
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css" rel="stylesheet" />
 <script>
     $(function() {
-  $('.selectpicker').selectpicker();
-});
+        $('.selectpicker').selectpicker();
+    });
+    // moment.tz.setDefault("America/New_York");
+    var tzString = "{{ env('TIME_ZONE') ? env('TIME_ZONE') : 'UTC' }}"
+    setInterval(() => {
+        // var currentDate = moment().format('DD-MM-YYYY HH:mm:ss');
+        $('#currentDate').empty()
+        $('#currentDate').append(new Date().toLocaleString("en-US", {timeZone: tzString}))
+    }, 1000);
 </script>
 @endsection
 

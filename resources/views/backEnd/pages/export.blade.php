@@ -50,12 +50,18 @@ Export
             <div class="form-horizontal form-label-left">
               <form class="edit-hsds-api-key" action="{{ route('dataSync.update_hsds_api_key') }}" method="POST">
                 {{ csrf_field() }}
-                <div class="item form-group">
+                <div class="item form-group" style="width:100%;float:left;">
                   <h4><b>HSDS Zip API</b></h4>
                   <h6><b>Access the HSDS Zip file via API using the authentication key below</b></h6>
-                  <label for="import_hsds_api_key_input">Authorization Key</label>
-                  <input class="form-control" type="text" name="import_hsds_api_key" id="import_csv_api_key" value="{{$hsds_api_key->hsds_api_key}}" />
-                  <p id="validation-hsds-api-key" style="font-style: italic; color: red;">Authorization Key is required.</p>
+                  <label for="import_hsds_api_key_input" class="col-md-4">Authorization Key</label>
+                <div class="col-md-6">
+                    <input class="form-control" type="text" name="import_hsds_api_key1" id="import_csv_api_key1" value="{{'***********'.substr($hsds_api_key->hsds_api_key,-4)}}" readonly/>
+                    <input class="form-control" type="text" name="import_hsds_api_key" id="import_csv_api_key" value="{{$hsds_api_key->hsds_api_key}}" style="display: none" />
+                    <p id="validation-hsds-api-key" style="font-style: italic; color: red;">Authorization Key is required.</p>
+                </div>
+                <div class="col-md-2 col-sm-2 col-xs-12">
+                    <button type="button"  class="btn btn-success" id="hsds_api_key">edit</button>
+                </div>
                 </div>
                 <button type="submit" class="btn btn-danger save-api-key">Save</button>
                 <!-- <button type="button" class="btn btn-primary refresh-export-page">Refresh</button> -->
@@ -113,7 +119,11 @@ Export
       $('#validation-hsds-api-key').show();
     }
   });
-
+  $('#hsds_api_key').click(function () {
+        $('#import_csv_api_key1').hide()
+        $('#import_csv_api_key').show()
+        $(this).hide()
+    })
   $('button.refresh-export-page').on('click', function(e) {
         e.preventDefault();
         window.location.reload(true);
