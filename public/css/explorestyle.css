@@ -2461,3 +2461,17 @@ input[type=checkbox]:checked:before {
     border-color: #5051DB;
     color: #fff;
 }
+
+
+.table_border_none.table td.create_btn .dropdown-menu li:last-child{
+    background: #6E6FDD;
+    color: #fff;
+    text-align: center;
+}
+.table_border_none.table td.create_btn .dropdown-menu li:last-child span,
+.table_border_none.table td.create_btn .dropdown-menu li:last-child:hover span{color: #fff;}
+.table_border_none.table td.create_btn .dropdown-menu li:last-child:hover a{
+    background: #5051DB;
+    color: #fff;
+    text-align: center;
+}

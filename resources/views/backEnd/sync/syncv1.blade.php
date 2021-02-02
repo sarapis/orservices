@@ -23,12 +23,12 @@
     <div class="form-group"  style="width:100%;float:left">
         <label for="airtable_base_url_input" class=" control-label col-md-3">Airtable Base ID</label>
         <div class="col-md-6">
-            <input class="form-control" type="text" name="airtable_base_url_input1" id="airtable_base_url_input1" value="{{'***********'.substr($airtablekeyinfo->base_url,-4)}}"   readonly/>
-            <input class="form-control" type="text" name="airtable_base_url_input" id="airtable_base_url_input" value="{{$airtablekeyinfo->base_url}}" style="display: none;" required />
+            {{-- <input class="form-control" type="text" name="airtable_base_url_input1" id="airtable_base_url_input1" value="{{'***********'.substr($airtablekeyinfo->base_url,-4)}}"   readonly/> --}}
+            <input class="form-control" type="text" name="airtable_base_url_input" id="airtable_base_url_input" value="{{$airtablekeyinfo->base_url}}" required />
         </div>
-        <div class="col-md-2 col-sm-2 col-xs-12">
+        {{-- <div class="col-md-2 col-sm-2 col-xs-12">
             <button type="button" class="btn btn-success" id="airtable_base_id_v1">edit</button>
-        </div>
+        </div> --}}
     </div>
     <div class="form-group">
         <label for="airtable_enable_auto_sync">Enable auto-sync: </label>
@@ -50,7 +50,7 @@
                         <label for="airtable_auto_sync_period">number of days</label>
                     </div>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-2">
                     @if ($autosync->option == 'yes')
                         @if ($autosync->working_status == 'no')
                         <button type="submit" name="btn_submit" class="btn btn-primary btn-start autosyncbtn" value="autosyncbtn-start" id="autosyncbtn-start">Start</button>
@@ -59,6 +59,11 @@
                         <button type="submit" name="btn_submit" class="btn btn-warning btn-stop autosyncbtn" value="autosyncbtn-stop" id="autosyncbtn-stop">Stop</button>
                         @endif
                     @endif
+                </div>
+                <div class="col-sm-2">
+                    <div class="col-md-2">
+                        <div class="clearfix text-right"><button class="btn btn-primary btn-sm sync_all" id="sync_1">SYNC ALL</button>  </div>
+                    </div>
                 </div>
             </form>
         </div>

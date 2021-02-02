@@ -287,8 +287,8 @@ Edit Service
                                     <div class="">
                                         <table class="table table_border_none" id="ServiceCategoryTable">
                                             <thead>
-                                                <th>Type</th>
-                                                <th>Term</th>
+                                                <th>Detail Type</th>
+                                                <th>Detail Term</th>
                                                 <th style="width:60px">&nbsp;</th>
                                             </thead>
                                             <tbody>
@@ -299,7 +299,7 @@ Edit Service
                                                         {!! Form::select('service_category_type[]',$service_category_types,$value->taxonomy_recordid,['class' => 'form-control selectpicker service_category_type','placeholder' => 'Select Type','id' => 'service_category_type_'.$key]) !!}
 
                                                     </td>
-                                                    <td>
+                                                    <td  class="create_btn">
                                                         @php
                                                         $taxonomy_parent_name = \App\Model\Taxonomy::where('taxonomy_recordid', $value->taxonomy_recordid)->first();
                                                         $taxonomy_info_list = \App\Model\Taxonomy::where('taxonomy_parent_name', $value->taxonomy_recordid)->get();
@@ -344,7 +344,7 @@ Edit Service
                                                         {!! Form::select('service_category_type[]',$service_category_types,null,['class' => 'form-control selectpicker service_category_type','placeholder' => 'Select Type','id' => 'service_category_type_0']) !!}
 
                                                     </td>
-                                                    <td>
+                                                    <td class="create_btn">
                                                         {!! Form::select('service_category_term[]',[],null,['class' => 'form-control selectpicker service_category_term','placeholder' => 'Select Term','id' => 'service_category_term_0']) !!}
                                                         <input type="hidden" name="service_category_term_type[]" id="service_category_term_type_0" value="old">
                                                     </td>
@@ -386,8 +386,8 @@ Edit Service
                                     <div class="">
                                         <table class="table table_border_none" id="ServiceEligibilityTable">
                                             <thead>
-                                                <th>Type</th>
-                                                <th>Term</th>
+                                                <th>Detail Type</th>
+                                                <th>Detail Term</th>
                                                 <th style="width:60px">&nbsp;</th>
                                             </thead>
                                             <tbody>
@@ -409,7 +409,7 @@ Edit Service
                                                         {!! Form::select('service_eligibility_type[]',$service_eligibility_types,$value->taxonomy_recordid,['class' => 'form-control selectpicker service_eligibility_type','placeholder' => 'Select Type','id' => 'service_eligibility_type_'.$key]) !!}
 
                                                     </td>
-                                                    <td>
+                                                    <td class="create_btn">
                                                         @php
                                                         $taxonomy_parent_name = \App\Model\Taxonomy::where('taxonomy_recordid', $value->taxonomy_recordid)->first();
                                                         $taxonomy_info_list = \App\Model\Taxonomy::where('taxonomy_parent_name', $value->taxonomy_recordid)->get();
@@ -450,7 +450,7 @@ Edit Service
                                                         {!! Form::select('service_eligibility_type[]',$service_eligibility_types,null,['class' => 'form-control selectpicker service_eligibility_type','placeholder' => 'Select Type','id' => 'service_eligibility_type_0']) !!}
 
                                                     </td>
-                                                    <td>
+                                                    <td class="create_btn">
                                                         {!! Form::select('service_eligibility_term[]',[],null,['class' => 'form-control selectpicker service_eligibility_term','placeholder' => 'Select Term','id' => 'service_eligibility_term_0']) !!}
                                                         <input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_0" value="old">
                                                     </td>
@@ -504,7 +504,7 @@ Edit Service
                                                         {!! Form::select('detail_type[]',$detail_types,$value->detail_type,['class' => 'form-control selectpicker detail_type','placeholder' => 'Select Detail Type','id' => 'detail_type_'.$key]) !!}
 
                                                     </td>
-                                                    <td>
+                                                    <td class="create_btn">
                                                         @php
                                                         // $create_new = ['create_new' => 'Create New'];
                                                         $detail_terms = \App\Model\Detail::where('detail_type',$value->detail_type)->pluck('detail_value','detail_recordid')->prepend('Create New','create_new');
@@ -527,7 +527,7 @@ Edit Service
                                                         {!! Form::select('detail_type[]',$detail_types,null,['class' => 'form-control selectpicker detail_type','placeholder' => 'Select Detail Type','id' => 'detail_type_0']) !!}
 
                                                     </td>
-                                                    <td>
+                                                    <td class="create_btn">
                                                         {!! Form::select('detail_term[]',[],null,['class' => 'form-control selectpicker detail_term','placeholder' => 'Select Detail Term','id' => 'detail_term_0']) !!}
                                                         <input type="hidden" name="term_type[]" id="term_type_0" value="old">
                                                     </td>
@@ -612,124 +612,6 @@ Edit Service
                 {{-- location table --}}
                 <div class="card all_form_field">
                     <div class="card-block">
-                        <h4 class="title_edit text-left mb-25 mt-10">
-                            Locations <a class="locationModalOpenButton float-right plus_delteicon bg-primary-color"><img src="/frontend/assets/images/plus.png" alt="" title=""></a>
-                        </h4>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <div class="table-responsive">
-                                        <table class="table table_border_none">
-                                            <thead>
-                                                <th>Name</th>
-                                                <th>Address</th>
-                                                <th>City</th>
-                                                <th>State</th>
-                                                <th>Zipcode</th>
-                                                <th>Phone</th>
-                                                <th style="width:100px">&nbsp;</th>
-                                            </thead>
-                                            <tbody id="locationsTable">
-                                                @foreach ($service_locations_data as $key => $location)
-                                                <tr id="locationTr_{{ $key }}">
-                                                    <td>
-                                                        {{ $location->location_name }}
-                                                        <input type="hidden" name="location_name[]" value="{{ $location->location_name }}" id="location_name_{{ $key }}">
-                                                    </td>
-                                                    <td>
-                                                        {{ $location->location_address }}
-                                                        <input type="hidden" name="location_address[]" value="{{ $location->location_address }}" id="location_address_{{ $key }}">
-                                                    </td>
-                                                    <td class="text-center">
-                                                        {{ $location->location_city }}
-                                                        <input type="hidden" name="location_city[]" value="{{ $location->location_city }}" id="location_city_{{ $key }}">
-                                                    </td>
-
-                                                    <td class="text-center">
-                                                        {{ $location->location_state }}
-                                                        <input type="hidden" name="location_state[]" value="{{ $location->location_state }}" id="location_state_{{ $key }}">
-                                                    </td>
-                                                    <td class="text-center">
-                                                        {{ $location->location_zipcode }}
-                                                        <input type="hidden" name="location_zipcode[]" value="{{ $location->location_zipcode }}" id="location_zipcode_{{ $key }}">
-                                                    </td>
-                                                    <td class="text-center">
-                                                        {{ $location->location_phone }}
-                                                        <input type="hidden" name="location_phone[]" value="{{ $location->location_phone }}" id="location_phone_{{ $key }}">
-                                                    </td>
-                                                    <td style="vertical-align:middle;">
-                                                        <a href="javascript:void(0)" class="locationEditButton plus_delteicon bg-primary-color">
-                                                            <img src="/frontend/assets/images/edit_pencil.png" alt="" title="">
-                                                        </a>
-                                                        <a href="javascript:void(0)" class="removeLocationData plus_delteicon btn-button">
-                                                            <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                        </a>
-                                                        <input type="hidden" name="locationRadio[]" value="existing" id="selectedLocationRadio_{{ $key }}">
-                                                        <input type="hidden" name="location_recordid[]" value="{{ $location->location_recordid }}" id="existingLocationIds_{{ $key }}">
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <hr/>
-                        {{-- location table end here --}}
-                        {{-- contact table --}}
-                        <h4 class="title_edit text-left mb-25 mt-10">
-                            Contacts <a class="contactModalOpenButton float-right plus_delteicon bg-primary-color"><img src="/frontend/assets/images/plus.png" alt="" title=""></a>
-                        </h4>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <div class="table-responsive">
-                                        <table class="table table_border_none" >
-                                            <thead>
-                                                <th>Name</th>
-                                                <th>Title</th>
-                                                <th>Email</th>
-                                                <th>Phone</th>
-                                                <th style="width:100px">&nbsp;</th>
-                                            </thead>
-                                            <tbody id="contactsTable">
-                                                @foreach ($service->contact as $key=>$contact)
-                                                <tr id="contactTr_{{ $key }}">
-                                                    <td>{{ $contact->contact_name }}
-                                                        <input type="hidden" name="contact_name[]" value="{{ $contact->contact_name }}" id="contact_name_{{ $key }}">
-                                                    </td>
-
-                                                    <td>{{ $contact->contact_title }}
-                                                        <input type="hidden" name="contact_title[]" value="{{ $contact->contact_title }}" id="contact_title_{{ $key }}">
-                                                    </td>
-
-                                                    <td class="text-center">{{ $contact->contact_email }}
-                                                        <input type="hidden" name="contact_email[]" value="{{ $contact->contact_email }}" id="contact_email_{{ $key }}">
-                                                    </td>
-
-                                                    <td class="text-center">{{ $contact->phone && count($contact->phone) > 0? $contact->phone[0]->phone_number : '' }}
-                                                        <input type="hidden" name="contact_phone[]" value="{{ $contact->phone && count($contact->phone) > 0? $contact->phone[0]->phone_number : '' }}" id="contact_phone_{{ $key }}">
-                                                    </td>
-                                                    <td style="vertical-align:middle;">
-                                                        <a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color">
-                                                            <img src="/frontend/assets/images/edit_pencil.png" alt="" title="">
-                                                        </a>
-                                                        <a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button">
-                                                            <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                        </a>
-                                                        <input type="hidden" name="contactRadio[]" value="existing" id="selectedContactRadio_{{ $key }}"><input type="hidden" name="contact_recordid[]" value="{{ $contact->contact_recordid }}" id="existingContactIds_{{ $key }}">
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <hr/>
-                        {{-- end here --}}
                         {{-- phone table --}}
                         <h4 class="title_edit text-left mb-25 mt-10">
                             Phones
@@ -833,6 +715,126 @@ Edit Service
                                 </div>
                             </div>
                         </div>
+                        <hr/>
+
+                        {{-- contact table --}}
+                        <h4 class="title_edit text-left mb-25 mt-10">
+                            Contacts <a class="contactModalOpenButton float-right plus_delteicon bg-primary-color"><img src="/frontend/assets/images/plus.png" alt="" title=""></a>
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="table-responsive">
+                                        <table class="table table_border_none" >
+                                            <thead>
+                                                <th>Name</th>
+                                                <th>Title</th>
+                                                <th>Email</th>
+                                                <th>Phone</th>
+                                                <th style="width:100px">&nbsp;</th>
+                                            </thead>
+                                            <tbody id="contactsTable">
+                                                @foreach ($service->contact as $key=>$contact)
+                                                <tr id="contactTr_{{ $key }}">
+                                                    <td>{{ $contact->contact_name }}
+                                                        <input type="hidden" name="contact_name[]" value="{{ $contact->contact_name }}" id="contact_name_{{ $key }}">
+                                                    </td>
+
+                                                    <td>{{ $contact->contact_title }}
+                                                        <input type="hidden" name="contact_title[]" value="{{ $contact->contact_title }}" id="contact_title_{{ $key }}">
+                                                    </td>
+
+                                                    <td class="text-center">{{ $contact->contact_email }}
+                                                        <input type="hidden" name="contact_email[]" value="{{ $contact->contact_email }}" id="contact_email_{{ $key }}">
+                                                    </td>
+
+                                                    <td class="text-center">{{ $contact->phone && count($contact->phone) > 0? $contact->phone[0]->phone_number : '' }}
+                                                        <input type="hidden" name="contact_phone[]" value="{{ $contact->phone && count($contact->phone) > 0? $contact->phone[0]->phone_number : '' }}" id="contact_phone_{{ $key }}">
+                                                    </td>
+                                                    <td style="vertical-align:middle;">
+                                                        <a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color">
+                                                            <img src="/frontend/assets/images/edit_pencil.png" alt="" title="">
+                                                        </a>
+                                                        <a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button">
+                                                            <img src="/frontend/assets/images/delete.png" alt="" title="">
+                                                        </a>
+                                                        <input type="hidden" name="contactRadio[]" value="existing" id="selectedContactRadio_{{ $key }}"><input type="hidden" name="contact_recordid[]" value="{{ $contact->contact_recordid }}" id="existingContactIds_{{ $key }}">
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        {{-- end here --}}
+                        <h4 class="title_edit text-left mb-25 mt-10">
+                            Locations <a class="locationModalOpenButton float-right plus_delteicon bg-primary-color"><img src="/frontend/assets/images/plus.png" alt="" title=""></a>
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="table-responsive">
+                                        <table class="table table_border_none">
+                                            <thead>
+                                                <th>Name</th>
+                                                <th>Address</th>
+                                                <th>City</th>
+                                                <th>State</th>
+                                                <th>Zipcode</th>
+                                                <th>Phone</th>
+                                                <th style="width:100px">&nbsp;</th>
+                                            </thead>
+                                            <tbody id="locationsTable">
+                                                @foreach ($service_locations_data as $key => $location)
+                                                <tr id="locationTr_{{ $key }}">
+                                                    <td>
+                                                        {{ $location->location_name }}
+                                                        <input type="hidden" name="location_name[]" value="{{ $location->location_name }}" id="location_name_{{ $key }}">
+                                                    </td>
+                                                    <td>
+                                                        {{ $location->location_address }}
+                                                        <input type="hidden" name="location_address[]" value="{{ $location->location_address }}" id="location_address_{{ $key }}">
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {{ $location->location_city }}
+                                                        <input type="hidden" name="location_city[]" value="{{ $location->location_city }}" id="location_city_{{ $key }}">
+                                                    </td>
+
+                                                    <td class="text-center">
+                                                        {{ $location->location_state }}
+                                                        <input type="hidden" name="location_state[]" value="{{ $location->location_state }}" id="location_state_{{ $key }}">
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {{ $location->location_zipcode }}
+                                                        <input type="hidden" name="location_zipcode[]" value="{{ $location->location_zipcode }}" id="location_zipcode_{{ $key }}">
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {{ $location->location_phone }}
+                                                        <input type="hidden" name="location_phone[]" value="{{ $location->location_phone }}" id="location_phone_{{ $key }}">
+                                                    </td>
+                                                    <td style="vertical-align:middle;">
+                                                        <a href="javascript:void(0)" class="locationEditButton plus_delteicon bg-primary-color">
+                                                            <img src="/frontend/assets/images/edit_pencil.png" alt="" title="">
+                                                        </a>
+                                                        <a href="javascript:void(0)" class="removeLocationData plus_delteicon btn-button">
+                                                            <img src="/frontend/assets/images/delete.png" alt="" title="">
+                                                        </a>
+                                                        <input type="hidden" name="locationRadio[]" value="existing" id="selectedLocationRadio_{{ $key }}">
+                                                        <input type="hidden" name="location_recordid[]" value="{{ $location->location_recordid }}" id="existingLocationIds_{{ $key }}">
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- location table end here --}}
+
                         <input type="hidden" name="removePhoneDataId" id="removePhoneDataId">
                         <input type="hidden" name="deletePhoneDataId" id="deletePhoneDataId">
                         <input type="hidden" name="phone_language_data" id="phone_language_data" value="{{ $phone_language_data }}">
@@ -917,7 +919,7 @@ Edit Service
                                                 <th>Weekday</th>
                                                 <th>Opens</th>
                                                 <th>Closes</th>
-                                                <th style="width:150px;">Closed</th>
+                                                <th style="width:150px;">Closed All Day</th>
                                             </thead>
                                             <tbody>
                                                 <tr>
@@ -1776,10 +1778,10 @@ Edit Service
             success: function (response) {
                 let data = response.data
                 $('#detail_term_'+index).empty()
-                $('#detail_term_'+index).append('<option value="create_new">Create New</option>');
                 $.each(data,function(i,v){
                     $('#detail_term_'+index).append('<option value="'+i+'">'+v+'</option>');
                 })
+                $('#detail_term_'+index).append('<option value="create_new">+ Create New</option>');
                 $('#detail_term_'+index).val('')
                 $('#detail_term_'+index).selectpicker('refresh')
             },
@@ -1836,7 +1838,7 @@ Edit Service
 
     let d = {{ count($serviceDetailsData) > 0 ? count($serviceDetailsData) : 1  }}
     $('#addDetailTr').click(function(){
-        $('#DetailTable').append('<tr><td><select name="detail_type[]" id="detail_type_'+d+'" class="form-control selectpicker detail_type"><option value="">Select Detail Type</option> @foreach ($detail_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td> <select name="detail_term[]" id="detail_term_'+d+'" class="form-control selectpicker detail_term"><option value="">Select Detail term</option> </select><input type="hidden" name="term_type[]" id="term_type_'+d+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#DetailTable').append('<tr><td><select name="detail_type[]" id="detail_type_'+d+'" class="form-control selectpicker detail_type"><option value="">Select Detail Type</option> @foreach ($detail_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td  class="create_btn"> <select name="detail_term[]" id="detail_term_'+d+'" class="form-control selectpicker detail_term"><option value="">Select Detail term</option> </select><input type="hidden" name="term_type[]" id="term_type_'+d+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         d++;
     })
@@ -1860,10 +1862,10 @@ Edit Service
                 let data = response.data
                 $('#service_category_term_'+index).empty()
                 $('#service_category_term_'+index).append('<option value="">Select term</option>');
-                $('#service_category_term_'+index).append('<option value="create_new">Create New</option>');
                 $.each(data,function(i,v){
                     $('#service_category_term_'+index).append('<option value="'+i+'">'+v+'</option>');
                 })
+                $('#service_category_term_'+index).append('<option value="create_new">+ Create New</option>');
                 $('#service_category_term_'+index).val('')
                 $('#service_category_term_'+index).selectpicker('refresh')
             },
@@ -1939,10 +1941,10 @@ Edit Service
                 let data = response.data
                 $('#service_eligibility_term_'+index).empty()
                 $('#service_eligibility_term_'+index).append('<option value="">Select term</option>');
-                $('#service_eligibility_term_'+index).append('<option value="create_new">Create New</option>');
                 $.each(data,function(i,v){
                     $('#service_eligibility_term_'+index).append('<option value="'+i+'">'+v+'</option>');
                 })
+                $('#service_eligibility_term_'+index).append('<option value="create_new">+ Create New</option>');
                 $('#service_eligibility_term_'+index).val('')
                 $('#service_eligibility_term_'+index).selectpicker('refresh')
             },
@@ -2000,13 +2002,13 @@ Edit Service
 
     let sc = {{ count($service_category_type_data) > 0 ? count($service_category_type_data) : 1  }}
     $('#addServiceCategoryTr').click(function(){
-        $('#ServiceCategoryTable tr:last').before('<tr><td><select name="service_category_type[]" id="service_category_type_'+sc+'" class="form-control selectpicker service_category_type"><option value="">Select Type</option> @foreach ($service_category_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td> <select name="service_category_term[]" id="service_category_term_'+sc+'" class="form-control selectpicker service_category_term"></select><input type="hidden" name="service_category_term_type[]" id="service_category_term_type_'+sc+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#ServiceCategoryTable tr:last').before('<tr><td><select name="service_category_type[]" id="service_category_type_'+sc+'" class="form-control selectpicker service_category_type"><option value="">Select Type</option> @foreach ($service_category_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td class="create_btn"> <select name="service_category_term[]" id="service_category_term_'+sc+'" class="form-control selectpicker service_category_term"></select><input type="hidden" name="service_category_term_type[]" id="service_category_term_type_'+sc+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         sc++;
     })
     let se = {{ count($service_eligibility_type_data) > 0 ? count($service_eligibility_type_data) : 1  }}
     $('#addServiceEligibilityTr').click(function(){
-        $('#ServiceEligibilityTable tr:last').before('<tr><td><select name="service_eligibility_type[]" id="service_eligibility_type_'+se+'" class="form-control selectpicker service_eligibility_type"><option value="">Select Type</option> @foreach ($service_eligibility_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td> <select name="service_eligibility_term[]" id="service_eligibility_term_'+se+'" class="form-control selectpicker service_eligibility_term"></select><input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_'+se+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#ServiceEligibilityTable tr:last').before('<tr><td><select name="service_eligibility_type[]" id="service_eligibility_type_'+se+'" class="form-control selectpicker service_eligibility_type"><option value="">Select Type</option> @foreach ($service_eligibility_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td class="create_btn"> <select name="service_eligibility_term[]" id="service_eligibility_term_'+se+'" class="form-control selectpicker service_eligibility_term"></select><input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_'+se+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         se++;
     })

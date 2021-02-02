@@ -38,7 +38,7 @@ Import
                     <label class="control-label col-md-4 col-sm-4 col-xs-12" for="email">Data Source (Select One)
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
-                        <select class="form-control" name="source_data">
+                        <select class="form-control" name="source_data" id="source_data">
                           <option>Choose option</option>
                           <option value="1" @if($source_data->active == 1) selected @endif>HSDS v.1.1 Airtable</option>
                           <option value="3" @if($source_data->active == 3) selected @endif>HSDS v.2.0 Airtable</option>
@@ -46,19 +46,20 @@ Import
                           <option value="0" @if($source_data->active == 0) selected @endif>HSDS v.1.1 CSVs</option>
                         </select>
                     </div>
-                    <div class="col-md-2 col-sm-2 col-xs-12">
+                    {{-- <div class="col-md-2 col-sm-2 col-xs-12">
                         <button id="send" type="submit" class="btn btn-success">Save</button>
-                    </div>
+                    </div> --}}
                 </div>
                 {!! Form::close() !!}
             </div>
-             @if($source_data->active == 1)
+             {{-- @if($source_data->active == 1)
             <div class="col-md-2">
                 <div class="clearfix text-right"><button class="btn btn-primary btn-sm sync_all" id="sync_1">SYNC ALL</button>  </div>
             </div>
             @elseif($source_data->active == 3)
                 <div class="clearfix text-right"><button class="btn btn-primary btn-sm sync_all_v2" id="sync_1_v2">SYNC ALL</button>  </div>
-            @else
+            @else --}}
+            @if($source_data->active != 1 && $source_data->active != 3)
             <div class="col-md-2">
                 <div class="clearfix text-right">
                     <button class="btn btn-danger" id="get_zip_from_api"><label for="get_zip_from_api">Import via API</label></button>
@@ -232,6 +233,26 @@ Import
     </div>
   </div>
 </div>
+<div class="modal fade " id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalTitle"  aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" id="addClass">
+            <div class="modal-header ">
+                <h3 class="modal-title" id="exampleModalLongTitle">Warning</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="message">Your current API Key will disappear and you will need to enter a new one.</div>
+                <input type="hidden" name="version" id="version_id">
+            </div>
+            <div class="modal-footer text-center top_btn_data">
+                <button type="button" class="btn btn-default btn_black" data-dismiss="modal">Go Back</button>
+                <button type="button" class="btn btn-default btn_black" data-dismiss="modal" id="continue_pop_up">Continue</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -240,6 +261,36 @@ Import
 <script type="text/javascript">
 
     $(document).ready(function() {
+
+        $('#source_data').change(function () {
+            let source_data = $(this).val()
+            let airtable_api_key_input
+            let airtable_base_url_input
+            let id = 1
+            if(source_data == 1){
+                airtable_api_key_input = $('#airtable_api_key_input').val()
+                airtable_base_url_input = $('#airtable_base_url_input').val()
+            }else if(source_data == 3){
+                airtable_api_key_input = $('#airtable_api_key_input_v2').val()
+                airtable_base_url_input = $('#airtable_base_url_input_v2').val()
+            }
+            $.ajax({
+                method : 'POST',
+                url : '{{ route("data.save_source_data") }}',
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                data : {
+                    source_data,airtable_api_key_input,airtable_base_url_input,id
+                },
+                success:function(response){
+                    window.location.reload()
+                },
+                error: function(error){
+                    console.log(error)
+                }
+            })
+        })
+
+
 
         var $img = $('<img class="probar titleimage" id="title" src="images/xpProgressBar.gif" alt="Loading..." />');
         var field_invalid= $('.field-invalid');
@@ -565,25 +616,40 @@ Import
         });
 
         $('#airtable_key_v1').click(function () {
-            $('#airtable_api_key_input1').hide()
-            $('#airtable_api_key_input').show()
-            $(this).hide()
-        })
-        $('#airtable_base_id_v1').click(function () {
-            $('#airtable_base_url_input1').hide()
-            $('#airtable_base_url_input').show()
-            $(this).hide()
+            $('#version_id').val('v1');
+            $('#alertModal').modal('show')
+            // $('#airtable_api_key_input1').hide()
+            // $('#airtable_api_key_input').show()
+            // $(this).hide()
         })
 
         $('#airtable_key_v2').click(function () {
-            $('#airtable_api_key_input_v2_1').hide()
-            $('#airtable_api_key_input_v2').show()
-            $(this).hide()
+            $('#version_id').val('v2');
+            $('#alertModal').modal('show')
+            // $('#airtable_api_key_input_v2_1').hide()
+            // $('#airtable_api_key_input_v2').show()
+            // $(this).hide()
         })
-        $('#airtable_base_id_v2').click(function () {
-            $('#airtable_base_url_input_v2_1').hide()
-            $('#airtable_base_url_input_v2').show()
-            $(this).hide()
+        $('#continue_pop_up').click(function () {
+            let version_id = $('#version_id').val()
+            if(version_id == 'v1'){
+                $('#airtable_api_key_input1').hide()
+                $('#airtable_api_key_input').show()
+                $('#airtable_api_key_input').val('')
+                // $('#airtable_base_url_input1').hide()
+                // $('#airtable_base_url_input').show()
+                // $('#airtable_base_url_input').val('')
+                $('#airtable_key_v1').hide()
+            }else{
+                $('#airtable_api_key_input_v2_1').hide()
+                $('#airtable_api_key_input_v2').show()
+                $('#airtable_api_key_input_v2').val('')
+                // $('#airtable_base_url_input_v2_1').hide()
+                // $('#airtable_base_url_input_v2').show()
+                // $('#airtable_base_url_input_v2').val('')
+                $('#airtable_key_v2').hide()
+            }
+            $('#alertModal').modal('hide')
         })
 
     });

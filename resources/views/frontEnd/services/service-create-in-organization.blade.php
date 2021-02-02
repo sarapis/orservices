@@ -12,6 +12,7 @@ Service Create
 </style>
 
 @section('content')
+<div class="top_header_blank"></div>
 <div class="inner_services">
     <div id="contacts-content" class="container">
         <div class="row">
@@ -49,13 +50,14 @@ Service Create
                                     </div>
                                 </div>
                                 <input type="hidden" id="service_organization" name="service_organization" value="{{$organization->organization_name}}">
-                                <div class="col-md-4">
+                                <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Service Description: </label>
                                         <div class="help-tip">
                                             <div><p>A description of the service.</p></div>
                                         </div>
-                                        <input class="form-control selectpicker" type="text" id="service_description" name="service_description" value="" >
+                                        <textarea id="service_description" name="service_description" class="selectpicker" rows="5"></textarea>
+                                        {{-- <input class="form-control selectpicker" type="text" id="service_description" name="service_description" value="" > --}}
                                     </div>
                                 </div>
                                 {{-- <div class="col-md-4">
@@ -76,12 +78,6 @@ Service Create
                                             <div><p>URL of the service</p></div>
                                         </div>
                                         <input class="form-control selectpicker" type="text" id="service_url" name="service_url" value="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Service Program: </label>
-                                        <input class="form-control selectpicker" type="text" id="service_program" name="service_program" value="">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -119,117 +115,131 @@ Service Create
                                         </select>
                                     </div>
                                 </div> --}}
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Application Process: </label>
-                                        <div class="help-tip">
-                                            <div><p>The steps needed to access the service.</p></div>
-                                        </div>
-                                        <input class="form-control selectpicker" type="text" id="service_application_process" name="service_application_process" value="">
-                                    </div>
+                                <div class="text-right col-md-12 mb-20">
+                                    <button type="button" class="btn btn_additional bg-primary-color" data-toggle="collapse" data-target="#demo">Additional Info
+                                        <img src="/frontend/assets/images/white_arrow.png" alt="" title="" />
+                                    </button>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Wait Time: </label>
-                                        <div class="help-tip">
-                                            <div><p>Time a client may expect to wait before receiving a service.</p></div>
+                                <div id="demo" class="collapse row m-0">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Licenses: </label>
+                                            <div class="help-tip">
+                                                <div><p>An organization may have a license issued by a government entity to operate legally. A list of any such licenses can be provided here.</p></div>
+                                            </div>
+                                            <input class="form-control selectpicker" type="text" id="service_licenses" name="service_licenses" value="">
                                         </div>
-                                        <input class="form-control selectpicker" type="text" id="service_wait_time" name="service_wait_time" value="">
                                     </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Service Fees: </label>
-                                        <div class="help-tip">
-                                            <div><p>Details of any charges for service users to access this service.</p></div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Application Process: </label>
+                                            <div class="help-tip">
+                                                <div><p>The steps needed to access the service.</p></div>
+                                            </div>
+                                            <input class="form-control selectpicker" type="text" id="service_application_process" name="service_application_process" value="">
                                         </div>
-                                        <input class="form-control selectpicker" type="text" id="service_fees" name="service_fees" value="">
                                     </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Service Accrediations: </label>
-                                        <div class="help-tip">
-                                            <div><p>Details of any accreditations. Accreditation is the formal evaluation of an organization or program against best practice standards set by an accrediting organization.</p></div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Wait Time: </label>
+                                            <div class="help-tip">
+                                                <div><p>Time a client may expect to wait before receiving a service.</p></div>
+                                            </div>
+                                            <input class="form-control selectpicker" type="text" id="service_wait_time" name="service_wait_time" value="">
                                         </div>
-                                        <input class="form-control selectpicker" type="text" id="service_accrediations" name="service_accrediations" value="">
                                     </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Licenses: </label>
-                                        <div class="help-tip">
-                                            <div><p>An organization may have a license issued by a government entity to operate legally. A list of any such licenses can be provided here.</p></div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Service Fees: </label>
+                                            <div class="help-tip">
+                                                <div><p>Details of any charges for service users to access this service.</p></div>
+                                            </div>
+                                            <input class="form-control selectpicker" type="text" id="service_fees" name="service_fees" value="">
                                         </div>
-                                        <input class="form-control selectpicker" type="text" id="service_licenses" name="service_licenses" value="">
                                     </div>
-                                </div>
-                                <!-- <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Service Phone: </label>
-                                        <input class="form-control selectpicker" type="text" id="service_phones"
-                                            name="service_phones" value="">
-                                        <p id="error_service_phones" style="font-style: italic; color: red;">Invalid phone number! Example: +39 422 789611, 0422-78961, (042)589-6000, +39 (0422)7896, 0422 (789611), 39 422/789 611 </p>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Service Program: </label>
+                                            <input class="form-control selectpicker" type="text" id="service_program" name="service_program" value="">
+                                        </div>
                                     </div>
-                                </div> -->
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Service Accrediations: </label>
+                                            <div class="help-tip">
+                                                <div><p>Details of any accreditations. Accreditation is the formal evaluation of an organization or program against best practice standards set by an accrediting organization.</p></div>
+                                            </div>
+                                            <input class="form-control selectpicker" type="text" id="service_accrediations" name="service_accrediations" value="">
+                                        </div>
+                                    </div>
 
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Service Schedule: </label>
-                                        <select class="form-control selectpicker" multiple data-live-search="true" id="service_schedules"
-                                            name="service_schedules[]" data-size="5" >
-                                            @foreach($schedule_info_list as $key => $schedule_info)
-                                            <option value="{{$schedule_info->schedule_recordid}}">{{$schedule_info->opens_at}} ~ {{$schedule_info->closes_at}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
+                                    <!-- <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Service Phone: </label>
+                                            <input class="form-control selectpicker" type="text" id="service_phones"
+                                                name="service_phones" value="">
+                                            <p id="error_service_phones" style="font-style: italic; color: red;">Invalid phone number! Example: +39 422 789611, 0422-78961, (042)589-6000, +39 (0422)7896, 0422 (789611), 39 422/789 611 </p>
+                                        </div>
+                                    </div> -->
 
-                                {{-- <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Contacts: </label>
-                                        <select class="form-control selectpicker" multiple data-live-search="true" id="service_contacts"
-                                            name="service_contacts[]" data-size="5" >
-                                            @foreach($contact_info_list as $key => $contact_info)
-                                            <option value="{{$contact_info->contact_recordid}}">{{$contact_info->contact_name}}</option>
-                                            @endforeach
-                                        </select>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Service Schedule: </label>
+                                            <select class="form-control selectpicker" multiple data-live-search="true" id="service_schedules"
+                                                name="service_schedules[]" data-size="5" >
+                                                @foreach($schedule_info_list as $key => $schedule_info)
+                                                <option value="{{$schedule_info->schedule_recordid}}">{{$schedule_info->opens_at}} ~ {{$schedule_info->closes_at}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
-                                </div> --}}
-                                {{-- <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Service Details: </label>
-                                        <select class="form-control selectpicker" multiple data-live-search="true" id="service_details"
-                                            name="service_details[]" data-size="5" >
-                                            @foreach($detail_info_list as $key => $detail_info)
-                                            <option value="{{$detail_info->detail_recordid}}">{{$detail_info->detail_value}}</option>
-                                            @endforeach
-                                        </select>
+
+                                    {{-- <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Contacts: </label>
+                                            <select class="form-control selectpicker" multiple data-live-search="true" id="service_contacts"
+                                                name="service_contacts[]" data-size="5" >
+                                                @foreach($contact_info_list as $key => $contact_info)
+                                                <option value="{{$contact_info->contact_recordid}}">{{$contact_info->contact_name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div> --}}
+                                    {{-- <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Service Details: </label>
+                                            <select class="form-control selectpicker" multiple data-live-search="true" id="service_details"
+                                                name="service_details[]" data-size="5" >
+                                                @foreach($detail_info_list as $key => $detail_info)
+                                                <option value="{{$detail_info->detail_recordid}}">{{$detail_info->detail_value}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div> --}}
+                                    {{-- <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Service Address: </label>
+                                            <select class="form-control selectpicker" multiple data-live-search="true" id="service_address"
+                                                name="service_address[]" data-size="5" >
+                                                @foreach($address_info_list as $key => $address_info)
+                                                @if($address_info->address_1)
+                                                <option value="{{$address_info->address_recordid}}">{{$address_info->address_1}}, {{$address_info->address_city}}, {{$address_info->address_state_province}}, {{$address_info->address_postal_code}}</option>
+                                                @endif
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div> --}}
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Meta Data: </label>
+                                            <input class="form-control selectpicker" type="text" id="service_metadata" name="service_metadata" value="">
+                                        </div>
                                     </div>
-                                </div> --}}
-                                {{-- <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Service Address: </label>
-                                        <select class="form-control selectpicker" multiple data-live-search="true" id="service_address"
-                                            name="service_address[]" data-size="5" >
-                                            @foreach($address_info_list as $key => $address_info)
-                                            @if($address_info->address_1)
-                                            <option value="{{$address_info->address_recordid}}">{{$address_info->address_1}}, {{$address_info->address_city}}, {{$address_info->address_state_province}}, {{$address_info->address_postal_code}}</option>
-                                            @endif
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div> --}}
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Meta Data: </label>
-                                        <input class="form-control selectpicker" type="text" id="service_metadata" name="service_metadata" value="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Airs Taxonomy X: </label>
-                                        <input class="form-control selectpicker" type="text" id="service_airs_taxonomy_x" name="service_airs_taxonomy_x" value="">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Airs Taxonomy X: </label>
+                                            <input class="form-control selectpicker" type="text" id="service_airs_taxonomy_x" name="service_airs_taxonomy_x" value="">
+                                        </div>
                                     </div>
                                 </div>
                                 {{-- taxonomy section --}}
@@ -262,7 +272,7 @@ Service Create
                                                             {!! Form::select('service_category_type[]',$service_category_types,null,['class' => 'form-control selectpicker service_category_type','placeholder' => 'select  type','id' => 'service_category_type_0']) !!}
 
                                                         </td>
-                                                        <td>
+                                                        <td  class="create_btn">
                                                             {!! Form::select('service_category_term[]',[],null,['class' => 'form-control selectpicker service_category_term','placeholder' => 'select  term','id' => 'service_category_term_0']) !!}
                                                             <input type="hidden" name="service_category_term_type[]" id="service_category_term_type_0" value="old">
                                                         </td>
@@ -312,7 +322,7 @@ Service Create
                                                             {!! Form::select('service_eligibility_type[]',$service_eligibility_types,null,['class' => 'form-control selectpicker service_eligibility_type','placeholder' => 'select service eligibility type','id' => 'service_eligibility_type_0']) !!}
 
                                                         </td>
-                                                        <td>
+                                                        <td class="create_btn">
                                                             {!! Form::select('service_eligibility_term[]',[],null,['class' => 'form-control selectpicker service_eligibility_term','placeholder' => 'select service eligibility term','id' => 'service_eligibility_term_0']) !!}
                                                             <input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_0" value="old">
                                                         </td>
@@ -363,7 +373,7 @@ Service Create
                                                             {!! Form::select('detail_type[]',$detail_types,null,['class' => 'form-control selectpicker detail_type','placeholder' => 'select detail type','id' => 'detail_type_0']) !!}
 
                                                         </td>
-                                                        <td>
+                                                        <td class="create_btn">
                                                             {!! Form::select('detail_term[]',[],null,['class' => 'form-control selectpicker detail_term','placeholder' => 'select detail term','id' => 'detail_term_0']) !!}
                                                             <input type="hidden" name="term_type[]" id="term_type_0" value="old">
                                                         </td>
@@ -385,73 +395,6 @@ Service Create
                                     </div>
                                 </div>
                                 {{-- end here --}}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card all_form_field">
-                        <div class="card-block">
-                            <h4 class="title_edit text-left mb-25 mt-10">
-                                Locations
-                                <div class="d-inline float-right">
-                                    <a href="javascript:void(0)" class="locationModalOpenButton plus_delteicon bg-primary-color">
-                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                    </a>
-                                </div>
-                            </h4>
-                            <div class="row">
-                                {{-- location table --}}
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        {{-- <label>Locations: <a class="locationModalOpenButton"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
-                                        <div class="table-responsive">
-                                            <table class="table table_border_none">
-                                                <thead>
-                                                    <th>Name</th>
-                                                    <th>Address</th>
-                                                    <th>City</th>
-                                                    <th>State</th>
-                                                    <th>Zipcode</th>
-                                                    <th>Phone</th>
-                                                    <th style="width:60px">&nbsp;</th>
-                                                </thead>
-                                                <tbody id="locationsTable">
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                {{-- location table end here --}}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card all_form_field">
-                        <div class="card-block">
-                            <h4 class="title_edit text-left mb-25 mt-10">
-                                Contacts <a class="contactModalOpenButton float-right plus_delteicon bg-primary-color"><img src="/frontend/assets/images/plus.png" alt="" title=""></a>
-                            </h4>
-                            <div class="row">
-                                {{-- contact table --}}
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        {{-- <label>Contacts: <a class="contactModalOpenButton"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
-                                        <div class="table-responsive">
-                                            <table class="table table_border_none" >
-                                                <thead>
-                                                    <th>Name</th>
-                                                    <th>Title</th>
-                                                    <th>Email</th>
-                                                    <th>Phone</th>
-                                                    <th style="width:60px">&nbsp;</th>
-                                                </thead>
-                                                <tbody id="contactsTable">
-
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                {{-- end here --}}
-                                {{-- phone table --}}
                             </div>
                         </div>
                     </div>
@@ -523,7 +466,69 @@ Service Create
                                     </div>
                                 </div>
                             </div>
+                            <hr/>
                             {{-- end here --}}
+                            <h4 class="title_edit text-left mb-25 mt-10">
+                                Contacts <a class="contactModalOpenButton float-right plus_delteicon bg-primary-color"><img src="/frontend/assets/images/plus.png" alt="" title=""></a>
+                            </h4>
+                            <div class="row">
+                                {{-- contact table --}}
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        {{-- <label>Contacts: <a class="contactModalOpenButton"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
+                                        <div class="table-responsive">
+                                            <table class="table table_border_none" >
+                                                <thead>
+                                                    <th>Name</th>
+                                                    <th>Title</th>
+                                                    <th>Email</th>
+                                                    <th>Phone</th>
+                                                    <th style="width:60px">&nbsp;</th>
+                                                </thead>
+                                                <tbody id="contactsTable">
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- end here --}}
+                                {{-- phone table --}}
+                            </div>
+                            <hr/>
+                            <h4 class="title_edit text-left mb-25 mt-10">
+                                Locations
+                                <div class="d-inline float-right">
+                                    <a href="javascript:void(0)" class="locationModalOpenButton plus_delteicon bg-primary-color">
+                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                    </a>
+                                </div>
+                            </h4>
+                            <div class="row">
+                                {{-- location table --}}
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        {{-- <label>Locations: <a class="locationModalOpenButton"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
+                                        <div class="table-responsive">
+                                            <table class="table table_border_none">
+                                                <thead>
+                                                    <th>Name</th>
+                                                    <th>Address</th>
+                                                    <th>City</th>
+                                                    <th>State</th>
+                                                    <th>Zipcode</th>
+                                                    <th>Phone</th>
+                                                    <th style="width:60px">&nbsp;</th>
+                                                </thead>
+                                                <tbody id="locationsTable">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- location table end here --}}
+                            </div>
+
                             <input type="hidden" name="phone_language_data" id="phone_language_data">
 
                             <input type="hidden" name="location_alternate_name[]" id="location_alternate_name">
@@ -1200,10 +1205,10 @@ Service Create
             success: function (response) {
                 let data = response.data
                 $('#detail_term_'+index).empty()
-                $('#detail_term_'+index).append('<option value="create_new">Create New</option>');
                 $.each(data,function(i,v){
                     $('#detail_term_'+index).append('<option value="'+i+'">'+v+'</option>');
                 })
+                $('#detail_term_'+index).append('<option value="create_new">+ Create New</option>');
                 $('#detail_term_'+index).val('')
                 $('#detail_term_'+index).selectpicker('refresh')
             },
@@ -1260,7 +1265,7 @@ Service Create
     })
     let d = 1
     $('#addDetailTr').click(function(){
-        $('#DetailTable tr:last').before('<tr><td><select name="detail_type[]" id="detail_type_'+d+'" class="form-control selectpicker detail_type"><option value="">Select Detail Type</option> @foreach ($detail_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td> <select name="detail_term[]" id="detail_term_'+d+'" class="form-control selectpicker detail_term"><option value="">Select Detail term</option> </select><input type="hidden" name="term_type[]" id="term_type_'+d+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#DetailTable tr:last').before('<tr><td><select name="detail_type[]" id="detail_type_'+d+'" class="form-control selectpicker detail_type"><option value="">Select Detail Type</option> @foreach ($detail_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td  class="create_btn"> <select name="detail_term[]" id="detail_term_'+d+'" class="form-control selectpicker detail_term"><option value="">Select Detail term</option> </select><input type="hidden" name="term_type[]" id="term_type_'+d+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         d++;
     })
@@ -1284,10 +1289,10 @@ Service Create
                 let data = response.data
                 $('#service_category_term_'+index).empty()
                 $('#service_category_term_'+index).append('<option value="">Select term</option>');
-                $('#service_category_term_'+index).append('<option value="create_new">Create New</option>');
                 $.each(data,function(i,v){
                     $('#service_category_term_'+index).append('<option value="'+i+'">'+v+'</option>');
                 })
+                $('#service_category_term_'+index).append('<option value="create_new">+ Create New</option>');
                 $('#service_category_term_'+index).val('')
                 $('#service_category_term_'+index).selectpicker('refresh')
             },
@@ -1363,10 +1368,10 @@ Service Create
                 let data = response.data
                 $('#service_eligibility_term_'+index).empty()
                 $('#service_eligibility_term_'+index).append('<option value="">Select term</option>');
-                $('#service_eligibility_term_'+index).append('<option value="create_new">Create New</option>');
                 $.each(data,function(i,v){
                     $('#service_eligibility_term_'+index).append('<option value="'+i+'">'+v+'</option>');
                 })
+                $('#service_eligibility_term_'+index).append('<option value="create_new">+ Create New</option>');
                 $('#service_eligibility_term_'+index).val('')
                 $('#service_eligibility_term_'+index).selectpicker('refresh')
             },
@@ -1424,13 +1429,13 @@ Service Create
 
     let sc = 1
     $('#addServiceCategoryTr').click(function(){
-        $('#ServiceCategoryTable tr:last').before('<tr><td><select name="service_category_type[]" id="service_category_type_'+sc+'" class="form-control selectpicker service_category_type"><option value="">Select Type</option> @foreach ($service_category_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td> <select name="service_category_term[]" id="service_category_term_'+sc+'" class="form-control selectpicker service_category_term"></select><input type="hidden" name="service_category_term_type[]" id="service_category_term_type_'+sc+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#ServiceCategoryTable tr:last').before('<tr><td><select name="service_category_type[]" id="service_category_type_'+sc+'" class="form-control selectpicker service_category_type"><option value="">Select Type</option> @foreach ($service_category_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td  class="create_btn"> <select name="service_category_term[]" id="service_category_term_'+sc+'" class="form-control selectpicker service_category_term"></select><input type="hidden" name="service_category_term_type[]" id="service_category_term_type_'+sc+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         sc++;
     })
     let se = 1
     $('#addServiceEligibilityTr').click(function(){
-        $('#ServiceEligibilityTable tr:last').before('<tr><td><select name="service_eligibility_type[]" id="service_eligibility_type_'+se+'" class="form-control selectpicker service_eligibility_type"><option value="">Select Type</option> @foreach ($service_eligibility_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td> <select name="service_eligibility_term[]" id="service_eligibility_term_'+se+'" class="form-control selectpicker service_eligibility_term"></select><input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_'+se+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#ServiceEligibilityTable tr:last').before('<tr><td><select name="service_eligibility_type[]" id="service_eligibility_type_'+se+'" class="form-control selectpicker service_eligibility_type"><option value="">Select Type</option> @foreach ($service_eligibility_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td  class="create_btn"> <select name="service_eligibility_term[]" id="service_eligibility_term_'+se+'" class="form-control selectpicker service_eligibility_term"></select><input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_'+se+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         se++;
     })

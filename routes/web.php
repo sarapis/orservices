@@ -332,6 +332,8 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::post('/meta_filter/{id}', 'backend\PagesController@metafilter_edit')->name('meta_filter.metafilter_edit');
 
     Route::resource('data', 'backend\DataController');
+    Route::post('/save_source_data', 'backend\DataController@save_source_data')->name('data.save_source_data');
+
     Route::resource('analytics', 'backend\AnalyticsController');
 
     // Route::post('/organization_delete_filter', 'OrganizationController@delete_organization');

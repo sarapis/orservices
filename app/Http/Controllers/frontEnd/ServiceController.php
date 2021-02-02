@@ -3187,8 +3187,12 @@ class ServiceController extends Controller
     {
         $this->validate($request, [
             'service_name' => 'required',
-            'service_email' => 'required'
         ]);
+        if ($request->service_email) {
+            $this->validate($request, [
+                'service_email' => 'email'
+            ]);
+        }
         try {
             $service = new Service;
 
@@ -3912,8 +3916,12 @@ class ServiceController extends Controller
     {
         $this->validate($request, [
             'service_name' => 'required',
-            'service_email' => 'required'
         ]);
+        if ($request->service_email) {
+            $this->validate($request, [
+                'service_email' => 'email'
+            ]);
+        }
         try {
             $service = new Service;
 
