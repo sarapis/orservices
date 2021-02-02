@@ -232,7 +232,7 @@ Location Edit
                                                         {!! Form::select('detail_type[]',$detail_types,$value->detail_type,['class' => 'form-control selectpicker detail_type','placeholder' => 'select detail type','id' => 'detail_type_'.$key]) !!}
 
                                                     </td>
-                                                    <td>
+                                                    <td class="create_btn">
                                                         @php
                                                         // $create_new = ['create_new' => 'Create New'];
                                                         $detail_terms = \App\Model\Detail::where('detail_type',$value->detail_type)->pluck('detail_value','detail_recordid')->prepend('Create New','create_new');
@@ -255,7 +255,7 @@ Location Edit
                                                         {!! Form::select('detail_type[]',$detail_types,null,['class' => 'form-control selectpicker detail_type','placeholder' => 'select detail type','id' => 'detail_type_0']) !!}
 
                                                     </td>
-                                                    <td>
+                                                    <td class="create_btn">
                                                         {!! Form::select('detail_term[]',[],null,['class' => 'form-control selectpicker detail_term','placeholder' => 'select detail term','id' => 'detail_term_0']) !!}
                                                         <input type="hidden" name="term_type[]" id="term_type_0" value="old">
                                                     </td>
@@ -479,10 +479,10 @@ Location Edit
             success: function (response) {
                 let data = response.data
                 $('#detail_term_'+index).empty()
-                $('#detail_term_'+index).append('<option value="create_new">Create New</option>');
                 $.each(data,function(i,v){
                     $('#detail_term_'+index).append('<option value="'+i+'">'+v+'</option>');
                 })
+                $('#detail_term_'+index).append('<option value="create_new">+ Create New</option>');
                 $('#detail_term_'+index).val('')
                 $('#detail_term_'+index).selectpicker('refresh')
             },
@@ -539,7 +539,7 @@ Location Edit
 
     let d = {{ count($locationDetails) > 0 ? count($locationDetails) : 1  }}
     $('#addDetailTr').click(function(){
-        $('#DetailTable tr:last').before('<tr><td><select name="detail_type[]" id="detail_type_'+d+'" class="form-control selectpicker detail_type"><option value="">Select Detail Type</option> @foreach ($detail_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td> <select name="detail_term[]" id="detail_term_'+d+'" class="form-control selectpicker detail_term"><option value="">Select Detail term</option> </select><input type="hidden" name="term_type[]" id="term_type_'+d+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#DetailTable tr:last').before('<tr><td><select name="detail_type[]" id="detail_type_'+d+'" class="form-control selectpicker detail_type"><option value="">Select Detail Type</option> @foreach ($detail_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td class="create_btn"> <select name="detail_term[]" id="detail_term_'+d+'" class="form-control selectpicker detail_term"><option value="">Select Detail term</option> </select><input type="hidden" name="term_type[]" id="term_type_'+d+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         d++;
     })

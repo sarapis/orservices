@@ -149,7 +149,6 @@ Service Create
                                     </button>
                                 </div>
                                 <div id="demo" class="collapse row m-0">
-
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Licenses: </label>
@@ -308,8 +307,8 @@ Service Create
                                         <div class="">
                                             <table class="table table_border_none " id="ServiceCategoryTable">
                                                 <thead>
-                                                    <th>Type</th>
-                                                    <th>Term</th>
+                                                    <th>Detail Type</th>
+                                                    <th>Detail Term</th>
                                                     <th style="width:60px">&nbsp;</th>
                                                 </thead>
                                                 <tbody>
@@ -318,7 +317,7 @@ Service Create
                                                             {!! Form::select('service_category_type[]',$service_category_types,null,['class' => 'form-control selectpicker service_category_type','placeholder' => 'Select Type','id' => 'service_category_type_0']) !!}
 
                                                         </td>
-                                                        <td>
+                                                        <td class="create_btn">
                                                             {!! Form::select('service_category_term[]',[],null,['class' => 'form-control selectpicker service_category_term','placeholder' => 'Select Term','id' => 'service_category_term_0']) !!}
                                                             <input type="hidden" name="service_category_term_type[]" id="service_category_term_type_0" value="old">
                                                         </td>
@@ -359,8 +358,8 @@ Service Create
                                         <div class="">
                                             <table class="table table_border_none" id="ServiceEligibilityTable">
                                                 <thead>
-                                                    <th>Type</th>
-                                                    <th>Term</th>
+                                                    <th>Detail Type</th>
+                                                    <th>Detail Term</th>
                                                     <th style="width:60px">&nbsp;</th>
                                                 </thead>
                                                 <tbody>
@@ -368,7 +367,7 @@ Service Create
                                                         <td>
                                                             {!! Form::select('service_eligibility_type[]',$service_eligibility_types,null,['class' => 'form-control selectpicker service_eligibility_type','placeholder' => 'Select Service Eligibility Type','id' => 'service_eligibility_type_0']) !!}
                                                         </td>
-                                                        <td>
+                                                        <td class="create_btn">
                                                             {!! Form::select('service_eligibility_term[]',[],null,['class' => 'form-control selectpicker service_eligibility_term','placeholder' => 'Select Service Eligibility Term','id' => 'service_eligibility_term_0']) !!}
                                                             <input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_0" value="old">
                                                         </td>
@@ -419,7 +418,7 @@ Service Create
                                                             {!! Form::select('detail_type[]',$detail_types,null,['class' => 'form-control selectpicker detail_type','placeholder' => 'Select Detail Type','id' => 'detail_type_0']) !!}
 
                                                         </td>
-                                                        <td>
+                                                        <td class="create_btn">
                                                             {!! Form::select('detail_term[]',[],null,['class' => 'form-control selectpicker detail_term','placeholder' => 'Select Detail Term','id' => 'detail_term_0']) !!}
                                                             <input type="hidden" name="term_type[]" id="term_type_0" value="old">
                                                         </td>
@@ -459,61 +458,6 @@ Service Create
 
                     <div class="card all_form_field">
                         <div class="card-block">
-                            <h4 class="title_edit text-left mb-25 mt-10">
-                                Locations
-                                <a class="locationModalOpenButton float-right plus_delteicon bg-primary-color">
-                                    <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                </a>
-                            </h4>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <div class="table-responsive">
-                                            <table class="table table_border_none">
-                                                <thead>
-                                                    <th>Name</th>
-                                                    <th>Address</th>
-                                                    <th>City</th>
-                                                    <th>State</th>
-                                                    <th>Zipcode</th>
-                                                    <th>Phone</th>
-                                                    <th style="width:60px">&nbsp;</th>
-                                                </thead>
-                                                <tbody id="locationsTable">
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr/>
-                            {{-- location table end here --}}
-                            {{-- contact table --}}
-                            <h4 class="title_edit text-left mb-25 mt-10">
-                                Contacts <a class="contactModalOpenButton float-right plus_delteicon bg-primary-color"><img src="/frontend/assets/images/plus.png" alt="" title=""></a>
-                            </h4>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <div class="table-responsive">
-                                            <table class="table table_border_none" >
-                                                <thead>
-                                                    <th>Name</th>
-                                                    <th>Title</th>
-                                                    <th>Email</th>
-                                                    <th>Phone</th>
-                                                    <th style="width:60px">&nbsp;</th>
-                                                </thead>
-                                                <tbody id="contactsTable">
-
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr/>
-                            {{-- end here --}}
                             {{-- phone table --}}
                             <h4 class="title_edit text-left mb-25 mt-10">
                                 Phones
@@ -582,7 +526,64 @@ Service Create
                                 </div>
                                 <input type="hidden" name="phone_language_data" id="phone_language_data">
                             </div>
+                            <hr/>
                             {{-- end here --}}
+
+                            {{-- contact table --}}
+                            <h4 class="title_edit text-left mb-25 mt-10">
+                                Contacts <a class="contactModalOpenButton float-right plus_delteicon bg-primary-color"><img src="/frontend/assets/images/plus.png" alt="" title=""></a>
+                            </h4>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="table-responsive">
+                                            <table class="table table_border_none" >
+                                                <thead>
+                                                    <th>Name</th>
+                                                    <th>Title</th>
+                                                    <th>Email</th>
+                                                    <th>Phone</th>
+                                                    <th style="width:60px">&nbsp;</th>
+                                                </thead>
+                                                <tbody id="contactsTable">
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- end here --}}
+                            <h4 class="title_edit text-left mb-25 mt-10">
+                                Locations
+                                <a class="locationModalOpenButton float-right plus_delteicon bg-primary-color">
+                                    <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                </a>
+                            </h4>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="table-responsive">
+                                            <table class="table table_border_none">
+                                                <thead>
+                                                    <th>Name</th>
+                                                    <th>Address</th>
+                                                    <th>City</th>
+                                                    <th>State</th>
+                                                    <th>Zipcode</th>
+                                                    <th>Phone</th>
+                                                    <th style="width:60px">&nbsp;</th>
+                                                </thead>
+                                                <tbody id="locationsTable">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr/>
+                            {{-- location table end here --}}
                             <input type="hidden" name="location_alternate_name[]" id="location_alternate_name">
                             <input type="hidden" name="location_transporation[]" id="location_transporation">
                             <input type="hidden" name="location_service[]" id="location_service">
@@ -651,7 +652,7 @@ Service Create
                                                     <th>Weekday</th>
                                                     <th>Opens</th>
                                                     <th>Closes</th>
-                                                    <th style="width:150px;">Closed</th>
+                                                    <th style="width:150px;">Closed All Day</th>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
@@ -1403,10 +1404,10 @@ Service Create
             success: function (response) {
                 let data = response.data
                 $('#detail_term_'+index).empty()
-                $('#detail_term_'+index).append('<option value="create_new">Create New</option>');
                 $.each(data,function(i,v){
                     $('#detail_term_'+index).append('<option value="'+i+'">'+v+'</option>');
                 })
+                $('#detail_term_'+index).append('<option value="create_new">+ Create New</option>');
                 $('#detail_term_'+index).val('')
                 $('#detail_term_'+index).selectpicker('refresh')
             },
@@ -1463,7 +1464,7 @@ Service Create
     })
     let d = 1
     $('#addDetailTr').click(function(){
-        $('#DetailTable tr:last').before('<tr><td><select name="detail_type[]" id="detail_type_'+d+'" class="form-control selectpicker detail_type"><option value="">Select Detail Type</option> @foreach ($detail_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td> <select name="detail_term[]" id="detail_term_'+d+'" class="form-control selectpicker detail_term"><option value="">Select Detail term</option> </select><input type="hidden" name="term_type[]" id="term_type_'+d+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#DetailTable tr:last').before('<tr><td><select name="detail_type[]" id="detail_type_'+d+'" class="form-control selectpicker detail_type"><option value="">Select Detail Type</option> @foreach ($detail_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td  class="create_btn"> <select name="detail_term[]" id="detail_term_'+d+'" class="form-control selectpicker detail_term"><option value="">Select Detail term</option> </select><input type="hidden" name="term_type[]" id="term_type_'+d+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         d++;
     })
@@ -1487,10 +1488,10 @@ Service Create
                 let data = response.data
                 $('#service_category_term_'+index).empty()
                 $('#service_category_term_'+index).append('<option value="">Select term</option>');
-                $('#service_category_term_'+index).append('<option value="create_new">Create New</option>');
                 $.each(data,function(i,v){
                     $('#service_category_term_'+index).append('<option value="'+i+'">'+v+'</option>');
                 })
+                $('#service_category_term_'+index).append('<option value="create_new">+ Create New</option>');
                 $('#service_category_term_'+index).val('')
                 $('#service_category_term_'+index).selectpicker('refresh')
             },
@@ -1566,10 +1567,10 @@ Service Create
                 let data = response.data
                 $('#service_eligibility_term_'+index).empty()
                 $('#service_eligibility_term_'+index).append('<option value="">Select term</option>');
-                $('#service_eligibility_term_'+index).append('<option value="create_new">Create New</option>');
                 $.each(data,function(i,v){
                     $('#service_eligibility_term_'+index).append('<option value="'+i+'">'+v+'</option>');
                 })
+                $('#service_eligibility_term_'+index).append('<option value="create_new">+ Create New</option>');
                 $('#service_eligibility_term_'+index).val('')
                 $('#service_eligibility_term_'+index).selectpicker('refresh')
             },
@@ -1627,13 +1628,13 @@ Service Create
 
     let sc = 1
     $('#addServiceCategoryTr').click(function(){
-        $('#ServiceCategoryTable tr:last').before('<tr><td><select name="service_category_type[]" id="service_category_type_'+sc+'" class="form-control selectpicker service_category_type"><option value="">Select Type</option> @foreach ($service_category_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td> <select name="service_category_term[]" id="service_category_term_'+sc+'" class="form-control selectpicker service_category_term"></select><input type="hidden" name="service_category_term_type[]" id="service_category_term_type_'+sc+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#ServiceCategoryTable tr:last').before('<tr><td><select name="service_category_type[]" id="service_category_type_'+sc+'" class="form-control selectpicker service_category_type"><option value="">Select Type</option> @foreach ($service_category_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td  class="create_btn"> <select name="service_category_term[]" id="service_category_term_'+sc+'" class="form-control selectpicker service_category_term"></select><input type="hidden" name="service_category_term_type[]" id="service_category_term_type_'+sc+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         sc++;
     })
     let se = 1
     $('#addServiceEligibilityTr').click(function(){
-        $('#ServiceEligibilityTable tr:last').before('<tr><td><select name="service_eligibility_type[]" id="service_eligibility_type_'+se+'" class="form-control selectpicker service_eligibility_type"><option value="">Select Type</option> @foreach ($service_eligibility_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td> <select name="service_eligibility_term[]" id="service_eligibility_term_'+se+'" class="form-control selectpicker service_eligibility_term"></select><input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_'+se+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#ServiceEligibilityTable tr:last').before('<tr><td><select name="service_eligibility_type[]" id="service_eligibility_type_'+se+'" class="form-control selectpicker service_eligibility_type"><option value="">Select Type</option> @foreach ($service_eligibility_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td  class="create_btn"> <select name="service_eligibility_term[]" id="service_eligibility_term_'+se+'" class="form-control selectpicker service_eligibility_term"></select><input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_'+se+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         se++;
     })

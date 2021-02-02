@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Model\Map;
 use App\Model\Source_data;
 use App\Model\Address;
+use App\Model\Airtablekeyinfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -108,16 +109,20 @@ class DataController extends Controller
      */
     public function update($id, Request $request)
     {
-        $source_data = Source_data::find(1);
-        // var_dump($request->input('active'));
-        // exit();
-        $source_data->active = $request->input('source_data');
+        try {
+            $source_data = Source_data::find(1);
+            // var_dump($request->input('active'));
+            // exit();
+            $source_data->active = $request->input('source_data');
 
 
-        $source_data->save();
+            $source_data->save();
 
 
-        return redirect('import');
+            return redirect('import');
+        } catch (\Throwable $th) {
+            return redirect('import');
+        }
     }
 
     /**
@@ -191,6 +196,35 @@ class DataController extends Controller
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
             return redirect()->back();
+        }
+    }
+    public function save_source_data(Request $request)
+    {
+        try {
+            $source_data = Source_data::find(1);
+            $source_data->active = $request->input('source_data');
+            $source_data->save();
+            $airtable_api_key_input = $request->airtable_api_key_input;
+            $airtable_base_url_input = $request->airtable_base_url_input;
+            // if ($request->source_data == 1) {
+            //     Airtablekeyinfo::whereid(1)->update([
+            //         'api_key' => $airtable_api_key_input,
+            //         'base_url' => $airtable_base_url_input,
+            //     ]);
+            // } else if ($request->source_data == 3) {
+            //     Airtablekeyinfo::whereid(2)->update([
+            //         'api_key' => $airtable_api_key_input,
+            //         'base_url' => $airtable_base_url_input,
+            //     ]);
+            // }
+            return response()->json([
+                'success' => true
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage(),
+                'success' => false
+            ], 500);
         }
     }
 }

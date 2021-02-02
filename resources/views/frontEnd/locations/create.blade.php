@@ -206,7 +206,7 @@ Location Create
                                                             {!! Form::select('detail_type[]',$detail_types,null,['class' => 'form-control selectpicker detail_type','placeholder' => 'select detail type','id' => 'detail_type_0']) !!}
 
                                                         </td>
-                                                        <td>
+                                                        <td class="create_btn">
                                                             {!! Form::select('detail_term[]',[],null,['class' => 'form-control selectpicker detail_term','placeholder' => 'select detail term','id' => 'detail_term_0']) !!}
                                                             <input type="hidden" name="term_type[]" id="term_type_0" value="old">
                                                         </td>
@@ -393,10 +393,10 @@ Location Create
             success: function (response) {
                 let data = response.data
                 $('#detail_term_'+index).empty()
-                $('#detail_term_'+index).append('<option value="create_new">Create New</option>');
                 $.each(data,function(i,v){
                     $('#detail_term_'+index).append('<option value="'+i+'">'+v+'</option>');
                 })
+                $('#detail_term_'+index).append('<option value="create_new">+ Create New</option>');
                 $('#detail_term_'+index).val('')
                 $('#detail_term_'+index).selectpicker('refresh')
             },
@@ -454,7 +454,7 @@ Location Create
 
     let d = 1
     $('#addDetailTr').click(function(){
-        $('#DetailTable tr:last').before('<tr><td><select name="detail_type[]" id="detail_type_'+d+'" class="form-control selectpicker detail_type"><option value="">Select Detail Type</option> @foreach ($detail_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td> <select name="detail_term[]" id="detail_term_'+d+'" class="form-control selectpicker detail_term"><option value="">Select Detail term</option> </select><input type="hidden" name="term_type[]" id="term_type_'+d+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#DetailTable tr:last').before('<tr><td><select name="detail_type[]" id="detail_type_'+d+'" class="form-control selectpicker detail_type"><option value="">Select Detail Type</option> @foreach ($detail_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td class="create_btn"> <select name="detail_term[]" id="detail_term_'+d+'" class="form-control selectpicker detail_term"><option value="">Select Detail term</option> </select><input type="hidden" name="term_type[]" id="term_type_'+d+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         d++;
     })
