@@ -302,7 +302,6 @@ Import
         $('.sync_all_v2').click(function(){
             sync_all_now_v2(this, 0);
         });
-
         $('#zipping').hide();
         $('#zipped').hide();
         $('#zip-fail').hide();
@@ -382,14 +381,15 @@ Import
                     if($('.sync_now_v2').length != c)
                         sync_all_now_v2(parent, c);
                 },
-                error: function(e) {
+                error: function(xhr, status, error) {
+                    var err = eval("(" + xhr.responseText + ")");
                     $img.remove();
                     $here.show();
+                    $('.field-invalid').append('<span>'+err.Message+'</span>');
                     field_invalid.show();
                 }
             });
         }
-
         $('#get_zip_from_api').click(function(){
             var origin_api_url = $('#import_csv_api_url').val();
             var origin_api_header_authorization = $('#import_csv_api_header').val();
@@ -462,8 +462,6 @@ Import
 
 
         });
-
-
         $('.sync_now').click(function(){
             $(this).hide();
             var name = $(this).parent().prev().prev().prev().prev().html();
@@ -511,9 +509,11 @@ Import
                     $here.addClass('bg-purple');
                     $here.parent().prev().html('<?php echo date("Y/m/d H:i:s"); ?>');
                 },
-                error: function(e) {
+                error: function(xhr, status, error) {
+                    var err = eval("(" + xhr.responseText + ")");
                     $img.remove();
                     $here.show();
+                    $('.field-invalid').append('<span>'+name + ' : '+err.message+'</span>');
                     field_invalid.show();
                 }
             });
@@ -568,7 +568,6 @@ Import
                 }
             });
         });
-
         $('.inputfile-zip').change(function(e){
 
             e.preventDefault();
@@ -614,7 +613,6 @@ Import
                 }
             });
         });
-
         $('#airtable_key_v1').click(function () {
             $('#version_id').val('v1');
             $('#alertModal').modal('show')
@@ -622,7 +620,6 @@ Import
             // $('#airtable_api_key_input').show()
             // $(this).hide()
         })
-
         $('#airtable_key_v2').click(function () {
             $('#version_id').val('v2');
             $('#alertModal').modal('show')
@@ -651,7 +648,6 @@ Import
             }
             $('#alertModal').modal('hide')
         })
-
     });
 
     function airtable_enable_autosync_Function() {

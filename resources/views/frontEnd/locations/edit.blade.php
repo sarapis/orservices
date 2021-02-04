@@ -235,7 +235,7 @@ Location Edit
                                                     <td class="create_btn">
                                                         @php
                                                         // $create_new = ['create_new' => 'Create New'];
-                                                        $detail_terms = \App\Model\Detail::where('detail_type',$value->detail_type)->pluck('detail_value','detail_recordid')->prepend('Create New','create_new');
+                                                        $detail_terms = \App\Model\Detail::where('detail_type',$value->detail_type)->pluck('detail_value','detail_recordid')->put('create_new','Create New');
                                                         // $detail_terms = array_merge($create_new,$detail_terms);
                                                         // dd($detail_terms);
                                                         @endphp

@@ -22,89 +22,96 @@ class ProgramController extends Controller
 {
     public function airtable_v2($api_key, $base_url)
     {
-
-        $airtable_key_info = Airtablekeyinfo::find(1);
-        if (!$airtable_key_info) {
-            $airtable_key_info = new Airtablekeyinfo;
-        }
-        $airtable_key_info->api_key = $api_key;
-        $airtable_key_info->base_url = $base_url;
-        $airtable_key_info->save();
-
-        Program::truncate();
-        ServiceProgram::truncate();
-        OrganizationProgram::truncate();
-
-        // $airtable = new Airtable(array(
-        //     'api_key'   => env('AIRTABLE_API_KEY'),
-        //     'base'      => env('AIRTABLE_BASE_URL'),
-        // ));
-        $airtable = new Airtable(array(
-            'api_key' => $api_key,
-            'base' => $base_url,
-        ));
-
-        $request = $airtable->getContent('programs');
-
-        do {
-
-            $response = $request->getResponse();
-
-            $airtable_response = json_decode($response, true);
-
-            foreach ($airtable_response['records'] as $record) {
-
-                $program = new Program();
-                $strtointclass = new Stringtoint();
-
-                $program->program_recordid = $strtointclass->string_to_int($record['id']);
-
-                $program->alternate_name = isset($record['fields']['alternate_name']) ? $record['fields']['alternate_name'] : null;
-                $program->name = isset($record['fields']['name']) ? $record['fields']['name'] : null;
-
-                if (isset($record['fields']['organizations'])) {
-                    $i = 0;
-                    $orgIds = [];
-                    foreach ($record['fields']['organizations'] as $value) {
-
-                        $programorganizations = $strtointclass->string_to_int($value);
-                        $orgIds[] = $programorganizations;
-                        if ($i != 0) {
-                            $program->organizations = $program->organizations . ',' . $programorganizations;
-                        } else {
-                            $program->organizations = $programorganizations;
-                        }
-
-                        $i++;
-                    }
-                    $program->organization()->sync($orgIds);
-                }
-
-                if (isset($record['fields']['services'])) {
-                    $i = 0;
-                    $serviceIds = [];
-                    foreach ($record['fields']['services'] as $value) {
-                        $programservice = $strtointclass->string_to_int($value);
-                        $serviceIds[] = $programservice;
-                        if ($i != 0) {
-                            $program->services = $program->services . ',' . $programservice;
-                        } else {
-                            $program->services = $programservice;
-                        }
-                        $i++;
-                    }
-                    $program->service()->sync($serviceIds);
-                }
-
-                $program->save();
+        try {
+            $airtable_key_info = Airtablekeyinfo::find(1);
+            if (!$airtable_key_info) {
+                $airtable_key_info = new Airtablekeyinfo;
             }
-        } while ($request = $response->next());
+            $airtable_key_info->api_key = $api_key;
+            $airtable_key_info->base_url = $base_url;
+            $airtable_key_info->save();
 
-        $date = date("Y/m/d H:i:s");
-        $airtable = Airtable_v2::where('name', '=', 'Programs')->first();
-        $airtable->records = Program::count();
-        $airtable->syncdate = $date;
-        $airtable->save();
+            Program::truncate();
+            ServiceProgram::truncate();
+            OrganizationProgram::truncate();
+
+            // $airtable = new Airtable(array(
+            //     'api_key'   => env('AIRTABLE_API_KEY'),
+            //     'base'      => env('AIRTABLE_BASE_URL'),
+            // ));
+            $airtable = new Airtable(array(
+                'api_key' => $api_key,
+                'base' => $base_url,
+            ));
+
+            $request = $airtable->getContent('programs');
+
+            do {
+
+                $response = $request->getResponse();
+
+                $airtable_response = json_decode($response, true);
+
+                foreach ($airtable_response['records'] as $record) {
+
+                    $program = new Program();
+                    $strtointclass = new Stringtoint();
+
+                    $program->program_recordid = $strtointclass->string_to_int($record['id']);
+
+                    $program->alternate_name = isset($record['fields']['alternate_name']) ? $record['fields']['alternate_name'] : null;
+                    $program->name = isset($record['fields']['name']) ? $record['fields']['name'] : null;
+
+                    if (isset($record['fields']['organizations'])) {
+                        $i = 0;
+                        $orgIds = [];
+                        foreach ($record['fields']['organizations'] as $value) {
+
+                            $programorganizations = $strtointclass->string_to_int($value);
+                            $orgIds[] = $programorganizations;
+                            if ($i != 0) {
+                                $program->organizations = $program->organizations . ',' . $programorganizations;
+                            } else {
+                                $program->organizations = $programorganizations;
+                            }
+
+                            $i++;
+                        }
+                        $program->organization()->sync($orgIds);
+                    }
+
+                    if (isset($record['fields']['services'])) {
+                        $i = 0;
+                        $serviceIds = [];
+                        foreach ($record['fields']['services'] as $value) {
+                            $programservice = $strtointclass->string_to_int($value);
+                            $serviceIds[] = $programservice;
+                            if ($i != 0) {
+                                $program->services = $program->services . ',' . $programservice;
+                            } else {
+                                $program->services = $programservice;
+                            }
+                            $i++;
+                        }
+                        $program->service()->sync($serviceIds);
+                    }
+
+                    $program->save();
+                }
+            } while ($request = $response->next());
+
+            $date = date("Y/m/d H:i:s");
+            $airtable = Airtable_v2::where('name', '=', 'Programs')->first();
+            $airtable->records = Program::count();
+            $airtable->syncdate = $date;
+            $airtable->save();
+        } catch (\Throwable $th) {
+            \Log::error('Error in Program:'.$th->getMessage());
+            return response()->json([
+                'message' => $th->getMessage(),
+                'success' => false
+            ], 500);
+        }
     }
     /**
      * Display a listing of the resource.

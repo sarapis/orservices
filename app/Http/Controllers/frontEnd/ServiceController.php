@@ -3000,7 +3000,11 @@ class ServiceController extends Controller
             $airtable->syncdate = $date;
             $airtable->save();
         } catch (\Throwable $th) {
-            dd($th);
+            \Log::error('Error in Service: ' . $th->getMessage());
+            return response()->json([
+                'message' => $th->getMessage(),
+                'success' => false
+            ], 500);
         }
     }
 

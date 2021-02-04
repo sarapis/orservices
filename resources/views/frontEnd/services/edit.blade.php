@@ -287,8 +287,8 @@ Edit Service
                                     <div class="">
                                         <table class="table table_border_none" id="ServiceCategoryTable">
                                             <thead>
-                                                <th>Detail Type</th>
-                                                <th>Detail Term</th>
+                                                <th>Type</th>
+                                                <th>Term</th>
                                                 <th style="width:60px">&nbsp;</th>
                                             </thead>
                                             <tbody>
@@ -323,6 +323,7 @@ Edit Service
                                                                 }
                                                             }
                                                         }
+                                                        $taxonomy_array['create_new'] = '+ Create New';
                                                         @endphp
                                                         {!! Form::select('service_category_term[]',$taxonomy_array,$value->selectedTermId,['class' => 'form-control selectpicker service_category_term','placeholder' => 'Select Term','id' => 'service_category_term_'.$key]) !!}
                                                         <input type="hidden" name="service_category_term_type[]" id="service_category_term_type_{{ $key }}" value="old">
@@ -386,8 +387,8 @@ Edit Service
                                     <div class="">
                                         <table class="table table_border_none" id="ServiceEligibilityTable">
                                             <thead>
-                                                <th>Detail Type</th>
-                                                <th>Detail Term</th>
+                                                <th>Type</th>
+                                                <th>Term</th>
                                                 <th style="width:60px">&nbsp;</th>
                                             </thead>
                                             <tbody>
@@ -430,6 +431,7 @@ Edit Service
                                                                     }
                                                                 }
                                                             }
+                                                            $taxonomy_array['create_new'] = '+ Create New';
                                                         @endphp
                                                         {!! Form::select('service_eligibility_term[]',$taxonomy_array,$value->selectedTermId,['class' => 'form-control selectpicker service_eligibility_term','placeholder' => 'Select Term','id' => 'service_eligibility_term_'.$key]) !!}
                                                         <input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_{{ $key }}" value="old">
@@ -507,7 +509,7 @@ Edit Service
                                                     <td class="create_btn">
                                                         @php
                                                         // $create_new = ['create_new' => 'Create New'];
-                                                        $detail_terms = \App\Model\Detail::where('detail_type',$value->detail_type)->pluck('detail_value','detail_recordid')->prepend('Create New','create_new');
+                                                        $detail_terms = \App\Model\Detail::where('detail_type',$value->detail_type)->pluck('detail_value','detail_recordid')->put('create_new','Create New');
                                                         // $detail_terms = array_merge($create_new,$detail_terms);
                                                         // dd($detail_terms);
                                                         @endphp
@@ -1981,7 +1983,8 @@ Edit Service
             return false
         }
         $('#service_eligibility_term_type_'+index).val('new')
-        $('#service_eligibility_term_'+index).append('<option value="'+service_eligibility_term+'">'+service_eligibility_term+'</option>');
+        // $('#service_eligibility_term_'+index+" option:last").prev().append('<option value="'+service_eligibility_term+'">'+service_eligibility_term+'</option>');
+        $('<option value="'+service_eligibility_term+'">'+service_eligibility_term+'</option>').insertAfter($('#service_eligibility_term_'+index+" option:last").prev());
         $('#service_eligibility_term_'+index).val(service_eligibility_term)
         $('#service_eligibility_term_'+index).selectpicker('refresh')
         $('#create_new_service_eligibility_term').modal('hide')

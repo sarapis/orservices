@@ -172,143 +172,151 @@ class LocationController extends Controller
     }
     public function airtable_v2($api_key, $base_url)
     {
-        $airtable_key_info = Airtablekeyinfo::find(1);
-        if (!$airtable_key_info) {
-            $airtable_key_info = new Airtablekeyinfo;
-        }
-        $airtable_key_info->api_key = $api_key;
-        $airtable_key_info->base_url = $base_url;
-        $airtable_key_info->save();
-
-        Location::truncate();
-        LocationAddress::truncate();
-        LocationPhone::truncate();
-        LocationSchedule::truncate();
-
-        // $airtable = new Airtable(array(
-        //     'api_key'   => env('AIRTABLE_API_KEY'),
-        //     'base'      => env('AIRTABLE_BASE_URL'),
-        // ));
-        $airtable = new Airtable(array(
-            'api_key'   => $api_key,
-            'base'      => $base_url,
-        ));
-
-        $request = $airtable->getContent('locations');
-
-        do {
-
-
-            $response = $request->getResponse();
-
-            $airtable_response = json_decode($response, TRUE);
-
-            foreach ($airtable_response['records'] as $record) {
-
-                $location = new Location();
-                $strtointclass = new Stringtoint();
-                $location->location_recordid = $strtointclass->string_to_int($record['id']);
-                $location->location_name = isset($record['fields']['name']) ? $record['fields']['name'] : null;
-
-                $location->location_organization = isset($record['fields']['organizations']) ? implode(",", $record['fields']['organizations']) : null;
-
-                $location->location_organization = $strtointclass->string_to_int($location->location_organization);
-
-                $location->location_alternate_name = isset($record['fields']['alternate_name']) ? $record['fields']['alternate_name'] : null;
-                $location->location_transportation = isset($record['fields']['transportation']) ? $record['fields']['transportation'] : null;
-                $location->location_latitude = isset($record['fields']['latitude']) ? $record['fields']['latitude'] : null;
-                $location->location_longitude = isset($record['fields']['longitude']) ? $record['fields']['longitude'] : null;
-                $location->location_description = isset($record['fields']['description']) ? $record['fields']['description'] : null;
-                $location->location_services = isset($record['fields']['services']) ? implode(",", $record['fields']['services']) : null;
-
-                if (isset($record['fields']['services'])) {
-                    $i = 0;
-                    foreach ($record['fields']['services']  as  $value) {
-
-                        $locationservice = $strtointclass->string_to_int($value);
-
-                        if ($i != 0)
-                            $location->location_services = $location->location_services . ',' . $locationservice;
-                        else
-                            $location->location_services = $locationservice;
-                        $i++;
-                    }
-                }
-
-                if (isset($record['fields']['phones'])) {
-                    $i = 0;
-                    foreach ($record['fields']['phones']  as  $value) {
-
-                        $location_phone = new Locationphone();
-                        $location_phone->location_recordid = $location->location_recordid;
-                        $location_phone->phone_recordid = $strtointclass->string_to_int($value);
-                        $location_phone->save();
-                        if ($i != 0)
-                            $location->location_phones = $location->location_phones . ',' . $location_phone->phone_recordid;
-                        else
-                            $location->location_phones = $location_phone->phone_recordid;
-                        $i++;
-                    }
-                }
-
-                // $location->location_details = isset($record['fields']['x-details']) ? implode(",", $record['fields']['x-details']) : null;
-
-                if (isset($record['fields']['x-details'])) {
-                    $i = 0;
-                    foreach ($record['fields']['x-details']  as  $value) {
-
-                        $locationDetail = $strtointclass->string_to_int($value);
-
-                        if ($i != 0)
-                            $location->location_details = $location->location_details . ',' . $locationDetail;
-                        else
-                            $location->location_details = $locationDetail;
-                        $i++;
-                    }
-                }
-
-
-                if (isset($record['fields']['schedule'])) {
-                    $i = 0;
-                    foreach ($record['fields']['schedule']  as  $value) {
-                        $locationschedule = new Locationschedule();
-                        $locationschedule->location_recordid = $location->location_recordid;
-                        $locationschedule->schedule_recordid = $strtointclass->string_to_int($value);
-                        $locationschedule->save();
-                        if ($i != 0)
-                            $location->location_schedule = $location->location_schedule . ',' . $locationschedule->schedule_recordid;
-                        else
-                            $location->location_schedule = $locationschedule->schedule_recordid;
-                        $i++;
-                    }
-                }
-
-                $location->location_address = isset($record['fields']['physical_addresses']) ? implode(",", $record['fields']['physical_addresses']) : null;
-
-                if (isset($record['fields']['physical_addresses'])) {
-                    $i = 0;
-                    foreach ($record['fields']['physical_addresses']  as  $value) {
-                        $locationaddress = new Locationaddress();
-                        $locationaddress->location_recordid = $location->location_recordid;
-                        $locationaddress->address_recordid = $strtointclass->string_to_int($value);
-                        $locationaddress->save();
-                        if ($i != 0)
-                            $location->location_address = $location->location_address . ',' . $locationaddress->address_recordid;
-                        else
-                            $location->location_address = $locationaddress->address_recordid;
-                        $i++;
-                    }
-                }
-
-                $location->save();
+        try {
+            $airtable_key_info = Airtablekeyinfo::find(1);
+            if (!$airtable_key_info) {
+                $airtable_key_info = new Airtablekeyinfo;
             }
-        } while ($request = $response->next());
+            $airtable_key_info->api_key = $api_key;
+            $airtable_key_info->base_url = $base_url;
+            $airtable_key_info->save();
 
-        $date = date("Y/m/d H:i:s");
-        $airtable = Airtable_v2::where('name', '=', 'Locations')->first();
-        $airtable->records = Location::count();
-        $airtable->syncdate = $date;
-        $airtable->save();
+            Location::truncate();
+            LocationAddress::truncate();
+            LocationPhone::truncate();
+            LocationSchedule::truncate();
+
+            // $airtable = new Airtable(array(
+            //     'api_key'   => env('AIRTABLE_API_KEY'),
+            //     'base'      => env('AIRTABLE_BASE_URL'),
+            // ));
+            $airtable = new Airtable(array(
+                'api_key'   => $api_key,
+                'base'      => $base_url,
+            ));
+
+            $request = $airtable->getContent('locations');
+
+            do {
+
+
+                $response = $request->getResponse();
+
+                $airtable_response = json_decode($response, TRUE);
+
+                foreach ($airtable_response['records'] as $record) {
+
+                    $location = new Location();
+                    $strtointclass = new Stringtoint();
+                    $location->location_recordid = $strtointclass->string_to_int($record['id']);
+                    $location->location_name = isset($record['fields']['name']) ? $record['fields']['name'] : null;
+
+                    $location->location_organization = isset($record['fields']['organizations']) ? implode(",", $record['fields']['organizations']) : null;
+
+                    $location->location_organization = $strtointclass->string_to_int($location->location_organization);
+
+                    $location->location_alternate_name = isset($record['fields']['alternate_name']) ? $record['fields']['alternate_name'] : null;
+                    $location->location_transportation = isset($record['fields']['transportation']) ? $record['fields']['transportation'] : null;
+                    $location->location_latitude = isset($record['fields']['latitude']) ? $record['fields']['latitude'] : null;
+                    $location->location_longitude = isset($record['fields']['longitude']) ? $record['fields']['longitude'] : null;
+                    $location->location_description = isset($record['fields']['description']) ? $record['fields']['description'] : null;
+                    $location->location_services = isset($record['fields']['services']) ? implode(",", $record['fields']['services']) : null;
+
+                    if (isset($record['fields']['services'])) {
+                        $i = 0;
+                        foreach ($record['fields']['services']  as  $value) {
+
+                            $locationservice = $strtointclass->string_to_int($value);
+
+                            if ($i != 0)
+                                $location->location_services = $location->location_services . ',' . $locationservice;
+                            else
+                                $location->location_services = $locationservice;
+                            $i++;
+                        }
+                    }
+
+                    if (isset($record['fields']['phones'])) {
+                        $i = 0;
+                        foreach ($record['fields']['phones']  as  $value) {
+
+                            $location_phone = new Locationphone();
+                            $location_phone->location_recordid = $location->location_recordid;
+                            $location_phone->phone_recordid = $strtointclass->string_to_int($value);
+                            $location_phone->save();
+                            if ($i != 0)
+                                $location->location_phones = $location->location_phones . ',' . $location_phone->phone_recordid;
+                            else
+                                $location->location_phones = $location_phone->phone_recordid;
+                            $i++;
+                        }
+                    }
+
+                    // $location->location_details = isset($record['fields']['x-details']) ? implode(",", $record['fields']['x-details']) : null;
+
+                    if (isset($record['fields']['x-details'])) {
+                        $i = 0;
+                        foreach ($record['fields']['x-details']  as  $value) {
+
+                            $locationDetail = $strtointclass->string_to_int($value);
+
+                            if ($i != 0)
+                                $location->location_details = $location->location_details . ',' . $locationDetail;
+                            else
+                                $location->location_details = $locationDetail;
+                            $i++;
+                        }
+                    }
+
+
+                    if (isset($record['fields']['schedule'])) {
+                        $i = 0;
+                        foreach ($record['fields']['schedule']  as  $value) {
+                            $locationschedule = new Locationschedule();
+                            $locationschedule->location_recordid = $location->location_recordid;
+                            $locationschedule->schedule_recordid = $strtointclass->string_to_int($value);
+                            $locationschedule->save();
+                            if ($i != 0)
+                                $location->location_schedule = $location->location_schedule . ',' . $locationschedule->schedule_recordid;
+                            else
+                                $location->location_schedule = $locationschedule->schedule_recordid;
+                            $i++;
+                        }
+                    }
+
+                    $location->location_address = isset($record['fields']['physical_addresses']) ? implode(",", $record['fields']['physical_addresses']) : null;
+
+                    if (isset($record['fields']['physical_addresses'])) {
+                        $i = 0;
+                        foreach ($record['fields']['physical_addresses']  as  $value) {
+                            $locationaddress = new Locationaddress();
+                            $locationaddress->location_recordid = $location->location_recordid;
+                            $locationaddress->address_recordid = $strtointclass->string_to_int($value);
+                            $locationaddress->save();
+                            if ($i != 0)
+                                $location->location_address = $location->location_address . ',' . $locationaddress->address_recordid;
+                            else
+                                $location->location_address = $locationaddress->address_recordid;
+                            $i++;
+                        }
+                    }
+
+                    $location->save();
+                }
+            } while ($request = $response->next());
+
+            $date = date("Y/m/d H:i:s");
+            $airtable = Airtable_v2::where('name', '=', 'Locations')->first();
+            $airtable->records = Location::count();
+            $airtable->syncdate = $date;
+            $airtable->save();
+        } catch (\Throwable $th) {
+            \Log::error('Error in location: '.$th->getMessage());
+            return response()->json([
+                'message' => $th->getMessage(),
+                'success' => false
+            ], 500);
+        }
     }
     /**
      * Display a listing of the resource.

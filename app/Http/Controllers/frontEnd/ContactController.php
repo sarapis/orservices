@@ -101,65 +101,72 @@ class ContactController extends Controller
     }
     public function airtable_v2($api_key, $base_url)
     {
-
-        $airtable_key_info = Airtablekeyinfo::find(1);
-        if (!$airtable_key_info) {
-            $airtable_key_info = new Airtablekeyinfo;
-        }
-        $airtable_key_info->api_key = $api_key;
-        $airtable_key_info->base_url = $base_url;
-        $airtable_key_info->save();
-
-        Contact::truncate();
-        // $airtable = new Airtable(array(
-        //     'api_key'   => env('AIRTABLE_API_KEY'),
-        //     'base'      => env('AIRTABLE_BASE_URL'),
-        // ));
-        $airtable = new Airtable(array(
-            'api_key' => $api_key,
-            'base' => $base_url,
-        ));
-
-        $request = $airtable->getContent('contacts');
-
-        do {
-
-            $response = $request->getResponse();
-
-            $airtable_response = json_decode($response, true);
-
-            foreach ($airtable_response['records'] as $record) {
-
-                $contact = new Contact();
-                $strtointclass = new Stringtoint();
-
-                $contact->contact_recordid = $strtointclass->string_to_int($record['id']);
-
-                $contact->contact_name = isset($record['fields']['name']) ? $record['fields']['name'] : null;
-                $contact->contact_organizations = isset($record['fields']['organizations']) ? implode(",", $record['fields']['organizations']) : null;
-
-                $contact->contact_organizations = $strtointclass->string_to_int($contact->contact_organizations);
-
-                $contact->contact_services = isset($record['fields']['services 2    ']) ? implode(",", $record['fields']['services 2    ']) : null;
-
-                $contact->contact_services = $strtointclass->string_to_int($contact->contact_services);
-
-                $contact->contact_title = isset($record['fields']['title']) ? $record['fields']['title'] : null;
-                $contact->contact_department = isset($record['fields']['department']) ? $record['fields']['department'] : null;
-                $contact->contact_email = isset($record['fields']['email']) ? $record['fields']['email'] : null;
-                $contact->contact_phones = isset($record['fields']['phones']) ? implode(",", $record['fields']['phones']) : null;
-
-                $contact->contact_phones = $strtointclass->string_to_int($contact->contact_phones);
-
-                $contact->save();
+        try {
+            $airtable_key_info = Airtablekeyinfo::find(1);
+            if (!$airtable_key_info) {
+                $airtable_key_info = new Airtablekeyinfo;
             }
-        } while ($request = $response->next());
+            $airtable_key_info->api_key = $api_key;
+            $airtable_key_info->base_url = $base_url;
+            $airtable_key_info->save();
 
-        $date = date("Y/m/d H:i:s");
-        $airtable = Airtable_v2::where('name', '=', 'Contacts')->first();
-        $airtable->records = Contact::count();
-        $airtable->syncdate = $date;
-        $airtable->save();
+            Contact::truncate();
+            // $airtable = new Airtable(array(
+            //     'api_key'   => env('AIRTABLE_API_KEY'),
+            //     'base'      => env('AIRTABLE_BASE_URL'),
+            // ));
+            $airtable = new Airtable(array(
+                'api_key' => $api_key,
+                'base' => $base_url,
+            ));
+
+            $request = $airtable->getContent('contacts');
+
+            do {
+
+                $response = $request->getResponse();
+
+                $airtable_response = json_decode($response, true);
+
+                foreach ($airtable_response['records'] as $record) {
+
+                    $contact = new Contact();
+                    $strtointclass = new Stringtoint();
+
+                    $contact->contact_recordid = $strtointclass->string_to_int($record['id']);
+
+                    $contact->contact_name = isset($record['fields']['name']) ? $record['fields']['name'] : null;
+                    $contact->contact_organizations = isset($record['fields']['organizations']) ? implode(",", $record['fields']['organizations']) : null;
+
+                    $contact->contact_organizations = $strtointclass->string_to_int($contact->contact_organizations);
+
+                    $contact->contact_services = isset($record['fields']['services 2    ']) ? implode(",", $record['fields']['services 2    ']) : null;
+
+                    $contact->contact_services = $strtointclass->string_to_int($contact->contact_services);
+
+                    $contact->contact_title = isset($record['fields']['title']) ? $record['fields']['title'] : null;
+                    $contact->contact_department = isset($record['fields']['department']) ? $record['fields']['department'] : null;
+                    $contact->contact_email = isset($record['fields']['email']) ? $record['fields']['email'] : null;
+                    $contact->contact_phones = isset($record['fields']['phones']) ? implode(",", $record['fields']['phones']) : null;
+
+                    $contact->contact_phones = $strtointclass->string_to_int($contact->contact_phones);
+
+                    $contact->save();
+                }
+            } while ($request = $response->next());
+
+            $date = date("Y/m/d H:i:s");
+            $airtable = Airtable_v2::where('name', '=', 'Contacts')->first();
+            $airtable->records = Contact::count();
+            $airtable->syncdate = $date;
+            $airtable->save();
+        } catch (\Throwable $th) {
+            \Log::error('Error in Contact: ' . $th->getMessage());
+            return response()->json([
+                'message' => $th->getMessage(),
+                'success' => false
+            ], 500);
+        }
     }
     /**
      * Display a listing of the resource.

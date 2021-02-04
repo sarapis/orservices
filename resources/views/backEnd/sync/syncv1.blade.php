@@ -62,7 +62,7 @@
                 </div>
                 <div class="col-sm-2">
                     <div class="col-md-2">
-                        <div class="clearfix text-right"><button class="btn btn-primary btn-sm sync_all" id="sync_1">SYNC ALL</button>  </div>
+                        <div class="clearfix text-right"><button class="btn btn-primary btn-sm sync_all" id="sync_1" type="button">SYNC ALL</button>  </div>
                     </div>
                 </div>
             </form>
@@ -71,7 +71,7 @@
 
     <div class="alert alert-danger alert-dismissible field-invalid">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <strong>Either of these infos is invalid or empty. Retype valid Airtable Key and Airtable Base Url.</strong>
+        {{-- <strong>Either of these infos is invalid or empty. Retype valid Airtable Key and Airtable Base Url.</strong> --}}
     </div>
 
     <table class="table table-striped jambo_table bulk_action" id="tblUsers">

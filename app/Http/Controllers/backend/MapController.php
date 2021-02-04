@@ -231,20 +231,19 @@ class MapController extends Controller
 
     public function apply_geocode(Request $request)
     {
+        try {
+            $ungeocoded_location_info_list = Location::whereNull('location_latitude')->get();
+            $badgeocoded_location_info_list = Location::where('location_latitude', '=', '')->get();
+            $client = new \GuzzleHttp\Client();
+            $geocoder = new Geocoder($client);
+            $geocode_api_key = env('GEOCODE_GOOGLE_APIKEY');
+            $geocoder->setApiKey($geocode_api_key);
 
-        $ungeocoded_location_info_list = Location::whereNull('location_latitude')->get();
-        $badgeocoded_location_info_list = Location::where('location_latitude', '=', '')->get();
-        $client = new \GuzzleHttp\Client();
-        $geocoder = new Geocoder($client);
-        $geocode_api_key = env('GEOCODE_GOOGLE_APIKEY');
-        $geocoder->setApiKey($geocode_api_key);
+            if ($ungeocoded_location_info_list) {
+                foreach ($ungeocoded_location_info_list as $key => $location_info) {
 
-        if ($ungeocoded_location_info_list) {
-            foreach ($ungeocoded_location_info_list as $key => $location_info) {
-
-                if ($location_info->address) {
-                    if (isset(($location_info->address)->address)) {
-                        $address_info = ($location_info->address)->address;
+                    if ($location_info->location_name) {
+                        $address_info = $location_info->location_name;
                         // $response = $geocoder->getCoordinatesForAddress('30-61 87th Street, Queens, NY, 11369');
                         $response = $geocoder->getCoordinatesForAddress($address_info);
                         // if (($response['lat'] > 40.5) && ($response['lat'] < 42.0)) {
@@ -264,13 +263,11 @@ class MapController extends Controller
                     }
                 }
             }
-        }
 
-        if ($badgeocoded_location_info_list) {
-            foreach ($badgeocoded_location_info_list as $key => $location_info) {
-                if ($location_info->address) {
-                    if (isset(($location_info->address)->address)) {
-                        $address_info = ($location_info->address)->address;
+            if ($badgeocoded_location_info_list) {
+                foreach ($badgeocoded_location_info_list as $key => $location_info) {
+                    if ($location_info->location_name) {
+                        $address_info = $location_info->location_name;
                         // $response = $geocoder->getCoordinatesForAddress('30-61 87th Street, Queens, NY, 11369');
                         $response = $geocoder->getCoordinatesForAddress($address_info);
                         $latitude = $response['lat'];
@@ -281,9 +278,11 @@ class MapController extends Controller
                     }
                 }
             }
-        }
 
-        return redirect('map');
+            return redirect('map');
+        } catch (\Throwable $th) {
+            dd($th);
+        }
     }
 
     public function apply_enrich(Request $request)
