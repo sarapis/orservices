@@ -29,3 +29,34 @@
 .SumoSelect .select-all{
     height: auto !important;
 }
+
+.footer-menu{
+    background-color: #50c9ce;
+    padding: 50px 50px;
+    border-radius: 20px;
+    margin-bottom: 60px;
+}
+.feedback-title{
+    font-size: 25px;
+    color: white;
+}
+.btn_darkblack{
+    border-color: #1973c8;
+    background-color: #1973c8;
+    color: white;
+    border-radius: 12px;
+    padding: 22.5px 54px;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+}
+.footer-content {
+    padding: 20px 20px;
+    border-top: 1px solid #d3dee3;
+}
+.footer-content p {
+    margin: 0px;
+    color: rgba(27, 27, 27, 0.4);
+    font-weight: 500;
+    font-size: 14px;
+}

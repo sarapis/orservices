@@ -99,89 +99,96 @@ class TaxonomyController extends Controller
     }
     public function airtable_v2($api_key, $base_url)
     {
-
-        $airtable_key_info = Airtablekeyinfo::find(1);
-        if (!$airtable_key_info) {
-            $airtable_key_info = new Airtablekeyinfo;
-        }
-        $airtable_key_info->api_key = $api_key;
-        $airtable_key_info->base_url = $base_url;
-        $airtable_key_info->save();
-
-        Taxonomy::truncate();
-        // $airtable = new Airtable(array(
-        //     'api_key'   => env('AIRTABLE_API_KEY'),
-        //     'base'      => env('AIRTABLE_BASE_URL'),
-        // ));
-        $airtable = new Airtable(array(
-            'api_key' => $api_key,
-            'base' => $base_url,
-        ));
-
-        $request = $airtable->getContent('taxonomy_term');
-
-        do {
-
-            $response = $request->getResponse();
-
-            $airtable_response = json_decode($response, true);
-
-            foreach ($airtable_response['records'] as $record) {
-
-                $taxonomy = new Taxonomy();
-                $strtointclass = new Stringtoint();
-
-                $taxonomy->taxonomy_recordid = $strtointclass->string_to_int($record['id']);
-                $taxonomy->taxonomy_id = $record['id'];
-                // $taxonomy->taxonomy_recordid = $record[ 'id' ];
-                $taxonomy->taxonomy_name = isset($record['fields']['term']) ? $record['fields']['term'] : null;
-                // $taxonomy->taxonomy_parent_name = isset($record['fields']['parent_name']) ? implode(",", $record['fields']['parent_name']) : null;
-                $parent_names = isset($record['fields']['parent_name']) ? $record['fields']['parent_name'] : [];
-                $parent_name_ids = null;
-                foreach ($parent_names as $key => $parent_name) {
-                    if ($key == 0) {
-                        $parent_name_ids = $strtointclass->string_to_int($parent_name);
-                    } else {
-
-                        $parent_name_ids = $parent_name_ids . ',' . $strtointclass->string_to_int($parent_name);
-                    }
-                }
-                $taxonomy->taxonomy_parent_name = $parent_name_ids;
-                // if ($taxonomy->taxonomy_parent_name != null) {
-                //     $taxonomy->taxonomy_parent_name = $strtointclass->string_to_int($taxonomy->taxonomy_parent_name);
-                // }
-                // $taxonomy->taxonomy_vocabulary = isset($record['fields']['vocabulary']) ? $record['fields']['vocabulary'] : null;
-                $taxonomy->taxonomy_vocabulary = isset($record['fields']['taxonomy']) ? $record['fields']['taxonomy'] : null;
-                $taxonomy->taxonomy_x_description = isset($record['fields']['description']) ? $record['fields']['description'] : null;
-                $taxonomy->taxonomy_x_notes = isset($record['fields']['x-notes']) ? $record['fields']['x-notes'] : null;
-
-                $color = substr(str_shuffle('AABBCCDDEEFF00112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF00112233445566778899'), 0, 6);
-                $taxonomy->badge_color = $color;
-                if (isset($record['fields']['services'])) {
-                    $i = 0;
-                    foreach ($record['fields']['services'] as $value) {
-
-                        $taxonomyservice = $strtointclass->string_to_int($value);
-
-                        if ($i != 0) {
-                            $taxonomy->taxonomy_services = $taxonomy->taxonomy_services . ',' . $taxonomyservice;
-                        } else {
-                            $taxonomy->taxonomy_services = $taxonomyservice;
-                        }
-
-                        $i++;
-                    }
-                }
-
-                $taxonomy->save();
+        try {
+            $airtable_key_info = Airtablekeyinfo::find(1);
+            if (!$airtable_key_info) {
+                $airtable_key_info = new Airtablekeyinfo;
             }
-        } while ($request = $response->next());
+            $airtable_key_info->api_key = $api_key;
+            $airtable_key_info->base_url = $base_url;
+            $airtable_key_info->save();
 
-        $date = date("Y/m/d H:i:s");
-        $airtable = Airtable_v2::where('name', '=', 'Taxonomy_Term')->first();
-        $airtable->records = Taxonomy::count();
-        $airtable->syncdate = $date;
-        $airtable->save();
+            Taxonomy::truncate();
+            // $airtable = new Airtable(array(
+            //     'api_key'   => env('AIRTABLE_API_KEY'),
+            //     'base'      => env('AIRTABLE_BASE_URL'),
+            // ));
+            $airtable = new Airtable(array(
+                'api_key' => $api_key,
+                'base' => $base_url,
+            ));
+
+            $request = $airtable->getContent('taxonomy_term');
+
+            do {
+
+                $response = $request->getResponse();
+
+                $airtable_response = json_decode($response, true);
+
+                foreach ($airtable_response['records'] as $record) {
+
+                    $taxonomy = new Taxonomy();
+                    $strtointclass = new Stringtoint();
+
+                    $taxonomy->taxonomy_recordid = $strtointclass->string_to_int($record['id']);
+                    $taxonomy->taxonomy_id = $record['id'];
+                    // $taxonomy->taxonomy_recordid = $record[ 'id' ];
+                    $taxonomy->taxonomy_name = isset($record['fields']['term']) ? $record['fields']['term'] : null;
+                    // $taxonomy->taxonomy_parent_name = isset($record['fields']['parent_name']) ? implode(",", $record['fields']['parent_name']) : null;
+                    $parent_names = isset($record['fields']['parent_name']) ? $record['fields']['parent_name'] : [];
+                    $parent_name_ids = null;
+                    foreach ($parent_names as $key => $parent_name) {
+                        if ($key == 0) {
+                            $parent_name_ids = $strtointclass->string_to_int($parent_name);
+                        } else {
+
+                            $parent_name_ids = $parent_name_ids . ',' . $strtointclass->string_to_int($parent_name);
+                        }
+                    }
+                    $taxonomy->taxonomy_parent_name = $parent_name_ids;
+                    // if ($taxonomy->taxonomy_parent_name != null) {
+                    //     $taxonomy->taxonomy_parent_name = $strtointclass->string_to_int($taxonomy->taxonomy_parent_name);
+                    // }
+                    // $taxonomy->taxonomy_vocabulary = isset($record['fields']['vocabulary']) ? $record['fields']['vocabulary'] : null;
+                    $taxonomy->taxonomy_vocabulary = isset($record['fields']['taxonomy']) ? $record['fields']['taxonomy'] : null;
+                    $taxonomy->taxonomy_x_description = isset($record['fields']['description']) ? $record['fields']['description'] : null;
+                    $taxonomy->taxonomy_x_notes = isset($record['fields']['x-notes']) ? $record['fields']['x-notes'] : null;
+
+                    $color = substr(str_shuffle('AABBCCDDEEFF00112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF00112233445566778899'), 0, 6);
+                    $taxonomy->badge_color = $color;
+                    if (isset($record['fields']['services'])) {
+                        $i = 0;
+                        foreach ($record['fields']['services'] as $value) {
+
+                            $taxonomyservice = $strtointclass->string_to_int($value);
+
+                            if ($i != 0) {
+                                $taxonomy->taxonomy_services = $taxonomy->taxonomy_services . ',' . $taxonomyservice;
+                            } else {
+                                $taxonomy->taxonomy_services = $taxonomyservice;
+                            }
+
+                            $i++;
+                        }
+                    }
+
+                    $taxonomy->save();
+                }
+            } while ($request = $response->next());
+
+            $date = date("Y/m/d H:i:s");
+            $airtable = Airtable_v2::where('name', '=', 'Taxonomy_Term')->first();
+            $airtable->records = Taxonomy::count();
+            $airtable->syncdate = $date;
+            $airtable->save();
+        } catch (\Throwable $th) {
+            \Log::error('Error in Taxonomy: ' . $th->getMessage());
+            return response()->json([
+                'message' => $th->getMessage(),
+                'success' => false
+            ], 500);
+        }
     }
 
     public function csv(Request $request)
