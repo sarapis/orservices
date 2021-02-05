@@ -5,7 +5,8 @@
  */
 
 require('./bootstrap');
-
+// import 'dist/js/bootstrap-colorpicker.css';
+// import 'dist/js/bootstrap-colorpicker.js';
 window.Vue = require('vue');
 
 /**

@@ -183,7 +183,7 @@ Appearance
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Primary Color
                 </label>
                 <div class="col-md-2 col-sm-6 col-xs-12">
-                    <input type="color" name="primary_color" value="{{$layout->primary_color}}" class="color-pick form-control col-md-5 col-xs-5">
+                    <input type="color" name="primary_color" value="{{$layout->primary_color}}" id="primary_color" class=" form-control col-md-5 col-xs-5" style="padding:0px">
                 </div>
               </div>
 
@@ -191,7 +191,7 @@ Appearance
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Secondary Color
                 </label>
                 <div class="col-md-2 col-sm-6 col-xs-12">
-                    <input type="color" name="secondary_color" value="{{$layout->secondary_color}}" class="color-pick form-control col-md-5 col-xs-5">
+                    <input type="color" name="secondary_color" id="secondary_color" value="{{$layout->secondary_color}}" style="padding:0px" class="form-control col-md-5 col-xs-5">
                 </div>
               </div>
 
@@ -199,7 +199,7 @@ Appearance
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Button Color
                 </label>
                 <div class="col-md-2 col-sm-6 col-xs-12">
-                    <input type="color" name="button_color" value="{{$layout->button_color}}" class="color-pick form-control col-md-5 col-xs-5">
+                    <input type="color" name="button_color" id="button_color" value="{{$layout->button_color}}" style="padding:0px" class="color-pick form-control col-md-5 col-xs-5">
                 </div>
               </div>
 
@@ -207,42 +207,42 @@ Appearance
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Button Hover Color
                 </label>
                 <div class="col-md-2 col-sm-6 col-xs-12">
-                    <input type="color" name="button_hover_color" value="{{$layout->button_hover_color}}" class="color-pick form-control col-md-5 col-xs-5">
+                    <input type="color" name="button_hover_color" id="button_hover_color" value="{{$layout->button_hover_color}}" style="padding:0px" class="color-pick form-control col-md-5 col-xs-5">
                 </div>
               </div>
               <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Title & Link Color
                 </label>
                 <div class="col-md-2 col-sm-6 col-xs-12">
-                    <input type="color" name="title_link_color" value="{{$layout->title_link_color}}" class="color-pick form-control col-md-5 col-xs-5">
+                    <input type="color" name="title_link_color" id="title_link_color" value="{{$layout->title_link_color}}" style="padding:0px" class="color-pick form-control col-md-5 col-xs-5">
                 </div>
               </div>
               <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Top Menu Color
                 </label>
                 <div class="col-md-2 col-sm-6 col-xs-12">
-                    <input type="color" name="top_menu_color" value="{{$layout->top_menu_color}}" class="color-pick form-control col-md-5 col-xs-5">
+                    <input type="color" name="top_menu_color" id="top_menu_color" value="{{$layout->top_menu_color}}" style="padding:0px" class="color-pick form-control col-md-5 col-xs-5">
                 </div>
               </div>
               <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Top Menu link Color
                 </label>
                 <div class="col-md-2 col-sm-6 col-xs-12">
-                    <input type="color" name="top_menu_link_color" value="{{$layout->top_menu_link_color}}" class="color-pick form-control col-md-5 col-xs-5">
+                    <input type="color" name="top_menu_link_color" id="top_menu_link_color" value="{{$layout->top_menu_link_color}}" style="padding:0px" class="color-pick form-control col-md-5 col-xs-5">
                 </div>
               </div>
               <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Top Menu Link Hover Color
                 </label>
                 <div class="col-md-2 col-sm-6 col-xs-12">
-                    <input type="color" name="top_menu_link_hover_color" value="{{$layout->top_menu_link_hover_color}}" class="color-pick form-control col-md-5 col-xs-5">
+                    <input type="color" name="top_menu_link_hover_color" id="top_menu_link_hover_color" value="{{$layout->top_menu_link_hover_color}}" style="padding:0px" class="color-pick form-control col-md-5 col-xs-5">
                 </div>
               </div>
               <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Menu Title Color
                 </label>
                 <div class="col-md-2 col-sm-6 col-xs-12">
-                    <input type="color" name="menu_title_color" value="{{$layout->menu_title_color}}" class="color-pick form-control col-md-5 col-xs-5">
+                    <input type="color" name="menu_title_color" id="menu_title_color" value="{{$layout->menu_title_color}}" style="padding:0px" class="color-pick form-control col-md-5 col-xs-5">
                 </div>
               </div>
 
@@ -262,7 +262,8 @@ Appearance
 @endsection
 @section('scripts')
 
-
+<link rel="stylesheet" media="screen" type="text/css" href="/css/colorpicker.css" />
+<script type="text/javascript" src="/js/colorpicker.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.1/js/bootstrap-colorpicker.min.js"></script>
 <script>
 $(document).ready(function() {
@@ -273,7 +274,132 @@ $(document).ready(function() {
         height: 200
     });
 });
-
+$('#primary_color').ColorPicker({
+	color: $('#primary_color').val(),
+	onShow: function (colpkr) {
+		$(colpkr).fadeIn(500);
+		return false;
+	},
+	onHide: function (colpkr) {
+		$(colpkr).fadeOut(500);
+		return false;
+	},
+	onChange: function (hsb, hex, rgb) {
+		$('#primary_color').val('#' + hex);
+	}
+});
+$('#secondary_color').ColorPicker({
+	color: $('#secondary_color').val(),
+	onShow: function (colpkr) {
+		$(colpkr).fadeIn(500);
+		return false;
+	},
+	onHide: function (colpkr) {
+		$(colpkr).fadeOut(500);
+		return false;
+	},
+	onChange: function (hsb, hex, rgb) {
+		$('#secondary_color').val('#' + hex);
+	}
+});
+$('#button_color').ColorPicker({
+	color: $('#button_color').val(),
+	onShow: function (colpkr) {
+		$(colpkr).fadeIn(500);
+		return false;
+	},
+	onHide: function (colpkr) {
+		$(colpkr).fadeOut(500);
+		return false;
+	},
+	onChange: function (hsb, hex, rgb) {
+		$('#button_color').val('#' + hex);
+	}
+});
+$('#button_hover_color').ColorPicker({
+	color: $('#button_hover_color').val(),
+	onShow: function (colpkr) {
+		$(colpkr).fadeIn(500);
+		return false;
+	},
+	onHide: function (colpkr) {
+		$(colpkr).fadeOut(500);
+		return false;
+	},
+	onChange: function (hsb, hex, rgb) {
+		$('#button_hover_color').val('#' + hex);
+	}
+});
+$('#title_link_color').ColorPicker({
+	color: $('#title_link_color').val(),
+	onShow: function (colpkr) {
+		$(colpkr).fadeIn(500);
+		return false;
+	},
+	onHide: function (colpkr) {
+		$(colpkr).fadeOut(500);
+		return false;
+	},
+	onChange: function (hsb, hex, rgb) {
+		$('#title_link_color').val('#' + hex);
+	}
+});
+$('#top_menu_color').ColorPicker({
+	color: $('#top_menu_color').val(),
+	onShow: function (colpkr) {
+		$(colpkr).fadeIn(500);
+		return false;
+	},
+	onHide: function (colpkr) {
+		$(colpkr).fadeOut(500);
+		return false;
+	},
+	onChange: function (hsb, hex, rgb) {
+		$('#top_menu_color').val('#' + hex);
+	}
+});
+$('#top_menu_link_color').ColorPicker({
+	color: $('#top_menu_link_color').val(),
+	onShow: function (colpkr) {
+		$(colpkr).fadeIn(500);
+		return false;
+	},
+	onHide: function (colpkr) {
+		$(colpkr).fadeOut(500);
+		return false;
+	},
+	onChange: function (hsb, hex, rgb) {
+		$('#top_menu_link_color').val('#' + hex);
+	}
+});
+$('#top_menu_link_hover_color').ColorPicker({
+	color: $('#top_menu_link_hover_color').val(),
+	onShow: function (colpkr) {
+		$(colpkr).fadeIn(500);
+		return false;
+	},
+	onHide: function (colpkr) {
+		$(colpkr).fadeOut(500);
+		return false;
+	},
+	onChange: function (hsb, hex, rgb) {
+		$('#top_menu_link_hover_color').val('#' + hex);
+	}
+});
+$('#menu_title_color').ColorPicker({
+	color: $('#menu_title_color').val(),
+	onShow: function (colpkr) {
+		$(colpkr).fadeIn(500);
+		return false;
+	},
+	onHide: function (colpkr) {
+		$(colpkr).fadeOut(500);
+		return false;
+	},
+	onChange: function (hsb, hex, rgb) {
+		$('#menu_title_color').val('#' + hex);
+	}
+});
 function readURL(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();

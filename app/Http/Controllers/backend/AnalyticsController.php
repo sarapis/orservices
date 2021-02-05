@@ -87,7 +87,7 @@ class AnalyticsController extends Controller
      * @return Response
      */
     public function update($id, Request $request)
-    {  
+    {
 
         $page = Page::findOrFail($id);
         $page->update($request->all());
