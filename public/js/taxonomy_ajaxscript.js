@@ -32,7 +32,8 @@ $(document).ready(function(){
                 }
                 $('#id').val(data.taxonomy_recordid);
                 $('#taxonomy_name').val(data.taxonomy_name);
-                $('#taxonomy_vocabulary').val(data.taxonomy_vocabulary);
+                $('#taxonomy').val(data.taxonomy);
+                $('#x_taxonomies').val(data.x_taxonomies);
                 $('#taxonomy_x_description').val(data.taxonomy_x_description);
                 $('#taxonomy_grandparent_name').val(data.taxonomy_parent_name);
                 $('#language').val(data.language);
@@ -43,7 +44,8 @@ $(document).ready(function(){
                 $('#badge_color').val(data.badge_color);
                 $('#white_logo_image').attr('src',data.category_logo_white)
                 $('#category_logo_image').attr('src',data.category_logo)
-
+                $("#taxonomy").selectpicker('refresh');
+                $("#x_taxonomies").selectpicker('refresh');
                 $('#btn-save').val("update");
                 $('#myModal').modal('show');
 

@@ -37,6 +37,7 @@ use App\Model\Taxonomy;
 use App\Services\Stringtoint;
 use Carbon\Carbon;
 use App\Model\csv;
+use App\Model\TaxonomyType;
 use App\Model\Language;
 use App\Model\PhoneType;
 use App\Model\Program;
@@ -312,8 +313,12 @@ class ServiceController extends Controller
         $address_city_list = array_unique($address_city_list);
 
         $detail_types = DetailType::pluck('type', 'type');
-        $service_category_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy_vocabulary', 'Service Category')->pluck('taxonomy_name', 'taxonomy_recordid');
-        $service_eligibility_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy_vocabulary', 'Service Eligibility')->pluck('taxonomy_name', 'taxonomy_recordid');
+
+        $serviceCategoryId = TaxonomyType::where('type', 'internal')->where('name', 'Service Category')->first();
+        $serviceEligibilityId = TaxonomyType::where('type', 'internal')->where('name', 'Service Eligibility')->first();
+
+        $service_category_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
+        $service_eligibility_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
         $programs = Program::pluck('name', 'program_recordid');
 
         return view('frontEnd.services.create', compact('map', 'organization_name_list', 'facility_info_list', 'service_status_list', 'taxonomy_info_list', 'schedule_info_list', 'contact_info_list', 'detail_info_list', 'address_info_list', 'all_contacts', 'all_locations', 'phone_languages', 'phone_type', 'service_info_list', 'address_city_list', 'address_states_list', 'detail_types', 'service_category_types', 'service_eligibility_types', 'programs'));
@@ -1642,10 +1647,14 @@ class ServiceController extends Controller
             }
             $phone_language_data = json_encode($phone_language_data);
 
-            $service_category_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy_vocabulary', 'Service Category')->pluck('taxonomy_name', 'taxonomy_recordid');
-            $service_eligibility_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy_vocabulary', 'Service Eligibility')->pluck('taxonomy_name', 'taxonomy_recordid');
+            $serviceCategoryId = TaxonomyType::where('type', 'internal')->where('name', 'Service Category')->first();
+            $serviceEligibilityId = TaxonomyType::where('type', 'internal')->where('name', 'Service Eligibility')->first();
 
-            $service_category_term_data = $service->taxonomy()->where('taxonomy_vocabulary', 'Service Category')->get();
+            $service_category_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
+            $service_eligibility_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
+
+
+            $service_category_term_data = $service->taxonomy()->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->get();
             // ->whereNotNull('taxonomy_parent_name')
             $service_category_type_data = [];
 
@@ -1662,7 +1671,7 @@ class ServiceController extends Controller
                 }
             }
 
-            $service_eligibility_term_data = $service->taxonomy()->where('taxonomy_vocabulary', 'Service Eligibility')->get();
+            $service_eligibility_term_data = $service->taxonomy()->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->get();
             $service_eligibility_type_data = [];
             // dd($service_eligibility_term_data);
             // dd($service->taxonomy);

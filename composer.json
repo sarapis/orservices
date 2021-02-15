@@ -17,6 +17,7 @@
         "guzzlehttp/guzzle": "^6.3",
         "illuminate/filesystem": "^7.17",
         "intervention/image": "^2.5",
+        "itsjavi/bootstrap-colorpicker": "^3.2",
         "ixudra/curl": "^6.19",
         "jcf/geocode": "^1.4",
         "laravel/framework": "^7.0",

@@ -53,6 +53,7 @@ class CreateLayoutsTable extends Migration
             $table->longText('login_content')->nullable();
             $table->longText('register_content')->nullable();
             $table->integer('activate_login_home')->default(0);
+            $table->integer('activate_about_home')->default(0);
             $table->string('home_page_style')->nullable();
             $table->integer('activate_religions')->default(0);
             $table->integer('activate_languages')->default(0);

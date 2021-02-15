@@ -93,7 +93,9 @@ class HomeController extends Controller
     public function dashboard($value = '')
     {
         $layout = Layout::first();
-        return view('backEnd.dashboard', compact('layout'));
+        $page = Page::whereId(6)->first();
+
+        return view('backEnd.dashboard', compact('layout', 'page'));
     }
     public function checkTwillio(Request $request)
     {

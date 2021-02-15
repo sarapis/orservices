@@ -70,14 +70,14 @@ location / {
 ```
 
 **👉Configuration**
-   * Run git clone https://github.com/d9it/larable.git
+   * Run git clone https://github.com/sarapis/orservices.git
    * Create a MySQL database for the project
    * mysql -u root -p, if using Vagrant: mysql -u homestead -psecret    
    * From the projects root run cp .env.example .env
    * Configure your .env file
    * Run composer update from the projects root folder
    * Run npm install & npm run dev from the projects root folder
-   * From the projects root folder run sudo chmod -R 755 ../larable
+   * From the projects root folder run sudo chmod -R 755 ../orservices
    * From the projects root folder run php artisan key:generate
    * From the projects root folder run php artisan migrate
    * From the projects root folder run php artisan db:seed

@@ -35,13 +35,13 @@
 							{!! $errors->first('name', '<p class="help-block">:message</p>') !!}
 							</div>
 						</div>
-						<div class="form-group {{ $errors->has('title') ? 'has-error' : ''}}">
+						{{-- <div class="form-group {{ $errors->has('title') ? 'has-error' : ''}}">
 							{!! Form::label('title', 'Title ', ['class' => 'col-sm-3 control-label']) !!}
 							<div class="col-sm-6">
 							{!! Form::text('title', null, ['class' => 'form-control']) !!}
 							{!! $errors->first('title', '<p class="help-block">:message</p>') !!}
 							</div>
-                        </div>
+                        </div> --}}
                         <div class="item form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Banner Text1
                             </label>
@@ -64,14 +64,14 @@
 								</div>
                             </div> -->
                         <div class="item form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Home Page Sidebar Image
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Bottom Image
                             </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <input type="file"  class="custom-file-input" name="part_1_image" >
                             </div>
                         </div>
                         <div class="item form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Home Page Sidebar Content
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Bottom Content
                             </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                             <textarea id="summernote1" type="text" name="sidebar_content"

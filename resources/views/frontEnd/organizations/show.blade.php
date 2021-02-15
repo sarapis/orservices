@@ -243,7 +243,7 @@
                                     </span> --}}
                                     <span class="pl-0 category_badge subtitle"><b>Service Category:</b>
                                         @foreach ($service->taxonomy as $service_taxonomy_info)
-                                        @if ($service_taxonomy_info->taxonomy_vocabulary == 'Service Category')
+                                        @if (isset($service_taxonomy_info->taxonomy_type) && count($service_taxonomy_info->taxonomy_type) > 0 &&  $service_taxonomy_info->taxonomy_type[0]->name == 'Service Category')
                                         @if($service->service_taxonomy != null)
                                         <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
                                             at="child_{{$service_taxonomy_info->taxonomy_recordid}}" style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>
@@ -255,7 +255,7 @@
                                 <h4>
                                     <span class="pl-0 category_badge subtitle"><b>Service Eligibility:</b>
                                     @foreach ($service->taxonomy as $service_taxonomy_info)
-                                    @if ($service_taxonomy_info->taxonomy_vocabulary == 'Service Eligibility')
+                                    @if (isset($service_taxonomy_info->taxonomy_type) && count($service_taxonomy_info->taxonomy_type) > 0 &&  $service_taxonomy_info->taxonomy_type[0]->name == 'Service Eligibility')
                                     @if($service->service_taxonomy != null)
                                     <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
                                         at="child_{{$service_taxonomy_info->taxonomy_recordid}}" style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>

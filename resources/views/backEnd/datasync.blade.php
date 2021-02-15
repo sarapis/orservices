@@ -652,13 +652,13 @@ Import
 
     function airtable_enable_autosync_Function() {
         var checkBox = document.getElementById("airtable_enable_auto_sync");
-        if (checkBox.checked == true){
-            $("#auto_sync_div").show();
-            $(".autosyncbtn").show();
-          } else {
-            $("#auto_sync_div").hide();
-            $(".autosyncbtn").hide();
-          }
+        // if (checkBox.checked == true){
+        //     $("#auto_sync_div").show();
+        //     $(".autosyncbtn").show();
+        //   } else {
+        //     $("#auto_sync_div").hide();
+        //     $(".autosyncbtn").hide();
+        //   }
     }
 
 </script>

@@ -2022,9 +2022,13 @@ class OrganizationController extends Controller
     {
         $this->validate($request, [
             'organization_name' => 'required',
-            'organization_email' => 'required|email',
             'organization_description' => 'required',
         ]);
+        if ($request->organization_email) {
+            $this->validate($request, [
+                'organization_email' => 'email',
+            ]);
+        }
         try {
             $organization = Organization::find($id);
             $organization->organization_name = $request->organization_name;
@@ -2063,165 +2067,165 @@ class OrganizationController extends Controller
                 $contact->save();
             }
             // service section
-            $service_recordids = [];
-            Service::where('service_organization', $id)->update(['service_organization' => '']);
-            if ($request->service_name && $request->service_name[0] != null) {
-                $service_alternate_name = $request->service_alternate_name && count($request->service_alternate_name) > 0 ? json_decode($request->service_alternate_name[0]) : [];
-                $service_program = $request->service_program && count($request->service_program) > 0 ? json_decode($request->service_program[0]) : [];
-                $service_status = $request->service_status && count($request->service_status) > 0 ? json_decode($request->service_status[0]) : [];
-                $service_taxonomies = $request->service_taxonomies && count($request->service_taxonomies) > 0 ? json_decode($request->service_taxonomies[0]) : [];
-                $service_application_process = $request->service_application_process && count($request->service_application_process) > 0 ? json_decode($request->service_application_process[0]) : [];
-                $service_wait_time = $request->service_wait_time && count($request->service_wait_time) > 0 ? json_decode($request->service_wait_time[0]) : [];
-                $service_fees = $request->service_fees && count($request->service_fees) > 0 ? json_decode($request->service_fees[0]) : [];
-                $service_accreditations = $request->service_accreditations && count($request->service_accreditations) > 0 ? json_decode($request->service_accreditations[0]) : [];
-                $service_licenses = $request->service_licenses && count($request->service_licenses) > 0 ? json_decode($request->service_licenses[0]) : [];
-                $service_schedules = $request->service_schedules && count($request->service_schedules) > 0 ? json_decode($request->service_schedules[0]) : [];
-                $service_details = $request->service_details && count($request->service_details) > 0 ? json_decode($request->service_details[0]) : [];
-                $service_address = $request->service_address && count($request->service_address) > 0 ? json_decode($request->service_address[0]) : [];
-                $service_metadata = $request->service_metadata && count($request->service_metadata) > 0 ? json_decode($request->service_metadata[0]) : [];
-                $service_airs_taxonomy_x = $request->service_airs_taxonomy_x && count($request->service_airs_taxonomy_x) > 0 ? json_decode($request->service_airs_taxonomy_x[0]) : [];
-                for ($i = 0; $i < count($request->service_name); $i++) {
-                    $service_phone_recordid_list = [];
-                    if ($request->serviceRadio[$i] == 'new_data') {
-                        $service = new Service();
-                        $service->service_recordid = Service::max('service_recordid') + 1;
-                        $service->service_name = $request->service_name[$i];
-                        $service->service_description = $request->service_description[$i];
-                        $service->service_url = $request->service_url[$i];
-                        $service->service_email = $request->service_email[$i];
-                        $service->service_organization = $id;
+            // $service_recordids = [];
+            // Service::where('service_organization', $id)->update(['service_organization' => '']);
+            // if ($request->service_name && $request->service_name[0] != null) {
+            //     $service_alternate_name = $request->service_alternate_name && count($request->service_alternate_name) > 0 ? json_decode($request->service_alternate_name[0]) : [];
+            //     $service_program = $request->service_program && count($request->service_program) > 0 ? json_decode($request->service_program[0]) : [];
+            //     $service_status = $request->service_status && count($request->service_status) > 0 ? json_decode($request->service_status[0]) : [];
+            //     $service_taxonomies = $request->service_taxonomies && count($request->service_taxonomies) > 0 ? json_decode($request->service_taxonomies[0]) : [];
+            //     $service_application_process = $request->service_application_process && count($request->service_application_process) > 0 ? json_decode($request->service_application_process[0]) : [];
+            //     $service_wait_time = $request->service_wait_time && count($request->service_wait_time) > 0 ? json_decode($request->service_wait_time[0]) : [];
+            //     $service_fees = $request->service_fees && count($request->service_fees) > 0 ? json_decode($request->service_fees[0]) : [];
+            //     $service_accreditations = $request->service_accreditations && count($request->service_accreditations) > 0 ? json_decode($request->service_accreditations[0]) : [];
+            //     $service_licenses = $request->service_licenses && count($request->service_licenses) > 0 ? json_decode($request->service_licenses[0]) : [];
+            //     $service_schedules = $request->service_schedules && count($request->service_schedules) > 0 ? json_decode($request->service_schedules[0]) : [];
+            //     $service_details = $request->service_details && count($request->service_details) > 0 ? json_decode($request->service_details[0]) : [];
+            //     $service_address = $request->service_address && count($request->service_address) > 0 ? json_decode($request->service_address[0]) : [];
+            //     $service_metadata = $request->service_metadata && count($request->service_metadata) > 0 ? json_decode($request->service_metadata[0]) : [];
+            //     $service_airs_taxonomy_x = $request->service_airs_taxonomy_x && count($request->service_airs_taxonomy_x) > 0 ? json_decode($request->service_airs_taxonomy_x[0]) : [];
+            //     for ($i = 0; $i < count($request->service_name); $i++) {
+            //         $service_phone_recordid_list = [];
+            //         if ($request->serviceRadio[$i] == 'new_data') {
+            //             $service = new Service();
+            //             $service->service_recordid = Service::max('service_recordid') + 1;
+            //             $service->service_name = $request->service_name[$i];
+            //             $service->service_description = $request->service_description[$i];
+            //             $service->service_url = $request->service_url[$i];
+            //             $service->service_email = $request->service_email[$i];
+            //             $service->service_organization = $id;
 
-                        $service->service_alternate_name = $service_alternate_name[$i];
-                        $service->service_program = $service_program[$i];
+            //             $service->service_alternate_name = $service_alternate_name[$i];
+            //             $service->service_program = $service_program[$i];
 
-                        if ($service_status[$i] == '1') {
-                            $service->service_status = 'Verified';
-                        } else {
-                            $service->service_status = '';
-                        }
-                        $service->service_taxonomy = join(',', $service_taxonomies[$i]);
-                        $service->service_application_process = $service_application_process[$i];
-                        $service->service_wait_time = $service_wait_time[$i];
-                        $service->service_fees = $service_fees[$i];
-                        $service->service_accreditations = $service_accreditations[$i];
-                        $service->service_licenses = $service_licenses[$i];
-                        if ($service_schedules[$i]) {
-                            $service->service_schedule = join(',', $service_schedules[$i]);
-                        } else {
-                            $service->service_schedule = '';
-                        }
-                        // $service->service_details = $service_details[$i];
-                        if ($service_details[$i]) {
-                            $service->service_details = join(',', $service_details[$i]);
-                        } else {
-                            $service->service_details = '';
-                        }
-                        // $service->service_address = $service_address[$i];
-                        if ($service_address[$i]) {
-                            $service->service_address = join(',', $service_address[$i]);
-                        } else {
-                            $service->service_address = '';
-                        }
-                        $service->service_metadata = $service_metadata[$i];
-                        $service->service_airs_taxonomy_x = $service_airs_taxonomy_x[$i];
-                        // $service->service_phones = $request->service_phone[$i];
+            //             if ($service_status[$i] == '1') {
+            //                 $service->service_status = 'Verified';
+            //             } else {
+            //                 $service->service_status = '';
+            //             }
+            //             $service->service_taxonomy = join(',', $service_taxonomies[$i]);
+            //             $service->service_application_process = $service_application_process[$i];
+            //             $service->service_wait_time = $service_wait_time[$i];
+            //             $service->service_fees = $service_fees[$i];
+            //             $service->service_accreditations = $service_accreditations[$i];
+            //             $service->service_licenses = $service_licenses[$i];
+            //             if ($service_schedules[$i]) {
+            //                 $service->service_schedule = join(',', $service_schedules[$i]);
+            //             } else {
+            //                 $service->service_schedule = '';
+            //             }
+            //             // $service->service_details = $service_details[$i];
+            //             if ($service_details[$i]) {
+            //                 $service->service_details = join(',', $service_details[$i]);
+            //             } else {
+            //                 $service->service_details = '';
+            //             }
+            //             // $service->service_address = $service_address[$i];
+            //             if ($service_address[$i]) {
+            //                 $service->service_address = join(',', $service_address[$i]);
+            //             } else {
+            //                 $service->service_address = '';
+            //             }
+            //             $service->service_metadata = $service_metadata[$i];
+            //             $service->service_airs_taxonomy_x = $service_airs_taxonomy_x[$i];
+            //             // $service->service_phones = $request->service_phone[$i];
 
-                        $phone_info = Phone::where('phone_number', '=', $request->service_phone[$i])->first();
-                        if ($phone_info) {
-                            $service->service_phones = $service->service_phones . $phone_info->phone_recordid . ',';
-                            $phone_info->phone_number = $request->service_phone[$i];
-                            $phone_info->save();
-                            array_push($service_phone_recordid_list, $phone_info->phone_recordid);
-                        } else {
-                            $new_phone = new Phone;
-                            $new_phone_recordid = Phone::max('phone_recordid') + 1;
-                            $new_phone->phone_recordid = $new_phone_recordid;
-                            $new_phone->phone_number = $request->service_phone[$i];
-                            $new_phone->save();
-                            $service->service_phones = $service->service_phones . $new_phone_recordid . ',';
-                            array_push($service_phone_recordid_list, $new_phone_recordid);
-                        }
-                        array_push($service_recordids, Service::max('service_recordid') + 1);
-                        $service->address()->sync($service_address[$i]);
-                        $service->details()->sync($service_details[$i]);
-                        $service->schedules()->sync($service_schedules[$i]);
-                        $service->taxonomy()->sync($service_taxonomies[$i]);
-                        $service->phone()->sync($service_phone_recordid_list);
-                        $service->save();
-                    } else {
-                        $updating_service = Service::where('service_recordid', '=', $request->service_recordid[$i])->first();
+            //             $phone_info = Phone::where('phone_number', '=', $request->service_phone[$i])->first();
+            //             if ($phone_info) {
+            //                 $service->service_phones = $service->service_phones . $phone_info->phone_recordid . ',';
+            //                 $phone_info->phone_number = $request->service_phone[$i];
+            //                 $phone_info->save();
+            //                 array_push($service_phone_recordid_list, $phone_info->phone_recordid);
+            //             } else {
+            //                 $new_phone = new Phone;
+            //                 $new_phone_recordid = Phone::max('phone_recordid') + 1;
+            //                 $new_phone->phone_recordid = $new_phone_recordid;
+            //                 $new_phone->phone_number = $request->service_phone[$i];
+            //                 $new_phone->save();
+            //                 $service->service_phones = $service->service_phones . $new_phone_recordid . ',';
+            //                 array_push($service_phone_recordid_list, $new_phone_recordid);
+            //             }
+            //             array_push($service_recordids, Service::max('service_recordid') + 1);
+            //             $service->address()->sync($service_address[$i]);
+            //             $service->details()->sync($service_details[$i]);
+            //             $service->schedules()->sync($service_schedules[$i]);
+            //             $service->taxonomy()->sync($service_taxonomies[$i]);
+            //             $service->phone()->sync($service_phone_recordid_list);
+            //             $service->save();
+            //         } else {
+            //             $updating_service = Service::where('service_recordid', '=', $request->service_recordid[$i])->first();
 
-                        if ($updating_service) {
-                            $updating_service->service_name = $request->service_name[$i];
-                            $updating_service->service_description = $request->service_description[$i];
-                            $updating_service->service_url = $request->service_url[$i];
-                            $updating_service->service_email = $request->service_email[$i];
-                            $updating_service->service_organization = $id;
-                            // $service->service_phones = $request->service_phone[$i];
+            //             if ($updating_service) {
+            //                 $updating_service->service_name = $request->service_name[$i];
+            //                 $updating_service->service_description = $request->service_description[$i];
+            //                 $updating_service->service_url = $request->service_url[$i];
+            //                 $updating_service->service_email = $request->service_email[$i];
+            //                 $updating_service->service_organization = $id;
+            //                 // $service->service_phones = $request->service_phone[$i];
 
-                            $updating_service->service_alternate_name = $service_alternate_name[$i];
-                            $updating_service->service_program = $service_program[$i];
+            //                 $updating_service->service_alternate_name = $service_alternate_name[$i];
+            //                 $updating_service->service_program = $service_program[$i];
 
-                            if ($service_status[$i] == '1') {
-                                $updating_service->service_status = 'Verified';
-                            } else {
-                                $updating_service->service_status = '';
-                            }
-                            $updating_service->service_taxonomy = join(',', $service_taxonomies[$i]);
-                            $updating_service->service_application_process = $service_application_process[$i];
-                            $updating_service->service_wait_time = $service_wait_time[$i];
-                            $updating_service->service_fees = $service_fees[$i];
-                            $updating_service->service_accreditations = $service_accreditations[$i];
-                            $updating_service->service_licenses = $service_licenses[$i];
-                            if ($service_schedules[$i]) {
-                                $updating_service->service_schedule = join(',', $service_schedules[$i]);
-                            } else {
-                                $updating_service->service_schedule = '';
-                            }
-                            // $updating_service->service_details = $service_details[$i];
-                            if ($service_details[$i]) {
-                                $updating_service->service_details = join(',', $service_details[$i]);
-                            } else {
-                                $updating_service->service_details = '';
-                            }
-                            // $updating_service->service_address = $service_address[$i];
-                            if ($service_address[$i]) {
-                                $updating_service->service_address = join(',', $service_address[$i]);
-                            } else {
-                                $updating_service->service_address = '';
-                            }
-                            $updating_service->service_metadata = $service_metadata[$i];
-                            $updating_service->service_airs_taxonomy_x = $service_airs_taxonomy_x[$i];
-                            // $updating_service->service_phones = $request->service_phone[$i];
+            //                 if ($service_status[$i] == '1') {
+            //                     $updating_service->service_status = 'Verified';
+            //                 } else {
+            //                     $updating_service->service_status = '';
+            //                 }
+            //                 $updating_service->service_taxonomy = join(',', $service_taxonomies[$i]);
+            //                 $updating_service->service_application_process = $service_application_process[$i];
+            //                 $updating_service->service_wait_time = $service_wait_time[$i];
+            //                 $updating_service->service_fees = $service_fees[$i];
+            //                 $updating_service->service_accreditations = $service_accreditations[$i];
+            //                 $updating_service->service_licenses = $service_licenses[$i];
+            //                 if ($service_schedules[$i]) {
+            //                     $updating_service->service_schedule = join(',', $service_schedules[$i]);
+            //                 } else {
+            //                     $updating_service->service_schedule = '';
+            //                 }
+            //                 // $updating_service->service_details = $service_details[$i];
+            //                 if ($service_details[$i]) {
+            //                     $updating_service->service_details = join(',', $service_details[$i]);
+            //                 } else {
+            //                     $updating_service->service_details = '';
+            //                 }
+            //                 // $updating_service->service_address = $service_address[$i];
+            //                 if ($service_address[$i]) {
+            //                     $updating_service->service_address = join(',', $service_address[$i]);
+            //                 } else {
+            //                     $updating_service->service_address = '';
+            //                 }
+            //                 $updating_service->service_metadata = $service_metadata[$i];
+            //                 $updating_service->service_airs_taxonomy_x = $service_airs_taxonomy_x[$i];
+            //                 // $updating_service->service_phones = $request->service_phone[$i];
 
-                            $phone_info = Phone::where('phone_number', '=', $request->service_phone[$i])->first();
-                            if ($phone_info) {
-                                $updating_service->service_phones = $updating_service->service_phones . $phone_info->phone_recordid . ',';
-                                $phone_info->phone_number = $request->service_phone[$i];
-                                $phone_info->save();
-                                array_push($service_phone_recordid_list, $phone_info->phone_recordid);
-                            } else {
-                                $new_phone = new Phone;
-                                $new_phone_recordid = Phone::max('phone_recordid') + 1;
-                                $new_phone->phone_recordid = $new_phone_recordid;
-                                $new_phone->phone_number = $request->service_phone[$i];
-                                $new_phone->save();
-                                $updating_service->service_phones = $updating_service->service_phones . $new_phone_recordid . ',';
-                                array_push($service_phone_recordid_list, $new_phone_recordid);
-                            }
-                            array_push($service_recordids, Service::max('service_recordid') + 1);
-                            $updating_service->address()->sync($service_address[$i]);
-                            $updating_service->details()->sync($service_details[$i]);
-                            $updating_service->schedules()->sync($service_schedules[$i]);
-                            $updating_service->taxonomy()->sync($service_taxonomies[$i]);
-                            $updating_service->phone()->sync($service_phone_recordid_list);
-                            $updating_service->save();
-                            array_push($service_recordids, $updating_service->service_recordid);
-                        }
-                    }
-                }
-            }
-            $organization->getServices()->sync($service_recordids);
+            //                 $phone_info = Phone::where('phone_number', '=', $request->service_phone[$i])->first();
+            //                 if ($phone_info) {
+            //                     $updating_service->service_phones = $updating_service->service_phones . $phone_info->phone_recordid . ',';
+            //                     $phone_info->phone_number = $request->service_phone[$i];
+            //                     $phone_info->save();
+            //                     array_push($service_phone_recordid_list, $phone_info->phone_recordid);
+            //                 } else {
+            //                     $new_phone = new Phone;
+            //                     $new_phone_recordid = Phone::max('phone_recordid') + 1;
+            //                     $new_phone->phone_recordid = $new_phone_recordid;
+            //                     $new_phone->phone_number = $request->service_phone[$i];
+            //                     $new_phone->save();
+            //                     $updating_service->service_phones = $updating_service->service_phones . $new_phone_recordid . ',';
+            //                     array_push($service_phone_recordid_list, $new_phone_recordid);
+            //                 }
+            //                 array_push($service_recordids, Service::max('service_recordid') + 1);
+            //                 $updating_service->address()->sync($service_address[$i]);
+            //                 $updating_service->details()->sync($service_details[$i]);
+            //                 $updating_service->schedules()->sync($service_schedules[$i]);
+            //                 $updating_service->taxonomy()->sync($service_taxonomies[$i]);
+            //                 $updating_service->phone()->sync($service_phone_recordid_list);
+            //                 $updating_service->save();
+            //                 array_push($service_recordids, $updating_service->service_recordid);
+            //             }
+            //         }
+            //     }
+            // }
+            // $organization->getServices()->sync($service_recordids);
             // if ($request->organization_contacts) {
             //     $contact_recordid_list = $request->organization_contacts;
             //     foreach ($contact_recordid_list as $key => $value) {
@@ -2684,7 +2688,7 @@ class OrganizationController extends Controller
                                         $phone_info->phone_number = $location_phone_numbers[$i][$p];
                                         $phone_info->phone_extension = $location_phone_extensions[$i][$p];
                                         $phone_info->phone_type = $location_phone_types[$i][$p];
-                                        $phone_info->phone_language = isset($location_phone_languages[$i][$p]) ? implode(',', $location_phone_languages[$i][$p]) : '';
+                                        $phone_info->phone_language = isset($location_phone_languages[$i][$p]) && $location_phone_languages[$i][$p] != null ? implode(',', $location_phone_languages[$i][$p]) : '';
                                         $phone_info->phone_description = $location_phone_descriptions[$i][$p];
                                         $phone_info->save();
                                         array_push($location_phone_recordid_list, $phone_info->phone_recordid);
@@ -2695,7 +2699,7 @@ class OrganizationController extends Controller
                                         $new_phone->phone_number = $location_phone_numbers[$i][$p];
                                         $new_phone->phone_extension = $location_phone_extensions[$i][$p];
                                         $new_phone->phone_type = $location_phone_types[$i][$p];
-                                        $new_phone->phone_language = isset($location_phone_languages[$i][$p]) ? implode(',', $location_phone_languages[$i][$p]) : '';
+                                        $new_phone->phone_language = isset($location_phone_languages[$i][$p]) && $location_phone_languages[$i][$p] != null ? implode(',', $location_phone_languages[$i][$p]) : '';
                                         $new_phone->phone_description = $location_phone_descriptions[$i][$p];
                                         $new_phone->save();
                                         $location->location_phones = $location->location_phones . $new_phone_recordid . ',';
