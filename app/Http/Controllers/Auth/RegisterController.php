@@ -154,7 +154,7 @@ class RegisterController extends Controller
 
                 $error = '';
 
-                $username = 'Larable Team';
+                $username = '';
                 $contact_email_list = Email::select('email_info')->pluck('email_info')->toArray();
 
                 foreach ($contact_email_list as $key => $contact_email) {
@@ -196,7 +196,7 @@ class RegisterController extends Controller
 
                     $error = '';
 
-                    $username = 'Larable Team';
+                    $username = '';
                     // $contact_email_list = Email::select('email_info')->pluck('email_info')->toArray();
 
                     // foreach ($contact_email_list as $key => $contact_email) {
@@ -205,6 +205,7 @@ class RegisterController extends Controller
                     $response = $sendgrid->send($email);
                     if ($response->statusCode() == 401) {
                         $error = json_decode($response->body());
+                        \Log::error($error);
                     }
                 }
                 // $user->roles()->sync([2]); // 2 = client
@@ -213,7 +214,6 @@ class RegisterController extends Controller
             }
             return redirect('/');
         } catch (\Throwable $th) {
-            dd($th);
             Session::flash('message', 'There was an error with the registration');
             Session::flash('status', 'error');
             return Redirect::back();

@@ -73,8 +73,10 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::get('/sync_v2_x_details/{api_key}/{base_url}', ['uses' => 'frontEnd\DetailController@airtable_v2']);
     Route::get('/sync_v2_services/{api_key}/{base_url}', ['uses' => 'frontEnd\ServiceController@airtable_v2']);
     Route::get('/sync_v2_programs/{api_key}/{base_url}', ['uses' => 'backend\ProgramController@airtable_v2']);
+    Route::get('/sync_v2_x_taxonomy/{api_key}/{base_url}', ['uses' => 'backend\TaxonomyTypeController@airtable_v2']);
 
 
+    Route::get('/about', 'frontEnd\AboutController@about');
 
     Route::resource('services', 'frontEnd\ServiceController');
     // Route::get('/services', 'frontEnd\ServiceController@services');
@@ -168,6 +170,7 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
 Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::get('dashboard', ['uses' => 'HomeController@dashboard', 'as' => 'home.dashboard']);
     // Route::get('messagesSetting', 'frontEnd\MessageController@messagesSetting')->name('messagesSetting');
+    Route::resource('dashboard_setting', 'backend\DashboardEditController');
     Route::resource('pages', 'PagesController');
     Route::resource('parties', 'backend\PoliticalPartyController');
     Route::resource('All_Sessions', 'backend\SessionController');
@@ -302,6 +305,7 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
 
     Route::post('/csv_zip', ['uses' => 'backend\UploadController@zip'])->name('import.zip');
 
+    Route::resource('taxonomy_types', 'backend\TaxonomyTypeController');
     Route::resource('layout_edit', 'backend\EditlayoutController');
     Route::resource('home_edit', 'backend\EdithomeController');
     Route::resource('about_edit', 'backend\EditaboutController');
@@ -340,6 +344,8 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
 
     // Route::post('/contact_delete_filter', 'frontEnd\ContactController@delete_contact');
     // Route::post('/group_delete_filter', 'GroupController@delete_group');
+
+    Route::get('/cron_datasync', ['uses' => 'CronController@cron_datasync', 'as' => 'cron_datasync.cron_datasync']);
 
     Route::resource('phone_types', 'backend\PhoneTypeController');
     Route::resource('detail_types', 'backend\DetailTypeController');

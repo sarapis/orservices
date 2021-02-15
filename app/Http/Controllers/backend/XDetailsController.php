@@ -5,6 +5,7 @@ namespace App\Http\Controllers\backend;
 use App\Http\Controllers\Controller;
 use App\Model\Detail;
 use App\Model\DetailType;
+use App\Model\Language;
 use App\Model\Location;
 use App\Model\Organization;
 use App\Model\Service;
@@ -27,9 +28,12 @@ class XDetailsController extends Controller
 
             $xdetails = Detail::get();
             $detail_types = DetailType::pluck('type', 'type');
+            $parents = Detail::pluck('detail_value', 'detail_recordid');
+            $parents->prepend('None', 'none');
+            $parents->prepend('All', 'all');
 
             if (!$request->ajax()) {
-                return view('backEnd.xdetails.index', compact('xdetails', 'detail_types'));
+                return view('backEnd.xdetails.index', compact('xdetails', 'detail_types', 'parents'));
             }
             $xdetails = Detail::select('*');
             return DataTables::of($xdetails)
@@ -45,6 +49,15 @@ class XDetailsController extends Controller
                 })
                 ->editColumn('detail_organizations', function ($row) {
                     return $row->organization ? $row->organization->organization_name : '';
+                })
+                ->editColumn('language', function ($row) {
+                    return $row->languageData ? $row->languageData->language : '';
+                })
+                ->editColumn('parent', function ($row) {
+
+                    $parent = Detail::where('detail_recordid', $row->parent)->first();
+
+                    return $parent ? $parent->detail_value : '';
                 })
                 ->editColumn('detail_locations', function ($row) {
                     return $row->location && count($row->location) > 0 && $row->location[0] ? $row->location[0]->location_name : '';
@@ -63,8 +76,20 @@ class XDetailsController extends Controller
                     $extraData = $request->get('extraData');
 
                     if ($extraData) {
+
                         if (isset($extraData['detail_type']) && $extraData['detail_type'] != null) {
+                            $extraData['detail_type'] = count($extraData['detail_type']) > 0 ?  array_filter($extraData['detail_type']) : [];
                             $query = $query->whereIn('detail_type', $extraData['detail_type']);
+                        }
+                        if (isset($extraData['parent']) && $extraData['parent'] != null) {
+                            $extraData['parent'] = count($extraData['parent']) > 0 ?  array_filter($extraData['parent']) : [];
+                            if (in_array('none', $extraData['parent'])) {
+                                $query = $query->whereNull('parent');
+                            } elseif (in_array('all', $extraData['parent'])) {
+                                $query = $query->whereNotNull('parent');
+                            } else {
+                                $query = $query->whereIn('parent', $extraData['parent']);
+                            }
                         }
                     }
                     return $query;
@@ -83,11 +108,13 @@ class XDetailsController extends Controller
      */
     public function create()
     {
+        $languages = Language::pluck('language', 'id');
+        $parents = Detail::pluck('detail_value', 'detail_recordid');
         $services = Service::whereNotNull('service_name')->pluck('service_name', 'service_recordid');
         $locations = Location::whereNotNull('location_name')->pluck('location_name', 'location_recordid');
         $organizations = Organization::whereNotNull('organization_name')->pluck('organization_name', 'organization_recordid');
         $detail_types = DetailType::pluck('type', 'type');
-        return view('backEnd.xdetails.create', compact('organizations', 'locations', 'services', 'detail_types'));
+        return view('backEnd.xdetails.create', compact('organizations', 'locations', 'services', 'detail_types', 'languages', 'parents'));
     }
 
     /**
@@ -113,6 +140,9 @@ class XDetailsController extends Controller
                 'detail_recordid' => $detail_recordid,
                 'detail_value' => $request->detail_value,
                 'detail_type' => $request->detail_type,
+                'parent' => $request->parent,
+                'language' => $request->language,
+                'notes' => $request->notes,
                 'detail_description' => $request->detail_description,
                 'detail_services' => $request->detail_services,
                 'detail_organizations' => $request->detail_organizations,
@@ -149,12 +179,14 @@ class XDetailsController extends Controller
     public function edit($id)
     {
         $xdetails = Detail::whereId($id)->first();
+        $languages = Language::pluck('language', 'id');
+        $parents = Detail::pluck('detail_value', 'detail_recordid');
         $serviceIds = $xdetails->detail_services ? explode(',', $xdetails->detail_services) : [];
         $services = Service::whereNotNull('service_name')->pluck('service_name', 'service_recordid');
         $locations = Location::whereNotNull('location_name')->pluck('location_name', 'location_recordid');
         $organizations = Organization::whereNotNull('organization_name')->pluck('organization_name', 'organization_recordid');
         $detail_types = DetailType::pluck('type', 'type');
-        return view('backEnd.xdetails.edit', compact('xdetails', 'services', 'locations', 'organizations', 'serviceIds', 'detail_types'));
+        return view('backEnd.xdetails.edit', compact('xdetails', 'services', 'locations', 'organizations', 'serviceIds', 'detail_types', 'languages', 'parents'));
     }
 
     /**
@@ -174,6 +206,9 @@ class XDetailsController extends Controller
             Detail::whereId($id)->update([
                 'detail_value' => $request->detail_value,
                 'detail_type' => $request->detail_type,
+                'parent' => $request->parent,
+                'language' => $request->language,
+                'notes' => $request->notes,
                 'detail_description' => $request->detail_description,
                 'detail_services' => $request->detail_services,
                 'detail_organizations' => $request->detail_organizations,
@@ -198,8 +233,8 @@ class XDetailsController extends Controller
      */
     public function destroy($id)
     {
-        $XDetail = Detail::findOrFail($id);
-        $XDetail->delete();
+        Detail::whereId($id)->delete();
+
 
         Session::flash('message', 'Success! Details is deleted successfully.');
         Session::flash('status', 'success');

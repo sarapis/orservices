@@ -2,6 +2,8 @@
 @section('title')
 Taxonomy
 @stop
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
 <style>
     tr.modified{
         background-color: red !important;
@@ -11,6 +13,20 @@ Taxonomy
         background-color: red !important;
         color: white;
     }
+    .dropdown-menu.open {
+            max-height: 156px;
+            overflow: hidden;
+            width: 100%;
+        }
+        .bootstrap-select .dropdown-toggle .filter-option {
+            position: relative;
+            top: 0;
+            left: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            text-align: left;
+        }
 </style>
 @section('content')
 
@@ -19,10 +35,13 @@ Taxonomy
     <div class="x_panel">
       <div class="x_title">
         <h2>Service Taxonomy</h2>
+        <div class="nav navbar-right panel_toolbox">
+            <a href="{{route('tb_taxonomy.create')}}" class="btn btn-success">Add Service Term</a>
+            </div>
         <div class="clearfix"></div>
       </div>
       {!! Form::open(['route' => 'tb_taxonomy.save_vocabulary']) !!}
-        <div class="form-group" style="float:left;width:100%;">
+        {{-- <div class="form-group" style="float:left;width:100%;">
             <label for="inputPassword3" class="col-sm-3 control-label">Exclude vocabularies from front-end Service taxonomy options.</label>
             <div class="col-sm-7">
                 <input type="text" class="form-control" id="exclude_vocabulary" name="exclude_vocabulary" value="{{ $layout->exclude_vocabulary }}">
@@ -30,20 +49,33 @@ Taxonomy
             <div class="col-sm-2">
                 <button type="submit" class="btn btn-primary">Save</button>
             </div>
-        </div>
+        </div> --}}
         <div class="form-group">
-            <label for="inputPassword3" class="col-sm-3 control-label">Select taxonomy type</label>
+            <label for="inputPassword3" class="col-sm-3 control-label">Select Taxonomies</label>
             <div class="col-sm-7">
-                <select name="vacabulary" id="vacabulary" class="form-control">
-                    <option value="">select all</option>
-                    <option value="Service Eligibility">Service Eligibility</option>
-                    <option value="Service Category">Service Category</option>
+                <select name="taxonomy_select" id="taxonomy_select" class="form-control">
+                    <option value="">None</option>
+                    @foreach ($taxonomieTypes as $item)
+                    <option value="{{ $item }}">{{ $item }}</option>
+                    @endforeach
                 </select>
                 {{-- <button type="submit" class="btn btn-success" style="margin-top:10px;">Search</button> --}}
             </div>
             {{-- <div class="col-sm-2">
                 <button type="submit" class="btn btn-primary">Save</button>
             </div> --}}
+        </div>
+        <div class="form-group">
+            <label for="inputPassword3" class="col-sm-3 control-label">Parent</label>
+            <div class="col-sm-7">
+                <select name="parent_filter" id="parent_filter" class="form-control selectpicker" multiple>
+                    <option value="none">None</option>
+                    <option value="all">All</option>
+                    @foreach ($taxonomieParents as $key=>$value)
+                    <option value="{{ $key }}">{{ $value }}</option>
+                    @endforeach
+                </select>
+            </div>
         </div>
         {!! Form::close() !!}
       <div class="x_content" style="overflow: scroll; ">
@@ -56,7 +88,7 @@ Taxonomy
                     <th class="text-center">ID</th>
                     @endif
                     <th class="text-center">Term</th>
-                    <th class="text-center">Parent</th>
+                    <th class="text-center">Parent Term</th>
                     @if($source_data->active == 0 )
                     <th class="text-center">Grandparent name</th>
                     @endif
@@ -64,6 +96,7 @@ Taxonomy
                     <th class="text-center">Language</th>
                     @if($source_data->active == 1 || $source_data->active == 3 )
                     <th class="text-center">Description</th>
+                    <th class="text-center">x-Taxonomies</th>
                     <th class="text-center">X-note</th>
                     @endif
 
@@ -83,18 +116,23 @@ Taxonomy
                   <td>{{$taxonomy->taxonomy_name}}</td>
 
                   <td>
+                      {{-- @php
+                        $taxonomy_parent_name = $taxonomy->taxonomy_parent_name ? explode('');
+                        $getTaxonomy = \App\Model\Taxonomy::where('taxo')
+                      @endphp --}}
                     <span class="badge bg-blue">{{$taxonomy->taxonomy_parent_name}}</span>
                   </td>
 
                   @if($source_data->active == 0 )
                   <td class="text-center">{{$taxonomy->taxonomy_grandparent_name}}</td>
                   @endif
-                  <td class="text-center">{{$taxonomy->taxonomy_vocabulary}}</td>
+                  <td class="text-center">{{$taxonomy->taxonomy_type && count($taxonomy->taxonomy_type) > 0 ? $taxonomy->taxonomy_type[0]->name : ''}}</td>
                   <td >{{ $taxonomy->language }}
                       {{-- <input type="text" class="form-control" id="language_{{ $taxonomy->id }}" value="{{ $taxonomy->language }}"><button class="btn btn-sm btn-primary" onclick="saveLanguage({{ $taxonomy->id }})">save</button> --}}
                     </td>
                   @if($source_data->active == 1 || $source_data->active == 3 )
                   <td class="text-center">{{$taxonomy->taxonomy_x_description}}</td>
+                  <td class="text-center">{{$taxonomy->additional_taxonomy_type && count($taxonomy->additional_taxonomy_type) > 0 ? $taxonomy->additional_taxonomy_type[0]->name : ''}}</td>
                   <td class="text-center">{{$taxonomy->taxonomy_x_notes}}</td>
                   @endif
 
@@ -112,6 +150,7 @@ Taxonomy
 </div>
 <!-- Passing BASE URL to AJAX -->
 <input id="url" type="hidden" value="{{ \Request::url() }}">
+<input id="taxonomyAllParents" type="hidden" value="{{ $taxonomyAllParents }}">
 
 <div class="modal fade in" id="myModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -137,8 +176,17 @@ Taxonomy
                       <label for="inputPassword3" class="col-sm-3 control-label">Taxonomy</label>
 
                       <div class="col-sm-7">
-                        <input type="text" class="form-control" id="taxonomy_vocabulary" name="taxonomy_vocabulary" value="">
+                        {{-- <input type="text" class="form-control" id="taxonomy_vocabulary" name="taxonomy_vocabulary" value=""> --}}
+                        {!! Form::select('taxonomy',$taxonomieTypes,null,['class' => 'form-control','id' =>'taxonomy','placeholder' => 'Select taxonomy']) !!}
                       </div>
+                    </div>
+                    <div class="form-group {{ $errors->has('x_taxonomies') ? 'has-error' : ''}}">
+                        {!! Form::label('x_taxonomies', 'x-Taxonomies', ['class' => 'col-md-3 control-label']) !!}
+                        <div class="col-sm-7">
+                            {!! Form::select('x_taxonomies',$taxonomieTypesExternal,null,['class' => 'form-control','id' =>'x_taxonomies','placeholder' => 'Select x_taxonomies']) !!}
+                            {{-- {!! Form::select('taxonomy',['Service Eligibility' => 'Service Eligibility','Service Category' => 'Service Category'],null,['class' => 'form-control','id' =>'taxonomy','placeholder' => 'Select Type']) !!} --}}
+                            {!! $errors->first('x_taxonomies', '<p class="help-block">:message</p>') !!}
+                        </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-3" for="email">Alt Taxonomy
@@ -156,7 +204,8 @@ Taxonomy
                         <label for="inputPassword3" class="col-sm-3 control-label">Language</label>
 
                         <div class="col-sm-7">
-                          <input type="text" class="form-control" id="language" name="language" value="">
+                          {{-- <input type="text" class="form-control" id="language" name="language" value=""> --}}
+                          {!! Form::select('language',$languages,null,['class' => 'form-control','id' =>'language','placeholder' => 'Select language']) !!}
                         </div>
                       </div>
                       <div class="form-group" id="parentDiv">
@@ -244,8 +293,11 @@ Taxonomy
 
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.1/js/bootstrap-colorpicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">
 let table
+$("#taxonomy_select").selectpicker();
+$("#parent_filter").selectpicker();
 $(document).ready(function() {
     table = $('#example').DataTable( {
         responsive: {
@@ -276,9 +328,26 @@ $(document).ready(function() {
         "autoWidth": true
     } );
 } );
-$('#vacabulary').change(function () {
+$('#taxonomy_select').change(function () {
     let value = $(this).val()
     table.column(3).search(value).draw();
+})
+$('#parent_filter').change(function () {
+    let value = $(this).val()
+    let taxonomyAllParents = JSON.parse($('#taxonomyAllParents').val());
+    let search
+    if(value){
+        if(value.includes("all")){
+            search = taxonomyAllParents.join('|');
+        }else if(value.includes("none")){
+            search = '^$';
+        }else{
+            search = value.join('|');
+        }
+    }else{
+        search = '';
+    }
+    table.column(2).search(search, true, false).draw();
 })
 </script>
 <script src="{{asset('js/taxonomy_ajaxscript.js')}}"></script>

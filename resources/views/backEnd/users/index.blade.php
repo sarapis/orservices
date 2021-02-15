@@ -28,7 +28,7 @@ Users
 							<th class="text-center">E-mail</th>
 							<th class="text-center">Cell Phone</th>
 							<th class="text-center">User Organizations</th>
-							<th class="text-center">user Role</th>
+							<th class="text-center">User Role</th>
 							<th class="text-center">Created At</th>
 							<th class="text-center">Actions</th>
 						</tr>
@@ -54,23 +54,23 @@ Users
 							<td class="text-center"> <a href="{{route('user.index')}}">{{empty($user->roles ) ? " ": $user->roles->name}}</a></td>
 							<td class="text-center">{{$user->created_at}}</td>
 							<td class="text-center">
-								@if ($authUser->roles && $authUser->roles->permissions && in_array('user.show',json_decode($authUser->roles->permissions)))
+								{{-- @if ($authUser->roles && $authUser->roles->permissions && in_array('user.show',json_decode($authUser->roles->permissions)))
 								<a href="{{route('user.show', $user->id)}}"><i class="fa fa-eye" data-toggle="tooltip" data-placement="top" title="" data-original-title="View" ></i></a>
-								@endif
+								@endif --}}
 								@if ($authUser->roles && $authUser->roles->permissions && in_array('user.edit',json_decode($authUser->roles->permissions)))
 								<a href="{{route('user.edit', $user->id)}}"><i class="fa fa-pencil" data-toggle="tooltip" data-placement="top" title="Edit" style="color: #4caf50;"></i></a>
 								@endif
 								{{-- @if ($authUser->permissions && in_array('user.permissions',json_decode($authUser->permissions)))
 								<a href="{{route('user.permissions', $user->id)}}"><i class="fa fa-lock" data-toggle="tooltip" data-placement="top" title="" data-original-title="Permission"  style="color: #ffa500;"></i> </a>
 								@endif --}}
-								@if ($authUser->roles && $authUser->roles->permissions && in_array('user.activate',json_decode($authUser->roles->permissions)) &&
+								{{-- @if ($authUser->roles && $authUser->roles->permissions && in_array('user.activate',json_decode($authUser->roles->permissions)) &&
 								$user->status == 0)
 								<a href="{{route('user.activate', $user->id)}}"><i class="fa fa-ban" data-toggle="tooltip" data-placement="top" title="" data-original-title="Deactivate"  style="color: #9a9a9a;"></i></a>
 								@else
 								@if ($authUser->roles && $authUser->roles->permissions && in_array('user.deactivate',json_decode($authUser->roles->permissions)))
 								<a href="{{route('user.deactivate', $user->id)}}"> <i class="fa fa-check" data-toggle="tooltip" data-placement="top" title="" data-original-title="Activate"  style="color: #4caf50;"></i> </a>
 								@endif
-								@endif
+								@endif --}}
 
 								@if ($authUser->roles && $authUser->roles->permissions && in_array('user.destroy',json_decode($authUser->roles->permissions)))
 								{!! Form::open(['method'=>'DELETE', 'route' => ['user.destroy', $user->id], 'style' =>

@@ -59,14 +59,15 @@
 					</li>
 					@endif
 					@endif
-					@if($layout->about_active == 1)
+
+					<li class="nav-item">
+                        <a class="nav-link" href="{{ route('suggest.create') }}">Suggest</a>
+					</li>
+                    @if($layout->activate_about_home == 1)
 					<li class="nav-item">
 						<a class="nav-link" href="/about">About</a>
 					</li>
 					@endif
-					<li class="nav-item">
-                        <a class="nav-link" href="{{ route('suggest.create') }}">Suggest</a>
-					</li>
 					<li class="nav-item">
 						<a id="google_translate_element" class="nav-link"></a>
                     </li>

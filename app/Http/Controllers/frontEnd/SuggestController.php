@@ -104,7 +104,7 @@ class SuggestController extends Controller
 
             $error = '';
 
-            $username = 'Larable Team';
+            $username = '';
             $contact_email_list = Email::select('email_info')->pluck('email_info')->toArray();
 
             foreach ($contact_email_list as $key => $contact_email) {

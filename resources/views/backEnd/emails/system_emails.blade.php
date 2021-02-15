@@ -30,8 +30,8 @@ System Emails
                 <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Activate</label>
                     <div class="col-md-8 col-sm-8 col-xs-12">
-                        <label>On&nbsp;&nbsp;
-                        <input type="checkbox" class="js-switch" value="checked" name="create_status"  @if($createMail ? $createMail->status : ''==1) checked @endif/>&nbsp;&nbsp;Off
+                        <label>Off&nbsp;&nbsp;
+                        <input type="checkbox" class="js-switch" value="checked" name="create_status"  @if($createMail ? $createMail->status : ''==1) checked @endif/>&nbsp;&nbsp;On
                         </label>
                     </div>
                 </div>
@@ -83,8 +83,8 @@ System Emails
                 <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Activate</label>
                     <div class="col-md-8 col-sm-8 col-xs-12">
-                        <label>On&nbsp;&nbsp;
-                        <input type="checkbox" class="js-switch" value="checked" name="activation_status"  @if($activationMail ? $activationMail->status : ''==1) checked @endif/>&nbsp;&nbsp;Off
+                        <label>Off&nbsp;&nbsp;
+                        <input type="checkbox" class="js-switch" value="checked" name="activation_status"  @if($activationMail ? $activationMail->status : ''==1) checked @endif/>&nbsp;&nbsp;On
                         </label>
                     </div>
                 </div>

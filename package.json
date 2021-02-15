@@ -23,6 +23,8 @@
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
-        "axios": "^0.21.1"
+        "axios": "^0.21.1",
+        "bootstrap-colorpicker": "^3.2.0",
+        "moment-timezone": "^0.5.32"
     }
 }

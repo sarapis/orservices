@@ -27,8 +27,7 @@ class Permissions
             if (!empty($api)) {
                 return response()->json(['message' => 'you_dont_have_permission_to_use_this_route'], 403);
             } else {
-
-                Session::flash('message', 'Warning! Not enough permissions. Please contact Us for more');
+                Session::flash('message', 'Warning! You don`t have permission to access this section. Please contact a system administrator for more information.');
                 Session::flash('status', 'warning');
                 return redirect()->back();
             }

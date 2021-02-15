@@ -35,6 +35,7 @@
                         <li><a href="/about_edit">About</a></li>
                         <li><a href="/login_register_edit">Login/Register</a></li>
                         <li><a href="/account">Account</a></li>
+                        <li><a href="/dashboard_setting">Dashboard Setting</a></li>
                     </ul>
                 </li>
                 <li><a><i class="fa fa-table"></i> Settings <span class="fa fa-chevron-down"></span></a>
@@ -88,20 +89,30 @@
                         <li><a href="/registrations">Registrations</a></li>
                     </ul>
                 </li>
-                <li><a><i class="fa fa-envelope"></i> Taxonomies <span class="fa fa-chevron-down"></span></a>
+                <li><a><img src="/images/Classifications.png" alt="" style="margin-left: -5px;width: 25px"> Classifications <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                         <li><a href="/tb_taxonomy">Services</a></li>
-                        <li><a href="{{ route('service_attributes.index') }}">Service Attributes</a></li>
-                        <li><a href="{{ route('other_attributes.index') }}">Other Attributes</a></li>
                         <li><a href="{{ route('languages.index') }}">Language</a></li>
                         <li><a href="{{ route('XDetails.index') }}">Details</a></li>
                         <li><a href="{{ route('phone_types.index') }}">Phone Type</a></li>
                         <li><a href="{{ route('detail_types.index') }}">Detail Type</a></li>
-                        <li><a href="{{ route('programs.index') }}">Programs</a></li>
+                        <li><a href="{{ route('taxonomy_types.index') }}">Taxonomies</a></li>
+
                         {{-- <li><a href="{{ route('service_categories.index') }}">Service Category</a></li>
                         <li><a href="{{ route('service_eligibilities.index') }}">Service Eligibility</a></li> --}}
                     </ul>
                 </li>
+                {{-- <li><a><i class="fa fa-envelope"></i> Taxonomies <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                        <li><a href="/tb_taxonomy">Services</a></li>
+                        <li><a href="{{ route('languages.index') }}">Language</a></li>
+                        <li><a href="{{ route('XDetails.index') }}">Details</a></li>
+                        <li><a href="{{ route('phone_types.index') }}">Phone Type</a></li>
+                        <li><a href="{{ route('detail_types.index') }}">Detail Type</a></li>
+                        <li><a href="{{ route('service_categories.index') }}">Service Category</a></li>
+                        <li><a href="{{ route('service_eligibilities.index') }}">Service Eligibility</a></li>
+                    </ul>
+                </li> --}}
                 <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                         <li><a href="/tb_services">Services</a></li>
@@ -120,6 +131,9 @@
                             <li><a href="/tb_accessibility">Accessibility</a></li>
                         @endif
                         <li><a href="/tb_service_areas">Service area</a></li>
+                        <li><a href="{{ route('service_attributes.index') }}">Service Attributes</a></li>
+                        <li><a href="{{ route('other_attributes.index') }}">Other Attributes</a></li>
+                        <li><a href="{{ route('programs.index') }}">Programs</a></li>
                     </ul>
                 </li>
             </ul>

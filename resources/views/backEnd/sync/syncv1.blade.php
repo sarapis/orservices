@@ -36,29 +36,35 @@
             <form action="/cron_datasync" method="GET" id="cron_airtable">
                 {!! Form::token() !!}
                 <div class="col-sm-4">
-                    @if ($autosync->option == 'no')
+                    {{-- @if ($autosync->option == 'no')
                     <input class="form-control" type="checkbox" name="airtable_enable_auto_sync" id="airtable_enable_auto_sync" onclick="airtable_enable_autosync_Function()" >
                     @endif
                     @if ($autosync->option == 'yes')
                     <input class="form-control" type="checkbox" name="airtable_enable_auto_sync" id="airtable_enable_auto_sync" onclick="airtable_enable_autosync_Function()" checked>
-                    @endif
+                    @endif --}}
+                    <label>Off&nbsp;&nbsp;
+                        <input type="checkbox" class="js-switch form-control" value="checked" name="airtable_enable_auto_sync"  @if($autosync->option == 'yes') checked @endif/>&nbsp;&nbsp;On
+                      </label>
                 </div>
                 <div class="col-sm-4">
+                    @if ($autosync->option == 'yes')
                     <div class="form-group" id="auto_sync_div">
                         <label for="airtable_auto_sync_period">Sync every</label>
                         <input class="form-control" type="text" name="airtable_auto_sync_period" id="airtable_auto_sync_period" value="{{$autosync->days}}" style="width: 75px;" required />
                         <label for="airtable_auto_sync_period">number of days</label>
                     </div>
+                    @endif
                 </div>
                 <div class="col-sm-2">
-                    @if ($autosync->option == 'yes')
+                    {{-- @if ($autosync->option == 'yes')
                         @if ($autosync->working_status == 'no')
                         <button type="submit" name="btn_submit" class="btn btn-primary btn-start autosyncbtn" value="autosyncbtn-start" id="autosyncbtn-start">Start</button>
                         @endif
                         @if ($autosync->working_status == 'yes')
                         <button type="submit" name="btn_submit" class="btn btn-warning btn-stop autosyncbtn" value="autosyncbtn-stop" id="autosyncbtn-stop">Stop</button>
                         @endif
-                    @endif
+                    @endif --}}
+                    <button type="submit" name="btn_submit" class="btn btn-primary btn-start autosyncbtn" value="autosyncbtn-start" id="autosyncbtn-start">Save</button>
                 </div>
                 <div class="col-sm-2">
                     <div class="col-md-2">

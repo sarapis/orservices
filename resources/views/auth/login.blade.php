@@ -13,6 +13,7 @@ Login
         {{ Form::open(array('url' => route('login'), 'class' => 'form-horizontal form-signin','files' => true)) }}
         {{-- {{$layout->site_name}}! --}}
 			{{-- <h3 class="form-signin-heading">Welcome to <br>Please Sign In</h3> --}}
+            <p>{!! $layout->login_content !!}</p>
 			{!! csrf_field() !!}
 			<div class="form-group {{ $errors->has('email') ? 'has-error' : ''}}">
 				<div class="col-sm-12">

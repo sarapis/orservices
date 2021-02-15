@@ -26,13 +26,13 @@ Edit Login/Register Page
                             {!! $errors->first('name', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
-                    <div class="form-group {{ $errors->has('title') ? 'has-error' : ''}}">
+                    {{-- <div class="form-group {{ $errors->has('title') ? 'has-error' : ''}}">
                         {!! Form::label('title', 'Title ', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-6">
                             {!! Form::text('title', null, ['class' => 'form-control']) !!}
                             {!! $errors->first('title', '<p class="help-block">:message</p>') !!}
                         </div>
-                    </div>
+                    </div> --}}
                     <!-- <div class="form-group {{ $errors->has('body') ? 'has-error' : ''}}">
                         {!! Form::label('body', 'Body ', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-6">
@@ -56,10 +56,10 @@ Edit Login/Register Page
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Make Directory Contents Public</label>
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Make Directory Private</label>
                         <div class="col-md-8 col-sm-8 col-xs-12">
-                            <label>On&nbsp;&nbsp;
-                              <input type="checkbox" class="js-switch" value="checked" name="activate_login_home"  @if($layout->activate_login_home==1) checked @endif/>&nbsp;&nbsp;Off
+                            <label>Off&nbsp;&nbsp;
+                              <input type="checkbox" class="js-switch" value="checked" name="activate_login_home"  @if($layout->activate_login_home==1) checked @endif/>&nbsp;&nbsp;On
                             </label>
                         </div>
                     </div>

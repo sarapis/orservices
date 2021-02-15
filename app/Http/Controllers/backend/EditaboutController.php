@@ -16,7 +16,6 @@ class EditaboutController extends Controller
     {
         return Validator::make($request->all(), [
             'name' => 'required',
-            'title' => 'required',
             'body' => 'required',
         ]);
     }
@@ -60,6 +59,16 @@ class EditaboutController extends Controller
 
         Page::create($request->all());
 
+        $layout = Layout::find(1);
+        if ($layout) {
+            if ($request->activate_about_home) {
+                $layout->activate_about_home = 1;
+            } else {
+                $layout->activate_about_home = 0;
+            }
+            $layout->save();
+        }
+
         Session::flash('message', 'Page added!');
         Session::flash('status', 'success');
 
@@ -76,6 +85,7 @@ class EditaboutController extends Controller
     public function show($id)
     {
         $page = Page::findOrFail($id);
+
 
         return view('backEnd.pages.show', compact('page'));
     }
@@ -110,16 +120,23 @@ class EditaboutController extends Controller
                     ->withErrors($this->validator($request))
                     ->withInput();
             }
-
             $page = Page::findOrFail($id);
             $page->update($request->all());
+            $layout = Layout::find(1);
+            if ($layout) {
+                if ($request->activate_about_home) {
+                    $layout->activate_about_home = 1;
+                } else {
+                    $layout->activate_about_home = 0;
+                }
+                $layout->save();
+            }
 
             Session::flash('message', 'Page updated!');
             Session::flash('status', 'success');
 
             return redirect('about_edit');
         } catch (\Throwable $th) {
-
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
 

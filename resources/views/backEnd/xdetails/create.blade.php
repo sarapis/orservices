@@ -1,6 +1,6 @@
 @extends('backLayout.app')
 @section('title')
-Create Attribute
+Create Detail
 @stop
 
 @section('content')
@@ -9,7 +9,7 @@ Create Attribute
 	<div class="col-md-12 col-sm-12 col-xs-12">
 		<div class="x_panel">
 			<div class="x_title">
-                <h2>Create Attribute</h2>
+                <h2>Create Detail</h2>
                 {{-- @if (count($errors) > 0)
                 <div class="form-group">
                     <div class="col-sm-10 col-sm-offset-1">
@@ -40,6 +40,27 @@ Create Attribute
                         <div class="col-sm-6">
                             {!! Form::select('detail_type',$detail_types,null,['class' => 'form-control','placeholder' => 'select service','id' => 'detail_type']) !!}
                             {!! $errors->first('detail_type', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+                    <div class="form-group {{ $errors->has('parent') ? 'has-error' : ''}}">
+                        {!! Form::label('parent', 'Parent', ['class' => 'col-md-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::select('parent',$parents,null,['class' => 'form-control','placeholder' => 'select parent','id' => 'parent']) !!}
+                            {!! $errors->first('parent', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+                    <div class="form-group {{ $errors->has('language') ? 'has-error' : ''}}">
+                        {!! Form::label('language', 'Language', ['class' => 'col-md-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::select('language',$languages,null,['class' => 'form-control','placeholder' => 'select language','id' => 'language']) !!}
+                            {!! $errors->first('language', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+                    <div class="form-group {{ $errors->has('notes') ? 'has-error' : ''}}">
+                        {!! Form::label('notes', 'Notes', ['class' => 'col-md-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::textarea('notes', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('notes', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
                     <div class="form-group {{ $errors->has('detail_description') ? 'has-error' : ''}}">
