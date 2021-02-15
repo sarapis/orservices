@@ -77,7 +77,7 @@ location / {
    * Configure your .env file
    * Run composer update from the projects root folder
    * Run npm install & npm run dev from the projects root folder
-   * From the projects root folder run sudo chmod -R 755 ../larable
+   * From the projects root folder run sudo chmod -R 755 ../orservices
    * From the projects root folder run php artisan key:generate
    * From the projects root folder run php artisan migrate
    * From the projects root folder run php artisan db:seed
