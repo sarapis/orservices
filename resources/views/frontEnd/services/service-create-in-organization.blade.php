@@ -150,7 +150,7 @@ Service Create
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Service Fees: </label>
+                                            <label>Fees: </label>
                                             <div class="help-tip">
                                                 <div><p>Details of any charges for service users to access this service.</p></div>
                                             </div>
@@ -159,19 +159,32 @@ Service Create
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Service Program: </label>
-                                            <input class="form-control selectpicker" type="text" id="service_program" name="service_program" value="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Service Accrediations: </label>
+                                            <label>Accrediations: </label>
                                             <div class="help-tip">
                                                 <div><p>Details of any accreditations. Accreditation is the formal evaluation of an organization or program against best practice standards set by an accrediting organization.</p></div>
                                             </div>
                                             <input class="form-control selectpicker" type="text" id="service_accrediations" name="service_accrediations" value="">
                                         </div>
                                     </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Service Grouping:</label>
+                                            <div class="help-tip">
+                                                <div><p>Some organizations organize their services into service groupings (e.g., Senior Services).. A service grouping brings together a number of related services.</p></div>
+                                            </div>
+                                            <input class="form-control selectpicker" type="text" id="service_program" name="service_program" value="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Service Grouping Description: </label>
+                                            {{-- <div class="help-tip">
+                                                <div><p></p></div>
+                                            </div> --}}
+                                            <textarea name="program_alternate_name" id="program_alternate_name" cols="30" rows="10" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+
 
                                     <!-- <div class="col-md-4">
                                         <div class="form-group">
@@ -182,7 +195,7 @@ Service Create
                                         </div>
                                     </div> -->
 
-                                    <div class="col-md-4">
+                                    {{-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Service Schedule: </label>
                                             <select class="form-control selectpicker" multiple data-live-search="true" id="service_schedules"
@@ -192,7 +205,7 @@ Service Create
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> --}}
 
                                     {{-- <div class="col-md-4">
                                         <div class="form-group">
@@ -229,7 +242,7 @@ Service Create
                                             </select>
                                         </div>
                                     </div> --}}
-                                    <div class="col-md-4">
+                                    {{-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Meta Data: </label>
                                             <input class="form-control selectpicker" type="text" id="service_metadata" name="service_metadata" value="">
@@ -240,7 +253,7 @@ Service Create
                                             <label>Airs Taxonomy X: </label>
                                             <input class="form-control selectpicker" type="text" id="service_airs_taxonomy_x" name="service_airs_taxonomy_x" value="">
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 {{-- taxonomy section --}}
                             </div>
@@ -262,8 +275,8 @@ Service Create
                                         <div class="">
                                             <table class="table table_border_none" id="ServiceCategoryTable">
                                                 <thead>
-                                                    <th>Detail Type</th>
-                                                    <th>Detail Term</th>
+                                                    <th>Type</th>
+                                                    <th>Term</th>
                                                     <th style="width:60px">&nbsp;</th>
                                                 </thead>
                                                 <tbody>
@@ -312,8 +325,8 @@ Service Create
                                         <div class="">
                                             <table class="table table_border_none" id="ServiceEligibilityTable">
                                                 <thead>
-                                                    <th>Detail Type</th>
-                                                    <th>Detail Term</th>
+                                                    <th>Type</th>
+                                                    <th>Term</th>
                                                     <th style="width:60px">&nbsp;</th>
                                                 </thead>
                                                 <tbody>
@@ -580,6 +593,192 @@ Service Create
                             <input type="hidden" name="location_holiday_open_ats" id="location_holiday_open_ats">
                             <input type="hidden" name="location_holiday_close_ats" id="location_holiday_close_ats">
                             <input type="hidden" name="location_holiday_closeds" id="location_holiday_closeds">
+                        </div>
+                    </div>
+                    <div class="card all_form_field">
+                        <div class="card-block">
+                            <h4 class="title_edit text-left mb-25 mt-10">
+                                Regular Schedule
+                            </h4>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="table-responsive">
+                                            <table class="table table_border_none">
+                                                {{-- <thead>
+                                                    <th colspan="4" class="text-center">Regular Schedule</th>
+                                                </thead> --}}
+                                                <thead>
+                                                    <th>Weekday</th>
+                                                    <th>Opens</th>
+                                                    <th>Closes</th>
+                                                    <th style="width:150px;">Closed All Day</th>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            Monday
+                                                            <input type="hidden" name="byday[]" value="monday">
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::time('opens_at[]',null, ['class' => 'form-control']) !!}
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::time('closes_at[]',null, ['class' => 'form-control']) !!}
+                                                        </td>
+                                                        <td style="vertical-align: middle">
+                                                            <input type="checkbox" name="schedule_closed[]" id="" value="1" >
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Tuesday
+                                                            <input type="hidden" name="byday[]" value="tuesday">
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::time('opens_at[]',null, ['class' => 'form-control']) !!}
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::time('closes_at[]',null, ['class' => 'form-control']) !!}
+                                                        </td>
+                                                        <td style="vertical-align: middle">
+                                                            <input type="checkbox" name="schedule_closed[]" id="" value="2" >
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Wednesday
+                                                            <input type="hidden" name="byday[]" value="wednesday">
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::time('opens_at[]',null, ['class' => 'form-control']) !!}
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::time('closes_at[]',null, ['class' => 'form-control']) !!}
+                                                        </td>
+                                                        <td style="vertical-align: middle">
+                                                            <input type="checkbox" name="schedule_closed[]" id="" value="3" >
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Thursday
+                                                            <input type="hidden" name="byday[]" value="thursday">
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::time('opens_at[]',null, ['class' => 'form-control']) !!}
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::time('closes_at[]',null, ['class' => 'form-control']) !!}
+                                                        </td>
+                                                        <td style="vertical-align: middle">
+                                                            <input type="checkbox" name="schedule_closed[]" id="" value="4" >
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Friday
+                                                            <input type="hidden" name="byday[]" value="friday">
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::time('opens_at[]',null, ['class' => 'form-control']) !!}
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::time('closes_at[]',null, ['class' => 'form-control']) !!}
+                                                        </td>
+                                                        <td style="vertical-align: middle">
+                                                            <input type="checkbox" name="schedule_closed[]" id="" value="5" >
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Saturday
+                                                            <input type="hidden" name="byday[]" value="saturday">
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::time('opens_at[]',null, ['class' => 'form-control']) !!}
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::time('closes_at[]',null, ['class' => 'form-control']) !!}
+                                                        </td>
+                                                        <td style="vertical-align: middle">
+                                                            <input type="checkbox" name="schedule_closed[]" id="" value="6" >
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Sunday
+                                                            <input type="hidden" name="byday[]" value="sunday">
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::time('opens_at[]',null, ['class' => 'form-control']) !!}
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::time('closes_at[]',null, ['class' => 'form-control']) !!}
+                                                        </td>
+
+                                                        <td style="vertical-align: middle">
+                                                            <input type="checkbox" name="schedule_closed[]" id="" value="7" >
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr/>
+                            <h4 class="title_edit text-left mb-25 mt-10">
+                                Holiday Schedule
+                                <div class="d-inline float-right" >
+                                    <a href="javascript:void(0)" id="addTr" class="plus_delteicon bg-primary-color">
+                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                    </a>
+                                </div>
+                            </h4>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="table-responsive">
+                                            <table class="table table_border_none" id="myTable">
+                                                <thead>
+                                                    <th>Start</th>
+                                                    <th>End</th>
+                                                    <th>Opens</th>
+                                                    <th>Closes</th>
+                                                    <th>Closed</th>
+                                                    <th style="width:60px">&nbsp;</th>
+                                                </thead>
+                                                <tbody>
+
+                                                    <tr>
+                                                        <td>
+                                                            <input type="date" name="holiday_start_date[]" id="" class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <input type="date" name="holiday_end_date[]" id="" class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <input type="time" name="holiday_open_at[]" id="" class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <input type="time" name="holiday_close_at[]" id="" class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <input type="checkbox" name="holiday_closed[]" id="" value="1">
+                                                        </td>
+                                                        <td style="vertical-align: middle">
+                                                            <a href="#" class="plus_delteicon btn-button">
+                                                                <img src="/frontend/assets/images/delete.png" alt="" title="">
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    <tr></tr>
+                                                    {{-- <tr id="addTr">
+                                                        <td colspan="6" class="text-center">
+                                                            <a href="javascript:void(0)" id="addData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
+                                                        </td>
+                                                    </tr> --}}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1439,6 +1638,11 @@ Service Create
         $('.selectpicker').selectpicker();
         se++;
     })
+    let hs = 2
+    $('#addTr').click(function(){
+        $('#myTable tr:last').before('<tr><td><input class="form-control" type="date" name="holiday_start_date[]" id=""></td><td><input class="form-control" type="date" name="holiday_end_date[]" id=""></td><td><input class="form-control" type="time" name="holiday_open_at[]" id=""></td><td><input class="form-control" type="time" name="holiday_close_at[]" id=""></td><td><input  type="checkbox" name="holiday_closed[]" id="" value="'+hs+'" ></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        hs++;
+    });
 
     let phone_language_data = []
     $(document).on('change','div > .phone_language',function () {

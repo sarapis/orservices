@@ -75,7 +75,6 @@ class LoginController extends Controller
 
             return Redirect::back()->withErrors(['global' => 'Invalid password or this user does not exist']);
         } catch (Throwable $th) {
-            dd($th);
             return Redirect::back()->withErrors(['global' => 'This user is not activated', 'activate_contact' => 1]);
         }
         // catch (ThrottlingException $e) {
