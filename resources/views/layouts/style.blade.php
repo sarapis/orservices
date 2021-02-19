@@ -56,12 +56,12 @@
   <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
   <link rel="stylesheet" href="../../../css/explorestyle.css">
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/themes/default/style.min.css" />
-  
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
   <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
-  
+
   <link rel="stylesheet" href="../../frontend/assets/examples/css/pages/register.css">
-  
+
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> -->
   <link rel="stylesheet" href="../../../css/responsive.css">
  <script
@@ -84,7 +84,7 @@
   Breakpoints();
   </script>
 
-@if($map->active == 0)
+@if($map && $map->active == 0)
 
 <script>
 
@@ -364,7 +364,7 @@ $(function () {
 
 
 @endif
- <script src="https://maps.googleapis.com/maps/api/js?key={{$map->api_key}}&libraries=places&callback=initMap"
+ <script src="https://maps.googleapis.com/maps/api/js?key={{$map && $map->api_key}}&libraries=places&callback=initMap"
   async defer></script>
  <style>
   body{

@@ -3149,8 +3149,11 @@ class ServiceController extends Controller
         $address_city_list = array_unique($address_city_list);
         $detail_types = DetailType::pluck('type', 'type');
 
-        $service_category_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy_vocabulary', 'Service Category')->pluck('taxonomy_name', 'taxonomy_recordid');
-        $service_eligibility_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy_vocabulary', 'Service Eligibility')->pluck('taxonomy_name', 'taxonomy_recordid');
+        $serviceCategoryId = TaxonomyType::where('type', 'internal')->where('name', 'Service Category')->first();
+        $serviceEligibilityId = TaxonomyType::where('type', 'internal')->where('name', 'Service Eligibility')->first();
+
+        $service_category_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
+        $service_eligibility_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
 
         return view('frontEnd.services.service-create-in-organization', compact('map', 'organization', 'facility_info_list', 'service_status_list', 'taxonomy_info_list', 'schedule_info_list', 'contact_info_list', 'detail_info_list', 'address_info_list', 'phone_languages', 'phone_type', 'all_contacts', 'all_locations', 'address_states_list', 'address_city_list', 'detail_types', 'service_eligibility_types', 'service_category_types'));
     }
@@ -3191,8 +3194,11 @@ class ServiceController extends Controller
         $address_city_list = array_unique($address_city_list);
         $detail_types = DetailType::pluck('type', 'type');
 
-        $service_category_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy_vocabulary', 'Service Category')->pluck('taxonomy_name', 'taxonomy_recordid');
-        $service_eligibility_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy_vocabulary', 'Service Eligibility')->pluck('taxonomy_name', 'taxonomy_recordid');
+        $serviceCategoryId = TaxonomyType::where('type', 'internal')->where('name', 'Service Category')->first();
+        $serviceEligibilityId = TaxonomyType::where('type', 'internal')->where('name', 'Service Eligibility')->first();
+
+        $service_category_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
+        $service_eligibility_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
 
         return view('frontEnd.services.service-create-in-facility', compact('map', 'facility', 'service_status_list', 'taxonomy_info_list', 'schedule_info_list', 'contact_info_list', 'detail_info_list', 'phone_languages', 'phone_type', 'all_contacts', 'all_locations', 'address_states_list', 'address_city_list', 'detail_types', 'service_category_types', 'service_eligibility_types'));
     }
@@ -3768,12 +3774,79 @@ class ServiceController extends Controller
             }
             $service->phone()->sync($phone_recordid_list);
 
-            if ($request->service_schedules) {
-                $service->service_schedule = join(',', $request->service_schedules);
-            } else {
-                $service->service_schedule = '';
+            // if ($request->service_schedules) {
+            //     $service->service_schedule = join(',', $request->service_schedules);
+            // } else {
+            //     $service->service_schedule = '';
+            // }
+            // $service->schedules()->sync($request->service_schedules);
+            $schedule_services = [];
+
+            if ($request->byday) {
+                for ($i = 0; $i < 7; $i++) {
+                    $schedules = Schedule::where('schedule_services', $service->service_recordid)->where('byday', $request->byday[$i])->first();
+                    if ($schedules) {
+                        $schedules->byday = $request->byday[$i];
+                        $schedules->opens_at = $request->opens_at[$i];
+                        $schedules->closes_at = $request->closes_at[$i];
+                        if ($request->schedule_closed && in_array(($i + 1), $request->schedule_closed)) {
+                            $schedules->schedule_closed = $i + 1;
+                        } else {
+                            $schedules->schedule_closed = null;
+                        }
+                        $schedules->save();
+                        $schedule_services[] = $schedules->schedule_recordid;
+                    } else {
+                        $schedule_recordid = Schedule::max('schedule_recordid') + 1;
+                        $schedules = new Schedule();
+                        $schedules->schedule_recordid = $schedule_recordid;
+                        $schedules->schedule_services = $service->service_recordid;
+                        $schedules->byday = $request->byday[$i];
+                        $schedules->opens_at = $request->opens_at[$i];
+                        $schedules->closes_at = $request->closes_at[$i];
+                        if ($request->schedule_closed && in_array(($i + 1), $request->schedule_closed)) {
+                            $schedules->schedule_closed = $i + 1;
+                        } else {
+                            $schedules->schedule_closed = null;
+                        }
+                        $schedules->save();
+                        $schedule_services[] = $schedule_recordid;
+                    }
+                }
             }
-            $service->schedules()->sync($request->service_schedules);
+            if ($request->holiday_start_date && $request->holiday_end_date && $request->holiday_open_at && $request->holiday_close_at && (count($request->holiday_start_date) == 0 && $request->holiday_start_date[0] != null)) {
+                Schedule::where('schedule_services', $service->service_recordid)->where('schedule_holiday', '1')->delete();
+                for ($i = 0; $i < count($request->holiday_start_date); $i++) {
+                    // $schedules =
+                    // if($schedules){
+                    //     $schedules->dtstart = $request->holiday_start_date[$i];
+                    //     $schedules->until = $request->holiday_end_date[$i];
+                    //     $schedules->opens_at = $request->holiday_open_at[$i];
+                    //     $schedules->closes_at = $request->closes_at[$i];
+                    //     if(in_array(($i+1),$request->schedule_closed)){
+                    //         $schedules->schedule_closed = $i+1;
+                    //     }
+                    //     $schedules->save();
+                    //     $schedule_services[] = $schedules->schedule_recordid;
+                    // }else{
+                    $schedule_recordid = Schedule::max('schedule_recordid') + 1;
+                    $schedules = new Schedule();
+                    $schedules->schedule_recordid = $schedule_recordid;
+                    $schedules->schedule_services = $service->service_recordid;
+                    $schedules->dtstart = $request->holiday_start_date[$i];
+                    $schedules->until = $request->holiday_end_date[$i];
+                    $schedules->opens_at = $request->holiday_open_at[$i];
+                    $schedules->closes_at = $request->holiday_close_at[$i];
+                    if ($request->holiday_closed && in_array(($i + 1), $request->holiday_closed)) {
+                        $schedules->schedule_closed = $i + 1;
+                    }
+                    $schedules->schedule_holiday = '1';
+                    $schedules->save();
+                    $schedule_services[] = $schedule_recordid;
+                    // }
+                }
+            }
+            $service->schedules()->sync($schedule_services);
 
             // if ($request->service_contacts) {
             //     $service->service_contacts = join(',', $request->service_contacts);
@@ -4105,12 +4178,80 @@ class ServiceController extends Controller
             }
             $service->phone()->sync($phone_recordid_list);
 
-            if ($request->service_schedules) {
-                $service->service_schedule = join(',', $request->service_schedules);
-            } else {
-                $service->service_schedule = '';
+            // if ($request->service_schedules) {
+            //     $service->service_schedule = join(',', $request->service_schedules);
+            // } else {
+            //     $service->service_schedule = '';
+            // }
+            // $service->schedules()->sync($request->service_schedules);
+
+            $schedule_services = [];
+
+            if ($request->byday) {
+                for ($i = 0; $i < 7; $i++) {
+                    $schedules = Schedule::where('schedule_services', $service->service_recordid)->where('byday', $request->byday[$i])->first();
+                    if ($schedules) {
+                        $schedules->byday = $request->byday[$i];
+                        $schedules->opens_at = $request->opens_at[$i];
+                        $schedules->closes_at = $request->closes_at[$i];
+                        if ($request->schedule_closed && in_array(($i + 1), $request->schedule_closed)) {
+                            $schedules->schedule_closed = $i + 1;
+                        } else {
+                            $schedules->schedule_closed = null;
+                        }
+                        $schedules->save();
+                        $schedule_services[] = $schedules->schedule_recordid;
+                    } else {
+                        $schedule_recordid = Schedule::max('schedule_recordid') + 1;
+                        $schedules = new Schedule();
+                        $schedules->schedule_recordid = $schedule_recordid;
+                        $schedules->schedule_services = $service->service_recordid;
+                        $schedules->byday = $request->byday[$i];
+                        $schedules->opens_at = $request->opens_at[$i];
+                        $schedules->closes_at = $request->closes_at[$i];
+                        if ($request->schedule_closed && in_array(($i + 1), $request->schedule_closed)) {
+                            $schedules->schedule_closed = $i + 1;
+                        } else {
+                            $schedules->schedule_closed = null;
+                        }
+                        $schedules->save();
+                        $schedule_services[] = $schedule_recordid;
+                    }
+                }
             }
-            $service->schedules()->sync($request->service_schedules);
+            if ($request->holiday_start_date && $request->holiday_end_date && $request->holiday_open_at && $request->holiday_close_at && (count($request->holiday_start_date) == 0 && $request->holiday_start_date[0] != null)) {
+                Schedule::where('schedule_services', $service->service_recordid)->where('schedule_holiday', '1')->delete();
+                for ($i = 0; $i < count($request->holiday_start_date); $i++) {
+                    // $schedules =
+                    // if($schedules){
+                    //     $schedules->dtstart = $request->holiday_start_date[$i];
+                    //     $schedules->until = $request->holiday_end_date[$i];
+                    //     $schedules->opens_at = $request->holiday_open_at[$i];
+                    //     $schedules->closes_at = $request->closes_at[$i];
+                    //     if(in_array(($i+1),$request->schedule_closed)){
+                    //         $schedules->schedule_closed = $i+1;
+                    //     }
+                    //     $schedules->save();
+                    //     $schedule_services[] = $schedules->schedule_recordid;
+                    // }else{
+                    $schedule_recordid = Schedule::max('schedule_recordid') + 1;
+                    $schedules = new Schedule();
+                    $schedules->schedule_recordid = $schedule_recordid;
+                    $schedules->schedule_services = $service->service_recordid;
+                    $schedules->dtstart = $request->holiday_start_date[$i];
+                    $schedules->until = $request->holiday_end_date[$i];
+                    $schedules->opens_at = $request->holiday_open_at[$i];
+                    $schedules->closes_at = $request->holiday_close_at[$i];
+                    if ($request->holiday_closed && in_array(($i + 1), $request->holiday_closed)) {
+                        $schedules->schedule_closed = $i + 1;
+                    }
+                    $schedules->schedule_holiday = '1';
+                    $schedules->save();
+                    $schedule_services[] = $schedule_recordid;
+                    // }
+                }
+            }
+            $service->schedules()->sync($schedule_services);
 
             // if ($request->service_contacts) {
             //     $service->service_contacts = join(',', $request->service_contacts);

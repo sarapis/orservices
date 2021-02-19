@@ -32,7 +32,7 @@ Map Settings
                 <label class="control-label col-md-3 col-sm-3 col-xs-12">Apply Unique NYC Map Settings</label>
                 <div class="col-md-8 col-sm-8 col-xs-12">
                     <label>On&nbsp;&nbsp;
-                      <input type="checkbox" class="js-switch" value="checked" name="active"  @if($map->active==1) checked @endif/>&nbsp;&nbsp;Off
+                      <input type="checkbox" class="js-switch" value="checked" name="active"  @if($map && $map->active ==1) checked @endif/>&nbsp;&nbsp;Off
                     </label>
                 </div>
               </div>
@@ -41,7 +41,7 @@ Map Settings
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Google Maps API Key
                 </label>
                 <div class="col-md-8 col-sm-8 col-xs-12">
-                  <input type="text" name="api_key" class="form-control col-md-7 col-xs-12" value="{{$map->api_key}}" @if($map->active==0) disabled="disabled" @endif>
+                  <input type="text" name="api_key" class="form-control col-md-7 col-xs-12" value="{{$map ? $map->api_key : ''}}" @if($map && $map->active==0) disabled="disabled" @endif>
                 </div>
               </div>
 
@@ -49,10 +49,10 @@ Map Settings
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Map Center Lat/Long <span class="required">*</span>
                 </label>
                 <div class="col-md-4 col-sm-4 col-xs-12">
-                  <input id="occupation" type="text" name="lat" class="optional form-control col-md-7 col-xs-12" value="{{$map->lat}}" required="required" @if($map->active==0) disabled="disabled" @endif>
+                  <input id="occupation" type="text" name="lat" class="optional form-control col-md-7 col-xs-12" value="{{$map ? $map->lat : ''}}" required="required" @if($map &&$map->active==0) disabled="disabled" @endif>
                 </div>
                 <div class="col-md-4 col-sm-4 col-xs-12">
-                  <input id="occupation" type="text" name="long" class="optional form-control col-md-7 col-xs-12" value="{{$map->long}}" required="required" @if($map->active==0) disabled="disabled" @endif>
+                  <input id="occupation" type="text" name="long" class="optional form-control col-md-7 col-xs-12" value="{{$map ? $map->long : ''}}" required="required" @if($map && $map->active==0) disabled="disabled" @endif>
                 </div>
               </div>
 
@@ -60,7 +60,7 @@ Map Settings
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="zoom">Browse Zoom Level
                 </label>
                 <div class="col-md-4 col-sm-4 col-xs-12">
-                  <input type="text" name="zoom" class="form-control col-md-7 col-xs-12" value="{{$map->zoom}}" @if($map->active==0) disabled="disabled" @endif>
+                  <input type="text" name="zoom" class="form-control col-md-7 col-xs-12" value="{{$map ? $map->zoom : ''}}" @if($map && $map->active==0) disabled="disabled" @endif>
                 </div>
               </div>
 
@@ -68,7 +68,7 @@ Map Settings
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="zoom">Profile Zoom
                 </label>
                 <div class="col-md-4 col-sm-4 col-xs-12">
-                  <input type="text" name="profile_zoom" class="form-control col-md-7 col-xs-12" value="{{$map->zoom_profile}}" @if($map->active==0) disabled="disabled" @endif>
+                  <input type="text" name="profile_zoom" class="form-control col-md-7 col-xs-12" value="{{$map ? $map->zoom_profile : ''}}" @if($map && $map->active==0) disabled="disabled" @endif>
                 </div>
               </div>
 
@@ -233,7 +233,7 @@ Map Settings
 
 @endsection
 @section('scripts')
-<script src="https://maps.googleapis.com/maps/api/js?key={{$map->api_key}}"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{$map ? $map->api_key : ''}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gmaps.js/0.4.9/gmaps.min.js"></script>
 <script src='//cdn.jsdelivr.net/gmaps4rails/2.1.2/gmaps4rails.js'> </script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js'> </script>

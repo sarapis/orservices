@@ -3,8 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Auth;
-use Session;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class OrganizationAdmin
 {
@@ -19,7 +19,11 @@ class OrganizationAdmin
     {
         $user = Auth::user();
         $routeName = $request->route()->getName();
-
+        if ($routeName == 'account.show' && $user->roles == null) {
+            Session::flash('message', 'Warning! Your Account is Under Review');
+            Session::flash('status', 'warning');
+            return redirect()->back();
+        }
         if ($routeName != 'contacts.index' && $routeName != 'facilities.index' && $routeName != 'organizations.create' || $user && $user->roles->name != 'Organization Admin') {
             return $next($request);
         } else {

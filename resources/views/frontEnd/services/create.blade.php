@@ -307,8 +307,8 @@ Service Create
                                         <div class="">
                                             <table class="table table_border_none " id="ServiceCategoryTable">
                                                 <thead>
-                                                    <th>Detail Type</th>
-                                                    <th>Detail Term</th>
+                                                    <th>Type</th>
+                                                    <th>Term</th>
                                                     <th style="width:60px">&nbsp;</th>
                                                 </thead>
                                                 <tbody>
@@ -358,8 +358,8 @@ Service Create
                                         <div class="">
                                             <table class="table table_border_none" id="ServiceEligibilityTable">
                                                 <thead>
-                                                    <th>Detail Type</th>
-                                                    <th>Detail Term</th>
+                                                    <th>Type</th>
+                                                    <th>Term</th>
                                                     <th style="width:60px">&nbsp;</th>
                                                 </thead>
                                                 <tbody>
