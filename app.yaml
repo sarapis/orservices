@@ -1,0 +1,15 @@
+runtime: php72
+
+env_variables:
+  ## Put production environment variables here.
+  APP_KEY: base64:8ivlD/xNPqI4KEkBTYWsBwbdklAQpRSt1S6V602PEGc=
+  APP_STORAGE: /tmp
+  VIEW_COMPILED_PATH: /tmp
+  SESSION_DRIVER: cookie
+  ## Set these environment variables according to your CloudSQL configuration.
+  DB_DATABASE: laravel
+  DB_USERNAME: root
+  DB_PASSWORD: password
+  ## for MYSQL, use DB_SOCKET:
+  DB_SOCKET: "/cloudsql/manyc-resources-prod:us-east4:manyc-orservices-mysql-db"
+  ## LOG_CHANNEL: stackdriver
