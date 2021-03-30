@@ -134,6 +134,17 @@ CREATE TABLE `airtablekeyinfos` (
 -- --------------------------------------------------------
 
 --
+-- Dumping data for table `airtablekeyinfos`
+--
+
+INSERT INTO `airtablekeyinfos` (`id`, `api_key`, `base_url`, `created_at`, `updated_at`) VALUES
+(1, 'your airtable key', 'your airtable base url', NULL, NULL);
+INSERT INTO `airtablekeyinfos` (`id`, `api_key`, `base_url`, `created_at`, `updated_at`) VALUES
+(2, 'your airtable key', 'your airtable base url', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `airtables`
 --
 
@@ -273,6 +284,15 @@ CREATE TABLE `auto_sync_airtables` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Dumping data for table `auto_sync_airtables`
+--
+
+INSERT INTO `auto_sync_airtables` (`id`, `option`, `days`, `working_status`, `created_at`, `updated_at`) VALUES
+(1, 'yes', '3', 'yes', NULL, NULL);
 
 -- --------------------------------------------------------
 

@@ -13,3 +13,38 @@ env_variables:
   ## for MYSQL, use DB_SOCKET:
   DB_SOCKET: "/cloudsql/manyc-resources-prod:us-east4:manyc-orservices-mysql-db"
   ## LOG_CHANNEL: stackdriver
+
+handlers:
+  ## - url: /favicon\.ico
+  ##   static_files: favicon.ico
+  ##   upload: favicon\.ico
+
+  - url: /backend
+    static_dir: public/backend
+
+  - url: /css
+    static_dir: public/css
+
+  - url: /csv
+    static_dir: public/csv
+
+  - url: /csv
+    static_dir: public/csv_export
+
+  - url: /frontend
+    static_dir: public/frontend
+
+  - url: /HSDS
+    static_dir: public/HSDS
+
+  - url: /images
+    static_dir: public/images
+
+  - url: /js
+    static_dir: public/js
+
+  - url: /uploads
+    static_dir: public/uploads
+
+  - url: /zip
+    static_dir: public/zip
