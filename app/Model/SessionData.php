@@ -19,4 +19,12 @@ class SessionData extends Model
     {
         return $this->belongsTo('App\Model\Organization', 'session_organization', 'organization_recordid');
     }
+    public function getInteraction()
+    {
+        return $this->belongsTo('App\Model\SessionInteraction', 'session_recordid', 'interaction_session');
+    }
+    // public function getInteraction()
+    // {
+    //     return $this->hasMany('App\Model\SessionInteraction', 'interaction_session', 'session_recordid');
+    // }
 }

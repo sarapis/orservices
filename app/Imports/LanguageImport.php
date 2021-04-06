@@ -16,7 +16,7 @@ class LanguageImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         $array = [
-            'language_recordid' => $row['id'],
+            'language_recordid' => $row['language_recordid'],
             'language_location' => $row['location_id'],
             'language_service' => $row['service_id'],
             'language' => $row['language'],

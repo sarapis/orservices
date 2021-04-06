@@ -94,6 +94,10 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::get('/getTaxonomyTerm', 'frontEnd\ServiceController@getTaxonomyTerm')->name('getTaxonomyTerm');
     // Route::get('/add_new_service_in_facility', 'frontEnd\ServiceController@add_new_service_in_facility');
 
+    Route::get('/viewChanges/{id}/{recordid}', 'frontEnd\EditChangeController@viewChanges')->name('viewChanges');
+    Route::get('/getDatas/{id}/{recordid}', 'frontEnd\EditChangeController@getDatas')->name('getDatas');
+    Route::post('/restoreDatas/{id}/{recordid}', 'frontEnd\EditChangeController@restoreDatas')->name('restoreDatas');
+
     Route::match(['get', 'post'], '/search', [
         'uses' => 'frontEnd\ExploreController@filter',
     ]);
@@ -102,8 +106,10 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     ]);
 
     // organization route
-    Route::resource('/organizations', 'frontEnd\OrganizationController');
+    Route::get('/addOrganizationTag', 'frontEnd\OrganizationController@addOrganizationTag')->name('addOrganizationTag');
+    Route::post('/createNewTag/{id}', 'frontEnd\OrganizationController@createNewTag')->name('createNewTag');
     Route::post('/organization_tag/{id}', 'frontEnd\OrganizationController@organization_tag')->name('organization_tag');
+    Route::resource('/organizations', 'frontEnd\OrganizationController');
     Route::post('/organizations/{id}/add_comment', 'frontEnd\OrganizationController@add_comment')->name('organization_comment');
     Route::any('getContacts', 'frontEnd\ContactController@index')->name('getContacts');
     Route::resource('/contacts', 'frontEnd\ContactController');
@@ -149,6 +155,7 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::get('/session_info/{id}/update', 'frontEnd\SessionController@update');
     Route::get('/add_new_session_in_organization', 'frontEnd\SessionController@add_new_session_in_organization');
     Route::post('/add_interaction', 'frontEnd\SessionController@add_interaction');
+    Route::post('/addInteractionOrganization', 'frontEnd\SessionController@addInteractionOrganization');
     Route::post('/session_start', 'frontEnd\SessionController@session_start');
     Route::post('/session_end', 'frontEnd\SessionController@session_end');
     Route::post('/interactionExport', 'frontEnd\SessionController@interactionExport')->name('interactionExport');
@@ -180,6 +187,8 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::get('/getInteraction', 'backend\SessionController@getInteraction')->name('All_Sessions.getInteraction');
     //users
     Route::resource('user', 'backend\UserController');
+    Route::resource('organization_tags', 'backend\OrganizationTagsController');
+
     Route::get('user/{user}/permissions', ['uses' => 'backend\UserController@permissions', 'as' => 'user.permissions']);
     Route::post('user/{user}/save', ['uses' => 'backend\UserController@save', 'as' => 'user.save']);
     Route::get('user/{user}/activate', ['uses' => 'backend\UserController@activate', 'as' => 'user.activate']);
@@ -187,6 +196,7 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::post('ajax_all', ['uses' => 'backend\UserController@ajax_all', 'as' => 'user.ajax_all']);
     Route::post('user/ajax_all', ['uses' => 'backend\UserController@ajax_all']);
     Route::get('user/{user}/profile', 'backend\UserController@profile')->name('user.profile');
+    Route::get('user/{user}/changelog', 'backend\UserController@changelog')->name('user.changelog');
     Route::post('user/{user}/saveProfile', 'backend\UserController@saveProfile')->name('user.saveProfile');
 
     //roles
@@ -247,6 +257,10 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::resource('service_attributes', 'backend\ServiceAttributeController');
     Route::resource('other_attributes', 'backend\OtherAttributesController');
     Route::resource('XDetails', 'backend\XDetailsController');
+    Route::resource('notes', 'backend\NotesController');
+    Route::resource('edits', 'backend\EditsController');
+    Route::get('userNotes/{id}', 'backend\NotesController@userNotes')->name('notes.userNotes');
+    Route::get('userEdits/{id}', 'backend\EditsController@userEdits')->name('edits.userEdits');
     Route::post('taxonommyUpdate', 'frontEnd\TaxonomyController@taxonommyUpdate')->name('tb_taxonomy.taxonommyUpdate');
     Route::post('saveLanguage', 'frontEnd\TaxonomyController@saveLanguage')->name('tb_taxonomy.saveLanguage');
     Route::post('save_vocabulary', 'frontEnd\TaxonomyController@save_vocabulary')->name('tb_taxonomy.save_vocabulary');
@@ -311,6 +325,12 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::resource('about_edit', 'backend\EditaboutController');
     Route::resource('login_register_edit', 'backend\EditLoginRegisterController');
 
+    Route::resource('import', 'backend\ImportController');
+    Route::post('/getDataSource', ['uses' => 'backend\ImportController@getDataSource'])->name('import.getDataSource');
+    Route::post('/getImportHistory', ['uses' => 'backend\ImportController@getImportHistory'])->name('import.getImportHistory');
+    Route::get('/importData/{id}', 'backend\ImportController@importData')->name('import.importData');;
+    Route::post('/changeAutoImport', 'backend\ImportController@changeAutoImport')->name('import.changeAutoImport');;
+
     // Route::resource('meta_filter', 'MetafilterController');
 
     Route::resource('map', 'backend\MapController');
@@ -319,7 +339,8 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::get('/apply_geocode', 'backend\MapController@apply_geocode')->name('map.apply_geocode');
     Route::get('/apply_enrich', 'backend\MapController@apply_enrich')->name('map.apply_enrich');
 
-    Route::get('/import', ['uses' => 'backend\PagesController@import'])->name('dataSync.import');
+
+    // Route::get('/import', ['uses' => 'backend\PagesController@import'])->name('dataSync.import');
     Route::get('/export', ['uses' => 'backend\PagesController@export'])->name('dataSync.export');
     Route::post('/export_hsds_zip_file', ['uses' => 'backend\PagesController@export_hsds_zip_file'])->name('dataSync.export_hsds_zip_file');
 
@@ -363,4 +384,5 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     // Route::post('ImportOrganizationExcel', 'backend\ExcelImportController@ImportOrganizationExcel')->name('ImportOrganizationExcel');
 
 });
+Route::get('/changeTag', 'backend\OrganizationTagsController@changeTag')->name('organization_tags.changeTag');
 Route::post('/update_hsds_api_key', ['uses' => 'backend\PagesController@update_hsds_api_key'])->name('dataSync.update_hsds_api_key');

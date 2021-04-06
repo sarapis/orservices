@@ -21,7 +21,7 @@ class MapController extends Controller
      * Post Repository
      *
      * @var Post
-    //  */
+     */
     // protected $about;
 
     // public function __construct(About $about)

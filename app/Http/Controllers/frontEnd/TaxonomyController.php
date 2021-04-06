@@ -6,6 +6,7 @@ use App\Functions\Airtable;
 use App\Http\Controllers\Controller;
 use App\Imports\ServiceTaxonomyImport;
 use App\Imports\TaxonomyImport;
+use App\Model\AdditionalTaxonomy;
 use App\Model\Airtable_v2;
 use App\Model\Airtablekeyinfo;
 use App\Model\Airtables;
@@ -13,9 +14,10 @@ use App\Model\Alt_taxonomy;
 use App\Model\CSV_Source;
 use App\Model\Language;
 use App\Model\Layout;
-use App\Model\Servicetaxonomy;
+use App\Model\ServiceTaxonomy;
 use App\Model\Source_data;
 use App\Model\Taxonomy;
+use App\Model\TaxonomyTerm;
 use App\Model\TaxonomyType;
 use App\Services\Stringtoint;
 use Carbon\Carbon;
@@ -111,7 +113,7 @@ class TaxonomyController extends Controller
             $airtable_key_info->base_url = $base_url;
             $airtable_key_info->save();
 
-            Taxonomy::truncate();
+            // Taxonomy::truncate();
             // $airtable = new Airtable(array(
             //     'api_key'   => env('AIRTABLE_API_KEY'),
             //     'base'      => env('AIRTABLE_BASE_URL'),
@@ -128,77 +130,81 @@ class TaxonomyController extends Controller
                 $response = $request->getResponse();
 
                 $airtable_response = json_decode($response, true);
-
                 foreach ($airtable_response['records'] as $record) {
-
-                    $taxonomy = new Taxonomy();
                     $strtointclass = new Stringtoint();
+                    $recordId = $strtointclass->string_to_int($record['id']);
+                    $old_taxonomy = Taxonomy::where('taxonomy_recordid', $recordId)->where('taxonomy_name', isset($record['fields']['term']) ? $record['fields']['term'] : null)->first();
 
-                    $taxonomy->taxonomy_recordid = $strtointclass->string_to_int($record['id']);
-                    $taxonomy->taxonomy_id = $record['id'];
-                    // $taxonomy->taxonomy_recordid = $record[ 'id' ];
-                    $taxonomy->taxonomy_name = isset($record['fields']['term']) ? $record['fields']['term'] : null;
-                    // $taxonomy->taxonomy_parent_name = isset($record['fields']['parent_name']) ? implode(",", $record['fields']['parent_name']) : null;
-                    $parent_names = isset($record['fields']['parent_name']) ? $record['fields']['parent_name'] : [];
-                    $parent_name_ids = null;
-                    foreach ($parent_names as $key => $parent_name) {
-                        if ($key == 0) {
-                            $parent_name_ids = $strtointclass->string_to_int($parent_name);
-                        } else {
+                    if ($old_taxonomy == null) {
+                        $taxonomy = new Taxonomy();
+                        $strtointclass = new Stringtoint();
 
-                            $parent_name_ids = $parent_name_ids . ',' . $strtointclass->string_to_int($parent_name);
-                        }
-                    }
-                    $taxonomy->taxonomy_parent_name = $parent_name_ids;
-                    // if ($taxonomy->taxonomy_parent_name != null) {
-                    //     $taxonomy->taxonomy_parent_name = $strtointclass->string_to_int($taxonomy->taxonomy_parent_name);
-                    // }
-                    $taxonomy->taxonomy_vocabulary = isset($record['fields']['vocabulary']) ? $record['fields']['vocabulary'] : null;
-                    $taxonomyIds = isset($record['fields']['taxonomy']) ? $record['fields']['taxonomy'] : [];
-
-                    $taxonomy_ids = null;
-                    foreach ($taxonomyIds as $key => $taxonomyid) {
-                        if ($key == 0) {
-                            $taxonomy_ids = $strtointclass->string_to_int($taxonomyid);
-                        } else {
-
-                            $taxonomy_ids = $taxonomy_ids . ',' . $strtointclass->string_to_int($taxonomyid);
-                        }
-                    }
-                    $taxonomy->taxonomy = $taxonomy_ids;
-                    $xtaxonomies = isset($record['fields']['x-taxonomies']) ? $record['fields']['x-taxonomies'] : [];
-                    $xtaxonomies_ids = null;
-                    foreach ($xtaxonomies as $key => $xtaxonomy) {
-                        if ($key == 0) {
-                            $xtaxonomies_ids = $strtointclass->string_to_int($xtaxonomy);
-                        } else {
-
-                            $xtaxonomies_ids = $taxonomy_ids . ',' . $strtointclass->string_to_int($xtaxonomy);
-                        }
-                    }
-                    $taxonomy->x_taxonomies = $xtaxonomies_ids;
-                    $taxonomy->taxonomy_x_description = isset($record['fields']['description']) ? $record['fields']['description'] : null;
-                    $taxonomy->taxonomy_x_notes = isset($record['fields']['x-notes']) ? $record['fields']['x-notes'] : null;
-
-                    $color = substr(str_shuffle('AABBCCDDEEFF00112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF00112233445566778899'), 0, 6);
-                    $taxonomy->badge_color = $color;
-                    if (isset($record['fields']['services'])) {
-                        $i = 0;
-                        foreach ($record['fields']['services'] as $value) {
-
-                            $taxonomyservice = $strtointclass->string_to_int($value);
-
-                            if ($i != 0) {
-                                $taxonomy->taxonomy_services = $taxonomy->taxonomy_services . ',' . $taxonomyservice;
+                        $taxonomy->taxonomy_recordid = $strtointclass->string_to_int($record['id']);
+                        $taxonomy->taxonomy_id = $record['id'];
+                        // $taxonomy->taxonomy_recordid = $record[ 'id' ];
+                        $taxonomy->taxonomy_name = isset($record['fields']['term']) ? $record['fields']['term'] : null;
+                        // $taxonomy->taxonomy_parent_name = isset($record['fields']['parent_name']) ? implode(",", $record['fields']['parent_name']) : null;
+                        $parent_names = isset($record['fields']['parent_name']) ? $record['fields']['parent_name'] : [];
+                        $parent_name_ids = null;
+                        foreach ($parent_names as $key => $parent_name) {
+                            if ($key == 0) {
+                                $parent_name_ids = $strtointclass->string_to_int($parent_name);
                             } else {
-                                $taxonomy->taxonomy_services = $taxonomyservice;
+
+                                $parent_name_ids = $parent_name_ids . ',' . $strtointclass->string_to_int($parent_name);
                             }
-
-                            $i++;
                         }
-                    }
+                        $taxonomy->taxonomy_parent_name = $parent_name_ids;
+                        // if ($taxonomy->taxonomy_parent_name != null) {
+                        //     $taxonomy->taxonomy_parent_name = $strtointclass->string_to_int($taxonomy->taxonomy_parent_name);
+                        // }
+                        $taxonomy->taxonomy_vocabulary = isset($record['fields']['vocabulary']) ? $record['fields']['vocabulary'] : null;
+                        $taxonomyIds = isset($record['fields']['taxonomy']) ? $record['fields']['taxonomy'] : [];
 
-                    $taxonomy->save();
+                        $taxonomy_ids = null;
+                        foreach ($taxonomyIds as $key => $taxonomyid) {
+                            if ($key == 0) {
+                                $taxonomy_ids = $strtointclass->string_to_int($taxonomyid);
+                            } else {
+
+                                $taxonomy_ids = $taxonomy_ids . ',' . $strtointclass->string_to_int($taxonomyid);
+                            }
+                        }
+                        $taxonomy->taxonomy = $taxonomy_ids;
+                        $xtaxonomies = isset($record['fields']['x-taxonomies']) ? $record['fields']['x-taxonomies'] : [];
+                        $xtaxonomies_ids = null;
+                        foreach ($xtaxonomies as $key => $xtaxonomy) {
+                            if ($key == 0) {
+                                $xtaxonomies_ids = $strtointclass->string_to_int($xtaxonomy);
+                            } else {
+
+                                $xtaxonomies_ids = $taxonomy_ids . ',' . $strtointclass->string_to_int($xtaxonomy);
+                            }
+                        }
+                        $taxonomy->x_taxonomies = $xtaxonomies_ids;
+                        $taxonomy->taxonomy_x_description = isset($record['fields']['description']) ? $record['fields']['description'] : null;
+                        $taxonomy->taxonomy_x_notes = isset($record['fields']['x-notes']) ? $record['fields']['x-notes'] : null;
+
+                        $color = substr(str_shuffle('AABBCCDDEEFF00112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF00112233445566778899'), 0, 6);
+                        $taxonomy->badge_color = $color;
+                        if (isset($record['fields']['services'])) {
+                            $i = 0;
+                            foreach ($record['fields']['services'] as $value) {
+
+                                $taxonomyservice = $strtointclass->string_to_int($value);
+
+                                if ($i != 0) {
+                                    $taxonomy->taxonomy_services = $taxonomy->taxonomy_services . ',' . $taxonomyservice;
+                                } else {
+                                    $taxonomy->taxonomy_services = $taxonomyservice;
+                                }
+
+                                $i++;
+                            }
+                        }
+
+                        $taxonomy->save();
+                    }
                 }
             } while ($request = $response->next());
 
@@ -510,7 +516,20 @@ class TaxonomyController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $taxonomy = Taxonomy::whereId($id)->first();
+            ServiceTaxonomy::where('taxonomy_recordid', $taxonomy->taxonomy_recordid)->delete();
+            TaxonomyTerm::where('taxonomy_recordid', $taxonomy->taxonomy_recordid)->delete();
+            AdditionalTaxonomy::where('taxonomy_recordid', $taxonomy->taxonomy_recordid)->delete();
+            Taxonomy::whereId($id)->delete();
+            Session::flash('message', 'Taxonomy deleted successfully!');
+            Session::flash('status', 'success');
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
+            return redirect()->back();
+        }
     }
     public function taxonommyUpdate(Request $request)
     {
@@ -531,6 +550,8 @@ class TaxonomyController extends Controller
             $taxonomy->badge_color = $request->badge_color;
             $taxonomy->exclude_vocabulary = $request->exclude_vocabulary;
             $taxonomy->flag = 'modified';
+            $taxonomy->additional_taxonomy_type()->sync($request->x_taxonomies);
+            $taxonomy->taxonomy_type()->sync($request->taxonomy);
 
             if ($request->hasFile('category_logo')) {
                 $category_logo = $request->file('category_logo');

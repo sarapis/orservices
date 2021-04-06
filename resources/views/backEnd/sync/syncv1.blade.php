@@ -51,7 +51,7 @@
                     <div class="form-group" id="auto_sync_div">
                         <label for="airtable_auto_sync_period">Sync every</label>
                         <input class="form-control" type="text" name="airtable_auto_sync_period" id="airtable_auto_sync_period" value="{{$autosync->days}}" style="width: 75px;" required />
-                        <label for="airtable_auto_sync_period">number of days</label>
+                        <label for="airtable_auto_sync_period">number of hours</label>
                     </div>
                     @endif
                 </div>

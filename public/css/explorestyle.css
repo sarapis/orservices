@@ -1798,14 +1798,17 @@ footer {
 .btn-download .tokenfield .token {
   padding: 8px 6px;
   height: auto;
-  background: #d0d0d0;
-  color: #000;
+  background: #A4A8B8;
+  color: #fff;
   font-size: 15px;
   border-radius: 8px;
   border: none;
 }
+.btn-download .tokenfield .token span{ color: #fff;}
 .btn-download .tokenfield .token .close {
-  height: auto;
+    height: auto;
+    color: #fff;
+    opacity: 1;
 }
 .all_form_field .card-title {
   font-size: 25px;
@@ -2463,17 +2466,88 @@ input[type=checkbox]:checked:before {
 }
 
 
-.table_border_none.table td.create_btn .dropdown-menu li:last-child{
+.table_border_none.table td.create_btn .dropdown-menu li:last-child,
+.drop_down_create .dropdown-menu li:last-child
+{
     background: #6E6FDD;
     color: #fff;
     text-align: center;
 }
 .table_border_none.table td.create_btn .dropdown-menu li:last-child span,
-.table_border_none.table td.create_btn .dropdown-menu li:last-child:hover span{color: #fff;}
-.table_border_none.table td.create_btn .dropdown-menu li:last-child:hover a{
+.table_border_none.table td.create_btn .dropdown-menu li:last-child:hover span,
+.drop_down_create .dropdown-menu li:last-child span,
+.drop_down_create .dropdown-menu li:last-child:hover span
+{
+    color: #fff;
+}
+.table_border_none.table td.create_btn .dropdown-menu li:last-child:hover a,
+.drop_down_create .dropdown-menu li:last-child:hover a{
     background: #5051DB;
     color: #fff;
     text-align: center;
 }
 .top_services_filter .dropdown-menu { z-index :1501}
-    
+.tabpanel_above.nav-tabs {border-bottom: none;}
+.tabpanel_above.nav-tabs .nav-link {
+    padding: 15px 16px;
+    background: #9293E8;
+    border-radius: 12px 12px 0px 0px;
+    margin-right: 5px;
+}
+.tabpanel_above.nav-tabs .nav-link.active ,.tabpanel_above.nav-tabs .nav-link:hover{
+    background: #5051DB;border-bottom:1px solid #4f50db;
+}
+.tabpanel_above.nav-tabs .nav-link .card_services_title{
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+    color: #fff;
+    margin: 0px;
+}
+.tabpanel_above.nav-tabs .add_new_btn button{
+    padding: 15px 16px;
+    background: #1B1B1B;
+    border-radius: 12px 12px 0px 0px;
+    margin-right: 5px;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+    color: #fff;
+    margin: 0px;
+    height: auto;
+    border: 1px solid #1B1B1B;
+}
+
+.btn-download  #tagging-div .btn_darkblack{
+    width: 90%;
+    padding: 14px 0px;
+    font-size: 20px;
+    background: #1B1B1B;
+    margin-top: 8px;
+    border-color: #1B1B1B;
+}
+
+.notes_table tr:first-child {background: #EDEEF1;}
+.customedata tr th{
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 17px;
+    color: #363636;
+    border-bottom: 1px solid #A4A8B8;
+    border-top: none;
+    padding: 15px 10px;
+}
+.customedata tr td{
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 17px;
+    color: #363636;
+    border-bottom: 1px solid #A4A8B8;
+    border-top: none;
+    padding: 15px 10px;
+}
+.customedata tr:nth-child(even){
+    background: #EDEEF1;
+}

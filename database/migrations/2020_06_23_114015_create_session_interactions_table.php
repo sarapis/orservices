@@ -19,7 +19,7 @@ class CreateSessionInteractionsTable extends Migration
             $table->string('interaction_session')->nullable();
             $table->string('interaction_method')->nullable();
             $table->string('interaction_disposition')->nullable();
-            $table->string('interaction_notes')->nullable();
+            $table->longText('interaction_notes')->nullable();
             $table->string('interaction_records_edited')->nullable();
             $table->string('interaction_timestamp')->nullable();
             $table->timestamps();

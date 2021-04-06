@@ -8,11 +8,11 @@
   <meta name="author" content="">
   <meta name="_token" content="{!! csrf_token() !!}" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta property="og:title" content="Join the best company in the world!" />
+{{-- <meta property="og:title" content="Join the best company in the world!" />
 <meta property="og:url" content="http://www.sharethis.com" />
 <meta property="og:image" content="http://sharethis.com/images/logo.jpg" />
 <meta property="og:description" content="ShareThis is its people. It's imperative that we hire smart,innovative people who can work intelligently as we continue to disrupt the very category we created. Come join us!" />
-<meta property="og:site_name" content="ShareThis" />
+<meta property="og:site_name" content="ShareThis" /> --}}
 {{-- <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=5f572e846b5d9900194e2a53&product=sop' async='async'></script> --}}
   <title>@yield('title')| {{ $layout->site_name }}</title>
   <link rel="apple-touch-icon" href="../../frontend/assets/images/apple-touch-icon.png">
@@ -364,7 +364,7 @@ $(function () {
 
 
 @endif
- <script src="https://maps.googleapis.com/maps/api/js?key={{$map && $map->api_key}}&libraries=places&callback=initMap"
+ <script src="https://maps.googleapis.com/maps/api/js?key={{$map ? $map->api_key : ''}}&libraries=places&callback=initMap"
   async defer></script>
  <style>
   body{

@@ -14,6 +14,7 @@ use App\Model\ServiceProgram;
 use App\Model\Source_data;
 use App\Services\Stringtoint;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
@@ -31,9 +32,9 @@ class ProgramController extends Controller
             $airtable_key_info->base_url = $base_url;
             $airtable_key_info->save();
 
-            Program::truncate();
-            ServiceProgram::truncate();
-            OrganizationProgram::truncate();
+            // Program::truncate();
+            // ServiceProgram::truncate();
+            // OrganizationProgram::truncate();
 
             // $airtable = new Airtable(array(
             //     'api_key'   => env('AIRTABLE_API_KEY'),
@@ -53,50 +54,54 @@ class ProgramController extends Controller
                 $airtable_response = json_decode($response, true);
 
                 foreach ($airtable_response['records'] as $record) {
-
-                    $program = new Program();
                     $strtointclass = new Stringtoint();
+                    $recordId = $strtointclass->string_to_int($record['id']);
+                    $old_program = Program::where('program_recordid', $recordId)->where('name', isset($record['fields']['name']) ? $record['fields']['name'] : null)->first();
+                    if ($old_program == null) {
+                        $program = new Program();
+                        $strtointclass = new Stringtoint();
 
-                    $program->program_recordid = $strtointclass->string_to_int($record['id']);
+                        $program->program_recordid = $strtointclass->string_to_int($record['id']);
 
-                    $program->alternate_name = isset($record['fields']['alternate_name']) ? $record['fields']['alternate_name'] : null;
-                    $program->name = isset($record['fields']['name']) ? $record['fields']['name'] : null;
+                        $program->alternate_name = isset($record['fields']['alternate_name']) ? $record['fields']['alternate_name'] : null;
+                        $program->name = isset($record['fields']['name']) ? $record['fields']['name'] : null;
 
-                    if (isset($record['fields']['organizations'])) {
-                        $i = 0;
-                        $orgIds = [];
-                        foreach ($record['fields']['organizations'] as $value) {
+                        if (isset($record['fields']['organizations'])) {
+                            $i = 0;
+                            $orgIds = [];
+                            foreach ($record['fields']['organizations'] as $value) {
 
-                            $programorganizations = $strtointclass->string_to_int($value);
-                            $orgIds[] = $programorganizations;
-                            if ($i != 0) {
-                                $program->organizations = $program->organizations . ',' . $programorganizations;
-                            } else {
-                                $program->organizations = $programorganizations;
+                                $programorganizations = $strtointclass->string_to_int($value);
+                                $orgIds[] = $programorganizations;
+                                if ($i != 0) {
+                                    $program->organizations = $program->organizations . ',' . $programorganizations;
+                                } else {
+                                    $program->organizations = $programorganizations;
+                                }
+
+                                $i++;
                             }
-
-                            $i++;
+                            $program->organization()->sync($orgIds);
                         }
-                        $program->organization()->sync($orgIds);
-                    }
 
-                    if (isset($record['fields']['services'])) {
-                        $i = 0;
-                        $serviceIds = [];
-                        foreach ($record['fields']['services'] as $value) {
-                            $programservice = $strtointclass->string_to_int($value);
-                            $serviceIds[] = $programservice;
-                            if ($i != 0) {
-                                $program->services = $program->services . ',' . $programservice;
-                            } else {
-                                $program->services = $programservice;
+                        if (isset($record['fields']['services'])) {
+                            $i = 0;
+                            $serviceIds = [];
+                            foreach ($record['fields']['services'] as $value) {
+                                $programservice = $strtointclass->string_to_int($value);
+                                $serviceIds[] = $programservice;
+                                if ($i != 0) {
+                                    $program->services = $program->services . ',' . $programservice;
+                                } else {
+                                    $program->services = $programservice;
+                                }
+                                $i++;
                             }
-                            $i++;
+                            $program->service()->sync($serviceIds);
                         }
-                        $program->service()->sync($serviceIds);
-                    }
 
-                    $program->save();
+                        $program->save();
+                    }
                 }
             } while ($request = $response->next());
 
@@ -106,7 +111,7 @@ class ProgramController extends Controller
             $airtable->syncdate = $date;
             $airtable->save();
         } catch (\Throwable $th) {
-            \Log::error('Error in Program:'.$th->getMessage());
+            Log::error('Error in Program:' . $th->getMessage());
             return response()->json([
                 'message' => $th->getMessage(),
                 'success' => false

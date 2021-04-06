@@ -72,7 +72,7 @@ class UploadController extends Controller
 
             $filename =  $request->file('file_zip')->getClientOriginalName();
             $request->file('file_zip')->move(public_path('/zip/'), $filename);
-            
+
             $path = public_path('/HSDS/data/services.csv');
 
             if (!file_exists($path)) {
@@ -84,8 +84,8 @@ class UploadController extends Controller
             }
 
 
-            Service::truncate();
-            ServiceOrganization::truncate();
+            // Service::truncate();
+            // ServiceOrganization::truncate();
 
             Excel::import(new Services, $path);
 
@@ -107,7 +107,7 @@ class UploadController extends Controller
             }
 
             // $data = Excel::load($path)->get();
-            Location::truncate();
+            // Location::truncate();
 
             Excel::import(new LocationImport, $path);
 
@@ -128,8 +128,8 @@ class UploadController extends Controller
                 return $response;
             }
 
-            Organization::truncate();
-            OrganizationDetail::truncate();
+            // Organization::truncate();
+            // OrganizationDetail::truncate();
 
             Excel::import(new OrganizationImport, $path);
 
@@ -149,8 +149,8 @@ class UploadController extends Controller
                 );
                 return $response;
             }
-            Contact::truncate();
-            ServiceContact::truncate();
+            // Contact::truncate();
+            // ServiceContact::truncate();
 
             Excel::import(new ContactImport, $path);
 
@@ -170,9 +170,9 @@ class UploadController extends Controller
                 );
                 return $response;
             }
-            Phone::truncate();
-            ServicePhone::truncate();
-            LocationPhone::truncate();
+            // Phone::truncate();
+            // ServicePhone::truncate();
+            // LocationPhone::truncate();
 
             Excel::import(new PhoneImport, $path);
 
@@ -192,9 +192,9 @@ class UploadController extends Controller
                 );
                 return $response;
             }
-            Address::truncate();
-            LocationAddress::truncate();
-            ServiceAddress::truncate();
+            // Address::truncate();
+            // LocationAddress::truncate();
+            // ServiceAddress::truncate();
 
             Excel::import(new AddressImport, $path);
 
@@ -214,7 +214,7 @@ class UploadController extends Controller
                 );
                 return $response;
             }
-            Language::truncate();
+            // Language::truncate();
 
             Excel::import(new LanguageImport, $path);
 
@@ -255,7 +255,7 @@ class UploadController extends Controller
                 return $response;
             }
 
-            ServiceTaxonomy::truncate();
+            // ServiceTaxonomy::truncate();
 
             Excel::import(new ServiceTaxonomyImport, $path);
 
@@ -276,7 +276,7 @@ class UploadController extends Controller
                 return $response;
             }
 
-            ServiceLocation::truncate();
+            // ServiceLocation::truncate();
 
             Excel::import(new ServiceLocationImport, $path);
 
@@ -296,7 +296,7 @@ class UploadController extends Controller
                 );
                 return $response;
             }
-            Accessibility::truncate();
+            // Accessibility::truncate();
 
             Excel::import(new AccessibilityImport, $path);
 
@@ -317,9 +317,9 @@ class UploadController extends Controller
                 return $response;
             }
 
-            Schedule::truncate();
-            ServiceSchedule::truncate();
-            LocationSchedule::truncate();
+            // Schedule::truncate();
+            // ServiceSchedule::truncate();
+            // LocationSchedule::truncate();
 
             Excel::import(new ScheduleImport, $path);
 
