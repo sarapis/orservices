@@ -24,10 +24,12 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "laravelcollective/html": "^6.1",
+        "owen-it/laravel-auditing": "^12.0",
         "sendgrid/sendgrid": "^7.6",
         "spatie/geocoder": "^3.8",
         "stevebauman/location": "^5.1",
         "usmanhalalit/laracsv": "^2.0",
+        "venturecraft/revisionable": "^1.37",
         "yajra/laravel-datatables-buttons": "^4.9",
         "yajra/laravel-datatables-oracle": "^9.10",
         "zanysoft/laravel-zip": "^1.0"

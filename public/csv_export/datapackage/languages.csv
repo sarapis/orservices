@@ -1,6 +1,8 @@
-id,service_id,location_id,language
-1,590149106022184,674131229606594,English
-9365,,,Spanish
-9366,,,en
-9367,,,es
-9368,,,fr
+id,language_recordid,service_id,location_id,language
+1,136,590149106022184,674131229606594,English
+9365,,,,Spanish
+9368,139,,,French
+9369,140,,,Amharic
+9370,141,,,Chinese
+9371,142,,,Korean
+9372,143,,,Vietnamese

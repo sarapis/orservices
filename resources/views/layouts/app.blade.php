@@ -28,9 +28,9 @@
 
 
 @include('layouts.script')
-@if(config('app.env') != 'local')
+{{-- @if(config('app.env') != 'local') --}}
     @include('layouts.analytics')
-@endif
+{{-- @endif --}}
 @yield('customScript')
 </body>
 </html>

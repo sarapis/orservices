@@ -21,7 +21,7 @@ class CreateSessionDataTable extends Migration
             $table->string('session_method')->nullable();
             $table->string('session_disposition')->nullable();
             $table->string('session_records_edited')->nullable();
-            $table->string('session_notes')->nullable();
+            $table->longText('session_notes')->nullable();
             $table->string('session_status')->nullable();
             $table->string('session_verification_status')->nullable();
             $table->string('session_edits')->nullable();

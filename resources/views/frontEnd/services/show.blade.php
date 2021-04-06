@@ -2,7 +2,12 @@
 @section('title')
 {{$service->service_name}}
 @stop
-
+<style>
+    .text_tooltips {position: relative;line-height: 20px; margin-top: 6px;}
+    .text_tooltips .help-tip{top: 0; left: 0; width: 100%; border: none; background: none;}
+    .text_tooltips .help-tip::before{display: none}
+    .text_tooltips:hover .help-tip div{display: block;    left: 0;}
+</style>
 @section('content')
 @include('layouts.filter')
 <div>
@@ -251,6 +256,33 @@
                                 @endforeach
                                 </span>
                             </h4>
+                            @if ($service->program && count($service->program) > 0)
+                            <h4>
+                                <span class="pl-0 category_badge subtitle"><b>Related Program:</b></span>
+                                    @if (count($service->program) == 1 && isset($service->program[0]))
+                                    {{ $service->program[0]->name }}
+                                    @if ($service->program[0]->program_service_relationship)
+                                    participation is {{ $service->program[0]->program_service_relationship == 'not_required' ? 'Not Required' : Str::ucfirst($service->program[0]->program_service_relationship) }}.
+                                    @endif
+                                    @else
+                                    <ul>
+                                        @foreach ($service->program as $key => $program)
+                                        <li class="text_tooltips">
+                                            {{ $program->name }}
+                                            @if ($program->program_service_relationship)
+                                            @if ($program->alternate_name)
+                                            <div class="help-tip">
+                                                <div><p>{{ $program->alternate_name }}</p></div>
+                                            </div>
+                                            @endif
+                                            participation is {{ $program->program_service_relationship == 'not_required' ? 'Not Required' : Str::ucfirst($program->program_service_relationship)}}.
+                                            @endif
+                                        </li>
+                                        @endforeach
+                                    </ul>
+                                    @endif
+                            </h4>
+                            @endif
 
                             @if($service->service_details!=NULL)
                                 @php
@@ -431,79 +463,122 @@
                     </div>
 
                     <!-- contact area design -->
-                        @if($contact_info_list && count($contact_info_list) > 0)
-                        <div class="card">
+                    @if($contact_info_list && count($contact_info_list) > 0)
+                    <div class="card">
+                        <div class="card-block">
+                            <h4 class="card_services_title"> Contacts </h4>
+                            @foreach($contact_info_list as $contact_info)
+                                <div class="location_border">
+                                    @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
+                                    <a href="/contacts/{{$contact_info->contact_recordid}}/edit" class="float-right">
+                                        <i class="icon md-edit mr-0"></i>
+                                    </a>
+                                    @endif
+                                    <table class="table ">
+                                        <tbody>
+                                            @if($contact_info->contact_name)
+                                                <tr>
+                                                    <td>
+                                                        <h4 class="m-0"><span><b>Name:</b></span> </h4>
+                                                    </td>
+                                                    <td>
+                                                        <h4 class="m-0"><a href="/contacts/{{$contact_info->contact_recordid}}">{{$contact_info->contact_name}}</a></h4>
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                            @if($contact_info->contact_title)
+                                                <tr>
+                                                    <td>
+                                                        <h4 class="m-0"><span><b>Title:</b></span> </h4>
+                                                    </td>
+                                                    <td>
+                                                        <h4 class="m-0"><span>{{$contact_info->contact_title}}</span></h4>
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                            @if($contact_info->contact_department)
+                                                <tr>
+                                                    <td>
+                                                        <h4 class="m-0"><span><b>Department:</b></span> </h4>
+                                                    </td>
+                                                    <td>
+                                                        <h4 class="m-0"><span>{{$contact_info->contact_department}}</span></h4>
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                            @if($contact_info->contact_email)
+                                                <tr>
+                                                    <td>
+                                                        <h4 class="m-0"><span><b>Email:</b></span> </h4>
+                                                    </td>
+                                                    <td>
+                                                        <h4 class="m-0"><span>{{$contact_info->contact_email}}</span></h4>
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                            @if($contact_info->contact_phones)
+                                                @if(isset($contact_info->phone->phone_number))
+                                                <tr>
+                                                    <td>
+                                                        <h4 class="m-0"><span><b>Phones:</b></span> </h4>
+                                                    </td>
+                                                    <td>
+                                                        <h4 class="m-0"><span> {{$contact_info->phone->phone_number}}</span></h4>
+                                                    </td>
+                                                </tr>
+                                                @endif
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+                    <!-- contact area design -->
+                    <div class="card">
+                        <div class="card all_form_field ">
                             <div class="card-block">
-                                <h4 class="card_services_title"> Contacts </h4>
-                                @foreach($contact_info_list as $contact_info)
-                                    <div class="location_border">
-                                        @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
-                                        <a href="/contacts/{{$contact_info->contact_recordid}}/edit" class="float-right">
-                                            <i class="icon md-edit mr-0"></i>
-                                        </a>
+                                <h4 class="card_services_title ">Change Log</h4>
+                                @foreach ($serviceAudits as $item)
+                                @if (count($item->new_values) != 0)
+                                <div class="py-10" style="float: left; width:100%;border-bottom: 1px solid #dadada;">
+                                    <p class="mb-5" style="color: #000;font-size: 16px;">On
+                                        <b
+                                            style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB; text-decoration:underline;">{{ $item->created_at }}</b>
+                                        ,
+                                        <b
+                                            style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB;text-decoration:underline;">{{ $item->user ? $item->user->first_name.' '.$item->user->last_name : '' }}</b>
+                                    </p>
+                                    @foreach ($item->old_values as $key => $v)
+                                    @php
+                                        $fieldNameArray = explode('_',$key);
+                                        $fieldName = implode(' ',$fieldNameArray);
+                                    @endphp
+                                    <ul style="padding-left: 0px;font-size: 16px;">
+                                        @if ($v)
+                                        <li style="color: #000;list-style: disc;list-style-position: inside;">Changed <b
+                                                style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b>
+                                            from <span style="color: #FF5044">{{ $v }}</span> to <span
+                                                style="color: #35AD8B">{{ $item->new_values[$key] }}</span>
+                                        </li>
+                                        @elseif($item->new_values[$key])
+                                        <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b
+                                            style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span
+                                            style="color: #35AD8B">{{ $item->new_values[$key] }}</span>
+                                        </li>
                                         @endif
-                                        <table class="table ">
-                                            <tbody>
-                                                @if($contact_info->contact_name)
-                                                    <tr>
-                                                        <td>
-                                                            <h4 class="m-0"><span><b>Name:</b></span> </h4>
-                                                        </td>
-                                                        <td>
-                                                            <h4 class="m-0"><a href="/contacts/{{$contact_info->contact_recordid}}">{{$contact_info->contact_name}}</a></h4>
-                                                        </td>
-                                                    </tr>
-                                                @endif
-                                                @if($contact_info->contact_title)
-                                                    <tr>
-                                                        <td>
-                                                            <h4 class="m-0"><span><b>Title:</b></span> </h4>
-                                                        </td>
-                                                        <td>
-                                                            <h4 class="m-0"><span>{{$contact_info->contact_title}}</span></h4>
-                                                        </td>
-                                                    </tr>
-                                                @endif
-                                                @if($contact_info->contact_department)
-                                                    <tr>
-                                                        <td>
-                                                            <h4 class="m-0"><span><b>Department:</b></span> </h4>
-                                                        </td>
-                                                        <td>
-                                                            <h4 class="m-0"><span>{{$contact_info->contact_department}}</span></h4>
-                                                        </td>
-                                                    </tr>
-                                                @endif
-                                                @if($contact_info->contact_email)
-                                                    <tr>
-                                                        <td>
-                                                            <h4 class="m-0"><span><b>Email:</b></span> </h4>
-                                                        </td>
-                                                        <td>
-                                                            <h4 class="m-0"><span>{{$contact_info->contact_email}}</span></h4>
-                                                        </td>
-                                                    </tr>
-                                                @endif
-                                                @if($contact_info->contact_phones)
-                                                    @if(isset($contact_info->phone->phone_number))
-                                                    <tr>
-                                                        <td>
-                                                            <h4 class="m-0"><span><b>Phones:</b></span> </h4>
-                                                        </td>
-                                                        <td>
-                                                            <h4 class="m-0"><span> {{$contact_info->phone->phone_number}}</span></h4>
-                                                        </td>
-                                                    </tr>
-                                                    @endif
-                                                @endif
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    </ul>
+                                    @endforeach
+                                    <span><a href="/viewChanges/{{ $item->id }}/{{ $service->service_recordid }}"
+                                            style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB; text-decoration:underline;">View
+                                            Changes</a></span>
+                                </div>
+                                @endif
                                 @endforeach
                             </div>
-                        @endif
-                    <!-- contact area design -->
-                </div>
+                        </div>
+                    </div>
             </div>
         </div>
     </div>
@@ -551,15 +626,15 @@
             center: {lat: parseFloat(latitude), lng: parseFloat(longitude)}
         });
 
-        // var latlongbounds = new google.maps.LatLngBounds();
+        var latlongbounds = new google.maps.LatLngBounds();
         var markers = locations.map(function(location, i) {
 
             var position = {
                 lat: location.location_latitude,
                 lng: location.location_longitude
             }
-            // var latlong = new google.maps.LatLng(position.lat, position.lng);
-            // latlongbounds.extend(latlong);
+            var latlong = new google.maps.LatLng(position.lat, position.lng);
+            latlongbounds.extend(latlong);
 
             var content = '<div id="iw-container">' +
                         '<div class="iw-title"> <a href="#">' + location.service + '</a> </div>' +
@@ -587,7 +662,10 @@
             return marker;
         });
 
-        map.fitBounds(latlongbounds);
+        // map.fitBounds(latlongbounds);
+        if (locations.length > 1) {
+          map.fitBounds(latlongbounds);
+      }
 
     }, 2000);
 

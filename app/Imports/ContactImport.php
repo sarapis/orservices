@@ -16,15 +16,14 @@ class ContactImport implements ToModel, WithHeadingRow
      */
     public function model(array $row)
     {
-
         $array = [
-            'contact_recordid' => $row['id'],
+            'contact_recordid' => $row['contact_recordid'],
             'contact_services' => $row['service_id'],
             'contact_email' => $row['email'],
             'contact_name' => $row['name'],
-            'contact_phones' => $row['phone_number'],
-            'contact_phone_areacode' => $row['phone_areacode'],
-            'contact_phone_extension' => $row['phone_extension'],
+            // 'contact_phones' => $row['phone_number'],
+            // 'contact_phone_areacode' => $row['phone_areacode'],
+            // 'contact_phone_extension' => $row['phone_extension'],
             'contact_title' => $row['title'],
             'contact_organizations' => $row['organization_id'],
             'contact_department' => $row['department'],
@@ -34,7 +33,7 @@ class ContactImport implements ToModel, WithHeadingRow
 
             $service_contact = new ServiceContact();
             $service_contact->service_recordid = $row['service_id'] != 'NULL' ? $row['service_id'] : null;
-            $service_contact->contact_recordid = $row['id'];
+            $service_contact->contact_recordid = $row['contact_recordid'];
             $service_contact->save();
         }
 

@@ -47,7 +47,7 @@
   {{-- <script src="../../frontend/assets/examples/js/pages/faq.js"></script> --}}
 {{-- <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script> --}}
 <script>
-$('#widget').draggable();
+// $('#widget').draggable();
 </script>
 <!--  <script>
   (function(document, window, $) {

@@ -31,6 +31,7 @@ use App\Model\Language;
 use App\Model\OrganizationPhone;
 use App\Model\PhoneType;
 use App\Model\Schedule;
+use App\Model\OrganizationTag;
 use App\Services\Stringtoint;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -42,7 +43,10 @@ use Sentinel;
 
 class OrganizationController extends Controller
 {
-
+    public function __construct(CommonController $commonController)
+    {
+        $this->commonController = $commonController;
+    }
     public function airtable($api_key, $base_url)
     {
 
@@ -208,7 +212,7 @@ class OrganizationController extends Controller
         $airtable->syncdate = $date;
         $airtable->save();
     }
-    public function airtable_v2($api_key, $base_url)
+    public function airtable_v2($api_key, $base_url, $organization_tag)
     {
         try {
             $airtable_key_info = Airtablekeyinfo::find(1);
@@ -219,8 +223,8 @@ class OrganizationController extends Controller
             $airtable_key_info->base_url = $base_url;
             $airtable_key_info->save();
 
-            Organization::truncate();
-            OrganizationDetail::truncate();
+            // Organization::truncate();
+            // OrganizationDetail::truncate();
 
             // $airtable = new Airtable(array(
             //     'api_key'   => env('AIRTABLE_API_KEY'),
@@ -241,131 +245,152 @@ class OrganizationController extends Controller
                 $airtable_response = json_decode($response, TRUE);
 
                 foreach ($airtable_response['records'] as $record) {
-
-                    $organization = new Organization();
                     $strtointclass = new Stringtoint();
-                    $organization->organization_recordid = $strtointclass->string_to_int($record['id']);
-                    $organization->organization_name = isset($record['fields']['name']) ? $record['fields']['name'] : null;
-                    if (isset($record['fields']['x-logo'])) {
-                        foreach ($record['fields']['x-logo'] as $key => $image) {
-                            try {
-                                $organization->organization_logo_x .= $image["url"];
-                            } catch (\Exception $e) {
-                                echo 'Caught exception: ',  $e->getMessage(), "\n";
+                    $recordId = $strtointclass->string_to_int($record['id']);
+                    $old_organization = Organization::where('organization_recordid', $recordId)->where('organization_name', isset($record['fields']['name']) ? $record['fields']['name'] : null)->first();
+                    if ($old_organization == null) {
+                        $organization = new Organization();
+                        $strtointclass = new Stringtoint();
+                        $organization->organization_recordid = $strtointclass->string_to_int($record['id']);
+                        $organization->organization_name = isset($record['fields']['name']) ? $record['fields']['name'] : null;
+                        if (isset($record['fields']['x-logo'])) {
+                            foreach ($record['fields']['x-logo'] as $key => $image) {
+                                try {
+                                    $organization->organization_logo_x .= $image["url"];
+                                } catch (\Exception $e) {
+                                    echo 'Caught exception: ',  $e->getMessage(), "\n";
+                                }
                             }
                         }
-                    }
-                    if (isset($record['fields']['forms-x'])) {
-                        foreach ($record['fields']['forms-x'] as $key => $form) {
-                            try {
-                                $organization->organization_forms_x_filename .= $form["filename"];
-                                $organization->organization_forms_x_url .= $form["url"];
-                            } catch (\Exception $e) {
-                                echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        if (isset($record['fields']['forms-x'])) {
+                            foreach ($record['fields']['forms-x'] as $key => $form) {
+                                try {
+                                    $organization->organization_forms_x_filename .= $form["filename"];
+                                    $organization->organization_forms_x_url .= $form["url"];
+                                } catch (\Exception $e) {
+                                    echo 'Caught exception: ',  $e->getMessage(), "\n";
+                                }
                             }
                         }
-                    }
-                    $organization->organization_alternate_name = isset($record['fields']['alternate_name']) ? $record['fields']['alternate_name'] : null;
-                    $organization->organization_x_uid = isset($record['fields']['x-uid']) ? $record['fields']['x-uid'] : null;
-                    $organization->organization_website_rating = isset($record['fields']['y-website_quality']) ? $record['fields']['y-website_quality'] : null;
-                    $organization->organization_description = isset($record['fields']['description']) ? $record['fields']['description'] : null;
+                        $organization->organization_alternate_name = isset($record['fields']['alternate_name']) ? $record['fields']['alternate_name'] : null;
+                        $organization->organization_x_uid = isset($record['fields']['x-uid']) ? $record['fields']['x-uid'] : null;
+                        $organization->organization_website_rating = isset($record['fields']['y-website_quality']) ? $record['fields']['y-website_quality'] : null;
+                        $organization->organization_description = isset($record['fields']['description']) ? $record['fields']['description'] : null;
 
-                    $organization->organization_description =  mb_convert_encoding($organization->organization_description, "HTML-ENTITIES", "UTF-8");
+                        $organization->organization_description =  mb_convert_encoding($organization->organization_description, "HTML-ENTITIES", "UTF-8");
 
-                    $organization->organization_email = isset($record['fields']['email']) ? $record['fields']['email'] : null;
-                    $organization->organization_url = isset($record['fields']['url']) ? $record['fields']['url'] : null;
-                    $organization->organization_status_x = isset($record['fields']['x-status']) ? $record['fields']['x-status'] : null;
-                    if ($organization->organization_status_x == 'Vetted')
-                        $organization->organization_status_sort = 1;
-                    if ($organization->organization_status_x == 'Vetting In Progress')
-                        $organization->organization_status_sort = 2;
-                    if ($organization->organization_status_x == 'Not vetted')
-                        $organization->organization_status_sort = 3;
-                    if ($organization->organization_status_x == null)
-                        $organization->organization_status_sort = 4;
-                    $organization->organization_legal_status = isset($record['fields']['legal_status']) ? $record['fields']['legal_status'] : null;
-                    $organization->organization_tax_status = isset($record['fields']['tax_status']) ? $record['fields']['tax_status'] : null;
-                    $organization->organization_legal_status = isset($record['fields']['legal_status']) ? $record['fields']['legal_status'] : null;
-                    $organization->organization_tax_status = isset($record['fields']['tax_status']) ? $record['fields']['tax_status'] : null;
-                    $organization->organization_tax_id = isset($record['fields']['tax_id']) ? $record['fields']['tax_id'] : null;
-                    $organization->organization_year_incorporated = isset($record['fields']['year_incorporated']) ? $record['fields']['year_incorporated'] : null;
-                    $organization->organization_tag = isset($record['fields']['x-tags']) ? implode(',', $record['fields']['x-tags']) : null;
-
-                    if (isset($record['fields']['services'])) {
-                        $i = 0;
-                        foreach ($record['fields']['services']  as  $value) {
-
-                            $organizationservice = $strtointclass->string_to_int($value);
-
-                            if ($i != 0)
-                                $organization->organization_services = $organization->organization_services . ',' . $organizationservice;
-                            else
-                                $organization->organization_services = $organizationservice;
-                            $i++;
+                        $organization->organization_email = isset($record['fields']['email']) ? $record['fields']['email'] : null;
+                        $organization->organization_url = isset($record['fields']['url']) ? $record['fields']['url'] : null;
+                        $organization->organization_status_x = isset($record['fields']['x-status']) ? $record['fields']['x-status'] : null;
+                        if ($organization->organization_status_x == 'Vetted')
+                            $organization->organization_status_sort = 1;
+                        if ($organization->organization_status_x == 'Vetting In Progress')
+                            $organization->organization_status_sort = 2;
+                        if ($organization->organization_status_x == 'Not vetted')
+                            $organization->organization_status_sort = 3;
+                        if ($organization->organization_status_x == null)
+                            $organization->organization_status_sort = 4;
+                        $organization->organization_legal_status = isset($record['fields']['legal_status']) ? $record['fields']['legal_status'] : null;
+                        $organization->organization_tax_status = isset($record['fields']['tax_status']) ? $record['fields']['tax_status'] : null;
+                        $organization->organization_legal_status = isset($record['fields']['legal_status']) ? $record['fields']['legal_status'] : null;
+                        $organization->organization_tax_status = isset($record['fields']['tax_status']) ? $record['fields']['tax_status'] : null;
+                        $organization->organization_tax_id = isset($record['fields']['tax_id']) ? $record['fields']['tax_id'] : null;
+                        $organization->organization_year_incorporated = isset($record['fields']['year_incorporated']) ? $record['fields']['year_incorporated'] : null;
+                        // $organization->organization_tag = isset($record['fields']['x-tags']) ? implode(',', $record['fields']['x-tags']) : null;
+                        $organization_tags = isset($record['fields']['x-tags']) ? $record['fields']['x-tags'] : [];
+                        if (!empty($organization_tags)) {
+                            // $organization->organization_tag = $organization->organization_tag . ',' . $organization_tag;
+                            $orgTag = [];
+                            foreach ($organization_tags as $key1 => $value1) {
+                                $organization_tag = OrganizationTag::where('tag', 'LIKE', '%' . $value1 . '%')->first();
+                                if ($organization_tag) {
+                                    $orgTag[] = $organization_tag->id;
+                                } else {
+                                    $organization_tag = OrganizationTag::create([
+                                        'tag' => $value1
+                                    ]);
+                                    $orgTag[] = $organization_tag->id;
+                                }
+                            }
+                            $organization->organization_tag = implode(',', $orgTag);
                         }
-                    }
 
-                    if (isset($record['fields']['phones'])) {
-                        $i = 0;
-                        foreach ($record['fields']['phones']  as  $value) {
+                        if (isset($record['fields']['services'])) {
+                            $i = 0;
+                            foreach ($record['fields']['services']  as  $value) {
 
-                            $organizationphone = $strtointclass->string_to_int($value);
+                                $organizationservice = $strtointclass->string_to_int($value);
 
-                            if ($i != 0)
-                                $organization->organization_phones = $organization->organization_phones . ',' . $organizationphone;
-                            else
-                                $organization->organization_phones = $organizationphone;
-                            $i++;
+                                if ($i != 0)
+                                    $organization->organization_services = $organization->organization_services . ',' . $organizationservice;
+                                else
+                                    $organization->organization_services = $organizationservice;
+                                $i++;
+                            }
                         }
-                    }
 
+                        if (isset($record['fields']['phones'])) {
+                            $i = 0;
+                            foreach ($record['fields']['phones']  as  $value) {
 
-                    if (isset($record['fields']['locations'])) {
-                        $i = 0;
-                        foreach ($record['fields']['locations']  as  $value) {
+                                $organizationphone = $strtointclass->string_to_int($value);
 
-                            $organizationlocation = $strtointclass->string_to_int($value);
-
-                            if ($i != 0)
-                                $organization->organization_locations = $organization->organization_locations . ',' . $organizationlocation;
-                            else
-                                $organization->organization_locations = $organizationlocation;
-                            $i++;
+                                if ($i != 0)
+                                    $organization->organization_phones = $organization->organization_phones . ',' . $organizationphone;
+                                else
+                                    $organization->organization_phones = $organizationphone;
+                                $i++;
+                            }
                         }
-                    }
-                    $organization->organization_contact = isset($record['fields']['contacts']) ? implode(",", $record['fields']['contacts']) : null;
-                    $organization->organization_contact = $strtointclass->string_to_int($organization->organization_contact);
 
-                    if (isset($record['fields']['x-details'])) {
-                        $i = 0;
-                        foreach ($record['fields']['x-details']  as  $value) {
-                            $organization_detail = new OrganizationDetail();
-                            $organization_detail->organization_recordid = $organization->organization_recordid;
-                            $organization_detail->detail_recordid = $strtointclass->string_to_int($value);
-                            $organization_detail->save();
-                            $organizationdetail = $strtointclass->string_to_int($value);
 
-                            if ($i != 0)
-                                $organization->organization_details = $organization->organization_details . ',' . $organizationdetail;
-                            else
-                                $organization->organization_details = $organizationdetail;
-                            $i++;
+                        if (isset($record['fields']['locations'])) {
+                            $i = 0;
+                            foreach ($record['fields']['locations']  as  $value) {
+
+                                $organizationlocation = $strtointclass->string_to_int($value);
+
+                                if ($i != 0)
+                                    $organization->organization_locations = $organization->organization_locations . ',' . $organizationlocation;
+                                else
+                                    $organization->organization_locations = $organizationlocation;
+                                $i++;
+                            }
                         }
-                    }
+                        $organization->organization_contact = isset($record['fields']['contacts']) ? implode(",", $record['fields']['contacts']) : null;
+                        $organization->organization_contact = $strtointclass->string_to_int($organization->organization_contact);
 
-                    if (isset($record['fields']['AIRS Taxonomy-x'])) {
-                        $i = 0;
-                        foreach ($record['fields']['AIRS Taxonomy-x']  as  $value) {
+                        if (isset($record['fields']['x-details'])) {
+                            $i = 0;
+                            foreach ($record['fields']['x-details']  as  $value) {
+                                $organization_detail = new OrganizationDetail();
+                                $organization_detail->organization_recordid = $organization->organization_recordid;
+                                $organization_detail->detail_recordid = $strtointclass->string_to_int($value);
+                                $organization_detail->save();
+                                $organizationdetail = $strtointclass->string_to_int($value);
 
-                            if ($i != 0)
-                                $organization->organization_airs_taxonomy_x = $organization->organization_airs_taxonomy_x . ',' . $value;
-                            else
-                                $organization->organization_airs_taxonomy_x  = $value;
-                            $i++;
+                                if ($i != 0)
+                                    $organization->organization_details = $organization->organization_details . ',' . $organizationdetail;
+                                else
+                                    $organization->organization_details = $organizationdetail;
+                                $i++;
+                            }
                         }
-                    }
 
-                    $organization->save();
+                        if (isset($record['fields']['AIRS Taxonomy-x'])) {
+                            $i = 0;
+                            foreach ($record['fields']['AIRS Taxonomy-x']  as  $value) {
+
+                                if ($i != 0)
+                                    $organization->organization_airs_taxonomy_x = $organization->organization_airs_taxonomy_x . ',' . $value;
+                                else
+                                    $organization->organization_airs_taxonomy_x  = $value;
+                                $i++;
+                            }
+                        }
+
+                        $organization->save();
+                    }
                 }
             } while ($request = $response->next());
 
@@ -686,7 +711,7 @@ class OrganizationController extends Controller
     {
         try {
             $organization = Organization::where('organization_recordid', $id)->first();
-            $organization->organization_tag = $request->tokenfield;
+            $organization->organization_tag = $request->organization_tag ? implode(',', $request->organization_tag) : '';
             $organization->updated_at = date("Y-m-d H:i:s");
             $organization->save();
             Session::flash('message', 'Tag added successfully!');
@@ -807,6 +832,7 @@ class OrganizationController extends Controller
             $organization->organization_tax_status = $request->organization_tax_status;
             $organization->organization_tax_id = $request->organization_tax_id;
             $organization->organization_website_rating = $request->organization_rating;
+            $organization->organization_code = $request->organization_code;
 
             $organization->organization_year_incorporated = $request->organization_year_incorporated;
             // if ($request->organization_services) {
@@ -1637,17 +1663,29 @@ class OrganizationController extends Controller
             $existing_tag_element_list = Organization::whereNotNull('organization_tag')->get()->pluck('organization_tag');
             $existing_tags = [];
             foreach ($existing_tag_element_list as $key => $existing_tag_element) {
-                $existing_tag_list = explode(", ", $existing_tag_element);
+                $existing_tag_list = explode(",", $existing_tag_element);
+
                 foreach ($existing_tag_list as $key => $existing_tag) {
                     if (!in_array($existing_tag, $existing_tags, true)) {
                         array_push($existing_tags, $existing_tag);
                     }
                 }
             }
+            $existing_tags = array_filter($existing_tags);
+            $tagList = [];
+            foreach ($existing_tags as $t) {
+                $tagList[$t] = $t;
+            }
+            $allTags = OrganizationTag::pluck('tag', 'id')->put('create_new', '+ Create New');
+
+            $disposition_list = ['Success', 'Limited Success', 'Unable to Connect'];
+            $method_list = ['Web and Call', 'Web', 'Email', 'Call', 'SMS'];
             $comment_list = Comment::where('comments_organization', '=', $id)->get();
             $session_list = SessionData::where('session_organization', '=', $id)->select('session_recordid', 'session_edits', 'session_performed_at', 'session_verification_status')->get();
 
-            return view('frontEnd.organizations.show', compact('organization', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'contact_info_list', 'organization_services', 'location_info_list', 'existing_tags', 'comment_list', 'session_list'));
+            $organizationAudits = $this->commonController->organizationSection($organization);
+
+            return view('frontEnd.organizations.show', compact('organization', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'contact_info_list', 'organization_services', 'location_info_list', 'existing_tags', 'comment_list', 'session_list', 'disposition_list', 'method_list', 'tagList', 'organizationAudits', 'allTags'));
         } else {
             Session::flash('message', 'This record has been deleted.');
             Session::flash('status', 'warning');
@@ -2003,7 +2041,9 @@ class OrganizationController extends Controller
             }
             $phone_language_data = json_encode($phone_language_data);
 
-            return view('frontEnd.organizations.edit', compact('organization', 'map', 'services_info_list', 'organization_service_list', 'organization_contacts_list', 'contact_info_list', 'organization_phones_list', 'phone_info_list', 'organization_locations_list', 'location_info_list', 'organization_services', 'rating_info_list', 'all_contacts', 'organizationContacts', 'organization_locations_data', 'all_locations', 'phone_languages', 'all_services', 'taxonomy_info_list', 'schedule_info_list', 'detail_info_list', 'address_info_list', 'service_info_list', 'address_states_list', 'address_city_list', 'phone_type', 'service_alternate_name', 'service_program', 'service_status', 'service_taxonomies', 'service_application_process', 'service_wait_time', 'service_fees', 'service_accreditations', 'service_licenses', 'service_schedules', 'service_details', 'service_address', 'service_metadata', 'service_airs_taxonomy_x', 'location_alternate_name', 'location_transporation', 'location_service', 'location_schedules', 'location_description', 'location_details', 'contact_service', 'contact_department', 'contact_phone_numbers', 'contact_phone_extensions', 'contact_phone_types', 'contact_phone_languages', 'contact_phone_descriptions', 'location_phone_numbers', 'location_phone_extensions', 'location_phone_types', 'location_phone_languages', 'location_phone_descriptions', 'opens_at_location_monday_datas', 'closes_at_location_monday_datas', 'schedule_closed_monday_datas', 'opens_at_location_tuesday_datas', 'closes_at_location_tuesday_datas', 'schedule_closed_tuesday_datas', 'opens_at_location_wednesday_datas', 'closes_at_location_wednesday_datas', 'schedule_closed_wednesday_datas', 'opens_at_location_thursday_datas', 'closes_at_location_thursday_datas', 'schedule_closed_thursday_datas', 'opens_at_location_friday_datas', 'closes_at_location_friday_datas', 'schedule_closed_friday_datas', 'opens_at_location_saturday_datas', 'closes_at_location_saturday_datas', 'schedule_closed_saturday_datas', 'opens_at_location_sunday_datas', 'closes_at_location_sunday_datas', 'schedule_closed_sunday_datas', 'location_holiday_start_dates', 'location_holiday_end_dates', 'location_holiday_open_ats', 'location_holiday_close_ats', 'location_holiday_closeds', 'phone_language_data'));
+            $organizationAudits = $this->commonController->organizationSection($organization);
+
+            return view('frontEnd.organizations.edit', compact('organization', 'map', 'services_info_list', 'organization_service_list', 'organization_contacts_list', 'contact_info_list', 'organization_phones_list', 'phone_info_list', 'organization_locations_list', 'location_info_list', 'organization_services', 'rating_info_list', 'all_contacts', 'organizationContacts', 'organization_locations_data', 'all_locations', 'phone_languages', 'all_services', 'taxonomy_info_list', 'schedule_info_list', 'detail_info_list', 'address_info_list', 'service_info_list', 'address_states_list', 'address_city_list', 'phone_type', 'service_alternate_name', 'service_program', 'service_status', 'service_taxonomies', 'service_application_process', 'service_wait_time', 'service_fees', 'service_accreditations', 'service_licenses', 'service_schedules', 'service_details', 'service_address', 'service_metadata', 'service_airs_taxonomy_x', 'location_alternate_name', 'location_transporation', 'location_service', 'location_schedules', 'location_description', 'location_details', 'contact_service', 'contact_department', 'contact_phone_numbers', 'contact_phone_extensions', 'contact_phone_types', 'contact_phone_languages', 'contact_phone_descriptions', 'location_phone_numbers', 'location_phone_extensions', 'location_phone_types', 'location_phone_languages', 'location_phone_descriptions', 'opens_at_location_monday_datas', 'closes_at_location_monday_datas', 'schedule_closed_monday_datas', 'opens_at_location_tuesday_datas', 'closes_at_location_tuesday_datas', 'schedule_closed_tuesday_datas', 'opens_at_location_wednesday_datas', 'closes_at_location_wednesday_datas', 'schedule_closed_wednesday_datas', 'opens_at_location_thursday_datas', 'closes_at_location_thursday_datas', 'schedule_closed_thursday_datas', 'opens_at_location_friday_datas', 'closes_at_location_friday_datas', 'schedule_closed_friday_datas', 'opens_at_location_saturday_datas', 'closes_at_location_saturday_datas', 'schedule_closed_saturday_datas', 'opens_at_location_sunday_datas', 'closes_at_location_sunday_datas', 'schedule_closed_sunday_datas', 'location_holiday_start_dates', 'location_holiday_end_dates', 'location_holiday_open_ats', 'location_holiday_close_ats', 'location_holiday_closeds', 'phone_language_data', 'organizationAudits'));
         } else {
             Session::flash('message', 'This record has been deleted.');
             Session::flash('status', 'warning');
@@ -2030,6 +2070,8 @@ class OrganizationController extends Controller
             ]);
         }
         try {
+            $organization_old = Organization::where('organization_recordid', $id)->first();
+
             $organization = Organization::find($id);
             $organization->organization_name = $request->organization_name;
             $organization->organization_alternate_name = $request->organization_alternate_name;
@@ -2040,6 +2082,7 @@ class OrganizationController extends Controller
             $organization->organization_tax_status = $request->organization_tax_status;
             $organization->organization_tax_id = $request->organization_tax_id;
             $organization->organization_website_rating = $request->organization_rating;
+            $organization->organization_code = $request->organization_code;
 
             // if ($request->organization_year_incorporated) {
             //     $organization->organization_year_incorporated = join(',', $request->organization_year_incorporated);
@@ -2903,6 +2946,55 @@ class OrganizationController extends Controller
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
             return redirect()->back();
+        }
+    }
+    public function organization_history($organization_old, $request)
+    {
+        try {
+            // if($request->)
+        } catch (\Throwable $th) {
+        }
+    }
+    public function createNewTag(Request $request, $id)
+    {
+        try {
+            $tag = $request->tag;
+            $organizationTag  = OrganizationTag::create([
+                'tag' => $tag,
+                'created_by' => Auth::id()
+            ]);
+            $organization = Organization::whereId($id)->first();
+            $orgTag = $organization->organization_tag != null ? explode(',', $organization->organization_tag) : [];
+            $orgTag[] = $organizationTag->id;
+            if (!empty($orgTag)) {
+                $organization->organization_tag = implode(',', $orgTag);
+                $organization->save();
+            }
+            Session::flash('message', 'Organization tag added successfully!');
+            Session::flash('status', 'success');
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'success');
+            return redirect()->back();
+        }
+    }
+    public function addOrganizationTag(Request $request)
+    {
+        try {
+            $id = $request->id;
+            $organization = Organization::whereId($id)->first();
+            $organization->organization_tag = $request->val && is_array($request->val) ? implode(',', $request->val) : '';
+            $organization->save();
+            return response()->json([
+                'message' => 'tags added successfully!',
+                'success' => true
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage(),
+                'success' => false
+            ], 500);
         }
     }
 }

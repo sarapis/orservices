@@ -59,6 +59,12 @@
                         <li><a href="/analytics">Analytics</a></li>
                     </ul>
                 </li>
+                <li><a><img src="/images/activity.png" alt="activity" style="margin-left: -5px;width: 25px"/>  Activity <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                        <li><a href="{{ route('notes.index') }}">Notes</a></li>
+                        <li><a href="{{ route('edits.index') }}">Edits</a></li>
+                    </ul>
+                </li>
                 <!-- <li><a><i class="fa fa-line-chart"></i> Taxonomies <span class="fa fa-chevron-down"></span></a>
             <ul class="nav child_menu">
               <li><a href="/service_taxonomy">Service Taxonomy</a></li>
@@ -94,6 +100,7 @@
                         <li><a href="/tb_taxonomy">Services</a></li>
                         <li><a href="{{ route('languages.index') }}">Language</a></li>
                         <li><a href="{{ route('XDetails.index') }}">Details</a></li>
+                        <li><a href="{{ route('organization_tags.index') }}">Organization Tags</a></li>
                         <li><a href="{{ route('phone_types.index') }}">Phone Type</a></li>
                         <li><a href="{{ route('detail_types.index') }}">Detail Type</a></li>
                         <li><a href="{{ route('taxonomy_types.index') }}">Taxonomies</a></li>

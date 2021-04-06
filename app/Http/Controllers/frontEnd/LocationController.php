@@ -33,15 +33,20 @@ use App\Services\Stringtoint;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 use Sentinel;
+use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
 // use DataTables;
-
 class LocationController extends Controller
 {
+    public function __construct(CommonController $commonController)
+    {
+        $this->commonController = $commonController;
+    }
 
     public function airtable($api_key, $base_url)
     {
@@ -181,10 +186,10 @@ class LocationController extends Controller
             $airtable_key_info->base_url = $base_url;
             $airtable_key_info->save();
 
-            Location::truncate();
-            LocationAddress::truncate();
-            LocationPhone::truncate();
-            LocationSchedule::truncate();
+            // Location::truncate();
+            // LocationAddress::truncate();
+            // LocationPhone::truncate();
+            // LocationSchedule::truncate();
 
             // $airtable = new Airtable(array(
             //     'api_key'   => env('AIRTABLE_API_KEY'),
@@ -205,103 +210,107 @@ class LocationController extends Controller
                 $airtable_response = json_decode($response, TRUE);
 
                 foreach ($airtable_response['records'] as $record) {
-
-                    $location = new Location();
                     $strtointclass = new Stringtoint();
-                    $location->location_recordid = $strtointclass->string_to_int($record['id']);
-                    $location->location_name = isset($record['fields']['name']) ? $record['fields']['name'] : null;
+                    $recordId = $strtointclass->string_to_int($record['id']);
+                    $old_location = Location::where('location_recordid', $recordId)->where('location_name', isset($record['fields']['name']) ? $record['fields']['name'] : null)->first();
+                    if ($old_location == null) {
+                        $location = new Location();
+                        $strtointclass = new Stringtoint();
+                        $location->location_recordid = $strtointclass->string_to_int($record['id']);
+                        $location->location_name = isset($record['fields']['name']) ? $record['fields']['name'] : null;
 
-                    $location->location_organization = isset($record['fields']['organizations']) ? implode(",", $record['fields']['organizations']) : null;
+                        $location->location_organization = isset($record['fields']['organizations']) ? implode(",", $record['fields']['organizations']) : null;
 
-                    $location->location_organization = $strtointclass->string_to_int($location->location_organization);
+                        $location->location_organization = $strtointclass->string_to_int($location->location_organization);
 
-                    $location->location_alternate_name = isset($record['fields']['alternate_name']) ? $record['fields']['alternate_name'] : null;
-                    $location->location_transportation = isset($record['fields']['transportation']) ? $record['fields']['transportation'] : null;
-                    $location->location_latitude = isset($record['fields']['latitude']) ? $record['fields']['latitude'] : null;
-                    $location->location_longitude = isset($record['fields']['longitude']) ? $record['fields']['longitude'] : null;
-                    $location->location_description = isset($record['fields']['description']) ? $record['fields']['description'] : null;
-                    $location->location_services = isset($record['fields']['services']) ? implode(",", $record['fields']['services']) : null;
+                        $location->location_alternate_name = isset($record['fields']['alternate_name']) ? $record['fields']['alternate_name'] : null;
+                        $location->location_transportation = isset($record['fields']['transportation']) ? $record['fields']['transportation'] : null;
+                        $location->location_latitude = isset($record['fields']['latitude']) ? $record['fields']['latitude'] : null;
+                        $location->location_longitude = isset($record['fields']['longitude']) ? $record['fields']['longitude'] : null;
+                        $location->location_description = isset($record['fields']['description']) ? $record['fields']['description'] : null;
+                        $location->location_services = isset($record['fields']['services']) ? implode(",", $record['fields']['services']) : null;
 
-                    if (isset($record['fields']['services'])) {
-                        $i = 0;
-                        foreach ($record['fields']['services']  as  $value) {
+                        if (isset($record['fields']['services'])) {
+                            $i = 0;
+                            foreach ($record['fields']['services']  as  $value) {
 
-                            $locationservice = $strtointclass->string_to_int($value);
+                                $locationservice = $strtointclass->string_to_int($value);
 
-                            if ($i != 0)
-                                $location->location_services = $location->location_services . ',' . $locationservice;
-                            else
-                                $location->location_services = $locationservice;
-                            $i++;
+                                if ($i != 0)
+                                    $location->location_services = $location->location_services . ',' . $locationservice;
+                                else
+                                    $location->location_services = $locationservice;
+                                $i++;
+                            }
                         }
-                    }
 
-                    if (isset($record['fields']['phones'])) {
-                        $i = 0;
-                        foreach ($record['fields']['phones']  as  $value) {
+                        if (isset($record['fields']['phones'])) {
+                            $i = 0;
+                            foreach ($record['fields']['phones']  as  $value) {
 
-                            $location_phone = new Locationphone();
-                            $location_phone->location_recordid = $location->location_recordid;
-                            $location_phone->phone_recordid = $strtointclass->string_to_int($value);
-                            $location_phone->save();
-                            if ($i != 0)
-                                $location->location_phones = $location->location_phones . ',' . $location_phone->phone_recordid;
-                            else
-                                $location->location_phones = $location_phone->phone_recordid;
-                            $i++;
+                                $location_phone = new Locationphone();
+                                $location_phone->location_recordid = $location->location_recordid;
+                                $location_phone->phone_recordid = $strtointclass->string_to_int($value);
+                                $location_phone->save();
+                                if ($i != 0)
+                                    $location->location_phones = $location->location_phones . ',' . $location_phone->phone_recordid;
+                                else
+                                    $location->location_phones = $location_phone->phone_recordid;
+                                $i++;
+                            }
                         }
-                    }
 
-                    // $location->location_details = isset($record['fields']['x-details']) ? implode(",", $record['fields']['x-details']) : null;
+                        // $location->location_details = isset($record['fields']['x-details']) ? implode(",", $record['fields']['x-details']) : null;
 
-                    if (isset($record['fields']['x-details'])) {
-                        $i = 0;
-                        foreach ($record['fields']['x-details']  as  $value) {
+                        if (isset($record['fields']['x-details'])) {
+                            $i = 0;
+                            foreach ($record['fields']['x-details']  as  $value) {
 
-                            $locationDetail = $strtointclass->string_to_int($value);
+                                $locationDetail = $strtointclass->string_to_int($value);
 
-                            if ($i != 0)
-                                $location->location_details = $location->location_details . ',' . $locationDetail;
-                            else
-                                $location->location_details = $locationDetail;
-                            $i++;
+                                if ($i != 0)
+                                    $location->location_details = $location->location_details . ',' . $locationDetail;
+                                else
+                                    $location->location_details = $locationDetail;
+                                $i++;
+                            }
                         }
-                    }
 
 
-                    if (isset($record['fields']['schedule'])) {
-                        $i = 0;
-                        foreach ($record['fields']['schedule']  as  $value) {
-                            $locationschedule = new Locationschedule();
-                            $locationschedule->location_recordid = $location->location_recordid;
-                            $locationschedule->schedule_recordid = $strtointclass->string_to_int($value);
-                            $locationschedule->save();
-                            if ($i != 0)
-                                $location->location_schedule = $location->location_schedule . ',' . $locationschedule->schedule_recordid;
-                            else
-                                $location->location_schedule = $locationschedule->schedule_recordid;
-                            $i++;
+                        if (isset($record['fields']['schedule'])) {
+                            $i = 0;
+                            foreach ($record['fields']['schedule']  as  $value) {
+                                $locationschedule = new Locationschedule();
+                                $locationschedule->location_recordid = $location->location_recordid;
+                                $locationschedule->schedule_recordid = $strtointclass->string_to_int($value);
+                                $locationschedule->save();
+                                if ($i != 0)
+                                    $location->location_schedule = $location->location_schedule . ',' . $locationschedule->schedule_recordid;
+                                else
+                                    $location->location_schedule = $locationschedule->schedule_recordid;
+                                $i++;
+                            }
                         }
-                    }
 
-                    $location->location_address = isset($record['fields']['physical_addresses']) ? implode(",", $record['fields']['physical_addresses']) : null;
+                        $location->location_address = isset($record['fields']['physical_addresses']) ? implode(",", $record['fields']['physical_addresses']) : null;
 
-                    if (isset($record['fields']['physical_addresses'])) {
-                        $i = 0;
-                        foreach ($record['fields']['physical_addresses']  as  $value) {
-                            $locationaddress = new Locationaddress();
-                            $locationaddress->location_recordid = $location->location_recordid;
-                            $locationaddress->address_recordid = $strtointclass->string_to_int($value);
-                            $locationaddress->save();
-                            if ($i != 0)
-                                $location->location_address = $location->location_address . ',' . $locationaddress->address_recordid;
-                            else
-                                $location->location_address = $locationaddress->address_recordid;
-                            $i++;
+                        if (isset($record['fields']['physical_addresses'])) {
+                            $i = 0;
+                            foreach ($record['fields']['physical_addresses']  as  $value) {
+                                $locationaddress = new Locationaddress();
+                                $locationaddress->location_recordid = $location->location_recordid;
+                                $locationaddress->address_recordid = $strtointclass->string_to_int($value);
+                                $locationaddress->save();
+                                if ($i != 0)
+                                    $location->location_address = $location->location_address . ',' . $locationaddress->address_recordid;
+                                else
+                                    $location->location_address = $locationaddress->address_recordid;
+                                $i++;
+                            }
                         }
-                    }
 
-                    $location->save();
+                        $location->save();
+                    }
                 }
             } while ($request = $response->next());
 
@@ -311,7 +320,7 @@ class LocationController extends Controller
             $airtable->syncdate = $date;
             $airtable->save();
         } catch (\Throwable $th) {
-            \Log::error('Error in location: '.$th->getMessage());
+            Log::error('Error in location: ' . $th->getMessage());
             return response()->json([
                 'message' => $th->getMessage(),
                 'success' => false
@@ -521,9 +530,9 @@ class LocationController extends Controller
 
             $facility_info[0] = '';
             $facility_info[1] = $facility->location_recordid;
-            $facility_info[2] = str_limit($facility->location_name, 30, '...');
+            $facility_info[2] = Str::limit($facility->location_name, 30, '...');
             if ($facility->organization) {
-                $facility_info[3] = str_limit($facility->organization['organization_name'], 25, '...');
+                $facility_info[3] = Str::limit($facility->organization['organization_name'], 25, '...');
             } else {
                 $facility_info[3] = '';
             }
@@ -544,7 +553,7 @@ class LocationController extends Controller
             }
 
             $facility_info[4] = $facility_full_address_info;
-            $facility_info[5] = str_limit($facility->location_description, 15, '...');
+            $facility_info[5] = Str::limit($facility->location_description, 15, '...');
 
             array_push($result, $facility_info);
         }
@@ -593,8 +602,6 @@ class LocationController extends Controller
             return redirect()->back();
         }
     }
-
-
     public function location_comment(Request $request, $id)
     {
 
@@ -665,7 +672,9 @@ class LocationController extends Controller
         $address_city_list = array_unique($address_city_list);
         $phone_languages = Language::pluck('language', 'language_recordid');
         $phone_type = PhoneType::pluck('type', 'id');
-        return view('frontEnd.locations.facility-create-in-organization', compact('map', 'organization', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'phone_languages', 'phone_type'));
+
+        $detail_types = DetailType::pluck('type', 'type');
+        return view('frontEnd.locations.facility-create-in-organization', compact('map', 'organization', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'phone_languages', 'phone_type', 'detail_types'));
     }
 
     public function create()
@@ -735,7 +744,7 @@ class LocationController extends Controller
             $facility->location_alternate_name = $request->location_alternate_name;
             $facility->location_transportation = $request->location_transporation;
             $facility->location_description = $request->location_description;
-            $facility->location_details = $request->location_details;
+            // $facility->location_details = $request->location_details;
 
             // $organization_name = $request->facility_organization;
             // $facility_organization = Organization::where('organization_name', '=', $organization_name)->first();
@@ -755,6 +764,50 @@ class LocationController extends Controller
                 $facility->location_schedule = '';
             }
             $facility->schedules()->sync($request->facility_schedules);
+
+            // detail section
+
+            if ($request->detail_type) {
+                $detail_type = $request->detail_type;
+                $detail_term = $request->detail_term;
+                $term_type = $request->term_type;
+                $detail_ids = [];
+                foreach ($detail_type as $key => $value) {
+                    if ($term_type[$key] == 'new') {
+                        $detail = new Detail();
+                        $detail_recordid = Detail::max('detail_recordid') + 1;
+                        $detail->detail_recordid = $detail_recordid;
+                        $detail->detail_type = $value;
+                        $detail_locations = $detail->detail_locations ? explode(',', $detail->detail_locations) : [];
+                        if (!empty($detail_locations)) {
+                            $detail_locations = array_filter($detail_locations);
+                        }
+                        if (!in_array($new_recordid, $detail_locations)) {
+                            array_push($detail_locations, $new_recordid);
+                        }
+                        $detail->detail_locations = join(',', $detail_locations);
+                        $detail->detail_value = $detail_term[$key];
+                        $detail->save();
+
+                        $detail_ids[] = $detail_recordid;
+                    } else {
+                        $detail_update = Detail::where('detail_recordid', $detail_term[$key])->first();
+                        if ($detail_update) {
+                            $detail_locations = $detail_update->detail_locations ? explode(',', $detail_update->detail_locations) : [];
+                            if (!empty($detail_locations)) {
+                                $detail_locations = array_filter($detail_locations);
+                            }
+                            if (!in_array($new_recordid, $detail_locations)) {
+                                array_push($detail_locations, $new_recordid);
+                            }
+                            $detail_update->detail_locations = join(',', $detail_locations);
+                            $detail_update->save();
+                        }
+                        $detail_ids[] = $detail_term[$key];
+                    }
+                }
+            }
+            $facility->location_details = join(',', $detail_ids);
 
             // if ($request->facility_address) {
             //     $facility->location_address = join(',', $request->facility_address);
@@ -1176,7 +1229,10 @@ class LocationController extends Controller
 
                 $locationDetails = Detail::whereIn('detail_recordid', $detail_recordids)->get();
             }
-            return view('frontEnd.locations.show', compact('facility', 'map', 'locations', 'facility_organizations', 'comment_list', 'existing_tags', 'locationDetails'));
+
+            $facilityAudits = $this->commonController->locationSection($facility);
+
+            return view('frontEnd.locations.show', compact('facility', 'map', 'locations', 'facility_organizations', 'comment_list', 'existing_tags', 'locationDetails', 'facilityAudits'));
         } else {
             Session::flash('message', 'This record has been deleted.');
             Session::flash('status', 'warning');
@@ -1302,7 +1358,9 @@ class LocationController extends Controller
         }
         $phone_language_data = json_encode($phone_language_data);
 
-        return view('frontEnd.locations.edit', compact('facility', 'map', 'facility_organization_name', 'service_info_list', 'facility_service_list', 'organization_names', 'facility_organization_list', 'facility_phone_number', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'location_address_city', 'location_street_address', 'location_zip_code', 'location_state', 'phone_languages', 'phone_type', 'detail_types', 'locationDetails', 'phone_language_data'));
+        $facilityAudits = $this->commonController->locationSection($facility);
+
+        return view('frontEnd.locations.edit', compact('facility', 'map', 'facility_organization_name', 'service_info_list', 'facility_service_list', 'organization_names', 'facility_organization_list', 'facility_phone_number', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'location_address_city', 'location_street_address', 'location_zip_code', 'location_state', 'phone_languages', 'phone_type', 'detail_types', 'locationDetails', 'phone_language_data', 'facilityAudits'));
     }
 
     /**
@@ -1367,19 +1425,21 @@ class LocationController extends Controller
 
                         $detail_ids[] = $detail_recordid;
                     } else {
-                        $detail_update = Detail::where('detail_recordid', $detail_term[$key])->first();
-                        if ($detail_update) {
-                            $detail_locations = $detail_update->detail_locations ? explode(',', $detail_update->detail_locations) : [];
-                            if (!empty($detail_locations)) {
-                                $detail_locations = array_filter($detail_locations);
+                        if (isset($detail_term[$key])) {
+                            $detail_update = Detail::where('detail_recordid', $detail_term[$key])->first();
+                            if ($detail_update) {
+                                $detail_locations = $detail_update->detail_locations ? explode(',', $detail_update->detail_locations) : [];
+                                if (!empty($detail_locations)) {
+                                    $detail_locations = array_filter($detail_locations);
+                                }
+                                if (!in_array($id, $detail_locations)) {
+                                    array_push($detail_locations, $id);
+                                }
+                                $detail_update->detail_locations = join(',', $detail_locations);
+                                $detail_update->save();
                             }
-                            if (!in_array($id, $detail_locations)) {
-                                array_push($detail_locations, $id);
-                            }
-                            $detail_update->detail_locations = join(',', $detail_locations);
-                            $detail_update->save();
+                            $detail_ids[] = $detail_term[$key];
                         }
-                        $detail_ids[] = $detail_term[$key];
                     }
                 }
             }
@@ -1459,25 +1519,7 @@ class LocationController extends Controller
 
             $facility->location_phones = '';
             $phone_recordid_list = [];
-            // if ($request->facility_phones) {
-            //     $facility_phone_number_list = $request->facility_phones;
-            //     foreach ($facility_phone_number_list as $key => $facility_phone_number) {
-            //         $phone_info = Phone::where('phone_number', '=', $facility_phone_number)->select('phone_recordid')->first();
-            //         if ($phone_info) {
-            //             $facility->location_phones = $facility->location_phones . $phone_info->phone_recordid . ',';
-            //             array_push($phone_recordid_list, $phone_info->phone_recordid);
-            //         } else {
-            //             $new_phone = new Phone;
-            //             $new_phone_recordid = Phone::max('phone_recordid') + 1;
-            //             $new_phone->phone_recordid = $new_phone_recordid;
-            //             $new_phone->phone_number = $facility_phone_number;
-            //             $new_phone->save();
-            //             $facility->location_phones = $facility->location_phones . $new_phone_recordid . ',';
-            //             array_push($phone_recordid_list, $new_phone_recordid);
-            //         }
-            //     }
-            // }
-            //
+
 
             if ($request->facility_phones) {
                 $facility_phone_number_list = $request->facility_phones;
@@ -1486,16 +1528,9 @@ class LocationController extends Controller
                 $facility_phone_language_list = $request->phone_language_data ? json_decode($request->phone_language_data) : [];
                 $facility_phone_description_list = $request->phone_description;
 
-                // foreach ($facility_phone_number_list as $key => $facility_phone_number) {
-
-                //     if ($phone_info) {
-                //         $facility->location_phones = $facility->location_phones . $phone_info->phone_recordid . ',';
-                //         array_push($phone_recordid_list, $phone_info->phone_recordid);
-                //     } else {
                 for ($i = 0; $i < count($facility_phone_number_list); $i++) {
                     $phone_info = Phone::where('phone_number', '=', $facility_phone_number_list[$i])->first();
                     if ($phone_info) {
-                        $facility->location_phones = $facility->location_phones . $phone_info->phone_recordid . ',';
                         $phone_info->phone_number = $facility_phone_number_list[$i];
                         $phone_info->phone_extension = $facility_phone_extension_list[$i];
                         $phone_info->phone_type = $facility_phone_type_list[$i];
@@ -1513,13 +1548,12 @@ class LocationController extends Controller
                         $new_phone->phone_language = $facility_phone_language_list && isset($facility_phone_language_list[$i]) ? implode(',', $facility_phone_language_list[$i]) : '';
                         $new_phone->phone_description = $facility_phone_description_list[$i];
                         $new_phone->save();
-                        $facility->location_phones = $facility->location_phones . $new_phone_recordid . ',';
                         array_push($phone_recordid_list, $new_phone_recordid);
                     }
-                    //     }
-                    // }
                 }
             }
+            $facility->location_phones = implode(',', $phone_recordid_list);
+
             $facility->phones()->sync($phone_recordid_list);
 
             if ($request->removePhoneDataId) {
@@ -1620,8 +1654,9 @@ class LocationController extends Controller
 
         $phone_languages = Language::pluck('language', 'language_recordid');
         $phone_type = PhoneType::pluck('type', 'id');
+        $detail_types = DetailType::pluck('type', 'type');
 
-        return view('frontEnd.locations.facility-create-in-service', compact('service_recordid', 'map', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'organization_recordid', 'organizations', 'phone_languages', 'phone_type'));
+        return view('frontEnd.locations.facility-create-in-service', compact('service_recordid', 'map', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'organization_recordid', 'organizations', 'phone_languages', 'phone_type', 'detail_types'));
     }
     public function add_new_facility_in_service(Request $request)
     {
@@ -1650,7 +1685,7 @@ class LocationController extends Controller
             $facility->location_alternate_name = $request->location_alternate_name;
             $facility->location_transportation = $request->location_transporation;
             $facility->location_description = $request->location_description;
-            $facility->location_details = $request->location_details;
+            // $facility->location_details = $request->location_details;
 
             $organization_recordid = $request->facility_organization;
             $facility_organization = Organization::where('organization_recordid', '=', $organization_recordid)->first();
@@ -1670,6 +1705,49 @@ class LocationController extends Controller
                 $facility->location_schedule = '';
             }
             $facility->schedules()->sync($request->facility_schedules);
+
+            // detail section
+            if ($request->detail_type) {
+                $detail_type = $request->detail_type;
+                $detail_term = $request->detail_term;
+                $term_type = $request->term_type;
+                $detail_ids = [];
+                foreach ($detail_type as $key => $value) {
+                    if ($term_type[$key] == 'new') {
+                        $detail = new Detail();
+                        $detail_recordid = Detail::max('detail_recordid') + 1;
+                        $detail->detail_recordid = $detail_recordid;
+                        $detail->detail_type = $value;
+                        $detail_locations = $detail->detail_locations ? explode(',', $detail->detail_locations) : [];
+                        if (!empty($detail_locations)) {
+                            $detail_locations = array_filter($detail_locations);
+                        }
+                        if (!in_array($new_recordid, $detail_locations)) {
+                            array_push($detail_locations, $new_recordid);
+                        }
+                        $detail->detail_locations = join(',', $detail_locations);
+                        $detail->detail_value = $detail_term[$key];
+                        $detail->save();
+
+                        $detail_ids[] = $detail_recordid;
+                    } else {
+                        $detail_update = Detail::where('detail_recordid', $detail_term[$key])->first();
+                        if ($detail_update) {
+                            $detail_locations = $detail_update->detail_locations ? explode(',', $detail_update->detail_locations) : [];
+                            if (!empty($detail_locations)) {
+                                $detail_locations = array_filter($detail_locations);
+                            }
+                            if (!in_array($new_recordid, $detail_locations)) {
+                                array_push($detail_locations, $new_recordid);
+                            }
+                            $detail_update->detail_locations = join(',', $detail_locations);
+                            $detail_update->save();
+                        }
+                        $detail_ids[] = $detail_term[$key];
+                    }
+                }
+            }
+            $facility->location_details = join(',', $detail_ids);
 
             // if ($request->facility_address) {
             //     $facility->location_address = join(',', $request->facility_address);

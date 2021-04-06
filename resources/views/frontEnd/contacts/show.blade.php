@@ -5,81 +5,6 @@ Contact
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
 
-{{-- <style type="text/css">
-
-    #content-contact-profile {
-        width: calc(50% - 270px);
-        padding: 0px;
-        transition: all 0.3s;
-        background: white;
-        min-height: calc(100% - 134px);
-    }
-
-    .table a {
-        text-decoration: none !important;
-        color: rgba(40, 53, 147, .9);
-        white-space: normal;
-    }
-
-    .footable.breakpoint>tbody>tr>td>span.footable-toggle {
-        position: absolute;
-        right: 25px;
-        font-size: 25px;
-        color: #000000;
-    }
-
-    .ui-menu .ui-menu-item .ui-state-active {
-        padding-left: 0 !important;
-    }
-
-    ul#ui-id-1 {
-        width: 260px !important;
-    }
-
-    #map {
-        position: relative !important;
-        z-index: 0 !important;
-    }
-
-    @media (max-width: 768px) {
-        .property {
-            padding-left: 30px !important;
-        }
-
-        #map {
-            display: block !important;
-            width: 100% !important;
-        }
-    }
-
-    .morecontent span {
-        display: none;
-
-    }
-
-    .morelink {
-        color: #428bca;
-    }
-
-    table#tbl-message-profile-contact {
-        width: 100% !important;
-        display: block;
-        border-bottom: 0px;
-    }
-
-    #tbl-message-profile-contact_wrapper {
-        overflow-x: scroll;
-    }
-
-    #contact_group_list_div {
-        display: flex;
-        flex-direction: column;
-    }
-
-    #tagging-div {
-        margin-top: 12px !important;
-    }
-</style> --}}
 
 @section('content')
 @if (session()->has('error'))
@@ -115,7 +40,7 @@ Contact
     <div id="content" class="container">
         <!-- Example Striped Rows -->
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-8">
                 <div class="card detail_services">
                     <div class="card-block">
                         <h4 class="card-title">
@@ -284,6 +209,53 @@ Contact
                 </div>
                 @endif
             </div>
+            @auth
+    <div class="col-md-4">
+        {{-- <h4 class="card-title title_edit mb-30"></h4> --}}
+        <div class="card all_form_field ">
+            <div class="card-block">
+                <h4 class="card_services_title mb-20">Change Log</h4>
+                @foreach ($contactAudits as $item)
+                @if (count($item->new_values) != 0)
+                <div class="py-10" style="float: left; width:100%;border-bottom: 1px solid #dadada;">
+                    <p class="mb-5" style="color: #000;font-size: 16px;">On
+                        <b
+                            style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB; text-decoration:underline;">{{ $item->created_at }}</b>
+                        ,
+                        <b
+                            style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB;text-decoration:underline;">{{ $item->user ? $item->user->first_name.' '.$item->user->last_name : '' }}</b>
+                    </p>
+                    @foreach ($item->old_values as $key => $v)
+                    @php
+                        $fieldNameArray = explode('_',$key);
+                        $fieldName = implode(' ',$fieldNameArray);
+                    @endphp
+                    <ul style="padding-left: 0px;font-size: 16px;">
+                    @if ($v)
+                    <li style="color: #000;list-style: disc;list-style-position: inside;">Changed <b
+                            style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b>
+                        from <span style="color: #FF5044">{{ $v }}</span> to <span
+                            style="color: #35AD8B">{{ $item->new_values[$key] }}</span>
+                    </li>
+                    @elseif($item->new_values[$key])
+                    <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b
+                        style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span
+                        style="color: #35AD8B">{{ $item->new_values[$key] }}</span>
+                    </li>
+                    @endif
+                    </ul>
+                    @endforeach
+
+                    <span><a href="/viewChanges/{{ $item->id }}/{{ $contact->contact_recordid }}"
+                            style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB; text-decoration:underline;">View
+                            Changes</a></span>
+                </div>
+                @endif
+                @endforeach
+            </div>
+        </div>
+    </div>
+    @endauth
         </div>
     </div>
 </div>

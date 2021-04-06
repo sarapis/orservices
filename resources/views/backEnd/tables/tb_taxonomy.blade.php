@@ -138,6 +138,11 @@ Taxonomy
 
                   <td class="text-center">
                     <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$taxonomy->taxonomy_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button>
+                    {!! Form::open(['method'=>'DELETE', 'route' => ['tb_taxonomy.destroy', $taxonomy->id], 'style' =>
+                    'display:inline']) !!}
+                        {{Form::button('<i class="fa fa-trash" "></i> Delete', array('type' => 'submit', 'data-placement' => 'top', 'data-original-title' => 'Delete', 'id'=>'delete-confirm','class' => 'btn btn-danger'))}}
+                    {!! Form::close() !!}
+
                   </td>
                 </tr>
               @endforeach
