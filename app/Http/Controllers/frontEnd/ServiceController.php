@@ -49,6 +49,10 @@ use PDF;
 
 class ServiceController extends Controller
 {
+    public function __construct(CommonController $commonController)
+    {
+        $this->commonController = $commonController;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -376,6 +380,7 @@ class ServiceController extends Controller
             $service->service_licenses = $request->service_licenses;
             $service->service_metadata = $request->service_metadata;
             $service->service_airs_taxonomy_x = $request->service_airs_taxonomy_x;
+            $service->service_code = $request->service_code;
 
             $organization_name = $request->service_organization;
             $service_organization = Organization::where('organization_name', '=', $organization_name)->first();
@@ -1278,7 +1283,8 @@ class ServiceController extends Controller
                     // }
                     $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies;
                 }
-                return view('frontEnd.services.show', compact('service', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'service_taxonomy_info_list', 'contact_info_list', 'phone_number_info', 'organization'));
+                $serviceAudits = $this->commonController->serviceSection($service);
+                return view('frontEnd.services.show', compact('service', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'service_taxonomy_info_list', 'contact_info_list', 'phone_number_info', 'organization', 'serviceAudits'));
             } else {
                 Session::flash('message', 'This record has been deleted.');
                 Session::flash('status', 'warning');
@@ -1690,7 +1696,34 @@ class ServiceController extends Controller
             }
             $program = $service->program && count($service->program) > 0 ? $service->program[0] : '';
 
-            return view('frontEnd.services.edit', compact('service', 'map', 'service_address_street', 'service_address_city', 'service_address_state', 'service_address_postal_code', 'service_organization_list', 'service_location_list', 'service_phone1', 'service_phone2', 'service_contacts_list', 'service_taxonomy_list', 'service_details_list', 'location_info_list', 'contact_info_list', 'taxonomy_info_list', 'detail_info_list', 'ServiceSchedule', 'ServiceDetails', 'monday', 'tuesday', 'wednesday', 'friday', 'saturday', 'thursday', 'sunday', 'holiday_schedules', 'all_contacts', 'service_locations_data', 'all_locations', 'phone_languages', 'phone_type', 'location_alternate_name', 'location_transporation', 'location_service', 'location_schedules', 'location_description', 'location_details', 'contact_service', 'contact_department', 'service_info_list', 'address_states_list', 'address_city_list', 'schedule_info_list', 'contact_phone_numbers', 'contact_phone_extensions', 'contact_phone_types', 'contact_phone_languages', 'contact_phone_descriptions', 'location_phone_numbers', 'location_phone_extensions', 'location_phone_types', 'location_phone_languages', 'location_phone_descriptions', 'opens_at_location_monday_datas', 'closes_at_location_monday_datas', 'schedule_closed_monday_datas', 'opens_at_location_tuesday_datas', 'closes_at_location_tuesday_datas', 'schedule_closed_tuesday_datas', 'opens_at_location_wednesday_datas', 'closes_at_location_wednesday_datas', 'schedule_closed_wednesday_datas', 'opens_at_location_thursday_datas', 'closes_at_location_thursday_datas', 'schedule_closed_thursday_datas', 'opens_at_location_friday_datas', 'closes_at_location_friday_datas', 'schedule_closed_friday_datas', 'opens_at_location_saturday_datas', 'closes_at_location_saturday_datas', 'schedule_closed_saturday_datas', 'opens_at_location_sunday_datas', 'closes_at_location_sunday_datas', 'schedule_closed_sunday_datas', 'location_holiday_start_dates', 'location_holiday_end_dates', 'location_holiday_open_ats', 'location_holiday_close_ats', 'location_holiday_closeds', 'service_status_list', 'address_info_list', 'addressIds', 'serviceDetailsData', 'detail_types', 'phone_language_data', 'service_category_term_data', 'service_category_type_data', 'service_category_types', 'service_eligibility_types', 'service_eligibility_term_data', 'service_eligibility_type_data', 'program'));
+            $program_names = [];
+            $program_descriptions = [];
+            $program_service_relationships = [];
+            foreach ($service->program as $keys => $programData) {
+                $program_names[] = $programData->name;
+                $program_descriptions[] = $programData->alternate_name;
+                $program_service_relationships[] = $programData->program_service_relationship;
+            }
+
+            $program_names = json_encode($program_names);
+            $program_descriptions = json_encode($program_descriptions);
+            $program_service_relationships = json_encode($program_service_relationships);
+
+            // if ($service->audits() && count($service->audits) > 0) {
+            //     foreach ($service->audits()->orderBy('id', 'desc')->get() as $key => $item) {
+            //         $item->old_values
+            //         // foreach ($item->old_values as $key  => $value) {
+            //         //     if($key)
+            //         // }
+            //     }
+            // }
+
+            $serviceAudits = $this->commonController->serviceSection($service);
+
+
+
+            $all_programs = Program::with('organization')->distinct()->get();
+            return view('frontEnd.services.edit', compact('service', 'map', 'service_address_street', 'service_address_city', 'service_address_state', 'service_address_postal_code', 'service_organization_list', 'service_location_list', 'service_phone1', 'service_phone2', 'service_contacts_list', 'service_taxonomy_list', 'service_details_list', 'location_info_list', 'contact_info_list', 'taxonomy_info_list', 'detail_info_list', 'ServiceSchedule', 'ServiceDetails', 'monday', 'tuesday', 'wednesday', 'friday', 'saturday', 'thursday', 'sunday', 'holiday_schedules', 'all_contacts', 'service_locations_data', 'all_locations', 'phone_languages', 'phone_type', 'location_alternate_name', 'location_transporation', 'location_service', 'location_schedules', 'location_description', 'location_details', 'contact_service', 'contact_department', 'service_info_list', 'address_states_list', 'address_city_list', 'schedule_info_list', 'contact_phone_numbers', 'contact_phone_extensions', 'contact_phone_types', 'contact_phone_languages', 'contact_phone_descriptions', 'location_phone_numbers', 'location_phone_extensions', 'location_phone_types', 'location_phone_languages', 'location_phone_descriptions', 'opens_at_location_monday_datas', 'closes_at_location_monday_datas', 'schedule_closed_monday_datas', 'opens_at_location_tuesday_datas', 'closes_at_location_tuesday_datas', 'schedule_closed_tuesday_datas', 'opens_at_location_wednesday_datas', 'closes_at_location_wednesday_datas', 'schedule_closed_wednesday_datas', 'opens_at_location_thursday_datas', 'closes_at_location_thursday_datas', 'schedule_closed_thursday_datas', 'opens_at_location_friday_datas', 'closes_at_location_friday_datas', 'schedule_closed_friday_datas', 'opens_at_location_saturday_datas', 'closes_at_location_saturday_datas', 'schedule_closed_saturday_datas', 'opens_at_location_sunday_datas', 'closes_at_location_sunday_datas', 'schedule_closed_sunday_datas', 'location_holiday_start_dates', 'location_holiday_end_dates', 'location_holiday_open_ats', 'location_holiday_close_ats', 'location_holiday_closeds', 'service_status_list', 'address_info_list', 'addressIds', 'serviceDetailsData', 'detail_types', 'phone_language_data', 'service_category_term_data', 'service_category_type_data', 'service_category_types', 'service_eligibility_types', 'service_eligibility_term_data', 'service_eligibility_type_data', 'program', 'all_programs', 'program_names', 'program_descriptions', 'program_service_relationships', 'serviceAudits'));
         } else {
             Session::flash('message', 'This record has been deleted.');
             Session::flash('status', 'warning');
@@ -1731,37 +1764,32 @@ class ServiceController extends Controller
             $service->service_accreditations = $request->service_accreditations;
             $service->service_licenses = $request->service_licenses;
             $service->service_organization = $request->service_organization;
+            $service->service_code = $request->service_code;
 
-            if ($request->service_program) {
-                if ($request->program_recordid) {
-                    $program = Program::where('program_recordid', $request->program_recordid)->first();
-                } else {
-                    $program = new Program();
-                    $program->program_recordid = Program::max('program_recordid') + 1;
+            if ($request->program_name) {
+                $program_name = $request->program_name;
+                $program_description = $request->program_description;
+                $program_service_relationship = $request->program_service_relationship;
+                $programRadio = $request->programRadio;
+                $program_recordid = $request->program_recordid;
+                for ($i = 0; $i < count($program_name); $i++) {
+                    if ($programRadio[$i] == 'new_data') {
+                        $program = new Program();
+                        $program->program_recordid = Program::max('program_recordid') + 1;
+                    } else {
+                        $program = Program::where('program_recordid', $program_recordid[$i])->first();
+                    }
+                    $program->name = $program_name[$i];
+                    $program->alternate_name = $program_description[$i];
+                    $program->program_service_relationship = $program_service_relationship[$i];
+                    $program->services = $service->service_recordid;
+                    $recordids = [];
+                    $recordids[] = $service->service_recordid;
+                    $program->service()->sync($recordids);
+                    $program->save();
                 }
-                $program->name = $request->service_program;
-                if ($request->program_alternate_name) {
-                    $program->alternate_name = $request->program_alternate_name;
-                }
-                $program->services = $service->service_recordid;
-                $recordids = [];
-                $recordids[] = $service->service_recordid;
-                $program->service()->sync($recordids);
-                $program->save();
             }
 
-            // if ($request->service_locations) {
-            //     ServiceLocation::where('service_recordid', $id)->delete();
-            //     foreach ($request->service_locations as $key => $locationId) {
-            //         ServiceLocation::create([
-            //             'service_recordid' => $id,
-            //             'location_recordid' => $locationId
-            //         ]);
-            //     }
-            //     $service->service_locations = join(',', $request->service_locations);
-            // } else {
-            //     $service->service_locations = '';
-            // }
             // location section
             $service_locations = [];
             if ($request->location_name && $request->location_name[0] != null) {
@@ -2025,7 +2053,7 @@ class ServiceController extends Controller
                                         $phone_info->phone_number = $location_phone_numbers[$i][$p];
                                         $phone_info->phone_extension = $location_phone_extensions[$i][$p];
                                         $phone_info->phone_type = $location_phone_types[$i][$p];
-                                        $phone_info->phone_language = isset($location_phone_languages[$i][$p]) ? implode(',', $location_phone_languages[$i][$p]) : '';
+                                        $phone_info->phone_language = isset($location_phone_languages[$i][$p]) && is_array($location_phone_languages[$i][$p]) ? implode(',', $location_phone_languages[$i][$p]) : '';
                                         $phone_info->phone_description = $location_phone_descriptions[$i][$p];
                                         $phone_info->save();
                                         array_push($location_phone_recordid_list, $phone_info->phone_recordid);
@@ -2202,7 +2230,7 @@ class ServiceController extends Controller
                                         $phone_info->phone_number = $contact_phone_numbers[$i][$p];
                                         $phone_info->phone_extension = $contact_phone_extensions[$i][$p];
                                         $phone_info->phone_type = $contact_phone_types[$i][$p];
-                                        $phone_info->phone_language = isset($contact_phone_languages[$i][$p]) ? implode(',', $contact_phone_languages[$i][$p]) : '';
+                                        $phone_info->phone_language = isset($contact_phone_languages[$i][$p]) && is_array($contact_phone_languages[$i][$p]) ? implode(',', $contact_phone_languages[$i][$p]) : '';
                                         $phone_info->phone_description = $contact_phone_descriptions[$i][$p];
                                         $phone_info->save();
                                         array_push($contact_phone_recordid_list, $phone_info->phone_recordid);
@@ -2360,7 +2388,7 @@ class ServiceController extends Controller
                         $phone_info->phone_number = $service_phone_number_list[$i];
                         $phone_info->phone_extension = $service_phone_extension_list[$i];
                         $phone_info->phone_type = $service_phone_type_list[$i];
-                        $phone_info->phone_language = $service_phone_language_list && count($service_phone_language_list) > 0 ? implode(',', $service_phone_language_list[$i]) : '';
+                        $phone_info->phone_language = isset($service_phone_language_list[$i]) && count($service_phone_language_list) > 0 ? implode(',', $service_phone_language_list[$i]) : '';
                         $phone_info->phone_description = $service_phone_description_list[$i];
                         $phone_info->save();
                         array_push($phone_recordid_list, $phone_info->phone_recordid);
@@ -2371,7 +2399,7 @@ class ServiceController extends Controller
                         $new_phone->phone_number = $service_phone_number_list[$i];
                         $new_phone->phone_extension = $service_phone_extension_list[$i];
                         $new_phone->phone_type = $service_phone_type_list[$i];
-                        $new_phone->phone_language = $service_phone_language_list && count($service_phone_language_list) > 0 ? implode(',', $service_phone_language_list[$i]) : '';
+                        $new_phone->phone_language = isset($service_phone_language_list[$i]) && count($service_phone_language_list) > 0 ? implode(',', $service_phone_language_list[$i]) : '';
                         $new_phone->phone_description = $service_phone_description_list[$i];
                         $new_phone->save();
                         $service->service_phones = $service->service_phones . $new_phone_recordid . ',';
@@ -2788,23 +2816,23 @@ class ServiceController extends Controller
     public function airtable_v2($api_key, $base_url)
     {
         try {
-            $airtable_key_info = Airtablekeyinfo::find(1);
-            if (!$airtable_key_info) {
-                $airtable_key_info = new Airtablekeyinfo;
-            }
-            $airtable_key_info->api_key = $api_key;
-            $airtable_key_info->base_url = $base_url;
-            $airtable_key_info->save();
+            // $airtable_key_info = Airtablekeyinfo::find(1);
+            // if (!$airtable_key_info) {
+            //     $airtable_key_info = new Airtablekeyinfo;
+            // }
+            // $airtable_key_info->api_key = $api_key;
+            // $airtable_key_info->base_url = $base_url;
+            // $airtable_key_info->save();
 
-            Service::truncate();
-            ServiceLocation::truncate();
-            ServiceAddress::truncate();
-            ServicePhone::truncate();
-            ServiceDetail::truncate();
-            ServiceOrganization::truncate();
-            ServiceContact::truncate();
-            ServiceTaxonomy::truncate();
-            ServiceSchedule::truncate();
+            // Service::truncate();
+            // ServiceLocation::truncate();
+            // ServiceAddress::truncate();
+            // ServicePhone::truncate();
+            // ServiceDetail::truncate();
+            // ServiceOrganization::truncate();
+            // ServiceContact::truncate();
+            // ServiceTaxonomy::truncate();
+            // ServiceSchedule::truncate();
 
             // $airtable = new Airtable(array(
             //     'api_key'   => env('AIRTABLE_API_KEY'),
@@ -2823,183 +2851,187 @@ class ServiceController extends Controller
                 $airtable_response = json_decode($response, true);
 
                 foreach ($airtable_response['records'] as $record) {
-
-                    $service = new Service();
                     $strtointclass = new Stringtoint();
-                    $service->service_recordid = $strtointclass->string_to_int($record['id']);
+                    $recordId = $strtointclass->string_to_int($record['id']);
+                    $old_service = Service::where('service_recordid', $recordId)->where('service_name', isset($record['fields']['name']) ? $record['fields']['name'] : null)->first();
+                    if ($old_service == null) {
 
-                    $service->service_name = isset($record['fields']['name']) ? $record['fields']['name'] : null;
+                        $service = new Service();
+                        $service->service_recordid = $strtointclass->string_to_int($record['id']);
 
-                    if (isset($record['fields']['organizations'])) {
-                        $i = 0;
-                        foreach ($record['fields']['organizations'] as $value) {
-                            $service_organization = new ServiceOrganization();
-                            $service_organization->service_recordid = $service->service_recordid;
-                            $service_organization->organization_recordid = $strtointclass->string_to_int($value);
-                            $service_organization->save();
-                            $serviceorganization = $strtointclass->string_to_int($value);
+                        $service->service_name = isset($record['fields']['name']) ? $record['fields']['name'] : null;
 
-                            if ($i != 0) {
-                                $service->service_organization = $service->service_organization . ',' . $serviceorganization;
-                            } else {
-                                $service->service_organization = $serviceorganization;
+                        if (isset($record['fields']['organizations'])) {
+                            $i = 0;
+                            foreach ($record['fields']['organizations'] as $value) {
+                                $service_organization = new ServiceOrganization();
+                                $service_organization->service_recordid = $service->service_recordid;
+                                $service_organization->organization_recordid = $strtointclass->string_to_int($value);
+                                $service_organization->save();
+                                $serviceorganization = $strtointclass->string_to_int($value);
+
+                                if ($i != 0) {
+                                    $service->service_organization = $service->service_organization . ',' . $serviceorganization;
+                                } else {
+                                    $service->service_organization = $serviceorganization;
+                                }
+
+                                $i++;
                             }
-
-                            $i++;
                         }
-                    }
 
-                    $service->service_alternate_name = isset($record['fields']['alternative_name']) ? $record['fields']['alternative_name'] : null;
-                    $service->service_description = isset($record['fields']['description']) ? $record['fields']['description'] : null;
+                        $service->service_alternate_name = isset($record['fields']['alternative_name']) ? $record['fields']['alternative_name'] : null;
+                        $service->service_description = isset($record['fields']['description']) ? $record['fields']['description'] : null;
 
-                    if (isset($record['fields']['locations'])) {
-                        $i = 0;
-                        foreach ($record['fields']['locations'] as $value) {
-                            $service_location = new Servicelocation();
-                            $service_location->service_recordid = $service->service_recordid;
-                            $service_location->location_recordid = $strtointclass->string_to_int($value);
-                            $service_location->save();
-                            $servicelocation = $strtointclass->string_to_int($value);
+                        if (isset($record['fields']['locations'])) {
+                            $i = 0;
+                            foreach ($record['fields']['locations'] as $value) {
+                                $service_location = new Servicelocation();
+                                $service_location->service_recordid = $service->service_recordid;
+                                $service_location->location_recordid = $strtointclass->string_to_int($value);
+                                $service_location->save();
+                                $servicelocation = $strtointclass->string_to_int($value);
 
-                            if ($i != 0) {
-                                $service->service_locations = $service->service_locations . ',' . $servicelocation;
-                            } else {
-                                $service->service_locations = $servicelocation;
+                                if ($i != 0) {
+                                    $service->service_locations = $service->service_locations . ',' . $servicelocation;
+                                } else {
+                                    $service->service_locations = $servicelocation;
+                                }
+
+                                $i++;
                             }
-
-                            $i++;
                         }
-                    }
 
-                    $service->service_url = isset($record['fields']['url']) ? $record['fields']['url'] : null;
-                    $service->service_email = isset($record['fields']['email']) ? $record['fields']['email'] : null;
-                    $service->service_status = isset($record['fields']['status']) ? $record['fields']['status'] : null;
+                        $service->service_url = isset($record['fields']['url']) ? $record['fields']['url'] : null;
+                        $service->service_email = isset($record['fields']['email']) ? $record['fields']['email'] : null;
+                        $service->service_status = isset($record['fields']['status']) ? $record['fields']['status'] : null;
 
-                    if (isset($record['fields']['taxonomy'])) {
-                        $i = 0;
-                        foreach ($record['fields']['taxonomy'] as $value) {
-                            $service_taxonomy = new ServiceTaxonomy();
-                            $service_taxonomy->service_recordid = $service->service_recordid;
-                            $service_taxonomy->taxonomy_recordid = $strtointclass->string_to_int($value);
-                            $service_taxonomy->save();
-                            $servicetaxonomy = $strtointclass->string_to_int($value);
+                        if (isset($record['fields']['taxonomy'])) {
+                            $i = 0;
+                            foreach ($record['fields']['taxonomy'] as $value) {
+                                $service_taxonomy = new ServiceTaxonomy();
+                                $service_taxonomy->service_recordid = $service->service_recordid;
+                                $service_taxonomy->taxonomy_recordid = $strtointclass->string_to_int($value);
+                                $service_taxonomy->save();
+                                $servicetaxonomy = $strtointclass->string_to_int($value);
 
-                            if ($i != 0) {
-                                $service->service_taxonomy = $service->service_taxonomy . ',' . $servicetaxonomy;
-                            } else {
-                                $service->service_taxonomy = $servicetaxonomy;
+                                if ($i != 0) {
+                                    $service->service_taxonomy = $service->service_taxonomy . ',' . $servicetaxonomy;
+                                } else {
+                                    $service->service_taxonomy = $servicetaxonomy;
+                                }
+
+                                $i++;
                             }
-
-                            $i++;
                         }
-                    }
 
-                    $service->service_application_process = isset($record['fields']['application_process']) ? $record['fields']['application_process'] : null;
-                    $service->service_wait_time = isset($record['fields']['wait_time']) ? $record['fields']['wait_time'] : null;
-                    $service->service_fees = isset($record['fields']['fees']) ? $record['fields']['fees'] : null;
-                    $service->service_accreditations = isset($record['fields']['accreditations']) ? $record['fields']['accreditations'] : null;
-                    $service->service_licenses = isset($record['fields']['licenses']) ? $record['fields']['licenses'] : null;
+                        $service->service_application_process = isset($record['fields']['application_process']) ? $record['fields']['application_process'] : null;
+                        $service->service_wait_time = isset($record['fields']['wait_time']) ? $record['fields']['wait_time'] : null;
+                        $service->service_fees = isset($record['fields']['fees']) ? $record['fields']['fees'] : null;
+                        $service->service_accreditations = isset($record['fields']['accreditations']) ? $record['fields']['accreditations'] : null;
+                        $service->service_licenses = isset($record['fields']['licenses']) ? $record['fields']['licenses'] : null;
 
-                    if (isset($record['fields']['phones'])) {
-                        $i = 0;
-                        foreach ($record['fields']['phones'] as $value) {
-                            $service_phone = new Servicephone();
-                            $service_phone->service_recordid = $service->service_recordid;
-                            $service_phone->phone_recordid = $strtointclass->string_to_int($value);
-                            $service_phone->save();
-                            $servicephone = $strtointclass->string_to_int($value);
+                        if (isset($record['fields']['phones'])) {
+                            $i = 0;
+                            foreach ($record['fields']['phones'] as $value) {
+                                $service_phone = new Servicephone();
+                                $service_phone->service_recordid = $service->service_recordid;
+                                $service_phone->phone_recordid = $strtointclass->string_to_int($value);
+                                $service_phone->save();
+                                $servicephone = $strtointclass->string_to_int($value);
 
-                            if ($i != 0) {
-                                $service->service_phones = $service->service_phones . ',' . $servicephone;
-                            } else {
-                                $service->service_phones = $servicephone;
+                                if ($i != 0) {
+                                    $service->service_phones = $service->service_phones . ',' . $servicephone;
+                                } else {
+                                    $service->service_phones = $servicephone;
+                                }
+
+                                $i++;
                             }
-
-                            $i++;
                         }
-                    }
 
-                    if (isset($record['fields']['schedule'])) {
-                        $i = 0;
-                        foreach ($record['fields']['schedule'] as $value) {
-                            $service_schedule = new Serviceschedule();
-                            $service_schedule->service_recordid = $service->service_recordid;
-                            $service_schedule->schedule_recordid = $strtointclass->string_to_int($value);
-                            $service_schedule->save();
-                            $serviceschedule = $strtointclass->string_to_int($value);
+                        if (isset($record['fields']['schedule'])) {
+                            $i = 0;
+                            foreach ($record['fields']['schedule'] as $value) {
+                                $service_schedule = new Serviceschedule();
+                                $service_schedule->service_recordid = $service->service_recordid;
+                                $service_schedule->schedule_recordid = $strtointclass->string_to_int($value);
+                                $service_schedule->save();
+                                $serviceschedule = $strtointclass->string_to_int($value);
 
-                            if ($i != 0) {
-                                $service->service_schedule = $service->service_schedule . ',' . $serviceschedule;
-                            } else {
-                                $service->service_schedule = $serviceschedule;
+                                if ($i != 0) {
+                                    $service->service_schedule = $service->service_schedule . ',' . $serviceschedule;
+                                } else {
+                                    $service->service_schedule = $serviceschedule;
+                                }
+
+                                $i++;
                             }
-
-                            $i++;
                         }
-                    }
 
-                    if (isset($record['fields']['contacts'])) {
-                        $i = 0;
-                        foreach ($record['fields']['contacts'] as $value) {
-                            $service_contact = new Servicecontact();
-                            $service_contact->service_recordid = $service->service_recordid;
-                            $service_contact->contact_recordid = $strtointclass->string_to_int($value);
-                            $service_contact->save();
-                            $servicecontact = $strtointclass->string_to_int($value);
+                        if (isset($record['fields']['contacts'])) {
+                            $i = 0;
+                            foreach ($record['fields']['contacts'] as $value) {
+                                $service_contact = new Servicecontact();
+                                $service_contact->service_recordid = $service->service_recordid;
+                                $service_contact->contact_recordid = $strtointclass->string_to_int($value);
+                                $service_contact->save();
+                                $servicecontact = $strtointclass->string_to_int($value);
 
-                            if ($i != 0) {
-                                $service->service_contacts = $service->service_contacts . ',' . $servicecontact;
-                            } else {
-                                $service->service_contacts = $servicecontact;
+                                if ($i != 0) {
+                                    $service->service_contacts = $service->service_contacts . ',' . $servicecontact;
+                                } else {
+                                    $service->service_contacts = $servicecontact;
+                                }
+
+                                $i++;
                             }
-
-                            $i++;
                         }
-                    }
 
-                    if (isset($record['fields']['x-details'])) {
-                        $i = 0;
-                        foreach ($record['fields']['x-details'] as $value) {
-                            $service_detail = new Servicedetail();
-                            $service_detail->service_recordid = $service->service_recordid;
-                            $service_detail->detail_recordid = $strtointclass->string_to_int($value);
-                            $service_detail->save();
-                            $servicedetail = $strtointclass->string_to_int($value);
+                        if (isset($record['fields']['x-details'])) {
+                            $i = 0;
+                            foreach ($record['fields']['x-details'] as $value) {
+                                $service_detail = new Servicedetail();
+                                $service_detail->service_recordid = $service->service_recordid;
+                                $service_detail->detail_recordid = $strtointclass->string_to_int($value);
+                                $service_detail->save();
+                                $servicedetail = $strtointclass->string_to_int($value);
 
-                            if ($i != 0) {
-                                $service->service_details = $service->service_details . ',' . $servicedetail;
-                            } else {
-                                $service->service_details = $servicedetail;
+                                if ($i != 0) {
+                                    $service->service_details = $service->service_details . ',' . $servicedetail;
+                                } else {
+                                    $service->service_details = $servicedetail;
+                                }
+
+                                $i++;
                             }
-
-                            $i++;
                         }
-                    }
 
-                    if (isset($record['fields']['address'])) {
-                        $i = 0;
-                        foreach ($record['fields']['address'] as $value) {
-                            $service_addresses = new Serviceaddress();
-                            $service_addresses->service_recordid = $service->service_recordid;
-                            $service_addresses->address_recordid = $strtointclass->string_to_int($value);
-                            $service_addresses->save();
-                            $serviceaddress = $strtointclass->string_to_int($value);
+                        if (isset($record['fields']['address'])) {
+                            $i = 0;
+                            foreach ($record['fields']['address'] as $value) {
+                                $service_addresses = new Serviceaddress();
+                                $service_addresses->service_recordid = $service->service_recordid;
+                                $service_addresses->address_recordid = $strtointclass->string_to_int($value);
+                                $service_addresses->save();
+                                $serviceaddress = $strtointclass->string_to_int($value);
 
-                            if ($i != 0) {
-                                $service->service_address = $service->service_address . ',' . $serviceaddress;
-                            } else {
-                                $service->service_address = $serviceaddress;
+                                if ($i != 0) {
+                                    $service->service_address = $service->service_address . ',' . $serviceaddress;
+                                } else {
+                                    $service->service_address = $serviceaddress;
+                                }
+
+                                $i++;
                             }
-
-                            $i++;
                         }
+
+                        $service->service_metadata = isset($record['fields']['metadata']) ? $record['fields']['metadata'] : null;
+
+                        $service->service_airs_taxonomy_x = isset($record['fields']['AIRS Taxonomy-x']) ? implode(",", $record['fields']['AIRS Taxonomy-x']) : null;
+
+                        $service->save();
                     }
-
-                    $service->service_metadata = isset($record['fields']['metadata']) ? $record['fields']['metadata'] : null;
-
-                    $service->service_airs_taxonomy_x = isset($record['fields']['AIRS Taxonomy-x']) ? implode(",", $record['fields']['AIRS Taxonomy-x']) : null;
-
-                    $service->save();
                 }
             } while ($request = $response->next());
 

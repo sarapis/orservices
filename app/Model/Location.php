@@ -3,10 +3,18 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
-class Location extends Model
+class Location extends Model implements ContractsAuditable
 {
     protected $primaryKey = 'location_recordid';
+
+    use Auditable;
+    protected $auditEvents = [
+        'updated',
+        'deleted',
+    ];
 
     protected $fillable = [
         'location_recordid', 'location_name', 'location_organization', 'location_alternate_name', 'location_transportation', 'location_latitude', 'location_longitude', 'location_description', 'location_services', 'location_phones', 'location_details', 'location_schedule', 'location_address', 'flag',

@@ -17,10 +17,9 @@ class ServiceTaxonomyImport implements ToModel, WithHeadingRow
     {
         $serviceTaxonomy = Servicetaxonomy::max('taxonomy_recordid');
         $array = [
-            'taxonomy_recordid' => $serviceTaxonomy,
+            'taxonomy_recordid' => $row['taxonomy_term_id'],
             'service_recordid' => $row['service_id'],
-            'taxonomy_id' => $row['taxonomy_id'],
-            'taxonomy_detail' => $row['taxonomy_detail'],
+            // 'taxonomy_detail' => $row['taxonomy_detail'],
         ];
         return new ServiceTaxonomy($array);
     }

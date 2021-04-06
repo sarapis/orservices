@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use OwenIt\Auditing\Models\Audit;
 use SendGrid;
 use SendGrid\Mail\Mail;
 
@@ -576,6 +577,16 @@ class UserController extends Controller
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
             return redirect()->back();
+        }
+    }
+    public function changelog($id)
+    {
+        try {
+            $user = User::whereId($id)->first();
+            $audits = Audit::where('user_id', $id)->get();
+            return view('backEnd.users.editsLogs', compact('audits', 'user'));
+        } catch (\Throwable $th) {
+            dd($th);
         }
     }
 }

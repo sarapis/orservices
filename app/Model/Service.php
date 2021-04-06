@@ -3,13 +3,21 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
-class Service extends Model
+class Service extends Model implements ContractsAuditable
 {
     protected $primaryKey = 'service_recordid';
 
+    use Auditable;
+    protected $auditEvents = [
+        'updated',
+        'deleted',
+    ];
+
     protected $fillable = [
-        'service_recordid', 'service_name', 'service_alternate_name', 'service_organization', 'service_description', 'service_locations', 'service_url', 'service_email', 'service_status', 'service_taxonomy', 'service_application_process', 'service_wait_time', 'service_fees', 'service_accreditations', 'service_licenses', 'service_phones', 'service_schedule', 'service_contacts', 'service_details', 'service_address', 'service_metadata', 'flag', 'service_program', 'service_airs_taxonomy_x'
+        'service_recordid', 'service_name', 'service_alternate_name', 'service_organization', 'service_description', 'service_locations', 'service_url', 'service_email', 'service_status', 'service_taxonomy', 'service_application_process', 'service_wait_time', 'service_fees', 'service_accreditations', 'service_licenses', 'service_phones', 'service_schedule', 'service_contacts', 'service_details', 'service_address', 'service_metadata', 'flag', 'service_program', 'service_airs_taxonomy_x', 'service_code'
     ];
 
     public function organizations()
@@ -20,7 +28,7 @@ class Service extends Model
     public function getOrganizations()
     {
         $this->primaryKey = 'service_recordid';
-        return $this->belongsToMany('App\Model\Organization', 'service_recordid', 'service_recordid', 'organization_recordid');
+        return $this->belongsToMany('App\Model\Organization', 'service_organizations', 'service_recordid', 'organization_recordid');
     }
 
     public function locations()

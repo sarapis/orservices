@@ -38,6 +38,9 @@ Organizations
                             <img src="/frontend/assets/images/arrow_right.png" alt="" title="" class="float-right">
                         </a>
                     </h4>
+                    @auth
+                        <h4> <span>Last Updated: </span> {{ $organization->updated_at }}</h4>
+                    @endauth
                 </div>
             </div>
             @endforeach

@@ -8,7 +8,7 @@ class Program extends Model
 {
     protected $primaryKey = 'program_recordid';
     protected $fillable = [
-        'program_recordid', 'alternate_name', 'organizations', 'services', 'name'
+        'program_recordid', 'alternate_name', 'organizations', 'services', 'name', 'program_service_relationship'
     ];
 
     public function service()

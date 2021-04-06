@@ -16,7 +16,7 @@ class OrganizationImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         $array = [
-            'organization_recordid' => $row['id'],
+            'organization_recordid' => $row['organization_recordid'],
             'organization_name' => $row['name'],
             'organization_alternate_name' => $row['alternate_name'],
             'organization_description' => $row['description'],

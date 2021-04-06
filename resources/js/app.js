@@ -4,10 +4,18 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+
 require('./bootstrap');
 // import 'dist/js/bootstrap-colorpicker.css';
 // import 'dist/js/bootstrap-colorpicker.js';
+import moment from 'moment'
 window.Vue = require('vue');
+
+Vue.filter('formatDate', function(value) {
+    if (value) {
+      return moment(String(value)).format('MM/DD/YYYY hh:mm:ss A')
+    }
+  });
 
 /**
  * The following block of code may be used to automatically register your
@@ -20,7 +28,8 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+// Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('editchange-component', require('./components/changeComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

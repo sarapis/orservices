@@ -28,9 +28,9 @@ class TaxonomyTypeController extends Controller
             $airtable_key_info->base_url = $base_url;
             $airtable_key_info->save();
 
-            TaxonomyType::truncate();
-            TaxonomyTerm::truncate();
-            AdditionalTaxonomy::truncate();
+            // TaxonomyType::truncate();
+            // TaxonomyTerm::truncate();
+            // AdditionalTaxonomy::truncate();
             // $airtable = new Airtable(array(
             //     'api_key'   => env('AIRTABLE_API_KEY'),
             //     'base'      => env('AIRTABLE_BASE_URL'),
@@ -49,31 +49,35 @@ class TaxonomyTypeController extends Controller
 
 
                 foreach ($airtable_response['records'] as $record) {
-
-                    $taxonomy = new TaxonomyType();
                     $strtointclass = new Stringtoint();
+                    $recordId = $strtointclass->string_to_int($record['id']);
+                    $old_taxonomy_type = TaxonomyType::where('taxonomy_type_recordid', $recordId)->where('name', isset($record['fields']['Name']) ? $record['fields']['Name'] : null)->first();
+                    if ($old_taxonomy_type == null) {
+                        $taxonomy = new TaxonomyType();
+                        $strtointclass = new Stringtoint();
 
-                    $taxonomy->taxonomy_type_recordid = $strtointclass->string_to_int($record['id']);
-                    $taxonomy->name = isset($record['fields']['Name']) ? $record['fields']['Name'] : null;
-                    $taxonomy->type = isset($record['fields']['Type']) ? $record['fields']['Type'] : null;
-                    $taxonomy->reference_url = isset($record['fields']['Reference URL']) ? $record['fields']['Reference URL'] : null;
-                    $taxonomy->notes = isset($record['fields']['Notes']) ? $record['fields']['Notes'] : null;
+                        $taxonomy->taxonomy_type_recordid = $strtointclass->string_to_int($record['id']);
+                        $taxonomy->name = isset($record['fields']['Name']) ? $record['fields']['Name'] : null;
+                        $taxonomy->type = isset($record['fields']['Type']) ? $record['fields']['Type'] : null;
+                        $taxonomy->reference_url = isset($record['fields']['Reference URL']) ? $record['fields']['Reference URL'] : null;
+                        $taxonomy->notes = isset($record['fields']['Notes']) ? $record['fields']['Notes'] : null;
 
-                    $taxonomy_terms = isset($record['fields']['taxonomy_term']) ? $record['fields']['taxonomy_term'] : [];
-                    $taxonomy_terms_ids = [];
-                    foreach ($taxonomy_terms as $key => $taxonomy_term_id) {
-                        $taxonomy_terms_ids[] = $strtointclass->string_to_int($taxonomy_term_id);
+                        $taxonomy_terms = isset($record['fields']['taxonomy_term']) ? $record['fields']['taxonomy_term'] : [];
+                        $taxonomy_terms_ids = [];
+                        foreach ($taxonomy_terms as $key => $taxonomy_term_id) {
+                            $taxonomy_terms_ids[] = $strtointclass->string_to_int($taxonomy_term_id);
+                        }
+                        $taxonomy->taxonomy_term()->sync($taxonomy_terms_ids);
+
+                        $additional_taxonomy_terms = isset($record['fields']['additional taxonomies']) ? $record['fields']['additional taxonomies'] : [];
+                        $additional_taxonomy_terms_ids = [];
+                        foreach ($additional_taxonomy_terms as $key => $additional_taxonomy_terms_id) {
+                            $additional_taxonomy_terms_ids[] = $strtointclass->string_to_int($additional_taxonomy_terms_id);
+                        }
+                        $taxonomy->additional_taxonomy_term()->sync($additional_taxonomy_terms_ids);
+
+                        $taxonomy->save();
                     }
-                    $taxonomy->taxonomy_term()->sync($taxonomy_terms_ids);
-
-                    $additional_taxonomy_terms = isset($record['fields']['additional taxonomies']) ? $record['fields']['additional taxonomies'] : [];
-                    $additional_taxonomy_terms_ids = [];
-                    foreach ($additional_taxonomy_terms as $key => $additional_taxonomy_terms_id) {
-                        $additional_taxonomy_terms_ids[] = $strtointclass->string_to_int($additional_taxonomy_terms_id);
-                    }
-                    $taxonomy->additional_taxonomy_term()->sync($additional_taxonomy_terms_ids);
-
-                    $taxonomy->save();
                 }
             } while ($request = $response->next());
 

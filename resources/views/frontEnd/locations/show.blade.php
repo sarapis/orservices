@@ -27,6 +27,34 @@ Location
                                 <br>
                             @endforeach
                         </h4>
+                        @if(isset($facility->address))
+                                <h4>
+                                    <span class="subtitle"><b>Address: </b></span>
+                                    @if(isset($facility->address))
+                                        @foreach($facility->address as $address)
+                                        <a href="https://www.google.com/maps/dir/?api=1&destination={{ $address->address_1 }} {{ $address->address_2 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }} {{ $address->address_region }} {{ $address->address_country }}" target="_blank">{{ $address->address_1 }} {{ $address->address_2 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }} {{ $address->address_region }} {{ $address->address_country }}</a>
+
+                                        @endforeach
+                                    @endif
+                                </h4>
+                                {{-- <h4>
+                                    <span class="subtitle"><b>Latitude: </b></span>
+                                    {{$facility->location_latitude}}
+                                </h4>
+                                <h4>
+                                    <span class="subtitle"><b>Longitude: </b></span>
+                                    {{$facility->location_longitude}}
+                                </h4> --}}
+                                @endif
+                                @if(isset($facility->phones))
+                                <h4>
+                                    <span class="subtitle"><b>Phones: </b></span>
+                                    @foreach($facility->phones as $key => $phone)
+                                        <a href="tel:{{$phone->phone_number}}">{{$phone->phone_number}}</a>
+                                        {{ count($facility->phones) > $key+1 ? ',' : '' }}
+                                    @endforeach
+                                </h4>
+                            @endif
                         {{-- @if(isset($facility->address))
                         <h4>
 							<span class="subtitle"><b>Address: </b></span>
@@ -233,7 +261,7 @@ Location
                 <!-- Services area design -->
 
                 <!-- commnet area design-->
-                @if (Auth::user())
+                {{-- @if (Auth::user())
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card_services_title">Comments</h4>
@@ -261,9 +289,6 @@ Location
 
                             <a class="active comment_add" id="reply-btn" href="javascript:void(0)" role="button">Add a comment</a>
 
-                            {{-- <form class="comment-reply"
-                                action="/facility/{{$facility->location_recordid}}/add_comment"
-                                method="POST"> --}}
 
                             {!! Form::open(['route' => ['location_comment',$facility->location_recordid],'class' => 'comment-reply']) !!}
                                 {{ csrf_field() }}
@@ -276,11 +301,10 @@ Location
                                     <button type="button" id="close-reply-window-btn" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic">Close</button>
                                 </div>
                             {!! Form::close() !!}
-                            {{-- </form> --}}
                         </div>
                     </div>
                 </div>
-                @endif
+                @endif --}}
                 <!-- commnet area design -->
             </div>
 
@@ -323,9 +347,8 @@ Location
                 </div>
                 <!-- Locations area design -->
 
-                <div class="card">
+                {{-- <div class="card">
                     <div class="card-block">
-                        {{-- <h4 class="card_services_title">Comments</h4> --}}
                         <div class="comment-body media-body">
                             @if(isset($facility->address))
                                 <h4>
@@ -337,14 +360,6 @@ Location
                                         @endforeach
                                     @endif
                                 </h4>
-                                {{-- <h4>
-                                    <span class="subtitle"><b>Latitude: </b></span>
-                                    {{$facility->location_latitude}}
-                                </h4>
-                                <h4>
-                                    <span class="subtitle"><b>Longitude: </b></span>
-                                    {{$facility->location_longitude}}
-                                </h4> --}}
                                 @endif
                                 @if(isset($facility->phones))
                                 <h4>
@@ -357,7 +372,7 @@ Location
                             @endif
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
                 <!-- Contact area design -->
                 @if($facility->organization)
@@ -432,7 +447,47 @@ Location
                     @endif
                 @endif
                 <!-- Contact area design -->
-
+                <div class="card all_form_field ">
+                    <div class="card-block">
+                        <h4 class="card_services_title mb-20">Change Log</h4>
+                        @foreach ($facilityAudits as $item)
+                        @if (count($item->new_values) != 0)
+                        <div class="py-10" style="float: left; width:100%;border-bottom: 1px solid #dadada;">
+                            <p class="mb-5" style="color: #000;font-size: 16px;">On
+                                <b
+                                    style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB; text-decoration:underline;">{{ $item->created_at }}</b>
+                                ,
+                                <b
+                                    style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB;text-decoration:underline;">{{ $item->user ? $item->user->first_name.' '.$item->user->last_name : '' }}</b>
+                            </p>
+                            @foreach ($item->old_values as $key => $v)
+                            @php
+                                $fieldNameArray = explode('_',$key);
+                                $fieldName = implode(' ',$fieldNameArray);
+                            @endphp
+                            <ul style="padding-left: 0px;font-size: 16px;">
+                            @if ($v)
+                            <li style="color: #000;list-style: disc;list-style-position: inside;">Changed <b
+                                    style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b>
+                                from <span style="color: #FF5044">{{ $v }}</span> to <span
+                                    style="color: #35AD8B">{{ $item->new_values[$key] }}</span>
+                            </li>
+                            @elseif($item->new_values[$key])
+                            <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b
+                                style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span
+                                style="color: #35AD8B">{{ $item->new_values[$key] }}</span>
+                            </li>
+                            @endif
+                            </ul>
+                            @endforeach
+                            <span><a href="/viewChanges/{{ $item->id }}/{{ $facility->location_recordid }}"
+                                    style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB; text-decoration:underline;">View
+                                    Changes</a></span>
+                        </div>
+                        @endif
+                        @endforeach
+                    </div>
+                </div>
             </div>
         </div>
     </div>

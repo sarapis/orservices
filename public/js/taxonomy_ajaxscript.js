@@ -22,7 +22,6 @@ $(document).ready(function(){
             type: "GET",
             url: url + '/' + id,
             success: function (data) {
-                console.log(data);
                 if(data.taxonomy_parent_name){
                     $('#parentDiv').show()
                     $('#orderDiv').show()

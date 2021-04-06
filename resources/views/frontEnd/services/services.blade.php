@@ -203,7 +203,7 @@ Services
                             @endif
                         @endforeach
                     @else
-                        <div class="alert dark alert-warning ml-15" role="alert" style="background-color: lightblue; border-color: lightblue;">
+                        <div class="alert dark alert-warning ml-15" role="alert" style="position: relative;left: auto;right: auto;width: 100%;top: auto;">
                             <span style="color: #ffffff;">
                                 <b>We’re unable to find any services based on your search.</b>
                             </span>

@@ -26,6 +26,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
@@ -36,7 +37,10 @@ use function GuzzleHttp\json_decode;
 
 class ContactController extends Controller
 {
-
+    public function __construct(CommonController $commonController)
+    {
+        $this->commonController = $commonController;
+    }
     public function airtable($api_key, $base_url)
     {
 
@@ -102,15 +106,15 @@ class ContactController extends Controller
     public function airtable_v2($api_key, $base_url)
     {
         try {
-            $airtable_key_info = Airtablekeyinfo::find(1);
-            if (!$airtable_key_info) {
-                $airtable_key_info = new Airtablekeyinfo;
-            }
-            $airtable_key_info->api_key = $api_key;
-            $airtable_key_info->base_url = $base_url;
-            $airtable_key_info->save();
+            // $airtable_key_info = Airtablekeyinfo::find(1);
+            // if (!$airtable_key_info) {
+            //     $airtable_key_info = new Airtablekeyinfo;
+            // }
+            // $airtable_key_info->api_key = $api_key;
+            // $airtable_key_info->base_url = $base_url;
+            // $airtable_key_info->save();
 
-            Contact::truncate();
+            // Contact::truncate();
             // $airtable = new Airtable(array(
             //     'api_key'   => env('AIRTABLE_API_KEY'),
             //     'base'      => env('AIRTABLE_BASE_URL'),
@@ -129,29 +133,33 @@ class ContactController extends Controller
                 $airtable_response = json_decode($response, true);
 
                 foreach ($airtable_response['records'] as $record) {
-
-                    $contact = new Contact();
                     $strtointclass = new Stringtoint();
+                    $recordId = $strtointclass->string_to_int($record['id']);
+                    $old_contact = Contact::where('contact_recordid', $recordId)->where('contact_name', isset($record['fields']['name']) ? $record['fields']['name'] : null)->first();
+                    if ($old_contact == null) {
+                        $contact = new Contact();
+                        $strtointclass = new Stringtoint();
 
-                    $contact->contact_recordid = $strtointclass->string_to_int($record['id']);
+                        $contact->contact_recordid = $strtointclass->string_to_int($record['id']);
 
-                    $contact->contact_name = isset($record['fields']['name']) ? $record['fields']['name'] : null;
-                    $contact->contact_organizations = isset($record['fields']['organizations']) ? implode(",", $record['fields']['organizations']) : null;
+                        $contact->contact_name = isset($record['fields']['name']) ? $record['fields']['name'] : null;
+                        $contact->contact_organizations = isset($record['fields']['organizations']) ? implode(",", $record['fields']['organizations']) : null;
 
-                    $contact->contact_organizations = $strtointclass->string_to_int($contact->contact_organizations);
+                        $contact->contact_organizations = $strtointclass->string_to_int($contact->contact_organizations);
 
-                    $contact->contact_services = isset($record['fields']['services 2    ']) ? implode(",", $record['fields']['services 2    ']) : null;
+                        $contact->contact_services = isset($record['fields']['services 2    ']) ? implode(",", $record['fields']['services 2    ']) : null;
 
-                    $contact->contact_services = $strtointclass->string_to_int($contact->contact_services);
+                        $contact->contact_services = $strtointclass->string_to_int($contact->contact_services);
 
-                    $contact->contact_title = isset($record['fields']['title']) ? $record['fields']['title'] : null;
-                    $contact->contact_department = isset($record['fields']['department']) ? $record['fields']['department'] : null;
-                    $contact->contact_email = isset($record['fields']['email']) ? $record['fields']['email'] : null;
-                    $contact->contact_phones = isset($record['fields']['phones']) ? implode(",", $record['fields']['phones']) : null;
+                        $contact->contact_title = isset($record['fields']['title']) ? $record['fields']['title'] : null;
+                        $contact->contact_department = isset($record['fields']['department']) ? $record['fields']['department'] : null;
+                        $contact->contact_email = isset($record['fields']['email']) ? $record['fields']['email'] : null;
+                        $contact->contact_phones = isset($record['fields']['phones']) ? implode(",", $record['fields']['phones']) : null;
 
-                    $contact->contact_phones = $strtointclass->string_to_int($contact->contact_phones);
+                        $contact->contact_phones = $strtointclass->string_to_int($contact->contact_phones);
 
-                    $contact->save();
+                        $contact->save();
+                    }
                 }
             } while ($request = $response->next());
 
@@ -161,7 +169,7 @@ class ContactController extends Controller
             $airtable->syncdate = $date;
             $airtable->save();
         } catch (\Throwable $th) {
-            \Log::error('Error in Contact: ' . $th->getMessage());
+            Log::error('Error in Contact: ' . $th->getMessage());
             return response()->json([
                 'message' => $th->getMessage(),
                 'success' => false
@@ -873,8 +881,9 @@ class ContactController extends Controller
                     $phone_number = '';
                 }
                 $map = Map::find(1);
+                $contactAudits = $this->commonController->contactSection($contact);
 
-                return view('frontEnd.contacts.show', compact('contact', 'map', 'phone_number'));
+                return view('frontEnd.contacts.show', compact('contact', 'map', 'phone_number', 'contactAudits'));
             } else {
                 Session::flash('message', 'This record has been deleted.');
                 Session::flash('status', 'warning');
@@ -927,7 +936,10 @@ class ContactController extends Controller
                 }
             }
             $phone_language_data = json_encode($phone_language_data);
-            return view('frontEnd.contacts.edit', compact('contact', 'map', 'organization_info_list', 'service_info_list', 'contact_services', 'contact_phone', 'contact_service_recordid_list', 'phone_languages', 'phone_type', 'phone_language_data'));
+
+            $contactAudits = $this->commonController->contactSection($contact);
+
+            return view('frontEnd.contacts.edit', compact('contact', 'map', 'organization_info_list', 'service_info_list', 'contact_services', 'contact_phone', 'contact_service_recordid_list', 'phone_languages', 'phone_type', 'phone_language_data', 'contactAudits'));
         } else {
             Session::flash('message', 'This record has been deleted.');
             Session::flash('status', 'warning');

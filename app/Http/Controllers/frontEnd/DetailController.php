@@ -139,7 +139,7 @@ class DetailController extends Controller
             $airtable_key_info->base_url = $base_url;
             $airtable_key_info->save();
 
-            Detail::truncate();
+            // Detail::truncate();
             // $airtable = new Airtable(array(
             //     'api_key'   => env('AIRTABLE_API_KEY'),
             //     'base'      => env('AIRTABLE_BASE_URL'),
@@ -158,108 +158,113 @@ class DetailController extends Controller
                 $airtable_response = json_decode($response, true);
 
                 foreach ($airtable_response['records'] as $record) {
-                    // dd($record);
-                    $detail = new Detail();
+
                     $strtointclass = new Stringtoint();
+                    $recordId = $strtointclass->string_to_int($record['id']);
+                    $old_detail = Detail::where('detail_recordid', $recordId)->where('detail_value', isset($record['fields']['x-value']) ? $record['fields']['x-value'] : null)->first();
+                    if ($old_detail == null) {
+                        $detail = new Detail();
+                        $strtointclass = new Stringtoint();
 
-                    $detail->detail_recordid = $strtointclass->string_to_int($record['id']);
-                    $detail->detail_value = isset($record['fields']['x-value']) ? $record['fields']['x-value'] : null;
-                    $detail->detail_type = isset($record['fields']['x-type']) ? $record['fields']['x-type'] : null;
+                        $detail->detail_recordid = $strtointclass->string_to_int($record['id']);
+                        $detail->detail_value = isset($record['fields']['x-value']) ? $record['fields']['x-value'] : null;
+                        $detail->detail_type = isset($record['fields']['x-type']) ? $record['fields']['x-type'] : null;
 
-                    $detail_type = isset($record['fields']['x-type']) ? $record['fields']['x-type'] : null;
+                        $detail_type = isset($record['fields']['x-type']) ? $record['fields']['x-type'] : null;
 
-                    if ($detail_type) {
-                        $check_detail_type = DetailType::where('type', $detail_type)->exists();
-                        if (!$check_detail_type) {
-                            DetailType::create([
-                                'type' => $detail_type,
-                                'created_by' => Auth::id()
-                            ]);
-                            DB::commit();
-                        }
-                    }
-                    $detail->detail_description = isset($record['fields']['x-description']) ? $record['fields']['x-description'] : null;
-                    if (isset($record['fields']['x-organizations'])) {
-                        $i = 0;
-                        foreach ($record['fields']['x-organizations'] as $value) {
-
-                            $detailorganization = $strtointclass->string_to_int($value);
-
-                            if ($i != 0) {
-                                $detail->detail_organizations = $detail->detail_organizations . ',' . $detailorganization;
-                            } else {
-                                $detail->detail_organizations = $detailorganization;
+                        if ($detail_type) {
+                            $check_detail_type = DetailType::where('type', $detail_type)->exists();
+                            if (!$check_detail_type) {
+                                DetailType::create([
+                                    'type' => $detail_type,
+                                    'created_by' => Auth::id()
+                                ]);
+                                DB::commit();
                             }
-
-                            $i++;
                         }
-                    }
-                    if (isset($record['fields']['x-contacts'])) {
-                        $i = 0;
-                        foreach ($record['fields']['x-contacts'] as $value) {
+                        $detail->detail_description = isset($record['fields']['x-description']) ? $record['fields']['x-description'] : null;
+                        if (isset($record['fields']['x-organizations'])) {
+                            $i = 0;
+                            foreach ($record['fields']['x-organizations'] as $value) {
 
-                            $detailcontacts = $strtointclass->string_to_int($value);
+                                $detailorganization = $strtointclass->string_to_int($value);
 
-                            if ($i != 0) {
-                                $detail->contacts = $detail->contacts . ',' . $detailcontacts;
-                            } else {
-                                $detail->contacts = $detailcontacts;
+                                if ($i != 0) {
+                                    $detail->detail_organizations = $detail->detail_organizations . ',' . $detailorganization;
+                                } else {
+                                    $detail->detail_organizations = $detailorganization;
+                                }
+
+                                $i++;
                             }
-
-                            $i++;
                         }
-                    }
-                    if (isset($record['fields']['phones'])) {
-                        $i = 0;
-                        foreach ($record['fields']['phones'] as $value) {
+                        if (isset($record['fields']['x-contacts'])) {
+                            $i = 0;
+                            foreach ($record['fields']['x-contacts'] as $value) {
 
-                            $detailphones = $strtointclass->string_to_int($value);
+                                $detailcontacts = $strtointclass->string_to_int($value);
 
-                            if ($i != 0) {
-                                $detail->phones = $detail->phones . ',' . $detailphones;
-                            } else {
-                                $detail->phones = $detailphones;
+                                if ($i != 0) {
+                                    $detail->contacts = $detail->contacts . ',' . $detailcontacts;
+                                } else {
+                                    $detail->contacts = $detailcontacts;
+                                }
+
+                                $i++;
                             }
-
-                            $i++;
                         }
-                    }
+                        if (isset($record['fields']['phones'])) {
+                            $i = 0;
+                            foreach ($record['fields']['phones'] as $value) {
 
-                    $detail->detail_services = isset($record['fields']['x-services']) ? implode(",", $record['fields']['x-services']) : null;
+                                $detailphones = $strtointclass->string_to_int($value);
 
-                    if (isset($record['fields']['x-services'])) {
-                        $i = 0;
-                        foreach ($record['fields']['x-services'] as $value) {
+                                if ($i != 0) {
+                                    $detail->phones = $detail->phones . ',' . $detailphones;
+                                } else {
+                                    $detail->phones = $detailphones;
+                                }
 
-                            $detailservice = $strtointclass->string_to_int($value);
-
-                            if ($i != 0) {
-                                $detail->detail_services = $detail->detail_services . ',' . $detailservice;
-                            } else {
-                                $detail->detail_services = $detailservice;
+                                $i++;
                             }
-
-                            $i++;
                         }
-                    }
 
-                    if (isset($record['fields']['x-locations'])) {
-                        $i = 0;
-                        foreach ($record['fields']['x-locations'] as $value) {
+                        $detail->detail_services = isset($record['fields']['x-services']) ? implode(",", $record['fields']['x-services']) : null;
 
-                            $detaillocation = $strtointclass->string_to_int($value);
+                        if (isset($record['fields']['x-services'])) {
+                            $i = 0;
+                            foreach ($record['fields']['x-services'] as $value) {
 
-                            if ($i != 0) {
-                                $detail->detail_locations = $detail->detail_locations . ',' . $detaillocation;
-                            } else {
-                                $detail->detail_locations = $detaillocation;
+                                $detailservice = $strtointclass->string_to_int($value);
+
+                                if ($i != 0) {
+                                    $detail->detail_services = $detail->detail_services . ',' . $detailservice;
+                                } else {
+                                    $detail->detail_services = $detailservice;
+                                }
+
+                                $i++;
                             }
-
-                            $i++;
                         }
-                    }
 
-                    $detail->save();
+                        if (isset($record['fields']['x-locations'])) {
+                            $i = 0;
+                            foreach ($record['fields']['x-locations'] as $value) {
+
+                                $detaillocation = $strtointclass->string_to_int($value);
+
+                                if ($i != 0) {
+                                    $detail->detail_locations = $detail->detail_locations . ',' . $detaillocation;
+                                } else {
+                                    $detail->detail_locations = $detaillocation;
+                                }
+
+                                $i++;
+                            }
+                        }
+
+                        $detail->save();
+                    }
                 }
             } while ($request = $response->next());
 
@@ -269,7 +274,7 @@ class DetailController extends Controller
             $airtable->syncdate = $date;
             $airtable->save();
         } catch (\Throwable $th) {
-            \Log::error('Error in Detail: '.$th->getMessage());
+            \Log::error('Error in Detail: ' . $th->getMessage());
             return response()->json([
                 'message' => $th->getMessage(),
                 'success' => false
