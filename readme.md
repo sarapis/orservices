@@ -4,7 +4,7 @@ ORServices is a free, open source, smartphone-friendly directory application for
 You can use ORServices as an interface to manage all aspects of your service directory data, or you can manage your data using the [OR Airtable Template](https://airtable.com/universe/expwt9yr65lFGUJAr/social-services-directory-v20) and display it automatically via ORServices. We can also set up a custom publishing workflow for you whereby your data is [transformed](https://github.com/openreferral/hsds_transformer) from its existing format into an [Open Referral’s Human Service Data Standard (HSDS)](http://docs.openreferral.org/en/latest/hsds/) zip file and regularly imported into an ORServices application.
 
 Features include:
-* Web and mobile-friendly, geo-aware directory software 
+* Web and mobile-friendly, geo-aware directory software
 * Human Service Data Standard (HSDS) compliant data model
 * Manage any facet of HSDS data within the app
 * Create and manage users, and assign them the ability to manage contact, service, location and organization information on an organization by organization basis
@@ -112,7 +112,7 @@ location / {
       ```
       php artisan db:seed
       ```
-   * From the projects root folder run: 
+   * From the projects root folder run:
       ```
       composer dump-autoload
       ```
@@ -123,3 +123,12 @@ If you have PHP installed locally and you would like to use PHP's built-in devel
 ```
 php artisan serve
 ```
+
+**👉GCloud App Engine Deployment**
+   * Install [Googld Cloud SDK](https://cloud.google.com/sdk/docs/install)
+   * Obtain a copy of the `env_variables.yaml` file from a dev and include in the root directory
+   * Replace the APP_KEY in the `env_variables.yaml` file with the APP_KEY in the `.env` file
+   * From the root directory run:
+     ```
+     gcloud beta app deploy --no-cache
+     ```
