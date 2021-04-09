@@ -62,12 +62,12 @@ class TaxonomyTypeController extends Controller
                         $taxonomy->reference_url = isset($record['fields']['Reference URL']) ? $record['fields']['Reference URL'] : null;
                         $taxonomy->notes = isset($record['fields']['Notes']) ? $record['fields']['Notes'] : null;
 
-                        $taxonomy_terms = isset($record['fields']['taxonomy_term']) ? $record['fields']['taxonomy_term'] : [];
-                        $taxonomy_terms_ids = [];
-                        foreach ($taxonomy_terms as $key => $taxonomy_term_id) {
-                            $taxonomy_terms_ids[] = $strtointclass->string_to_int($taxonomy_term_id);
-                        }
-                        $taxonomy->taxonomy_term()->sync($taxonomy_terms_ids);
+                        // $taxonomy_terms = isset($record['fields']['taxonomy_term']) ? explode(',', $record['fields']['taxonomy_term']) : [];
+                        // $taxonomy_terms_ids = [];
+                        // foreach ($taxonomy_terms as $key => $taxonomy_term_id) {
+                        //     $taxonomy_terms_ids[] = $strtointclass->string_to_int($taxonomy_term_id);
+                        // }
+                        // $taxonomy->taxonomy_term()->sync($taxonomy_terms_ids);
 
                         $additional_taxonomy_terms = isset($record['fields']['additional taxonomies']) ? $record['fields']['additional taxonomies'] : [];
                         $additional_taxonomy_terms_ids = [];
@@ -87,6 +87,7 @@ class TaxonomyTypeController extends Controller
             $airtable->syncdate = $date;
             $airtable->save();
         } catch (\Throwable $th) {
+            dd($th);
             Log::error('Error in x-taxonomies: ' . $th->getMessage());
             return response()->json([
                 'message' => $th->getMessage(),

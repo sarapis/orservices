@@ -272,47 +272,44 @@ class OrganizationController extends Controller
                                 }
                             }
                         }
-                        $organization->organization_alternate_name = isset($record['fields']['alternate_name']) ? $record['fields']['alternate_name'] : null;
-                        $organization->organization_x_uid = isset($record['fields']['x-uid']) ? $record['fields']['x-uid'] : null;
-                        $organization->organization_website_rating = isset($record['fields']['y-website_quality']) ? $record['fields']['y-website_quality'] : null;
-                        $organization->organization_description = isset($record['fields']['description']) ? $record['fields']['description'] : null;
+                    }
+                    $organization->organization_alternate_name = isset($record['fields']['alternate_name']) ? $record['fields']['alternate_name'] : null;
+                    $organization->organization_x_uid = isset($record['fields']['x-uid']) ? $record['fields']['x-uid'] : null;
+                    $organization->organization_website_rating = isset($record['fields']['y-website_quality']) ? $record['fields']['y-website_quality'] : null;
+                    $organization->organization_description = isset($record['fields']['description']) ? $record['fields']['description'] : null;
 
-                        $organization->organization_description =  mb_convert_encoding($organization->organization_description, "HTML-ENTITIES", "UTF-8");
+                    $organization->organization_description =  mb_convert_encoding($organization->organization_description, "HTML-ENTITIES", "UTF-8");
 
-                        $organization->organization_email = isset($record['fields']['email']) ? $record['fields']['email'] : null;
-                        $organization->organization_url = isset($record['fields']['url']) ? $record['fields']['url'] : null;
-                        $organization->organization_status_x = isset($record['fields']['x-status']) ? $record['fields']['x-status'] : null;
-                        if ($organization->organization_status_x == 'Vetted')
-                            $organization->organization_status_sort = 1;
-                        if ($organization->organization_status_x == 'Vetting In Progress')
-                            $organization->organization_status_sort = 2;
-                        if ($organization->organization_status_x == 'Not vetted')
-                            $organization->organization_status_sort = 3;
-                        if ($organization->organization_status_x == null)
-                            $organization->organization_status_sort = 4;
-                        $organization->organization_legal_status = isset($record['fields']['legal_status']) ? $record['fields']['legal_status'] : null;
-                        $organization->organization_tax_status = isset($record['fields']['tax_status']) ? $record['fields']['tax_status'] : null;
-                        $organization->organization_legal_status = isset($record['fields']['legal_status']) ? $record['fields']['legal_status'] : null;
-                        $organization->organization_tax_status = isset($record['fields']['tax_status']) ? $record['fields']['tax_status'] : null;
-                        $organization->organization_tax_id = isset($record['fields']['tax_id']) ? $record['fields']['tax_id'] : null;
-                        $organization->organization_year_incorporated = isset($record['fields']['year_incorporated']) ? $record['fields']['year_incorporated'] : null;
-                        // $organization->organization_tag = isset($record['fields']['x-tags']) ? implode(',', $record['fields']['x-tags']) : null;
-                        $organization_tags = isset($record['fields']['x-tags']) ? $record['fields']['x-tags'] : [];
-                        if (!empty($organization_tags)) {
-                            // $organization->organization_tag = $organization->organization_tag . ',' . $organization_tag;
-                            $orgTag = [];
-                            foreach ($organization_tags as $key1 => $value1) {
-                                $organization_tag = OrganizationTag::where('tag', 'LIKE', '%' . $value1 . '%')->first();
-                                if ($organization_tag) {
-                                    $orgTag[] = $organization_tag->id;
-                                } else {
-                                    $organization_tag = OrganizationTag::create([
-                                        'tag' => $value1
-                                    ]);
-                                    $orgTag[] = $organization_tag->id;
-                                }
-                            }
-                            $organization->organization_tag = implode(',', $orgTag);
+                    $organization->organization_email = isset($record['fields']['email']) ? $record['fields']['email'] : null;
+                    $organization->organization_url = isset($record['fields']['url']) ? $record['fields']['url'] : null;
+                    $organization->organization_status_x = isset($record['fields']['x-status']) ? $record['fields']['x-status'] : null;
+                    if ($organization->organization_status_x == 'Vetted')
+                        $organization->organization_status_sort = 1;
+                    if ($organization->organization_status_x == 'Vetting In Progress')
+                        $organization->organization_status_sort = 2;
+                    if ($organization->organization_status_x == 'Not vetted')
+                        $organization->organization_status_sort = 3;
+                    if ($organization->organization_status_x == null)
+                        $organization->organization_status_sort = 4;
+                    $organization->organization_legal_status = isset($record['fields']['legal_status']) ? implode(',', $record['fields']['legal_status']) : null;
+                    $organization->organization_tax_status = isset($record['fields']['tax_status']) ? implode(',', $record['fields']['tax_status']) : null;
+                    $organization->organization_legal_status = isset($record['fields']['legal_status']) ? implode(',', $record['fields']['legal_status']) : null;
+                    $organization->organization_tax_status = isset($record['fields']['tax_status']) ? implode(',', $record['fields']['tax_status']) : null;
+                    $organization->organization_tax_id = isset($record['fields']['tax_id']) ? $record['fields']['tax_id'] : null;
+                    $organization->organization_year_incorporated = isset($record['fields']['year_incorporated']) ? $record['fields']['year_incorporated'] : null;
+                    $organization->organization_tag = isset($record['fields']['x-tags']) ? implode(',', $record['fields']['x-tags']) : null;
+
+                    if (isset($record['fields']['services'])) {
+                        $i = 0;
+                        foreach ($record['fields']['services']  as  $value) {
+
+                            $organizationservice = $strtointclass->string_to_int($value);
+
+                            if ($i != 0)
+                                $organization->organization_services = $organization->organization_services . ',' . $organizationservice;
+                            else
+                                $organization->organization_services = $organizationservice;
+                            $i++;
                         }
 
                         if (isset($record['fields']['services'])) {
@@ -377,9 +374,9 @@ class OrganizationController extends Controller
                             }
                         }
 
-                        if (isset($record['fields']['AIRS Taxonomy-x'])) {
+                        if (isset($record['fields']['x-AIRS Taxonomy'])) {
                             $i = 0;
-                            foreach ($record['fields']['AIRS Taxonomy-x']  as  $value) {
+                            foreach ($record['fields']['x-AIRS Taxonomy']  as  $value) {
 
                                 if ($i != 0)
                                     $organization->organization_airs_taxonomy_x = $organization->organization_airs_taxonomy_x . ',' . $value;
@@ -426,18 +423,10 @@ class OrganizationController extends Controller
             //     return $response;
             // }
 
-            // if (count($data) > 0) {
-            //     $csv_header_fields = [];
-            //     foreach ($data[0] as $key => $value) {
-            //         $csv_header_fields[] = $key;
-            //     }
-            //     $csv_data = $data;
             // }
-
             Organization::truncate();
             OrganizationDetail::truncate();
 
-            Excel::import(new OrganizationImport, $request->file('csv_file'));
 
             $date = Carbon::now();
             $csv_source = CSV_Source::where('name', '=', 'Organizations')->first();

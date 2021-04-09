@@ -13,6 +13,7 @@ use App\Services\Stringtoint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DetailController extends Controller
 {
@@ -157,6 +158,7 @@ class DetailController extends Controller
 
                 $airtable_response = json_decode($response, true);
 
+
                 foreach ($airtable_response['records'] as $record) {
 
                     $strtointclass = new Stringtoint();
@@ -168,103 +170,105 @@ class DetailController extends Controller
 
                         $detail->detail_recordid = $strtointclass->string_to_int($record['id']);
                         $detail->detail_value = isset($record['fields']['x-value']) ? $record['fields']['x-value'] : null;
-                        $detail->detail_type = isset($record['fields']['x-type']) ? $record['fields']['x-type'] : null;
 
-                        $detail_type = isset($record['fields']['x-type']) ? $record['fields']['x-type'] : null;
+                        $detail->detail_type = isset($record['fields']['x-type']) && is_array($record['fields']['x-type']) ? implode(',', $record['fields']['x-type']) : '';
 
+                        $detail_type = isset($record['fields']['x-type']) ? $record['fields']['x-type'] : [];
                         if ($detail_type) {
-                            $check_detail_type = DetailType::where('type', $detail_type)->exists();
-                            if (!$check_detail_type) {
-                                DetailType::create([
-                                    'type' => $detail_type,
-                                    'created_by' => Auth::id()
-                                ]);
-                                DB::commit();
-                            }
-                        }
-                        $detail->detail_description = isset($record['fields']['x-description']) ? $record['fields']['x-description'] : null;
-                        if (isset($record['fields']['x-organizations'])) {
-                            $i = 0;
-                            foreach ($record['fields']['x-organizations'] as $value) {
-
-                                $detailorganization = $strtointclass->string_to_int($value);
-
-                                if ($i != 0) {
-                                    $detail->detail_organizations = $detail->detail_organizations . ',' . $detailorganization;
-                                } else {
-                                    $detail->detail_organizations = $detailorganization;
+                            foreach ($detail_type as $key => $value) {
+                                $check_detail_type = DetailType::where('type', $value)->exists();
+                                if (!$check_detail_type) {
+                                    DetailType::create([
+                                        'type' => $value,
+                                        'created_by' => Auth::id()
+                                    ]);
+                                    DB::commit();
                                 }
-
-                                $i++;
                             }
                         }
-                        if (isset($record['fields']['x-contacts'])) {
-                            $i = 0;
-                            foreach ($record['fields']['x-contacts'] as $value) {
-
-                                $detailcontacts = $strtointclass->string_to_int($value);
-
-                                if ($i != 0) {
-                                    $detail->contacts = $detail->contacts . ',' . $detailcontacts;
-                                } else {
-                                    $detail->contacts = $detailcontacts;
-                                }
-
-                                $i++;
-                            }
-                        }
-                        if (isset($record['fields']['phones'])) {
-                            $i = 0;
-                            foreach ($record['fields']['phones'] as $value) {
-
-                                $detailphones = $strtointclass->string_to_int($value);
-
-                                if ($i != 0) {
-                                    $detail->phones = $detail->phones . ',' . $detailphones;
-                                } else {
-                                    $detail->phones = $detailphones;
-                                }
-
-                                $i++;
-                            }
-                        }
-
-                        $detail->detail_services = isset($record['fields']['x-services']) ? implode(",", $record['fields']['x-services']) : null;
-
-                        if (isset($record['fields']['x-services'])) {
-                            $i = 0;
-                            foreach ($record['fields']['x-services'] as $value) {
-
-                                $detailservice = $strtointclass->string_to_int($value);
-
-                                if ($i != 0) {
-                                    $detail->detail_services = $detail->detail_services . ',' . $detailservice;
-                                } else {
-                                    $detail->detail_services = $detailservice;
-                                }
-
-                                $i++;
-                            }
-                        }
-
-                        if (isset($record['fields']['x-locations'])) {
-                            $i = 0;
-                            foreach ($record['fields']['x-locations'] as $value) {
-
-                                $detaillocation = $strtointclass->string_to_int($value);
-
-                                if ($i != 0) {
-                                    $detail->detail_locations = $detail->detail_locations . ',' . $detaillocation;
-                                } else {
-                                    $detail->detail_locations = $detaillocation;
-                                }
-
-                                $i++;
-                            }
-                        }
-
-                        $detail->save();
                     }
+                    // $detail->detail_description = isset($record['fields']['x-description']) ? $record['fields']['x-description'] : null;
+                    if (isset($record['fields']['x-organizations'])) {
+                        $i = 0;
+                        foreach ($record['fields']['x-organizations'] as $value) {
+
+                            $detailorganization = $strtointclass->string_to_int($value);
+
+                            if ($i != 0) {
+                                $detail->detail_organizations = $detail->detail_organizations . ',' . $detailorganization;
+                            } else {
+                                $detail->detail_organizations = $detailorganization;
+                            }
+
+                            $i++;
+                        }
+                    }
+                    if (isset($record['fields']['x-contacts'])) {
+                        $i = 0;
+                        foreach ($record['fields']['x-contacts'] as $value) {
+
+                            $detailcontacts = $strtointclass->string_to_int($value);
+
+                            if ($i != 0) {
+                                $detail->contacts = $detail->contacts . ',' . $detailcontacts;
+                            } else {
+                                $detail->contacts = $detailcontacts;
+                            }
+
+                            $i++;
+                        }
+                    }
+                    if (isset($record['fields']['phones'])) {
+                        $i = 0;
+                        foreach ($record['fields']['phones'] as $value) {
+
+                            $detailphones = $strtointclass->string_to_int($value);
+
+                            if ($i != 0) {
+                                $detail->phones = $detail->phones . ',' . $detailphones;
+                            } else {
+                                $detail->phones = $detailphones;
+                            }
+
+                            $i++;
+                        }
+                    }
+
+                    // $detail->detail_services = isset($record['fields']['x-services']) ? implode(",", $record['fields']['x-services']) : null;
+
+                    if (isset($record['fields']['x-services'])) {
+                        $i = 0;
+                        foreach ($record['fields']['x-services'] as $value) {
+
+                            $detailservice = $strtointclass->string_to_int($value);
+
+                            if ($i != 0) {
+                                $detail->detail_services = $detail->detail_services . ',' . $detailservice;
+                            } else {
+                                $detail->detail_services = $detailservice;
+                            }
+
+                            $i++;
+                        }
+                    }
+
+                    if (isset($record['fields']['x-locations'])) {
+                        $i = 0;
+                        foreach ($record['fields']['x-locations'] as $value) {
+
+                            $detaillocation = $strtointclass->string_to_int($value);
+
+                            if ($i != 0) {
+                                $detail->detail_locations = $detail->detail_locations . ',' . $detaillocation;
+                            } else {
+                                $detail->detail_locations = $detaillocation;
+                            }
+
+                            $i++;
+                        }
+                    }
+
+                    $detail->save();
                 }
             } while ($request = $response->next());
 
@@ -274,7 +278,9 @@ class DetailController extends Controller
             $airtable->syncdate = $date;
             $airtable->save();
         } catch (\Throwable $th) {
-            \Log::error('Error in Detail: ' . $th->getMessage());
+
+            dd($th); 
+            Log::error('Error in Detail: ' . $th->getMessage());
             return response()->json([
                 'message' => $th->getMessage(),
                 'success' => false
@@ -302,18 +308,10 @@ class DetailController extends Controller
     {
         //
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         //
     }
-
     /**
      * Display the specified resource.
      *
