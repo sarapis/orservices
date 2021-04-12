@@ -1,12 +1,228 @@
 id,term,description,parent_id,taxonomy,language,x_taxonomies,taxonomy_x_notes,badge_color,taxonomy_recordid
-45,Food,"Services for free meals, food pantries, help paying for food, food delivery, food benefits and nutrition support.\n",,629864383953331,,1336498016075499,,#000000,630013980013392
-122,Work,"Services for finding and sustaining work and improving job skills and abilities. \n",,629864383953331,,1336498016075499,,#000000,832122112723102
-140,Legal,"Services for legal representation, mediation, advocacy, citizenship and immigration, adoption and foster care, guardianship, civil rights and more.\n",,629864383953331,,1336498016075499,,#000000,841905613386238
-171,Money,"Services to help pay for housing, education, childcare, school, food and goods, financial education, tax preparation, insurance, government benefits, vouchers and more.\n",,629864383953331,,1336498016075499,,#000000,899387596744807
-178,Care,"Services for animal welfare, residential caregiving, daytime caregiving, adoption & foster care, building support networks, end-of-life care and help navigating the system.\n",,629864383953331,,1336498016075499,,#000000,893915418546777
-184,Transit,"Services for bus passes, transportation to school, healthcare, appointments and more. \n	    	",,629864383953331,,1336498016075499,,34F0C1,897715506052490
-238,Education,"Services for preschool, after-school, special education, help finding school, help paying for school, alternative education tutoring and more. \n",,629864383953331,,1336498016075499,,#000000,976566727118378
-320,Emergency,"Services for psychiatric emergencies, emergency financial assistance, immediate safety needs, disaster preparedness and disaster response. \n",,629864383953331,,1336498016075499,,#000000,1169956847122981
-360,Goods,"Services for clothing, furniture, baby supplies, toys and gifts and other physical goods.\n",,629864383953331,,1336498016075499,,#000000,1211420433536032
-406,"Health Conditions","Services for medical care, dental care, health education, addiction and recovery, help finding services and help paying for healthcare.\n",,1081834932991779,,1240637095744489,,#000000,1276982655382389
-408,Housing,"Services for emergency, short-term and long-term housing, housing advice, help finding housing and help paying for housing.\n",,629864383953331,,1336498016075499,,#000000,1305774265925553
+1,"Peer Support","Support services from a person who has common life experiences and is working to assist other people with those same experiences.",1313649827605051,1128133739941080,,1080938299011131,,D3E3CF,568941873404674
+2,"Skilled Nursing","Care given or supervised by registered nurses. Nurses provide direct care; manage, observe, and evaluate a patient?s care; and teach the patient and his or her family caregiver.",1087697029011671,1128133739941080,,1080938299011131,"Website only",E2D132,598664874121202
+3,Detox,"Services treating severe intoxication and other withdrawal symptoms from reducing physical dependence on alcohol or drugs to avoid life-threatening medical crises during recovery.",586452735347812,1128133739941080,,1080938299011131,,6A8F71,557817203890885
+4,Transportation,"Services that promote or provide access to transportation.",1191195509116109,1128133739941080,,1080938299011131,,4DB237,570706556462322
+5,"Help Pay for Food","Financial assistance for food related expenses.",1238717430178898,1128133739941080,,1080938299011131,,2A4EB9,579144238619502
+6,"Financial Aid & Loans","Financial assistance to help pay for tuition, books and other education expenses.",759745038291037,1128133739941080,,1080938299011131,,8B8BBC,579849991698650
+7,Bereavement,"Grief counseling for the death or departure of a loved one.",830916845316095,1128133739941080,,1080938299011131,,40E22D,583720897422711
+9,"Alternative Medicine","Medical practice using self-awareness, herbal medicine, biofeedback or acupuncture.",1087697029011671,1128133739941080,,1080938299011131,,BA82EF,586575912374297
+10,"Credit Counseling","Financial education services to help improve credit scores and reduce debt.",1156404249835372,1128133739941080,,1080938299011131,,9182DA,597922035170063
+12,"Computer or Internet Access","Provides access to computers, word processing programs, and the Internet for users who otherwise would not be able to connect to these services.",1271111924739113,1128133739941080,,1080938299011131,"Website only",74E301,590415235690018
+16,"Foreclosure Counseling","Services to help homeowners protect their housing and avoid foreclosure.",1186860507752498,1128133739941080,,1080938299011131,,86470F,581130016509817
+18,"Alternative Education","Alternative education options for children and teens having difficulty succeeding in traditional public schools.",815115792108082,1128133739941080,,1080938299011131,,DAC4A9,582366869320834
+20,Representation,"Legal work performed by a licensed attorney.",1156519889594243,1128133739941080,,1080938299011131,,C851FF,601726407940395
+21,"One-on-One Support","Services providing one-on-one interaction with a case worker.",1313649827605051,1128133739941080,,1080938299011131,,C6829B,628066671479051
+22,"Government Food Benefits","Government benefits to obtain food (WIC, SNAP).",637784701218656,1128133739941080,,1080938299011131,"Website only",2562D4,637784701218656
+24,"Addiction & Recovery","Programs guiding members through recovery from addiction, compulsion or other behavioral problems.",843562920971241,1128133739941080,,1080938299011131,,390F6C,586452735347812
+26,"Supplies for School","Services provide supplies for school such as pencils and notebooks.",888130965222442,1128133739941080,,1080938299011131,"Website only",0E6C3A,650855713271837
+27,"Primary Care","Services provided for primary medical care.",1087697029011671,1128133739941080,,1080938299011131,"Website only",8CDB95,660379597765385
+28,"Understand Mental Health","Information and instruction on living a mentally healthy life.",1127890358862735,1128133739941080,,1080938299011131,,8032B5,600435154539213
+31,"Resume Development","Employment services to help prepare for job interviews and improve resumes.",1189587443168816,1128133739941080,,1080938299011131,,734103,649969654958469
+33,"Psychiatric Emergency Services","24/7 emergency psychiatric assessment, crisis intervention, physician services, and referrals for children and adults experiencing psychiatric distress.",1318993105722138,1128133739941080,,1080938299011131,,772DD3,659998349344630
+34,"Unemployment Benefits","Services providing temporary financial assistance benefits to those who are unemployed.",982659025871683,1128133739941080,,1080938299011131,,CB8B21,662196780137959
+36,"Toys & Gifts","Services providing toys and gifts for children.",1080715265305965,1128133739941080,,1080938299011131,,3F99EA,612598456746881
+37,"Personal Care Items","Services providing personal care items and hygiene necessities.",888130965222442,1128133739941080,,1080938299011131,,AD52E0,630895690258744
+38,"Personal Hygiene","Services providing showers and other sanitation services.",1087697029011671,1128133739941080,,1080938299011131,,3BC91B,641563143496743
+39,Recreation,"Services providing recreational and leisure activities.",1304882756842793,1128133739941080,,1080938299011131,,A6235E,648127886036575
+40,"Loans ","Programs that provide quality financing or microloans to members of underserved communities that lack access to traditional financial services.",1145881970407760,1128133739941080,,1080938299011131,"Website only",4C5112,675943488509761
+41,"Job Placement","Activities assisting in obtaining employment by matching the skills and capabilities of job seekers with those demanded by job openings.",790246817502621,1128133739941080,,1080938299011131,,D62324,616765343572355
+43,"Understand Government Programs","Services providing information and guidance to help navigate and access government programs.",982659025871683,1128133739941080,,1080938299011131,,BC93DB,664245338438051
+45,"Help Find Housing","Services for helping find the right housing for your needs.",1186892906434230,1128133739941080,,1080938299011131,,94BE13,633743556714661
+46,Mediation,"Intervening for the purposes of reaching an agreement or resolve difference.",1156519889594243,1128133739941080,,1080938299011131,,4AF6B3,650412950864712
+49,"Birth Control","Services provide forms of birth control.",1087697029011671,1128133739941080,,1080938299011131,,26A8FC,699874039229900
+50,"Special Education","Educational services for those with learning or developmental disabilities and other cognitive challenges.",815115792108082,1128133739941080,,1080938299011131,,FEDAA2,712741193078565
+52,"Help Find Missing Persons","Emergency services to assist in finding a missing person.",1318993105722138,1128133739941080,,1080938299011131,,AD3256,730690926782942
+53,"Help Pay for Internet or Phone","Financial assistance to pay for home or personal communication services such as landline or mobile phone services or internet access.",1158639030659112,1128133739941080,,1080938299011131,"Website only",423CD0,733918917729332
+54,"Help Escape Violence","Services for helping escape dangerous situations.",950814511693850,1128133739941080,,1080938299011131,,4FCEC6,739297090344168
+55,"Advocacy & Legal Aid","Services that provide advocacy and/or legal aid for individuals.",1156519889594243,1128133739941080,,1080938299011131,,B94AFE,737380176928417
+56,"Disaster Preparedness & Response","Services providing emergency planning, preparation, response relief, and recovery for natural disasters.",815115792108082,1128133739941080,,1080938299011131,,879F42,740474392551686
+58,"Disease Management","Services to help manage health conditions in day-to-day life and improve overall quality of life.",1127890358862735,1128133739941080,,1080938299011131,,07ED50,751452568691959
+59,"Dental Care","Low cost or free dental care.",843562920971241,1128133739941080,,1080938299011131,,B518BC,768063197211410
+60,"Group Therapy","Services that provide a group setting for individuals to discuss their problems under the supervision of a therapist.",943485386009319,1128133739941080,,1080938299011131,"Website only",3069C1,768541862287889
+62,"Sex Education","Educational services related to sexual reproduction, intercourse, anatomy, reproductive health, emotional relationships, contraception, abstinence and personal rights and responsibilities.",1127890358862735,1128133739941080,,1080938299011131,,4C6EBA,772484325337283
+70,"Community Gardens","Access to food through community gardens.",842160891954809,1128133739941080,,1080938299011131,,B34CDB,737609336669988
+72,"Spiritual Support","Services providing religious and spiritual support.",1313649827605051,1128133739941080,,1080938299011131,,36C57E,769982219794570
+73,"Sober Living","Alcohol and drug free affordable housing environments where residents can develop individual recovery programs and become self supporting.",795418792986830,1128133739941080,,1080938299011131,,B03956,772901016385670
+77,"Food Pantry","Services providing food to meet nourishment needs of individuals and families.",842160891954809,1128133739941080,,1080938299011131,,B22198,799309160679477
+81,"Screening & Exams","Services that screen and give exams for various circumstances that are specific to education.",1188270167603003,1128133739941080,,1080938299011131,,83189A,747735571994567
+82,"In-Home Support","Services providing regular support to ensure families and caregivers are able to remain in their home.",1218888719108670,1128133739941080,,1080938299011131,,AEC578,768875117529884
+83,"Head Start","Services providing comprehensive early childhood education, health, nutrition, and parent involvement services.",1304882756842793,1128133739941080,,1080938299011131,"Website only",372962,803228324874953
+85,"Help Pay for School","Financial assistance for education related expenses.",1238717430178898,1128133739941080,,1080938299011131,,8C69F9,759745038291037
+88,Notary,"Services to authorize or certify certain legal documents.",1156519889594243,1128133739941080,,1080938299011131,,7AA2ED,779605732706669
+89,"Help Fill out Forms","Services providing assistance filling out difficult government forms and applications.",827906237415920,1128133739941080,,1080938299011131,,12E92B,798289187109918
+94,"Residential Care","Out of home overnight care.",816930021924821,1128133739941080,,1080938299011131,,5D2BB7,833844356185954
+95,"Temporary Shelter","Immediate overnight sleeping facility for individuals and families in crisis, typically operated on first-come, first-serve basis.",920951764046045,1128133739941080,,1080938299011131,"Website only",CDEA8B,770192080912060
+96,"Business Loans","Programs that provide business financing to members of underserved communities that lack access to traditional financial services to help promote entrepreneurship.",1297620632550193,1128133739941080,,1080938299011131,"Website only",F1343F,769232169897633
+98,"Medical Supplies","Programs that pay for or provide durable medical equipment or disposable medical supplies such as monitoring devices, respiratory aids, and prevention kits.",1080715265305965,1128133739941080,,1080938299011131,,2936F6,793922705230824
+101,"Interview Training","Services to help prepare individuals for job interviews.",1189587443168816,1128133739941080,,1080938299011131,,8E1634,838373937533889
+103,"English as a Second Language (ESL)","Services providing practical english language literacy instruction.",815115792108082,1128133739941080,,1080938299011131,,FD292D,837845278404369
+104,"Help Find Work","Activities assisting in obtaining employment by matching the skills and capabilities of job seekers with those demanded by job openings.",827906237415920,1128133739941080,,1080938299011131,,D943C6,790246817502621
+105,"Short-Term Housing","Time-limited safe and affordable housing for individuals and families typically ranging from 2 weeks to 24 months.",1251892169016481,1128133739941080,,1080938299011131,,C74750,795418792986830
+106,"Assisted Living","Residential facility typically providing a room, meals, housekeeping and laundry service. Depending on the needs of the resident they may also provide assistance with daily activities such as personal hygiene, dressing, eating and walking.",1244529920473776,1128133739941080,,1080938299011131,,5AC87C,814206079438256
+107,"GED/High-School Equivalency","Instruction to help prepare individuals for the GED or High School Equivalency.",815115792108082,1128133739941080,,1080938299011131,,6586DC,815229946004691
+109,"End-of-Life Care","Services for pain management, spiritual support, grief counseling, bereavement support, and help paying for burial and funeral expenses.",843562920971241,1128133739941080,,1080938299011131,,872205,830916845316095
+111,"More Education","Opportunities to acquire knowledge, skills or behavior.",1188270167603003,1128133739941080,,1080938299011131,,1E3BBF,815115792108082
+114,Care,"Services for animal welfare, residential caregiving, daytime caregiving, adoption & foster care, building support networks, end-of-life care and help navigating the system.\n	    	",,1128133739941080,,1080938299011131,,E71747,816930021924821
+117,"Health Insurance","Insurance against loss due to ill health.",931898863532604,1128133739941080,,1080938299011131,,039646,846977430303901
+118,"Retirement Benefits","Services providing retirement benefit plans.",982659025871683,1128133739941080,,1080938299011131,,45E484,816077690131440
+119,"Foreign Languages","Instruction for learning foreign languages.",815115792108082,1128133739941080,,1080938299011131,,D11972,824345407209129
+120,"Identification Recovery","Services to help pay for and retrieve birth certificates, social security numbers, and other forms of identification.",737380176928417,1128133739941080,,1080938299011131,,E00FF9,832229370647672
+121,"Help Hotlines","Services for individuals to call 24/7 to get assistance.",1313649827605051,1128133739941080,,1080938299011131,,6ABA6F,834787469814462
+122,"Safety Education","Educational services related to the teaching of knowledge, skills, and understanding of risk management, prevention, and emergency resources (examples include swimming classes, defensive driving, and CPR training).",920951764046045,1128133739941080,,1080938299011131,"Website only",46581B,857465601410669
+124,"Navigating the System","Services that provide general advice and guidance about resources for any situation.",816930021924821,1128133739941080,,1080938299011131,,93455B,827906237415920
+125,"Burial & Funeral Help","Services relating to funeral ceremonies and burial arrangements.",830916845316095,1128133739941080,,1080938299011131,,54621E,830973807101138
+126,"Transportation for Healthcare","Low cost or free transportation to and/or from medical related appointments.",570706556462322,1128133739941080,,1080938299011131,,6CFC68,836091053592801
+127,"Citizenship & Immigration","Services to help navigate US citizenship and immigration.",747735571994567,1128133739941080,,1080938299011131,,F662D4,843491046604823
+128,Health,"Services for medical care, dental care, health education, addiction and recovery, help finding services and help paying for healthcare.\n	    	",,1128133739941080,,1080938299011131,,4F295B,843562920971241
+129,"Medications for Addiction","Services that provide medications for recovery from substance use (including NARCAN, suboxone, methadone, buprenorphine).",586452735347812,1128133739941080,,1080938299011131,"Website only",D904B5,862166287618677
+130,"Hospital Treatment","Treatment within a hospital.",1218888719108670,1128133739941080,,1080938299011131,"Website only",EF97FF,874520680866522
+131,"Savings Program","Services to assist individuals save money.",1156404249835372,1128133739941080,,1080938299011131,,ECCD32,818581888719269
+132,Food,"Services for free meals, food pantries, help paying for food, food delivery, food benefits and nutrition support.\n	    	",,1128133739941080,,1080938299011131,,21B304,842160891954809
+134,"Adoption Planning","Services for anyone considering an adoption plan for their child.",1236998510240870,1128133739941080,,1080938299011131,,6FCC83,833535741826883
+135,Insurance,"Programs protecting against future loss.",1145881970407760,1128133739941080,,1080938299011131,,76703D,833514744556199
+138,"Medication Management","Services that help people understand and manage medications used to treat health conditions and help with safe, effective, and appropriate drug therapy (such as managing drug interactions, help remembering to take pills, help administering IV medications).",1218888719108670,1128133739941080,,1080938299011131,"Website only",3AB800,878137005355388
+139,"Virtual Support","Online support environments.",1313649827605051,1128133739941080,,1080938299011131,,FBE9B9,891048752370492
+140,"Help Pay for Car","Help with paying for vehicle maintenance, repairs, or purchasing.",1191195509116109,1128133739941080,,1080938299011131,"Website only",4BA391,899368474728196
+143,"Substance Abuse Counseling","Services that provide professional counseling for individuals with substance abuse.",943485386009319,1128133739941080,,1080938299011131,"Website only",D8F250,860275338053291
+145,"Daily Life Skills","Practical education and guidance in activities of daily living for those seeking to improve independent living ability.",1127890358862735,1128133739941080,,1080938299011131,,6C19D5,860635347686243
+146,Hospice,"Services providing healthcare, pain management, and emotional support to terminally ill patients and their caregivers.",830916845316095,1128133739941080,,1080938299011131,,0F4645,878308224993503
+149,"Housing Vouchers","Coupons to help pay for housing.",1158639030659112,1128133739941080,,1080938299011131,,F0F1C7,889703792926044
+151,"Relief for Caregivers","Supervised care for dependent individuals providing temporary relief for family or other caregivers.",1304882756842793,1128133739941080,,1080938299011131,,B97E95,912446422486011
+153,"Mental Health Evaluation","Screening and evaluation services for individuals and groups with the purpose of attaining and maintaining good mental health.",947756599286203,1128133739941080,,1080938299011131,,428258,927220015951955
+154,"Emergency Food","Access to emergency food.",1318993105722138,1128133739941080,,1080938299011131,,58D19F,931017736104379
+156,"Support & Service Animals","Programs that train animals to provide mental, emotional, medical, or disability support.",1218888719108670,1128133739941080,,1080938299011131,"Website only",43049A,870492265293220
+157,12-Step,"Services to treat addiction through the 12-Step program.",586452735347812,1128133739941080,,1080938299011131,,76C831,870837540552218
+158,"Home Goods","Services providing new or used furniture items and other household supplies.",1080715265305965,1128133739941080,,1080938299011131,,38A13F,888130965222442
+159,"Help Pay for Childcare","Financial assistance for childcare related expenses.",1199310287963209,1128133739941080,,1080938299011131,,522B0A,940287511885449
+160,"Sexual & Reproductive Health","Services to promote healthy sex, sexuality, and reproductive health.",1218888719108670,1128133739941080,,1080938299011131,"Website only",1E9518,891676165095519
+162,Guardianship,"Services providing legal management of individuals property and rights.",737380176928417,1128133739941080,,1080938299011131,,FF0F83,913413140537507
+163,"Physical Safety","Services for moving people away from potential physical harm, such as during a disaster or if someone is missing.",816930021924821,1128133739941080,,1080938299011131,"Website only",DB1C0A,920951764046045
+164,"Physical Therapy","Support to restore or improve movement and strength for persons whose mobility has been impaired.",1218888719108670,1128133739941080,,1080938299011131,,D67539,914663056989012
+165,"Checkup & Test","Health and wellness services to check your current physical and mental well-being.",1087697029011671,1128133739941080,,1080938299011131,,75BF39,947756599286203
+166,Counseling,"Services for individuals, families and groups providing professional therapeutic interactions to address specific treatment goals.",1218888719108670,1128133739941080,,1080938299011131,,8C8B6C,943485386009319
+168,"Peer Recovery Coaching","Coaching and support by a certified Peer Recovery Coach who has progressed in her or her own recovery from addiction and is working to assist other people with those issues.",1313649827605051,1128133739941080,,1080938299011131,"Website only",861179,953017517853003
+169,"Clothes for Work","New or used clothing for work.",1164485518339204,1128133739941080,,1080938299011131,,76FBD2,904809470344636
+170,"Help Pay for Healthcare","Financial assistance to help pay for medical expenses.",1238717430178898,1128133739941080,,1080938299011131,,2FA0D2,931898863532604
+171,"Understand Disability","Services providing general education to help individuals and supporters understand challenges of persons with disabilities.",1127890358862735,1128133739941080,,1080938299011131,,5A0BFF,950764878406518
+172,"Disability Benefits","Services providing supplemental income for individuals with disabilities.",931898863532604,1128133739941080,,1080938299011131,,9E158E,958623185313345
+173,Meals,"Services providing meals.",842160891954809,1128133739941080,,1080938299011131,"Website only",18A23A,915843719128802
+175,"Case Management","Case management services to help assess, plan, coordinate, navigate or advocate for options to meet their clients? needs.?",827906237415920,1128133739941080,,1080938299011131,"Website only",661E57,947794015295284
+177,"Immediate Safety","Immediate services to help escape violence, find safe and protective housing, or otherwise protect an individual?s immediate personal safety.",1318993105722138,1128133739941080,,1080938299011131,,8E7BD5,950814511693850
+179,"Government Benefits","Supplemental income assistance.",1145881970407760,1128133739941080,,1080938299011131,,03AADC,982659025871683
+180,"Help Pay for Transit","Services to help pay for transit, includes bus passes and gas.",1191195509116109,1128133739941080,,1080938299011131,,51CF30,937982330136886
+181,"Efficient Appliances","Services providing efficient appliances such as refrigerators.",888130965222442,1128133739941080,,1080938299011131,"Website only",86FF4F,943274112854961
+182,"Afterschool Care","Services providing supervised care for children after school is over.",1304882756842793,1128133739941080,,1080938299011131,,55DC4B,954030933544089
+183,Prosthesis,"An artificial device that replaces a missing or injured part of the body such as wigs, dentures, implants and artificial limbs.",793922705230824,1128133739941080,,1080938299011131,"Website only",42A646,987032302955560
+185,"Adult Daycare","Services providing supervised planned care for adults.",1304882756842793,1128133739941080,,1080938299011131,,BA295E,944321588469249
+186,"Pregnancy Tests","Services providing tests to determine whether a woman is pregnant.",947756599286203,1128133739941080,,1080938299011131,,F65E03,975779432363851
+187,Nutrition,"Services providing instruction and guidance to maintain or improve nutritional well-being.",842160891954809,1128133739941080,,1080938299011131,,9AEBFF,993031881548481
+191,"Prescription Assistance","Financial assistance for prescription drug related expenses.",931898863532604,1128133739941080,,1080938299011131,,FD4FEB,982177059705290
+193,"Discounted Healthcare","Reduced cost healthcare services.",931898863532604,1128133739941080,,1080938299011131,,4B1E8F,984686414123466
+194,"Personal Loans","Programs that provide personal financing to members of underserved communities that lack access to traditional financial services, such as home loans, car loans, and emergency loans.",1297620632550193,1128133739941080,,1080938299011131,"Website only",342F68,996311078745174
+195,"Home & Renters Insurance","Protection against future loss related to housing.",1158639030659112,1128133739941080,,1080938299011131,,0CDB47,1009347266789221
+196,"Bus Passes","Services providing financial assistance in the form of bus passes.",937982330136886,1128133739941080,,1080938299011131,,1631DC,985822712167258
+197,Preschool,"Services providing supervised planned care for children age three through entrance into kindergarten.",1304882756842793,1128133739941080,,1080938299011131,,BB43C3,987690927566059
+198,"Skills Assessment","Programs that measure skill, abilities, interests, personality traits and other characteristics affecting work related success.",1189587443168816,1128133739941080,,1080938299011131,,8B31DE,988112684788160
+199,"Individual Counseling","Services that provide professional counseling to individual people.",943485386009319,1128133739941080,,1080938299011131,"Website only",01A32F,1038422241605756
+201,"Weather Relief","Daytime facility for individuals to find relief from extreme heat or extreme cold on a first-come, first-served basis.",1271111924739113,1128133739941080,,1080938299011131,"Website only",E51293,1059144544992177
+202,"Help Find Childcare","Services to help find the right childcare program for your needs.",1098570418945740,1128133739941080,,1080938299011131,,55982F,1060124572237933
+203,"Early Childhood Intervention","Services and supports addressing developmental delays or risks of delays, including therapeutic services, for families of children from 0 and 36 months.",1218888719108670,1128133739941080,,1080938299011131,"Website only",22816F,1062564641011336
+205,"Medical Care","Services provided for medical care.",843562920971241,1128133739941080,,1080938299011131,,6391DD,1087697029011671
+207,Books,"Services that provide free books.",888130965222442,1128133739941080,,1080938299011131,,BF565B,1094246008449470
+209,"Disability Screening","Services provide screenings for disabilities.",947756599286203,1128133739941080,,1080938299011131,,A2BCB3,1044802678751048
+211,"Maintenance & Repairs","Free or low-cost home maintenance services.",1158639030659112,1128133739941080,,1080938299011131,,C54159,1097318159419684
+212,"Nursing Home","Residential facility providing 24-hour licensed nursing care intended for people who need ongoing medical care as well as help with daily activities.",1244529920473776,1128133739941080,,1080938299011131,,7975EB,1099858632851857
+213,"Medications for Mental Health","Services that prescribe or provide medications for individuals with mental health issues.",1135665334715180,1128133739941080,,1080938299011131,"Website only",8DC05A,1108167174183851
+214,"Adoption & Foster Parenting","Services related to becoming a foster parent and support while parenting.",1236998510240870,1128133739941080,,1080938299011131,,6E5E0B,1054099766853009
+219,Goods,"Services for clothing, furniture, baby supplies, toys and gifts and other physical goods.\n	    	",,1128133739941080,,1080938299011131,,26A2FE,1080715265305965
+220,Childcare,"Services providing supervised planned care for children.",1304882756842793,1128133739941080,,1080938299011131,,92D46D,1098570418945740
+221,"Adoption & Foster Placement","Services that help select families and children for adoption and supervision for the child during placement.",1236998510240870,1128133739941080,,1080938299011131,,DC1520,1107161613216888
+223,Vaccinations,"Immunization to prevent disease.",1218888719108670,1128133739941080,,1080938299011131,,E2591A,1115550652916394
+224,"Tax Preparation","Programs to help individuals prepare their tax returns.",1145881970407760,1128133739941080,,1080938299011131,,30AEB5,1118217208243196
+225,"Supported Employment","Services providing a supported work environment, typically for individuals with severe disabilities.",815115792108082,1128133739941080,,1080938299011131,,D4C4AD,1116797077477466
+227,"Translation & Interpretation","Services providing translators or interpreters to assist with communication.",1156519889594243,1128133739941080,,1080938299011131,,B319A1,1125228174458372
+230,"Efficiency Upgrades","Services for upgrading home for efficiency. Examples are lights, gas, electric.",1097318159419684,1128133739941080,,1080938299011131,"Website only",012874,1103624798440378
+231,"Clothes for School","New or used clothes for school.",1164485518339204,1128133739941080,,1080938299011131,,6ADE4C,1112366067965934
+232,"Disease Screening","Services providing STD screening and other diagnostic services.",947756599286203,1128133739941080,,1080938299011131,,15D1E1,1126211059418220
+233,"Clothing Vouchers","Coupons to help pay for clothing.",1164485518339204,1128133739941080,,1080938299011131,,A6F957,1134283007083779
+234,"Before School Care","Services providing supervised care for children before school is in session.",1304882756842793,1128133739941080,,1080938299011131,"Website only",0843DA,1080750056345097
+236,Money,"Services to help pay for housing, education, childcare, school, food and goods, financial education, tax preparation, insurance, government benefits, vouchers and more.\n	    	",,1128133739941080,,1080938299011131,,A1283E,1145881970407760
+237,"Transportation for School","Low cost or free transportation to and/or from school.",570706556462322,1128133739941080,,1080938299011131,,AB4B9F,1147669894959671
+238,"Anger Management","Services to assist individuals with anger issues.",1135665334715180,1128133739941080,,1080938299011131,"Website only",DE18A9,1121368403296150
+239,"Help Find School","Services for helping find the right school or learning program for your needs.",827906237415920,1128133739941080,,1080938299011131,,AB7EA0,1125911504336828
+240,"Food Delivery","Services providing well-balanced meals to those living alone or with another person who is unable to prepare regular, adequate meals.",842160891954809,1128133739941080,,1080938299011131,,1DF02C,1159521258297272
+241,"Baby Supplies","Services providing baby goods and supplies like formula, diapers and clothes.",1080715265305965,1128133739941080,,1080938299011131,,05B916,1129478017339547
+242,"Health Education","Services helping you learn about nutrition, daily living skills, parenting, family planning, disease management, disability, sex education, and mental health.",843562920971241,1128133739941080,,1080938299011131,,B82029,1127890358862735
+243,"Specialized Therapy","Specialized treatments that help relieve or improve conditions impacting daily living.",1218888719108670,1128133739941080,,1080938299011131,,B592CA,1133459333129880
+245,"Independent Living","Residential housing for individuals or couples who are able to take care of their own daily needs.",1244529920473776,1128133739941080,,1080938299011131,,B8B8F5,1126317122051210
+246,"Outpatient Treatment","Nonresidential treatment services.",586452735347812,1128133739941080,,1080938299011131,,0C5940,1126794242307229
+248,Clothing,"Services that provide new or used clothing.",1080715265305965,1128133739941080,,1080938299011131,,CAC317,1164485518339204
+249,"Parenting Education","Services to educate individuals about parenting through classes and support.",1127890358862735,1128133739941080,,1080938299011131,,512290,1117179414586921
+250,"Hearing Tests","Services providing tests to determine if an individual has hearing deficiencies.",947756599286203,1128133739941080,,1080938299011131,,132EA1,1143356721221925
+253,"Pain Management","Medical services to relieve pain.",830916845316095,1128133739941080,,1080938299011131,,C16446,1177480895392256
+254,Housing,"Services for emergency, short-term and long-term housing, housing advice, help finding housing and help paying for housing.\n	    	",,1128133739941080,,1080938299011131,,944C00,1186892906434230
+255,"Home Fuels","Services providing home fuels such as firewood or propane.",888130965222442,1128133739941080,,1080938299011131,"Website only",3CA346,1132538579576033
+256,"Mental Health Care","Services for individuals with mental health issues.",843562920971241,1128133739941080,,1080938299011131,"Website only",0345F4,1135665334715180
+257,"Day Camp","Care and activities typically for children during the daytime.",1304882756842793,1128133739941080,,1080938299011131,,C658FA,1138719270298425
+258,"Women's Health","Health services that address the special needs of women, including well woman exams, OB/GYN visits, breast and ovarian cancer screenings, and reproductive health.",891676165095519,1128133739941080,,1080938299011131,"Website only",A4112B,1150005248907855
+260,"HIV Treatment","Services providing medical treatment for HIV/AIDS.",1218888719108670,1128133739941080,,1080938299011131,,395FBC,1154880292831185
+261,"Speech Therapy","Training to help people with speech and language problems to speak more clearly.",1218888719108670,1128133739941080,,1080938299011131,"Website only",58F109,1155597938426671
+263,"Help Find Healthcare","Services that help find the right healthcare options for your needs.",1087697029011671,1128133739941080,,1080938299011131,"Website only",D604B7,1191269715020709
+264,"Blankets & Fans","Services providing goods to help stay warm in the winter and cool in the summer.",888130965222442,1128133739941080,,1080938299011131,,22D3F9,1142881758215466
+265,"STD/STI Treatment & Prevention","Services to control the spread and symptoms of STD/STIs such as HIV testing, PEP/PreP, condoms, and screenings.",891676165095519,1128133739941080,,1080938299011131,"Website only",6F8E89,1139844609530463
+266,Legal,"Services for legal representation, mediation, advocacy, citizenship and immigration, adoption and foster care, guardianship, civil rights and more.\n	    	",,1128133739941080,,1080938299011131,,652EF9,1156519889594243
+267,"Help Pay for Housing","Financial assistance for rent and other housing related expenses.",1238717430178898,1128133739941080,,1080938299011131,,B76307,1158639030659112
+269,"Drug Testing","Services to test individuals for drug usage.",586452735347812,1128133739941080,,1080938299011131,"Website only",AE898A,1192461338262385
+271,"Public Housing","Publicly funded housing owned, maintained and administered by local public housing authorities.",1244529920473776,1128133739941080,,1080938299011131,,8FB663,1205179721512879
+272,"Occupational Therapy","Support to develop, recover, improve, or maintain the meaningful activities, daily living, or working of individuals.",1218888719108670,1128133739941080,,1080938299011131,"Website only",8B2EFD,1210609524219725
+273,"Animal Welfare","Services for pet food and supplies, companion animals, shelters and rescue, and help paying for pet care.",816930021924821,1128133739941080,,1080938299011131,,63B8D1,1171278749621006
+274,"Diapers & Formula","Services providing diapers and formula.",1129478017339547,1128133739941080,,1080938299011131,,136543,1180368263730679
+275,Education,"Services for preschool, after-school, special education, help finding school, help paying for school, alternative education tutoring and more. \n	    	",,1128133739941080,,1080938299011131,,80DA64,1188270167603003
+276,"Vision Care","Low cost or free vision care.",843562920971241,1128133739941080,,1080938299011131,"Website only",FA4A41,1189624960397648
+278,"Postnatal Care","The essential core care which every woman and her baby should receive, as appropriate to their needs, during the first 6-8 weeks after birth.",1150005248907855,1128133739941080,,1080938299011131,"Website only",2AE441,1191796357818532
+281,"Financial Education","Services to help increase savings, manage debt, prepare to buy a house, and prevent home foreclosure.",1145881970407760,1128133739941080,,1080938299011131,,857659,1156404249835372
+283,Transit,"Services for bus passes, transportation to school, healthcare, appointments and more. \n	    	",,1128133739941080,,1080938299011131,,A78B24,1191195509116109
+285,"Skills & Training","Training and preparation for specific employment opportunities.",1188270167603003,1128133739941080,,1080938299011131,,2B663B,1189587443168816
+286,"Housing Advice","Services that can help guide individuals and families through issues related to housing.",1186892906434230,1128133739941080,,1080938299011131,,318D91,1186860507752498
+287,"Family Planning","Services to help plan having children and using birth control.",1127890358862735,1128133739941080,,1080938299011131,,310C8D,1187606768775739
+290,"Personal Safety","Services that provide or maintain items that contribute to personal safety, such as bike helmets or items for self-defense.",1080715265305965,1128133739941080,,1080938299011131,"Website only",823A7C,1223612230593465
+293,"Baby Clothes","Services providing baby clothes.",1129478017339547,1128133739941080,,1080938299011131,,4A7F51,1235222548682002
+294,"Emergency Payments","Emergency financial assistance.",1318993105722138,1128133739941080,,1080938299011131,,DE8E2C,1238717430178898
+296,"Financial Assistance","Services to help pay for things.",1145881970407760,1128133739941080,,1080938299011131,,8067FA,1199310287963209
+298,"Prevent & Treat","Services that help prevent health conditions and treat current health conditions.",1087697029011671,1128133739941080,,1080938299011131,,E8398F,1218888719108670
+300,"Assistive Technology","Programs that pay for or provide services, equipment and supplies to help perform activities of daily living and employment tasks such as communication devices, mobility aids, education devices, tools and utensils.",1087697029011671,1128133739941080,,1080938299011131,,E83046,1242103961715643
+301,"Overnight Camp","Services providing overnight camps.",833844356185954,1128133739941080,,1080938299011131,,12C867,1248326497362177
+302,"Help Pay for Gas","Financial assistance to pay for gas (car).",1238717430178898,1128133739941080,,1080938299011131,,0967C6,1209676557041658
+303,Furniture,"Services providing new or used furniture.",888130965222442,1128133739941080,,1080938299011131,,4B6DFE,1231764657920047
+304,"Adoption & Foster Care","Services surrounding the legal and supportive processes involved in selection, placement and supervision of adults and children into adoption and foster care homes.",816930021924821,1128133739941080,,1080938299011131,,1F462C,1236998510240870
+305,Fertility,"Services that assist with fertility related issues.",891676165095519,1128133739941080,,1080938299011131,"Website only",E80B4B,1246722446404061
+307,"Help Pay for Work Expenses","Financial assistance to help pay for work expenses like clothing and certifications.",1199310287963209,1128133739941080,,1080938299011131,,EB1A07,1257194260402167
+308,"Safe Housing","Safe and secure residential facility in an undisclosed location where victims of abuse can remain safe from the abuser.",950814511693850,1128133739941080,,1080938299011131,,E9D29C,1229977314281988
+309,"Specialized Training","Various types of specific job trainings.",1189587443168816,1128133739941080,,1080938299011131,,753E64,1233963995855090
+310,Mentoring,"Services that provide individuals with someone who can advise or train them.",1313649827605051,1128133739941080,,1080938299011131,,F96993,1233910729667294
+311,"Support Groups","Groups of people sharing common bonds coming together on a regular basis to share problems and experiences.",1313649827605051,1128133739941080,,1080938299011131,,272940,1240062759139773
+312,"Health & Safety","Services for upgrading home for health and safety. An example would be a wheelchair ramp.",1097318159419684,1128133739941080,,1080938299011131,"Website only",6D4A90,1259327053263173
+314,"Pest Control","Services for preventing or removing pests from a home.",1097318159419684,1128133739941080,,1080938299011131,"Website only",580D56,1279785883442218
+315,"Long-Term Housing","Permanent, safe and affordable housing for individuals and families including assisted living communities, supportive housing, nursing homes, and residential care.",1251892169016481,1128133739941080,,1080938299011131,,B2DFE7,1244529920473776
+316,"Residential Housing","Temporary and long-term residential housing programs and facilities.",1186892906434230,1128133739941080,,1080938299011131,,4093C0,1251892169016481
+318,"Adoption Counseling","Services for anyone needing counseling prior to or during adoption process.",1236998510240870,1128133739941080,,1080938299011131,"Website only",77F5BB,1237787286771621
+319,"Maternity Care","Prenatal and maternity care activities including breastfeeding, exams, tests, counseling, education and referrals.",1087697029011671,1128133739941080,,1080938299011131,,D09A48,1251101736641957
+321,"Home Visiting","Visits to homebound, hospitalized or other socially isolated individuals due to disability, old age, or lack of companionship to maintain contact with others to just talk, read, listen etc.",1313649827605051,1128133739941080,,1080938299011131,,69CF2B,1253756268451978
+322,Work,"Services for finding and sustaining work and improving job skills and abilities. \n	    	",,1128133739941080,,1080938299011131,,7CD0F3,1260520267518088
+324,"Discrimination & Civil Rights","Services to help fight for your rights.",737380176928417,1128133739941080,,1080938299011131,,5A7FC5,1285254446198939
+326,Tutoring,"Services providing additional or private instruction.",815115792108082,1128133739941080,,1080938299011131,,1057B2,1261220574444526
+327,"Supplies for Work","Services providing supplies for work.",888130965222442,1128133739941080,,1080938299011131,,B78FF7,1267219462614428
+328,"Daytime Care","Services providing daytime caregiving programs and activities.",816930021924821,1128133739941080,,1080938299011131,,B371E5,1304882756842793
+329,"Exercise & Fitness","Services that provide various exercise and fitness opportunities.",1087697029011671,1128133739941080,,1080938299011131,"Website only",DE9C11,1303342681358058
+330,"Family Counseling","Services that provide professional counseling for families.",1135665334715180,1128133739941080,,1080938299011131,"Website only",54324F,1315916360572080
+331,Emergency,"Services for psychiatric emergencies, emergency financial assistance, immediate safety needs, disaster preparedness and disaster response. \n	    	",,1128133739941080,,1080938299011131,,AD5F16,1318993105722138
+332,"Basic Literacy","Services to help improve basic reading and writing skills.",1189587443168816,1128133739941080,,1080938299011131,,D1594D,1258751680820481
+335,"Homebuyer Education","Services to assist individual in purchasing a home. Topics include advice on buying a home, renting, defaults, foreclosures, and credit issues.",1186860507752498,1128133739941080,,1080938299011131,,DBA8B3,1280188567310508
+336,"Disaster Response","Services provided during and after a disaster such as a tornado or hurricane.",1318993105722138,1128133739941080,,1080938299011131,,39E356,1286538777612409
+337,"Support Network","Services to help build and maintain supportive relationships.",816930021924821,1128133739941080,,1080938299011131,,4E2188,1313649827605051
+338,"Residential Treatment","Residential substance use treatment to assist patients in maintaining recovery while adjusting to regular daily living.",586452735347812,1128133739941080,,1080938299011131,,33504D,1329055587933344
+340,"Community Support Services","A place where people can meet for social, educational, or community services or activities (examples are Resource Centers, Senior Centers, and Libraries).",816930021924821,1128133739941080,,1080938299011131,"Website only",65C4A7,1271111924739113
+341,"Post-Adoption Support","Support services to help families after an adoption.",1236998510240870,1128133739941080,,1080938299011131,,DCEADF,1301394402740727
+345,"Computer Class","Services to help improve computer skills and abilities.",1189587443168816,1128133739941080,,1080938299011131,,0D3EF6,1334051888533440
+346,"Help Pay for Utilities","Financial assistance to pay for utilities such as electric, water or gas.",1238717430178898,1128133739941080,,1080938299011131,,733B5B,1343962437017695

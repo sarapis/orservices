@@ -426,9 +426,24 @@ class ImportController extends Controller
                 app(\App\Http\Controllers\frontEnd\OrganizationController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url, $organization_tag);
                 app(\App\Http\Controllers\frontEnd\PhoneController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
                 app(\App\Http\Controllers\frontEnd\ScheduleController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\backend\TaxonomyTypeController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
                 app(\App\Http\Controllers\frontEnd\TaxonomyController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
                 app(\App\Http\Controllers\backend\ProgramController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
-                app(\App\Http\Controllers\backend\TaxonomyTypeController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
+                $taxonomies = Taxonomy::get();
+                foreach ($taxonomies as $key => $value) {
+                    $taxonomy = Taxonomy::whereId($value->id)->first();
+                    if ($taxonomy) {
+                        $taxonomyType = TaxonomyType::where('name', $value->taxonomy)->first();
+                        if ($taxonomyType) {
+                            $taxonomy->taxonomy = $taxonomyType->taxonomy_type_recordid;
+                            TaxonomyTerm::create([
+                                'taxonomy_type_recordid' => $taxonomyType->taxonomy_type_recordid,
+                                'taxonomy_recordid' => $taxonomy->taxonomy_recordid,
+                            ]);
+                            $taxonomy->save();
+                        }
+                    }
+                }
                 $importData->last_imports = Carbon::now();
                 $importData->save();
 

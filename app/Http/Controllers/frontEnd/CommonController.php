@@ -230,7 +230,7 @@ class CommonController extends Controller
                     $new_values[$key] = $tagName;
 
                     foreach ($organizationTagOldIds as $keyO => $valueO) {
-                        $oldTagData = OrganizationTag::whereId($valueP)->first();
+                        $oldTagData = OrganizationTag::whereId($valueO)->first();
                         if ($oldTagData) {
                             if ($keyO == 0)
                                 $oldTagName = $oldTagData->tag;

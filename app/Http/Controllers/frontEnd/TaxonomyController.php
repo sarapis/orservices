@@ -159,18 +159,18 @@ class TaxonomyController extends Controller
                         //     $taxonomy->taxonomy_parent_name = $strtointclass->string_to_int($taxonomy->taxonomy_parent_name);
                         // }
                         $taxonomy->taxonomy_vocabulary = isset($record['fields']['vocabulary']) ? $record['fields']['vocabulary'] : null;
-                        $taxonomyIds = isset($record['fields']['taxonomy']) ? $record['fields']['taxonomy'] : [];
+                        $taxonomyIds = isset($record['fields']['taxonomy']) ? $record['fields']['taxonomy'] : '';
+                        // $taxonomyType = TaxonomyType::where('name', $taxonomyIds)->first();
+                        // $taxonomy_ids = null;
+                        // foreach ($taxonomyIds as $key => $taxonomyid) {
+                        //     if ($key == 0) {
+                        //         $taxonomy_ids = $strtointclass->string_to_int($taxonomyid);
+                        //     } else {
 
-                        $taxonomy_ids = null;
-                        foreach ($taxonomyIds as $key => $taxonomyid) {
-                            if ($key == 0) {
-                                $taxonomy_ids = $strtointclass->string_to_int($taxonomyid);
-                            } else {
-
-                                $taxonomy_ids = $taxonomy_ids . ',' . $strtointclass->string_to_int($taxonomyid);
-                            }
-                        }
-                        $taxonomy->taxonomy = $taxonomy_ids;
+                        //         $taxonomy_ids = $taxonomy_ids . ',' . $strtointclass->string_to_int($taxonomyid);
+                        //     }
+                        // }
+                        $taxonomy->taxonomy = $taxonomyIds;
                         $xtaxonomies = isset($record['fields']['x-taxonomies']) ? $record['fields']['x-taxonomies'] : [];
                         $xtaxonomies_ids = null;
                         foreach ($xtaxonomies as $key => $xtaxonomy) {
@@ -178,7 +178,7 @@ class TaxonomyController extends Controller
                                 $xtaxonomies_ids = $strtointclass->string_to_int($xtaxonomy);
                             } else {
 
-                                $xtaxonomies_ids = $taxonomy_ids . ',' . $strtointclass->string_to_int($xtaxonomy);
+                                $xtaxonomies_ids = $xtaxonomies_ids . ',' . $strtointclass->string_to_int($xtaxonomy);
                             }
                         }
                         $taxonomy->x_taxonomies = $xtaxonomies_ids;

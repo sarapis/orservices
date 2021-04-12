@@ -536,49 +536,49 @@
                     </div>
                     @endif
                     <!-- contact area design -->
-                    <div class="card">
-                        <div class="card all_form_field ">
-                            <div class="card-block">
-                                <h4 class="card_services_title ">Change Log</h4>
-                                @foreach ($serviceAudits as $item)
-                                @if (count($item->new_values) != 0)
-                                <div class="py-10" style="float: left; width:100%;border-bottom: 1px solid #dadada;">
-                                    <p class="mb-5" style="color: #000;font-size: 16px;">On
-                                        <b
-                                            style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB; text-decoration:underline;">{{ $item->created_at }}</b>
-                                        ,
-                                        <b
-                                            style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB;text-decoration:underline;">{{ $item->user ? $item->user->first_name.' '.$item->user->last_name : '' }}</b>
-                                    </p>
-                                    @foreach ($item->old_values as $key => $v)
-                                    @php
-                                        $fieldNameArray = explode('_',$key);
-                                        $fieldName = implode(' ',$fieldNameArray);
-                                    @endphp
-                                    <ul style="padding-left: 0px;font-size: 16px;">
-                                        @if ($v)
-                                        <li style="color: #000;list-style: disc;list-style-position: inside;">Changed <b
-                                                style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b>
-                                            from <span style="color: #FF5044">{{ $v }}</span> to <span
-                                                style="color: #35AD8B">{{ $item->new_values[$key] }}</span>
-                                        </li>
-                                        @elseif($item->new_values[$key])
-                                        <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b
-                                            style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span
+                    @auth
+                    <div class="card ">
+                        <div class="card-block">
+                            <h4 class="card_services_title ">Change Log</h4>
+                            @foreach ($serviceAudits as $item)
+                            @if (count($item->new_values) != 0)
+                            <div class="py-10" style="float: left; width:100%;border-bottom: 1px solid #dadada;">
+                                <p class="mb-5" style="color: #000;font-size: 16px;">On
+                                    <b
+                                        style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB; text-decoration:underline;">{{ $item->created_at }}</b>
+                                    ,
+                                    <b
+                                        style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB;text-decoration:underline;">{{ $item->user ? $item->user->first_name.' '.$item->user->last_name : '' }}</b>
+                                </p>
+                                @foreach ($item->old_values as $key => $v)
+                                @php
+                                    $fieldNameArray = explode('_',$key);
+                                    $fieldName = implode(' ',$fieldNameArray);
+                                @endphp
+                                <ul style="padding-left: 0px;font-size: 16px;">
+                                    @if ($v)
+                                    <li style="color: #000;list-style: disc;list-style-position: inside;">Changed <b
+                                            style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b>
+                                        from <span style="color: #FF5044">{{ $v }}</span> to <span
                                             style="color: #35AD8B">{{ $item->new_values[$key] }}</span>
-                                        </li>
-                                        @endif
-                                    </ul>
-                                    @endforeach
-                                    <span><a href="/viewChanges/{{ $item->id }}/{{ $service->service_recordid }}"
-                                            style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB; text-decoration:underline;">View
-                                            Changes</a></span>
-                                </div>
-                                @endif
+                                    </li>
+                                    @elseif($item->new_values[$key])
+                                    <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b
+                                        style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span
+                                        style="color: #35AD8B">{{ $item->new_values[$key] }}</span>
+                                    </li>
+                                    @endif
+                                </ul>
                                 @endforeach
+                                <span><a href="/viewChanges/{{ $item->id }}/{{ $service->service_recordid }}"
+                                        style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB; text-decoration:underline;">View
+                                        Changes</a></span>
                             </div>
+                            @endif
+                            @endforeach
                         </div>
                     </div>
+                    @endauth
             </div>
         </div>
     </div>

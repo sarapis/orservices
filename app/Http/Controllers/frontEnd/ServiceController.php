@@ -321,8 +321,8 @@ class ServiceController extends Controller
         $serviceCategoryId = TaxonomyType::where('type', 'internal')->where('name', 'Service Category')->first();
         $serviceEligibilityId = TaxonomyType::where('type', 'internal')->where('name', 'Service Eligibility')->first();
 
-        $service_category_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
-        $service_eligibility_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
+        $service_category_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId ? $serviceCategoryId->taxonomy_type_recordid : '')->pluck('taxonomy_name', 'taxonomy_recordid');
+        $service_eligibility_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceEligibilityId ? $serviceEligibilityId->taxonomy_type_recordid : '')->pluck('taxonomy_name', 'taxonomy_recordid');
         $programs = Program::pluck('name', 'program_recordid');
 
         return view('frontEnd.services.create', compact('map', 'organization_name_list', 'facility_info_list', 'service_status_list', 'taxonomy_info_list', 'schedule_info_list', 'contact_info_list', 'detail_info_list', 'address_info_list', 'all_contacts', 'all_locations', 'phone_languages', 'phone_type', 'service_info_list', 'address_city_list', 'address_states_list', 'detail_types', 'service_category_types', 'service_eligibility_types', 'programs'));
@@ -1103,7 +1103,7 @@ class ServiceController extends Controller
             // $service->details()->sync($request->service_details);
 
             $detail_ids = [];
-            if ($request->detail_type && $request->detail_type[0] != null) {
+            if ($request->detail_type && $request->detail_type[0] != null && $request->detail_term && $request->detail_term[0] != null) {
                 $detail_type = $request->detail_type;
                 $detail_term = $request->detail_term;
                 $term_type = $request->term_type;
@@ -1113,12 +1113,12 @@ class ServiceController extends Controller
                         $detail_recordid = Detail::max('detail_recordid') + 1;
                         $detail->detail_recordid = $detail_recordid;
                         $detail->detail_type = $value;
-                        $detail->detail_value = $detail_term[$key];
+                        $detail->detail_value = isset($detail_term[$key]) ? $detail_term[$key] : '';
                         $detail->save();
 
                         $detail_ids[] = $detail_recordid;
                     } else {
-                        $detail_ids[] = $detail_term[$key];
+                        $detail_ids[] = isset($detail_term[$key]) ? $detail_term[$key] : '';
                     }
                 }
             }
@@ -1656,11 +1656,11 @@ class ServiceController extends Controller
             $serviceCategoryId = TaxonomyType::where('type', 'internal')->where('name', 'Service Category')->first();
             $serviceEligibilityId = TaxonomyType::where('type', 'internal')->where('name', 'Service Eligibility')->first();
 
-            $service_category_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
-            $service_eligibility_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
+            $service_category_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId ? $serviceCategoryId->taxonomy_type_recordid : '')->pluck('taxonomy_name', 'taxonomy_recordid');
+            $service_eligibility_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceEligibilityId ? $serviceEligibilityId->taxonomy_type_recordid : '')->pluck('taxonomy_name', 'taxonomy_recordid');
 
 
-            $service_category_term_data = $service->taxonomy()->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->get();
+            $service_category_term_data = $service->taxonomy()->where('taxonomy', $serviceCategoryId ? $serviceCategoryId->taxonomy_type_recordid : '')->get();
             // ->whereNotNull('taxonomy_parent_name')
             $service_category_type_data = [];
 
@@ -1677,7 +1677,7 @@ class ServiceController extends Controller
                 }
             }
 
-            $service_eligibility_term_data = $service->taxonomy()->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->get();
+            $service_eligibility_term_data = $service->taxonomy()->where('taxonomy', $serviceEligibilityId ? $serviceEligibilityId->taxonomy_type_recordid : '')->get();
             $service_eligibility_type_data = [];
             // dd($service_eligibility_term_data);
             // dd($service->taxonomy);
@@ -2321,7 +2321,7 @@ class ServiceController extends Controller
             //     $service->service_details = '';
             // }
             $detail_ids = [];
-            if ($request->detail_type && $request->detail_type[0] != null) {
+            if ($request->detail_type && $request->detail_type[0] != null && $request->detail_term && $request->detail_term[0] != null) {
                 $detail_type = $request->detail_type;
                 $detail_term = $request->detail_term;
                 $term_type = $request->term_type;
@@ -2331,12 +2331,13 @@ class ServiceController extends Controller
                         $detail_recordid = Detail::max('detail_recordid') + 1;
                         $detail->detail_recordid = $detail_recordid;
                         $detail->detail_type = $value;
-                        $detail->detail_value = $detail_term[$key];
+                        $detail->detail_value = isset($detail_term[$key]) ? $detail_term[$key] : '';
                         $detail->save();
 
                         $detail_ids[] = $detail_recordid;
                     } else {
-                        $detail_ids[] = $detail_term[$key];
+                        dd($request);
+                        $detail_ids[] = isset($detail_term[$key]) ? $detail_term[$key] : '';
                     }
                 }
             }
@@ -2854,6 +2855,7 @@ class ServiceController extends Controller
                     $strtointclass = new Stringtoint();
                     $recordId = $strtointclass->string_to_int($record['id']);
                     $old_service = Service::where('service_recordid', $recordId)->where('service_name', isset($record['fields']['name']) ? $record['fields']['name'] : null)->first();
+
                     if ($old_service == null) {
 
                         $service = new Service();
@@ -2928,8 +2930,8 @@ class ServiceController extends Controller
                         $service->service_application_process = isset($record['fields']['application_process']) ? $record['fields']['application_process'] : null;
                         $service->service_wait_time = isset($record['fields']['wait_time']) ? $record['fields']['wait_time'] : null;
                         $service->service_fees = isset($record['fields']['fees']) ? $record['fields']['fees'] : null;
-                        $service->service_accreditations = isset($record['fields']['accreditations']) ? $record['fields']['accreditations'] : null;
-                        $service->service_licenses = isset($record['fields']['licenses']) ? $record['fields']['licenses'] : null;
+                        $service->service_accreditations = isset($record['fields']['accreditations']) && is_array($record['fields']['accreditations']) ? implode(',', $record['fields']['accreditations']) : null;
+                        $service->service_licenses = isset($record['fields']['licenses']) && is_array($record['fields']['licenses']) ? implode(',', $record['fields']['licenses']) : null;
 
                         if (isset($record['fields']['phones'])) {
                             $i = 0;
@@ -3028,7 +3030,7 @@ class ServiceController extends Controller
 
                         $service->service_metadata = isset($record['fields']['metadata']) ? $record['fields']['metadata'] : null;
 
-                        $service->service_airs_taxonomy_x = isset($record['fields']['AIRS Taxonomy-x']) ? implode(",", $record['fields']['AIRS Taxonomy-x']) : null;
+                        $service->service_airs_taxonomy_x = isset($record['fields']['x-AIRS Taxonomy']) ? implode(",", $record['fields']['x-AIRS Taxonomy']) : null;
 
                         $service->save();
                     }
@@ -3041,6 +3043,7 @@ class ServiceController extends Controller
             $airtable->syncdate = $date;
             $airtable->save();
         } catch (\Throwable $th) {
+            dd($th);
             \Log::error('Error in Service: ' . $th->getMessage());
             return response()->json([
                 'message' => $th->getMessage(),
@@ -3989,7 +3992,7 @@ class ServiceController extends Controller
             // }
             // $service->details()->sync($request->service_details);
             $detail_ids = [];
-            if ($request->detail_type && $request->detail_type[0] != null) {
+            if ($request->detail_type && $request->detail_type[0] != null && $request->detail_term && $request->detail_term[0] != null) {
                 $detail_type = $request->detail_type;
                 $detail_term = $request->detail_term;
                 $term_type = $request->term_type;
@@ -3999,12 +4002,12 @@ class ServiceController extends Controller
                         $detail_recordid = Detail::max('detail_recordid') + 1;
                         $detail->detail_recordid = $detail_recordid;
                         $detail->detail_type = $value;
-                        $detail->detail_value = $detail_term[$key];
+                        $detail->detail_value = isset($detail_term[$key]) ? $detail_term[$key] : '';
                         $detail->save();
 
                         $detail_ids[] = $detail_recordid;
                     } else {
-                        $detail_ids[] = $detail_term[$key];
+                        $detail_ids[] = isset($detail_term[$key]) ? $detail_term[$key] : '';
                     }
                 }
             }
@@ -4393,7 +4396,7 @@ class ServiceController extends Controller
             // }
             // $service->details()->sync($request->service_details);
             $detail_ids = [];
-            if ($request->detail_type && $request->detail_type[0] != null) {
+            if ($request->detail_type && $request->detail_type[0] != null && $request->detail_term && $request->detail_term[0] != null) {
                 $detail_type = $request->detail_type;
                 $detail_term = $request->detail_term;
                 $term_type = $request->term_type;
@@ -4403,12 +4406,12 @@ class ServiceController extends Controller
                         $detail_recordid = Detail::max('detail_recordid') + 1;
                         $detail->detail_recordid = $detail_recordid;
                         $detail->detail_type = $value;
-                        $detail->detail_value = $detail_term[$key];
+                        $detail->detail_value = isset($detail_term[$key]) ? $detail_term[$key] : '';
                         $detail->save();
 
                         $detail_ids[] = $detail_recordid;
                     } else {
-                        $detail_ids[] = $detail_term[$key];
+                        $detail_ids[] = isset($detail_term[$key]) ? $detail_term[$key] : '';
                     }
                 }
             }
