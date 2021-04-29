@@ -112,5 +112,7 @@ To deploy the application to Microsoft Azure (https://azure.com) follow the belo
 * Fill out the details and click "Review + create" button. Make sure to select the subscription you created ealier and the resource group. Provide the database name, for Server, click create new and fill out the pop out form with server name, server admin login, password and location. Its important to save these details somewhere since you will need them to connect the application to the database. For Want to use SQL elastic pool? - select No. For Compute + storage - leave as default or configure based on your needs.
 
 *Deploying the application*
-* 
+* Navigate to the App Service we created in step one
+* On the left side menu, under "Deployment", click Deployment Center. For this deployment, we shall FTP manual code upload. If you have a paid plan, you can link your Github/Bitbucket account and create CI/CD pipeline to automatically deploy code from your repo to the app service.
+
 
