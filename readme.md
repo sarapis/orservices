@@ -99,7 +99,7 @@ php artisan serve
 
 **👉Deploy to Microsoft Azure (App Service Deployment)**
 
-To deploy the application to Microsoft Azure (https://azure.com) follow the below steps. The guide assumes you have signed up for Azure account and have an active subscription.
+To deploy the application to Microsoft Azure (https://azure.com) follow the below steps. The guide assumes you have signed up for Azure account, have an active subscription and basic Linux server administration.
 
 *Create App Service* 
 * Login to you Azure account and navigate to subscriptions page (https://portal.azure.com/#blade/Microsoft_Azure_Billing/SubscriptionsBlade). Azure gives a Free Trial subscription on signup.
@@ -113,6 +113,24 @@ To deploy the application to Microsoft Azure (https://azure.com) follow the belo
 
 *Deploying the application*
 * Navigate to the App Service we created in step one
-* On the left side menu, under "Deployment", click Deployment Center. For this deployment, we shall FTP manual code upload. If you have a paid plan, you can link your Github/Bitbucket account and create CI/CD pipeline to automatically deploy code from your repo to the app service.
+* On the left side menu, under "Deployment", click Deployment Center. For this deployment, we shall FTP manual code upload. If you have a paid plan, you can link your Github/Bitbucket account and create CI/CD pipeline to automatically deploy code from your repo to the app service. Obtain FTP credentials and Fire up FTP service like FileZilla
+* Upload the codebase. By default, the code base will be deployed to ```bash /home/site/wwwroot``` directory
 
+*Final touched*
+* On the left side menu of the App Service, navigate to "SSH" under Development Tool. This will open a web terminal. Navigate to web root by running
+
+```bash
+   cd site/wwwroot
+   ```
+* Install composer (https://getcomposer.org/download/) by running
+```bash
+   php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+   php -r "if (hash_file('sha384', 'composer-setup.php') === '756890a4488ce9024fc62c56153228907f1545c228516cbf63f885e036d37e9a59d27d63f46af1d4d07ee0f76181c7d3') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+   php composer-setup.php
+   php -r "unlink('composer-setup.php');"
+   ```
+* Install Laravel dependencies by running
+```bash
+   composer install
+   ```
 
