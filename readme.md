@@ -97,7 +97,8 @@ location / {
 php artisan serve
 ```
 
-**👉Deploy to Microsoft Azure (App Service)**
+**👉Deploy to Microsoft Azure (App Service Deployment)**
+***Create App Service***
 
 To deploy the application to Microsoft Azure (https://azure.com) follow the below steps. The guide assumes you have signed up for Azure account and have an active subscription. 
 * Login to you Azure account and navigate to subscriptions page (https://portal.azure.com/#blade/Microsoft_Azure_Billing/SubscriptionsBlade). Azure gives a Free Trial subscription on signup.
