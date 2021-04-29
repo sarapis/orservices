@@ -152,3 +152,10 @@ To deploy the application to Microsoft Azure (https://azure.com) follow the belo
    DB_USERNAME=<YOUR_DATABASE_USERNAME>@<YOUR_DATABASE_NAME>.database.windows.net
    DB_PASSWORD="<YOUR_DATABASE_PASSWORD>"
    ```
+
+* Load the database dump
+```bash
+   php artisan db:seed
+   ```
+
+Finally you can access your application at https://<YOUR_APP_SERVICE_NAME>.azurewebsites.net/
