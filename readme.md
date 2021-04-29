@@ -109,3 +109,8 @@ To deploy the application to Microsoft Azure (https://azure.com) follow the belo
 
 *Create SQL Database*
 * Navigate to SQL Databases (https://portal.azure.com/#blade/HubsExtension/BrowseResource/resourceType/Microsoft.Sql%2Fservers%2Fdatabases) and click "+ Add" button.
+* Fill out the details and click "Review + create" button. Make sure to select the subscription you created ealier and the resource group. Provide the database name, for Server, click create new and fill out the pop out form with server name, server admin login, password and location. Its important to save these details somewhere since you will need them to connect the application to the database. For Want to use SQL elastic pool? - select No. For Compute + storage - leave as default or configure based on your needs.
+
+*Deploying the application*
+* 
+
