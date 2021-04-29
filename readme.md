@@ -99,25 +99,25 @@ php artisan serve
 
 **👉Deploy to Microsoft Azure (App Service Deployment)**
 
-To deploy the application to Microsoft Azure (https://azure.com) follow the below steps. The guide assumes you have signed up for Azure account, have an active subscription and basic Linux server administration.
+To deploy the application to Microsoft Azure (https://azure.com) follow the below steps. The guide assumes you have signed up for Azure account, have an active subscription and basic Linux server administration skills.
 
 *Create App Service* 
-* Login to you Azure account and navigate to subscriptions page (https://portal.azure.com/#blade/Microsoft_Azure_Billing/SubscriptionsBlade). Azure gives a Free Trial subscription on signup.
-* Once you have confirmed you have an active subsctiption, create a resource group. A resource group is a container that holds related resources. Resources could be applications e.g App service, databases e.g Azure Database for MySQL. Here is a guide on creatign a resource group - https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal#create-resource-groups
+* Login to your Azure account and navigate to subscriptions page (https://portal.azure.com/#blade/Microsoft_Azure_Billing/SubscriptionsBlade). Azure gives a Free Trial subscription on signup.
+* Once you have confirmed you have an active subscription, create a resource group. A resource group is a container that holds related resources. Resources could be applications e.g App service, databases e.g Azure Database for MySQL etc. Here is a guide on creating a resource group - https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal#create-resource-groups
 * Navigate to App Services (https://portal.azure.com/#blade/HubsExtension/BrowseResource/resourceType/Microsoft.Web%2Fsites) and click the "+ Add" button
-* Fill out the details and click "Review + create" button. Make sure to select the subscription you created ealier and the resource group. Provide the instance name (the name will form part of the application url e.g Naming your service orservices-test, the application will be accessible via https://orservices-test.azurewebsites.net/). For publish select "Code", Runtime stack - select PHP 7.4, Region - select any (tip: select the region where most of the users using your application are located), for Linux Plan - leave as default. For Sku and size, you can leave as default.
+* Fill out the details and click "Review + create" button. Make sure to select the subscription you created ealier and the resource group. Provide the instance name (the name will form part of the application url e.g naming your service orservices-test, the application will be accessible via https://orservices-test.azurewebsites.net/). For publish select "Code", Runtime stack - select PHP 7.4, Region - select any (tip: select the region where most of the users using your application are located to reduce latency), for Linux Plan - leave as default. For Sku and size - leave as default.
 
 *Create SQL Database*
 * Navigate to SQL Databases (https://portal.azure.com/#blade/HubsExtension/BrowseResource/resourceType/Microsoft.Sql%2Fservers%2Fdatabases) and click "+ Add" button.
-* Fill out the details and click "Review + create" button. Make sure to select the subscription you created ealier and the resource group. Provide the database name, for Server, click create new and fill out the pop out form with server name, server admin login, password and location. Its important to save these details somewhere since you will need them to connect the application to the database. For Want to use SQL elastic pool? - select No. For Compute + storage - leave as default or configure based on your needs.
+* Fill out the details and click "Review + create" button. Make sure to select the subscription you created ealier and the resource group. Provide the database name, for Server, click create new and fill out the pop out form with server name, server admin login (this will be the database username), password and location (Its advisable to pick the same location as your App service). Save these details somewhere since you will need them to connect the application to the database. For Want to use SQL elastic pool? - select No. For Compute + storage - leave as default or configure based on your needs.
 
 *Deploying the application*
 * Navigate to the App Service we created in step one
-* On the left side menu, under "Deployment", click Deployment Center. For this deployment, we shall FTP manual code upload. If you have a paid plan, you can link your Github/Bitbucket account and create CI/CD pipeline to automatically deploy code from your repo to the app service. Obtain FTP credentials and Fire up FTP service like FileZilla
-* Upload the codebase. By default, the code base will be deployed to ```bash /home/site/wwwroot``` directory
+* On the left side menu, under "Deployment", click Deployment Center. For this deployment, we shall FTP manual code upload. If you have a paid plan, you can link your Github/Bitbucket account and create CI/CD pipeline to automatically deploy code from your repo to the app service. Obtain FTP credentials and Fire up FTP service like FileZilla. 
+* Upload the codebase. By default, the code base will be deployed to ```/home/site/wwwroot``` directory
 
-*Final touched*
-* On the left side menu of the App Service, navigate to "SSH" under Development Tool. This will open a web terminal. Navigate to web root:
+*Final touches*
+* On the left side menu of the App Service, navigate to "SSH" under Development Tools. This will open a web terminal. Navigate to web root:
 
 ```bash
    cd site/wwwroot
