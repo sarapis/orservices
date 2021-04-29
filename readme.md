@@ -98,10 +98,14 @@ php artisan serve
 ```
 
 **👉Deploy to Microsoft Azure (App Service Deployment)**
-*Create App Service*
 
-To deploy the application to Microsoft Azure (https://azure.com) follow the below steps. The guide assumes you have signed up for Azure account and have an active subscription. 
+To deploy the application to Microsoft Azure (https://azure.com) follow the below steps. The guide assumes you have signed up for Azure account and have an active subscription.
+
+*Create App Service* 
 * Login to you Azure account and navigate to subscriptions page (https://portal.azure.com/#blade/Microsoft_Azure_Billing/SubscriptionsBlade). Azure gives a Free Trial subscription on signup.
 * Once you have confirmed you have an active subsctiption, create a resource group. A resource group is a container that holds related resources. Resources could be applications e.g App service, databases e.g Azure Database for MySQL. Here is a guide on creatign a resource group - https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal#create-resource-groups
 * Navigate to App Services (https://portal.azure.com/#blade/HubsExtension/BrowseResource/resourceType/Microsoft.Web%2Fsites) and click the "+ Add" button
 * Fill out the details and click "Review + create" button. Make sure to select the subscription you created ealier and the resource group. Provide the instance name (the name will form part of the application url e.g Naming your service orservices-test, the application will be accessible via https://orservices-test.azurewebsites.net/). For publish select "Code", Runtime stack - select PHP 7.4, Region - select any (tip: select the region where most of the users using your application are located), for Linux Plan - leave as default. For Sku and size, you can leave as default.
+
+*Create SQL Database*
+* Navigate to SQL Databases (https://portal.azure.com/#blade/HubsExtension/BrowseResource/resourceType/Microsoft.Sql%2Fservers%2Fdatabases) and click "+ Add" button.
