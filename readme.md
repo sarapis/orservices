@@ -117,20 +117,38 @@ To deploy the application to Microsoft Azure (https://azure.com) follow the belo
 * Upload the codebase. By default, the code base will be deployed to ```bash /home/site/wwwroot``` directory
 
 *Final touched*
-* On the left side menu of the App Service, navigate to "SSH" under Development Tool. This will open a web terminal. Navigate to web root by running
+* On the left side menu of the App Service, navigate to "SSH" under Development Tool. This will open a web terminal. Navigate to web root:
 
 ```bash
    cd site/wwwroot
    ```
-* Install composer (https://getcomposer.org/download/) by running
+* Install composer (https://getcomposer.org/download/)
 ```bash
    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
    php -r "if (hash_file('sha384', 'composer-setup.php') === '756890a4488ce9024fc62c56153228907f1545c228516cbf63f885e036d37e9a59d27d63f46af1d4d07ee0f76181c7d3') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
    php composer-setup.php
    php -r "unlink('composer-setup.php');"
    ```
-* Install Laravel dependencies by running
+* Install Laravel dependencies
 ```bash
    composer install
    ```
+* Create .env file
+```bash
+   mv .env.example .env
+   ```
+* Generate application key
+```bash
+   php artisan key:generate
+   ```
 
+* Replace database variables as below. Make sure to change variables under <> to reflect your details (details from creating SQL database step)
+```bash
+   DB_CONNECTION=sqlsrv
+   DB_HOST="tcp:<YOUR_DATABASE_NAME>.database.windows.net,1433"
+   DB_URL="sqlsrv:server = tcp:<YOUR_DATABASE_NAME>.database.windows.net,1433; Database = <YOUR_DATABASE_NAME>"
+   DB_PORT=3306
+   DB_DATABASE=<YOUR_DATABASE_NAME>
+   DB_USERNAME=<YOUR_DATABASE_USERNAME>@<YOUR_DATABASE_NAME>.database.windows.net
+   DB_PASSWORD="<YOUR_DATABASE_PASSWORD>"
+   ```
