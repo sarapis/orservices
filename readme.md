@@ -97,7 +97,7 @@ location / {
 php artisan serve
 ```
 
-### [Deploy to Microsoft Azure (App Service Deployment)](#azure)
+### Deploy to Microsoft Azure (App Service Deployment)
 
 To deploy the application to Microsoft Azure (https://azure.com) follow the below steps. The guide assumes you have signed up for Azure account, have an active subscription and basic Linux server administration skills.
 
