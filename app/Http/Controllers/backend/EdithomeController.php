@@ -7,6 +7,7 @@ use App\Model\Layout;
 use App\Model\Page;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Image;
@@ -33,7 +34,7 @@ class EdithomeController extends Controller
             $layout = Layout::find(1);
             return view('backEnd.pages.edit_home', compact('page', 'layout'));
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in edit home : ' . $th);
         }
     }
 

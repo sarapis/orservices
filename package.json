@@ -17,14 +17,14 @@
         "lodash": "^4.17.21",
         "popper.js": "^1.12",
         "resolve-url-loader": "^2.3.1",
-        "sass": "^1.32.8",
+        "sass": "^1.32.11",
         "sass-loader": "^8.0.0",
         "vue": "^2.6.12",
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
         "axios": "^0.21.1",
-        "bootstrap-colorpicker": "^3.2.0",
+        "bootstrap-colorpicker": "^3.3.0",
         "moment-timezone": "^0.5.33",
         "rangeslider-js": "^3.2.5",
         "vue-code-diff": "^1.1.0",

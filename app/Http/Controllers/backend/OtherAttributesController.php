@@ -5,6 +5,7 @@ namespace App\Http\Controllers\backend;
 use App\Http\Controllers\Controller;
 use App\Model\OtherAttribute;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -42,7 +43,7 @@ class OtherAttributesController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in Other attribute index : ' . $th);
         }
     }
 

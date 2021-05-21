@@ -64,6 +64,14 @@ Edit Login/Register Page
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Show Login button in main menu</label>
+                        <div class="col-md-8 col-sm-8 col-xs-12">
+                            <label>Off&nbsp;&nbsp;
+                              <input type="checkbox" class="js-switch" value="checked" name="activate_login_button"  @if($layout->activate_login_button==1) checked @endif/>&nbsp;&nbsp;On
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-6">
                             {!! Form::submit('Update', ['class' => 'btn btn-success']) !!}
                             {!! Form::close() !!}

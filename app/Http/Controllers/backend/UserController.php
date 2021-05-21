@@ -11,6 +11,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -56,7 +57,7 @@ class UserController extends Controller
 
             return View('backEnd.users.index', compact('users', 'layout', 'authUser'));
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in user controller index : ' . $th);
         }
     }
     /**
@@ -539,7 +540,7 @@ class UserController extends Controller
                 return response()->json(['success' => true, 'status' => 'Sucesfully Activated']);
             }
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in ahax_all : ' . $th);
         }
     }
     public function profile()
@@ -586,7 +587,7 @@ class UserController extends Controller
             $audits = Audit::where('user_id', $id)->get();
             return view('backEnd.users.editsLogs', compact('audits', 'user'));
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in ChangeLog : ' . $th);
         }
     }
 }

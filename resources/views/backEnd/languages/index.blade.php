@@ -36,6 +36,7 @@ Languages
               </th>
               <th>ID</th>
               <th>language name</th>
+              <th>Order</th>
               <th>Service Id</th>
               <th>Location Id</th>
               {{-- <th>Created At</th> --}}
@@ -88,6 +89,7 @@ Languages
             columns: [
                 { data: 'id', name: 'id' },
                 { data: 'language', name: 'language' },
+                { data: 'order', name: 'order' },
                 { data: 'language_service', name: 'language_service' },
                 { data: 'language_location', name: 'language_location' },
                 { data: 'action', name: 'action' },
@@ -115,6 +117,11 @@ Languages
                 },
                 {
                     "targets": 4,
+                    "orderable": true,
+                    "class": "text-left"
+                },
+                {
+                    "targets": 5,
                     "orderable": true,
                     "class": "text-left"
                 },

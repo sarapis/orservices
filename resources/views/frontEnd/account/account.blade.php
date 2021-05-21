@@ -26,7 +26,7 @@
                     </div>
                 </div>
                 <h4 class="card-title mb-20 text-center" style="font-weight: 500;font-size: 20px;color: #1b1b1b;font-family: Neue Haas Grotesk Display Medium">My Organizations</h4>
-                <div class="col-sm-12 p-0 card-columns">
+                <div class="col-sm-12 p-0">
                     @if ($organization_list && count($organization_list) > 0 && $user && $user->role_id != 1)
                     @foreach($organization_list as $organization)
                     <div class="card">
@@ -59,7 +59,7 @@
                     @else
                     <div class="card">
                         <div class="card-block">
-                            <p>You are a system administrator so you can edit all <a href="/organizations">organizations</a> .</p>
+                            <p style="font-size:16px">You are a system administrator so you can edit all <a href="/organizations">organizations</a>.</p>
                         </div>
                     </div>
                     @endif

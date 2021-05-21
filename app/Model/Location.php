@@ -14,6 +14,7 @@ class Location extends Model implements ContractsAuditable
     protected $auditEvents = [
         'updated',
         'deleted',
+        'created',
     ];
 
     protected $fillable = [

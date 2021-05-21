@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Sentinel;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Exports\SessionExport;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -254,16 +255,17 @@ class SessionController extends Controller
         try {
             return Excel::download(new SessionExport($id), 'Sessions.csv');
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in session download : ' . $th);
         }
     }
     public function interactionExport(Request $request)
     {
         try {
             try {
+
                 return Excel::download(new InteractionExport($request), 'SessionInteraction.csv');
             } catch (\Throwable $th) {
-                dd($th);
+                Log::error('Error in interaction export : ' . $th);
             }
         } catch (\Throwable $th) {
             //throw $th;

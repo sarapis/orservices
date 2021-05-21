@@ -1,6 +1,6 @@
 @extends('backLayout.app')
 @section('title')
-    Message settings
+Other Services
 @stop
 <style>
     .color-pick {
@@ -21,7 +21,7 @@
                 </div>
             @endif
             <div class="x_title" style="margin-bottom:30px;">
-                <h4>Apis</h4>
+                <h4>Other Services</h4>
             </div>
             {!! Form::open(['route' => 'saveMessageCredential', 'class' => 'form-horizontal form-label-left']) !!}
             <div class="x_panel">
@@ -115,9 +115,36 @@
                         <label class="control-label sel-label-org pl-4 col-md-3"></label>
                         <div class="col-md-5 col-sm-6 col-xs-12 ">
                             <button type="button" class="btn btn-primary" onclick="checkSendgrid()">Check</button>
+                            <button type="submit" class="btn btn-success btn-rounded" style="width:45%;"><i class="fa fa-save"></i> Save</button>
                         </div>
                     </div>
                 </div>
+                <div class="x_title" style="margin-bottom:30px;">
+                    <h5>ShareThis</h5>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <label class="control-label sel-label-org pl-4 col-md-3"><b>ShareThis Domain Activate URL:</b> </label>
+                        <div class="col-md-5 col-sm-6 col-xs-12 ">
+                            <input class="form-control" type="text" value="{{ $share_this_api_activate }}" name="share_this_api_activate" id="share_this_api_activate">
+                            <p>You can find this URL on the ShareThis app within a code embed string. The URL should look like this: https://platform-api.sharethis.com/js/sharethis.js#property=xxxxxxxxxxxxxx&product=sop.</p>
+                            @if ($errors->first('share_this_api_activate'))
+                                <div class="alert alert-danger">{{ $errors->first('share_this_api_activate') }}</div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                {{-- <div class="form-group">
+                    <div class="row">
+                        <label class="control-label sel-label-org pl-4 col-md-3"><b>ShareThis API:</b> </label>
+                        <div class="col-md-5 col-sm-6 col-xs-12 ">
+                            <input class="form-control" type="text" value="{{ $share_this_api }}" name="share_this_api" id="share_this_api">
+                            @if ($errors->first('share_this_api'))
+                                <div class="alert alert-danger">{{ $errors->first('share_this_api') }}</div>
+                            @endif
+                        </div>
+                    </div>
+                </div> --}}
                 <div class="form-group">
                     <div class="row">
                         <label class="control-label sel-label-org pl-4 col-md-3"><b></b> </label>

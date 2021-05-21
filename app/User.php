@@ -28,6 +28,7 @@ class User extends Authenticatable
         'role_id',
         'created_by',
         'status',
+        'last_login'
     ];
     public function roles()
     {

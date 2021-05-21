@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -77,12 +78,12 @@ class LanguageController extends Controller
         try {
 
             $layout = Layout::first();
-            $languages = Language::get();
+            $languages = Language::orderBy('order')->get();
 
             if (!$request->ajax()) {
                 return view('backEnd.languages.index', compact('languages', 'layout'));
             }
-            $languages = Language::select('*');
+            $languages = Language::orderBy('order');
             return DataTables::of($languages)
                 ->editColumn('language_location', function ($row) {
                     return $row->location ? $row->location->location_name : '';
@@ -103,7 +104,7 @@ class LanguageController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in language controller index : ' . $th);
         }
     }
 
@@ -127,12 +128,17 @@ class LanguageController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'language' => 'required',
+            'order' => 'required|unique:languages,order'
+        ]);
         try {
             DB::beginTransaction();
             $language_recordid = Language::max('language_recordid') + 1;
             Language::create([
                 'language' => $request->get('language'),
                 'language_recordid' => $language_recordid,
+                'order' => $request->get('order'),
                 'language_service' => $request->get('language_service'),
                 'language_location' => $request->get('language_location'),
             ]);
@@ -180,11 +186,13 @@ class LanguageController extends Controller
     {
         $this->validate($request, [
             'language' => 'required',
+            'order' => 'required'
         ]);
         try {
             DB::beginTransaction();
             Language::whereId($id)->update([
                 'language' => $request->get('language'),
+                'order' => $request->get('order'),
                 'language_service' => $request->get('language_service'),
                 'language_location' => $request->get('language_location'),
             ]);

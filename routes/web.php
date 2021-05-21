@@ -80,6 +80,7 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
 
     Route::resource('services', 'frontEnd\ServiceController');
     // Route::get('/services', 'frontEnd\ServiceController@services');
+    Route::post('/fetchService', 'frontEnd\ExploreController@fetchService')->name('services.fetch');
     Route::get('/download_service/{id}', 'frontEnd\ServiceController@download');
     Route::get('/download_service_csv/{id}', 'frontEnd\ServiceController@download_csv');
     // Route::get('/service/{id}', 'frontEnd\ServiceController@service');
@@ -92,6 +93,7 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::post('/add_new_service_in_organization', 'frontEnd\ServiceController@add_new_service_in_organization')->name('add_new_service_in_organization');
     Route::get('/getDetailTerm', 'frontEnd\ServiceController@getDetailTerm')->name('getDetailTerm');
     Route::get('/getTaxonomyTerm', 'frontEnd\ServiceController@getTaxonomyTerm')->name('getTaxonomyTerm');
+    Route::post('/saveTaxonomyTerm', 'frontEnd\ServiceController@saveTaxonomyTerm')->name('saveTaxonomyTerm');
     // Route::get('/add_new_service_in_facility', 'frontEnd\ServiceController@add_new_service_in_facility');
 
     Route::get('/viewChanges/{id}/{recordid}', 'frontEnd\EditChangeController@viewChanges')->name('viewChanges');
@@ -110,6 +112,7 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::post('/createNewTag/{id}', 'frontEnd\OrganizationController@createNewTag')->name('createNewTag');
     Route::post('/organization_tag/{id}', 'frontEnd\OrganizationController@organization_tag')->name('organization_tag');
     Route::resource('/organizations', 'frontEnd\OrganizationController');
+    Route::post('/fetchOrganization', 'frontEnd\ExploreController@fetchOrganization')->name('organizations.fetch');
     Route::post('/organizations/{id}/add_comment', 'frontEnd\OrganizationController@add_comment')->name('organization_comment');
     Route::any('getContacts', 'frontEnd\ContactController@index')->name('getContacts');
     Route::resource('/contacts', 'frontEnd\ContactController');
@@ -147,7 +150,7 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::get('/services_near_me', 'frontEnd\ExploreController@geolocation');
 
     // session
-    Route::resource('sessions', 'frontEnd\SessionController');
+    Route::resource('sessions', 'backEnd\SessionController');
     Route::get('/session/{id}', 'frontEnd\SessionController@session');
     Route::get('/session_download/{id}', 'frontEnd\SessionController@session_download')->name('session_download');
     Route::get('/session_create/{id}', 'frontEnd\SessionController@create_in_organization');
@@ -188,6 +191,7 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     //users
     Route::resource('user', 'backend\UserController');
     Route::resource('organization_tags', 'backend\OrganizationTagsController');
+    Route::resource('organization_status', 'backend\OrganizationStatusController');
 
     Route::get('user/{user}/permissions', ['uses' => 'backend\UserController@permissions', 'as' => 'user.permissions']);
     Route::post('user/{user}/save', ['uses' => 'backend\UserController@save', 'as' => 'user.save']);
@@ -260,8 +264,17 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::resource('notes', 'backend\NotesController');
     Route::resource('edits', 'backend\EditsController');
     Route::get('userNotes/{id}', 'backend\NotesController@userNotes')->name('notes.userNotes');
-    Route::get('userEdits/{id}', 'backend\EditsController@userEdits')->name('edits.userEdits');
+    Route::get('userEdits/{id}', 'backend\EditsController@index')->name('edits.userEdits');
     Route::post('taxonommyUpdate', 'frontEnd\TaxonomyController@taxonommyUpdate')->name('tb_taxonomy.taxonommyUpdate');
+
+    Route::post('/edits_export_csv', 'backend\EditsController@edits_export_csv')->name('edits.edits_export_csv');
+    Route::post('/taxonomy_export_csv', 'frontEnd\TaxonomyController@taxonomy_export_csv')->name('tb_taxonomy.taxonomy_export_csv');
+    Route::post('/getAllTaxonomy', 'frontEnd\TaxonomyController@getAllTaxonomy')->name('tb_taxonomy.getAllTaxonomy');
+    Route::get('/show_added_taxonomy', 'frontEnd\TaxonomyController@show_added_taxonomy')->name('tb_taxonomy.show_added_taxonomy');
+    Route::get('/getParentTerm', 'frontEnd\TaxonomyController@getParentTerm')->name('tb_taxonomy.getParentTerm');
+    Route::get('edit_taxonomy_added/{id}', 'frontEnd\TaxonomyController@edit_taxonomy_added')->name('tb_taxonomy.edit_taxonomy_added');
+    Route::post('add_taxonomy_email', 'frontEnd\TaxonomyController@add_taxonomy_email')->name('tb_taxonomy.add_taxonomy_email');
+    Route::post('delete_taxonomy_email', 'frontEnd\TaxonomyController@delete_taxonomy_email')->name('tb_taxonomy.delete_taxonomy_email');
     Route::post('saveLanguage', 'frontEnd\TaxonomyController@saveLanguage')->name('tb_taxonomy.saveLanguage');
     Route::post('save_vocabulary', 'frontEnd\TaxonomyController@save_vocabulary')->name('tb_taxonomy.save_vocabulary');
     Route::resource('tb_details', 'frontEnd\DetailController');
@@ -384,5 +397,7 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     // Route::post('ImportOrganizationExcel', 'backend\ExcelImportController@ImportOrganizationExcel')->name('ImportOrganizationExcel');
 
 });
+Route::get('/forMakePhoneMain', 'frontEnd\CommonController@forMakePhoneMain')->name('forMakePhoneMain');
 Route::get('/changeTag', 'backend\OrganizationTagsController@changeTag')->name('organization_tags.changeTag');
 Route::post('/update_hsds_api_key', ['uses' => 'backend\PagesController@update_hsds_api_key'])->name('dataSync.update_hsds_api_key');
+Route::post('/updateStatus/{id}', 'frontEnd\TaxonomyController@updateStatus')->name('updateStatus.updateStatus');

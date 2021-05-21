@@ -83,7 +83,7 @@ class RegisterController extends Controller
     public function showRegistrationForm()
     {
         $layout = Layout::first();
-        $organization_info_list = Organization::select("organization_name", "organization_recordid")->distinct()->get();
+        $organization_info_list = Organization::orderBy('organization_name')->select("organization_name", "organization_recordid")->distinct()->get();
         return view('auth.register', compact('layout', 'organization_info_list'));
     }
     public function register(Request $request)

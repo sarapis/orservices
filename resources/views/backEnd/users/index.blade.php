@@ -31,6 +31,7 @@ Users
 							<th class="text-center">User Role</th>
 							<th class="text-center">Edits </th>
 							<th class="text-center">Notes </th>
+							<th class="text-center">Last Logged In </th>
 							<th class="text-center">Created At</th>
 							<th class="text-center">Actions</th>
 						</tr>
@@ -56,6 +57,7 @@ Users
 							<td class="text-center"> <a href="{{route('user.index')}}">{{empty($user->roles ) ? " ": $user->roles->name}}</a></td>
                             <td><a href="{{route('edits.userEdits',$user->id)}}">{{ count($user->edits) }}</a></td>
 							<td class="text-center"><a href="{{route('notes.userNotes',$user->id)}}">{{$user->interations ? count($user->interations) : 0 }}</a></td>
+							<td class="text-center">{{$user->last_login}}</td>
 							<td class="text-center">{{$user->created_at}}</td>
 							<td class="text-center">
 								{{-- @if ($authUser->roles && $authUser->roles->permissions && in_array('user.show',json_decode($authUser->roles->permissions)))

@@ -80,9 +80,8 @@ class AutoSync extends Command
             //     $to = \Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $AutoSyncAirtable->updated_at);
             //     $from = \Carbon\Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now());
             // $AutoSyncAirtable = AutoSyncAirtable::first();
-            $importData = ImportDataSource::where('auto_sync', 1)->first();
+            $importData = ImportDataSource::where('auto_sync', '1')->first();
             if ($importData) {
-
                 $hours = $importData->sync_hours;
                 $to = \Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $importData->last_imports);
                 $from = \Carbon\Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now());

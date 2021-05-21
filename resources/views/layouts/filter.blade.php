@@ -5,7 +5,8 @@
 				<div class="col-md-5 col-sm-5">
 					<div class="form-group text-left form-material m-0" data-plugin="formMaterial">
 						<img src="/frontend/assets/images/search.png" alt="" title="" class="form_icon_img">
-						<input type="text" class="form-control search-form" name="find" placeholder="Search for Services" id="search_address" @if(isset($chip_service)) value="{{$chip_service}}" @endif>
+						<input type="text" autocomplete="off" class="form-control search-form" name="find" placeholder="Search for Services" id="search_address" @if(isset($chip_service)) value="{{$chip_service}}" @endif>
+                        <div id="serviceList"></div>
 					</div>
 				</div>
 				<div class="col-md-5 col-sm-5">
@@ -102,5 +103,29 @@ $(document).ready(function(){
 		$("#status").val(status);
 		$("#filter").submit();
 	});
+    $('#search_address').keyup(function () {
+        let query = $(this).val()
+        if(query != ''){
+                var _token = "{{ csrf_token() }}";
+            $.ajax({
+                url: "{{ route('services.fetch') }}",
+                method:"post",
+                data:{_token,query},
+                success:function(data){
+                    $('#serviceList').fadeIn();
+                    $('#serviceList').html(data)
+                },
+                error : function(err){
+                    console.log(err)
+                }
+            })
+        }else{
+            $('#serviceList').fadeOut();
+        }
+    })
+    $(document).on('click', '#serviceList li',function () {
+        $('#search_address').val($(this).text())
+        $('#serviceList').fadeOut();
+    })
 });
 </script>

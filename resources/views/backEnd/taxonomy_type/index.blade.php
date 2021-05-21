@@ -50,6 +50,7 @@ Taxonomies
                 <tr>
                     <th class="text-center">No</th>
                     <th>Name</th>
+                    <th>Order</th>
                     <th>Type</th>
                     <th>Reference URL</th>
                     <th>Notes</th>
@@ -94,6 +95,7 @@ Taxonomies
             columns: [
                 { data: 'id', name: 'id' },
                 { data: 'name', name: 'name' },
+                { data: 'order', name: 'order' },
                 { data: 'type', name: 'type' },
                 { data: 'reference_url', name: 'reference_url' },
                 { data: 'notes', name: 'notes' },
@@ -127,6 +129,11 @@ Taxonomies
                 },
                 {
                     "targets": 5,
+                    "orderable": true,
+                    "class": "text-left"
+                },
+                {
+                    "targets": 6,
                     "orderable": true,
                     "class": "text-left"
                 },

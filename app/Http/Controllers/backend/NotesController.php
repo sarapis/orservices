@@ -7,6 +7,7 @@ use App\Model\Organization;
 use App\Model\SessionData;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
 class NotesController extends Controller
@@ -204,7 +205,7 @@ class NotesController extends Controller
                 })
                 ->make(true);
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in user notes : ' . $th);
         }
     }
 }

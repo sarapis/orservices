@@ -9,6 +9,7 @@ use App\Model\OrganizationTag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -24,12 +25,12 @@ class OrganizationTagsController extends Controller
         try {
 
             $layout = Layout::first();
-            $organization_tags = OrganizationTag::get();
+            $organization_tags = OrganizationTag::orderBy('order')->get();
 
             if (!$request->ajax()) {
                 return view('backEnd.organization_tag.index', compact('organization_tags', 'layout'));
             }
-            $organization_tags = OrganizationTag::select('*');
+            $organization_tags = OrganizationTag::orderBy('order');
             return DataTables::of($organization_tags)
                 ->addColumn('action', function ($row) {
                     $links = '';
@@ -44,7 +45,7 @@ class OrganizationTagsController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in orgTags : ' . $th);
         }
     }
 
@@ -67,12 +68,14 @@ class OrganizationTagsController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'tag' => 'required'
+            'tag' => 'required',
+            'order' => 'required|unique:organization_tags,order'
         ]);
         try {
             DB::beginTransaction();
             OrganizationTag::create([
                 'tag' => $request->tag,
+                'order' => $request->order,
                 'created_by' => Auth::id()
             ]);
             DB::commit();
@@ -120,12 +123,14 @@ class OrganizationTagsController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'tag' => 'required'
+            'tag' => 'required',
+            'order' => 'required'
         ]);
         try {
             DB::beginTransaction();
             OrganizationTag::whereId($id)->update([
                 'tag' => $request->tag,
+                'order' => $request->order,
                 'updated_by' => Auth::id()
             ]);
             DB::commit();
@@ -187,7 +192,7 @@ class OrganizationTagsController extends Controller
             }
             return 'done';
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in Change tags : ' . $th);
         }
     }
 }

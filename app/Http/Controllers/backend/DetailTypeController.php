@@ -41,9 +41,14 @@ class DetailTypeController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'type' => 'required',
+            'order' => 'required|unique:detail_types,order'
+        ]);
         try {
             DetailType::create([
                 'type' => $request->type,
+                'order' => $request->order,
                 'created_by' => Auth::id()
             ]);
             Session::flash('message', 'Detail type created successfully');
@@ -88,9 +93,14 @@ class DetailTypeController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->validate($request, [
+            'type' => 'required',
+            'order' => 'required'
+        ]);
         try {
             DetailType::whereId($id)->update([
                 'type' => $request->type,
+                'order' => $request->order,
                 'updated_by' => Auth::id()
             ]);
             Session::flash('message', 'Detail type updated successfully');

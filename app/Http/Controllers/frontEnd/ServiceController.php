@@ -23,6 +23,7 @@ use App\Model\Organization;
 use App\Model\Phone;
 use App\Model\Schedule;
 use App\Model\Service;
+use App\Model\OrganizationTag;
 use App\Model\ServiceAddress;
 use App\Model\ServiceContact;
 use App\Model\ServiceDetail;
@@ -41,11 +42,16 @@ use App\Model\TaxonomyType;
 use App\Model\Language;
 use App\Model\PhoneType;
 use App\Model\Program;
+use App\Model\TaxonomyEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
+use SendGrid;
+use SendGrid\Mail\Mail;
+use OwenIt\Auditing\Models\Audit;
+use Illuminate\Support\Facades\Log;
 
 class ServiceController extends Controller
 {
@@ -79,6 +85,7 @@ class ServiceController extends Controller
         $checked_transportations = [];
         $checked_hours = [];
         $meta_status = 'On';
+        $layout = Layout::findOrFail(1);
 
         $metas = MetaFilter::all();
         $count_metas = MetaFilter::count();
@@ -158,18 +165,19 @@ class ServiceController extends Controller
         }
         $locations = $locations->get();
 
-        $organization_tags = Organization::whereNotNull('organization_tag')->select("organization_tag")->distinct()->get();
+        // $organization_tags = Organization::whereNotNull('organization_tag')->select("organization_tag")->distinct()->get();
 
-        $tag_list = [];
-        foreach ($organization_tags as $key => $value) {
-            $tags = explode(",", trim($value->organization_tag));
-            $tag_list = array_merge($tag_list, $tags);
-        }
-        $tag_list = array_unique($tag_list);
-        $organization_tagsArray = [];
-        foreach ($tag_list as $key => $value) {
-            $organization_tagsArray[$value] = $value;
-        }
+        // $tag_list = [];
+        // foreach ($organization_tags as $key => $value) {
+        //     $tags = explode(",", trim($value->organization_tag));
+        //     $tag_list = array_merge($tag_list, $tags);
+        // }
+        // $tag_list = array_unique($tag_list);
+        // $organization_tagsArray = [];
+        // foreach ($tag_list as $key => $value) {
+        //     $organization_tagsArray[$value] = $value;
+        // }
+        $organization_tagsArray = OrganizationTag::pluck('tag', 'id');
 
 
         //======================updated alt taxonomy tree======================
@@ -221,7 +229,7 @@ class ServiceController extends Controller
         }
 
 
-        return view('frontEnd.services.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'meta_status', 'grandparent_taxonomies', 'sort_by_distance_clickable', 'service_taxonomy_info_list', 'service_taxonomy_badge_color_list', 'organization_tagsArray'))->with('taxonomy_tree', $taxonomy_tree);
+        return view('frontEnd.services.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'meta_status', 'grandparent_taxonomies', 'sort_by_distance_clickable', 'service_taxonomy_info_list', 'service_taxonomy_badge_color_list', 'organization_tagsArray', 'layout'))->with('taxonomy_tree', $taxonomy_tree);
     }
 
     public function tb_services()
@@ -243,9 +251,9 @@ class ServiceController extends Controller
 
         if (Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin') {
             $organization_recordid = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_recordid') : [];
-            $organization_names = Organization::select("organization_name")->whereIn('organization_recordid', $organization_recordid)->distinct()->get();
+            $organization_names = Organization::orderBy("organization_name")->select("organization_name")->whereIn('organization_recordid', $organization_recordid)->distinct()->get();
         } else {
-            $organization_names = Organization::select("organization_name")->distinct()->get();
+            $organization_names = Organization::orderBy("organization_name")->select("organization_name")->distinct()->get();
         }
         $organization_name_list = [];
         foreach ($organization_names as $key => $value) {
@@ -257,7 +265,7 @@ class ServiceController extends Controller
 
         $facility_info_list = Location::select('location_recordid', 'location_name')->orderBy('location_recordid')->distinct()->get();
 
-        $service_status_list = ['Yes', 'No'];
+        $service_status_list = ['Yes' => 'Yes', 'No' => 'No'];
 
         // $taxonomy_info_list = Taxonomy::select('taxonomy_recordid', 'taxonomy_name')->orderBy('taxonomy_name')->distinct()->get();
         $layout = Layout::findOrFail(1);
@@ -284,16 +292,16 @@ class ServiceController extends Controller
         });
         $schedule_info_list = Schedule::select('schedule_recordid', 'opens_at', 'closes_at')->whereNotNull('opens_at')->where('opens_at', '!=', '')->orderBy('opens_at')->distinct()->get();
 
-        $all_contacts = Contact::orderBy('contact_recordid')->with('phone')->distinct()->get();
-        $all_locations = Location::orderBy('location_recordid')->with('phones', 'address', 'schedules')->distinct()->get();
+        $all_contacts = Contact::orderBy('contact_name')->with('phone')->distinct()->get();
+        $all_locations = Location::orderBy('location_name')->with('phones', 'address', 'schedules')->distinct()->get();
 
         $contact_info_list = Contact::select('contact_recordid', 'contact_name')->orderBy('contact_recordid')->distinct()->get();
 
 
 
-        $phone_languages = Language::pluck('language', 'language_recordid');
+        $phone_languages = Language::orderBy('order')->whereNotNull('language_recordid')->pluck('language', 'language_recordid');
 
-        $phone_type = PhoneType::pluck('type', 'id');
+        $phone_type = PhoneType::orderBy('order')->orderBy('type')->pluck('type', 'id');
         $service_info_list = Service::select('service_recordid', 'service_name')->orderBy('service_recordid')->distinct()->get();
         $address_info_list = Address::select('address_recordid', 'address_1', 'address_city', 'address_state_province', 'address_postal_code')->orderBy('address_1')->distinct()->get();
         // $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
@@ -316,13 +324,13 @@ class ServiceController extends Controller
         }
         $address_city_list = array_unique($address_city_list);
 
-        $detail_types = DetailType::pluck('type', 'type');
+        $detail_types = DetailType::orderBy('order')->pluck('type', 'type');
 
-        $serviceCategoryId = TaxonomyType::where('type', 'internal')->where('name', 'Service Category')->first();
-        $serviceEligibilityId = TaxonomyType::where('type', 'internal')->where('name', 'Service Eligibility')->first();
+        $serviceCategoryId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Category')->first();
+        $serviceEligibilityId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Eligibility')->first();
 
-        $service_category_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
-        $service_eligibility_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
+        $service_category_types = Taxonomy::orderBy('taxonomy_name')->whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
+        $service_eligibility_types = Taxonomy::orderBy('taxonomy_name')->whereNull('taxonomy_parent_name')->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
         $programs = Program::pluck('name', 'program_recordid');
 
         return view('frontEnd.services.create', compact('map', 'organization_name_list', 'facility_info_list', 'service_status_list', 'taxonomy_info_list', 'schedule_info_list', 'contact_info_list', 'detail_info_list', 'address_info_list', 'all_contacts', 'all_locations', 'phone_languages', 'phone_type', 'service_info_list', 'address_city_list', 'address_states_list', 'detail_types', 'service_category_types', 'service_eligibility_types', 'programs'));
@@ -345,7 +353,6 @@ class ServiceController extends Controller
                 'service_email' => 'email'
             ]);
         }
-
         try {
             $service = new Service;
 
@@ -361,6 +368,7 @@ class ServiceController extends Controller
             if (in_array($new_recordid, $service_recordid_list)) {
                 $new_recordid = Service::max('service_recordid') + 1;
             }
+            $service_recordid = $new_recordid;
             $service->service_recordid = $new_recordid;
 
             $service->service_name = $request->service_name;
@@ -368,10 +376,11 @@ class ServiceController extends Controller
             $service->service_url = $request->service_url;
             // $service->service_program = $request->service_program;
             $service->service_email = $request->service_email;
-            $service->service_status = '';
-            if ($request->service_status = 'Yes') {
-                $service->service_status = 'Verified';
-            }
+            // $service->service_status = '';
+            // if ($request->service_status = 'Yes') {
+            //     $service->service_status = 'Verified';
+            // }
+            $service->service_status = $request->service_status;
             $service->service_description = $request->service_description;
             $service->service_application_process = $request->service_application_process;
             $service->service_wait_time = $request->service_wait_time;
@@ -381,6 +390,7 @@ class ServiceController extends Controller
             $service->service_metadata = $request->service_metadata;
             $service->service_airs_taxonomy_x = $request->service_airs_taxonomy_x;
             $service->service_code = $request->service_code;
+            $service->access_requirement = $request->access_requirement;
 
             $organization_name = $request->service_organization;
             $service_organization = Organization::where('organization_name', '=', $organization_name)->first();
@@ -496,7 +506,7 @@ class ServiceController extends Controller
                         // location address
                         $address_info = Address::where('address_1', '=', $request->location_address[$i])->first();
                         if ($address_info) {
-                            $location->location_address = $location->location_address . $address_info->address_recordid . ',';
+                            $location->location_address =  $address_info->address_recordid;
                             $address_info->address_1 = $request->location_address[$i];
                             $address_info->address_city = $request->location_city[$i];
                             $address_info->address_state_province = $request->location_state[$i];
@@ -512,7 +522,7 @@ class ServiceController extends Controller
                             $new_address->address_state_province = $request->location_state[$i];
                             $new_address->address_postal_code = $request->location_zipcode[$i];
                             $new_address->save();
-                            $location->location_address = $location->location_addresss . $new_address_recordid . ',';
+                            $location->location_address = $new_address_recordid;
                             array_push($location_address_recordid_list, $new_address_recordid);
                         }
 
@@ -522,7 +532,7 @@ class ServiceController extends Controller
                             for ($p = 0; $p < count($location_phone_numbers[$i]); $p++) {
                                 $phone_info = Phone::where('phone_number', '=', $location_phone_numbers[$i][$p])->first();
                                 if ($phone_info) {
-                                    $location->location_phones = $location->location_phones . $phone_info->phone_recordid . ',';
+                                    // $location->location_phones = $location->location_phones . $phone_info->phone_recordid . ',';
                                     $phone_info->phone_number = $location_phone_numbers[$i][$p];
                                     $phone_info->phone_extension = $location_phone_extensions[$i][$p];
                                     $phone_info->phone_type = $location_phone_types[$i][$p];
@@ -541,7 +551,7 @@ class ServiceController extends Controller
                                     $new_phone->phone_language = isset($location_phone_languages[$i][$p]) ? implode(',', $location_phone_languages[$i][$p]) : '';
                                     $new_phone->phone_description = $location_phone_descriptions[$i][$p];
                                     $new_phone->save();
-                                    $location->location_phones = $location->location_phones . $new_phone_recordid . ',';
+                                    // $location->location_phones = $location->location_phones . $new_phone_recordid . ',';
                                     array_push($location_phone_recordid_list, $new_phone_recordid);
                                 }
                             }
@@ -619,7 +629,11 @@ class ServiceController extends Controller
                         $location->location_schedule = join(',', $schedule_locations);
 
                         $location->schedules()->sync($schedule_locations);
+
                         $location->phones()->sync($location_phone_recordid_list);
+                        $location_phone_recordid_list = array_unique($location_phone_recordid_list);
+                        $location->location_phones = '';
+                        $location->location_phones = count($location_phone_recordid_list) > 0 ? implode(',', $location_phone_recordid_list) : '';
 
                         $location->address()->sync($location_address_recordid_list);
                         $location->save();
@@ -649,7 +663,7 @@ class ServiceController extends Controller
                             // location address
                             $address_info = Address::where('address_1', '=', $request->location_address[$i])->first();
                             if ($address_info) {
-                                $location->location_address = $location->location_address . $address_info->address_recordid . ',';
+                                $location->location_address =  $address_info->address_recordid;
                                 $address_info->address_1 = $request->location_address[$i];
                                 $address_info->address_city = $request->location_city[$i];
                                 $address_info->address_state_province = $request->location_state[$i];
@@ -665,7 +679,7 @@ class ServiceController extends Controller
                                 $new_address->address_state_province = $request->location_state[$i];
                                 $new_address->address_postal_code = $request->location_zipcode[$i];
                                 $new_address->save();
-                                $location->location_address = $location->location_addresss . $new_address_recordid . ',';
+                                $location->location_address = $new_address_recordid;
                                 array_push($location_address_recordid_list, $new_address_recordid);
                             }
                             // location phone
@@ -674,7 +688,7 @@ class ServiceController extends Controller
                                 for ($p = 0; $p < count($location_phone_numbers[$i]); $p++) {
                                     $phone_info = Phone::where('phone_number', '=', $location_phone_numbers[$i][$p])->first();
                                     if ($phone_info) {
-                                        $location->location_phones = $location->location_phones . $phone_info->phone_recordid . ',';
+                                        // $location->location_phones = $location->location_phones . $phone_info->phone_recordid . ',';
                                         $phone_info->phone_number = $location_phone_numbers[$i][$p];
                                         $phone_info->phone_extension = $location_phone_extensions[$i][$p];
                                         $phone_info->phone_type = $location_phone_types[$i][$p];
@@ -692,7 +706,7 @@ class ServiceController extends Controller
                                         $new_phone->phone_language = isset($location_phone_languages[$i][$p]) ? implode(',', $location_phone_languages[$i][$p]) : '';
                                         $new_phone->phone_description = $location_phone_descriptions[$i][$p];
                                         $new_phone->save();
-                                        $location->location_phones = $location->location_phones . $new_phone_recordid . ',';
+                                        // $location->location_phones = $location->location_phones . $new_phone_recordid . ',';
                                         array_push($location_phone_recordid_list, $new_phone_recordid);
                                     }
                                 }
@@ -771,6 +785,11 @@ class ServiceController extends Controller
 
                             $location->schedules()->sync($schedule_locations);
                             $location->phones()->sync($location_phone_recordid_list);
+
+                            $location_phone_recordid_list = array_unique($location_phone_recordid_list);
+                            $location->location_phones = '';
+                            $location->location_phones = count($location_phone_recordid_list) > 0 ? implode(',', $location_phone_recordid_list) : '';
+
                             $location->address()->sync($location_address_recordid_list);
                             $location->save();
                         }
@@ -808,6 +827,8 @@ class ServiceController extends Controller
                         $taxonomy->taxonomy_name = $service_category_term[$key];
                         $taxonomy->taxonomy_parent_name = $value;
                         $taxonomy->taxonomy_vocabulary = 'Service Category';
+                        $taxonomy->status = 'Unpublished';
+                        $taxonomy->created_by = Auth::id();
                         $taxonomy->save();
                         $service_taxonomies[] = $taxonomy_recordid;
                         $service_taxonomies[] = $value;
@@ -829,6 +850,8 @@ class ServiceController extends Controller
                         $taxonomy->taxonomy_name = $service_eligibility_term[$key];
                         $taxonomy->taxonomy_parent_name = $value;
                         $taxonomy->taxonomy_vocabulary = 'Service Eligibility';
+                        $taxonomy->status = 'Unpublished';
+                        $taxonomy->created_by = Auth::id();
                         $taxonomy->save();
                         $service_taxonomies[] = $taxonomy_recordid;
                         $service_taxonomies[] = $value;
@@ -884,6 +907,7 @@ class ServiceController extends Controller
                 $service_phone_type_list = $request->phone_type;
                 $service_phone_language_list = $request->phone_language_data ? json_decode($request->phone_language_data) : [];
                 $service_phone_description_list = $request->phone_description;
+                $service_main_priority_list = $request->main_priority;
                 // foreach ($service_phone_number_list as $key => $service_phone_number) {
 
                 //     if ($phone_info) {
@@ -899,6 +923,11 @@ class ServiceController extends Controller
                         $phone_info->phone_type = $service_phone_type_list[$i];
                         $phone_info->phone_language = $service_phone_language_list && count($service_phone_language_list) > 0 ?  implode(',', $service_phone_language_list[$i]) : '';
                         $phone_info->phone_description = $service_phone_description_list[$i];
+                        if (isset($service_main_priority_list[0]) && $service_main_priority_list[0] == $i) {
+                            $phone_info->main_priority = '1';
+                        } else {
+                            $phone_info->main_priority = '0';
+                        }
                         $phone_info->save();
                         array_push($phone_recordid_list, $phone_info->phone_recordid);
                     } else {
@@ -910,6 +939,11 @@ class ServiceController extends Controller
                         $new_phone->phone_type = $service_phone_type_list[$i];
                         $new_phone->phone_language = $service_phone_language_list && count($service_phone_language_list) > 0 ?  implode(',', $service_phone_language_list[$i]) : '';
                         $new_phone->phone_description = $service_phone_description_list[$i];
+                        if (isset($service_main_priority_list[0]) && $service_main_priority_list[0] == $i) {
+                            $new_phone->main_priority = '1';
+                        } else {
+                            $new_phone->main_priority = '0';
+                        }
                         $new_phone->save();
                         $service->service_phones = $service->service_phones . $new_phone_recordid . ',';
                         array_push($phone_recordid_list, $new_phone_recordid);
@@ -961,7 +995,8 @@ class ServiceController extends Controller
                     }
                 }
             }
-            if ($request->holiday_start_date && $request->holiday_end_date && $request->holiday_open_at && $request->holiday_close_at && (count($request->holiday_start_date) == 0 && $request->holiday_start_date[0] != null)) {
+
+            if ($request->holiday_start_date && $request->holiday_end_date && $request->holiday_open_at && $request->holiday_close_at) {
                 Schedule::where('schedule_services', $service->service_recordid)->where('schedule_holiday', '1')->delete();
                 for ($i = 0; $i < count($request->holiday_start_date); $i++) {
                     // $schedules =
@@ -992,6 +1027,9 @@ class ServiceController extends Controller
                     $schedule_services[] = $schedule_recordid;
                     // }
                 }
+            }
+            if (count($schedule_services)) {
+                $service->service_schedule = join(',', $schedule_services);
             }
             $service->schedules()->sync($schedule_services);
 
@@ -1108,17 +1146,19 @@ class ServiceController extends Controller
                 $detail_term = $request->detail_term;
                 $term_type = $request->term_type;
                 foreach ($detail_type as $key => $value) {
-                    if ($term_type[$key] == 'new') {
-                        $detail = new Detail();
-                        $detail_recordid = Detail::max('detail_recordid') + 1;
-                        $detail->detail_recordid = $detail_recordid;
-                        $detail->detail_type = $value;
-                        $detail->detail_value = $detail_term[$key];
-                        $detail->save();
+                    if (isset($detail_type[$key]) && isset($detail_term[$key]) && isset($term_type[$key])) {
+                        if ($term_type[$key] == 'new') {
+                            $detail = new Detail();
+                            $detail_recordid = Detail::max('detail_recordid') + 1;
+                            $detail->detail_recordid = $detail_recordid;
+                            $detail->detail_type = $value;
+                            $detail->detail_value = $detail_term[$key];
+                            $detail->save();
 
-                        $detail_ids[] = $detail_recordid;
-                    } else {
-                        $detail_ids[] = $detail_term[$key];
+                            $detail_ids[] = $detail_recordid;
+                        } else {
+                            $detail_ids[] = $detail_term[$key];
+                        }
                     }
                 }
             }
@@ -1134,11 +1174,18 @@ class ServiceController extends Controller
 
             $service->save();
 
+            $audit = Audit::where('auditable_id', $service->service_recordid)->first();
+
+            if ($audit) {
+                $audit->auditable_id = $service_recordid;
+                $audit->save();
+            }
+
             Session::flash('message', 'Service created successfully');
             Session::flash('status', 'success');
             return redirect('services');
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in create service : ' . $th);
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
             return redirect('services');
@@ -1157,11 +1204,10 @@ class ServiceController extends Controller
         // return response()->json($service);
 
         try {
-            $service = Service::where('service_recordid', '=', $id)->first();
+            $service = Service::where('service_recordid', '=', $id)->with('locations', 'phone', 'locations.address', 'contact', 'schedules')->first();
             if ($service) {
                 $organzation_recordid = $service->service_organization;
                 $organization = Organization::where('organization_recordid', '=', $organzation_recordid)->first();
-
                 $service_phones_info = $service->service_phones;
                 if (strpos($service_phones_info, ',') !== false) {
                     $service_phone_recordid_list = explode(',', $service_phones_info);
@@ -1171,19 +1217,34 @@ class ServiceController extends Controller
                     $phone1_recordid = $service_phones_info;
                     $phone2_recordid = null;
                 }
+                // if ($phone1_recordid) {
+                //     $phone1_number = Phone::where('phone_recordid', '=', $phone1_recordid)->select('phone_number')->first();
+                //     $phone_number_info = $phone1_number ? $phone1_number->phone_number : '';
+                // }
+                // if ($phone2_recordid) {
+                //     $phone2_number = Phone::where('phone_recordid', '=', $phone2_recordid)->select('phone_number')->first();
+                //     if ($phone_number_info) {
+                //         $phone_number_info = $phone_number_info . ', ' . $phone2_number->phone_number;
+                //     } else {
+                //         $phone_number_info = $phone2_number ? $phone2_number->phone_number : '';
+                //     }
+                // }
                 $phone_number_info = '';
-                if ($phone1_recordid) {
-                    $phone1_number = Phone::where('phone_recordid', '=', $phone1_recordid)->select('phone_number')->first();
-                    $phone_number_info = $phone1_number ? $phone1_number->phone_number : '';
-                }
-                if ($phone2_recordid) {
-                    $phone2_number = Phone::where('phone_recordid', '=', $phone2_recordid)->select('phone_number')->first();
-                    if ($phone_number_info) {
-                        $phone_number_info = $phone_number_info . ', ' . $phone2_number->phone_number;
-                    } else {
-                        $phone_number_info = $phone2_number ? $phone2_number->phone_number : '';
+                $mainPhoneNumber = [];
+                $phone_number_info_array = [];
+
+                if (isset($service->phone) && count($service->phone) > 0) {
+                    foreach ($service->phone as $valueV) {
+                        if ($valueV->main_priority == '1') {
+                            $mainPhoneNumber[] = $valueV->phone_number;
+                        } else {
+                            $phone_number_info_array[] = $valueV->phone_number;
+                        }
                     }
+                    // $servicePhoneData = $service->phone()->where('main_priority', '1')->first();
                 }
+                // $phone_number_info = $mainPhoneNumber . ', ' . implode(',', $phone_number_info_array);
+                $mainPhoneNumber = array_filter(array_merge($mainPhoneNumber, $phone_number_info_array));
 
                 $service_taxonomy_recordid_list = explode(',', $service->service_taxonomy);
                 $service_taxonomy_info_list = [];
@@ -1284,7 +1345,7 @@ class ServiceController extends Controller
                     $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies;
                 }
                 $serviceAudits = $this->commonController->serviceSection($service);
-                return view('frontEnd.services.show', compact('service', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'service_taxonomy_info_list', 'contact_info_list', 'phone_number_info', 'organization', 'serviceAudits'));
+                return view('frontEnd.services.show', compact('service', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'service_taxonomy_info_list', 'contact_info_list', 'phone_number_info', 'organization', 'serviceAudits', 'mainPhoneNumber'));
             } else {
                 Session::flash('message', 'This record has been deleted.');
                 Session::flash('status', 'warning');
@@ -1312,12 +1373,14 @@ class ServiceController extends Controller
             $addressIds = $service->address ? $service->address->pluck('address_recordid')->toArray() : [];
 
             // $service_organization_list = Organization::select('organization_recordid', 'organization_name')->get();
+            // dd($service->getOrganizations);
+            $contactOrganization = $service->organizations ? $service->organizations->contact : [];
 
             if (Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin') {
                 $organization_recordid = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_recordid') : [];
-                $organization_names = Organization::select("organization_name", "organization_recordid")->whereIn('organization_recordid', $organization_recordid)->distinct()->get();
+                $organization_names = Organization::orderBy("organization_name")->select("organization_name", "organization_recordid")->whereIn('organization_recordid', $organization_recordid)->distinct()->get();
             } else {
-                $organization_names = Organization::select("organization_name", "organization_recordid")->distinct()->get();
+                $organization_names = Organization::orderBy("organization_name")->select("organization_name", "organization_recordid")->distinct()->get();
             }
             // $organization_name_list = [];
             // foreach ($organization_names as $key => $value) {
@@ -1397,7 +1460,7 @@ class ServiceController extends Controller
                 $ServiceDetails = array_unique(array_merge($ServiceDetails, $serviceDetailsList));
             }
 
-            $detail_types = DetailType::pluck('type', 'type');
+            $detail_types = DetailType::orderBy('order')->pluck('type', 'type');
 
             $serviceDetailsData = Detail::whereIn('detail_recordid', $ServiceDetails)->get();
 
@@ -1416,9 +1479,9 @@ class ServiceController extends Controller
 
 
             $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
-            $all_contacts = Contact::orderBy('contact_recordid')->with('phone', 'service')->distinct()->get();
-            $all_locations = Location::orderBy('location_recordid')->with('phones', 'address', 'services', 'schedules')->distinct()->get();
-            $phone_languages = Language::pluck('language', 'language_recordid');
+            $all_contacts = Contact::orderBy('contact_name')->with('phone', 'service')->distinct()->get();
+            $all_locations = Location::orderBy('location_name')->with('phones', 'address', 'services', 'schedules')->distinct()->get();
+            $phone_languages = Language::orderBy('order')->whereNotNull('language_recordid')->pluck('language', 'language_recordid');
 
             // location section
             $exclude_vocabulary = [];
@@ -1464,7 +1527,7 @@ class ServiceController extends Controller
                 $address_city_list = array_merge($address_city_list, $cities);
             }
             $address_city_list = array_unique($address_city_list);
-            $phone_type = PhoneType::pluck('type', 'id');
+            $phone_type = PhoneType::orderBy('order')->pluck('type', 'id');
 
             $location_alternate_name = [];
             $location_transporation = [];
@@ -1535,7 +1598,7 @@ class ServiceController extends Controller
             $location_phone_languages = [];
             $location_phone_descriptions = [];
             foreach ($location_phones_data as $key => $phonelocation) {
-                if ($phonelocation->phone && count($phonelocation->phone) > 0) {
+                if ($phonelocation->phones && count($phonelocation->phones) > 0) {
                     foreach ($phonelocation->phones as $key1 => $phone) {
                         $location_phone_numbers[$key][] = $phone->phone_number;
                         $location_phone_extensions[$key][] = $phone->phone_extension;
@@ -1587,6 +1650,7 @@ class ServiceController extends Controller
             $location_holiday_closeds = [];
             $j = 0;
             foreach ($service_locations_data as $key => $value) {
+                $weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
                 if ($value->schedules && !empty($value->schedules) && count($value->schedules) > 0) {
                     foreach ($value->schedules as $key1 => $schedule) {
                         if ($schedule->schedule_holiday == 1) {
@@ -1596,23 +1660,28 @@ class ServiceController extends Controller
                             $location_holiday_close_ats[$j][] = $schedule->closes_at;
                             $location_holiday_closeds[$j][] = $schedule->schedule_closed;
                         } else {
-                            $weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
                             for ($i = 0; $i < 7; $i++) {
                                 if ($schedule->byday == $weekdays[$i]) {
                                     ${'opens_at_location_' . $weekdays[$i] . '_datas'}[$j] = $schedule->opens_at;
                                     ${'closes_at_location_' . $weekdays[$i] . '_datas'}[$j] = $schedule->closes_at;
                                     ${'schedule_closed_' . $weekdays[$i] . '_datas'}[$j] = $schedule->schedule_closed;
                                 }
-                                //  else {
-                                //     ${'opens_at_location_' . $weekdays[$i] . '_datas'}[$j] = '';
-                                //     ${'closes_at_location_' . $weekdays[$i] . '_datas'}[$j] = '';
-                                //     ${'schedule_closed_' . $weekdays[$i] . '_datas'}[$j] = '';
-                                // }
                             }
                         }
                     }
-                    $j = $j + 1;
+                } else {
+                    $location_holiday_start_dates[$j][] = '';
+                    $location_holiday_end_dates[$j][] = '';
+                    $location_holiday_open_ats[$j][] = '';
+                    $location_holiday_close_ats[$j][] = '';
+                    $location_holiday_closeds[$j][] = '';
+                    for ($i = 0; $i < 7; $i++) {
+                        ${'opens_at_location_' . $weekdays[$i] . '_datas'}[$j] = '';
+                        ${'closes_at_location_' . $weekdays[$i] . '_datas'}[$j] = '';
+                        ${'schedule_closed_' . $weekdays[$i] . '_datas'}[$j] = '';
+                    }
                 }
+                $j = $j + 1;
             }
 
             $opens_at_location_monday_datas = json_encode($opens_at_location_monday_datas);
@@ -1642,9 +1711,7 @@ class ServiceController extends Controller
             $location_holiday_close_ats = json_encode($location_holiday_close_ats);
             $location_holiday_closeds = json_encode($location_holiday_closeds);
 
-
-            $service_status_list = ['Yes', 'No'];
-
+            $service_status_list = ['Yes' => 'Yes', 'No' => 'No'];
             $phone_language_data = [];
             if ($service->phone) {
                 foreach ($service->phone as $key => $value) {
@@ -1653,61 +1720,105 @@ class ServiceController extends Controller
             }
             $phone_language_data = json_encode($phone_language_data);
 
-            $serviceCategoryId = TaxonomyType::where('type', 'internal')->where('name', 'Service Category')->first();
-            $serviceEligibilityId = TaxonomyType::where('type', 'internal')->where('name', 'Service Eligibility')->first();
+            $serviceCategoryId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Category')->first();
+            $serviceEligibilityId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Eligibility')->first();
 
-            $service_category_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
-            $service_eligibility_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
+            $service_category_types = Taxonomy::orderBy('taxonomy_name')->whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId ? $serviceCategoryId->taxonomy_type_recordid : '')->pluck('taxonomy_name', 'taxonomy_recordid');
+            $service_eligibility_types = Taxonomy::orderBy('taxonomy_name')->whereNull('taxonomy_parent_name')->where('taxonomy', $serviceEligibilityId ? $serviceEligibilityId->taxonomy_type_recordid : '')->pluck('taxonomy_name', 'taxonomy_recordid');
 
 
             $service_category_term_data = $service->taxonomy()->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->get();
             // ->whereNotNull('taxonomy_parent_name')
             $service_category_type_data = [];
-
+            $categoryRemovableIds = [];
             foreach ($service_category_term_data as $value) {
                 if ($value->taxonomy_parent_name) {
                     $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $value->taxonomy_parent_name)->first();
+                    if ($taxonomyParentData->taxonomy_parent_name) {
+                        $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $taxonomyParentData->taxonomy_parent_name)->first();
+                        if ($taxonomyParentData->taxonomy_parent_name) {
+                            $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $taxonomyParentData->taxonomy_parent_name)->first();
+                            if ($taxonomyParentData->taxonomy_parent_name) {
+                                $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $taxonomyParentData->taxonomy_parent_name)->first();
+                            }
+                        }
+                    }
                     if ($taxonomyParentData) {
                         $taxonomyParentData->selectedTermId = $value->taxonomy_recordid;
                         $taxonomyParentData->selectedTermName = $value->taxonomy_name;
                         $service_category_type_data[] = $taxonomyParentData;
+                        $categoryRemovableIds[] = $taxonomyParentData->taxonomy_recordid;
                     }
                 } else {
                     $service_category_type_data[] = $value;
                 }
             }
 
+            $splicable_key = [];
+            $t = 0;
+            foreach ($service_category_type_data as $k => $v) {
+                if (in_array($v->taxonomy_recordid, $categoryRemovableIds) && !isset($v->selectedTermId)) {
+                    // $splicable_key[] = $value->taxonomy_recordid;
+                    array_splice($service_category_type_data, $t, 1);
+                    $t--;
+                }
+                $t++;
+            }
             $service_eligibility_term_data = $service->taxonomy()->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->get();
             $service_eligibility_type_data = [];
             // dd($service_eligibility_term_data);
             // dd($service->taxonomy);
-
+            $removableIds = [];
             foreach ($service_eligibility_term_data as $value) {
                 if ($value->taxonomy_parent_name) {
                     $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $value->taxonomy_parent_name)->first();
+                    if ($taxonomyParentData->taxonomy_parent_name) {
+                        $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $taxonomyParentData->taxonomy_parent_name)->first();
+                        if ($taxonomyParentData->taxonomy_parent_name) {
+                            $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $taxonomyParentData->taxonomy_parent_name)->first();
+                            if ($taxonomyParentData->taxonomy_parent_name) {
+                                $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $taxonomyParentData->taxonomy_parent_name)->first();
+                            }
+                        }
+                    }
                     if ($taxonomyParentData) {
                         $taxonomyParentData->selectedTermId = $value->taxonomy_recordid;
                         $taxonomyParentData->selectedTermName = $value->taxonomy_name;
                         $service_eligibility_type_data[] = $taxonomyParentData;
+                        $removableIds[] = $taxonomyParentData->taxonomy_recordid;
                     }
                 } else {
                     $service_eligibility_type_data[] = $value;
                 }
             }
+            $splicable_key = [];
+            $t = 0;
+            foreach ($service_eligibility_type_data as $k => $v) {
+                if (in_array($v->taxonomy_recordid, $removableIds) && !isset($v->selectedTermId)) {
+                    // $splicable_key[] = $value->taxonomy_recordid;
+                    array_splice($service_eligibility_type_data, $t, 1);
+                    $t--;
+                }
+                $t++;
+            }
+            // dd($service_eligibility_type_data);
+            // foreach ($splicable_key as $s) {
+            //     array_splice($service_eligibility_type_data, $s, 1);
+            // }
             $program = $service->program && count($service->program) > 0 ? $service->program[0] : '';
 
             $program_names = [];
             $program_descriptions = [];
-            $program_service_relationships = [];
+            // $program_service_relationships = [];
             foreach ($service->program as $keys => $programData) {
                 $program_names[] = $programData->name;
                 $program_descriptions[] = $programData->alternate_name;
-                $program_service_relationships[] = $programData->program_service_relationship;
+                // $program_service_relationships[] = $programData->program_service_relationship;
             }
 
             $program_names = json_encode($program_names);
             $program_descriptions = json_encode($program_descriptions);
-            $program_service_relationships = json_encode($program_service_relationships);
+            // $program_service_relationships = json_encode($program_service_relationships);
 
             // if ($service->audits() && count($service->audits) > 0) {
             //     foreach ($service->audits()->orderBy('id', 'desc')->get() as $key => $item) {
@@ -1723,7 +1834,7 @@ class ServiceController extends Controller
 
 
             $all_programs = Program::with('organization')->distinct()->get();
-            return view('frontEnd.services.edit', compact('service', 'map', 'service_address_street', 'service_address_city', 'service_address_state', 'service_address_postal_code', 'service_organization_list', 'service_location_list', 'service_phone1', 'service_phone2', 'service_contacts_list', 'service_taxonomy_list', 'service_details_list', 'location_info_list', 'contact_info_list', 'taxonomy_info_list', 'detail_info_list', 'ServiceSchedule', 'ServiceDetails', 'monday', 'tuesday', 'wednesday', 'friday', 'saturday', 'thursday', 'sunday', 'holiday_schedules', 'all_contacts', 'service_locations_data', 'all_locations', 'phone_languages', 'phone_type', 'location_alternate_name', 'location_transporation', 'location_service', 'location_schedules', 'location_description', 'location_details', 'contact_service', 'contact_department', 'service_info_list', 'address_states_list', 'address_city_list', 'schedule_info_list', 'contact_phone_numbers', 'contact_phone_extensions', 'contact_phone_types', 'contact_phone_languages', 'contact_phone_descriptions', 'location_phone_numbers', 'location_phone_extensions', 'location_phone_types', 'location_phone_languages', 'location_phone_descriptions', 'opens_at_location_monday_datas', 'closes_at_location_monday_datas', 'schedule_closed_monday_datas', 'opens_at_location_tuesday_datas', 'closes_at_location_tuesday_datas', 'schedule_closed_tuesday_datas', 'opens_at_location_wednesday_datas', 'closes_at_location_wednesday_datas', 'schedule_closed_wednesday_datas', 'opens_at_location_thursday_datas', 'closes_at_location_thursday_datas', 'schedule_closed_thursday_datas', 'opens_at_location_friday_datas', 'closes_at_location_friday_datas', 'schedule_closed_friday_datas', 'opens_at_location_saturday_datas', 'closes_at_location_saturday_datas', 'schedule_closed_saturday_datas', 'opens_at_location_sunday_datas', 'closes_at_location_sunday_datas', 'schedule_closed_sunday_datas', 'location_holiday_start_dates', 'location_holiday_end_dates', 'location_holiday_open_ats', 'location_holiday_close_ats', 'location_holiday_closeds', 'service_status_list', 'address_info_list', 'addressIds', 'serviceDetailsData', 'detail_types', 'phone_language_data', 'service_category_term_data', 'service_category_type_data', 'service_category_types', 'service_eligibility_types', 'service_eligibility_term_data', 'service_eligibility_type_data', 'program', 'all_programs', 'program_names', 'program_descriptions', 'program_service_relationships', 'serviceAudits'));
+            return view('frontEnd.services.edit', compact('service', 'map', 'service_address_street', 'service_address_city', 'service_address_state', 'service_address_postal_code', 'service_organization_list', 'service_location_list', 'service_phone1', 'service_phone2', 'service_contacts_list', 'service_taxonomy_list', 'service_details_list', 'location_info_list', 'contact_info_list', 'taxonomy_info_list', 'detail_info_list', 'ServiceSchedule', 'ServiceDetails', 'monday', 'tuesday', 'wednesday', 'friday', 'saturday', 'thursday', 'sunday', 'holiday_schedules', 'all_contacts', 'service_locations_data', 'all_locations', 'phone_languages', 'phone_type', 'location_alternate_name', 'location_transporation', 'location_service', 'location_schedules', 'location_description', 'location_details', 'contact_service', 'contact_department', 'service_info_list', 'address_states_list', 'address_city_list', 'schedule_info_list', 'contact_phone_numbers', 'contact_phone_extensions', 'contact_phone_types', 'contact_phone_languages', 'contact_phone_descriptions', 'location_phone_numbers', 'location_phone_extensions', 'location_phone_types', 'location_phone_languages', 'location_phone_descriptions', 'opens_at_location_monday_datas', 'closes_at_location_monday_datas', 'schedule_closed_monday_datas', 'opens_at_location_tuesday_datas', 'closes_at_location_tuesday_datas', 'schedule_closed_tuesday_datas', 'opens_at_location_wednesday_datas', 'closes_at_location_wednesday_datas', 'schedule_closed_wednesday_datas', 'opens_at_location_thursday_datas', 'closes_at_location_thursday_datas', 'schedule_closed_thursday_datas', 'opens_at_location_friday_datas', 'closes_at_location_friday_datas', 'schedule_closed_friday_datas', 'opens_at_location_saturday_datas', 'closes_at_location_saturday_datas', 'schedule_closed_saturday_datas', 'opens_at_location_sunday_datas', 'closes_at_location_sunday_datas', 'schedule_closed_sunday_datas', 'location_holiday_start_dates', 'location_holiday_end_dates', 'location_holiday_open_ats', 'location_holiday_close_ats', 'location_holiday_closeds', 'service_status_list', 'address_info_list', 'addressIds', 'serviceDetailsData', 'detail_types', 'phone_language_data', 'service_category_term_data', 'service_category_type_data', 'service_category_types', 'service_eligibility_types', 'service_eligibility_term_data', 'service_eligibility_type_data', 'program', 'all_programs', 'program_names', 'program_descriptions', 'serviceAudits', 'contactOrganization'));
         } else {
             Session::flash('message', 'This record has been deleted.');
             Session::flash('status', 'warning');
@@ -1765,30 +1876,40 @@ class ServiceController extends Controller
             $service->service_licenses = $request->service_licenses;
             $service->service_organization = $request->service_organization;
             $service->service_code = $request->service_code;
+            $service->access_requirement = $request->access_requirement;
 
+            $servicePrograms = [];
             if ($request->program_name) {
                 $program_name = $request->program_name;
                 $program_description = $request->program_description;
-                $program_service_relationship = $request->program_service_relationship;
+                // $program_service_relationship = $request->program_service_relationship;
                 $programRadio = $request->programRadio;
                 $program_recordid = $request->program_recordid;
+
                 for ($i = 0; $i < count($program_name); $i++) {
                     if ($programRadio[$i] == 'new_data') {
                         $program = new Program();
                         $program->program_recordid = Program::max('program_recordid') + 1;
+                        $servicePrograms[] = Program::max('program_recordid') + 1;
                     } else {
                         $program = Program::where('program_recordid', $program_recordid[$i])->first();
+                        $servicePrograms[] = $program->program_recordid;
                     }
                     $program->name = $program_name[$i];
                     $program->alternate_name = $program_description[$i];
-                    $program->program_service_relationship = $program_service_relationship[$i];
+                    // $program->program_service_relationship = $program_service_relationship[$i];
                     $program->services = $service->service_recordid;
                     $recordids = [];
                     $recordids[] = $service->service_recordid;
-                    $program->service()->sync($recordids);
                     $program->save();
                 }
             }
+            $service->service_program = '';
+            if (count($servicePrograms) > 0) {
+                $service->service_program = implode(',', $servicePrograms);
+            }
+
+            $service->program()->sync($servicePrograms);
 
             // location section
             $service_locations = [];
@@ -1870,7 +1991,7 @@ class ServiceController extends Controller
                         // location address
                         $address_info = Address::where('address_1', '=', $request->location_address[$i])->first();
                         if ($address_info) {
-                            $location->location_address = $location->location_address . $address_info->address_recordid . ',';
+                            $location->location_address = $address_info->address_recordid;
                             $address_info->address_1 = $request->location_address[$i];
                             $address_info->address_city = $request->location_city[$i];
                             $address_info->address_state_province = $request->location_state[$i];
@@ -1886,7 +2007,7 @@ class ServiceController extends Controller
                             $new_address->address_state_province = $request->location_state[$i];
                             $new_address->address_postal_code = $request->location_zipcode[$i];
                             $new_address->save();
-                            $location->location_address = $location->location_addresss . $new_address_recordid . ',';
+                            $location->location_address = $new_address_recordid;
                             array_push($location_address_recordid_list, $new_address_recordid);
                         }
 
@@ -1896,7 +2017,7 @@ class ServiceController extends Controller
                             for ($p = 0; $p < count($location_phone_numbers[$i]); $p++) {
                                 $phone_info = Phone::where('phone_number', '=', $location_phone_numbers[$i][$p])->first();
                                 if ($phone_info) {
-                                    $location->location_phones = $location->location_phones . $phone_info->phone_recordid . ',';
+                                    // $location->location_phones = $location->location_phones . $phone_info->phone_recordid . ',';
                                     $phone_info->phone_number = $location_phone_numbers[$i][$p];
                                     $phone_info->phone_extension = $location_phone_extensions[$i][$p];
                                     $phone_info->phone_type = $location_phone_types[$i][$p];
@@ -1914,7 +2035,7 @@ class ServiceController extends Controller
                                     $new_phone->phone_language = isset($location_phone_languages[$i][$p]) ? implode(',', $location_phone_languages[$i][$p]) : '';
                                     $new_phone->phone_description = $location_phone_descriptions[$i][$p];
                                     $new_phone->save();
-                                    $location->location_phones = $location->location_phones . $new_phone_recordid . ',';
+                                    // $location->location_phones = $location->location_phones . $new_phone_recordid . ',';
                                     array_push($location_phone_recordid_list, $new_phone_recordid);
                                 }
                             }
@@ -1996,6 +2117,10 @@ class ServiceController extends Controller
 
                         $location->phones()->sync($location_phone_recordid_list);
 
+                        $location_phone_recordid_list = array_unique($location_phone_recordid_list);
+                        $location->location_phones = '';
+                        $location->location_phones = count($location_phone_recordid_list) > 0 ? implode(',', $location_phone_recordid_list) : '';
+
                         $location->address()->sync($location_address_recordid_list);
                         $location->save();
 
@@ -2024,7 +2149,7 @@ class ServiceController extends Controller
                             // location address
                             $address_info = Address::where('address_1', '=', $request->location_address[$i])->first();
                             if ($address_info) {
-                                $location->location_address = $location->location_address . $address_info->address_recordid . ',';
+                                $location->location_address = $address_info->address_recordid;
                                 $address_info->address_1 = $request->location_address[$i];
                                 $address_info->address_city = $request->location_city[$i];
                                 $address_info->address_state_province = $request->location_state[$i];
@@ -2040,7 +2165,7 @@ class ServiceController extends Controller
                                 $new_address->address_state_province = $request->location_state[$i];
                                 $new_address->address_postal_code = $request->location_zipcode[$i];
                                 $new_address->save();
-                                $location->location_address = $location->location_addresss . $new_address_recordid . ',';
+                                $location->location_address = $new_address_recordid;
                                 array_push($location_address_recordid_list, $new_address_recordid);
                             }
                             // location phone
@@ -2049,7 +2174,7 @@ class ServiceController extends Controller
                                 for ($p = 0; $p < count($location_phone_numbers[$i]); $p++) {
                                     $phone_info = Phone::where('phone_number', '=', $location_phone_numbers[$i][$p])->first();
                                     if ($phone_info) {
-                                        $location->location_phones = $location->location_phones . $phone_info->phone_recordid . ',';
+                                        // $location->location_phones = $location->location_phones . $phone_info->phone_recordid . ',';
                                         $phone_info->phone_number = $location_phone_numbers[$i][$p];
                                         $phone_info->phone_extension = $location_phone_extensions[$i][$p];
                                         $phone_info->phone_type = $location_phone_types[$i][$p];
@@ -2067,7 +2192,7 @@ class ServiceController extends Controller
                                         $new_phone->phone_language = isset($location_phone_languages[$i][$p]) ? implode(',', $location_phone_languages[$i][$p]) : '';
                                         $new_phone->phone_description = $location_phone_descriptions[$i][$p];
                                         $new_phone->save();
-                                        $location->location_phones = $location->location_phones . $new_phone_recordid . ',';
+                                        // $location->location_phones = $location->location_phones . $new_phone_recordid . ',';
                                         array_push($location_phone_recordid_list, $new_phone_recordid);
                                     }
                                 }
@@ -2144,6 +2269,11 @@ class ServiceController extends Controller
 
                             $location->schedules()->sync($schedule_locations);
                             $location->phones()->sync($location_phone_recordid_list);
+
+                            $location_phone_recordid_list = array_unique($location_phone_recordid_list);
+                            $location->location_phones = '';
+                            $location->location_phones = count($location_phone_recordid_list) > 0 ? implode(',', $location_phone_recordid_list) : '';
+
                             $location->address()->sync($location_address_recordid_list);
                             $location->save();
                         }
@@ -2154,12 +2284,6 @@ class ServiceController extends Controller
             $service->service_locations = join(',', $service_locations);
             $service->locations()->sync($service_locations);
 
-            // if ($request->service_contacts) {
-            //     $service->service_contacts = join(',', $request->service_contacts);
-            //     $service->contact()->sync($request->service_contacts);
-            // } else {
-            //     $service->service_contacts = '';
-            // }
             // contact section
             $service_contacts = [];
             if ($request->contact_name && $request->contact_name[0] != null) {
@@ -2259,31 +2383,29 @@ class ServiceController extends Controller
             $service->service_contacts = join(',', $service_contacts);
             $service->contact()->sync($service_contacts);
 
-            // if ($request->service_taxonomy) {
-            //     $service->service_taxonomy = join(',', $request->service_taxonomy);
-            //     $service->taxonomy()->sync($request->service_taxonomy);
-            // } else {
-            //     $service->service_taxonomy = '';
-            // }
             $service_taxonomies = [];
             if ($request->service_category_type && $request->service_category_type[0] != null) {
                 $service_category_type = $request->service_category_type;
                 $service_category_term = $request->service_category_term;
                 $service_category_term_type = $request->service_category_term_type;
                 foreach ($service_category_type as $key => $value) {
-                    if ($service_category_term_type[$key] == 'new') {
-                        $taxonomy = new Taxonomy();
-                        $taxonomy_recordid = Taxonomy::max('taxonomy_recordid') + 1;
-                        $taxonomy->taxonomy_recordid = $taxonomy_recordid;
-                        $taxonomy->taxonomy_name = $service_category_term[$key];
-                        $taxonomy->taxonomy_parent_name = $value;
-                        $taxonomy->taxonomy_vocabulary = 'Service Category';
-                        $taxonomy->save();
-                        $service_taxonomies[] = $taxonomy_recordid;
-                        $service_taxonomies[] = $value;
-                    } else {
-                        $service_taxonomies[] = $service_category_type[$key];
-                        $service_taxonomies[] = $service_category_term[$key];
+                    if (isset($service_category_term_type[$key]) && isset($service_category_type[$key]) && isset($service_category_term[$key])) {
+                        if ($service_category_term_type[$key] == 'new') {
+                            $taxonomy = new Taxonomy();
+                            $taxonomy_recordid = Taxonomy::max('taxonomy_recordid') + 1;
+                            $taxonomy->taxonomy_recordid = $taxonomy_recordid;
+                            $taxonomy->taxonomy_name = $service_category_term[$key];
+                            $taxonomy->taxonomy_parent_name = $value;
+                            $taxonomy->taxonomy_vocabulary = 'Service Category';
+                            $taxonomy->status = 'Unpublished';
+                            $taxonomy->created_by = Auth::id();
+                            $taxonomy->save();
+                            $service_taxonomies[] = $taxonomy_recordid;
+                            $service_taxonomies[] = $value;
+                        } else {
+                            $service_taxonomies[] = $service_category_type[$key];
+                            $service_taxonomies[] = $service_category_term[$key];
+                        }
                     }
                 }
             }
@@ -2292,19 +2414,23 @@ class ServiceController extends Controller
                 $service_eligibility_term = $request->service_eligibility_term;
                 $service_eligibility_term_type = $request->service_eligibility_term_type;
                 foreach ($service_eligibility_type as $key => $value) {
-                    if ($service_eligibility_term_type[$key] == 'new') {
-                        $taxonomy = new Taxonomy();
-                        $taxonomy_recordid = Taxonomy::max('taxonomy_recordid') + 1;
-                        $taxonomy->taxonomy_recordid = $taxonomy_recordid;
-                        $taxonomy->taxonomy_name = $service_eligibility_term[$key];
-                        $taxonomy->taxonomy_parent_name = $value;
-                        $taxonomy->taxonomy_vocabulary = 'Service Eligibility';
-                        $taxonomy->save();
-                        $service_taxonomies[] = $taxonomy_recordid;
-                        $service_taxonomies[] = $value;
-                    } else {
-                        $service_taxonomies[] = $service_eligibility_type[$key];
-                        $service_taxonomies[] = $service_eligibility_term[$key];
+                    if (isset($service_eligibility_type[$key]) && isset($service_eligibility_term[$key]) && isset($service_eligibility_term_type[$key])) {
+                        if ($service_eligibility_term_type[$key] == 'new') {
+                            $taxonomy = new Taxonomy();
+                            $taxonomy_recordid = Taxonomy::max('taxonomy_recordid') + 1;
+                            $taxonomy->taxonomy_recordid = $taxonomy_recordid;
+                            $taxonomy->taxonomy_name = $service_eligibility_term[$key];
+                            $taxonomy->taxonomy_parent_name = $value;
+                            $taxonomy->taxonomy_vocabulary = 'Service Eligibility';
+                            $taxonomy->status = 'Unpublished';
+                            $taxonomy->created_by = Auth::id();
+                            $taxonomy->save();
+                            $service_taxonomies[] = $taxonomy_recordid;
+                            $service_taxonomies[] = $value;
+                        } else {
+                            $service_taxonomies[] = $service_eligibility_type[$key];
+                            $service_taxonomies[] = $service_eligibility_term[$key];
+                        }
                     }
                 }
             }
@@ -2314,57 +2440,31 @@ class ServiceController extends Controller
             $service->service_taxonomy = join(',', $service_taxonomies);
             $service->taxonomy()->sync($service_taxonomies);
 
-            // if ($request->service_details) {
-            //     $service->service_details = join(',', $request->service_details);
-            //     $service->details()->sync($request->service_details);
-            // } else {
-            //     $service->service_details = '';
-            // }
             $detail_ids = [];
             if ($request->detail_type && $request->detail_type[0] != null) {
                 $detail_type = $request->detail_type;
                 $detail_term = $request->detail_term;
                 $term_type = $request->term_type;
                 foreach ($detail_type as $key => $value) {
-                    if ($term_type[$key] == 'new') {
-                        $detail = new Detail();
-                        $detail_recordid = Detail::max('detail_recordid') + 1;
-                        $detail->detail_recordid = $detail_recordid;
-                        $detail->detail_type = $value;
-                        $detail->detail_value = $detail_term[$key];
-                        $detail->save();
+                    if (isset($detail_type[$key]) && isset($detail_term[$key]) && isset($term_type[$key])) {
+                        if ($term_type[$key] == 'new') {
+                            $detail = new Detail();
+                            $detail_recordid = Detail::max('detail_recordid') + 1;
+                            $detail->detail_recordid = $detail_recordid;
+                            $detail->detail_type = $value;
+                            $detail->detail_value = $detail_term[$key];
+                            $detail->save();
 
-                        $detail_ids[] = $detail_recordid;
-                    } else {
-                        $detail_ids[] = $detail_term[$key];
+                            $detail_ids[] = $detail_recordid;
+                        } else {
+                            $detail_ids[] = $detail_term[$key];
+                        }
                     }
                 }
             }
 
             $service->service_details = join(',', $detail_ids);
             $service->details()->sync($detail_ids);
-
-            // $service->service_phones = '';
-            // $phone_recordid_list = [];
-            // if ($request->service_phones) {
-            //     $service_phone_number_list = $request->service_phones;
-            //     foreach ($service_phone_number_list as $key => $service_phone_number) {
-            //         $phone_info = Phone::where('phone_number', '=', $service_phone_number)->select('phone_recordid')->first();
-            //         if ($phone_info) {
-            //             $service->service_phones = $service->service_phones . $phone_info->phone_recordid . ',';
-            //             array_push($phone_recordid_list, $phone_info->phone_recordid);
-            //         } else {
-            //             $new_phone = new Phone;
-            //             $new_phone_recordid = Phone::max('phone_recordid') + 1;
-            //             $new_phone->phone_recordid = $new_phone_recordid;
-            //             $new_phone->phone_number = $service_phone_number;
-            //             $new_phone->save();
-            //             $service->service_phones = $service->service_phones . $new_phone_recordid . ',';
-            //             array_push($phone_recordid_list, $new_phone_recordid);
-            //         }
-            //     }
-            // }
-            // $service->phone()->sync($phone_recordid_list);
 
             // service phone section
             $service->service_phones = '';
@@ -2375,6 +2475,7 @@ class ServiceController extends Controller
                 $service_phone_type_list = $request->phone_type;
                 $service_phone_language_list = $request->phone_language_data ? json_decode($request->phone_language_data) : [];
                 $service_phone_description_list = $request->phone_description;
+                $service_main_priority_list = $request->main_priority;
                 // foreach ($service_phone_number_list as $key => $service_phone_number) {
 
                 //     if ($phone_info) {
@@ -2390,6 +2491,11 @@ class ServiceController extends Controller
                         $phone_info->phone_type = $service_phone_type_list[$i];
                         $phone_info->phone_language = isset($service_phone_language_list[$i]) && count($service_phone_language_list) > 0 ? implode(',', $service_phone_language_list[$i]) : '';
                         $phone_info->phone_description = $service_phone_description_list[$i];
+                        if (isset($service_main_priority_list[0]) && $service_main_priority_list[0] == $i) {
+                            $phone_info->main_priority = '1';
+                        } else {
+                            $phone_info->main_priority = '0';
+                        }
                         $phone_info->save();
                         array_push($phone_recordid_list, $phone_info->phone_recordid);
                     } else {
@@ -2400,6 +2506,11 @@ class ServiceController extends Controller
                         $new_phone->phone_extension = $service_phone_extension_list[$i];
                         $new_phone->phone_type = $service_phone_type_list[$i];
                         $new_phone->phone_language = isset($service_phone_language_list[$i]) && count($service_phone_language_list) > 0 ? implode(',', $service_phone_language_list[$i]) : '';
+                        if (isset($service_main_priority_list[0]) && $service_main_priority_list[0] == $i) {
+                            $new_phone->main_priority = '1';
+                        } else {
+                            $new_phone->main_priority = '0';
+                        }
                         $new_phone->phone_description = $service_phone_description_list[$i];
                         $new_phone->save();
                         $service->service_phones = $service->service_phones . $new_phone_recordid . ',';
@@ -2503,7 +2614,7 @@ class ServiceController extends Controller
                     }
                 }
             }
-            if ($request->holiday_start_date && $request->holiday_end_date && $request->holiday_open_at && $request->holiday_close_at && (count($request->holiday_start_date) == 0 && $request->holiday_start_date[0] != null)) {
+            if ($request->holiday_start_date && $request->holiday_end_date && $request->holiday_open_at && $request->holiday_close_at) {
                 Schedule::where('schedule_services', $service->service_recordid)->where('schedule_holiday', '1')->delete();
                 for ($i = 0; $i < count($request->holiday_start_date); $i++) {
                     // $schedules =
@@ -2535,6 +2646,9 @@ class ServiceController extends Controller
                     // }
                 }
             }
+            if (count($schedule_services)) {
+                $service->service_schedule = join(',', $schedule_services);
+            }
             $service->schedules()->sync($schedule_services);
 
             // if ($request->service_details) {
@@ -2556,7 +2670,7 @@ class ServiceController extends Controller
             Session::flash('status', 'success');
             return redirect('services/' . $id);
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in update service : ' . $th);
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
             return redirect()->back();
@@ -2810,7 +2924,7 @@ class ServiceController extends Controller
             $airtable->syncdate = $date;
             $airtable->save();
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in sync service v1 : ' . $th);
         }
     }
     public function airtable_v2($api_key, $base_url)
@@ -3082,7 +3196,7 @@ class ServiceController extends Controller
             );
             return $response;
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in service csv : ' . $th);
         }
     }
     public function export_services()
@@ -3090,7 +3204,8 @@ class ServiceController extends Controller
         try {
             return Excel::download(new ServiceExport, 'export.csv');
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in export service : ' . $th);
+            return redirect('services');
         }
     }
 
@@ -3146,9 +3261,10 @@ class ServiceController extends Controller
     {
         $map = Map::find(1);
         $organization = Organization::where('organization_recordid', '=', $id)->select('organization_recordid', 'organization_name')->first();
+        $all_locations = $organization->location;
         $facility_info_list = Location::select('location_recordid', 'location_name')->orderBy('location_recordid')->distinct()->get();
 
-        $service_status_list = ['Yes', 'No'];
+        $service_status_list = ['Yes' => 'Yes', 'No' => 'No'];
 
         $taxonomy_info_list = Taxonomy::select('taxonomy_recordid', 'taxonomy_name')->orderBy('taxonomy_name')->distinct()->get();
         $schedule_info_list = Schedule::select('schedule_recordid', 'opens_at', 'closes_at')->whereNotNull('opens_at')->where('opens_at', '!=', '')->orderBy('opens_at')->distinct()->get();
@@ -3157,11 +3273,12 @@ class ServiceController extends Controller
         $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
         $address_info_list = Address::select('address_recordid', 'address_1', 'address_city', 'address_state_province', 'address_postal_code')->orderBy('address_1')->distinct()->get();
 
-        $phone_languages = Language::pluck('language', 'language_recordid');
+        $phone_languages = Language::orderBy('order')->whereNotNull('language_recordid')->pluck('language', 'language_recordid');
 
-        $phone_type = PhoneType::pluck('type', 'id');
-        $all_contacts = Contact::orderBy('contact_recordid')->with('phone')->distinct()->get();
-        $all_locations = Location::orderBy('location_recordid')->with('phones', 'address', 'schedules')->distinct()->get();
+        $phone_type = PhoneType::orderBy('order')->pluck('type', 'id');
+        // $all_contacts = Contact::orderBy('contact_recordid')->with('phone')->distinct()->get();
+        $all_contacts = $organization->contact()->orderBy('contact_name')->with('phone')->distinct()->get();
+        // $all_locations = Location::orderBy('location_name')->with('phones', 'address', 'schedules')->distinct()->get();
 
         $address_cities = Address::select("address_city")->distinct()->get();
         $address_states = Address::select("address_state_province")->distinct()->get();
@@ -3179,10 +3296,10 @@ class ServiceController extends Controller
             $address_city_list = array_merge($address_city_list, $cities);
         }
         $address_city_list = array_unique($address_city_list);
-        $detail_types = DetailType::pluck('type', 'type');
+        $detail_types = DetailType::orderBy('order')->pluck('type', 'type');
 
-        $serviceCategoryId = TaxonomyType::where('type', 'internal')->where('name', 'Service Category')->first();
-        $serviceEligibilityId = TaxonomyType::where('type', 'internal')->where('name', 'Service Eligibility')->first();
+        $serviceCategoryId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Category')->first();
+        $serviceEligibilityId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Eligibility')->first();
 
         $service_category_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
         $service_eligibility_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
@@ -3195,18 +3312,18 @@ class ServiceController extends Controller
         $map = Map::find(1);
         $facility = Location::where('location_recordid', '=', $id)->first();
 
-        $service_status_list = ['Yes', 'No'];
+        $service_status_list = ['Yes' => 'Yes', 'No' => 'No'];
 
         $taxonomy_info_list = Taxonomy::select('taxonomy_recordid', 'taxonomy_name')->orderBy('taxonomy_name')->distinct()->get();
         $schedule_info_list = Schedule::select('schedule_recordid', 'opens_at', 'closes_at')->whereNotNull('opens_at')->where('opens_at', '!=', '')->orderBy('opens_at')->distinct()->get();
 
         $contact_info_list = Contact::select('contact_recordid', 'contact_name')->orderBy('contact_recordid')->distinct()->get();
         $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
-        $phone_languages = Language::pluck('language', 'language_recordid');
+        $phone_languages = Language::orderBy('order')->whereNotNull('language_recordid')->pluck('language', 'language_recordid');
 
-        $phone_type = PhoneType::pluck('type', 'id');
-        $all_contacts = Contact::orderBy('contact_recordid')->with('phone')->distinct()->get();
-        $all_locations = Location::orderBy('location_recordid')->with('phones', 'address', 'schedules')->distinct()->get();
+        $phone_type = PhoneType::orderBy('order')->pluck('type', 'id');
+        $all_contacts = Contact::orderBy('contact_name')->with('phone')->distinct()->get();
+        $all_locations = Location::orderBy('location_name')->with('phones', 'address', 'schedules')->distinct()->get();
 
         $address_cities = Address::select("address_city")->distinct()->get();
         $address_states = Address::select("address_state_province")->distinct()->get();
@@ -3224,10 +3341,10 @@ class ServiceController extends Controller
             $address_city_list = array_merge($address_city_list, $cities);
         }
         $address_city_list = array_unique($address_city_list);
-        $detail_types = DetailType::pluck('type', 'type');
+        $detail_types = DetailType::orderBy('order')->pluck('type', 'type');
 
-        $serviceCategoryId = TaxonomyType::where('type', 'internal')->where('name', 'Service Category')->first();
-        $serviceEligibilityId = TaxonomyType::where('type', 'internal')->where('name', 'Service Eligibility')->first();
+        $serviceCategoryId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Category')->first();
+        $serviceEligibilityId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Eligibility')->first();
 
         $service_category_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
         $service_eligibility_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
@@ -3273,7 +3390,7 @@ class ServiceController extends Controller
             $service->service_email = $request->service_email;
             $service->service_status = '';
             if ($request->service_status = 'Yes') {
-                $service->service_status = 'Verified';
+                $service->service_status = 'Yes';
             }
             $service->service_description = $request->service_description;
             $service->service_application_process = $request->service_application_process;
@@ -3371,7 +3488,7 @@ class ServiceController extends Controller
                         // location address
                         $address_info = Address::where('address_1', '=', $request->location_address[$i])->first();
                         if ($address_info) {
-                            $location->location_address = $location->location_address . $address_info->address_recordid . ',';
+                            $location->location_address = $address_info->address_recordid;
                             $address_info->address_1 = $request->location_address[$i];
                             $address_info->address_city = $request->location_city[$i];
                             $address_info->address_state_province = $request->location_state[$i];
@@ -3387,7 +3504,7 @@ class ServiceController extends Controller
                             $new_address->address_state_province = $request->location_state[$i];
                             $new_address->address_postal_code = $request->location_zipcode[$i];
                             $new_address->save();
-                            $location->location_address = $location->location_addresss . $new_address_recordid . ',';
+                            $location->location_address = $new_address_recordid;
                             array_push($location_address_recordid_list, $new_address_recordid);
                         }
 
@@ -3397,7 +3514,7 @@ class ServiceController extends Controller
                             for ($p = 0; $p < count($location_phone_numbers[$i]); $p++) {
                                 $phone_info = Phone::where('phone_number', '=', $location_phone_numbers[$i][$p])->first();
                                 if ($phone_info) {
-                                    $location->location_phones = $location->location_phones . $phone_info->phone_recordid . ',';
+                                    // $location->location_phones = $location->location_phones . $phone_info->phone_recordid . ',';
                                     $phone_info->phone_number = $location_phone_numbers[$i][$p];
                                     $phone_info->phone_extension = $location_phone_extensions[$i][$p];
                                     $phone_info->phone_type = $location_phone_types[$i][$p];
@@ -3415,7 +3532,7 @@ class ServiceController extends Controller
                                     $new_phone->phone_language = isset($location_phone_languages[$i][$p]) ? implode(',', $location_phone_languages[$i][$p]) : '';
                                     $new_phone->phone_description = $location_phone_descriptions[$i][$p];
                                     $new_phone->save();
-                                    $location->location_phones = $location->location_phones . $new_phone_recordid . ',';
+                                    // $location->location_phones = $location->location_phones . $new_phone_recordid . ',';
                                     array_push($location_phone_recordid_list, $new_phone_recordid);
                                 }
                             }
@@ -3495,6 +3612,10 @@ class ServiceController extends Controller
                         $location->schedules()->sync($schedule_locations);
                         $location->phones()->sync($location_phone_recordid_list);
 
+                        $location_phone_recordid_list = array_unique($location_phone_recordid_list);
+                        $location->location_phones = '';
+                        $location->location_phones = count($location_phone_recordid_list) > 0 ? implode(',', $location_phone_recordid_list) : '';
+
                         $location->address()->sync($location_address_recordid_list);
                         $location->save();
 
@@ -3523,7 +3644,7 @@ class ServiceController extends Controller
                             // location address
                             $address_info = Address::where('address_1', '=', $request->location_address[$i])->first();
                             if ($address_info) {
-                                $location->location_address = $location->location_address . $address_info->address_recordid . ',';
+                                $location->location_address =  $address_info->address_recordid;
                                 $address_info->address_1 = $request->location_address[$i];
                                 $address_info->address_city = $request->location_city[$i];
                                 $address_info->address_state_province = $request->location_state[$i];
@@ -3539,7 +3660,7 @@ class ServiceController extends Controller
                                 $new_address->address_state_province = $request->location_state[$i];
                                 $new_address->address_postal_code = $request->location_zipcode[$i];
                                 $new_address->save();
-                                $location->location_address = $location->location_addresss . $new_address_recordid . ',';
+                                $location->location_address = $new_address_recordid;
                                 array_push($location_address_recordid_list, $new_address_recordid);
                             }
                             // location phone
@@ -3548,7 +3669,7 @@ class ServiceController extends Controller
                                 for ($p = 0; $p < count($location_phone_numbers[$i]); $p++) {
                                     $phone_info = Phone::where('phone_number', '=', $location_phone_numbers[$i][$p])->first();
                                     if ($phone_info) {
-                                        $location->location_phones = $location->location_phones . $phone_info->phone_recordid . ',';
+                                        // $location->location_phones = $location->location_phones . $phone_info->phone_recordid . ',';
                                         $phone_info->phone_number = $location_phone_numbers[$i][$p];
                                         $phone_info->phone_extension = $location_phone_extensions[$i][$p];
                                         $phone_info->phone_type = $location_phone_types[$i][$p];
@@ -3566,7 +3687,7 @@ class ServiceController extends Controller
                                         $new_phone->phone_language = isset($location_phone_languages[$i][$p]) ? implode(',', $location_phone_languages[$i][$p]) : '';
                                         $new_phone->phone_description = $location_phone_descriptions[$i][$p];
                                         $new_phone->save();
-                                        $location->location_phones = $location->location_phones . $new_phone_recordid . ',';
+                                        // $location->location_phones = $location->location_phones . $new_phone_recordid . ',';
                                         array_push($location_phone_recordid_list, $new_phone_recordid);
                                     }
                                 }
@@ -3645,6 +3766,11 @@ class ServiceController extends Controller
 
                             $location->schedules()->sync($schedule_locations);
                             $location->phones()->sync($location_phone_recordid_list);
+
+                            $location_phone_recordid_list = array_unique($location_phone_recordid_list);
+                            $location->location_phones = '';
+                            $location->location_phones = count($location_phone_recordid_list) > 0 ? implode(',', $location_phone_recordid_list) : '';
+
                             $location->address()->sync($location_address_recordid_list);
                             $location->save();
                         }
@@ -3666,19 +3792,23 @@ class ServiceController extends Controller
                 $service_category_term = $request->service_category_term;
                 $service_category_term_type = $request->service_category_term_type;
                 foreach ($service_category_type as $key => $value) {
-                    if ($service_category_term_type[$key] == 'new') {
-                        $taxonomy = new Taxonomy();
-                        $taxonomy_recordid = Taxonomy::max('taxonomy_recordid') + 1;
-                        $taxonomy->taxonomy_recordid = $taxonomy_recordid;
-                        $taxonomy->taxonomy_name = $service_category_term[$key];
-                        $taxonomy->taxonomy_parent_name = $value;
-                        $taxonomy->taxonomy_vocabulary = 'Service Category';
-                        $taxonomy->save();
-                        $service_taxonomies[] = $taxonomy_recordid;
-                        $service_taxonomies[] = $value;
-                    } else {
-                        $service_taxonomies[] = $service_category_type[$key];
-                        $service_taxonomies[] = $service_category_term[$key];
+                    if (isset($service_category_type[$key]) && isset($service_category_term[$key])) {
+                        if ($service_category_term_type[$key] == 'new') {
+                            $taxonomy = new Taxonomy();
+                            $taxonomy_recordid = Taxonomy::max('taxonomy_recordid') + 1;
+                            $taxonomy->taxonomy_recordid = $taxonomy_recordid;
+                            $taxonomy->taxonomy_name = $service_category_term[$key];
+                            $taxonomy->taxonomy_parent_name = $value;
+                            $taxonomy->taxonomy_vocabulary = 'Service Category';
+                            $taxonomy->status = 'Unpublished';
+                            $taxonomy->created_by = Auth::id();
+                            $taxonomy->save();
+                            $service_taxonomies[] = $taxonomy_recordid;
+                            $service_taxonomies[] = $value;
+                        } else {
+                            $service_taxonomies[] = $service_category_type[$key];
+                            $service_taxonomies[] = $service_category_term[$key];
+                        }
                     }
                 }
             }
@@ -3687,19 +3817,23 @@ class ServiceController extends Controller
                 $service_eligibility_term = $request->service_eligibility_term;
                 $service_eligibility_term_type = $request->service_eligibility_term_type;
                 foreach ($service_eligibility_type as $key => $value) {
-                    if ($service_eligibility_term_type[$key] == 'new') {
-                        $taxonomy = new Taxonomy();
-                        $taxonomy_recordid = Taxonomy::max('taxonomy_recordid') + 1;
-                        $taxonomy->taxonomy_recordid = $taxonomy_recordid;
-                        $taxonomy->taxonomy_name = $service_eligibility_term[$key];
-                        $taxonomy->taxonomy_parent_name = $value;
-                        $taxonomy->taxonomy_vocabulary = 'Service Eligibility';
-                        $taxonomy->save();
-                        $service_taxonomies[] = $taxonomy_recordid;
-                        $service_taxonomies[] = $value;
-                    } else {
-                        $service_taxonomies[] = $service_eligibility_type[$key];
-                        $service_taxonomies[] = $service_eligibility_term[$key];
+                    if (isset($service_eligibility_type[$key]) && isset($service_eligibility_term[$key])) {
+                        if ($service_eligibility_term_type[$key] == 'new') {
+                            $taxonomy = new Taxonomy();
+                            $taxonomy_recordid = Taxonomy::max('taxonomy_recordid') + 1;
+                            $taxonomy->taxonomy_recordid = $taxonomy_recordid;
+                            $taxonomy->taxonomy_name = $service_eligibility_term[$key];
+                            $taxonomy->taxonomy_parent_name = $value;
+                            $taxonomy->taxonomy_vocabulary = 'Service Eligibility';
+                            $taxonomy->status = 'Unpublished';
+                            $taxonomy->created_by = Auth::id();
+                            $taxonomy->save();
+                            $service_taxonomies[] = $taxonomy_recordid;
+                            $service_taxonomies[] = $value;
+                        } else {
+                            $service_taxonomies[] = $service_eligibility_type[$key];
+                            $service_taxonomies[] = $service_eligibility_term[$key];
+                        }
                     }
                 }
             }
@@ -3846,7 +3980,7 @@ class ServiceController extends Controller
                     }
                 }
             }
-            if ($request->holiday_start_date && $request->holiday_end_date && $request->holiday_open_at && $request->holiday_close_at && (count($request->holiday_start_date) == 0 && $request->holiday_start_date[0] != null)) {
+            if ($request->holiday_start_date && $request->holiday_end_date && $request->holiday_open_at && $request->holiday_close_at) {
                 Schedule::where('schedule_services', $service->service_recordid)->where('schedule_holiday', '1')->delete();
                 for ($i = 0; $i < count($request->holiday_start_date); $i++) {
                     // $schedules =
@@ -3877,6 +4011,9 @@ class ServiceController extends Controller
                     $schedule_services[] = $schedule_recordid;
                     // }
                 }
+            }
+            if (count($schedule_services)) {
+                $service->service_schedule = join(',', $schedule_services);
             }
             $service->schedules()->sync($schedule_services);
 
@@ -3994,17 +4131,19 @@ class ServiceController extends Controller
                 $detail_term = $request->detail_term;
                 $term_type = $request->term_type;
                 foreach ($detail_type as $key => $value) {
-                    if ($term_type[$key] == 'new') {
-                        $detail = new Detail();
-                        $detail_recordid = Detail::max('detail_recordid') + 1;
-                        $detail->detail_recordid = $detail_recordid;
-                        $detail->detail_type = $value;
-                        $detail->detail_value = $detail_term[$key];
-                        $detail->save();
+                    if (isset($detail_type[$key]) && isset($detail_term[$key]) && isset($term_type[$key])) {
+                        if ($term_type[$key] == 'new') {
+                            $detail = new Detail();
+                            $detail_recordid = Detail::max('detail_recordid') + 1;
+                            $detail->detail_recordid = $detail_recordid;
+                            $detail->detail_type = $value;
+                            $detail->detail_value = $detail_term[$key];
+                            $detail->save();
 
-                        $detail_ids[] = $detail_recordid;
-                    } else {
-                        $detail_ids[] = $detail_term[$key];
+                            $detail_ids[] = $detail_recordid;
+                        } else {
+                            $detail_ids[] = $detail_term[$key];
+                        }
                     }
                 }
             }
@@ -4107,6 +4246,8 @@ class ServiceController extends Controller
                         $taxonomy->taxonomy_name = $service_category_term[$key];
                         $taxonomy->taxonomy_parent_name = $value;
                         $taxonomy->taxonomy_vocabulary = 'Service Category';
+                        $taxonomy->status = 'Unpublished';
+                        $taxonomy->created_by = Auth::id();
                         $taxonomy->save();
                         $service_taxonomies[] = $taxonomy_recordid;
                         $service_taxonomies[] = $value;
@@ -4128,6 +4269,8 @@ class ServiceController extends Controller
                         $taxonomy->taxonomy_name = $service_eligibility_term[$key];
                         $taxonomy->taxonomy_parent_name = $value;
                         $taxonomy->taxonomy_vocabulary = 'Service Eligibility';
+                        $taxonomy->status = 'Unpublished';
+                        $taxonomy->created_by = Auth::id();
                         $taxonomy->save();
                         $service_taxonomies[] = $taxonomy_recordid;
                         $service_taxonomies[] = $value;
@@ -4251,7 +4394,7 @@ class ServiceController extends Controller
                     }
                 }
             }
-            if ($request->holiday_start_date && $request->holiday_end_date && $request->holiday_open_at && $request->holiday_close_at && (count($request->holiday_start_date) == 0 && $request->holiday_start_date[0] != null)) {
+            if ($request->holiday_start_date && $request->holiday_end_date && $request->holiday_open_at && $request->holiday_close_at) {
                 Schedule::where('schedule_services', $service->service_recordid)->where('schedule_holiday', '1')->delete();
                 for ($i = 0; $i < count($request->holiday_start_date); $i++) {
                     // $schedules =
@@ -4282,6 +4425,9 @@ class ServiceController extends Controller
                     $schedule_services[] = $schedule_recordid;
                     // }
                 }
+            }
+            if (count($schedule_services)) {
+                $service->service_schedule = join(',', $schedule_services);
             }
             $service->schedules()->sync($schedule_services);
 
@@ -4398,17 +4544,19 @@ class ServiceController extends Controller
                 $detail_term = $request->detail_term;
                 $term_type = $request->term_type;
                 foreach ($detail_type as $key => $value) {
-                    if ($term_type[$key] == 'new') {
-                        $detail = new Detail();
-                        $detail_recordid = Detail::max('detail_recordid') + 1;
-                        $detail->detail_recordid = $detail_recordid;
-                        $detail->detail_type = $value;
-                        $detail->detail_value = $detail_term[$key];
-                        $detail->save();
+                    if (isset($detail_type[$key]) && isset($detail_term[$key]) && isset($term_type[$key])) {
+                        if ($term_type[$key] == 'new') {
+                            $detail = new Detail();
+                            $detail_recordid = Detail::max('detail_recordid') + 1;
+                            $detail->detail_recordid = $detail_recordid;
+                            $detail->detail_type = $value;
+                            $detail->detail_value = $detail_term[$key];
+                            $detail->save();
 
-                        $detail_ids[] = $detail_recordid;
-                    } else {
-                        $detail_ids[] = $detail_term[$key];
+                            $detail_ids[] = $detail_recordid;
+                        } else {
+                            $detail_ids[] = $detail_term[$key];
+                        }
                     }
                 }
             }
@@ -4670,13 +4818,18 @@ class ServiceController extends Controller
     public function delete_service(Request $request)
     {
         try {
-            Service::where('service_recordid', $request->service_recordid)->delete();
+            // Service::where('service_recordid', $request->service_recordid)->delete();
+            $service = Service::find($request->service_recordid);
+            if ($service) {
+                $service->delete();
+            }
 
             Session::flash('message', 'Service deleted successfully!');
             Session::flash('status', 'success');
             return redirect('/services');
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in delete service : ' . $th);
+            return redirect('/services');
         }
     }
     public function getDetailTerm(Request $request)
@@ -4684,14 +4837,14 @@ class ServiceController extends Controller
         try {
             $detail_type = $request->value;
 
-            $detail_info_list = Detail::where('detail_type', $detail_type)->pluck('detail_value', 'detail_recordid')->unique();
+            $detail_info_list = Detail::orderBy('detail_value')->where('detail_type', $detail_type)->pluck('detail_value', 'detail_recordid')->unique();
 
             return response()->json([
                 'success' => true,
                 'data' => $detail_info_list,
             ], 200);
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in get detai term service : ' . $th);
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),
@@ -4702,8 +4855,8 @@ class ServiceController extends Controller
     {
         try {
             $taxonomy_recordid = $request->value;
-            $taxonomy_parent_name = Taxonomy::where('taxonomy_recordid', $taxonomy_recordid)->first();
-            $taxonomy_info_list = Taxonomy::where('taxonomy_parent_name', 'LIKE', '%' . $taxonomy_recordid . '%')->get();
+            $taxonomy_parent_name = Taxonomy::orderBy('taxonomy_name')->where('taxonomy_recordid', $taxonomy_recordid)->first();
+            $taxonomy_info_list = Taxonomy::orderBy('taxonomy_name')->where('taxonomy_parent_name', 'LIKE', '%' . $taxonomy_recordid . '%')->where('status', 'Published')->get();
             // $taxonomy_info_list = $this->parent()->get();
 
             // while ($taxonomy_info_list->last() && $taxonomy_info_list->last()->taxonomy_parent_name !== null) {
@@ -4714,11 +4867,11 @@ class ServiceController extends Controller
             $taxonomy_array = [];
             foreach ($taxonomy_info_list as $value) {
                 $taxonomy_array[$value->taxonomy_recordid] = '- ' . $value->taxonomy_name;
-                $taxonomy_child_list = Taxonomy::where('taxonomy_parent_name', 'LIKE', '%' . $value->taxonomy_recordid . '%')->get();
+                $taxonomy_child_list = Taxonomy::orderBy('taxonomy_name')->where('taxonomy_parent_name', 'LIKE', '%' . $value->taxonomy_recordid . '%')->where('status', 'Published')->get();
                 if ($taxonomy_child_list) {
                     foreach ($taxonomy_child_list as $value1) {
                         $taxonomy_array[$value1->taxonomy_recordid] = '-- '  . $value1->taxonomy_name;
-                        $taxonomy_child_list1 = Taxonomy::where('taxonomy_parent_name', 'LIKE', '%' . $value1->taxonomy_recordid . '%')->get();
+                        $taxonomy_child_list1 = Taxonomy::orderBy('taxonomy_name')->where('taxonomy_parent_name', 'LIKE', '%' . $value1->taxonomy_recordid . '%')->where('status', 'Published')->get();
                         if ($taxonomy_child_list1) {
                             foreach ($taxonomy_child_list1 as $value2) {
                                 $taxonomy_array[$value2->taxonomy_recordid] = '--- '  . $value2->taxonomy_name;
@@ -4727,18 +4880,95 @@ class ServiceController extends Controller
                     }
                 }
             }
-
-
             return response()->json([
                 'success' => true,
                 'data' => $taxonomy_array,
             ], 200);
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in get taxonomy term service : ' . $th);
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),
             ], 200);
+        }
+    }
+    public function saveTaxonomyTerm(Request $request)
+    {
+        try {
+            $taxonomyType = TaxonomyType::where('name', 'Service Category')->first();
+            $taxonomy = Taxonomy::where('taxonomy_recordid', $request->get('category_type_recordid'))->first();
+            Taxonomy::create([
+                'taxonomy_recordid' => Taxonomy::max('taxonomy_recordid') + 1,
+                'taxonomy_name' =>  $request->get('service_category_term'),
+                'taxonomy_parent_name' => $request->get('category_type_recordid'),
+                'temp_service_recordid' => $request->get('service_recordid'),
+                'temp_organization_recordid' => $request->get('organization_recordid'),
+                'status' => 'Unpublished',
+                'added_term' => '1',
+                'created_by' => Auth::id(),
+                'taxonomy' => $taxonomyType->taxonomy_type_recordid ?? ''
+            ]);
+            $service_name = '';
+            $organization_name = '';
+            if ($request->has('service_recordid')) {
+                $service = Service::where('service_recordid', $request->get('service_recordid'))->first();
+                if ($service) {
+                    $service_name = $service->service_name;
+                    $serviceOrganizations = $service->getOrganizations()->pluck('organization_name')->toArray();
+                    $organization_name = count($serviceOrganizations) > 0 ? implode(', ', $serviceOrganizations) : '';
+                }
+            }
+            $contact_email_list = TaxonomyEmail::select('email')->pluck('email')->toArray();
+            if (count($contact_email_list) > 0) {
+
+                $from = env('MAIL_FROM_ADDRESS');
+                $name = env('MAIL_FROM_NAME');
+                // $from_phone = env('MAIL_FROM_PHONE');
+
+                $email = new Mail();
+                $email->setFrom($from, $name);
+                // $subject = 'A Suggested Change was Submitted at ' . $site_name;
+                $subject = 'New Taxonomy Term Added to ORServices';
+                $email->setSubject($subject);
+                $user = Auth::user();
+
+                $message = '<html><body>';
+                $message .= '<h1 style="color:#424242;">New Taxonomy Term Added to ORServices</h1>';
+                // $message .= '<p style="color:#424242;font-size:18px;">The following change was suggested at  ' . $site_name . ' website.</p>';
+                $message .= '<p style="color:#424242;font-size:12px;">User: ' . $user->first_name . ' ' . $user->last_name . '</p>';
+                $message .= '<p style="color:#424242;font-size:12px;">Term: ' . $request->get('service_category_term') . '</p>';
+                $message .= '<p style="color:#424242;font-size:12px;">Parent term: ' . $taxonomy->taxonomy_name . '</p>';
+                $message .= '<p style="color:#424242;font-size:12px;">Service: ' . $service_name . '</p>';
+                $message .= '<p style="color:#424242;font-size:12px;">Organization: ' . $organization_name . '</p>';
+                $message .= '<p style="color:#424242;font-size:12px;">Timestamp: ' . Carbon::now() . '</p>';
+                // $message .= '<p style="color:#424242;font-size:12px;">Phone: '. $from_phone .'</p>';
+                $message .= '</body></html>';
+
+                $email->addContent("text/html", $message);
+                $sendgrid = new SendGrid(getenv('SENDGRID_API_KEY'));
+
+                $error = '';
+
+                $username = '';
+
+
+                foreach ($contact_email_list as $key => $contact_email) {
+                    $email->addTo($contact_email, $username);
+                }
+                $response = $sendgrid->send($email);
+                if ($response->statusCode() == 401) {
+                    $error = json_decode($response->body());
+                }
+            }
+            return response()->json([
+                'success' => true
+            ], 200);
+        } catch (\Throwable $th) {
+            Log::error('Error in save taxonomy term servie : ' . $th);
+            return response()->json([
+                'message' => $th->getMessage(),
+                'success' => false
+            ], 500);
         }
     }
 }

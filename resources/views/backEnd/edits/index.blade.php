@@ -37,6 +37,9 @@ Edits
     <div class="x_panel">
       <div class="x_title">
         <h2>Edits </h2>
+        <div class="nav navbar-right panel_toolbox">
+            <a href="javascript:void(0)" id="export_csv" class="btn btn-info">Download CSV</a>
+        </div>
         <div class="clearfix"></div>
       </div>
       <div class="row">
@@ -50,6 +53,25 @@ Edits
           </div>
           <div class="col-md-6">
             <div class="form-group">
+                <label for="inputPassword3" class="col-sm-3 control-label">Select User</label>
+                <div class="col-sm-7">
+                    {!! Form::select('user',$users,$id,['class' => 'form-control','id' => 'user','placeholder' => 'Select', 'data-live-search' => 'true','data-size' => '5']) !!}
+                </div>
+            </div>
+          </div>
+      </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="inputPassword3" class="col-sm-3 control-label">Select Organizations Tags</label>
+                <div class="col-sm-7">
+                    {!! Form::select('organization_tag',$organization_tags,null,['class' => 'form-control selectpicker','id' => 'organization_tag','placeholder' => 'Select ', 'data-live-search' => 'true','data-size' => '5']) !!}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
                 <label for="inputPassword3" class="col-sm-3 control-label">Select Data type</label>
                 <div class="col-sm-7">
                     <select class="form-control selectpicker" data-live-search="true" id="dataType" name="dataType" data-size="5">
@@ -60,27 +82,9 @@ Edits
                     </select>
                 </div>
             </div>
-          </div>
-      </div>
+        </div>
+    </div>
 
-      <div class="row">
-          <div class="col-md-6">
-            <div class="form-group">
-                <label for="inputPassword3" class="col-sm-3 control-label">Start Date</label>
-                <div class="col-sm-7">
-                    <input type="date" name="start_date" id="start_date" class="form-control">
-                </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="form-group">
-                <label for="inputPassword3" class="col-sm-3 control-label">End Date</label>
-                <div class="col-sm-7">
-                    <input type="date" name="end_date" id="end_date" class="form-control">
-                </div>
-            </div>
-          </div>
-      </div>
       <div class="row">
         {{-- <div class="col-md-6">
           <div class="form-group">
@@ -97,34 +101,55 @@ Edits
           </div>
         </div> --}}
         <div class="col-md-6">
-          <div class="form-group">
-              <label for="inputPassword3" class="col-sm-3 control-label">Select User</label>
-              <div class="col-sm-7">
-                  {!! Form::select('user',$users,$id,['class' => 'form-control','id' => 'user','placeholder' => 'Select', 'data-live-search' => 'true','data-size' => '5']) !!}
-              </div>
-          </div>
+            <div class="form-group">
+                <label for="inputPassword3" class="col-sm-3 control-label">Start Date</label>
+                <div class="col-sm-7">
+                    <input type="date" name="start_date" id="start_date" class="form-control">
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label for="inputPassword3" class="col-sm-3 control-label">Select Organizations Tags</label>
+                <label for="inputPassword3" class="col-sm-3 control-label">Select Field type</label>
                 <div class="col-sm-7">
-                    {!! Form::select('organization_tag',$organization_tagsArray,null,['class' => 'form-control selectpicker','id' => 'organization_tag','placeholder' => 'Select ', 'data-live-search' => 'true','data-size' => '5']) !!}
+                    <select class="form-control selectpicker" data-live-search="true" id="fieldType" name="fieldType" data-size="5">
+                        <option value="">Select </option>
+                        @foreach($fieldTypes as $key => $type)
+                        <option value="{{$type}}">{{$type}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="inputPassword3" class="col-sm-3 control-label">End Date</label>
+                <div class="col-sm-7">
+                    <input type="date" name="end_date" id="end_date" class="form-control">
                 </div>
             </div>
         </div>
     </div>
 
-      <div class="x_content" style="overflow: scroll;">
+      <div class="x_content">
 
         <!-- <table class="table table-striped jambo_table bulk_action table-responsive"> -->
         <table id="edits_table" class="display table-striped jambo_table table-bordered " cellspacing="0" width="100%">
             <thead>
                 <tr>
-                    <th class="text-center">Timestamp</th>
+                    <th class="text-center">Date</th>
+                    <th class="text-center">Time</th>
                     <th class="text-center">Organization</th>
                     <th class="text-center">User</th>
+                    <th class="text-center">Event</th>
                     <th class="text-center">Data Type</th>
-                    <th class="text-center">Log</th>
+                    <th class="text-center">Field Type</th>
+                    <th class="text-center">Change From</th>
+                    <th class="text-center">Change To</th>
                     <th class="text-center">Record ID</th>
                 </tr>
             </thead>
@@ -140,6 +165,7 @@ Edits
 
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+<script src="//cdn.datatables.net/plug-ins/1.10.11/sorting/date-eu.js" type="text/javascript"></script>
 <script type="text/javascript">
     $('#organization').selectpicker()
     $('#dataType').selectpicker()
@@ -157,6 +183,7 @@ Edits
   $(document).ready(function(){
     edits_table = $('#edits_table').DataTable({
         "order": [[ 0, "desc" ]],
+
             ajax: {
                 url: ajaxUrl,
                 method : "get",
@@ -172,10 +199,14 @@ Edits
                 },
             columns: [
                 { data: 'created_at', name: 'created_at' },
+                { data: 'time', name: 'time' },
                 { data: 'organization', name: 'organization' },
                 { data: 'user', name: 'user' },
+                { data: 'event', name: 'event' },
                 { data: 'auditable_type', name: 'auditable_type' },
-                { data: 'log', name: 'log' },
+                { data: 'field_type', name: 'field_type' },
+                { data: 'change_from', name: 'change_from' },
+                { data: 'change_to', name: 'change_to' },
                 { data: 'auditable_id', name: 'auditable_id' },
             ],
             columnDefs : [
@@ -183,6 +214,7 @@ Edits
                     "targets": 0,
                     "orderable": true,
                     "class": "text-left",
+                    "type" : "date-eu"
                 },
                 {
                     "targets": 1,
@@ -209,13 +241,28 @@ Edits
                     "orderable": true,
                     "class": "text-left"
                 },
+                {
+                    "targets": 6,
+                    "orderable": true,
+                    "class": "text-left"
+                },
+                {
+                    "targets": 7,
+                    "orderable": true,
+                    "class": "text-left"
+                },
+                {
+                    "targets": 8,
+                    "orderable": true,
+                    "class": "text-left"
+                },
             ],
         });
         $('#organization').change(function(){
             let val = $(this).val()
-            // extraData.organization = val
-            // edits_table.ajax.reload()
-            edits_table.search( val ).draw();
+            extraData.organization = val
+            edits_table.ajax.reload()
+            // edits_table.search( val ).draw();
         })
         $('#organization_tag').change(function(){
             let val = $(this).val()
@@ -225,6 +272,11 @@ Edits
         $('#dataType').change(function(){
             let val = $(this).val()
             extraData.dataType = val
+            edits_table.ajax.reload()
+        })
+        $('#fieldType').change(function(){
+            let val = $(this).val()
+            extraData.fieldType = val
             edits_table.ajax.reload()
         })
         $('#session_disposition').change(function(){
@@ -246,6 +298,25 @@ Edits
             let val = $(this).val()
             extraData.end_date = val
             edits_table.ajax.reload()
+        })
+        $('#export_csv').click(function () {
+            _token = '{{ csrf_token() }}'
+            $.ajax({
+                url:"{{ route('edits.edits_export_csv') }}",
+                method : 'POST',
+                data:{extraData,},
+                success:function(response){
+                    // const url = window.URL.createObjectURL(new Blob([response]));
+                    const a = document.createElement('a');
+                            a.href = response.path;
+                            a.download = 'edit.csv';
+                            document.body.appendChild(a);
+                            a.click();
+                },
+                error : function(error){
+                    console.log(error)
+                }
+            })
         })
     });
 </script>

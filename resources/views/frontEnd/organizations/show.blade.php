@@ -77,6 +77,18 @@
                                 @if($organization->organization_alternate_name!='')
                                 ({{$organization->organization_alternate_name}})
                                 @endif
+                                @if ($organization->organization_url)
+                                <a href="{{ $organization->organization_url }}" class="m-2" target="_blank" style="font-size: 18px;"><i class="fab fa-globe"></i></a>
+                                @endif
+                                @if ($organization->facebook_url)
+                                <a href="{{ $organization->facebook_url }}" class="m-2" target="_blank" style="font-size: 18px;"><i class="fab fa-facebook"></i></a>
+                                @endif
+                                @if ($organization->twitter_url)
+                                <a href="{{ $organization->twitter_url }}" class="m-2" target="_blank" style="font-size: 18px;"><i class="fab fa-twitter"></i></a>
+                                @endif
+                                @if ($organization->instagram_url)
+                                <a href="{{ $organization->instagram_url }}" class="m-2" target="_blank" style="font-size: 18px;"><i class="fab fa-instagram"></i></a>
+                                @endif
                             </a>
                             @if (Auth::user() && Auth::user()->roles && Auth::user()->user_organization &&
                             str_contains(Auth::user()->user_organization,
@@ -91,31 +103,54 @@
                             </a>
                             @endif
                         </h4>
+                        @if ($organization->organization_status_x)
                         <h4>
                             <span class="subtitle"><b>Status:</b></span>
                             {{$organization->organization_status_x}}
                         </h4>
+                        @endif
                         {{-- <h4 class="panel-text"><span class="badge bg-red">Alternate Name:</span> {{$organization->organization_alternate_name}}
                         </h4> --}}
+                        @if ($organization->organization_description)
                         <h4 style="line-height:inherit"> {!! nl2br($organization->organization_description) !!}</h4>
+                        @endif
+                        @if ($organization->organization_url)
                         <h4 style="line-height: inherit;">
                             <span><i class="icon md-globe font-size-18 vertical-align-top pr-10 m-0"></i>
                                 <a href="{{$organization->organization_url}}"> {{$organization->organization_url}}</a>
                             </span>
                         </h4>
-                        @if($organization->phones)
+                        @endif
+                        @php
+                            $phone_number_info = '';
+                            $mainPhoneNumber = [];
+                            $phone_number_info_array = [];
+
+                            if (isset($organization->phones) && count($organization->phones) > 0) {
+                                foreach ($organization->phones as $valueV) {
+                                    if ($valueV->main_priority == '1' && count($mainPhoneNumber) == 0) {
+                                        $mainPhoneNumber[] = $valueV->phone_number;
+                                    }
+                                    // else {
+                                    //     $phone_number_info_array[] = $valueV->phone_number;
+                                    // }
+                                }
+                                // $servicePhoneData = $service->phone()->where('main_priority', '1')->first();
+                            }
+                            // $phone_number_info = $mainPhoneNumber . ', ' . implode(',', $phone_number_info_array);
+                            $mainPhoneNumber = array_merge($mainPhoneNumber, $phone_number_info_array);
+                        @endphp
+                        @if($mainPhoneNumber && count($mainPhoneNumber) > 0)
                         <h4 style="line-height: inherit;">
                             <span><i class="icon md-phone font-size-18 vertical-align-top pr-10  m-0"></i>
-                                @foreach($organization->phones as $key => $phone)
-                                @if ($phone->phone_number)
-                                @if($key == 0)
-                                <a href="tel:{{$phone->phone_number}}">{{$phone->phone_number}}
-                                </a>
-                                @else
-                                <a href="tel:{{$phone->phone_number}}">, {{$phone->phone_number}}
-                                </a>
+                                {{-- @foreach($organization->phones as $key => $phone)
+
+                                @if($phone->main_priority == '1')
+                                <a href="tel:{{$phone->phone_number}}">{{$phone->phone_number}}</a>
                                 @endif
-                                @endif
+                                @endforeach --}}
+                                @foreach ($mainPhoneNumber as $key => $item)
+                                    <a href="tel:{{$item}}">{{ $key == 0 ? $item : ', '.$item}}</a>
                                 @endforeach
                             </span>
                         </h4>
@@ -213,27 +248,29 @@
                                 <!-- Services area design -->
                                 @if(isset($organization_services))
                                 @foreach($organization_services as $service)
+                                @if ((!Auth::user() && $service->access_requirement == 'none') || Auth::user())
+
+
                                 <div class="organization_services">
                                     <h4 class="card-title">
                                         <a
                                             href="/services/{{$service->service_recordid}}">{{$service->service_name}}</a>
-                                        @if (Auth::user() && Auth::user()->roles && Auth::user()->user_organization &&
-                                        str_contains(Auth::user()->user_organization,
-                                        $organization->organization_recordid) && Auth::user()->roles->name ==
-                                        'Organization Admin')
+                                        @if ((Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,
+                                        $organization->organization_recordid) && Auth::user()->roles->name =='Organization Admin') || Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
                                         <a href="/services/{{$service->service_recordid}}/edit" class="float-right">
-                                            <i class="icon md-edit mr-0"></i>
-                                        </a>
-                                        @endif
-                                        @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System
-                                        Admin')
-                                        <a href="/services/{{$service->service_recordid}}/edit" class="float-right">
+                                            @if ($service->access_requirement == 'yes')
+                                            <img src="/images/noun_Lock and Key_1043619.png" width="30px" alt="noun_Lock and Key_1043619" style="margin-right: 6px">
+                                            @endif
                                             <i class="icon md-edit mr-0"></i>
                                         </a>
                                         @endif
                                     </h4>
+                                    @if ($service->service_description)
+
                                     <h4 style="line-height: inherit;">{!! Str::limit($service->service_description, 200)
                                         !!}</h4>
+                                    @endif
+                                    @if ($service->phone && count($service->phone) > 0)
                                     <h4 style="line-height: inherit;">
                                         <span><i class="icon md-phone font-size-18 vertical-align-top pr-10  m-0"></i>
                                             @foreach($service->phone as $phone)
@@ -243,6 +280,8 @@
                                             @endforeach
                                         </span>
                                     </h4>
+                                    @endif
+                                    @if (isset($service->address)&& count($service->address) > 0)
                                     <h4>
                                         <span>
                                             <i class="icon md-pin font-size-18 vertical-align-top pr-10  m-0"></i>
@@ -261,6 +300,7 @@
                                             @endif
                                         </span>
                                     </h4>
+                                    @endif
 
                                     @if($service->service_details!=NULL)
                                     @php
@@ -288,58 +328,9 @@
                                             $detail['detail_value'] !!}</h4>
                                         @endforeach
                                         @endif
+                                        @if (isset($service->taxonomy) && count($service->taxonomy) > 0)
+
                                         <h4>
-                                            {{-- <span class="pl-0 category_badge subtitle"><b>Types of Services:</b>
-                                                    @if($service->service_taxonomy != 0 || $service->service_taxonomy==null)
-                                                    @php
-                                                    $names = [];
-                                                    @endphp
-                                                    @foreach($service->taxonomy->sortBy('taxonomy_name') as $key => $taxonomy)
-                                                    @if(!in_array($taxonomy->taxonomy_grandparent_name, $names))
-                                                    @if($taxonomy->taxonomy_grandparent_name && $taxonomy->taxonomy_parent_name !=
-                                                    'Target Populations')
-
-                                                    <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}"
-                                            at="{{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}"
-                                            style="background-color:
-                                            {{ $taxonomy->badge_color ? '#'.$taxonomy->badge_color : '#000' }}
-                                            !important; color:#fff
-                                            !important;">{{$taxonomy->taxonomy_grandparent_name}}</a>
-                                            @php
-                                            $names[] = $taxonomy->taxonomy_grandparent_name;
-                                            @endphp
-                                            @endif
-                                            @endif
-                                            @if(!in_array($taxonomy->taxonomy_parent_name, $names))
-                                            @if($taxonomy->taxonomy_parent_name && $taxonomy->taxonomy_parent_name !=
-                                            'Target
-                                            Populations')
-
-                                            @if($taxonomy->taxonomy_grandparent_name)
-                                            <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_parent_name)}}"
-                                                at="{{str_replace(' ', '_', $taxonomy->taxonomy_grandparent_name)}}_{{str_replace(' ', '_', $taxonomy->taxonomy_parent_name)}}"
-                                                style="background-color: {{ $taxonomy->badge_color ? '#'.$taxonomy->badge_color : '#000' }} !important; color:#fff !important;">{{$taxonomy->taxonomy_parent_name}}</a>
-                                            @endif
-                                            @php
-                                            $names[] = $taxonomy->taxonomy_parent_name;
-                                            @endphp
-                                            @endif
-                                            @endif
-                                            @if(!in_array($taxonomy->taxonomy_name, $names))
-                                            @if($taxonomy->taxonomy_name && $taxonomy->taxonomy_parent_name != 'Target
-                                            Populations')
-                                            <a class="panel-link {{str_replace(' ', '_', $taxonomy->taxonomy_name)}}"
-                                                at="{{$taxonomy->taxonomy_recordid}}"
-                                                style="background-color: {{ $taxonomy->badge_color ? '#'.$taxonomy->badge_color : '#000' }} !important; color:#fff !important;">{{$taxonomy->taxonomy_name}}</a>
-                                            @php
-                                            $names[] = $taxonomy->taxonomy_name;
-                                            @endphp
-                                            @endif
-                                            @endif
-
-                                            @endforeach
-                                            @endif
-                                            </span> --}}
                                             <span class="pl-0 category_badge subtitle"><b>Service Category:</b>
                                                 @foreach ($service->taxonomy as $service_taxonomy_info)
                                                 @if (isset($service_taxonomy_info->taxonomy_type) &&
@@ -369,7 +360,9 @@
                                                 @endforeach
                                             </span>
                                         </h4>
+                                        @endif
                                 </div>
+                                @endif
                                 @endforeach
                                 @endif
                             </div>
@@ -392,6 +385,7 @@
                                                     href="/facilities/{{$location->location_recordid}}">{{$location->location_name}}</a>
                                             </span>
                                         </h4>
+                                        @if (isset($location->address) && count($location->address) > 0)
                                         <h4>
                                             <span><i class="icon md-pin font-size-18 vertical-align-top"></i>
                                                 @if(isset($location->address))
@@ -404,6 +398,9 @@
                                                 @endif
                                             </span>
                                         </h4>
+                                        @endif
+                                        @if (isset($location->phones) && count($location->phones) > 0)
+
                                         <h4>
                                             <span><i class="icon md-phone font-size-18 vertical-align-top  "></i>
                                                 @php
@@ -427,6 +424,7 @@
                                                 @endif
                                             </span>
                                         </h4>
+                                        @endif
                                     </div>
                                     @endforeach
                                     @endif
@@ -535,16 +533,18 @@
                             <h4 class="card_services_title">Comments</h4>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#interactions">
-                            <h4 class="card_services_title">Notes</h4>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#customdata">
-                            <h4 class="card_services_title">Custom Data</h4>
-                        </a>
-                    </li>
+                    @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin')
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#interactions">
+                                <h4 class="card_services_title">Notes</h4>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#customdata">
+                                <h4 class="card_services_title">Custom Data</h4>
+                            </a>
+                        </li>
+                    @endif
                 </ul>
                 <div class="card">
                     <div class="card-block" style="border-radius: 0 0 12px 12px">
@@ -670,7 +670,8 @@
                                     {{-- {{ dd($organization->organization_tag) }} --}}
                                     {!!
                                     Form::select('organization_tag[]',$allTags,explode(',',$organization->organization_tag),['class'
-                                    => 'form-control selectpicker drop_down_create','id' => 'organization_tag','data-live-search' =>
+                                    => 'form-control selectpicker drop_down_create','id' =>
+                                    'organization_tag','data-live-search' =>
                                     'true','data-size' => '5','multiple' => 'true']) !!}
                                 </div>
                                 {{-- <div class="col-md-2 pl-0">
@@ -711,28 +712,52 @@
                         <div class="py-10" style="float: left; width:100%;border-bottom: 1px solid #dadada;">
                             <p style="color: #000;font-size: 16px; font-weight: 500 !Important;">For Organization :
                                 {{ $organization->organization_name }}</p>
-                            <a href="/viewChanges/{{ $item->id }}/{{ $organization->organization_recordid }}">
-                                <p class="mb-5" style="color: #000;font-size: 16px;">On
+                            <p class="mb-5" style="color: #000;font-size: 16px;">On
+                                <a href="/viewChanges/{{ $item->id }}/{{ $organization->organization_recordid }}">
                                     <b
                                         style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB; text-decoration:underline;">{{ $item->created_at }}</b>
-                                    ,
+                                </a>
+                                ,
+                                @if ($item->user)
+                                <a href="/userEdits/{{ $item->user ? $item->user->id : '' }}"
+                                    style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB; text-decoration:underline;">
                                     <b
                                         style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB;text-decoration:underline;">{{ $item->user ? $item->user->first_name.' '.$item->user->last_name : '' }}</b>
-                                </p>
-                            </a>
+                                </a>
+                                @endif
+                            </p>
                             {{-- <p><b style="font-family: Neue Haas Grotesk Display Medium; color:#000">User Name</b> - </p> --}}
                             @foreach ($item->old_values as $key => $v)
                             @php
                             $fieldNameArray = explode('_',$key);
                             $fieldName = implode(' ',$fieldNameArray);
+                            $new_values = explode('| ',$item->new_values[$key]);
+                            $old_values = explode('| ',$v);
+                            $old_values = array_values(array_filter($old_values));
+                            $new_values = array_values(array_filter($new_values));
                             @endphp
                             <ul style="padding-left: 0px;font-size: 16px;">
-                                @if ($v)
-                                <li style="color: #000;list-style: disc;list-style-position: inside;">Changed <b
-                                        style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b>
-                                    from <span style="color: #FF5044">{{ $v }}</span> to <span
-                                        style="color: #35AD8B">{{ $item->new_values[$key] }}</span>
+                                @if($v && count($old_values) > count($new_values))
+
+                                @php
+                                    $diffData = array_diff($old_values,$new_values);
+                                @endphp
+                                <li style="color: #000;list-style: disc;list-style-position: inside;">Removed <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span style="color: #FF5044">{{ implode(',',$diffData) }}</span>
                                 </li>
+                                @elseif($v && count($old_values) < count($new_values))
+                                @php
+                                    $diffData = array_diff($new_values,$old_values);
+                                @endphp
+                                <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span style="color: #35AD8B">{{ implode(',',$diffData) }}</span>
+                                </li>
+                                @elseif($v && count($new_values) == count($old_values))
+                                @php
+                                    $diffData = array_diff($new_values,$old_values);
+                                @endphp
+                                <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span style="color: #35AD8B">{{ implode(',',$diffData) }}</span>
+                                </li>
+                                {{-- <li style="color: #000;list-style: disc;list-style-position: inside;">Changed <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> from <span style="color: #FF5044">{{ $v }}</span> to <span style="color: #35AD8B">{{ $new_values ? $new_values : 'none' }}</span>
+                                </li> --}}
                                 @elseif($item->new_values[$key])
                                 <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b
                                         style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b>
@@ -956,13 +981,22 @@
                             content +=  '<div class="iw-title"> <a href="/services/'+location.services[i].service_recordid+'">'+location.services[i].service_name+'</a></div>';
                         }
                         // '<div class="iw-title"> <a href="/services/'+ location.service_recordid +'">' + location.service_name + '</a> </div>' +
+
                         content += '<div class="iw-content">' +
                             '<div class="iw-subTitle">Organization Name</div>' +
-                            '<a href="/organizations/' + location.organization_recordid + '">' + location.organization_name +'</a>'+
-                            '<div class="iw-subTitle">Address</div>' +
-                            '<a href="https://www.google.com/maps/dir/?api=1&destination=' + location.address_name + '" target="_blank">' + location.address_name +'</a>'+
-                        '</div>' +
-                        '<div class="iw-bottom-gradient"></div>' +
+                            '<a href="/organizations/' + location.organization_recordid + '">' + location.organization_name +'</a>';
+                            // '<div class="iw-subTitle">Address</div>' +
+                            // location.address_name ;
+                            // '<br> <a href="https://www.google.com/maps/dir/?api=1&destination=' + location.address_name + '" target="_blank">View on Google Maps</a>'+
+
+                        if(location.address){
+                            for(i = 0; i < location.address.length; i ++){
+                                content +=  '<div class="iw-subTitle">Address</div>'+
+                                        location.address[i].address_1+ ', '+location.address[i].address_city+','+location.address[i].address_state_province+','+location.address[i].address_postal_code ;
+                                content += '<div><a href="https://www.google.com/maps/dir/?api=1&destination=' + location.address[i].address_1+ ', '+location.address[i].address_city+','+location.address[i].address_state_province+','+location.address[i].address_postal_code + '" target="_blank">View on Google Maps</a></div>';
+                            }
+                        }
+                        content += '</div><div class="iw-bottom-gradient"></div>' +
                         '</div>';
 
             var infowindow = new google.maps.InfoWindow({

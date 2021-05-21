@@ -7,6 +7,7 @@ use App\Model\Layout;
 use App\Model\Page;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
@@ -33,7 +34,7 @@ class EditLoginRegisterController extends Controller
             $layout = Layout::find(1);
             return view('backEnd.pages.edit_login_register', compact('page', 'layout'));
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in login register : ' . $th);
         }
     }
 
@@ -112,6 +113,11 @@ class EditLoginRegisterController extends Controller
                 $layout->activate_login_home = 1;
             } else {
                 $layout->activate_login_home = 0;
+            }
+            if ($request->activate_login_button) {
+                $layout->activate_login_button = 1;
+            } else {
+                $layout->activate_login_button = 0;
             }
             $layout->save();
 

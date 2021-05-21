@@ -17,6 +17,7 @@ class Contact extends Model implements ContractsAuditable
     protected $auditEvents = [
         'updated',
         'deleted',
+        'created',
     ];
 
     protected $fillable = [
