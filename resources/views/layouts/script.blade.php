@@ -1,53 +1,55 @@
 <!-- Core  -->
 
 <script src="../../frontend/global/vend/babel-external-helpers/babel-external-helpers.js"></script>
-  <script src="../../frontend/global/vend/tether/tether.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.5/jquery.csv.min.js" integrity="sha256-zGo0JbZ5Sn6wU76MyVL0TrUZUq5GLXaFnMQCe/hSwVI=" crossorigin="anonymous"></script>
+<script src="../../frontend/global/vend/tether/tether.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.5/jquery.csv.min.js"
+    integrity="sha256-zGo0JbZ5Sn6wU76MyVL0TrUZUq5GLXaFnMQCe/hSwVI=" crossorigin="anonymous"></script>
 {{-- <script src="../../frontend/global/vend/animsition/animsition.js"></script> --}}
-  <script src="../../frontend/global/vend/mousewheel/jquery.mousewheel.js"></script>
-  <script src="../../frontend/global/vend/asscrollbar/jquery-asScrollbar.js"></script>
-  <script src="../../frontend/global/vend/asscrollable/jquery-asScrollable.js"></script>
-  <script src="../../frontend/global/vend/ashoverscroll/jquery-asHoverScroll.js"></script>
-  <script src="../../frontend/global/vend/waves/waves.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+<script src="../../frontend/global/vend/mousewheel/jquery.mousewheel.js"></script>
+<script src="../../frontend/global/vend/asscrollbar/jquery-asScrollbar.js"></script>
+<script src="../../frontend/global/vend/asscrollable/jquery-asScrollable.js"></script>
+<script src="../../frontend/global/vend/ashoverscroll/jquery-asHoverScroll.js"></script>
+<script src="../../frontend/global/vend/waves/waves.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
-  <!-- Plugins -->
+<!-- Plugins -->
 <script src="../../frontend/global/vend/switchery/switchery.min.js"></script>
-  <script src="../../frontend/global/vend/intro-js/intro.js"></script>
-  <script src="../../frontend/global/vend/screenfull/screenfull.js"></script>
-  <script src="../../frontend/global/vend/slidepanel/jquery-slidePanel.js"></script>
-  <script src="../../frontend/global/vend/moment/moment.min.js"></script>
-  <script src="../../frontend/global/vend/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js"></script>
+<script src="../../frontend/global/vend/intro-js/intro.js"></script>
+<script src="../../frontend/global/vend/screenfull/screenfull.js"></script>
+<script src="../../frontend/global/vend/slidepanel/jquery-slidePanel.js"></script>
+<script src="../../frontend/global/vend/moment/moment.min.js"></script>
+<script src="../../frontend/global/vend/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js"></script>
 
-  <!-- Scripts -->
+<!-- Scripts -->
+
 <script src="../../frontend/global/js/State.js"></script>
-  <script src="../../frontend/global/js/Component.js"></script>
-  <script src="../../frontend/global/js/Plugin.js"></script>
-  <script src="../../frontend/global/js/Base.js"></script>
-  <script src="../../frontend/global/js/Config.js"></script>
-  <script src="../../frontend/assets/js/Section/Menubar.js"></script>
-  <script src="../../frontend/assets/js/Section/Sidebar.js"></script>
-  <script src="../../frontend/assets/js/Section/PageAside.js"></script>
-  <script src="../../frontend/assets/js/Plugin/menu.js"></script>
-  <!-- Config -->
+<script src="../../frontend/global/js/Component.js"></script>
+<script src="../../frontend/global/js/Plugin.js"></script>
+<script src="../../frontend/global/js/Base.js"></script>
+<script src="../../frontend/global/js/Config.js"></script>
+<script src="../../frontend/assets/js/Section/Menubar.js"></script>
+<script src="../../frontend/assets/js/Section/Sidebar.js"></script>
+<script src="../../frontend/assets/js/Section/PageAside.js"></script>
+<script src="../../frontend/assets/js/Plugin/menu.js"></script>
+<!-- Config -->
 <script src="../../frontend/global/js/config/colors.js"></script>
-  <script src="../../frontend/assets/js/config/tour.js"></script>
+<script src="../../frontend/assets/js/config/tour.js"></script>
 <script>
-  Config.set('assets', '../../frontend/assets');
-  </script>
-  <!-- Page -->
+    Config.set('assets', '../../frontend/assets');
+</script>
+<!-- Page -->
 <script src="../../frontend/assets/js/Site.js"></script>
-  <script src="../../frontend/global/js/Plugin/asscrollable.js"></script>
-  <script src="../../frontend/global/js/Plugin/slidepanel.js"></script>
-  <script src="../../frontend/global/js/Plugin/switchery.js"></script>
-  <script src="../../../frontend/global/js/Plugin/select2.js"></script>
-  <script src="../../../frontend/global/js/Plugin/multi-select.js"></script>
-  {{-- <script src="../../frontend/assets/examples/js/pages/faq.js"></script> --}}
+<script src="../../frontend/global/js/Plugin/asscrollable.js"></script>
+<script src="../../frontend/global/js/Plugin/slidepanel.js"></script>
+<script src="../../frontend/global/js/Plugin/switchery.js"></script>
+<script src="../../../frontend/global/js/Plugin/select2.js"></script>
+<script src="../../../frontend/global/js/Plugin/multi-select.js"></script>
+{{-- <script src="../../frontend/assets/examples/js/pages/faq.js"></script> --}}
 {{-- <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script> --}}
 <script>
-$('#widget').draggable();
+    // $('#widget').draggable();
 </script>
 <!--  <script>
   (function(document, window, $) {
@@ -58,11 +60,14 @@ $('#widget').draggable();
     });
   })(document, window, jQuery);
   </script> -->
-  {{-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> --}}
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
-  <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=5d162f2d55a8b200110cde49&product=inline-share-buttons"></script>
-  {{-- <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=5f55fb3cd449570011d2b2dd&product=inline-share-buttons' async='async'></script> --}}
-  <script type="text/javascript">
+{{-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> --}}
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js">
+</script>
+<script type="text/javascript" src="{{ env('SHARETHIS_API') }}">
+</script>
+{{-- <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=5f55fb3cd449570011d2b2dd&product=inline-share-buttons' async='async'></script> --}}
+<script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,es,ht', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, multilanguagePage: true}, 'google_translate_element');
     }
@@ -119,18 +124,17 @@ $('#widget').draggable();
     $('.st-btn[data-network="print"]').hide();
     $('.st-btn[data-network="xing"]').hide();
   }, 500);
-  </script>
-  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.touchswipe/1.6.4/jquery.touchSwipe.min.js"></script>
-  <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.touchswipe/1.6.4/jquery.touchSwipe.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
 
-  <script src="{{asset('js/gmaps.js')}}"></script>
+<script src="{{asset('js/gmaps.js')}}"></script>
 
-  <script type="text/javascript">
-
-
-      $(document).ready(function () {
+<script type="text/javascript">
+    $(document).ready(function () {
           var selected_sort="";
           $("#sidebar").mCustomScrollbar({
               theme: "minimal"
@@ -363,8 +367,8 @@ $('#widget').draggable();
   // Example Multi-Select
   // --------------------
 
-  </script>
- <script>
+</script>
+<script>
     (function(document, window, $){
       'use strict';
 
@@ -373,4 +377,4 @@ $('#widget').draggable();
         Site.run();
       });
     })(document, window, jQuery);
-  </script>
+</script>

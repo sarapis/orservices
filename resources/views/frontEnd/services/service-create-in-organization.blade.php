@@ -95,13 +95,14 @@ Service Create
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Status(Verified): </label>
-                                        <select class="form-control selectpicker" data-live-search="true" id="service_status"
+                                        {{-- <select class="form-control selectpicker" data-live-search="true" id="service_status"
                                             name="service_status" data-size="5" >
                                             <option value="">Select status</option>
                                             @foreach($service_status_list as $key => $service_status)
                                             <option value="{{$service_status}}">{{$service_status}}</option>
                                             @endforeach
-                                        </select>
+                                        </select> --}}
+                                        {!! Form::select('service_status',$service_status_list,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'service_status','placeholder' => 'Select status']) !!}
                                     </div>
                                 </div>
                                 {{-- <div class="col-md-4">
@@ -150,7 +151,7 @@ Service Create
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Service Fees: </label>
+                                            <label>Fees: </label>
                                             <div class="help-tip">
                                                 <div><p>Details of any charges for service users to access this service.</p></div>
                                             </div>
@@ -159,19 +160,32 @@ Service Create
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Service Program: </label>
-                                            <input class="form-control selectpicker" type="text" id="service_program" name="service_program" value="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Service Accrediations: </label>
+                                            <label>Accrediations: </label>
                                             <div class="help-tip">
                                                 <div><p>Details of any accreditations. Accreditation is the formal evaluation of an organization or program against best practice standards set by an accrediting organization.</p></div>
                                             </div>
                                             <input class="form-control selectpicker" type="text" id="service_accrediations" name="service_accrediations" value="">
                                         </div>
                                     </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Service Grouping:</label>
+                                            <div class="help-tip">
+                                                <div><p>Some organizations organize their services into service groupings (e.g., Senior Services).. A service grouping brings together a number of related services.</p></div>
+                                            </div>
+                                            <input class="form-control selectpicker" type="text" id="service_program" name="service_program" value="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Service Grouping Description: </label>
+                                            {{-- <div class="help-tip">
+                                                <div><p></p></div>
+                                            </div> --}}
+                                            <textarea name="program_alternate_name" id="program_alternate_name" cols="30" rows="10" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+
 
                                     <!-- <div class="col-md-4">
                                         <div class="form-group">
@@ -182,7 +196,7 @@ Service Create
                                         </div>
                                     </div> -->
 
-                                    <div class="col-md-4">
+                                    {{-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Service Schedule: </label>
                                             <select class="form-control selectpicker" multiple data-live-search="true" id="service_schedules"
@@ -192,7 +206,7 @@ Service Create
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> --}}
 
                                     {{-- <div class="col-md-4">
                                         <div class="form-group">
@@ -229,7 +243,7 @@ Service Create
                                             </select>
                                         </div>
                                     </div> --}}
-                                    <div class="col-md-4">
+                                    {{-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Meta Data: </label>
                                             <input class="form-control selectpicker" type="text" id="service_metadata" name="service_metadata" value="">
@@ -240,7 +254,7 @@ Service Create
                                             <label>Airs Taxonomy X: </label>
                                             <input class="form-control selectpicker" type="text" id="service_airs_taxonomy_x" name="service_airs_taxonomy_x" value="">
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 {{-- taxonomy section --}}
                             </div>
@@ -262,8 +276,8 @@ Service Create
                                         <div class="">
                                             <table class="table table_border_none" id="ServiceCategoryTable">
                                                 <thead>
-                                                    <th>Detail Type</th>
-                                                    <th>Detail Term</th>
+                                                    <th>Type</th>
+                                                    <th>Term</th>
                                                     <th style="width:60px">&nbsp;</th>
                                                 </thead>
                                                 <tbody>
@@ -312,8 +326,8 @@ Service Create
                                         <div class="">
                                             <table class="table table_border_none" id="ServiceEligibilityTable">
                                                 <thead>
-                                                    <th>Detail Type</th>
-                                                    <th>Detail Term</th>
+                                                    <th>Type</th>
+                                                    <th>Term</th>
                                                     <th style="width:60px">&nbsp;</th>
                                                 </thead>
                                                 <tbody>
@@ -580,6 +594,192 @@ Service Create
                             <input type="hidden" name="location_holiday_open_ats" id="location_holiday_open_ats">
                             <input type="hidden" name="location_holiday_close_ats" id="location_holiday_close_ats">
                             <input type="hidden" name="location_holiday_closeds" id="location_holiday_closeds">
+                        </div>
+                    </div>
+                    <div class="card all_form_field">
+                        <div class="card-block">
+                            <h4 class="title_edit text-left mb-25 mt-10">
+                                Regular Schedule
+                            </h4>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="table-responsive">
+                                            <table class="table table_border_none">
+                                                {{-- <thead>
+                                                    <th colspan="4" class="text-center">Regular Schedule</th>
+                                                </thead> --}}
+                                                <thead>
+                                                    <th>Weekday</th>
+                                                    <th>Opens</th>
+                                                    <th>Closes</th>
+                                                    <th style="width:150px;">Closed All Day</th>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            Monday
+                                                            <input type="hidden" name="byday[]" value="monday">
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                        </td>
+                                                        <td style="vertical-align: middle">
+                                                            <input type="checkbox" name="schedule_closed[]" id="" value="1" >
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Tuesday
+                                                            <input type="hidden" name="byday[]" value="tuesday">
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                        </td>
+                                                        <td style="vertical-align: middle">
+                                                            <input type="checkbox" name="schedule_closed[]" id="" value="2" >
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Wednesday
+                                                            <input type="hidden" name="byday[]" value="wednesday">
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                        </td>
+                                                        <td style="vertical-align: middle">
+                                                            <input type="checkbox" name="schedule_closed[]" id="" value="3" >
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Thursday
+                                                            <input type="hidden" name="byday[]" value="thursday">
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                        </td>
+                                                        <td style="vertical-align: middle">
+                                                            <input type="checkbox" name="schedule_closed[]" id="" value="4" >
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Friday
+                                                            <input type="hidden" name="byday[]" value="friday">
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                        </td>
+                                                        <td style="vertical-align: middle">
+                                                            <input type="checkbox" name="schedule_closed[]" id="" value="5" >
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Saturday
+                                                            <input type="hidden" name="byday[]" value="saturday">
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                        </td>
+                                                        <td style="vertical-align: middle">
+                                                            <input type="checkbox" name="schedule_closed[]" id="" value="6" >
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Sunday
+                                                            <input type="hidden" name="byday[]" value="sunday">
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                        </td>
+                                                        <td>
+                                                            {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                        </td>
+
+                                                        <td style="vertical-align: middle">
+                                                            <input type="checkbox" name="schedule_closed[]" id="" value="7" >
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr/>
+                            <h4 class="title_edit text-left mb-25 mt-10">
+                                Holiday Schedule
+                                <div class="d-inline float-right" >
+                                    <a href="javascript:void(0)" id="addTr" class="plus_delteicon bg-primary-color">
+                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                    </a>
+                                </div>
+                            </h4>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="table-responsive">
+                                            <table class="table table_border_none" id="myTable">
+                                                <thead>
+                                                    <th>Start</th>
+                                                    <th>End</th>
+                                                    <th>Opens</th>
+                                                    <th>Closes</th>
+                                                    <th>Closed All Day</th>
+                                                    <th style="width:60px">&nbsp;</th>
+                                                </thead>
+                                                <tbody>
+
+                                                    <tr>
+                                                        <td>
+                                                            <input type="date" name="holiday_start_date[]" id="" class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <input type="date" name="holiday_end_date[]" id="" class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="holiday_open_at[]" id="" class="form-control timePicker">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="holiday_close_at[]" id="" class="form-control timePicker">
+                                                        </td>
+                                                        <td>
+                                                            <input type="checkbox" name="holiday_closed[]" id="" value="1">
+                                                        </td>
+                                                        <td style="vertical-align: middle">
+                                                            <a href="#" class="plus_delteicon btn-button">
+                                                                <img src="/frontend/assets/images/delete.png" alt="" title="">
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    <tr></tr>
+                                                    {{-- <tr id="addTr">
+                                                        <td colspan="6" class="text-center">
+                                                            <a href="javascript:void(0)" id="addData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
+                                                        </td>
+                                                    </tr> --}}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -592,7 +792,7 @@ Service Create
                 {{-- </form> --}}
             </div>
             {{-- location Modal --}}
-            <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="locationmodal" >
+            <div class="modal fade " tabindex="-1" role="dialog" aria-hidden="true" id="locationmodal" >
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <form>
@@ -754,7 +954,7 @@ Service Create
                                                             <th>Weekday</th>
                                                             <th>Opens</th>
                                                             <th>Closes</th>
-                                                            <th>Closed</th>
+                                                            <th>Closed All Day</th>
                                                         </thead>
                                                         <tbody>
                                                             <tr>
@@ -763,10 +963,10 @@ Service Create
                                                                     <input type="hidden" name="byday" value="monday" >
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('opens_at', null, ['class' => 'form-control','id' => 'opens_at_location_monday']) !!}
+                                                                    {!! Form::text('opens_at', null, ['class' => 'form-control timePicker','id' => 'opens_at_location_monday']) !!}
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('closes_at', null, ['class' => 'form-control','id' => 'closes_at_location_monday']) !!}
+                                                                    {!! Form::text('closes_at', null, ['class' => 'form-control timePicker','id' => 'closes_at_location_monday']) !!}
                                                                 </td>
                                                                 <td style="vertical-align: middle">
                                                                     <input type="checkbox" name="schedule_closed_location_monday" value="1" id="schedule_closed_location_monday" >
@@ -778,10 +978,10 @@ Service Create
                                                                     <input type="hidden" name="byday" value="tuesday" >
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('opens_at', null, ['class' => 'form-control' ,'id' => 'opens_at_location_tuesday']) !!}
+                                                                    {!! Form::text('opens_at', null, ['class' => 'form-control timePicker' ,'id' => 'opens_at_location_tuesday']) !!}
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('closes_at', null, ['class' => 'form-control','id' => 'closes_at_location_tuesday']) !!}
+                                                                    {!! Form::text('closes_at', null, ['class' => 'form-control timePicker','id' => 'closes_at_location_tuesday']) !!}
                                                                 </td>
                                                                 <td style="vertical-align: middle">
                                                                     <input type="checkbox" name="schedule_closed_location_tuesday" value="2" id="schedule_closed_location_tuesday">
@@ -792,10 +992,10 @@ Service Create
                                                                     <input type="hidden" name="byday" value="wednesday">
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('opens_at', null, ['class' => 'form-control','id' => 'opens_at_location_wednesday']) !!}
+                                                                    {!! Form::text('opens_at', null, ['class' => 'form-control timePicker','id' => 'opens_at_location_wednesday']) !!}
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('closes_at', null, ['class' => 'form-control','id' => 'closes_at_location_wednesday']) !!}
+                                                                    {!! Form::text('closes_at', null, ['class' => 'form-control timePicker','id' => 'closes_at_location_wednesday']) !!}
                                                                 </td>
                                                                 <td style="vertical-align: middle">
                                                                     <input type="checkbox" name="schedule_closed_location_wednesday" value="3" id="schedule_closed_location_wednesday" >
@@ -806,10 +1006,10 @@ Service Create
                                                                     <input type="hidden" name="byday" value="thursday">
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('opens_at', null, ['class' => 'form-control','id' => 'opens_at_location_thursday']) !!}
+                                                                    {!! Form::text('opens_at', null, ['class' => 'form-control timePicker','id' => 'opens_at_location_thursday']) !!}
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('closes_at',null, ['class' => 'form-control','id' => 'closes_at_location_thursday']) !!}
+                                                                    {!! Form::text('closes_at',null, ['class' => 'form-control timePicker','id' => 'closes_at_location_thursday']) !!}
                                                                 </td>
                                                                 <td style="vertical-align: middle">
                                                                     <input type="checkbox" name="schedule_closed_location_thursday" value="4" id="schedule_closed_location_thursday">
@@ -820,10 +1020,10 @@ Service Create
                                                                     <input type="hidden" name="byday" value="friday">
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('opens_at',null, ['class' => 'form-control','id' => 'opens_at_location_friday']) !!}
+                                                                    {!! Form::text('opens_at',null, ['class' => 'form-control timePicker','id' => 'opens_at_location_friday']) !!}
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('closes_at', null, ['class' => 'form-control','id' => 'closes_at_location_friday']) !!}
+                                                                    {!! Form::text('closes_at', null, ['class' => 'form-control timePicker','id' => 'closes_at_location_friday']) !!}
                                                                 </td>
                                                                 <td style="vertical-align: middle">
                                                                     <input type="checkbox" name="schedule_closed_location_friday" id="schedule_closed_location_friday" value="5" >
@@ -834,10 +1034,10 @@ Service Create
                                                                     <input type="hidden" name="byday" value="saturday">
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('opens_at', null, ['class' => 'form-control','id' => 'opens_at_location_saturday']) !!}
+                                                                    {!! Form::text('opens_at', null, ['class' => 'form-control timePicker','id' => 'opens_at_location_saturday']) !!}
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('closes_at', null, ['class' => 'form-control','id' => 'closes_at_location_saturday']) !!}
+                                                                    {!! Form::text('closes_at', null, ['class' => 'form-control timePicker','id' => 'closes_at_location_saturday']) !!}
                                                                 </td>
                                                                 <td style="vertical-align: middle">
                                                                     <input type="checkbox" name="schedule_closed_location_saturday" id="schedule_closed_location_saturday" value="6" >
@@ -848,10 +1048,10 @@ Service Create
                                                                     <input type="hidden" name="byday" value="sunday">
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('opens_at',  null, ['class' => 'form-control','id' => 'opens_at_location_sunday']) !!}
+                                                                    {!! Form::text('opens_at',  null, ['class' => 'form-control timePicker','id' => 'opens_at_location_sunday']) !!}
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('closes_at', null, ['class' => 'form-control','id' => 'closes_at_location_sunday']) !!}
+                                                                    {!! Form::text('closes_at', null, ['class' => 'form-control timePicker','id' => 'closes_at_location_sunday']) !!}
                                                                 </td>
 
                                                                 <td style="vertical-align: middle">
@@ -876,7 +1076,7 @@ Service Create
                                                             <th>End</th>
                                                             <th>Opens</th>
                                                             <th>Closes</th>
-                                                            <th>Closed</th>
+                                                            <th>Closed All Day</th>
                                                             <th>&nbsp;</th>
                                                         </thead>
                                                         <tbody id="scheduleHolidayLocation">
@@ -888,10 +1088,10 @@ Service Create
                                                                     <input type="date" name="holiday_end_date" id="holiday_end_date_location_0" class="form-control">
                                                                 </td>
                                                                 <td>
-                                                                    <input type="time" name="holiday_open_at" id="holiday_open_at_location_0" class="form-control">
+                                                                    <input type="text" name="holiday_open_at" id="holiday_open_at_location_0" class="form-control timePicker">
                                                                 </td>
                                                                 <td>
-                                                                    <input type="time" name="holiday_close_at" id="holiday_close_at_location_0" class="form-control">
+                                                                    <input type="text" name="holiday_close_at" id="holiday_close_at_location_0" class="form-control timePicker">
                                                                 </td>
                                                                 <td>
                                                                     <input type="checkbox" name="holiday_closed" id="holiday_closed_location_0" value="1">
@@ -926,7 +1126,7 @@ Service Create
             </div>
             {{-- End here --}}
             {{-- contact modal --}}
-            <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="contactmodal" >
+            <div class="modal fade " tabindex="-1" role="dialog" aria-hidden="true" id="contactmodal" >
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <form>
@@ -1076,7 +1276,7 @@ Service Create
             </div>
             {{-- End here --}}
             {{-- detail term modal --}}
-            <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="create_new_term" >
+            <div class="modal fade " tabindex="-1" role="dialog" aria-hidden="true" id="create_new_term" >
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <form>
@@ -1107,7 +1307,7 @@ Service Create
             </div>
             {{-- End here --}}
             {{-- service category term modal --}}
-            <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="create_new_service_category_term" >
+            <div class="modal fade " tabindex="-1" role="dialog" aria-hidden="true" id="create_new_service_category_term" >
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <form>
@@ -1120,7 +1320,7 @@ Service Create
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Service Category Term</label>
+                                            {{-- <label>Service Category Term</label> --}}
                                             <input type="text" class="form-control" placeholder="Service Category Term" id="service_category_term_p">
                                             <input type="hidden" name="service_category_term_index_p" value="" id="service_category_term_index_p">
                                             <span id="service_category_term_error" style="display: none;color:red" >Service Category Term is required!</span>
@@ -1138,7 +1338,7 @@ Service Create
             </div>
             {{-- End here --}}
             {{-- service eligibility term modal --}}
-            <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="create_new_service_eligibility_term" >
+            <div class="modal fade " tabindex="-1" role="dialog" aria-hidden="true" id="create_new_service_eligibility_term" >
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <form>
@@ -1172,8 +1372,9 @@ Service Create
     </div>
 </div>
 
-
+<script src="/js/jquery.timepicker.min.js"></script>
 <script>
+    $('.timePicker').timepicker({ 'scrollDefault': 'now' });
     $('#back-service-btn').click(function() {
         history.go(-1);
         return false;
@@ -1319,22 +1520,48 @@ Service Create
     })
     $('#serviceCategoryTermSubmit').click(function () {
 
+        // let service_category_term = $('#service_category_term_p').val()
+        // let index = $('#service_category_term_index_p').val()
+        // if($('#service_category_term_p').val() == ''){
+        //         $('#service_category_term_error').show()
+        //     setTimeout(() => {
+        //         $('#service_category_term_error').hide()
+        //     }, 5000);
+        //     return false
+        // }
+        // $('#service_category_term_type_'+index).val('new')
+        // $('#service_category_term_'+index).append('<option value="'+service_category_term+'">'+service_category_term+'</option>');
+        // $('#service_category_term_'+index).val(service_category_term)
+        // $('#service_category_term_'+index).selectpicker('refresh')
+        // $('#create_new_service_category_term').modal('hide')
+        // $('#service_category_term_p').val('')
+        // $('#service_category_term_index_p').val('')
         let service_category_term = $('#service_category_term_p').val()
         let index = $('#service_category_term_index_p').val()
-        if($('#service_category_term_p').val() == ''){
-                $('#service_category_term_error').show()
-            setTimeout(() => {
-                $('#service_category_term_error').hide()
-            }, 5000);
-            return false
-        }
-        $('#service_category_term_type_'+index).val('new')
-        $('#service_category_term_'+index).append('<option value="'+service_category_term+'">'+service_category_term+'</option>');
-        $('#service_category_term_'+index).val(service_category_term)
-        $('#service_category_term_'+index).selectpicker('refresh')
-        $('#create_new_service_category_term').modal('hide')
-        $('#service_category_term_p').val('')
-        $('#service_category_term_index_p').val('')
+        let category_type_recordid = $('#service_category_type_'+index).val()
+        let _token = "{{ csrf_token() }}"
+        let service_recordid = ""
+        let organization_recordid = ""
+        $.ajax({
+            url : '{{ route("saveTaxonomyTerm") }}',
+            method : 'post',
+            data : {category_type_recordid,service_category_term,_token,service_recordid,organization_recordid},
+            success: function (response) {
+                $('#loading').hide()
+                alert('Thank you for submitting a new term. It is being evaluated by the system administrators. We will let you know if it becomes available.');
+                $('#service_category_type_'+index).val('')
+                $('#service_category_term_'+index).empty()
+                $('#service_category_term_'+index).selectpicker('refresh')
+                $('#service_category_type_'+index).selectpicker('refresh')
+                $('#create_new_service_category_term').modal('hide')
+                $('#service_category_term_p').val('')
+            },
+            error : function (error) {
+                $('#loading').hide()
+                $('#create_new_service_category_term').modal('hide')
+                console.log(error)
+            }
+        })
     })
     $('.serviceCategoryTermCloseButton').click(function () {
 
@@ -1439,6 +1666,12 @@ Service Create
         $('.selectpicker').selectpicker();
         se++;
     })
+    let hs = 2
+    $('#addTr').click(function(){
+        $('#myTable tr:last').before('<tr><td><input class="form-control" type="date" name="holiday_start_date[]" id=""></td><td><input class="form-control" type="date" name="holiday_end_date[]" id=""></td><td><input class="form-control timePicker" type="text" name="holiday_open_at[]" id=""></td><td><input class="form-control timePicker" type="text" name="holiday_close_at[]" id=""></td><td><input  type="checkbox" name="holiday_closed[]" id="" value="'+hs+'" ></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        hs++;
+        $('.timePicker').timepicker({ 'scrollDefault': 'now' });
+    });
 
     let phone_language_data = []
     $(document).on('change','div > .phone_language',function () {
@@ -1469,8 +1702,9 @@ Service Create
     })
     let ls = 1;
     $('#addScheduleHolidayLocation').click(function(){
-        $('#scheduleHolidayLocation').append('<tr><td> <input type="date" name="holiday_start_date" id="holiday_start_date_location_'+ls+'"></td><td> <input type="date" name="holiday_end_date" id="holiday_end_date_location_'+ls+'"></td><td> <input type="time" name="holiday_open_at" id="holiday_open_at_location_'+ls+'"></td><td> <input type="time" name="holiday_close_at" id="holiday_close_at_location_'+ls+'"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_'+ls+'" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#scheduleHolidayLocation').append('<tr><td> <input type="date" name="holiday_start_date" id="holiday_start_date_location_'+ls+'"></td><td> <input type="date" name="holiday_end_date" id="holiday_end_date_location_'+ls+'"></td><td> <input type="text" class="timePicker" name="holiday_open_at" id="holiday_open_at_location_'+ls+'"></td><td> <input type="text" class="timePicker" name="holiday_close_at" id="holiday_close_at_location_'+ls+'"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_'+ls+'" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         ls++;
+        $('.timePicker').timepicker({ 'scrollDefault': 'now' });
     });
     $(document).on('click', '.removePhoneData', function(){
         var $row = jQuery(this).closest('tr');
@@ -2303,7 +2537,8 @@ Service Create
         $('#location_holiday_closeds').val(JSON.stringify(location_holiday_closeds))
 
         $('#scheduleHolidayLocation').empty()
-        $('#scheduleHolidayLocation').append('<tr><td> <input type="date" name="holiday_start_date" id="holiday_start_date_location_0"></td><td> <input type="date" name="holiday_end_date" id="holiday_end_date_location_0"></td><td> <input type="time" name="holiday_open_at" id="holiday_open_at_location_0"></td><td> <input type="time" name="holiday_close_at" id="holiday_close_at_location_0"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_0" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#scheduleHolidayLocation').append('<tr><td> <input type="date" name="holiday_start_date" id="holiday_start_date_location_0"></td><td> <input type="date" name="holiday_end_date" id="holiday_end_date_location_0"></td><td> <input type="text" class="timePicker" name="holiday_open_at" id="holiday_open_at_location_0"></td><td> <input type="text" class="timePicker" name="holiday_close_at" id="holiday_close_at_location_0"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_0" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('.timePicker').timepicker({ 'scrollDefault': 'now' });
 
         $('#opens_at_location_monday').val('')
         $('#closes_at_location_monday').val('')
@@ -2555,7 +2790,8 @@ Service Create
         $('.selectpicker').selectpicker('refresh');
 
         $('#scheduleHolidayLocation').empty()
-        $('#scheduleHolidayLocation').append('<tr><td> <input type="date" name="holiday_start_date" id="holiday_start_date_location_0"></td><td> <input type="date" name="holiday_end_date" id="holiday_end_date_location_0"></td><td> <input type="time" name="holiday_open_at" id="holiday_open_at_location_0"></td><td> <input type="time" name="holiday_close_at" id="holiday_close_at_location_0"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_0" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#scheduleHolidayLocation').append('<tr><td> <input type="date" name="holiday_start_date" id="holiday_start_date_location_0"></td><td> <input type="date" name="holiday_end_date" id="holiday_end_date_location_0"></td><td> <input type="text" class="timePicker" name="holiday_open_at" id="holiday_open_at_location_0"></td><td> <input type="text" class="timePicker" name="holiday_close_at" id="holiday_close_at_location_0"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_0" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('.timePicker').timepicker({ 'scrollDefault': 'now' });
 
         // $('.locationRadio').val()
         let radioValue = $("#selectedLocationRadio_"+id).val();
@@ -2740,7 +2976,8 @@ Service Create
         }
 
         for (let index = 1; index < location_holiday_start_dates.length; index++) {
-            $('#scheduleHolidayLocation').append('<tr><td> <input type="date" name="holiday_start_date" id="holiday_start_date_location_'+index+'" value="'+location_holiday_start_dates[index]+'"></td><td> <input type="date" name="holiday_end_date" id="holiday_end_date_location_'+index+'" value="'+location_holiday_end_dates[index]+'"></td><td> <input type="time" name="holiday_open_at" id="holiday_open_at_location_'+index+'" value="'+location_holiday_open_ats[index]+'"></td><td> <input type="time" name="holiday_close_at" id="holiday_close_at_location_'+index+'" value="'+location_holiday_close_ats[index]+'"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_'+index+'" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+            $('#scheduleHolidayLocation').append('<tr><td> <input type="date" name="holiday_start_date" id="holiday_start_date_location_'+index+'" value="'+location_holiday_start_dates[index]+'"></td><td> <input type="date" name="holiday_end_date" id="holiday_end_date_location_'+index+'" value="'+location_holiday_end_dates[index]+'"></td><td> <input type="text" class="timePicker" name="holiday_open_at" id="holiday_open_at_location_'+index+'" value="'+location_holiday_open_ats[index]+'"></td><td> <input type="text" class="timePicker" name="holiday_close_at" id="holiday_close_at_location_'+index+'" value="'+location_holiday_close_ats[index]+'"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_'+index+'" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+            $('.timePicker').timepicker({ 'scrollDefault': 'now' });
 
             if(location_holiday_closeds[index] == 1){
                 $('#holiday_closed_location_'+index).attr('checked',true)

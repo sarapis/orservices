@@ -19,7 +19,7 @@ class TimeZoneMiddleware
             // \Config::set('app.timezone', env('TIME_ZONE'));
             date_default_timezone_set(env('TIME_ZONE'));
         } else {
-            date_default_timezone_set(env('UTC'));
+            date_default_timezone_set('UTC');
         }
         return $next($request);
     }

@@ -5,7 +5,7 @@ Location Create
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
 <style type="text/css">
-    button[data-id="facility_organization"], button[data-id="facility_schedules"], button[data-id="facility_details"], button[data-id="facility_service"], button[data-id="facility_address_city"] ,button[data-id="facility_address_state"], button[data-id="phone_type"], button[data-id="phone_language"]  {
+    button[data-id="location_organization"], button[data-id="facility_schedules"], button[data-id="facility_details"], button[data-id="location_services"], button[data-id="facility_address_city"] ,button[data-id="facility_address_state"], button[data-id="phone_type"], button[data-id="phone_language"]  {
         height: 100%;
         border: 1px solid #ddd;
     }
@@ -36,7 +36,7 @@ Location Create
                                         <div class="help-tip">
                                             <div><p>The name of the location (e.g., Northeast Center, Engine 18)</p></div>
                                         </div>
-                                        <input class="form-control selectpicker" type="text" id="location_name"  name="location_name" value="">
+                                        {!! Form::text('location_name',null,['class' => 'form-control','id' => 'location_name']) !!}
                                         @error('location_name')
                                             <span class="error-message"><strong>{{ $message }}</strong></span>
                                         @enderror
@@ -45,13 +45,14 @@ Location Create
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Organization Name: </label>
-                                        <select class="form-control selectpicker" data-live-search="true" id="facility_organization"
-                                            name="facility_organization" data-size="5">
+                                        {{-- <select class="form-control selectpicker" data-live-search="true" id="location_organization"
+                                            name="location_organization" data-size="5">
                                             @foreach($organization_name_list as $key => $org_name)
                                             <option value="{{$org_name}}">{{$org_name}}</option>
                                             @endforeach
-                                        </select>
-                                        @error('facility_organization')
+                                        </select> --}}
+                                        {!! Form::select('location_organization',$organization_name_list,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'location_organization','placeholder' => 'select organization']) !!}
+                                        @error('location_organization')
                                             <span class="error-message"><strong>{{ $message }}</strong></span>
                                         @enderror
                                     </div>
@@ -62,8 +63,7 @@ Location Create
                                         <div class="help-tip">
                                             <div><p>An alternative name for the location</p></div>
                                         </div>
-                                        <input class="form-control selectpicker" type="text" id="location_alternate_name"
-                                            name="location_alternate_name" value="">
+                                        {!! Form::text('location_alternate_name',null,['class' => 'form-control','id' => 'location_alternate_name']) !!}
                                     </div>
                                 </div>
 
@@ -73,8 +73,7 @@ Location Create
                                         <div class="help-tip">
                                             <div><p>A description of the access to public or private transportation to and from the location.</p></div>
                                         </div>
-                                        <input class="form-control selectpicker" type="text" id="location_transporation"
-                                            name="location_transporation" value="">
+                                        {!! Form::text('location_transportation',null,['class' => 'form-control','id' => 'location_transportation']) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -83,12 +82,13 @@ Location Create
                                         <div class="help-tip">
                                             <div><p>Link to any services provided at the facility.</p></div>
                                         </div>
-                                        <select class="form-control selectpicker" multiple data-live-search="true" id="facility_service"
-                                            name="facility_service[]" data-size="8">
+                                        {{-- <select class="form-control selectpicker" multiple data-live-search="true" id="location_services"
+                                            name="location_services[]" data-size="8">
                                             @foreach($service_info_list as $key => $service_info)
                                             <option value="{{$service_info->service_recordid}}">{{$service_info->service_name}}</option>
                                             @endforeach
-                                        </select>
+                                        </select> --}}
+                                        {!! Form::select('location_services[]',$service_info_list,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'location_services','multiple' => 'true']) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -97,7 +97,7 @@ Location Create
                                         <div class="help-tip">
                                             <div><p>A description of this location.</p></div>
                                         </div>
-                                        <textarea id="location_description" name="location_description" class=" form-control selectpicker"></textarea>
+                                        {!! Form::textarea('location_description',null,['class' => 'form-control']) !!}
                                     </div>
                                 </div>
                                 {{-- <div class="col-md-4">
@@ -115,36 +115,39 @@ Location Create
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Street Address: </label>
-                                        <input class="form-control selectpicker" type="text" id="facility_street_address"
-                                            name="facility_street_address" value="">
+                                        {!! Form::text('facility_street_address',null,['class' => 'form-control','id' => 'facility_street_address']) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>City: </label>
-                                        <select class="form-control selectpicker" data-live-search="true" id="facility_address_city"
+                                        {{-- <select class="form-control selectpicker" data-live-search="true" id="facility_address_city"
                                             name="facility_address_city", data-size="5">
+                                            <option value="">Select City</option>
                                             @foreach($address_city_list as $key => $address_city)
                                             <option value="{{$address_city}}">{{$address_city}}</option>
                                             @endforeach
-                                        </select>
+                                        </select> --}}
+                                        {!! Form::select('facility_address_city',$address_city_list,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'facility_address_city','placeholder' => 'select city']) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>State: </label>
-                                        <select class="form-control selectpicker" data-live-search="true" id="facility_address_state"
+                                        {{-- <select class="form-control selectpicker" data-live-search="true" id="facility_address_state"
                                             name="facility_address_state", data-size="5">
+                                            <option value="">Select State</option>
                                             @foreach($address_states_list as $key => $address_state)
                                             <option value="{{$address_state}}">{{$address_state}}</option>
                                             @endforeach
-                                        </select>
+                                        </select> --}}
+                                        {!! Form::select('facility_address_state',$address_states_list,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'facility_address_state','placeholder' => 'select state']) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Zip Code: </label>
-                                        <input class="form-control selectpicker" type="text" id="facility_zip_code" name="facility_zip_code" value="">
+                                        {!! Form::text('facility_zip_code',null,['class' => 'form-control','id' => 'facility_zip_code']) !!}
                                     </div>
                                 </div>
                                 {{-- <div class="col-md-12">
@@ -369,10 +372,10 @@ Location Create
         return false;
     });
     $(document).ready(function() {
-        $('select#facility_organization').val([]).change();
+        // $('select#location_organization').val([]).change();
         $('select#facility_schedules').val([]).change();
-        $('select#facility_address_city').val([]).change();
-        $('select#facility_address_state').val([]).change();
+        // $('select#facility_address_city').val([]).change();
+        // $('select#facility_address_state').val([]).change();
     });
 
     $(document).on("change",'div > .detail_type', function(){
@@ -454,7 +457,7 @@ Location Create
 
     let d = 1
     $('#addDetailTr').click(function(){
-        $('#DetailTable tr:last').before('<tr><td><select name="detail_type[]" id="detail_type_'+d+'" class="form-control selectpicker detail_type"><option value="">Select Detail Type</option> @foreach ($detail_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td class="create_btn"> <select name="detail_term[]" id="detail_term_'+d+'" class="form-control selectpicker detail_term"><option value="">Select Detail term</option> </select><input type="hidden" name="term_type[]" id="term_type_'+d+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#DetailTable').append('<tr><td><select name="detail_type[]" id="detail_type_'+d+'" class="form-control selectpicker detail_type"><option value="">Select Detail Type</option> @foreach ($detail_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td class="create_btn"> <select name="detail_term[]" id="detail_term_'+d+'" class="form-control selectpicker detail_term"><option value="">Select Detail term</option> </select><input type="hidden" name="term_type[]" id="term_type_'+d+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         d++;
     })

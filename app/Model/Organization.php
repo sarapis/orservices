@@ -3,13 +3,22 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
-class Organization extends Model
+class Organization extends Model implements ContractsAuditable
 {
     protected $primaryKey = 'organization_recordid';
 
+    use Auditable;
+    protected $auditEvents = [
+        'updated',
+        'deleted',
+        'created',
+    ];
+
     protected $fillable = [
-        'organization_recordid', 'organization_name', 'organization_alternate_name', 'organization_logo_x', 'organization_x_uid', 'organization_description', 'organization_email', 'organization_forms_x_filename', 'organization_forms_x_url', 'organization_url', 'organization_status_x', 'organization_status_sort', 'organization_legal_status', 'organization_tax_status', 'organization_tax_id', 'organization_year_incorporated', 'organization_services', 'organization_phones', 'organization_locations', 'organization_contact', 'organization_details', 'organization_tag', 'organization_airs_taxonomy_x', 'flag', 'organization_website_rating',
+        'organization_recordid', 'organization_name', 'organization_alternate_name', 'organization_logo_x', 'organization_x_uid', 'organization_description', 'organization_email', 'organization_forms_x_filename', 'organization_forms_x_url', 'organization_url', 'organization_status_x', 'organization_status_sort', 'organization_legal_status', 'organization_tax_status', 'organization_tax_id', 'organization_year_incorporated', 'organization_services', 'organization_phones', 'organization_locations', 'organization_contact', 'organization_details', 'organization_tag', 'organization_airs_taxonomy_x', 'flag', 'organization_website_rating', 'organization_code', 'facebook_url', 'twitter_url', 'instagram_url'
     ];
 
     public function services()
@@ -51,5 +60,9 @@ class Organization extends Model
         $this->primaryKey = 'organization_recordid';
 
         return $this->belongsToMany('App\Model\Program', 'organization_programs', 'organization_recordid', 'program_recordid');
+    }
+    public function SessionData()
+    {
+        return $this->hasMany('App\Model\SessionData', 'session_organization', 'organization_recordid');
     }
 }

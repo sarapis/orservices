@@ -3,14 +3,16 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
-class Phone extends Model
+class Phone extends Model implements ContractsAuditable
 {
-
+    use Auditable;
     protected $primaryKey = 'phone_recordid';
 
     protected $fillable = [
-        'phone_recordid', 'phone_number', 'phone_locations', 'phone_services', 'phone_organizations', 'phone_contacts', 'phone_extension', 'phone_type', 'phone_language', 'phone_description', 'phone_schedule', 'flag'
+        'phone_recordid', 'phone_number', 'phone_locations', 'phone_services', 'phone_organizations', 'phone_contacts', 'phone_extension', 'phone_type', 'phone_language', 'phone_description', 'phone_schedule', 'flag', 'main_priority'
     ];
 
     public function locations()

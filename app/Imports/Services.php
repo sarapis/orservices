@@ -17,8 +17,9 @@ class Services implements ToModel, WithHeadingRow
      */
     public function model(array $row)
     {
+
         $array = [
-            'service_recordid' => $row['id'],
+            'service_recordid' => $row['service_recordid'],
             'service_name' => $row['name'],
             'service_organization' => $row['organization_id'],
             'service_alternate_name' => $row['alternate_name'],
@@ -33,12 +34,14 @@ class Services implements ToModel, WithHeadingRow
             'service_accreditations' => $row['accreditations'],
             'service_licenses' => $row['licenses'],
         ];
-
         if ($row['organization_id']) {
-            $service_organization = new ServiceOrganization();
-            $service_organization->service_recordid = $row['id'];
-            $service_organization->organization_recordid = $row['organization_id'];
-            $service_organization->save();
+            $organization_recordids = explode(',', $row['organization_id']);
+            foreach ($organization_recordids as $key => $value) {
+                $service_organization = new ServiceOrganization();
+                $service_organization->service_recordid = $row['service_recordid'];
+                $service_organization->organization_recordid = $value;
+                $service_organization->save();
+            }
         }
 
         return new Service($array);

@@ -29,6 +29,7 @@ use App\Model\Source_data;
 use App\Model\Taxonomy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -195,7 +196,7 @@ class PagesController extends Controller
             $url_path = url('/datapackages?auth_key=' . $hsds_api_key->hsds_api_key);
             return view('backEnd.pages.export', compact('hsds_api_key', 'url_path', 'organization_tags'));
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in pagecontroller export : ' . $th);
         }
 
         // return view('backEnd.pages.export');
@@ -249,8 +250,8 @@ class PagesController extends Controller
                     'name' => $row->service_name,
                     'alternate_name' => $row->service_alternate_name,
                     'description' => $row->service_description,
-                    'url' => $row->service_url,
-                    'email' => $row->service_email,
+                    'url' => $row->service_url && strpos($row->service_url, '://') !== false ? trim($row->service_url) : ($row->service_url ? 'http://' . trim($row->service_url) : ''),
+                    'email' => trim($row->service_email),
                     'status' => $row->service_status == 'Verified' ? 'active' : 'inactive',
                     'interpretation_services' => '',
                     'application_process' => $row->service_application_process,
@@ -258,6 +259,7 @@ class PagesController extends Controller
                     'fees' => $row->service_fees,
                     'accreditations' => $row->service_accreditations,
                     'licenses' => $row->service_licenses,
+                    // 'service_recordid' => $row->service_recordid,
                     // 'taxonomy_ids' => $row->service_taxonomy,
                 ];
                 fputcsv($file_service, $serviceArray);
@@ -290,6 +292,7 @@ class PagesController extends Controller
                 'transportation' => $row->location_transportation,
                 'latitude' => $row->location_latitude,
                 'longitude' => $row->location_longitude,
+                // 'location_recordid' => $row->location_recordid,
             ];
             // fputcsv($file_location, $row->toArray());
             fputcsv($file_location, $locationArray);
@@ -311,21 +314,22 @@ class PagesController extends Controller
 
         // fputcsv($file_organization, array('ID', 'id', 'name', 'alternate_name', 'organization_logo_x', 'organization_x_uid', 'description', 'email', 'organization_forms_x_filename', 'organization_forms_x_url', 'url', 'organization_status_x', 'organization_status_sort', 'legal_status', 'tax_status', 'tax_id', 'year_incorporated', 'organization_services', 'organization_phones', 'organization_locations', 'organization_contact', 'organization_details', 'organization_airs_taxonomy_x', 'flag'));
         foreach ($table_organization as $row) {
-            // if ($row->organization_description) {
-            $organizationArray = [
-                'id' => strval($row->id),
-                'name' => $row->organization_name,
-                'alternate_name' => $row->organization_alternate_name,
-                'description' => $row->organization_description,
-                'email' => $row->organization_email,
-                'url' => $row->organization_url,
-                'tax_status' => $row->organization_tax_status,
-                'tax_id' => $row->organization_tax_id,
-                'year_incorporated' => $row->organization_year_incorporated,
-                'legal_status' => $row->organization_legal_status,
-            ];
-            fputcsv($file_organization, $organizationArray);
-            // }
+            if ($row->organization_description) {
+                $organizationArray = [
+                    'id' => strval($row->id),
+                    'name' => $row->organization_name,
+                    'alternate_name' => $row->organization_alternate_name,
+                    'description' => $row->organization_description,
+                    'email' => trim($row->organization_email),
+                    'url' => $row->organization_url && strpos($row->organization_url, '://') !== false ? $row->organization_url : ($row->organization_url ? 'http://' . $row->organization_url : ''),
+                    'tax_status' => $row->organization_tax_status,
+                    'tax_id' => $row->organization_tax_id,
+                    'year_incorporated' => $row->organization_year_incorporated,
+                    'legal_status' => $row->organization_legal_status,
+                    // 'organization_recordid' => $row->organization_recordid,
+                ];
+                fputcsv($file_organization, $organizationArray);
+            }
             // fputcsv($file_organization, $row->toArray());
         }
         fclose($file_organization);
@@ -352,7 +356,8 @@ class PagesController extends Controller
                 'name' => $row->contact_name,
                 'title' => $row->contact_title,
                 'department' => $row->contact_department,
-                'email' => trim($row->contact_email),
+                'email' => ($row->contact_email && $row->contact_email[-1] == '.') ? substr_replace($row->contact_email, "", -1) :  trim($row->contact_email),
+                // 'contact_recordid' => $row->contact_recordid,
             ];
             fputcsv($file_contact, $locationArray);
             // fputcsv($file_contact, $row->toArray());
@@ -380,11 +385,12 @@ class PagesController extends Controller
                     'contact_id' => $row->phone_contacts,
                     'service_at_location_id' => '',
                     'number' => $row->phone_number,
-                    'extension' => $row->phone_extension,
+                    'extension' => is_numeric($row->phone_extension) ? $row->phone_extension : '',
                     'type' => $row->phone_type,
                     'language' => $row->phone_language,
                     'description' => $row->phone_description,
                     'department' => '',
+                    // 'phone_recordid' => $row->phone_recordid,
                 ];
                 fputcsv($file_phone, $phoneArray);
             }
@@ -415,6 +421,7 @@ class PagesController extends Controller
                     'state_province' => $row->address_state_province,
                     'postal_code' => $row->address_postal_code,
                     'country' => $row->address_country,
+                    // 'address_recordid' => $row->address_recordid,
                 ];
                 // fputcsv($file_address, $row->toArray());
                 fputcsv($file_address, $addressArray);
@@ -437,6 +444,7 @@ class PagesController extends Controller
                 'service_id' => $row->language_service,
                 'location_id' => $row->language_location,
                 'language' => $row->language,
+                // 'language_recordid' => $row->language_recordid,
             ];
             fputcsv($file_language, $langaugeArray);
             // fputcsv($file_language, $row->toArray());
@@ -454,13 +462,17 @@ class PagesController extends Controller
         foreach ($table_taxonomy as $row) {
             if ($row->taxonomy_name && $row->taxonomy_x_description) {
                 $taxonomyArray = [
-                    'id' => $row->id,
+                    'id' => $row->taxonomy_recordid,
                     'term' => $row->taxonomy_name,
                     'description' => $row->taxonomy_x_description,
-                    'parent_id' => $row->taxonomy_parent_recordid,
-                    'taxonomy' => '',
+                    'parent_id' => $row->taxonomy_parent_name,
+                    'taxonomy' => $row->taxonomy,
                     'language' => '',
-                    // 'vocabulary' => $row->taxonomy_vocabulary,
+                    // 'x_taxonomies' => $row->x_taxonomies,
+                    // 'taxonomy_x_notes' => $row->taxonomy_x_notes,
+                    // 'badge_color' => $row->badge_color,
+                    // 'taxonomy_recordid' => $row->taxonomy_recordid,
+                    // 'vocabulary' => $row->badge_color,
                 ];
                 fputcsv($file_taxonomy, $taxonomyArray);
                 // fputcsv($file_taxonomy, $row->toArray());
@@ -550,6 +562,7 @@ class PagesController extends Controller
                 'bymonthday' => $row->bymonthday,
                 'byyearday' => $row->byyearday,
                 'description' => $row->description,
+                // 'schedule_recordid' => $row->schedule_recordid,
             ];
 
             fputcsv($file_schedule, $scheduleArray);
@@ -590,13 +603,14 @@ class PagesController extends Controller
 
             $table_service = Service::all();
             $file_service = fopen('services.csv', 'w');
-            fputcsv($file_service, array('id', 'organization_id', 'program_id', 'name', 'alternate_name', 'description', 'url', 'email', 'status', 'interpretation_services', 'application_process', 'wait_time', 'fees', 'accreditations', 'licenses'));
+            fputcsv($file_service, array('id', 'service_recordid', 'organization_id', 'program_id', 'name', 'alternate_name', 'description', 'url', 'email', 'status', 'interpretation_services', 'application_process', 'wait_time', 'fees', 'accreditations', 'licenses'));
             // fputcsv($file_service, array('ID', 'id', 'name', 'alternate_name', 'organization_id', 'description', 'service_locations', 'url', 'program_id', 'email', 'status', 'service_taxonomy', 'application_process', 'wait_time', 'fees', 'accreditations', 'licenses', 'service_phones'));
             foreach ($table_service as $row) {
 
                 if ($row->service_organization) {
                     $serviceArray = [
                         'id' => $row->id,
+                        'service_recordid' => $row->service_recordid,
                         'organization_id' => $row->service_organization,
                         'program_id' => $row->service_program,
                         'name' => $row->service_name,
@@ -793,7 +807,7 @@ class PagesController extends Controller
             foreach ($table_taxonomy as $row) {
                 if ($row->taxonomy_name && $row->taxonomy_x_description) {
                     $taxonomyArray = [
-                        'id' => $row->id,
+                        'id' => $row->taxonomy_recordid,
                         'term' => $row->taxonomy_name,
                         'description' => $row->taxonomy_x_description,
                         'parent_id' => $row->taxonomy_parent_recordid,

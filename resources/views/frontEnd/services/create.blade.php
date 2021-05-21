@@ -5,13 +5,27 @@ Service Create
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
 <style type="text/css">
-    button[data-id="service_organization"], button[data-id="service_locations"], button[data-id="service_status"], button[data-id="service_taxonomies"], button[data-id="service_schedules"], button[data-id="service_contacts"], button[data-id="service_details"], button[data-id="service_address"], button[data-id="phone_type"], button[data-id="phone_language"],
-    button[data-id="facility_organization"], button[data-id="facility_schedules"], button[data-id="facility_details"], button[data-id="facility_service"], button[data-id="facility_address_city"] ,button[data-id="facility_address_state"],
-    button[data-id="contact_organization_name"],button[data-id="contact_service"] {
+    button[data-id="service_organization"],
+    button[data-id="service_locations"],
+    button[data-id="service_status"],
+    button[data-id="service_taxonomies"],
+    button[data-id="service_schedules"],
+    button[data-id="service_contacts"],
+    button[data-id="service_details"],
+    button[data-id="service_address"],
+    button[data-id="phone_type"],
+    button[data-id="phone_language"],
+    button[data-id="facility_organization"],
+    button[data-id="facility_schedules"],
+    button[data-id="facility_details"],
+    button[data-id="facility_service"],
+    button[data-id="facility_address_city"],
+    button[data-id="facility_address_state"],
+    button[data-id="contact_organization_name"],
+    button[data-id="contact_service"] {
         height: 100%;
         border: 1px solid #ddd;
     }
-
 </style>
 
 @section('content')
@@ -27,421 +41,397 @@ Service Create
                     Create New Service
                 </h4>
                 {!! Form::open(['route' => 'services.store']) !!}
-                    <div class="card all_form_field">
-                        <div class="card-block">
-                            {{-- <h4 class="card-title mb-30 ">
+                <div class="card all_form_field">
+                    <div class="card-block">
+                        {{-- <h4 class="card-title mb-30 ">
                                 <p>Create New Service</p>
                             </h4> --}}
-                            {{-- <form action="/add_new_service" method="GET"> --}}
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Service Name:</label>
-                                        <div class="help-tip">
-                                            <div><p>The official or public name of the service.</p></div>
+                        {{-- <form action="/add_new_service" method="GET"> --}}
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Service Name:</label>
+                                    <div class="help-tip">
+                                        <div>
+                                            <p>The official or public name of the service.</p>
                                         </div>
-                                        <input class="form-control selectpicker" type="text" id="service_name"name="service_name" value="" >
-                                        @error('service_name')
-                                            <span class="error-message"><strong>{{ $message }}</strong></span>
-                                        @enderror
                                     </div>
+                                    <input class="form-control selectpicker" type="text" id="service_name"
+                                        name="service_name" value="">
+                                    @error('service_name')
+                                    <span class="error-message"><strong>{{ $message }}</strong></span>
+                                    @enderror
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Service Alternate Name: </label>
-                                        <div class="help-tip">
-                                        <div><p>Alternative or commonly used name for a service.</p></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Service Alternate Name: </label>
+                                    <div class="help-tip">
+                                        <div>
+                                            <p>Alternative or commonly used name for a service.</p>
                                         </div>
-                                        <input class="form-control selectpicker" type="text" id="service_alternate_name"
-                                            name="service_alternate_name" value="">
                                     </div>
+                                    <input class="form-control selectpicker" type="text" id="service_alternate_name"
+                                        name="service_alternate_name" value="">
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Organization Name: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Organization Name: </label>
 
-                                        <select class="form-control selectpicker" data-live-search="true" id="service_organization"
-                                            name="service_organization" data-size="5" >
-                                            @foreach($organization_name_list as $key => $org_name)
-                                            <option value="{{$org_name}}">{{$org_name}}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('service_organization')
-                                            <span class="error-message"><strong>{{ $message }}</strong></span>
-                                        @enderror
-                                    </div>
+                                    <select class="form-control selectpicker" data-live-search="true"
+                                        id="service_organization" name="service_organization" data-size="5">
+                                        @foreach($organization_name_list as $key => $org_name)
+                                        <option value="{{$org_name}}">{{$org_name}}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('service_organization')
+                                    <span class="error-message"><strong>{{ $message }}</strong></span>
+                                    @enderror
                                 </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>Service Description: </label>
-                                        <div class="help-tip">
-                                            <div><p>A description of the service.</p></div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Service Description: </label>
+                                    <div class="help-tip">
+                                        <div>
+                                            <p>A description of the service.</p>
                                         </div>
-                                        <textarea id="service_description" name="service_description" class="selectpicker" rows="5"></textarea>
-                                        {{-- <input class="form-control selectpicker" type="text" id="service_description"
-                                            name="service_description" value="" rows="5" > --}}
                                     </div>
+                                    <textarea id="service_description" name="service_description" class="selectpicker"
+                                        rows="5"></textarea>
+                                    {{-- <input class="form-control selectpicker" type="text" id="service_description"
+                                            name="service_description" value="" rows="5" > --}}
                                 </div>
-                                {{-- <div class="col-md-4">
+                            </div>
+                            {{-- <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Service Locations: </label>
                                         <select class="form-control selectpicker" multiple data-live-search="true" id="service_locations"
                                             name="service_locations[]" data-size="5" >
                                             @foreach($facility_info_list as $key => $location_info)
-                                            <option value="{{$location_info->location_recordid}}">{{$location_info->location_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div> --}}
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Service URL (website) </label>
-                                        <div class="help-tip">
-                                            <div><p>URL of the service</p></div>
-                                        </div>
-                                        <input class="form-control selectpicker" type="text" id="service_url" name="service_url"
-                                            value="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group {{ $errors->has('service_email') ? 'has-error' : ''}}">
-                                        <label>Service Email: </label>
-                                        <div class="help-tip">
-                                        <div><p>Email address for the service, if any.</p></div>
-                                        </div>
-                                        <input class="form-control selectpicker" type="text" id="service_email"
-                                            name="service_email" value="">
-                                        @error('service_email')
-                                            <span class="error-message"><strong>{{ $message }}</strong></span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Status(Verified): </label>
-                                        <select class="form-control selectpicker" data-live-search="true" id="service_status"
-                                            name="service_status" data-size="5" >
-                                            <option value="">Select status</option>
-                                            @foreach($service_status_list as $key => $service_status)
-                                            <option value="{{$service_status}}">{{$service_status}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                {{-- <div class="col-md-4">
-                                    <div class="form-group">
-                                    <label>Taxonomies: </label>
-                                        <select class="form-control selectpicker" multiple data-live-search="true" id="service_taxonomies"
-                                            name="service_taxonomies[]" data-size="5" >
-                                            @foreach($taxonomy_info_list as $key => $taxonomy_info)
-                                                <option value="{{$taxonomy_info->taxonomy_recordid}}">{{$taxonomy_info->taxonomy_name}}</option>
-                                                @foreach ($taxonomy_info->taxonomyArray as $item)
-                                                <option value="{{$item->taxonomy_recordid}}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- {{$taxonomy_info->taxonomy_name .' : '.$item->taxonomy_name }}</option>
-                                                @endforeach
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div> --}}
-
-                                <div class="text-right col-md-12 mb-20">
-                                    <button type="button" class="btn btn_additional bg-primary-color" data-toggle="collapse" data-target="#demo">Additional Info
-                                        <img src="/frontend/assets/images/white_arrow.png" alt="" title="" />
-                                    </button>
-                                </div>
-                                <div id="demo" class="collapse row m-0">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Licenses: </label>
-                                            <div class="help-tip">
-                                                <div><p>An organization may have a license issued by a government entity to operate legally. A list of any such licenses can be provided here.</p></div>
-                                            </div>
-                                            <input class="form-control selectpicker" type="text" id="service_licenses"
-                                                name="service_licenses" value="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Application Process: </label>
-                                            <div class="help-tip">
-                                                <div><p>The steps needed to access the service.</p></div>
-                                            </div>
-                                            <input class="form-control selectpicker" type="text" id="service_application_process"
-                                                name="service_application_process" value="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Wait Time: </label>
-                                            <div class="help-tip">
-                                                <div><p>Time a client may expect to wait before receiving a service.</p></div>
-                                            </div>
-                                            <input class="form-control selectpicker" type="text" id="service_wait_time"
-                                                name="service_wait_time" value="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Fees: </label>
-                                            <div class="help-tip">
-                                                <div><p>Details of any charges for service users to access this service.</p></div>
-                                            </div>
-                                            <input class="form-control selectpicker" type="text" id="service_fees"
-                                                name="service_fees" value="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Accrediations: </label>
-                                            <div class="help-tip">
-                                                <div><p>Details of any accreditations. Accreditation is the formal evaluation of an organization or program against best practice standards set by an accrediting organization.</p></div>
-                                            </div>
-                                            <input class="form-control selectpicker" type="text" id="service_accrediations"
-                                                name="service_accrediations" value="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Service Grouping: </label>
-                                            <div class="help-tip">
-                                                <div><p>Some organizations organize their services into service groupings (e.g., Senior Services).. A service grouping brings together a number of related services.</p></div>
-                                            </div>
-                                            <input class="form-control selectpicker" type="text" id="service_program" name="service_program" value="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label>Service Grouping Description: </label>
-                                            {{-- <div class="help-tip">
-                                                <div><p></p></div>
-                                            </div> --}}
-                                            <textarea name="program_alternate_name" id="program_alternate_name" cols="30" rows="10" class="form-control"></textarea>
-                                        </div>
-                                    </div>
-                                    <!-- <div class="form-group">
-                                        <label>Service Phone: </label>
-                                            <input class="form-control selectpicker" type="text" id="service_phones"
-                                                name="service_phones" value="">
-                                            <p id="error_service_phones" style="font-style: italic; color: red;">Invalid phone number! Example: +39 422 789611, 0422-78961, (042)589-6000, +39 (0422)7896, 0422 (789611), 39 422/789 611 </p>
-                                        </div>
-                                    </div> -->
-
-                                    {{-- <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Service Schedule: </label>
-                                            <select class="form-control selectpicker" multiple data-live-search="true" id="service_schedules"
-                                                name="service_schedules[]" data-size="5" >
-                                                @foreach($schedule_info_list as $key => $schedule_info)
-                                                <option value="{{$schedule_info->schedule_recordid}}">{{$schedule_info->opens_at}} ~ {{$schedule_info->closes_at}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div> --}}
-                                    {{-- <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Contacts: </label>
-                                            <select class="form-control selectpicker" multiple data-live-search="true" id="service_contacts"
-                                                name="service_contacts[]" data-size="5" >
-                                                @foreach($contact_info_list as $key => $contact_info)
-                                                <option value="{{$contact_info->contact_recordid}}">{{$contact_info->contact_name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div> --}}
-                                    {{-- <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Service Details: </label>
-                                            <select class="form-control selectpicker" multiple data-live-search="true" id="service_details"
-                                                name="service_details[]" data-size="5" >
-                                                @foreach($detail_info_list as $key => $detail_info)
-                                                <option value="{{$detail_info->detail_recordid}}">{{$detail_info->detail_value}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div> --}}
-                                    {{-- <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Service Address: </label>
-                                            <select class="form-control selectpicker" multiple data-live-search="true" id="service_address"
-                                                name="service_address[]" data-size="5" >
-                                                @foreach($address_info_list as $key => $address_info)
-                                                @if($address_info->address_1)
-                                                <option value="{{$address_info->address_recordid}}">{{$address_info->address_1}}, {{$address_info->address_city}}, {{$address_info->address_state_province}}, {{$address_info->address_postal_code}}</option>
-                                                @endif
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div> --}}
-                                    {{-- <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Meta Data: </label>
-                                            <input class="form-control selectpicker" type="text" id="service_metadata"
-                                                name="service_metadata" value="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Airs Taxonomy X: </label>
-                                            <input class="form-control selectpicker" type="text" id="service_airs_taxonomy_x"
-                                                name="service_airs_taxonomy_x" value="">
-                                        </div>
-                                    </div> --}}
-                                    {{-- taxonomy section --}}
+                                            <option value="{{$location_info->location_recordid}}">{{$location_info->location_name}}
+                            </option>
+                            @endforeach
+                            </select>
+                        </div>
+                    </div> --}}
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Service URL (website) </label>
+                            <div class="help-tip">
+                                <div>
+                                    <p>URL of the service</p>
                                 </div>
                             </div>
-                            {{-- </form> --}}
+                            <input class="form-control selectpicker" type="text" id="service_url" name="service_url"
+                                value="">
                         </div>
                     </div>
-                    <div class="card all_form_field">
-                        <div class="card-block">
-                            <h4 class="title_edit text-left mb-25 mt-10">
-                                Category
-                                <div class="d-inline float-right" id="addServiceCategoryTr">
-                                    <a href="javascript:void(0)" id="addServiceCategoryData" class="plus_delteicon bg-primary-color">
-                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                    </a>
+                    <div class="col-md-4">
+                        <div class="form-group {{ $errors->has('service_email') ? 'has-error' : ''}}">
+                            <label>Service Email: </label>
+                            <div class="help-tip">
+                                <div>
+                                    <p>Email address for the service, if any.</p>
                                 </div>
-                            </h4>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <div class="">
-                                            <table class="table table_border_none " id="ServiceCategoryTable">
-                                                <thead>
-                                                    <th>Detail Type</th>
-                                                    <th>Detail Term</th>
-                                                    <th style="width:60px">&nbsp;</th>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            {!! Form::select('service_category_type[]',$service_category_types,null,['class' => 'form-control selectpicker service_category_type','placeholder' => 'Select Type','id' => 'service_category_type_0']) !!}
+                            </div>
+                            <input class="form-control selectpicker" type="text" id="service_email" name="service_email"
+                                value="">
+                            @error('service_email')
+                            <span class="error-message"><strong>{{ $message }}</strong></span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Access Requirement</label>
+                            {{-- <div class="help-tip">
+                                <div>
+                                    <p>URL of the service</p>
+                                </div>
+                            </div> --}}
+                            {!! Form::select('access_requirement',['none'=>'None','yes'=>'Yes'],'none',['class' => 'form-control selectpicker']) !!}
+                        </div>
+                    </div>
 
-                                                        </td>
-                                                        <td class="create_btn">
-                                                            {!! Form::select('service_category_term[]',[],null,['class' => 'form-control selectpicker service_category_term','placeholder' => 'Select Term','id' => 'service_category_term_0']) !!}
-                                                            <input type="hidden" name="service_category_term_type[]" id="service_category_term_type_0" value="old">
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <a href="#" class="plus_delteicon btn-button">
-                                                                <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr></tr>
-                                                    {{-- <tr id="addServiceCategoryTr">
+            <div class="text-right col-md-12 mb-20">
+                <button type="button" class="btn btn_additional bg-primary-color" data-toggle="collapse"
+                    data-target="#demo">Additional Info
+                    <img src="/frontend/assets/images/white_arrow.png" alt="" title="" />
+                </button>
+            </div>
+            <div id="demo" class="collapse row m-0">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Licenses: </label>
+                        <div class="help-tip">
+                            <div>
+                                <p>An organization may have a license issued by a government entity to operate legally.
+                                    A list of any such licenses can be provided here.</p>
+                            </div>
+                        </div>
+                        <input class="form-control selectpicker" type="text" id="service_licenses"
+                            name="service_licenses" value="">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Application Process: </label>
+                        <div class="help-tip">
+                            <div>
+                                <p>The steps needed to access the service.</p>
+                            </div>
+                        </div>
+                        <input class="form-control selectpicker" type="text" id="service_application_process"
+                            name="service_application_process" value="">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Wait Time: </label>
+                        <div class="help-tip">
+                            <div>
+                                <p>Time a client may expect to wait before receiving a service.</p>
+                            </div>
+                        </div>
+                        <input class="form-control selectpicker" type="text" id="service_wait_time"
+                            name="service_wait_time" value="">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Fees: </label>
+                        <div class="help-tip">
+                            <div>
+                                <p>Details of any charges for service users to access this service.</p>
+                            </div>
+                        </div>
+                        <input class="form-control selectpicker" type="text" id="service_fees" name="service_fees"
+                            value="">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Accrediations: </label>
+                        <div class="help-tip">
+                            <div>
+                                <p>Details of any accreditations. Accreditation is the formal evaluation of an
+                                    organization or program against best practice standards set by an accrediting
+                                    organization.</p>
+                            </div>
+                        </div>
+                        <input class="form-control selectpicker" type="text" id="service_accrediations"
+                            name="service_accrediations" value="">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Service Grouping: </label>
+                        <div class="help-tip">
+                            <div>
+                                <p>Some organizations organize their services into service groupings (e.g., Senior
+                                    Services).. A service grouping brings together a number of related services.</p>
+                            </div>
+                        </div>
+                        <input class="form-control selectpicker" type="text" id="service_program" name="service_program"
+                            value="">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Service Grouping Description: </label>
+                        {{-- <div class="help-tip">
+                                                <div><p></p></div>
+                                            </div> --}}
+                        <textarea name="program_alternate_name" id="program_alternate_name" cols="30" rows="10"
+                            class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Status(Verified): </label>
+                        <select class="form-control selectpicker" data-live-search="true" id="service_status"
+                            name="service_status" data-size="5">
+                            <option value="">Select status</option>
+                            @foreach($service_status_list as $key => $service_status)
+                            <option value="{{$service_status}}">{{$service_status}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+{{-- taxonomy section --}}
+</div>
+</div>
+{{-- </form> --}}
+</div>
+</div>
+<div class="card all_form_field">
+    <div class="card-block">
+        <h4 class="title_edit text-left mb-25 mt-10">
+            Category
+            <div class="d-inline float-right" id="addServiceCategoryTr">
+                <a href="javascript:void(0)" id="addServiceCategoryData" class="plus_delteicon bg-primary-color">
+                    <img src="/frontend/assets/images/plus.png" alt="" title="">
+                </a>
+            </div>
+        </h4>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="">
+                        <table class="table table_border_none " id="ServiceCategoryTable">
+                            <thead>
+                                <th>Type</th>
+                                <th>Term</th>
+                                <th style="width:60px">&nbsp;</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        {!! Form::select('service_category_type[]',$service_category_types,null,['class'
+                                        => 'form-control selectpicker service_category_type','placeholder' => 'Select
+                                        Type','id' => 'service_category_type_0']) !!}
+
+                                    </td>
+                                    <td class="create_btn">
+                                        {!! Form::select('service_category_term[]',[],null,['class' => 'form-control
+                                        selectpicker service_category_term','placeholder' => 'Select Term','id' =>
+                                        'service_category_term_0']) !!}
+                                        <input type="hidden" name="service_category_term_type[]"
+                                            id="service_category_term_type_0" value="old">
+                                    </td>
+                                    <td style="vertical-align: middle">
+                                        <a href="#" class="plus_delteicon btn-button">
+                                            <img src="/frontend/assets/images/delete.png" alt="" title="">
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr></tr>
+                                {{-- <tr id="addServiceCategoryTr">
                                                         <td colspan="6" class="text-center">
                                                             <a href="javascript:void(0)" id="addServiceCategoryData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
                                                         </td>
                                                     </tr> --}}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                            </tbody>
+                        </table>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-                    <div class="card all_form_field">
-                        <div class="card-block">
-                            <h4 class="title_edit text-left mb-25 mt-10">
-                                Eligibility
-                                <div class="d-inline float-right" id="addServiceEligibilityTr">
-                                    <a href="javascript:void(0)" id="addServiceEligibilityData" class="plus_delteicon bg-primary-color">
-                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                    </a>
-                                </div>
-                            </h4>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <div class="">
-                                            <table class="table table_border_none" id="ServiceEligibilityTable">
-                                                <thead>
-                                                    <th>Detail Type</th>
-                                                    <th>Detail Term</th>
-                                                    <th style="width:60px">&nbsp;</th>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            {!! Form::select('service_eligibility_type[]',$service_eligibility_types,null,['class' => 'form-control selectpicker service_eligibility_type','placeholder' => 'Select Service Eligibility Type','id' => 'service_eligibility_type_0']) !!}
-                                                        </td>
-                                                        <td class="create_btn">
-                                                            {!! Form::select('service_eligibility_term[]',[],null,['class' => 'form-control selectpicker service_eligibility_term','placeholder' => 'Select Service Eligibility Term','id' => 'service_eligibility_term_0']) !!}
-                                                            <input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_0" value="old">
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <a href="#" class="plus_delteicon btn-button">
-                                                                <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr></tr>
-                                                    {{-- <tr id="addServiceEligibilityTr">
+<div class="card all_form_field">
+    <div class="card-block">
+        <h4 class="title_edit text-left mb-25 mt-10">
+            Eligibility
+            <div class="d-inline float-right" id="addServiceEligibilityTr">
+                <a href="javascript:void(0)" id="addServiceEligibilityData" class="plus_delteicon bg-primary-color">
+                    <img src="/frontend/assets/images/plus.png" alt="" title="">
+                </a>
+            </div>
+        </h4>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="">
+                        <table class="table table_border_none" id="ServiceEligibilityTable">
+                            <thead>
+                                <th>Type</th>
+                                <th>Term</th>
+                                <th style="width:60px">&nbsp;</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        {!!
+                                        Form::select('service_eligibility_type[]',$service_eligibility_types,null,['class'
+                                        => 'form-control selectpicker service_eligibility_type','placeholder' => 'Select
+                                        Service Eligibility Type','id' => 'service_eligibility_type_0']) !!}
+                                    </td>
+                                    <td class="create_btn">
+                                        {!! Form::select('service_eligibility_term[]',[],null,['class' => 'form-control
+                                        selectpicker service_eligibility_term','placeholder' => 'Select Service
+                                        Eligibility Term','id' => 'service_eligibility_term_0']) !!}
+                                        <input type="hidden" name="service_eligibility_term_type[]"
+                                            id="service_eligibility_term_type_0" value="old">
+                                    </td>
+                                    <td style="vertical-align: middle">
+                                        <a href="#" class="plus_delteicon btn-button">
+                                            <img src="/frontend/assets/images/delete.png" alt="" title="">
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr></tr>
+                                {{-- <tr id="addServiceEligibilityTr">
                                                         <td colspan="6" class="text-center">
                                                             <a href="javascript:void(0)" id="addServiceEligibilityData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
                                                         </td>
                                                     </tr> --}}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="card all_form_field">
-                        <div class="card-block">
-                            <h4 class="title_edit text-left mb-25 mt-10">
-                                Details
-                                <div class="d-inline float-right" id="addDetailTr">
-                                    <a href="javascript:void(0)" id="addDetailData" class="plus_delteicon bg-primary-color">
-                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                    </a>
-                                </div>
-                            </h4>
-                            <div class="row">
-                                {{-- service detail section --}}
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <div class="">
-                                            <table class="table table_border_none" id="DetailTable">
-                                                <thead>
-                                                    <th>Detail Type</th>
-                                                    <th>Detail Term</th>
-                                                    <th style="width:60px">&nbsp;</th>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            {!! Form::select('detail_type[]',$detail_types,null,['class' => 'form-control selectpicker detail_type','placeholder' => 'Select Detail Type','id' => 'detail_type_0']) !!}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card all_form_field">
+    <div class="card-block">
+        <h4 class="title_edit text-left mb-25 mt-10">
+            Details
+            <div class="d-inline float-right" id="addDetailTr">
+                <a href="javascript:void(0)" id="addDetailData" class="plus_delteicon bg-primary-color">
+                    <img src="/frontend/assets/images/plus.png" alt="" title="">
+                </a>
+            </div>
+        </h4>
+        <div class="row">
+            {{-- service detail section --}}
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="">
+                        <table class="table table_border_none" id="DetailTable">
+                            <thead>
+                                <th>Detail Type</th>
+                                <th>Detail Term</th>
+                                <th style="width:60px">&nbsp;</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        {!! Form::select('detail_type[]',$detail_types,null,['class' => 'form-control
+                                        selectpicker detail_type','placeholder' => 'Select Detail Type','id' =>
+                                        'detail_type_0']) !!}
 
-                                                        </td>
-                                                        <td class="create_btn">
-                                                            {!! Form::select('detail_term[]',[],null,['class' => 'form-control selectpicker detail_term','placeholder' => 'Select Detail Term','id' => 'detail_term_0']) !!}
-                                                            <input type="hidden" name="term_type[]" id="term_type_0" value="old">
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <a href="#" class="plus_delteicon btn-button">
-                                                                <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr></tr>
-                                                    {{-- <tr id="addDetailTr">
+                                    </td>
+                                    <td class="create_btn">
+                                        {!! Form::select('detail_term[]',[],null,['class' => 'form-control selectpicker
+                                        detail_term','placeholder' => 'Select Detail Term','id' => 'detail_term_0']) !!}
+                                        <input type="hidden" name="term_type[]" id="term_type_0" value="old">
+                                    </td>
+                                    <td style="vertical-align: middle">
+                                        <a href="#" class="plus_delteicon btn-button">
+                                            <img src="/frontend/assets/images/delete.png" alt="" title="">
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr></tr>
+                                {{-- <tr id="addDetailTr">
                                                         <td colspan="6" class="text-center">
                                                             <a href="javascript:void(0)" id="addDetailData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
                                                         </td>
                                                     </tr> --}}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                {{-- end here --}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {{-- end here --}}
 
-                                {{-- <div class="col-md-12">
+            {{-- <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Phones: <a id="add-phone-input"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label>
                                         <ol id="phones-ul" class="row p-0 m-0" style="list-style: none; ">
@@ -451,937 +441,1077 @@ Service Create
                                         </ol>
                                     </div>
                                 </div> --}}
-                                {{-- location table --}}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card all_form_field">
-                        <div class="card-block">
-                            {{-- phone table --}}
-                            <h4 class="title_edit text-left mb-25 mt-10">
-                                Phones
-                                <div class="d-inline float-right" id="addPhoneTr">
-                                    <a href="javascript:void(0)" id="addData" class="plus_delteicon bg-primary-color">
-                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                    </a>
-                                </div>
-                            </h4>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <div class="">
-                                            <table class="table table_border_none" id="PhoneTable">
-                                                <thead>
-                                                    <th>Number</th>
-                                                    <th>extension</th>
-                                                    <th style="width:200px;position:relative;">Type
-                                                        <div class="help-tip" style="top:8px;">
-                                                            <div><p>Select “Main” if this is the organization's primary phone number (or leave blank)
-                                                            </p></div>
-                                                        </div>
-                                                    </th>
-                                                    <th style="width:200px;">Language(s)</th>
-                                                    <th style="width:200px;position:relative;">Description
-                                                        <div class="help-tip" style="top:8px;">
-                                                            <div><p>A description providing extra information about the phone service (e.g. any special arrangements for accessing, or details of availability at particular times).
-                                                            </p></div>
-                                                        </div>
-                                                    </th>
-                                                    <th style="width:60px">&nbsp;</th>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <input type="text" class="form-control" name="service_phones[]" id="">
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control" name="phone_extension[]" id="">
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::select('phone_type[]',$phone_type,[],['class' => 'form-control selectpicker','data-live-search' => 'true','id' => 'phone_type','data-size' => 5,'placeholder' => 'select phone type'])!!}
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::select('phone_language[]',$phone_languages,[],['class' => 'form-control selectpicker phone_language','data-size' => 5,' data-live-search' => 'true',"multiple" => true,"id" => "phone_language_0"]) !!}
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control" name="phone_description[]" id="">
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <a href="#" class="plus_delteicon btn-button">
-                                                                <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr></tr>
-                                                    {{-- <tr id="addPhoneTr">
-                                                        <td colspan="6" class="text-center">
-                                                            <a href="javascript:void(0)" id="addData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
-                                                        </td>
-                                                    </tr> --}}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <input type="hidden" name="phone_language_data" id="phone_language_data">
-                            </div>
-                            <hr/>
-                            {{-- end here --}}
-
-                            {{-- contact table --}}
-                            <h4 class="title_edit text-left mb-25 mt-10">
-                                Contacts <a class="contactModalOpenButton float-right plus_delteicon bg-primary-color"><img src="/frontend/assets/images/plus.png" alt="" title=""></a>
-                            </h4>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <div class="table-responsive">
-                                            <table class="table table_border_none" >
-                                                <thead>
-                                                    <th>Name</th>
-                                                    <th>Title</th>
-                                                    <th>Email</th>
-                                                    <th>Phone</th>
-                                                    <th style="width:60px">&nbsp;</th>
-                                                </thead>
-                                                <tbody id="contactsTable">
-
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- end here --}}
-                            <h4 class="title_edit text-left mb-25 mt-10">
-                                Locations
-                                <a class="locationModalOpenButton float-right plus_delteicon bg-primary-color">
-                                    <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                </a>
-                            </h4>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <div class="table-responsive">
-                                            <table class="table table_border_none">
-                                                <thead>
-                                                    <th>Name</th>
-                                                    <th>Address</th>
-                                                    <th>City</th>
-                                                    <th>State</th>
-                                                    <th>Zipcode</th>
-                                                    <th>Phone</th>
-                                                    <th style="width:60px">&nbsp;</th>
-                                                </thead>
-                                                <tbody id="locationsTable">
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr/>
-                            {{-- location table end here --}}
-                            <input type="hidden" name="location_alternate_name[]" id="location_alternate_name">
-                            <input type="hidden" name="location_transporation[]" id="location_transporation">
-                            <input type="hidden" name="location_service[]" id="location_service">
-                            <input type="hidden" name="location_schedules[]" id="location_schedules">
-                            <input type="hidden" name="location_description[]" id="location_description">
-                            <input type="hidden" name="location_details[]" id="location_details">
-                            <input type="hidden" name="contact_service[]" id="contact_service">
-                            <input type="hidden" name="contact_department[]" id="contact_department">
-                            {{-- contact phone --}}
-                            <input type="hidden" name="contact_phone_numbers[]" id="contact_phone_numbers">
-                            <input type="hidden" name="contact_phone_extensions[]" id="contact_phone_extensions">
-                            <input type="hidden" name="contact_phone_types[]" id="contact_phone_types">
-                            <input type="hidden" name="contact_phone_languages[]" id="contact_phone_languages">
-                            <input type="hidden" name="contact_phone_descriptions[]" id="contact_phone_descriptions">
-                            {{-- location phone --}}
-                            <input type="hidden" name="location_phone_numbers[]" id="location_phone_numbers" value="[]">
-                            <input type="hidden" name="location_phone_extensions[]" id="location_phone_extensions">
-                            <input type="hidden" name="location_phone_types[]" id="location_phone_types">
-                            <input type="hidden" name="location_phone_languages[]" id="location_phone_languages">
-                            <input type="hidden" name="location_phone_descriptions[]" id="location_phone_descriptions">
-
-                            {{-- schedule section --}}
-                            <input type="hidden" name="opens_at_location_monday_datas" id="opens_at_location_monday_datas">
-                            <input type="hidden" name="closes_at_location_monday_datas" id="closes_at_location_monday_datas">
-                            <input type="hidden" name="schedule_closed_monday_datas" id="schedule_closed_monday_datas">
-                            <input type="hidden" name="opens_at_location_tuesday_datas" id="opens_at_location_tuesday_datas">
-                            <input type="hidden" name="closes_at_location_tuesday_datas" id="closes_at_location_tuesday_datas">
-                            <input type="hidden" name="schedule_closed_tuesday_datas" id="schedule_closed_tuesday_datas">
-                            <input type="hidden" name="opens_at_location_wednesday_datas" id="opens_at_location_wednesday_datas">
-                            <input type="hidden" name="closes_at_location_wednesday_datas" id="closes_at_location_wednesday_datas">
-                            <input type="hidden" name="schedule_closed_wednesday_datas" id="schedule_closed_wednesday_datas">
-                            <input type="hidden" name="opens_at_location_thursday_datas" id="opens_at_location_thursday_datas">
-                            <input type="hidden" name="closes_at_location_thursday_datas" id="closes_at_location_thursday_datas">
-                            <input type="hidden" name="schedule_closed_thursday_datas" id="schedule_closed_thursday_datas">
-                            <input type="hidden" name="opens_at_location_friday_datas" id="opens_at_location_friday_datas">
-                            <input type="hidden" name="closes_at_location_friday_datas" id="closes_at_location_friday_datas">
-                            <input type="hidden" name="schedule_closed_friday_datas" id="schedule_closed_friday_datas">
-                            <input type="hidden" name="opens_at_location_saturday_datas" id="opens_at_location_saturday_datas">
-                            <input type="hidden" name="closes_at_location_saturday_datas" id="closes_at_location_saturday_datas">
-                            <input type="hidden" name="schedule_closed_saturday_datas" id="schedule_closed_saturday_datas">
-                            <input type="hidden" name="opens_at_location_sunday_datas" id="opens_at_location_sunday_datas">
-                            <input type="hidden" name="closes_at_location_sunday_datas" id="closes_at_location_sunday_datas">
-                            <input type="hidden" name="schedule_closed_sunday_datas" id="schedule_closed_sunday_datas">
-
-                            <input type="hidden" name="location_holiday_start_dates" id="location_holiday_start_dates">
-                            <input type="hidden" name="location_holiday_end_dates" id="location_holiday_end_dates">
-                            <input type="hidden" name="location_holiday_open_ats" id="location_holiday_open_ats">
-                            <input type="hidden" name="location_holiday_close_ats" id="location_holiday_close_ats">
-                            <input type="hidden" name="location_holiday_closeds" id="location_holiday_closeds">
-                        </div>
-                    </div>
-                    <div class="card all_form_field">
-                        <div class="card-block">
-                            <h4 class="title_edit text-left mb-25 mt-10">
-                                Regular Schedule
-                            </h4>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <div class="table-responsive">
-                                            <table class="table table_border_none">
-                                                {{-- <thead>
-                                                    <th colspan="4" class="text-center">Regular Schedule</th>
-                                                </thead> --}}
-                                                <thead>
-                                                    <th>Weekday</th>
-                                                    <th>Opens</th>
-                                                    <th>Closes</th>
-                                                    <th style="width:150px;">Closed All Day</th>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            Monday
-                                                            <input type="hidden" name="byday[]" value="monday">
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::time('opens_at[]',null, ['class' => 'form-control']) !!}
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::time('closes_at[]',null, ['class' => 'form-control']) !!}
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <input type="checkbox" name="schedule_closed[]" id="" value="1" >
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            Tuesday
-                                                            <input type="hidden" name="byday[]" value="tuesday">
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::time('opens_at[]',null, ['class' => 'form-control']) !!}
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::time('closes_at[]',null, ['class' => 'form-control']) !!}
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <input type="checkbox" name="schedule_closed[]" id="" value="2" >
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Wednesday
-                                                            <input type="hidden" name="byday[]" value="wednesday">
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::time('opens_at[]',null, ['class' => 'form-control']) !!}
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::time('closes_at[]',null, ['class' => 'form-control']) !!}
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <input type="checkbox" name="schedule_closed[]" id="" value="3" >
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Thursday
-                                                            <input type="hidden" name="byday[]" value="thursday">
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::time('opens_at[]',null, ['class' => 'form-control']) !!}
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::time('closes_at[]',null, ['class' => 'form-control']) !!}
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <input type="checkbox" name="schedule_closed[]" id="" value="4" >
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Friday
-                                                            <input type="hidden" name="byday[]" value="friday">
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::time('opens_at[]',null, ['class' => 'form-control']) !!}
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::time('closes_at[]',null, ['class' => 'form-control']) !!}
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <input type="checkbox" name="schedule_closed[]" id="" value="5" >
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Saturday
-                                                            <input type="hidden" name="byday[]" value="saturday">
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::time('opens_at[]',null, ['class' => 'form-control']) !!}
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::time('closes_at[]',null, ['class' => 'form-control']) !!}
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <input type="checkbox" name="schedule_closed[]" id="" value="6" >
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Sunday
-                                                            <input type="hidden" name="byday[]" value="sunday">
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::time('opens_at[]',null, ['class' => 'form-control']) !!}
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::time('closes_at[]',null, ['class' => 'form-control']) !!}
-                                                        </td>
-
-                                                        <td style="vertical-align: middle">
-                                                            <input type="checkbox" name="schedule_closed[]" id="" value="7" >
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr/>
-                            <h4 class="title_edit text-left mb-25 mt-10">
-                                Holiday Schedule
-                                <div class="d-inline float-right" >
-                                    <a href="javascript:void(0)" id="addTr" class="plus_delteicon bg-primary-color">
-                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                    </a>
-                                </div>
-                            </h4>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <div class="table-responsive">
-                                            <table class="table table_border_none" id="myTable">
-                                                <thead>
-                                                    <th>Start</th>
-                                                    <th>End</th>
-                                                    <th>Opens</th>
-                                                    <th>Closes</th>
-                                                    <th>Closed</th>
-                                                    <th style="width:60px">&nbsp;</th>
-                                                </thead>
-                                                <tbody>
-
-                                                    <tr>
-                                                        <td>
-                                                            <input type="date" name="holiday_start_date[]" id="" class="form-control">
-                                                        </td>
-                                                        <td>
-                                                            <input type="date" name="holiday_end_date[]" id="" class="form-control">
-                                                        </td>
-                                                        <td>
-                                                            <input type="time" name="holiday_open_at[]" id="" class="form-control">
-                                                        </td>
-                                                        <td>
-                                                            <input type="time" name="holiday_close_at[]" id="" class="form-control">
-                                                        </td>
-                                                        <td>
-                                                            <input type="checkbox" name="holiday_closed[]" id="" value="1">
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <a href="#" class="plus_delteicon btn-button">
-                                                                <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr></tr>
-                                                    {{-- <tr id="addTr">
-                                                        <td colspan="6" class="text-center">
-                                                            <a href="javascript:void(0)" id="addData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
-                                                        </td>
-                                                    </tr> --}}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12 text-center">
-                        <button type="button" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn" id="back-service-btn"> Back </button>
-                        <button type="submit" class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic green_btn" id="save-service-btn"> Save </button>
-                    </div>
-                {!! Form::close() !!}
-            </div>
-            {{-- location Modal --}}
-            <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="locationmodal" >
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <form>
-                            <div class="modal-header">
-                                <button type="button" class="close locationCloseButton" ><span aria-hidden="true">×</span>
-                                </button>
-                                <h4 class="modal-title" id="myModalLabel">Add Locations</h4>
-                            </div>
-                            <div class="modal-body all_form_field">
-                                <div class="form-group">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input locationRadio" type="radio" name="locationRadio" id="locationRadio2" value="new_data" checked>
-                                        <label class="form-check-label" for="locationRadio2"><b style="color: #000">Create New Data</b></label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input locationRadio" type="radio" name="locationRadio" id="locationRadio1" value="existing">
-                                        <label class="form-check-label" for="locationRadio1"><b style="color: #000">Existing Data</b></label>
-                                    </div>
-                                </div>
-                                <div class="" id="existingLocationData" style="display: none;">
-                                    <select name="locations" id="locationSelectData" class="form-control selectpicker" data-live-search="true" data-size="5">
-                                        <option value="">Select Locations</option>
-                                        @foreach ($all_locations as $location)
-                                        <option value="{{ $location }}" data-id="{{ $location->location_recordid }}">{{ $location->location_name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div id="newLocationData">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label>Location Name:</label>
-                                                <input class="form-control selectpicker" type="text" id="location_name_p"  name="location_name" value="">
-                                                <span id="location_name_error" style="display: none;color:red" >Location Name is required!</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label>Location Alternate Name: </label>
-                                                <input class="form-control selectpicker" type="text" id="location_alternate_name_p" name="location_alternate_name" value="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label>Location Transportation: </label>
-                                                <input class="form-control selectpicker" type="text" id="location_transporation_p" name="location_transporation" value="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label>Description: </label>
-                                                <textarea id="location_description_p" name="location_description" class="form-control selectpicker" rows="5"></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Address</label>
-                                                <input type="text" class="form-control" placeholder="Address" id="location_address_p">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>City: </label>
-                                                <select class="form-control selectpicker" data-live-search="true" id="location_city_p" name="location_city", data-size="5">
-                                                    <option value="">Select city</option>
-                                                    @foreach($address_city_list as $key => $address_city)
-                                                    <option value="{{$address_city}}">{{$address_city}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label>State: </label>
-                                                <select class="form-control selectpicker" data-live-search="true" id="location_state_p" name="location_state", data-size="5">
-                                                    <option value="">Select state</option>
-                                                    @foreach($address_states_list as $key => $address_state)
-                                                    <option value="{{$address_state}}">{{$address_state}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label>Zip Code: </label>
-                                                <input type="text" class="form-control" placeholder="Zipcode" id="location_zipcode_p">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label>Location Details: </label>
-                                                <input class="form-control selectpicker" type="text" id="location_details_p" name="location_details" value="">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <h4 class="title_edit text-left mb-25 mt-10 pl-20">
-                                                Phones
-                                            </h4>
-                                            <div class="col-md-12">
-                                                <table class="table table_border_none" id="PhoneTableLocation">
-                                                    <thead>
-                                                        <th>Number</th>
-                                                        <th>extension</th>
-                                                        <th style="width:200px;position:relative;">Type
-                                                            <div class="help-tip" style="top:8px;">
-                                                                <div><p>Select “Main” if this is the organization's primary phone number (or leave blank)
-                                                                </p></div>
-                                                            </div>
-                                                        </th>
-                                                        <th style="width:200px;">Language(s)</th>
-                                                        <th style="width:200px;position:relative;">Description
-                                                            <div class="help-tip" style="top:8px;">
-                                                                <div><p>A description providing extra information about the phone service (e.g. any special arrangements for accessing, or details of availability at particular times).
-                                                                </p></div>
-                                                            </div>
-                                                        </th>
-                                                        <th>&nbsp;</th>
-                                                    </thead>
-                                                    <tbody id="addPhoneTrLocation">
-                                                        <tr id="location_0">
-                                                            <td>
-                                                                <input type="text" class="form-control" name="service_phones[]" id="service_phones_location_0">
-                                                            </td>
-                                                            <td>
-                                                                <input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_0">
-                                                            </td>
-                                                            <td>
-                                                                {!! Form::select('phone_type[]',$phone_type,[],['class' => 'form-control selectpicker','data-live-search' => 'true','id' => 'phone_type_location_0','data-size' => 5,'placeholder' => 'select phone type'])!!}
-                                                            </td>
-                                                            <td>
-                                                                {!! Form::select('phone_language[]',$phone_languages,[],['class' => 'form-control selectpicker phone_language','data-size' => 5,' data-live-search' => 'true',"multiple" => true,"id" => "phone_language_location_0"]) !!}
-                                                            </td>
-                                                            <td>
-                                                                <input type="text" class="form-control" name="phone_description[]" id="phone_description_location_0">
-                                                            </td>
-                                                            <td>
-                                                                <a href="javascript:void(0)" id="addDataLocation" class="plus_delteicon bg-primary-color">
-                                                                    <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                                                </a>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        {{-- schedule section --}}
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                {{-- <label class="p-0">Regular Schedule: </label> --}}
-                                                <h4 class="title_edit text-left mb-25 mt-10">
-                                                    Regular Schedule
-                                                </h4>
-                                                <div class="table-responsive">
-                                                    <table class="table">
-                                                        {{-- <thead>
-                                                            <th colspan="4" class="text-center">Regular Schedule</th>
-                                                        </thead> --}}
-                                                        <thead>
-                                                            <th>Weekday</th>
-                                                            <th>Opens</th>
-                                                            <th>Closes</th>
-                                                            <th>Closed</th>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    Monday
-                                                                    <input type="hidden" name="byday" value="monday" >
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::time('opens_at', null, ['class' => 'form-control','id' => 'opens_at_location_monday']) !!}
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::time('closes_at', null, ['class' => 'form-control','id' => 'closes_at_location_monday']) !!}
-                                                                </td>
-                                                                <td style="vertical-align: middle">
-                                                                    <input type="checkbox" name="schedule_closed_location_monday" value="1" id="schedule_closed_location_monday" >
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    Tuesday
-                                                                    <input type="hidden" name="byday" value="tuesday" >
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::time('opens_at', null, ['class' => 'form-control' ,'id' => 'opens_at_location_tuesday']) !!}
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::time('closes_at', null, ['class' => 'form-control','id' => 'closes_at_location_tuesday']) !!}
-                                                                </td>
-                                                                <td style="vertical-align: middle">
-                                                                    <input type="checkbox" name="schedule_closed_location_tuesday" value="2" id="schedule_closed_location_tuesday">
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Wednesday
-                                                                    <input type="hidden" name="byday" value="wednesday">
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::time('opens_at', null, ['class' => 'form-control','id' => 'opens_at_location_wednesday']) !!}
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::time('closes_at', null, ['class' => 'form-control','id' => 'closes_at_location_wednesday']) !!}
-                                                                </td>
-                                                                <td style="vertical-align: middle">
-                                                                    <input type="checkbox" name="schedule_closed_location_wednesday" value="3" id="schedule_closed_location_wednesday" >
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Thursday
-                                                                    <input type="hidden" name="byday" value="thursday">
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::time('opens_at', null, ['class' => 'form-control','id' => 'opens_at_location_thursday']) !!}
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::time('closes_at',null, ['class' => 'form-control','id' => 'closes_at_location_thursday']) !!}
-                                                                </td>
-                                                                <td style="vertical-align: middle">
-                                                                    <input type="checkbox" name="schedule_closed_location_thursday" value="4" id="schedule_closed_location_thursday">
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Friday
-                                                                    <input type="hidden" name="byday" value="friday">
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::time('opens_at',null, ['class' => 'form-control','id' => 'opens_at_location_friday']) !!}
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::time('closes_at', null, ['class' => 'form-control','id' => 'closes_at_location_friday']) !!}
-                                                                </td>
-                                                                <td style="vertical-align: middle">
-                                                                    <input type="checkbox" name="schedule_closed_location_friday" id="schedule_closed_location_friday" value="5" >
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Saturday
-                                                                    <input type="hidden" name="byday" value="saturday">
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::time('opens_at', null, ['class' => 'form-control','id' => 'opens_at_location_saturday']) !!}
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::time('closes_at', null, ['class' => 'form-control','id' => 'closes_at_location_saturday']) !!}
-                                                                </td>
-                                                                <td style="vertical-align: middle">
-                                                                    <input type="checkbox" name="schedule_closed_location_saturday" id="schedule_closed_location_saturday" value="6" >
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Sunday
-                                                                    <input type="hidden" name="byday" value="sunday">
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::time('opens_at',  null, ['class' => 'form-control','id' => 'opens_at_location_sunday']) !!}
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::time('closes_at', null, ['class' => 'form-control','id' => 'closes_at_location_sunday']) !!}
-                                                                </td>
-                                                                <td style="vertical-align: middle">
-                                                                    <input type="checkbox" name="schedule_closed_location_sunday" id="schedule_closed_location_sunday" value="7" >
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                {{-- <label class="p-0">Holiday Schedule: </label> --}}
-                                                <h4 class="title_edit text-left mb-25 mt-10">
-                                                    Holiday Schedule
-                                                </h4>
-                                                <div class="table-responsive">
-                                                    <table class="table table_border_none" id="">
-                                                        <thead>
-                                                            <th>Start</th>
-                                                            <th>End</th>
-                                                            <th>Opens</th>
-                                                            <th>Closes</th>
-                                                            <th>Closed</th>
-                                                            <th>&nbsp;</th>
-                                                        </thead>
-                                                        <tbody id="scheduleHolidayLocation">
-                                                            <tr>
-                                                                <td>
-                                                                    <input type="date" name="holiday_start_date" id="holiday_start_date_location_0" class="form-control">
-                                                                </td>
-                                                                <td>
-                                                                    <input type="date" name="holiday_end_date" id="holiday_end_date_location_0" class="form-control">
-                                                                </td>
-                                                                <td>
-                                                                    <input type="time" name="holiday_open_at" id="holiday_open_at_location_0" class="form-control">
-                                                                </td>
-                                                                <td>
-                                                                    <input type="time" name="holiday_close_at" id="holiday_close_at_location_0" class="form-control">
-                                                                </td>
-                                                                <td style="vertical-align: middle">
-                                                                    <input type="checkbox" name="holiday_closed" id="holiday_closed_location_0" value="1">
-                                                                </td>
-                                                                <td>
-                                                                    <a href="javascript:void(0)" id="addScheduleHolidayLocation" class="plus_delteicon bg-primary-color">
-                                                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                                                    </a>
-                                                                </td>
-                                                            </tr>
-                                                            {{-- <tr id="addTr">
-                                                                <td colspan="6" class="text-center">
-                                                                    <a href="javascript:void(0)" id="addData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
-                                                                </td>
-                                                            </tr> --}}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {{-- end here --}}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger btn-lg btn_delete red_btn locationCloseButton" >Close</button>
-                                <button type="button" id="locationSubmit" class="btn btn-primary btn-lg btn_padding green_btn">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            {{-- End here --}}
-            {{-- contact modal --}}
-            <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="contactmodal" >
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <form>
-                            <div class="modal-header">
-                                <button type="button" class="close contactCloseButton" ><span aria-hidden="true">×</span>
-                                </button>
-                                <h4 class="modal-title" id="myModalLabel">Add Contacts</h4>
-                            </div>
-                            <div class="modal-body all_form_field">
-                                <div class="form-group">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input contactRadio" type="radio" name="contactRadio" id="contactRadio2" value="new_data" checked>
-                                        <label class="form-check-label" for="contactRadio2"><b style="color: #000">Create New Data</b></label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input contactRadio" type="radio" name="contactRadio" id="contactRadio1" value="existing">
-                                        <label class="form-check-label" for="contactRadio1"><b style="color: #000">Existing Data</b></label>
-                                    </div>
-
-                                </div>
-                                <div class="" id="existingContactData" style="display: none;">
-                                    <select name="contacts" id="contactSelectData" class="form-control selectpicker" data-live-search="true" data-size="5">
-                                        <option value="">Select Contacts</option>
-                                        @foreach ($all_contacts as $contact)
-                                        <option value="{{ $contact }}" data-id="{{ $contact->contact_recordid }}">{{ $contact->contact_name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div id="newContactData">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Name</label>
-                                                <input type="text" class="form-control" placeholder="Name" id="contact_name_p">
-                                                <span id="contact_name_error" style="display: none;color:red" >Contact Name is required!</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Title</label>
-                                                <input type="text" class="form-control" placeholder="Title" id="contact_title_p">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Contact Department: </label>
-                                                <input class="form-control selectpicker" type="text" id="contact_department_p" name="contact_department" value="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Email</label>
-                                                <input type="text" class="form-control" placeholder="Email" id="contact_email_p">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            {{-- <a id="addDataContact"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> --}}
-                                            <h4 class="title_edit text-left mb-25 mt-10 px-20">Phones
-                                                <a id="addDataContact" class="plus_delteicon bg-primary-color float-right"><img src="/frontend/assets/images/plus.png" alt="" title=""></a>
-                                            </h4>
-                                            <div class="col-md-12">
-                                                <table class="table table_border_none" id="PhoneTableContact">
-                                                    <thead>
-                                                        <th>Number</th>
-                                                        <th>extension</th>
-                                                        <th style="width:200px;position:relative;">Type
-                                                            <div class="help-tip" style="top:8px;">
-                                                                <div><p>Select “Main” if this is the organization's primary phone number (or leave blank)
-                                                                </p></div>
-                                                            </div>
-                                                        </th>
-                                                        <th style="width:200px;">Language(s)</th>
-                                                        <th style="width:200px;position:relative;">Description
-                                                            <div class="help-tip" style="top:8px;">
-                                                                <div><p>A description providing extra information about the phone service (e.g. any special arrangements for accessing, or details of availability at particular times).
-                                                                </p></div>
-                                                            </div>
-                                                        </th>
-                                                        <th>&nbsp;</th>
-                                                    </thead>
-                                                    <tbody id="addPhoneTrContact">
-                                                        <tr id="contact_0">
-                                                            <td>
-                                                                <input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_0">
-                                                            </td>
-                                                            <td>
-                                                                <input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_0">
-                                                            </td>
-                                                            <td>
-                                                                {!! Form::select('phone_type[]',$phone_type,[],['class' => 'form-control selectpicker','data-live-search' => 'true','id' => 'phone_type_contact_0','data-size' => 5,'placeholder' => 'select phone type'])!!}
-                                                            </td>
-                                                            <td>
-                                                                {!! Form::select('phone_language[]',$phone_languages,[],['class' => 'form-control selectpicker','data-size' => 5,' data-live-search' => 'true', 'id' => 'phone_language_contact_0','multiple' => true]) !!}
-                                                            </td>
-                                                            <td>
-                                                                <input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_0">
-                                                            </td>
-                                                            <td>
-                                                                {{-- <a href="javascript:void(0)" id="addDataContact" class="plus_delteicon bg-primary-color">
-                                                                    <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                                                </a> --}}
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger btn-lg btn_delete red_btn contactCloseButton">Close</button>
-                                <button type="button" id="contactSubmit" class="btn btn-primary btn-lg btn_padding green_btn">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            {{-- End here --}}
-            {{-- detail term modal --}}
-            <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="create_new_term" >
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <form>
-                            <div class="modal-header">
-                                <button type="button" class="close detailTermCloseButton" ><span aria-hidden="true">×</span>
-                                </button>
-                                <h4 class="modal-title" id="myModalLabel">Add Detail Term</h4>
-                            </div>
-                            <div class="modal-body all_form_field">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Detail Term</label>
-                                            <input type="text" class="form-control" placeholder="Detail Term" id="detail_term_p">
-                                            <input type="hidden" name="detail_term_index_p" value="" id="detail_term_index_p">
-                                            <span id="detail_term_error" style="display: none;color:red" >Detail Term is required!</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger btn-lg btn_delete red_btn detailTermCloseButton">Close</button>
-                                <button type="button" id="detailTermSubmit" class="btn btn-primary btn-lg btn_padding green_btn">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            {{-- End here --}}
-            {{-- service category term modal --}}
-            <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="create_new_service_category_term" >
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <form>
-                            <div class="modal-header">
-                                <button type="button" class="close serviceCategoryTermCloseButton" ><span aria-hidden="true">×</span>
-                                </button>
-                                <h4 class="modal-title" id="myModalLabel">Add Service Category Term</h4>
-                            </div>
-                            <div class="modal-body all_form_field">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Service Category Term</label>
-                                            <input type="text" class="form-control" placeholder="Service Category Term" id="service_category_term_p">
-                                            <input type="hidden" name="service_category_term_index_p" value="" id="service_category_term_index_p">
-                                            <span id="service_category_term_error" style="display: none;color:red" >Service Category Term is required!</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger btn-lg btn_delete red_btn serviceCategoryTermCloseButton">Close</button>
-                                <button type="button" id="serviceCategoryTermSubmit" class="btn btn-primary btn-lg btn_padding green_btn">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            {{-- End here --}}
-            {{-- service eligibility term modal --}}
-            <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="create_new_service_eligibility_term" >
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <form>
-                            <div class="modal-header">
-                                <button type="button" class="close serviceEligibilityTermCloseButton" ><span aria-hidden="true">×</span>
-                                </button>
-                                <h4 class="modal-title" id="myModalLabel">Add Service Eligibility Term</h4>
-                            </div>
-                            <div class="modal-body all_form_field">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label style="margin-bottom:5px;font-weight:600;color: #000;letter-spacing: 0.5px;">Service Eligibility Term</label>
-                                            <input type="text" class="form-control" placeholder="Service Eligibility Term" id="service_eligibility_term_p">
-                                            <input type="hidden" name="service_eligibility_term_index_p" value="" id="service_eligibility_term_index_p">
-                                            <span id="service_eligibility_term_error" style="display: none;color:red" >Service Eligibility Term is required!</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger btn-lg btn_delete red_btn serviceEligibilityTermCloseButton">Close</button>
-                                <button type="button" id="serviceEligibilityTermSubmit" class="btn btn-primary btn-lg btn_padding green_btn">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            {{-- End here --}}
+            {{-- location table --}}
         </div>
     </div>
 </div>
 
+<div class="card all_form_field">
+    <div class="card-block">
+        {{-- phone table --}}
+        <h4 class="title_edit text-left mb-25 mt-10">
+            Phones
+            <div class="d-inline float-right" id="addPhoneTr">
+                <a href="javascript:void(0)" id="addData" class="plus_delteicon bg-primary-color">
+                    <img src="/frontend/assets/images/plus.png" alt="" title="">
+                </a>
+            </div>
+        </h4>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="">
+                        <table class="table table_border_none" id="PhoneTable">
+                            <thead>
+                                <th>Number</th>
+                                <th>extension</th>
+                                <th style="width:200px;position:relative;">Type
+                                    <div class="help-tip" style="top:8px;">
+                                        <div>
+                                            <p>Select “Main” if this is the organization's primary phone number (or
+                                                leave blank)
+                                            </p>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th style="width:200px;">Language(s)</th>
+                                <th style="width:200px;position:relative;">Description
+                                    <div class="help-tip" style="top:8px;">
+                                        <div>
+                                            <p>A description providing extra information about the phone service (e.g.
+                                                any special arrangements for accessing, or details of availability at
+                                                particular times).
+                                            </p>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>Main</th>
+                                <th style="width:60px">&nbsp;</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="text" class="form-control" name="service_phones[]" id="">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="phone_extension[]" id="">
+                                    </td>
+                                    <td>
+                                        {!! Form::select('phone_type[]',$phone_type,[],['class' => 'form-control
+                                        selectpicker','data-live-search' => 'true','id' => 'phone_type','data-size' =>
+                                        5,'placeholder' => 'select phone type'])!!}
+                                    </td>
+                                    <td>
+                                        {!! Form::select('phone_language[]',$phone_languages,[],['class' =>
+                                        'form-control selectpicker phone_language','data-size' => 5,' data-live-search'
+                                        => 'true',"multiple" => true,"id" => "phone_language_0"]) !!}
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="phone_description[]" id="">
+                                    </td>
+                                    <td>
+                                        <div class="form-check form-check-inline" style="margin-top: -10px;">
+                                            <input class="form-check-input " type="radio" name="main_priority[]" id="main_priority" value="1" checked>
+                                            <label class="form-check-label" for="main_priority"></label>
+                                        </div>
+                                    </td>
+                                    <td style="vertical-align: middle">
+                                        <a href="#" class="plus_delteicon btn-button">
+                                            <img src="/frontend/assets/images/delete.png" alt="" title="">
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr></tr>
+                                {{-- <tr id="addPhoneTr">
+                                                        <td colspan="6" class="text-center">
+                                                            <a href="javascript:void(0)" id="addData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
+                                                        </td>
+                                                    </tr> --}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" name="phone_language_data" id="phone_language_data">
+        </div>
+        <hr />
+        {{-- end here --}}
+
+        {{-- contact table --}}
+        <h4 class="title_edit text-left mb-25 mt-10">
+            Contacts <a class="contactModalOpenButton float-right plus_delteicon bg-primary-color"><img
+                    src="/frontend/assets/images/plus.png" alt="" title=""></a>
+        </h4>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="table-responsive">
+                        <table class="table table_border_none">
+                            <thead>
+                                <th>Name</th>
+                                <th>Title</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th style="width:60px">&nbsp;</th>
+                            </thead>
+                            <tbody id="contactsTable">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- end here --}}
+        <h4 class="title_edit text-left mb-25 mt-10">
+            Locations
+            <a class="locationModalOpenButton float-right plus_delteicon bg-primary-color">
+                <img src="/frontend/assets/images/plus.png" alt="" title="">
+            </a>
+        </h4>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="table-responsive">
+                        <table class="table table_border_none">
+                            <thead>
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>City</th>
+                                <th>State</th>
+                                <th>Zipcode</th>
+                                <th>Phone</th>
+                                <th style="width:60px">&nbsp;</th>
+                            </thead>
+                            <tbody id="locationsTable">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        {{-- location table end here --}}
+        <input type="hidden" name="location_alternate_name[]" id="location_alternate_name">
+        <input type="hidden" name="location_transporation[]" id="location_transporation">
+        <input type="hidden" name="location_service[]" id="location_service">
+        <input type="hidden" name="location_schedules[]" id="location_schedules">
+        <input type="hidden" name="location_description[]" id="location_description">
+        <input type="hidden" name="location_details[]" id="location_details">
+        <input type="hidden" name="contact_service[]" id="contact_service">
+        <input type="hidden" name="contact_department[]" id="contact_department">
+        {{-- contact phone --}}
+        <input type="hidden" name="contact_phone_numbers[]" id="contact_phone_numbers">
+        <input type="hidden" name="contact_phone_extensions[]" id="contact_phone_extensions">
+        <input type="hidden" name="contact_phone_types[]" id="contact_phone_types">
+        <input type="hidden" name="contact_phone_languages[]" id="contact_phone_languages">
+        <input type="hidden" name="contact_phone_descriptions[]" id="contact_phone_descriptions">
+        {{-- location phone --}}
+        <input type="hidden" name="location_phone_numbers[]" id="location_phone_numbers" value="[]">
+        <input type="hidden" name="location_phone_extensions[]" id="location_phone_extensions">
+        <input type="hidden" name="location_phone_types[]" id="location_phone_types">
+        <input type="hidden" name="location_phone_languages[]" id="location_phone_languages">
+        <input type="hidden" name="location_phone_descriptions[]" id="location_phone_descriptions">
+
+        {{-- schedule section --}}
+        <input type="hidden" name="opens_at_location_monday_datas" id="opens_at_location_monday_datas">
+        <input type="hidden" name="closes_at_location_monday_datas" id="closes_at_location_monday_datas">
+        <input type="hidden" name="schedule_closed_monday_datas" id="schedule_closed_monday_datas">
+        <input type="hidden" name="opens_at_location_tuesday_datas" id="opens_at_location_tuesday_datas">
+        <input type="hidden" name="closes_at_location_tuesday_datas" id="closes_at_location_tuesday_datas">
+        <input type="hidden" name="schedule_closed_tuesday_datas" id="schedule_closed_tuesday_datas">
+        <input type="hidden" name="opens_at_location_wednesday_datas" id="opens_at_location_wednesday_datas">
+        <input type="hidden" name="closes_at_location_wednesday_datas" id="closes_at_location_wednesday_datas">
+        <input type="hidden" name="schedule_closed_wednesday_datas" id="schedule_closed_wednesday_datas">
+        <input type="hidden" name="opens_at_location_thursday_datas" id="opens_at_location_thursday_datas">
+        <input type="hidden" name="closes_at_location_thursday_datas" id="closes_at_location_thursday_datas">
+        <input type="hidden" name="schedule_closed_thursday_datas" id="schedule_closed_thursday_datas">
+        <input type="hidden" name="opens_at_location_friday_datas" id="opens_at_location_friday_datas">
+        <input type="hidden" name="closes_at_location_friday_datas" id="closes_at_location_friday_datas">
+        <input type="hidden" name="schedule_closed_friday_datas" id="schedule_closed_friday_datas">
+        <input type="hidden" name="opens_at_location_saturday_datas" id="opens_at_location_saturday_datas">
+        <input type="hidden" name="closes_at_location_saturday_datas" id="closes_at_location_saturday_datas">
+        <input type="hidden" name="schedule_closed_saturday_datas" id="schedule_closed_saturday_datas">
+        <input type="hidden" name="opens_at_location_sunday_datas" id="opens_at_location_sunday_datas">
+        <input type="hidden" name="closes_at_location_sunday_datas" id="closes_at_location_sunday_datas">
+        <input type="hidden" name="schedule_closed_sunday_datas" id="schedule_closed_sunday_datas">
+
+        <input type="hidden" name="location_holiday_start_dates" id="location_holiday_start_dates">
+        <input type="hidden" name="location_holiday_end_dates" id="location_holiday_end_dates">
+        <input type="hidden" name="location_holiday_open_ats" id="location_holiday_open_ats">
+        <input type="hidden" name="location_holiday_close_ats" id="location_holiday_close_ats">
+        <input type="hidden" name="location_holiday_closeds" id="location_holiday_closeds">
+    </div>
+</div>
+<div class="card all_form_field">
+    <div class="card-block">
+        <h4 class="title_edit text-left mb-25 mt-10">
+            Regular Schedule
+        </h4>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="table-responsive">
+                        <table class="table table_border_none">
+                            {{-- <thead>
+                                                    <th colspan="4" class="text-center">Regular Schedule</th>
+                                                </thead> --}}
+                            <thead>
+                                <th>Weekday</th>
+                                <th>Opens</th>
+                                <th>Closes</th>
+                                <th style="width:150px;">Closed All Day</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        Monday
+                                        <input type="hidden" name="byday[]" value="monday">
+                                    </td>
+                                    <td>
+                                        {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker','id' =>
+                                        'opens_at']) !!}
+                                    </td>
+                                    <td>
+                                        {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                    </td>
+                                    <td style="vertical-align: middle">
+                                        <input type="checkbox" name="schedule_closed[]" id="" value="1">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Tuesday
+                                        <input type="hidden" name="byday[]" value="tuesday">
+                                    </td>
+                                    <td>
+                                        {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                    </td>
+                                    <td>
+                                        {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                    </td>
+                                    <td style="vertical-align: middle">
+                                        <input type="checkbox" name="schedule_closed[]" id="" value="2">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Wednesday
+                                        <input type="hidden" name="byday[]" value="wednesday">
+                                    </td>
+                                    <td>
+                                        {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                    </td>
+                                    <td>
+                                        {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                    </td>
+                                    <td style="vertical-align: middle">
+                                        <input type="checkbox" name="schedule_closed[]" id="" value="3">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Thursday
+                                        <input type="hidden" name="byday[]" value="thursday">
+                                    </td>
+                                    <td>
+                                        {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                    </td>
+                                    <td>
+                                        {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                    </td>
+                                    <td style="vertical-align: middle">
+                                        <input type="checkbox" name="schedule_closed[]" id="" value="4">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Friday
+                                        <input type="hidden" name="byday[]" value="friday">
+                                    </td>
+                                    <td>
+                                        {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                    </td>
+                                    <td>
+                                        {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                    </td>
+                                    <td style="vertical-align: middle">
+                                        <input type="checkbox" name="schedule_closed[]" id="" value="5">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Saturday
+                                        <input type="hidden" name="byday[]" value="saturday">
+                                    </td>
+                                    <td>
+                                        {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                    </td>
+                                    <td>
+                                        {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                    </td>
+                                    <td style="vertical-align: middle">
+                                        <input type="checkbox" name="schedule_closed[]" id="" value="6">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Sunday
+                                        <input type="hidden" name="byday[]" value="sunday">
+                                    </td>
+                                    <td>
+                                        {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                    </td>
+                                    <td>
+                                        {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                    </td>
+
+                                    <td style="vertical-align: middle">
+                                        <input type="checkbox" name="schedule_closed[]" id="" value="7">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <h4 class="title_edit text-left mb-25 mt-10">
+            Holiday Schedule
+            <div class="d-inline float-right">
+                <a href="javascript:void(0)" id="addTr" class="plus_delteicon bg-primary-color">
+                    <img src="/frontend/assets/images/plus.png" alt="" title="">
+                </a>
+            </div>
+        </h4>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="table-responsive">
+                        <table class="table table_border_none" id="myTable">
+                            <thead>
+                                <th>Start</th>
+                                <th>End</th>
+                                <th>Opens</th>
+                                <th>Closes</th>
+                                <th>Closed All Day</th>
+                                <th style="width:60px">&nbsp;</th>
+                            </thead>
+                            <tbody>
+
+                                <tr>
+                                    <td>
+                                        <input type="date" name="holiday_start_date[]" id="" class="form-control">
+                                    </td>
+                                    <td>
+                                        <input type="date" name="holiday_end_date[]" id="" class="form-control">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="holiday_open_at[]" id="" class="form-control timePicker">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="holiday_close_at[]" id="" class="form-control timePicker">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="holiday_closed[]" id="" value="1">
+                                    </td>
+                                    <td style="vertical-align: middle">
+                                        <a href="#" class="plus_delteicon btn-button">
+                                            <img src="/frontend/assets/images/delete.png" alt="" title="">
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr></tr>
+                                {{-- <tr id="addTr">
+                                                        <td colspan="6" class="text-center">
+                                                            <a href="javascript:void(0)" id="addData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
+                                                        </td>
+                                                    </tr> --}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12 text-center">
+    <button type="button"
+        class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn"
+        id="back-service-btn"> Back </button>
+    <button type="submit"
+        class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic green_btn"
+        id="save-service-btn"> Save </button>
+</div>
+{!! Form::close() !!}
+</div>
+{{-- location Modal --}}
+<div class="modal fade " tabindex="-1" role="dialog" aria-hidden="true" id="locationmodal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form>
+                <div class="modal-header">
+                    <button type="button" class="close locationCloseButton"><span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Add Locations</h4>
+                </div>
+                <div class="modal-body all_form_field">
+                    <div class="form-group">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input locationRadio" type="radio" name="locationRadio"
+                                id="locationRadio2" value="new_data" checked>
+                            <label class="form-check-label" for="locationRadio2"><b style="color: #000">Create New
+                                    Data</b></label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input locationRadio" type="radio" name="locationRadio"
+                                id="locationRadio1" value="existing">
+                            <label class="form-check-label" for="locationRadio1"><b style="color: #000">Existing
+                                    Data</b></label>
+                        </div>
+                    </div>
+                    <div class="" id="existingLocationData" style="display: none;">
+                        <select name="locations" id="locationSelectData" class="form-control selectpicker"
+                            data-live-search="true" data-size="5">
+                            <option value="">Select Locations</option>
+                            @foreach ($all_locations as $location)
+                            <option value="{{ $location }}" data-id="{{ $location->location_recordid }}">
+                                {{ $location->location_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div id="newLocationData">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Location Name:</label>
+                                    <input class="form-control selectpicker" type="text" id="location_name_p"
+                                        name="location_name" value="">
+                                    <span id="location_name_error" style="display: none;color:red">Location Name is
+                                        required!</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Location Alternate Name: </label>
+                                    <input class="form-control selectpicker" type="text" id="location_alternate_name_p"
+                                        name="location_alternate_name" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Location Transportation: </label>
+                                    <input class="form-control selectpicker" type="text" id="location_transporation_p"
+                                        name="location_transporation" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Description: </label>
+                                    <textarea id="location_description_p" name="location_description"
+                                        class="form-control selectpicker" rows="5"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Address</label>
+                                    <input type="text" class="form-control" placeholder="Address"
+                                        id="location_address_p">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>City: </label>
+                                    <select class="form-control selectpicker" data-live-search="true"
+                                        id="location_city_p" name="location_city" , data-size="5">
+                                        <option value="">Select city</option>
+                                        @foreach($address_city_list as $key => $address_city)
+                                        <option value="{{$address_city}}">{{$address_city}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>State: </label>
+                                    <select class="form-control selectpicker" data-live-search="true"
+                                        id="location_state_p" name="location_state" , data-size="5">
+                                        <option value="">Select state</option>
+                                        @foreach($address_states_list as $key => $address_state)
+                                        <option value="{{$address_state}}">{{$address_state}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Zip Code: </label>
+                                    <input type="text" class="form-control" placeholder="Zipcode"
+                                        id="location_zipcode_p">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Location Details: </label>
+                                    <input class="form-control selectpicker" type="text" id="location_details_p"
+                                        name="location_details" value="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <h4 class="title_edit text-left mb-25 mt-10 pl-20">
+                                    Phones
+                                </h4>
+                                <div class="col-md-12">
+                                    <table class="table table_border_none" id="PhoneTableLocation">
+                                        <thead>
+                                            <th>Number</th>
+                                            <th>extension</th>
+                                            <th style="width:200px;position:relative;">Type
+                                                <div class="help-tip" style="top:8px;">
+                                                    <div>
+                                                        <p>Select “Main” if this is the organization's primary phone
+                                                            number (or leave blank)
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </th>
+                                            <th style="width:200px;">Language(s)</th>
+                                            <th style="width:200px;position:relative;">Description
+                                                <div class="help-tip" style="top:8px;">
+                                                    <div>
+                                                        <p>A description providing extra information about the phone
+                                                            service (e.g. any special arrangements for accessing, or
+                                                            details of availability at particular times).
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </th>
+                                            <th>&nbsp;</th>
+                                        </thead>
+                                        <tbody id="addPhoneTrLocation">
+                                            <tr id="location_0">
+                                                <td>
+                                                    <input type="text" class="form-control" name="service_phones[]"
+                                                        id="service_phones_location_0">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" name="phone_extension[]"
+                                                        id="phone_extension_location_0">
+                                                </td>
+                                                <td>
+                                                    {!! Form::select('phone_type[]',$phone_type,[],['class' =>
+                                                    'form-control selectpicker','data-live-search' => 'true','id' =>
+                                                    'phone_type_location_0','data-size' => 5,'placeholder' => 'select
+                                                    phone type'])!!}
+                                                </td>
+                                                <td>
+                                                    {!! Form::select('phone_language[]',$phone_languages,[],['class' =>
+                                                    'form-control selectpicker phone_language','data-size' => 5,'
+                                                    data-live-search' => 'true',"multiple" => true,"id" =>
+                                                    "phone_language_location_0"]) !!}
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" name="phone_description[]"
+                                                        id="phone_description_location_0">
+                                                </td>
+                                                <td>
+                                                    <a href="javascript:void(0)" id="addDataLocation"
+                                                        class="plus_delteicon bg-primary-color">
+                                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            {{-- schedule section --}}
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    {{-- <label class="p-0">Regular Schedule: </label> --}}
+                                    <h4 class="title_edit text-left mb-25 mt-10">
+                                        Regular Schedule
+                                    </h4>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            {{-- <thead>
+                                                            <th colspan="4" class="text-center">Regular Schedule</th>
+                                                        </thead> --}}
+                                            <thead>
+                                                <th>Weekday</th>
+                                                <th>Opens</th>
+                                                <th>Closes</th>
+                                                <th>Closed All Day</th>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        Monday
+                                                        <input type="hidden" name="byday" value="monday">
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::text('opens_at', null, ['class' => 'form-control
+                                                        timePicker','id'
+                                                        => 'opens_at_location_monday']) !!}
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::text('closes_at', null, ['class' =>
+                                                        'form-control timePicker','id' => 'closes_at_location_monday'])
+                                                        !!}
+                                                    </td>
+                                                    <td style="vertical-align: middle">
+                                                        <input type="checkbox" name="schedule_closed_location_monday"
+                                                            value="1" id="schedule_closed_location_monday">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Tuesday
+                                                        <input type="hidden" name="byday" value="tuesday">
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::text('opens_at', null, ['class' => 'form-control
+                                                        timePicker'
+                                                        ,'id' => 'opens_at_location_tuesday']) !!}
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::text('closes_at', null, ['class' =>
+                                                        'form-control timePicker','id' => 'closes_at_location_tuesday'])
+                                                        !!}
+                                                    </td>
+                                                    <td style="vertical-align: middle">
+                                                        <input type="checkbox" name="schedule_closed_location_tuesday"
+                                                            value="2" id="schedule_closed_location_tuesday">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Wednesday
+                                                        <input type="hidden" name="byday" value="wednesday">
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::text('opens_at', null, ['class' => 'form-control
+                                                        timePicker','id'
+                                                        => 'opens_at_location_wednesday']) !!}
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::text('closes_at', null, ['class' =>
+                                                        'form-control timePicker','id' =>
+                                                        'closes_at_location_wednesday']) !!}
+                                                    </td>
+                                                    <td style="vertical-align: middle">
+                                                        <input type="checkbox" name="schedule_closed_location_wednesday"
+                                                            value="3" id="schedule_closed_location_wednesday">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Thursday
+                                                        <input type="hidden" name="byday" value="thursday">
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::text('opens_at', null, ['class' => 'form-control
+                                                        timePicker','id'
+                                                        => 'opens_at_location_thursday']) !!}
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::text('closes_at',null, ['class' => 'form-control
+                                                        timePicker','id'
+                                                        => 'closes_at_location_thursday']) !!}
+                                                    </td>
+                                                    <td style="vertical-align: middle">
+                                                        <input type="checkbox" name="schedule_closed_location_thursday"
+                                                            value="4" id="schedule_closed_location_thursday">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Friday
+                                                        <input type="hidden" name="byday" value="friday">
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::text('opens_at',null, ['class' => 'form-control timePicker','id'
+                                                        => 'opens_at_location_friday']) !!}
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::text('closes_at', null, ['class' =>
+                                                        'form-control timePicker','id' => 'closes_at_location_friday']) !!}
+                                                    </td>
+                                                    <td style="vertical-align: middle">
+                                                        <input type="checkbox" name="schedule_closed_location_friday"
+                                                            id="schedule_closed_location_friday" value="5">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Saturday
+                                                        <input type="hidden" name="byday" value="saturday">
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::text('opens_at', null, ['class' => 'form-control timePicker','id'
+                                                        => 'opens_at_location_saturday']) !!}
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::text('closes_at', null, ['class' =>
+                                                        'form-control timePicker','id' => 'closes_at_location_saturday']) !!}
+                                                    </td>
+                                                    <td style="vertical-align: middle">
+                                                        <input type="checkbox" name="schedule_closed_location_saturday"
+                                                            id="schedule_closed_location_saturday" value="6">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Sunday
+                                                        <input type="hidden" name="byday" value="sunday">
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::text('opens_at', null, ['class' => 'form-control timePicker','id'
+                                                        => 'opens_at_location_sunday']) !!}
+                                                    </td>
+                                                    <td>
+                                                        {!! Form::text('closes_at', null, ['class' =>
+                                                        'form-control timePicker','id' => 'closes_at_location_sunday']) !!}
+                                                    </td>
+                                                    <td style="vertical-align: middle">
+                                                        <input type="checkbox" name="schedule_closed_location_sunday"
+                                                            id="schedule_closed_location_sunday" value="7">
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    {{-- <label class="p-0">Holiday Schedule: </label> --}}
+                                    <h4 class="title_edit text-left mb-25 mt-10">
+                                        Holiday Schedule
+                                    </h4>
+                                    <div class="table-responsive">
+                                        <table class="table table_border_none" id="">
+                                            <thead>
+                                                <th>Start</th>
+                                                <th>End</th>
+                                                <th>Opens</th>
+                                                <th>Closes</th>
+                                                <th>Closed All Day</th>
+                                                <th>&nbsp;</th>
+                                            </thead>
+                                            <tbody id="scheduleHolidayLocation">
+                                                <tr>
+                                                    <td>
+                                                        <input type="date" name="holiday_start_date"
+                                                            id="holiday_start_date_location_0" class="form-control">
+                                                    </td>
+                                                    <td>
+                                                        <input type="date" name="holiday_end_date"
+                                                            id="holiday_end_date_location_0" class="form-control">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="holiday_open_at"
+                                                            id="holiday_open_at_location_0" class="form-control timePicker">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="holiday_close_at"
+                                                            id="holiday_close_at_location_0" class="form-control timePicker">
+                                                    </td>
+                                                    <td style="vertical-align: middle">
+                                                        <input type="checkbox" name="holiday_closed"
+                                                            id="holiday_closed_location_0" value="1">
+                                                    </td>
+                                                    <td>
+                                                        <a href="javascript:void(0)" id="addScheduleHolidayLocation"
+                                                            class="plus_delteicon bg-primary-color">
+                                                            <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                {{-- <tr id="addTr">
+                                                                <td colspan="6" class="text-center">
+                                                                    <a href="javascript:void(0)" id="addData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
+                                                                </td>
+                                                            </tr> --}}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- end here --}}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                        class="btn btn-danger btn-lg btn_delete red_btn locationCloseButton">Close</button>
+                    <button type="button" id="locationSubmit"
+                        class="btn btn-primary btn-lg btn_padding green_btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{{-- End here --}}
+{{-- contact modal --}}
+<div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="contactmodal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form>
+                <div class="modal-header">
+                    <button type="button" class="close contactCloseButton"><span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Add Contacts</h4>
+                </div>
+                <div class="modal-body all_form_field">
+                    <div class="form-group">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input contactRadio" type="radio" name="contactRadio"
+                                id="contactRadio2" value="new_data" checked>
+                            <label class="form-check-label" for="contactRadio2"><b style="color: #000">Create New
+                                    Data</b></label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input contactRadio" type="radio" name="contactRadio"
+                                id="contactRadio1" value="existing">
+                            <label class="form-check-label" for="contactRadio1"><b style="color: #000">Existing
+                                    Data</b></label>
+                        </div>
+
+                    </div>
+                    <div class="" id="existingContactData" style="display: none;">
+                        <select name="contacts" id="contactSelectData" class="form-control selectpicker"
+                            data-live-search="true" data-size="5">
+                            <option value="">Select Contacts</option>
+                            @foreach ($all_contacts as $contact)
+                            <option value="{{ $contact }}" data-id="{{ $contact->contact_recordid }}">
+                                {{ $contact->contact_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div id="newContactData">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Name</label>
+                                    <input type="text" class="form-control" placeholder="Name" id="contact_name_p">
+                                    <span id="contact_name_error" style="display: none;color:red">Contact Name is
+                                        required!</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Title</label>
+                                    <input type="text" class="form-control" placeholder="Title" id="contact_title_p">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Contact Department: </label>
+                                    <input class="form-control selectpicker" type="text" id="contact_department_p"
+                                        name="contact_department" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="text" class="form-control" placeholder="Email" id="contact_email_p">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{-- <a id="addDataContact"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> --}}
+                                <h4 class="title_edit text-left mb-25 mt-10 px-20">Phones
+                                    <a id="addDataContact" class="plus_delteicon bg-primary-color float-right"><img
+                                            src="/frontend/assets/images/plus.png" alt="" title=""></a>
+                                </h4>
+                                <div class="col-md-12">
+                                    <table class="table table_border_none" id="PhoneTableContact">
+                                        <thead>
+                                            <th>Number</th>
+                                            <th>extension</th>
+                                            <th style="width:200px;position:relative;">Type
+                                                <div class="help-tip" style="top:8px;">
+                                                    <div>
+                                                        <p>Select “Main” if this is the organization's primary phone
+                                                            number (or leave blank)
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </th>
+                                            <th style="width:200px;">Language(s)</th>
+                                            <th style="width:200px;position:relative;">Description
+                                                <div class="help-tip" style="top:8px;">
+                                                    <div>
+                                                        <p>A description providing extra information about the phone
+                                                            service (e.g. any special arrangements for accessing, or
+                                                            details of availability at particular times).
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </th>
+                                            <th>&nbsp;</th>
+                                        </thead>
+                                        <tbody id="addPhoneTrContact">
+                                            <tr id="contact_0">
+                                                <td>
+                                                    <input type="text" class="form-control" name="service_phones[]"
+                                                        id="service_phones_contact_0">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" name="phone_extension[]"
+                                                        id="phone_extension_contact_0">
+                                                </td>
+                                                <td>
+                                                    {!! Form::select('phone_type[]',$phone_type,[],['class' =>
+                                                    'form-control selectpicker','data-live-search' => 'true','id' =>
+                                                    'phone_type_contact_0','data-size' => 5,'placeholder' => 'select
+                                                    phone type'])!!}
+                                                </td>
+                                                <td>
+                                                    {!! Form::select('phone_language[]',$phone_languages,[],['class' =>
+                                                    'form-control selectpicker','data-size' => 5,' data-live-search' =>
+                                                    'true', 'id' => 'phone_language_contact_0','multiple' => true]) !!}
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" name="phone_description[]"
+                                                        id="phone_description_contact_0">
+                                                </td>
+                                                <td>
+                                                    {{-- <a href="javascript:void(0)" id="addDataContact" class="plus_delteicon bg-primary-color">
+                                                                    <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                                                </a> --}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                        class="btn btn-danger btn-lg btn_delete red_btn contactCloseButton">Close</button>
+                    <button type="button" id="contactSubmit"
+                        class="btn btn-primary btn-lg btn_padding green_btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{{-- End here --}}
+{{-- detail term modal --}}
+<div class="modal fade " tabindex="-1" role="dialog" aria-hidden="true" id="create_new_term">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form>
+                <div class="modal-header">
+                    <button type="button" class="close detailTermCloseButton"><span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Add Detail Term</h4>
+                </div>
+                <div class="modal-body all_form_field">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Detail Term</label>
+                                <input type="text" class="form-control" placeholder="Detail Term" id="detail_term_p">
+                                <input type="hidden" name="detail_term_index_p" value="" id="detail_term_index_p">
+                                <span id="detail_term_error" style="display: none;color:red">Detail Term is
+                                    required!</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                        class="btn btn-danger btn-lg btn_delete red_btn detailTermCloseButton">Close</button>
+                    <button type="button" id="detailTermSubmit"
+                        class="btn btn-primary btn-lg btn_padding green_btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{{-- End here --}}
+{{-- service category term modal --}}
+<div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"
+    id="create_new_service_category_term">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form>
+                <div class="modal-header">
+                    <button type="button" class="close serviceCategoryTermCloseButton"><span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Add Service Category Term</h4>
+                </div>
+                <div class="modal-body all_form_field">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{-- <label>Service Category Term</label> --}}
+                                <input type="text" class="form-control" placeholder="Service Category Term"
+                                    id="service_category_term_p">
+                                <input type="hidden" name="service_category_term_index_p" value=""
+                                    id="service_category_term_index_p">
+                                <span id="service_category_term_error" style="display: none;color:red">Service Category
+                                    Term is required!</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                        class="btn btn-danger btn-lg btn_delete red_btn serviceCategoryTermCloseButton">Close</button>
+                    <button type="button" id="serviceCategoryTermSubmit"
+                        class="btn btn-primary btn-lg btn_padding green_btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{{-- End here --}}
+{{-- service eligibility term modal --}}
+<div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true"
+    id="create_new_service_eligibility_term">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form>
+                <div class="modal-header">
+                    <button type="button" class="close serviceEligibilityTermCloseButton"><span
+                            aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Add Service Eligibility Term</h4>
+                </div>
+                <div class="modal-body all_form_field">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label
+                                    style="margin-bottom:5px;font-weight:600;color: #000;letter-spacing: 0.5px;">Service
+                                    Eligibility Term</label>
+                                <input type="text" class="form-control" placeholder="Service Eligibility Term"
+                                    id="service_eligibility_term_p">
+                                <input type="hidden" name="service_eligibility_term_index_p" value=""
+                                    id="service_eligibility_term_index_p">
+                                <span id="service_eligibility_term_error" style="display: none;color:red">Service
+                                    Eligibility Term is required!</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                        class="btn btn-danger btn-lg btn_delete red_btn serviceEligibilityTermCloseButton">Close</button>
+                    <button type="button" id="serviceEligibilityTermSubmit"
+                        class="btn btn-primary btn-lg btn_padding green_btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{{-- End here --}}
+</div>
+</div>
+</div>
 
 
+
+<script src="/js/jquery.timepicker.min.js"></script>
 <script>
+    $('.timePicker').timepicker({ 'scrollDefault': 'now' });
     $('#back-service-btn').click(function() {
         history.go(-1);
         return false;
@@ -1518,22 +1648,48 @@ Service Create
     })
     $('#serviceCategoryTermSubmit').click(function () {
 
+        // let service_category_term = $('#service_category_term_p').val()
+        // let index = $('#service_category_term_index_p').val()
+        // if($('#service_category_term_p').val() == ''){
+        //         $('#service_category_term_error').show()
+        //     setTimeout(() => {
+        //         $('#service_category_term_error').hide()
+        //     }, 5000);
+        //     return false
+        // }
+        // $('#service_category_term_type_'+index).val('new')
+        // $('#service_category_term_'+index).append('<option value="'+service_category_term+'">'+service_category_term+'</option>');
+        // $('#service_category_term_'+index).val(service_category_term)
+        // $('#service_category_term_'+index).selectpicker('refresh')
+        // $('#create_new_service_category_term').modal('hide')
+        // $('#service_category_term_p').val('')
+        // $('#service_category_term_index_p').val('')
         let service_category_term = $('#service_category_term_p').val()
         let index = $('#service_category_term_index_p').val()
-        if($('#service_category_term_p').val() == ''){
-                $('#service_category_term_error').show()
-            setTimeout(() => {
-                $('#service_category_term_error').hide()
-            }, 5000);
-            return false
-        }
-        $('#service_category_term_type_'+index).val('new')
-        $('#service_category_term_'+index).append('<option value="'+service_category_term+'">'+service_category_term+'</option>');
-        $('#service_category_term_'+index).val(service_category_term)
-        $('#service_category_term_'+index).selectpicker('refresh')
-        $('#create_new_service_category_term').modal('hide')
-        $('#service_category_term_p').val('')
-        $('#service_category_term_index_p').val('')
+        let category_type_recordid = $('#service_category_type_'+index).val()
+        let _token = "{{ csrf_token() }}"
+        let service_recordid = ""
+        let organization_recordid = ""
+        $.ajax({
+            url : '{{ route("saveTaxonomyTerm") }}',
+            method : 'post',
+            data : {category_type_recordid,service_category_term,_token,service_recordid,organization_recordid},
+            success: function (response) {
+                $('#loading').hide()
+                alert('Thank you for submitting a new term. It is being evaluated by the system administrators. We will let you know if it becomes available.');
+                $('#service_category_type_'+index).val('')
+                $('#service_category_term_'+index).empty()
+                $('#service_category_term_'+index).selectpicker('refresh')
+                $('#service_category_type_'+index).selectpicker('refresh')
+                $('#create_new_service_category_term').modal('hide')
+                $('#service_category_term_p').val('')
+            },
+            error : function (error) {
+                $('#loading').hide()
+                $('#create_new_service_category_term').modal('hide')
+                console.log(error)
+            }
+        })
     })
     $('.serviceCategoryTermCloseButton').click(function () {
 
@@ -1659,12 +1815,13 @@ Service Create
     })
     let hs = 2
     $('#addTr').click(function(){
-        $('#myTable tr:last').before('<tr><td><input class="form-control" type="date" name="holiday_start_date[]" id=""></td><td><input class="form-control" type="date" name="holiday_end_date[]" id=""></td><td><input class="form-control" type="time" name="holiday_open_at[]" id=""></td><td><input class="form-control" type="time" name="holiday_close_at[]" id=""></td><td><input  type="checkbox" name="holiday_closed[]" id="" value="'+hs+'" ></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#myTable tr:last').before('<tr><td><input class="form-control" type="date" name="holiday_start_date[]" id=""></td><td><input class="form-control" type="date" name="holiday_end_date[]" id=""></td><td><input class="form-control timePicker" type="text" name="holiday_open_at[]" id=""></td><td><input class="form-control timePicker" type="text" name="holiday_close_at[]" id=""></td><td><input  type="checkbox" name="holiday_closed[]" id="" value="'+hs+'" ></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         hs++;
+        $('.timePicker').timepicker({ 'scrollDefault': 'now' });
     });
     pt = 1
     $('#addPhoneTr').click(function(){
-        $('#PhoneTable tr:last').before('<tr ><td><input type="text" class="form-control" name="service_phones[]" id=""></td><td><input type="text" class="form-control" name="phone_extension[]" id=""></td><td>{!! Form::select("phone_type[]",$phone_type,[],["class" => "form-control selectpicker","data-live-search" => "true","id" => "phone_type","data-size" => 5,"placeholder" => "select phone type"])!!}</td><td><select name="phone_language[]" id="phone_language_'+pt+'" class="form-control selectpicker phone_language" data-size="5" data-live-search="true" multiple> @foreach ($phone_languages as $key=>$value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id=""></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#PhoneTable tr:last').before('<tr ><td><input type="text" class="form-control" name="service_phones[]" id=""></td><td><input type="text" class="form-control" name="phone_extension[]" id=""></td><td>{!! Form::select("phone_type[]",$phone_type,[],["class" => "form-control selectpicker","data-live-search" => "true","id" => "phone_type","data-size" => 5,"placeholder" => "select phone type"])!!}</td><td><select name="phone_language[]" id="phone_language_'+pt+'" class="form-control selectpicker phone_language" data-size="5" data-live-search="true" multiple> @foreach ($phone_languages as $key=>$value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id=""></td><td><div class="form-check form-check-inline" style="margin-top: -10px;"> <input class="form-check-input " type="radio" name="main_priority[]" id="main_priority" value="1" > <label class="form-check-label" for="main_priority"></label></div></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         pt++;
     })
@@ -1682,8 +1839,9 @@ Service Create
     })
     let ls = 1;
     $('#addScheduleHolidayLocation').click(function(){
-        $('#scheduleHolidayLocation').append('<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_'+ls+'"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_'+ls+'"></td><td> <input class="form-control" type="time" name="holiday_open_at" id="holiday_open_at_location_'+ls+'"></td><td> <input class="form-control" type="time" name="holiday_close_at" id="holiday_close_at_location_'+ls+'"></td><td> <input  type="checkbox" name="holiday_closed" id="holiday_closed_location_'+ls+'" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#scheduleHolidayLocation').append('<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_'+ls+'"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_'+ls+'"></td><td> <input class="form-control timePicker" type="text" name="holiday_open_at" id="holiday_open_at_location_'+ls+'"></td><td> <input class="form-control timePicker" type="text" name="holiday_close_at" id="holiday_close_at_location_'+ls+'"></td><td> <input  type="checkbox" name="holiday_closed" id="holiday_closed_location_'+ls+'" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         ls++;
+        $('.timePicker').timepicker({ 'scrollDefault': 'now' });
     });
     $(document).on('click', '.removePhoneData', function(){
 
@@ -2523,8 +2681,8 @@ Service Create
         $('#location_holiday_closeds').val(JSON.stringify(location_holiday_closeds))
 
         $('#scheduleHolidayLocation').empty()
-        $('#scheduleHolidayLocation').append('<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_0"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_0"></td><td> <input class="form-control" type="time" name="holiday_open_at" id="holiday_open_at_location_0"></td><td> <input class="form-control" type="time" name="holiday_close_at" id="holiday_close_at_location_0"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_0" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
-
+        $('#scheduleHolidayLocation').append('<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_0"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_0"></td><td> <input class="form-control timePicker" type="text" name="holiday_open_at" id="holiday_open_at_location_0"></td><td> <input class="form-control timePicker" type="text" name="holiday_close_at" id="holiday_close_at_location_0"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_0" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('.timePicker').timepicker({ 'scrollDefault': 'now' });
         $('#opens_at_location_monday').val('')
         $('#closes_at_location_monday').val('')
         $('#schedule_closed_location_monday').val(1)
@@ -2775,8 +2933,8 @@ Service Create
         $('.selectpicker').selectpicker('refresh');
 
         $('#scheduleHolidayLocation').empty()
-        $('#scheduleHolidayLocation').append('<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_0"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_0"></td><td> <input class="form-control" type="time" name="holiday_open_at" id="holiday_open_at_location_0"></td><td> <input class="form-control" type="time" name="holiday_close_at" id="holiday_close_at_location_0"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_0" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
-
+        $('#scheduleHolidayLocation').append('<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_0"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_0"></td><td> <input class="form-control timePicker" type="text" name="holiday_open_at" id="holiday_open_at_location_0"></td><td> <input class="form-control timePicker" type="text" name="holiday_close_at" id="holiday_close_at_location_0"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_0" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('.timePicker').timepicker({ 'scrollDefault': 'now' });
         // $('.locationRadio').val()
         let radioValue = $("#selectedLocationRadio_"+id).val();
         let location_name_p = $('#location_name_'+id).val()
@@ -2963,8 +3121,8 @@ Service Create
         }
 
         for (let index = 1; index < location_holiday_start_dates.length; index++) {
-            $('#scheduleHolidayLocation').append('<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_'+index+'" value="'+location_holiday_start_dates[index]+'"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_'+index+'" value="'+location_holiday_end_dates[index]+'"></td><td> <input class="form-control" type="time" name="holiday_open_at" id="holiday_open_at_location_'+index+'" value="'+location_holiday_open_ats[index]+'"></td><td> <input class="form-control" type="time" name="holiday_close_at" id="holiday_close_at_location_'+index+'" value="'+location_holiday_close_ats[index]+'"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_'+index+'" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
-
+            $('#scheduleHolidayLocation').append('<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_'+index+'" value="'+location_holiday_start_dates[index]+'"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_'+index+'" value="'+location_holiday_end_dates[index]+'"></td><td> <input class="form-control timePicker" type="text" name="holiday_open_at" id="holiday_open_at_location_'+index+'" value="'+location_holiday_open_ats[index]+'"></td><td> <input class="form-control timePicker" type="text" name="holiday_close_at" id="holiday_close_at_location_'+index+'" value="'+location_holiday_close_ats[index]+'"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_'+index+'" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+            $('.timePicker').timepicker({ 'scrollDefault': 'now' });
             if(location_holiday_closeds[index] == 1){
                 $('#holiday_closed_location_'+index).attr('checked',true)
             }else{

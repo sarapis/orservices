@@ -34,7 +34,7 @@ class SuggestController extends Controller
     public function create()
     {
         $map = Map::find(1);
-        $organizations = Organization::pluck('organization_name', "organization_recordid");
+        $organizations = Organization::orderBy('organization_name')->pluck('organization_name', "organization_recordid");
 
         return view('frontEnd.suggest.create', compact('map', 'organizations'));
     }

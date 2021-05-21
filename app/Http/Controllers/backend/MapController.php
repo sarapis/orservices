@@ -9,6 +9,7 @@ use App\Model\Location;
 use App\Model\Map;
 use Curl;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
@@ -21,7 +22,7 @@ class MapController extends Controller
      * Post Repository
      *
      * @var Post
-    //  */
+     */
     // protected $about;
 
     // public function __construct(About $about)
@@ -281,7 +282,7 @@ class MapController extends Controller
 
             return redirect('map');
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in applying geocode : ' . $th);
         }
     }
 

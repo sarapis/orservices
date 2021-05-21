@@ -5,7 +5,7 @@ Organization Create
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
 <style type="text/css">
-    button[data-id="organization_services"] , button[data-id="organization_contacts"], button[data-id="organization_phones"], button[data-id="organization_locations"], button[data-id="organization_rating"], button[data-id="phone_type"], button[data-id="phone_language"],
+    button[data-id="organization_services"] , button[data-id="organization_contacts"], button[data-id="organization_phones"], button[data-id="organization_locations"], button[data-id="organization_website_rating"], button[data-id="phone_type"], button[data-id="phone_language"],
     button[data-id="service_organization"], button[data-id="service_status"], button[data-id="service_taxonomies"], button[data-id="service_schedules"], button[data-id="service_details"], button[data-id="service_address"],
     button[data-id="facility_organization"], button[data-id="facility_schedules"], button[data-id="facility_details"], button[data-id="facility_service"], button[data-id="facility_address_city"] ,button[data-id="facility_address_state"],
     button[data-id="contact_organization_name"],button[data-id="contact_service"] {
@@ -38,7 +38,7 @@ Organization Create
                                         <div class="help-tip">
                                             <div><p>The official or public name of the organization.</p></div>
                                         </div>
-                                        <input class="form-control selectpicker" type="text" id="organization_name" name="organization_name" value="">
+                                        {!! Form::text('organization_name',null,['class' => 'form-control','id' => 'organization_name']) !!}
                                         @error('organization_name')
                                             <span class="error-message"><strong>{{ $message }}</strong></span>
                                         @enderror
@@ -50,7 +50,8 @@ Organization Create
                                         <div class="help-tip">
                                             <div><p>Alternative or commonly used name for the organization.</p></div>
                                         </div>
-                                        <input class="form-control selectpicker" type="text" id="organization_alternate_name" name="organization_alternate_name" value="">
+                                        {!! Form::text('organization_alternate_name',null,['class' => 'form-control','id' => 'organization_alternate_name']) !!}
+
                                     </div>
                                 </div>
                                 <div class="col-md-12">
@@ -59,7 +60,7 @@ Organization Create
                                         <div class="help-tip">
                                             <div><p>A brief summary about the organization.</p></div>
                                         </div>
-                                        <textarea id="organization_description" name="organization_description" class="selectpicker" rows="5"></textarea>
+                                        {!! Form::textarea('organization_description', null, ['id' => 'organization_description', 'rows' => 4, 'cols' => 54, 'style' => 'resize:none']) !!}
                                         @error('organization_description')
                                             <span class="error-message"><strong>{{ $message }}</strong></span>
                                         @enderror
@@ -71,7 +72,7 @@ Organization Create
                                         <div class="help-tip">
                                             <div><p>The contact email address for the organization.</p></div>
                                         </div>
-                                        <input class="form-control selectpicker" type="text" id="organization_email" name="organization_email" value="">
+                                        {!! Form::text('organization_email',null,['class' => 'form-control','id' => 'organization_email']) !!}
                                         @error('organization_email')
                                             <span class="error-message"><strong>{{ $message }}</strong></span>
                                         @enderror
@@ -83,23 +84,35 @@ Organization Create
                                         <div class="help-tip">
                                             <div><p>The URL (website address) of the organization.</p></div>
                                         </div>
-                                        <input class="form-control selectpicker" type="text"  id="organization_url" name="organization_url" value="">
+                                        {!! Form::text('organization_url',null,['class' => 'form-control','id' => 'organization_url']) !!}
                                     </div>
                                 </div>
                                 @if (Auth::user() && Auth::user()->roles->name == 'System Admin')
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Website Rating: </label>
-                                        <select class="form-control selectpicker" data-live-search="true" id="organization_rating" data-size="5" name="organization_rating">
-                                            <option value="">Select Rating</option>
-                                            @foreach($rating_info_list as $key => $rating_info)
-                                                <option value="{{$rating_info}}">{{$rating_info}}</option>
-                                            @endforeach
-                                        </select>
+                                        {!! Form::select('organization_website_rating',$rating_info_list,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' =>'organization_website_rating','placeholder' => 'Select website rating']) !!}
                                     </div>
                                 </div>
                                 @endif
-
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Facebook URL: </label>
+                                        {!! Form::text('facebook_url',null,['class' => 'form-control']) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Twitter URL: </label>
+                                        {!! Form::text('twitter_url',null,['class' => 'form-control']) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Instagram URL: </label>
+                                        {!! Form::text('instagram_url',null,['class' => 'form-control']) !!}
+                                    </div>
+                                </div>
                                 <div class="text-right col-md-12 mb-20">
                                     <button type="button" class="btn btn_additional bg-primary-color" data-toggle="collapse" data-target="#demo">Additional Info
                                         <img src="/frontend/assets/images/white_arrow.png" alt="" title="" />
@@ -112,7 +125,7 @@ Organization Create
                                             <div class="help-tip">
                                                 <div><p>Government assigned tax designation for tax-exempt organizations.</p></div>
                                             </div>
-                                            <input class="form-control selectpicker"  type="text" id="organization_tax_status" name="organization_tax_status" value="" placeholder="Ex. 501(c)(3)">
+                                            {!! Form::text('organization_tax_status',null,['class' => 'form-control','id' => 'organization_tax_status','placeholder' => 'Ex. 501(c)(3)']) !!}
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -121,66 +134,39 @@ Organization Create
                                             <div class="help-tip">
                                                 <div><p>A government issued identifier used for tax administration (i.e., EIN, TIN).</p></div>
                                             </div>
-                                            <input class="form-control selectpicker"  type="text" id="organization_tax_id" name="organization_tax_id" value="" placeholder="Ex. 12-3456789">
+                                            {!! Form::text('organization_tax_id',null,['class' => 'form-control','id' => 'organization_tax_id','placeholder' => 'Ex. 12-3456789']) !!}
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Year Incorporated: </label>
                                             <div class="help-tip">
-                                                <div><p>The year in which the organization was legally formed</p></div>
+                                                <div>
+                                                    <p>The year in which the organization was legally formed</p>
+                                                </div>
                                             </div>
-                                            <input class="form-control selectpicker"  type="text" id="organization_year_incorporated" name="organization_year_incorporated" value="">
+                                            {!! Form::text('organization_year_incorporated',null,['class' => 'form-control','id' => 'organization_year_incorporated']) !!}
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Legal Status: </label>
                                             <div class="help-tip">
-                                                <div><p>The legal status defines the conditions that an organization is operating under; e.g. non-profit, private corporation or a government organization.</p></div>
+                                                {{-- <div><p>The legal status defines the conditions that an organization is operating under; e.g. non-profit, private corporation or a government organization.</p></div> --}}
+                                                <p>Type of organization</p>
                                             </div>
-                                            {{-- <input class="form-control selectpicker"  type="text" id="organization_legal_status"  name="organization_legal_status" value=""> --}}
-                                            {{-- <select name="organization_legal_status" id="organization_legal_status">
-                                                <option value="">Select Legal status</option>
-                                                <option value="non-profit">non-profit</option>
-                                                <option value="private-corporation">private corporation</option>
-                                                <option value="government">government</option>
-                                                <option value="other">other</option>
-                                            </select> --}}
                                             {!! Form::select('organization_legal_status',['non-profit' => 'non-profit','private-corporation' => 'private corporation','government' => 'government','other' => 'other'],null,['class' => 'form-control selectpicker','id' => 'organization_legal_status','placeholder' => 'Select Legal Status']) !!}
                                         </div>
                                     </div>
-                                    {{-- <div class="col-md-4">
+                                    @if ((Auth::user() &&
+                                    Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin'))
+                                    <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Services: </label>
-                                            <select class="form-control selectpicker" multiple data-live-search="true" id="organization_services" data-size="5" name="organization_services[]">
-                                                @foreach($services_info_list as $key => $services_info)
-                                                    <option value="{{$services_info->service_recordid}}">{{$services_info->service_name}}</option>
-                                                @endforeach
-                                            </select>
+                                            <label>Status: </label>
+                                            {!! Form::select('organization_status_x',$organizationStatus,null,['class' => 'form-control selectpicker','id' => 'organization_status_x','placeholder' => 'Select Status']) !!}
                                         </div>
-                                    </div> --}}
-                                    {{-- <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Contacts: </label>
-                                            <select class="form-control selectpicker" multiple data-live-search="true" data-size="5" id="organization_contacts" name="organization_contacts[]">
-                                                @foreach($organization_contacts_list as $key => $organization_cont)
-                                                    <option value="{{$organization_cont->contact_recordid}}">{{$organization_cont->contact_name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div> --}}
-
-                                    {{-- <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label>Phones: <a id="add-phone-input"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a></label>
-                                            <ol id="phones-ul" class="row p-0 m-0" style="list-style: none;">
-                                                <li class="organization-phones-li mb-2 col-md-4">
-                                                    <input class="form-control selectpicker organization_phones"  type="text" name="organization_phones[]" value="">
-                                                </li>
-                                            </ol>
-                                        </div>
-                                    </div>--}}
+                                    </div>
+                                    @endif
                                     {{-- service table --}}
                                     {{-- <div class="col-md-12">
                                         <div class="form-group">
@@ -240,6 +226,7 @@ Organization Create
                                                             </p></div>
                                                         </div>
                                                     </th>
+                                                    <th>Main</th>
                                                     <th style="width:60px">&nbsp;</th>
                                                 </thead>
                                                 <tbody>
@@ -268,6 +255,12 @@ Organization Create
                                                         </td>
                                                         <td>
                                                             <input type="text" class="form-control" name="phone_description[]" id="">
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-check form-check-inline" style="margin-top: -10px;">
+                                                                <input class="form-check-input " type="radio" name="main_priority[]" id="main_priority" value="1" checked>
+                                                                <label class="form-check-label" for="main_priority"></label>
+                                                            </div>
                                                         </td>
                                                         <td style="vertical-align: middle">
                                                             <a href="#" class="plus_delteicon btn-button">
@@ -633,7 +626,7 @@ Organization Create
             </div>
             {{-- End here --}}
             {{-- location Modal --}}
-            <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="locationmodal" >
+            <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="locationmodal" >
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <form>
@@ -806,7 +799,7 @@ Organization Create
                                                             <th>Weekday</th>
                                                             <th>Opens</th>
                                                             <th>Closes</th>
-                                                            <th>Closed</th>
+                                                            <th>Closed All Day</th>
                                                         </thead>
                                                         <tbody>
                                                             <tr>
@@ -815,10 +808,10 @@ Organization Create
                                                                     <input type="hidden" name="byday" value="monday" >
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('opens_at', null, ['class' => 'form-control','id' => 'opens_at_location_monday']) !!}
+                                                                    {!! Form::text('opens_at', null, ['class' => 'form-control timePicker','id' => 'opens_at_location_monday']) !!}
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('closes_at', null, ['class' => 'form-control','id' => 'closes_at_location_monday']) !!}
+                                                                    {!! Form::text('closes_at', null, ['class' => 'form-control timePicker','id' => 'closes_at_location_monday']) !!}
                                                                 </td>
                                                                 <td style="vertical-align: middle">
                                                                     <input type="checkbox" name="schedule_closed_location_monday" value="1" id="schedule_closed_location_monday" >
@@ -830,10 +823,10 @@ Organization Create
                                                                     <input type="hidden" name="byday" value="tuesday" >
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('opens_at', null, ['class' => 'form-control' ,'id' => 'opens_at_location_tuesday']) !!}
+                                                                    {!! Form::text('opens_at', null, ['class' => 'form-control timePicker' ,'id' => 'opens_at_location_tuesday']) !!}
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('closes_at', null, ['class' => 'form-control','id' => 'closes_at_location_tuesday']) !!}
+                                                                    {!! Form::text('closes_at', null, ['class' => 'form-control timePicker','id' => 'closes_at_location_tuesday']) !!}
                                                                 </td>
                                                                 <td style="vertical-align: middle">
                                                                     <input type="checkbox" name="schedule_closed_location_tuesday" value="2" id="schedule_closed_location_tuesday">
@@ -844,10 +837,10 @@ Organization Create
                                                                     <input type="hidden" name="byday" value="wednesday">
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('opens_at', null, ['class' => 'form-control','id' => 'opens_at_location_wednesday']) !!}
+                                                                    {!! Form::text('opens_at', null, ['class' => 'form-control timePicker','id' => 'opens_at_location_wednesday']) !!}
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('closes_at', null, ['class' => 'form-control','id' => 'closes_at_location_wednesday']) !!}
+                                                                    {!! Form::text('closes_at', null, ['class' => 'form-control timePicker','id' => 'closes_at_location_wednesday']) !!}
                                                                 </td>
                                                                 <td style="vertical-align: middle">
                                                                     <input type="checkbox" name="schedule_closed_location_wednesday" value="3" id="schedule_closed_location_wednesday" >
@@ -858,10 +851,10 @@ Organization Create
                                                                     <input type="hidden" name="byday" value="thursday">
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('opens_at', null, ['class' => 'form-control','id' => 'opens_at_location_thursday']) !!}
+                                                                    {!! Form::text('opens_at', null, ['class' => 'form-control timePicker','id' => 'opens_at_location_thursday']) !!}
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('closes_at',null, ['class' => 'form-control','id' => 'closes_at_location_thursday']) !!}
+                                                                    {!! Form::text('closes_at',null, ['class' => 'form-control timePicker','id' => 'closes_at_location_thursday']) !!}
                                                                 </td>
                                                                 <td style="vertical-align: middle">
                                                                     <input type="checkbox" name="schedule_closed_location_thursday" value="4" id="schedule_closed_location_thursday">
@@ -872,10 +865,10 @@ Organization Create
                                                                     <input type="hidden" name="byday" value="friday">
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('opens_at',null, ['class' => 'form-control','id' => 'opens_at_location_friday']) !!}
+                                                                    {!! Form::text('opens_at',null, ['class' => 'form-control timePicker','id' => 'opens_at_location_friday']) !!}
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('closes_at', null, ['class' => 'form-control','id' => 'closes_at_location_friday']) !!}
+                                                                    {!! Form::text('closes_at', null, ['class' => 'form-control timePicker','id' => 'closes_at_location_friday']) !!}
                                                                 </td>
                                                                 <td style="vertical-align: middle">
                                                                     <input type="checkbox" name="schedule_closed_location_friday" id="schedule_closed_location_friday" value="5" >
@@ -886,10 +879,10 @@ Organization Create
                                                                     <input type="hidden" name="byday" value="saturday">
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('opens_at', null, ['class' => 'form-control','id' => 'opens_at_location_saturday']) !!}
+                                                                    {!! Form::text('opens_at', null, ['class' => 'form-control timePicker','id' => 'opens_at_location_saturday']) !!}
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('closes_at', null, ['class' => 'form-control','id' => 'closes_at_location_saturday']) !!}
+                                                                    {!! Form::text('closes_at', null, ['class' => 'form-control timePicker','id' => 'closes_at_location_saturday']) !!}
                                                                 </td>
                                                                 <td style="vertical-align: middle">
                                                                     <input type="checkbox" name="schedule_closed_location_saturday" id="schedule_closed_location_saturday" value="6" >
@@ -900,10 +893,10 @@ Organization Create
                                                                     <input type="hidden" name="byday" value="sunday">
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('opens_at',  null, ['class' => 'form-control','id' => 'opens_at_location_sunday']) !!}
+                                                                    {!! Form::text('opens_at',  null, ['class' => 'form-control timePicker','id' => 'opens_at_location_sunday']) !!}
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::time('closes_at', null, ['class' => 'form-control','id' => 'closes_at_location_sunday']) !!}
+                                                                    {!! Form::text('closes_at', null, ['class' => 'form-control timePicker','id' => 'closes_at_location_sunday']) !!}
                                                                 </td>
 
                                                                 <td style="vertical-align: middle">
@@ -928,7 +921,7 @@ Organization Create
                                                             <th>End</th>
                                                             <th>Opens</th>
                                                             <th>Closes</th>
-                                                            <th>Closed</th>
+                                                            <th>Closed All Day</th>
                                                             <th>&nbsp;</th>
                                                         </thead>
                                                         <tbody id="scheduleHolidayLocation">
@@ -940,10 +933,10 @@ Organization Create
                                                                     <input type="date" name="holiday_end_date" id="holiday_end_date_location_0" class="form-control">
                                                                 </td>
                                                                 <td>
-                                                                    <input type="time" name="holiday_open_at" id="holiday_open_at_location_0" class="form-control">
+                                                                    <input type="text" name="holiday_open_at" id="holiday_open_at_location_0" class="form-control timePicker">
                                                                 </td>
                                                                 <td>
-                                                                    <input type="time" name="holiday_close_at" id="holiday_close_at_location_0" class="form-control">
+                                                                    <input type="text" name="holiday_close_at" id="holiday_close_at_location_0" class="form-control timePicker">
                                                                 </td>
                                                                 <td>
                                                                     <input type="checkbox" name="holiday_closed" id="holiday_closed_location_0" value="1">
@@ -978,7 +971,7 @@ Organization Create
             </div>
             {{-- End here --}}
             {{-- contact modal --}}
-            <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="contactmodal" >
+            <div class="modal fade " tabindex="-1" role="dialog" aria-hidden="true" id="contactmodal" >
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <form>
@@ -1110,8 +1103,9 @@ Organization Create
     </div>
 </div>
 
-
+<script src="/js/jquery.timepicker.min.js"></script>
 <script>
+    $('.timePicker').timepicker({ 'scrollDefault': 'now' });
     let editContactData = false;
     let selectedContactTrId = ''
     let editLocationData = false;
@@ -1148,7 +1142,7 @@ Organization Create
     })
     pt = 1
     $('#addPhoneTr').click(function(){
-        $('#PhoneTable tr:last').before('<tr><td><input type="text" class="form-control" name="organization_phones[]" id=""></td><td><input type="text" class="form-control" name="phone_extension[]" id=""></td><td>{!! Form::select("phone_type[]",$phone_type,[],["class" => "form-control selectpicker","data-live-search" => "true","id" => "phone_type","data-size" => 5,"placeholder" => "select phone type"])!!}</td><td><select name="phone_language[]" id="phone_language_'+pt+'" class="form-control selectpicker phone_language" data-size="5" data-live-search="true" multiple> @foreach ($phone_languages as $key=>$value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id=""></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#PhoneTable tr:last').before('<tr><td><input type="text" class="form-control" name="organization_phones[]" id=""></td><td><input type="text" class="form-control" name="phone_extension[]" id=""></td><td>{!! Form::select("phone_type[]",$phone_type,[],["class" => "form-control selectpicker","data-live-search" => "true","id" => "phone_type","data-size" => 5,"placeholder" => "select phone type"])!!}</td><td><select name="phone_language[]" id="phone_language_'+pt+'" class="form-control selectpicker phone_language" data-size="5" data-live-search="true" multiple> @foreach ($phone_languages as $key=>$value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id=""></td><td><div class="form-check form-check-inline" style="margin-top: -10px;"><input class="form-check-input " type="radio" name="main_priority[]" id="main_priority'+pt+'" value="1" ><label class="form-check-label" for="main_priority'+pt+'"></label></div></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         pt++;
     })
@@ -1167,8 +1161,9 @@ Organization Create
     })
     let ls = 1;
     $('#addScheduleHolidayLocation').click(function(){
-        $('#scheduleHolidayLocation').append('<tr><td><input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_'+ls+'"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_'+ls+'"></td><td> <input class="form-control" type="time" name="holiday_open_at" id="holiday_open_at_location_'+ls+'"></td><td> <input class="form-control" type="time" name="holiday_close_at" id="holiday_close_at_location_'+ls+'"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_'+ls+'" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#scheduleHolidayLocation').append('<tr><td><input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_'+ls+'"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_'+ls+'"></td><td> <input class="form-control timePicker" type="text" name="holiday_open_at" id="holiday_open_at_location_'+ls+'"></td><td> <input class="form-control timePicker" type="text" name="holiday_close_at" id="holiday_close_at_location_'+ls+'"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_'+ls+'" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         ls++;
+        $('.timePicker').timepicker({ 'scrollDefault': 'now' });
     });
     $(document).on('click', '.removePhoneData', function(){
         var $row = jQuery(this).closest('tr');
@@ -1323,13 +1318,13 @@ Organization Create
             }, 5000);
             return false
         }
-        if(contactRadioValue == 'new_data' && $('#contact_service_p').val() == ''){
-                $('#contact_service_error').show()
-            setTimeout(() => {
-                $('#contact_service_error').hide()
-            }, 5000);
-            return false
-        }
+        // if(contactRadioValue == 'new_data' && $('#contact_service_p').val() == ''){
+        //         $('#contact_service_error').show()
+        //     setTimeout(() => {
+        //         $('#contact_service_error').hide()
+        //     }, 5000);
+        //     return false
+        // }
 
         let phone_number_contact = []
         let phone_extension_contact = []
@@ -2018,8 +2013,8 @@ Organization Create
         $('#location_holiday_closeds').val(JSON.stringify(location_holiday_closeds))
 
         $('#scheduleHolidayLocation').empty()
-        $('#scheduleHolidayLocation').append('<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_0"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_0"></td><td> <input class="form-control" type="time" name="holiday_open_at" id="holiday_open_at_location_0"></td><td> <input class="form-control" type="time" name="holiday_close_at" id="holiday_close_at_location_0"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_0" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
-
+        $('#scheduleHolidayLocation').append('<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_0"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_0"></td><td> <input class="form-control timePicker" type="text" name="holiday_open_at" id="holiday_open_at_location_0"></td><td> <input class="form-control timePicker" type="text" name="holiday_close_at" id="holiday_close_at_location_0"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_0" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('.timePicker').timepicker({ 'scrollDefault': 'now' });
         $('#opens_at_location_monday').val('')
         $('#closes_at_location_monday').val('')
         $('#schedule_closed_location_monday').val(1)
@@ -2268,8 +2263,8 @@ Organization Create
         $('.selectpicker').selectpicker('refresh');
 
         $('#scheduleHolidayLocation').empty()
-        $('#scheduleHolidayLocation').append('<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_0"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_0"></td><td> <input class="form-control" type="time" name="holiday_open_at" id="holiday_open_at_location_0"></td><td> <input class="form-control" type="time" name="holiday_close_at" id="holiday_close_at_location_0"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_0" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
-
+        $('#scheduleHolidayLocation').append('<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_0"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_0"></td><td> <input class="form-control timePicker" type="text" name="holiday_open_at" id="holiday_open_at_location_0"></td><td> <input class="form-control timePicker" type="text" name="holiday_close_at" id="holiday_close_at_location_0"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_0" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('.timePicker').timepicker({ 'scrollDefault': 'now' });
         // $('.locationRadio').val()
         let radioValue = $("#selectedLocationRadio_"+id).val();
         let location_name_p = $('#location_name_'+id).val()
@@ -2454,14 +2449,14 @@ Organization Create
         }
 
         for (let index = 1; index < location_holiday_start_dates.length; index++) {
-            $('#scheduleHolidayLocation').append('<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_'+index+'" value="'+location_holiday_start_dates[index]+'"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_'+index+'" value="'+location_holiday_end_dates[index]+'"></td><td> <input class="form-control" type="time" name="holiday_open_at" id="holiday_open_at_location_'+index+'" value="'+location_holiday_open_ats[index]+'"></td><td> <input class="form-control" type="time" name="holiday_close_at" id="holiday_close_at_location_'+index+'" value="'+location_holiday_close_ats[index]+'"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_'+index+'" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
-
+            $('#scheduleHolidayLocation').append('<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_'+index+'" value="'+location_holiday_start_dates[index]+'"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_'+index+'" value="'+location_holiday_end_dates[index]+'"></td><td> <input class="form-control timePicker" type="text" name="holiday_open_at" id="holiday_open_at_location_'+index+'" value="'+location_holiday_open_ats[index]+'"></td><td> <input class="form-control timePicker" type="text" name="holiday_close_at" id="holiday_close_at_location_'+index+'" value="'+location_holiday_close_ats[index]+'"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_'+index+'" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
             if(location_holiday_closeds[index] == 1){
                 $('#holiday_closed_location_'+index).attr('checked',true)
             }else{
                 $('#holiday_closed_location_'+index).attr('checked',false)
             }
         }
+            $('.timePicker').timepicker({ 'scrollDefault': 'now' });
 
         ls = location_holiday_start_dates.length
 

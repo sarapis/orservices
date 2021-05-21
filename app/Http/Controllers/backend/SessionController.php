@@ -7,9 +7,11 @@ use App\Exports\SessionExport;
 use App\Http\Controllers\Controller;
 use App\Model\Layout;
 use App\Model\Organization;
+use App\Model\OrganizationTag;
 use App\Model\SessionData;
 use App\Model\SessionInteraction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -29,18 +31,19 @@ class SessionController extends Controller
             $organizations = Organization::whereIn('organization_recordid', $organization_recordedid)->pluck('organization_name', 'organization_recordid');
             // $organization_tags = Organization::whereNotNull('organization_tag')->whereIn('organization_recordid', $organization_recordedid)->pluck('organization_tag', 'organization_recordid');
 
-            $organization_tags = Organization::whereNotNull('organization_tag')->select("organization_tag")->distinct()->get();
+            // $organization_tags = Organization::whereNotNull('organization_tag')->select("organization_tag")->distinct()->get();
 
-            $tag_list = [];
-            foreach ($organization_tags as $key => $value) {
-                $tags = explode(", ", trim($value->organization_tag));
-                $tag_list = array_merge($tag_list, $tags);
-            }
-            $tag_list = array_unique($tag_list);
-            $organization_tagsArray = [];
-            foreach ($tag_list as $key => $value) {
-                $organization_tagsArray[$value] = $value;
-            }
+            // $tag_list = [];
+            // foreach ($organization_tags as $key => $value) {
+            //     $tags = explode(", ", trim($value->organization_tag));
+            //     $tag_list = array_merge($tag_list, $tags);
+            // }
+            // $tag_list = array_unique($tag_list);
+            // $organization_tagsArray = [];
+            // foreach ($tag_list as $key => $value) {
+            //     $organization_tagsArray[$value] = $value;
+            // }
+            $organization_tagsArray = OrganizationTag::pluck('tag', 'id');
 
             $session_starts = SessionData::pluck('session_start_datetime', 'session_recordid');
             $session_ends = SessionData::pluck('session_end_datetime', 'session_recordid');
@@ -106,6 +109,7 @@ class SessionController extends Controller
                 ->make(true);
         } catch (\Throwable $th) {
             dd($th);
+            Log::error('Error in Session controller index : ' . $th);
         }
     }
 
@@ -179,7 +183,7 @@ class SessionController extends Controller
         try {
             return Excel::download(new SessionExport($request), 'Sessions.csv');
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in All session export : ' . $th);
         }
     }
     public function all_interaction_export(Request $request)
@@ -187,7 +191,7 @@ class SessionController extends Controller
         try {
             return Excel::download(new InteractionExport($request), 'SessionInteraction.csv');
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in All interaction export : ' . $th);
         }
     }
     public function getInteraction(Request $request)
@@ -201,7 +205,7 @@ class SessionController extends Controller
                 'success' => true
             ], 200);
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in GetInteraction : ' . $th);
         }
     }
 }

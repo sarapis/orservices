@@ -6,8 +6,8 @@
 				<div class="site-gridmenu-toggle" data-toggle="gridmenu">
 					<a class="navbar-brand" href="/">
 						@if($layout->logo_active == 1)
-							<img class="navbar-brand-logo navbar-brand-logo-normal" src="../uploads/images/{{$layout->logo}}" title="{{$layout->site_name}}" style="height: auto;width:100px;">
-							<img class="navbar-brand-logo navbar-brand-logo-special" src="./uploads/images/{{$layout->logo}}" title="{{$layout->site_name}}" style="height: auto;width:100px;">
+							<img class="navbar-brand-logo navbar-brand-logo-normal" src="/uploads/images/{{$layout->logo}}" title="{{$layout->site_name}}" style="height: auto;width:100px;">
+							<img class="navbar-brand-logo navbar-brand-logo-special" src="/uploads/images/{{$layout->logo}}" title="{{$layout->site_name}}" style="height: auto;width:100px;">
 						@endif
 						@if($layout->title_active == 1)
 						<span class="navbar-brand-text">{{$layout->site_name}}</span>
@@ -87,16 +87,33 @@
 					</li>
                     @endif
 					@if (Auth::user())
+                    @if (Auth::user()->role_id == 1)
+                    <li class="nav-item">
+						<div class="dropdown">
+							<button class="dropbtn" style="color: {{$layout->top_menu_link_color}}">My account</button>
+							<div class="dropdown-content">
+								@if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin' || Auth::user() && Auth::user()->roles &&  Auth::user()->roles->name == 'System Admin')
+								<a class="nav-link" href="/account/{{Auth::user()->id}}">My account</a>
+                                <a href="/dashboard" class="nav-link"> Administration </a>
+								@endif
+							</div>
+						</div>
+					</li>
+                    @else
 					<li class="nav-item">
 						<a class="nav-link" href="/account/{{Auth::user()->id}}">My account</a>
 					</li>
+                    @endif
 					<li class="nav-item">
 						<a class="nav-link" href="/logout">Logout</a>
 					</li>
 					@else
+
+                    @if ($layout->activate_login_button == 1)
 					<li class="nav-item">
 						<a class="nav-link" href="/login">Login</a>
 					</li>
+                    @endif
 					@endif
 				</ul>
 			</div>
@@ -134,9 +151,18 @@
 		height: 50px;
 		background: {{$layout->secondary_color}} ;
 	}
-	.card-block .card-title a,.card-block .card-title a.title_org,.detail_services .card-block .card-title a,.card-block .organization_services .card-title a,.table a,.card-block .panel-link{
+	.card-block .card-title a,.card-block .card-title a.title_org,.detail_services .card-block .card-title a,.card-block .organization_services .card-title a,.table a, .card-block .panel-link, {
 		  color: {{$layout->title_link_color}};
 	}
+    .card-block .nav-tabs .nav-item .nav-link.active{
+        background: {{$layout->button_color}};
+    }
+    .card-block .nav-tabs .nav-item .nav-link.active h4.card_services_title{
+        color: white;  font-size: 24px;
+    }
+    .card-block .nav-tabs .nav-item .nav-link h4.card_services_title{
+        font-size: 24px;
+    }
 	.site-navbar .navbar-header .navbar-brand{
 		color: {{$layout->menu_title_color}};
 	}

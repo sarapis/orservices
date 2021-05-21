@@ -7,8 +7,10 @@ use App\Model\Layout;
 use App\Model\Map;
 use App\Model\Page;
 use App\Model\Taxonomy;
+use App\Model\TaxonomyType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use SendGrid\Client;
 
 class HomeController extends Controller
 {
@@ -75,7 +77,8 @@ class HomeController extends Controller
                 array_push($taxonomy_tree, $taxonomy_data);
             }
         } else {
-            $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name')->whereNotNull('taxonomy_services')->get();
+            $serviceCategoryId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Category')->first();
+            $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId ? $serviceCategoryId->taxonomy_type_recordid : '')->whereNotNull('taxonomy_services')->get();
             // $parent_taxonomy_data = [];
             // foreach($parent_taxonomies as $parent_taxonomy) {
             //     $child_data['parent_taxonomy'] = $parent_taxonomy->taxonomy_name;

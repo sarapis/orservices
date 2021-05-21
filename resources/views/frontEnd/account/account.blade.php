@@ -26,10 +26,9 @@
                     </div>
                 </div>
                 <h4 class="card-title mb-20 text-center" style="font-weight: 500;font-size: 20px;color: #1b1b1b;font-family: Neue Haas Grotesk Display Medium">My Organizations</h4>
-                <div class="col-sm-12 p-0 card-columns">
-                    @if ($organization_list)
+                <div class="col-sm-12 p-0">
+                    @if ($organization_list && count($organization_list) > 0 && $user && $user->role_id != 1)
                     @foreach($organization_list as $organization)
-
                     <div class="card">
                         <div class="card-block">
                             <h4 class="card-title">
@@ -53,9 +52,16 @@
                                     <img src="/frontend/assets/images/arrow_right.png" alt="" title="" class="float-right">
                                 </a>
                             </h4>
+                            <h4> <span> Last updated : </span> {{ $organization->updated_at }}</h4>
                         </div>
                     </div>
                     @endforeach
+                    @else
+                    <div class="card">
+                        <div class="card-block">
+                            <p style="font-size:16px">You are a system administrator so you can edit all <a href="/organizations">organizations</a>.</p>
+                        </div>
+                    </div>
                     @endif
                 </div>
             </div>
@@ -105,14 +111,14 @@
                         </div>
                     </div>
                 </div>
-                @if ($user)
+                {{-- @if ($user)
                     <div class="col-md-12 p-0 text-right mb-20">
                         @if ($user->role_id == 1)
                         <a href="/dashboard" class="btn btn-success ml-20 "> Access Backend </a>
                         @endif
-                        {{-- <a href="/account/{{$user->id}}/change_password" class="btn btn-danger mr-20"> Change Password </a> --}}
+                        <a href="/account/{{$user->id}}/change_password" class="btn btn-danger mr-20"> Change Password </a>
                     </div>
-                @endif
+                @endif --}}
                 <div class="card">
                     <div class="card-block">
                         @if ($account)

@@ -20,15 +20,23 @@ $(document).ready(function(){
         // Populate Data in Edit Modal Form
         $.ajax({
             type: "GET",
-            url: url + '/' + id,
+            url: '/tb_taxonomy' + '/' + id,
             success: function (data) {
-                console.log(data);
                 if(data.taxonomy_parent_name){
                     $('#parentDiv').show()
                     $('#orderDiv').show()
                 }else{
                     $('#parentDiv').hide()
                     $('#orderDiv').hide()
+                }
+                if(data.parentData){
+                    $('#taxonomy_parent_name').empty()
+                    $('#taxonomy_parent_name').append('<option value="">Select Parent</option>');
+                    $.each(data.parentData,function(i,v){
+                        $('#taxonomy_parent_name').append('<option value="'+i+'">'+v+'</option>');
+                    })
+                    $('#taxonomy_parent_name').val('')
+                    $('#taxonomy_parent_name').selectpicker('refresh')
                 }
                 $('#id').val(data.taxonomy_recordid);
                 $('#taxonomy_name').val(data.taxonomy_name);
@@ -42,12 +50,17 @@ $(document).ready(function(){
                 $('#taxonomy_x_notes').val(data.taxonomy_x_notes);
                 $('#exclude_vocabulary').val(data.exclude_vocabulary);
                 $('#badge_color').val(data.badge_color);
+                $('#created_at').val(data.created_at);
+                $('#created_by').val(data.user ? data.user.first_name : '' );
+                $('#status').val(data.status);
                 $('#white_logo_image').attr('src',data.category_logo_white)
                 $('#category_logo_image').attr('src',data.category_logo)
                 $("#taxonomy").selectpicker('refresh');
                 $("#x_taxonomies").selectpicker('refresh');
+                $('#taxonomy_parent_name').selectpicker('refresh')
                 $('#btn-save').val("update");
                 $('#myModal').modal('show');
+
 
             },
             error: function (data) {

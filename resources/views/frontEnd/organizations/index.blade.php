@@ -15,29 +15,33 @@ Organizations
                 <div class="card-block">
                     {{-- <img src="/frontend/assets/images/logo_dummy.png" alt="" title="" class="org_logo_img"> --}}
                     <h4 class="card-title">
-                        <a href="/organizations/{{$organization->organization_recordid}}" class="notranslate title_org">{{$organization->organization_name}}</a>
+                        <a href="/organizations/{{$organization->organization_recordid}}"
+                            class="notranslate title_org">{{$organization->organization_name}}</a>
                     </h4>
                     <p class="card-text" style="font-weight:400;">
                         {!! Str::limit($organization->organization_description, 200) !!}
                     </p>
                     <h4><span>Number of Services:
-                        @php
+                            @php
                             if(count($organization->services) == 0){
-                                $organization_services = $organization->getServices->count();
+                            $organization_services = $organization->getServices->count();
                             }
-                        @endphp
-                        @if(isset($organization->services) && count($organization->services) != 0)
+                            @endphp
+                            @if(isset($organization->services) && count($organization->services) != 0)
                             {{$organization->services->count()}}
-                        @elseif(count($organization->services) == 0)
+                            @elseif(count($organization->services) == 0)
                             {{ $organization->getServices->count() }}
-                        @else
+                            @else
                             0
-                        @endif
+                            @endif
                         </span>
                         <a href="/organizations/{{$organization->organization_recordid}}">
                             <img src="/frontend/assets/images/arrow_right.png" alt="" title="" class="float-right">
                         </a>
                     </h4>
+                    @auth
+                    <h4> <span>Last Updated: </span> {{ $organization->updated_at }}</h4>
+                    @endauth
                 </div>
             </div>
             @endforeach
@@ -45,7 +49,10 @@ Organizations
         <div class="example col-md-12">
             <div class="row">
                 <div class="col-md-6 pagination_text">
-                    <p>Showing {{ $organizations->currentPage() * Request::get('paginate') - intval(Request::get('paginate') - 1)  }}-{{ $organizations->currentPage() * Request::get('paginate')  }} of {{ $organizations->total() }} items  <span>Show {{ Request::get('paginate') }} per page</span></p>
+                    {{-- <p>Showing {{ $organizations->currentPage() * Request::get('paginate') - intval(Request::get('paginate') - 1)  }}-{{ $organizations->currentPage() * Request::get('paginate')  }}
+                    of {{ $organizations->total() }} items <span>Show {{ Request::get('paginate') }} per page</span></p>
+                    --}}
+                    <p>Showing {{ $organizations->count() }} of {{ $organizations->total() }} results</p>
                 </div>
                 <div class="col-md-6 text-right">
                     {{ $organizations->appends(\Request::except('page'))->render() }}
@@ -56,5 +63,3 @@ Organizations
 </div>
 
 @endsection
-
-

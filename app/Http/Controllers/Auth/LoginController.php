@@ -69,13 +69,12 @@ class LoginController extends Controller
             $remember = ($request->get('remember') == 'on') ? true : false;
 
             if ($user = Auth::attempt(['email' => $email, 'password' => $password], $remember)) {
-
+                
                 return redirect()->intended('home');
             }
 
             return Redirect::back()->withErrors(['global' => 'Invalid password or this user does not exist']);
         } catch (Throwable $th) {
-            dd($th);
             return Redirect::back()->withErrors(['global' => 'This user is not activated', 'activate_contact' => 1]);
         }
         // catch (ThrottlingException $e) {

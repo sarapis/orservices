@@ -6,6 +6,7 @@ use App\Model\Alt_taxonomy;
 use App\Model\Layout;
 use App\Model\Map;
 use App\Model\Organization;
+use App\Model\OrganizationTag;
 use App\Model\Page;
 use App\Model\Source_data;
 use App\Model\Taxonomy;
@@ -122,19 +123,20 @@ class ComposerServiceProvider extends ServiceProvider
                 $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies;
             }
 
-            $organization_tags = Organization::whereNotNull('organization_tag')->select("organization_tag")->distinct()->get();
+            // $organization_tags = Organization::whereNotNull('organization_tag')->select("organization_tag")->distinct()->get();
 
-            $tag_list = [];
-            foreach ($organization_tags as $key => $value) {
-                $tags = explode(",", trim($value->organization_tag));
-                $tag_list = array_merge($tag_list, $tags);
-            }
-            $tag_list = array_unique($tag_list);
+            // $tag_list = [];
+            // foreach ($organization_tags as $key => $value) {
+            //     $tags = explode(",", trim($value->organization_tag));
+            //     $tag_list = array_merge($tag_list, $tags);
+            // }
+            // $tag_list = array_unique($tag_list);
 
-            $organization_tagsArray = [];
-            foreach ($tag_list as $key => $value) {
-                $organization_tagsArray[$value] = $value;
-            }
+            // $organization_tagsArray = [];
+            // foreach ($tag_list as $key => $value) {
+            //     $organization_tagsArray[$value] = $value;
+            // }
+            $organization_tagsArray = OrganizationTag::pluck('tag', 'id');
 
             // $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name')->whereNotNull('taxonomy_services')->get();
             $layout = Layout::first();

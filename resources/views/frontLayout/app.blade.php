@@ -16,7 +16,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
 	<link href="/css/style.css" rel="stylesheet">
 	<link rel="stylesheet" href="/css/responsive.css">
-	{{-- <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=5f572e846b5d9900194e2a53&product=sop' async='async'></script> --}}
+	<script type='text/javascript' src='{{ env('SHARETHIS_ACTIVATE')}}' async='async'></script>
 	<style>
 		body {
 			padding-top: 70px;

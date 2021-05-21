@@ -119,7 +119,7 @@ class AddressController extends Controller
             $airtable_key_info->base_url = $base_url;
             $airtable_key_info->save();
 
-            Address::truncate();
+            // Address::truncate();
             // $airtable = new Airtable(array(
             //     'api_key'   => env('AIRTABLE_API_KEY'),
             //     'base'      => env('AIRTABLE_BASE_URL'),
@@ -139,53 +139,59 @@ class AddressController extends Controller
 
                 foreach ($airtable_response['records'] as $record) {
 
-                    $address = new Address();
                     $strtointclass = new Stringtoint();
+                    $recordId = $strtointclass->string_to_int($record['id']);
+                    $old_address = Address::where('address_recordid', $recordId)->where('address_1', isset($record['fields']['address_1']) ? $record['fields']['address_1'] : null)->first();
+                    if ($old_address == null) {
 
-                    $address->address_recordid = $strtointclass->string_to_int($record['id']);
+                        $address = new Address();
+                        $strtointclass = new Stringtoint();
 
-                    $address->address_1 = isset($record['fields']['address_1']) ? $record['fields']['address_1'] : null;
-                    $address->address_2 = isset($record['fields']['address_2']) ? $record['fields']['address_2'] : null;
-                    $address->address_city = isset($record['fields']['city']) ? $record['fields']['city'] : null;
-                    $address->address_state_province = isset($record['fields']['state_province']) ? $record['fields']['state_province'] : null;
-                    $address->address_postal_code = isset($record['fields']['postal_code']) ? $record['fields']['postal_code'] : null;
-                    $address->address_region = isset($record['fields']['region']) ? $record['fields']['region'] : null;
-                    $address->address_country = isset($record['fields']['country']) ? $record['fields']['country'] : null;
-                    $address->address_attention = isset($record['fields']['attention']) ? $record['fields']['attention'] : null;
-                    $address->address_type = isset($record['fields']['x-type'])  ? $record['fields']['x-type'] : null;
+                        $address->address_recordid = $strtointclass->string_to_int($record['id']);
 
-                    if (isset($record['fields']['locations'])) {
-                        $i = 0;
-                        foreach ($record['fields']['locations'] as $value) {
+                        $address->address_1 = isset($record['fields']['address_1']) ? $record['fields']['address_1'] : null;
+                        $address->address_2 = isset($record['fields']['address_2']) ? $record['fields']['address_2'] : null;
+                        $address->address_city = isset($record['fields']['city']) ? $record['fields']['city'] : null;
+                        $address->address_state_province = isset($record['fields']['state_province']) ? $record['fields']['state_province'] : null;
+                        $address->address_postal_code = isset($record['fields']['postal_code']) ? $record['fields']['postal_code'] : null;
+                        $address->address_region = isset($record['fields']['region']) ? $record['fields']['region'] : null;
+                        $address->address_country = isset($record['fields']['country']) ? $record['fields']['country'] : null;
+                        $address->address_attention = isset($record['fields']['attention']) ? $record['fields']['attention'] : null;
+                        $address->address_type = isset($record['fields']['x-type'])  ? $record['fields']['x-type'] : null;
 
-                            $addresslocation = $strtointclass->string_to_int($value);
+                        if (isset($record['fields']['locations'])) {
+                            $i = 0;
+                            foreach ($record['fields']['locations'] as $value) {
 
-                            if ($i != 0) {
-                                $address->address_locations = $address->address_locations . ',' . $addresslocation;
-                            } else {
-                                $address->address_locations = $addresslocation;
+                                $addresslocation = $strtointclass->string_to_int($value);
+
+                                if ($i != 0) {
+                                    $address->address_locations = $address->address_locations . ',' . $addresslocation;
+                                } else {
+                                    $address->address_locations = $addresslocation;
+                                }
+
+                                $i++;
                             }
-
-                            $i++;
                         }
-                    }
 
-                    if (isset($record['fields']['services'])) {
-                        $i = 0;
-                        foreach ($record['fields']['services'] as $value) {
+                        if (isset($record['fields']['services'])) {
+                            $i = 0;
+                            foreach ($record['fields']['services'] as $value) {
 
-                            $addressservice = $strtointclass->string_to_int($value);
+                                $addressservice = $strtointclass->string_to_int($value);
 
-                            if ($i != 0) {
-                                $address->address_services = $address->address_services . ',' . $addressservice;
-                            } else {
-                                $address->address_services = $addressservice;
+                                if ($i != 0) {
+                                    $address->address_services = $address->address_services . ',' . $addressservice;
+                                } else {
+                                    $address->address_services = $addressservice;
+                                }
+
+                                $i++;
                             }
-
-                            $i++;
                         }
+                        $address->save();
                     }
-                    $address->save();
                 }
             } while ($request = $response->next());
 

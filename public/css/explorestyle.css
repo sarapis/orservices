@@ -1593,7 +1593,7 @@ footer {
 .top_services_filter a.btn_share_download {
   background: transparent;
   border: none;
-  padding: 13px 10px;
+  padding: 0 6px;
   color: #1b1b1b;
   font-weight: 500;
   font-size: 16px;
@@ -1622,7 +1622,7 @@ footer {
 .top_services_filter button.btn_share_download #st-1 .st-btn > img {
   display: none;
 }
-.top_services_filter
+/* .top_services_filter
   button.btn_share_download
   #st-1
   .st-btn[data-network="sharethis"]
@@ -1634,7 +1634,7 @@ footer {
   font-weight: 500;
   font-size: 16px;
   line-height: 18px;
-}
+} */
 .inner_services {
   background: #f4f7fb;
   padding: 35px 0;
@@ -1798,14 +1798,17 @@ footer {
 .btn-download .tokenfield .token {
   padding: 8px 6px;
   height: auto;
-  background: #d0d0d0;
-  color: #000;
+  background: #A4A8B8;
+  color: #fff;
   font-size: 15px;
   border-radius: 8px;
   border: none;
 }
+.btn-download .tokenfield .token span{ color: #fff;}
 .btn-download .tokenfield .token .close {
-  height: auto;
+    height: auto;
+    color: #fff;
+    opacity: 1;
 }
 .all_form_field .card-title {
   font-size: 25px;
@@ -2228,6 +2231,7 @@ table.dataTable.no-footer {
     cursor: default;
     color: #A4A8B8;
     border: 1px solid #A4A8B8;
+    z-index: 11;
 }
 
 .help-tip:before{
@@ -2463,15 +2467,110 @@ input[type=checkbox]:checked:before {
 }
 
 
-.table_border_none.table td.create_btn .dropdown-menu li:last-child{
+.table_border_none.table td.create_btn .dropdown-menu li:last-child,
+.drop_down_create .dropdown-menu li:last-child
+{
     background: #6E6FDD;
     color: #fff;
     text-align: center;
 }
 .table_border_none.table td.create_btn .dropdown-menu li:last-child span,
-.table_border_none.table td.create_btn .dropdown-menu li:last-child:hover span{color: #fff;}
-.table_border_none.table td.create_btn .dropdown-menu li:last-child:hover a{
+.table_border_none.table td.create_btn .dropdown-menu li:last-child:hover span,
+.drop_down_create .dropdown-menu li:last-child span,
+.drop_down_create .dropdown-menu li:last-child:hover span
+{
+    color: #fff;
+}
+.table_border_none.table td.create_btn .dropdown-menu li:last-child:hover a,
+.drop_down_create .dropdown-menu li:last-child:hover a{
     background: #5051DB;
     color: #fff;
     text-align: center;
+}
+.top_services_filter .dropdown-menu { z-index :1501}
+.tabpanel_above.nav-tabs {border-bottom: none;}
+.tabpanel_above.nav-tabs .nav-link {
+    padding: 15px 16px;
+    background: #9293E8;
+    border-radius: 12px 12px 0px 0px;
+    margin-right: 5px;
+}
+.tabpanel_above.nav-tabs .nav-link.active ,.tabpanel_above.nav-tabs .nav-link:hover{
+    background: #5051DB;border-bottom:1px solid #4f50db;
+}
+.tabpanel_above.nav-tabs .nav-link .card_services_title{
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+    color: #fff;
+    margin: 0px;
+}
+.tabpanel_above.nav-tabs .add_new_btn button{
+    padding: 15px 16px;
+    background: #1B1B1B;
+    border-radius: 12px 12px 0px 0px;
+    margin-right: 5px;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+    color: #fff;
+    margin: 0px;
+    height: auto;
+    border: 1px solid #1B1B1B;
+}
+
+.btn-download  #tagging-div .btn_darkblack{
+    width: 90%;
+    padding: 14px 0px;
+    font-size: 20px;
+    background: #1B1B1B;
+    margin-top: 8px;
+    border-color: #1B1B1B;
+}
+
+.notes_table tr:first-child {background: #EDEEF1;}
+.customedata tr th{
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 17px;
+    color: #363636;
+    border-bottom: 1px solid #A4A8B8;
+    border-top: none;
+    padding: 15px 10px;
+}
+.customedata tr td{
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 17px;
+    color: #363636;
+    border-bottom: 1px solid #A4A8B8;
+    border-top: none;
+    padding: 15px 10px;
+}
+.customedata tr:nth-child(even){
+    background: #EDEEF1;
+}
+
+#st-1.st-has-labels .st-btn.st-remove-label > span{
+  display: inline-block !important;
+}
+.st-btn.st-remove-label{
+  display: inline-block !important;
+}
+#st-1 .st-btn {
+    height: auto !important;
+    padding: 5px 16px !important;
+}
+#st-1 .st-btn > img {
+  width: 20px !important;
+  height: 20px !important;
+  top: 5px !important;
+  margin: 0 auto;
+  float: left;
+}
+#st-1.st-has-labels .st-btn.st-remove-label {
+    min-width: 90px !important;
+    margin-bottom: 10px;
 }

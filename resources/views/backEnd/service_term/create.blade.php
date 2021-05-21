@@ -60,6 +60,13 @@ Create service term
                             {!! $errors->first('taxonomy', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
+                    <div class="form-group {{ $errors->has('taxonomy_parent_name') ? 'has-error' : ''}}">
+                        {!! Form::label('taxonomy_parent_name', 'Parent', ['class' => 'col-md-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::select('taxonomy_parent_name',[],null,['class' => 'form-control','id' => 'taxonomy_parent_name','placeholder' => 'select parent']) !!}
+                            {!! $errors->first('taxonomy_parent_name', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
                     <div class="form-group {{ $errors->has('x_taxonomies') ? 'has-error' : ''}}">
                         {!! Form::label('x_taxonomies', 'x-Taxonomies', ['class' => 'col-md-3 control-label']) !!}
                         <div class="col-sm-6">
@@ -87,13 +94,7 @@ Create service term
                             {!! $errors->first('language', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
-                    <div class="form-group {{ $errors->has('taxonomy_parent_name') ? 'has-error' : ''}}">
-                        {!! Form::label('taxonomy_parent_name', 'Parent', ['class' => 'col-md-3 control-label']) !!}
-                        <div class="col-sm-6">
-                            {!! Form::select('taxonomy_parent_name',$taxonomy_parent_name,null,['class' => 'form-control','id' => 'taxonomy_parent_name','placeholder' => 'select parent']) !!}
-                            {!! $errors->first('taxonomy_parent_name', '<p class="help-block">:message</p>') !!}
-                        </div>
-                    </div>
+
                     <div class="form-group {{ $errors->has('taxonomy_x_description') ? 'has-error' : ''}}">
                         {!! Form::label('taxonomy_x_description', 'Description' , ['class' => 'col-md-3 control-label']) !!}
                         <div class="col-sm-6">
@@ -187,5 +188,29 @@ Create service term
 
 <script type="text/javascript">
     $("#taxonomy_vocabulary").selectpicker();
+    $("#taxonomy_parent_name").selectpicker();
+    $(document).ready(function(){
+        $('#taxonomy').change(function(){
+            let taxonomyTypeId = $(this).val()
+            $.ajax({
+                url: "{{ route('tb_taxonomy.getParentTerm') }}",
+                method : 'get',
+                data:{taxonomyTypeId},
+                success : function(response){
+                    let data = response.data
+                    $('#taxonomy_parent_name').empty()
+                    $('#taxonomy_parent_name').append('<option value="">Select Parent</option>');
+                    $.each(data,function(i,v){
+                        $('#taxonomy_parent_name').append('<option value="'+i+'">'+v+'</option>');
+                    })
+                    $('#taxonomy_parent_name').val('')
+                    $('#taxonomy_parent_name').selectpicker('refresh')
+                },
+                error : function(error){
+                    console.log(error)
+                }
+            })
+        })
+    })
 </script>
 @endsection

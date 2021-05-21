@@ -329,7 +329,8 @@ $(document).ready(function(){
     //     organization_tags = JSON.parse(organization_tags)
     // }
     $('.drop-tags').on('click', function(){
-        let text = $(this).text();
+        // let text = $(this).text();
+        let text = $(this).data('id');
         if($.inArray(text,organization_tags) == -1){
             organization_tags.push(text)
         }else{

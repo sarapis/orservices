@@ -16,7 +16,7 @@ class LocationImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         $array = [
-            'location_recordid' => $row['id'],
+            'location_recordid' => $row['location_recordid'],
             'location_name' => $row['name'],
             'location_organization' => $row['organization_id'],
             'location_alternate_name' => isset($row['alternate_name']) ? $row['alternate_name'] : null,

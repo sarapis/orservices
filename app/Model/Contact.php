@@ -4,12 +4,21 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
-class Contact extends Model
+class Contact extends Model implements ContractsAuditable
 {
     use SoftDeletes;
+    use Auditable;
 
     protected $primaryKey = 'contact_recordid';
+
+    protected $auditEvents = [
+        'updated',
+        'deleted',
+        'created',
+    ];
 
     protected $fillable = [
         'contact_recordid', 'contact_name', 'contact_organizations', 'contact_services', 'contact_title', 'contact_department', 'contact_email', 'contact_phones',

@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Auth;
 use Sentinel;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Exports\SessionExport;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 
 class SessionController extends Controller
@@ -253,19 +255,69 @@ class SessionController extends Controller
         try {
             return Excel::download(new SessionExport($id), 'Sessions.csv');
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in session download : ' . $th);
         }
     }
     public function interactionExport(Request $request)
     {
         try {
             try {
+
                 return Excel::download(new InteractionExport($request), 'SessionInteraction.csv');
             } catch (\Throwable $th) {
-                dd($th);
+                Log::error('Error in interaction export : ' . $th);
             }
         } catch (\Throwable $th) {
             //throw $th;
+        }
+    }
+    public function addInteractionOrganization(Request $request)
+    {
+        try {
+            $session = new SessionData;
+            $new_recordid = SessionData::max('session_recordid') + 1;
+            $session->session_recordid = $new_recordid;
+            $user = Auth::user();
+            $date_time = date("Y-m-d h:i:sa");
+            $session->session_name = 'session' . $new_recordid;
+            $session->session_organization = $request->organization_recordid;
+
+            if ($user) {
+                $session->session_performed_by = $user->id;
+            }
+
+            $session->session_performed_at = Carbon::now();
+            $session->session_edits = '0';
+            $session->save();
+            // add new interaction session
+            $interaction = new SessionInteraction();
+            $session_recordid = $new_recordid;
+            $interaction->interaction_session = $session_recordid;
+
+            $new_recordid = SessionInteraction::max('interaction_recordid') + 1;
+            $interaction->interaction_recordid = $new_recordid;
+
+            $interaction->interaction_method = $request->interaction_method;
+            $interaction->interaction_disposition = $request->interaction_disposition;
+            $interaction->interaction_notes = $request->interaction_notes;
+            $interaction->interaction_records_edited = $request->interaction_records_edited;
+            $date_time = date("Y-m-d h:i:sa");
+            $interaction->interaction_timestamp = $date_time;
+
+            $interaction->save();
+
+            // $session = SessionData::where('session_recordid', '=', $session_recordid)->first();
+            // $session_original_edits = $session->session_edits;
+            // $session_new_edits = intval($session_original_edits) + intval($request->interaction_records_edited);
+            // $session->session_edits = $session_new_edits;
+            // $session->save();
+            Session::flash('message', 'Interaction added successfully!');
+            Session::flash('status', 'success');
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
+            return redirect()->back();
         }
     }
 }

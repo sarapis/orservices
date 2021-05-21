@@ -16,7 +16,7 @@ class PhoneTypeController extends Controller
      */
     public function index()
     {
-        $phone_types = PhoneType::get();
+        $phone_types = PhoneType::orderBy('order')->get();
 
         return view('backEnd.phone_types.index', compact('phone_types'));
     }
@@ -40,12 +40,14 @@ class PhoneTypeController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'type' => 'required'
+            'type' => 'required',
+            'order' => 'required|unique:phone_types,order'
         ]);
         try {
             DB::beginTransaction();
             PhoneType::create([
-                'type' => $request->type
+                'type' => $request->type,
+                'order' => $request->order
             ]);
             DB::commit();
             return redirect('phone_types')->with('success', 'Phone type created successfully');
@@ -87,12 +89,14 @@ class PhoneTypeController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'type' => 'required'
+            'type' => 'required',
+            'order' => 'required'
         ]);
         try {
             DB::beginTransaction();
             PhoneType::whereId($id)->update([
-                'type' => $request->type
+                'type' => $request->type,
+                'order' => $request->order
             ]);
             DB::commit();
             return redirect('phone_types')->with('success', 'Phone type updated successfully');

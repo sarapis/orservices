@@ -28,10 +28,19 @@ class User extends Authenticatable
         'role_id',
         'created_by',
         'status',
+        'last_login'
     ];
     public function roles()
     {
         return $this->belongsTo('App\Model\Role', 'role_id', 'id');
+    }
+    public function interations()
+    {
+        return $this->hasMany('App\Model\SessionData', 'session_performed_by', 'id');
+    }
+    public function edits()
+    {
+        return $this->hasMany('OwenIt\Auditing\Models\Audit', 'user_id', 'id');
     }
     public function organizations()
     {
