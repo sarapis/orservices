@@ -13,6 +13,7 @@ use App\Services\Stringtoint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DetailController extends Controller
 {
@@ -274,7 +275,7 @@ class DetailController extends Controller
             $airtable->syncdate = $date;
             $airtable->save();
         } catch (\Throwable $th) {
-            \Log::error('Error in Detail: ' . $th->getMessage());
+            Log::error('Error in Detail: ' . $th->getMessage());
             return response()->json([
                 'message' => $th->getMessage(),
                 'success' => false

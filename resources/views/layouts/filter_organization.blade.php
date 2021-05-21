@@ -1,28 +1,33 @@
 <style type="text/css">
 </style>
 <form action="/search_organization" method="GET" id="filter_organization" class="m-0">
-  	<div class="filter-bar container-fluid bg-primary-color home_serach_form filter_serach">
-		<div class="container">
-			<div class="row">
-				<input type="hidden" name="meta_status" id="status" @if(isset($meta_status)) value="{{$meta_status}}" @else value="On" @endif>
-				<div class="col-md-5 col-sm-8">
-					<div class="form-group text-left form-material m-0" data-plugin="formMaterial">
-						<img src="/frontend/assets/images/search.png" alt="" title="" class="form_icon_img">
-						<input type="text" class="form-control search-form" name="find" placeholder="Search for Organization" id="search_organization" @if(isset($chip_organization)) value="{{$chip_organization}}" @endif>
-					</div>
-				</div>
-				<!-- <div class="col-md-5 col-sm-5">
+    <div class="filter-bar container-fluid bg-primary-color home_serach_form filter_serach">
+        <div class="container">
+            <div class="row">
+                <input type="hidden" name="meta_status" id="status" @if(isset($meta_status)) value="{{$meta_status}}"
+                    @else value="On" @endif>
+                <div class="col-md-5 col-sm-8">
+                    <div class="form-group text-left form-material m-0" data-plugin="formMaterial">
+                        <img src="/frontend/assets/images/search.png" alt="" title="" class="form_icon_img">
+                        <input type="text" class="form-control search-form" name="find" autocomplete="off"
+                            placeholder="Search for Organization" id="search_organization"
+                            @if(isset($chip_organization)) value="{{$chip_organization}}" @endif>
+                            <div id="organizationList"></div>
+                    </div>
+                </div>
+                <!-- <div class="col-md-5 col-sm-5">
 					<div class="form-group text-left form-material m-0" data-plugin="formMaterial">
 						<img src="/frontend/assets/images/location.png" alt="" title="" class="form_icon_img">
 						<input type="text" class="form-control pr-50" id="location1" name="search_address" placeholder="Search Location...">
 					</div>
 				</div> -->
-				<div class="col-md-2 col-sm-4">
-					<button class="btn btn-raised btn-lg btn_darkblack search_btn" title="Search" style="line-height: 31px;">Search</button>
-				</div>
-			</div>
-		</div>
-		{{-- <div class="row">
+                <div class="col-md-2 col-sm-4">
+                    <button class="btn btn-raised btn-lg btn_darkblack search_btn" title="Search"
+                        style="line-height: 31px;">Search</button>
+                </div>
+            </div>
+        </div>
+        {{-- <div class="row">
 			<div class="col-md-8 col-sm-8 col-xs-12">
 				<div class="row">
 					<div class="col-md-2">
@@ -38,89 +43,105 @@
 				            </div>
 				        </div>
 					</div>
-		          	<input type="hidden" name="meta_status" id="status" @if(isset($meta_status)) value="{{$meta_status}}" @else value="On" @endif>
-					<div class="col-md-4 m-auto">
-						<div class="input-search">
-							<i class="input-search-icon md-search" aria-hidden="true"></i>
-							<input type="text" class="form-control search-form" name="find" placeholder="Search for Organization" id="search_organization" @if(isset($chip_organization)) value="{{$chip_organization}}" @endif>
-						</div>
-					</div>
-					@if (Auth::user())
-					<div class="col-md-4 m-auto">
-						<div class="organization-tags-div">
-		                    <select class="form-control selectpicker" multiple data-live-search="true" id="organization_tag" data-size="3" name="organization_tag[]">
-		                    	<option value="" selected disabled hidden>Filter by Tags</option>
-		                        @foreach($organization_tag_list as $key => $organization_tag)
-		                            <option value="{{$organization_tag}}">{{$organization_tag}}</option>
-		                        @endforeach
-		                    </select>
-		                </div>
-		            </div>
-		            @endif
-				</div>
-			</div>
-		</div> --}}
-  	</div>
-<div class="top_services_filter">
-	<div class="container">
-        <!-- Types Of Services -->
+		          	<input type="hidden" name="meta_status" id="status" @if(isset($meta_status)) value="{{$meta_status}}"
+        @else value="On" @endif>
+        <div class="col-md-4 m-auto">
+            <div class="input-search">
+                <i class="input-search-icon md-search" aria-hidden="true"></i>
+                <input type="text" class="form-control search-form" name="find" placeholder="Search for Organization"
+                    id="search_organization" @if(isset($chip_organization)) value="{{$chip_organization}}" @endif>
+            </div>
+        </div>
+        @if (Auth::user())
+        <div class="col-md-4 m-auto">
+            <div class="organization-tags-div">
+                <select class="form-control selectpicker" multiple data-live-search="true" id="organization_tag"
+                    data-size="3" name="organization_tag[]">
+                    <option value="" selected disabled hidden>Filter by Tags</option>
+                    @foreach($organization_tag_list as $key => $organization_tag)
+                    <option value="{{$organization_tag}}">{{$organization_tag}}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        @endif
+    </div>
+    </div>
+    </div> --}}
+    </div>
+    <div class="top_services_filter">
+        <div class="container">
+            <!-- Types Of Services -->
             @auth
-            @if (Auth::user()->roles && Auth::user()->roles->name == 'System Admin' || (Auth::user() && Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin'))
+            @if (Auth::user()->roles && Auth::user()->roles->name == 'System Admin' || (Auth::user() &&
+            Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin'))
             @php
-                $org_activate = [];
-                if(isset($organization_tags) && $organization_tags != null){
+            $org_activate = [];
+            if(isset($organization_tags) && $organization_tags != null){
 
-                    $org_activate = json_decode($organization_tags);
-                }
+            $org_activate = json_decode($organization_tags);
+            }
 
             @endphp
-			<div class="dropdown">
-				<button type="button" class="btn dropdown-toggle"  id="exampleSizingDropdown1" data-toggle="dropdown" aria-expanded="false">
-					Organization Tags
+            <div class="dropdown">
+                <button type="button" class="btn dropdown-toggle" id="exampleSizingDropdown1" data-toggle="dropdown"
+                    aria-expanded="false">
+                    Organization Tags
                 </button>
-				<div class="dropdown-menu bullet" aria-labelledby="exampleSizingDropdown1" role="menu" >
+                <div class="dropdown-menu bullet" aria-labelledby="exampleSizingDropdown1" role="menu">
                     {{-- {!! Form::select('organization_tags',$organization_tagsArray,'',['class' => 'btn dropdown-toggle']) !!} --}}
-                    @foreach ($organization_tagsArray as $value)
-                        <a class="dropdown-item drop-tags{{ isset($organization_tags) && in_array($value,$org_activate)  ? ' active' : '' }}" href="javascript:void(0)" role="menuitem">{{ $value }}</a>
+                    @foreach ($organization_tagsArray as $key => $value)
+                    <a class="dropdown-item drop-tags{{ isset($organization_tags) && in_array($key,$org_activate)  ? ' active' : '' }}"
+                        href="javascript:void(0)" role="menuitem" data-id="{{ $key }}">{{ $value }}</a>
                     @endforeach
                     {{-- <select class="form-control selectpicker" multiple data-live-search="true" id="organization_tag" data-size="3" name="organization_tag[]">
                         <option value="" selected disabled hidden>Filter by Tags</option>
                         @foreach($organization_tag_list as $key => $organization_tag)
                             <option value="{{$organization_tag}}">{{$organization_tag}}</option>
-                        @endforeach
+                    @endforeach
                     </select> --}}
 
                 </div>
             </div>
             @endif
             @endauth
-		<!--end  Types Of Services -->
-		<!-- Sort By -->
-			<div class="dropdown">
-				<button type="button" class="btn dropdown-toggle"  id="exampleSizingDropdown2" data-toggle="dropdown" aria-expanded="false">
-					Sort By
-				</button>
-				<div class="dropdown-menu bullet" aria-labelledby="exampleSizingDropdown2" role="menu">
-					<a @if(isset($sort) && $sort == 'Most Recently Updated') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Most Recently Updated</a>
-                    <a @if(isset($sort) && $sort == 'Least Recently Updated') class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Least Recently Updated</a>
-				</div>
-			</div>
-		<!--end  Sort By -->
+            <!--end  Types Of Services -->
+            <!-- Sort By -->
+            <div class="dropdown">
+                <button type="button" class="btn dropdown-toggle" id="exampleSizingDropdown2" data-toggle="dropdown"
+                    aria-expanded="false">
+                    Sort By
+                </button>
+                <div class="dropdown-menu bullet" aria-labelledby="exampleSizingDropdown2" role="menu">
+                    <a @if(isset($sort) && $sort=='Most Recently Updated' ) class="dropdown-item drop-sort active" @else
+                        class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Most Recently
+                        Updated</a>
+                    <a @if(isset($sort) && $sort=='Least Recently Updated' ) class="dropdown-item drop-sort active"
+                        @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Least
+                        Recently Updated</a>
+                </div>
+            </div>
+            <!--end  Sort By -->
 
-		<!-- Results Per Page -->
-		<div class="dropdown">
-			<button type="button" class="btn dropdown-toggle"  id="exampleSizingDropdown3" data-toggle="dropdown" aria-expanded="false">
-				Results Per Page
-            </button>
-			<div class="dropdown-menu bullet" aria-labelledby="exampleSizingDropdown3" role="menu">
-				<a class="dropdown-item drop-paginate {{ isset($pagination) && $pagination == '10' ? 'active' : ''}}" >10</a>
-				<a class="dropdown-item drop-paginate {{ isset($pagination) && $pagination == '25' ? 'active' : ''}}" >25</a>
-				<a class="dropdown-item drop-paginate {{ isset($pagination) && $pagination == '50' ? 'active' : ''}}">50</a>
-			</div>
-		</div>
-		<!--end Results Per Page -->
-        <div class="dropdown btn_download float-right">
-                <button type="button" class="float-right btn_share_download dropdown-toggle" id="exampleBulletDropdown4" data-toggle="dropdown" aria-expanded="false">
+            <!-- Results Per Page -->
+            <div class="dropdown">
+                <button type="button" class="btn dropdown-toggle" id="exampleSizingDropdown3" data-toggle="dropdown"
+                    aria-expanded="false">
+                    Results Per Page
+                </button>
+                <div class="dropdown-menu bullet" aria-labelledby="exampleSizingDropdown3" role="menu">
+                    <a
+                        class="dropdown-item drop-paginate {{ isset($pagination) && $pagination == '10' ? 'active' : ''}}">10</a>
+                    <a
+                        class="dropdown-item drop-paginate {{ isset($pagination) && $pagination == '25' ? 'active' : ''}}">25</a>
+                    <a
+                        class="dropdown-item drop-paginate {{ isset($pagination) && $pagination == '50' ? 'active' : ''}}">50</a>
+                </div>
+            </div>
+            <!--end Results Per Page -->
+            <div class="dropdown btn_download float-right">
+                <button type="button" class="float-right btn_share_download dropdown-toggle" id="exampleBulletDropdown4"
+                    data-toggle="dropdown" aria-expanded="false">
                     <img src="/frontend/assets/images/download.png" alt="" title="" class="mr-10"> Download
                 </button>
                 <div class="dropdown-menu bullet" aria-labelledby="exampleBulletDropdown4" role="menu">
@@ -130,22 +151,24 @@
             </div>
             <input type="hidden" name="organization_pdf" id="organization_pdf" value="">
             <input type="hidden" name="organization_csv" id="organization_csv" value="">
-            <button type="button" class="float-right btn_share_download">
+            @if ($layout->organization_share_button == 1)
+            <button type="button" class="float-right btn_share_download" data-toggle="modal" data-target="#shareThisModal">
                 <img src="/frontend/assets/images/share.png" alt="" title="" class="mr-10 share_image">
-                <div class="sharethis-inline-share-buttons"></div>
+                Share
             </button>
-	</div>
-</div>
-<style>
-/* @media (max-width: 768px){
+            @endif
+        </div>
+    </div>
+    <style>
+        /* @media (max-width: 768px){
   .filter-bar{
     display: none;
   }
 } */
-</style>
+    </style>
 
-<script type="text/javascript">
-$(document).ready(function(){
+    <script type="text/javascript">
+        $(document).ready(function(){
 	$('.dropdown-status').click(function(){
 		var status = $(this).attr('at');
 		var status_meta = $(this).html();
@@ -313,7 +336,8 @@ $(document).ready(function(){
 
     let organization_tags = $('#organization_tags').val() != '' ? JSON.parse($('#organization_tags').val()) : [];
     $('.drop-tags').on('click', function(){
-        let text = $(this).text();
+        let text = $(this).data('id');
+        // let text = $(this).text();
         if($.inArray(text,organization_tags) == -1){
             organization_tags.push(text)
         }else{
@@ -335,6 +359,29 @@ $(document).ready(function(){
         $("#filter_organization").submit();
     });
 
-
+    $('#search_organization').keyup(function () {
+        let query = $(this).val()
+        if(query != ''){
+                var _token = "{{ csrf_token() }}";
+            $.ajax({
+                url: "{{ route('organizations.fetch') }}",
+                method:"post",
+                data:{_token,query},
+                success:function(data){
+                    $('#organizationList').fadeIn();
+                    $('#organizationList').html(data)
+                },
+                error : function(err){
+                    console.log(err)
+                }
+            })
+        }else{
+            $('#organizationList').fadeOut();
+        }
+    })
+    $(document).on('click', '#organizationList li',function () {
+        $('#search_organization').val($(this).text())
+        $('#organizationList').fadeOut();
+    })
 });
-</script>
+    </script>

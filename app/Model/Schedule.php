@@ -3,9 +3,12 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
-class Schedule extends Model
+class Schedule extends Model implements ContractsAuditable
 {
+    use Auditable;
     protected $primaryKey = 'schedule_recordid';
 
     protected $fillable = [

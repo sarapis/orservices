@@ -1593,7 +1593,7 @@ footer {
 .top_services_filter a.btn_share_download {
   background: transparent;
   border: none;
-  padding: 13px 10px;
+  padding: 0 6px;
   color: #1b1b1b;
   font-weight: 500;
   font-size: 16px;
@@ -1622,7 +1622,7 @@ footer {
 .top_services_filter button.btn_share_download #st-1 .st-btn > img {
   display: none;
 }
-.top_services_filter
+/* .top_services_filter
   button.btn_share_download
   #st-1
   .st-btn[data-network="sharethis"]
@@ -1634,7 +1634,7 @@ footer {
   font-weight: 500;
   font-size: 16px;
   line-height: 18px;
-}
+} */
 .inner_services {
   background: #f4f7fb;
   padding: 35px 0;
@@ -2231,6 +2231,7 @@ table.dataTable.no-footer {
     cursor: default;
     color: #A4A8B8;
     border: 1px solid #A4A8B8;
+    z-index: 11;
 }
 
 .help-tip:before{
@@ -2550,4 +2551,26 @@ input[type=checkbox]:checked:before {
 }
 .customedata tr:nth-child(even){
     background: #EDEEF1;
+}
+
+#st-1.st-has-labels .st-btn.st-remove-label > span{
+  display: inline-block !important;
+}
+.st-btn.st-remove-label{
+  display: inline-block !important;
+}
+#st-1 .st-btn {
+    height: auto !important;
+    padding: 5px 16px !important;
+}
+#st-1 .st-btn > img {
+  width: 20px !important;
+  height: 20px !important;
+  top: 5px !important;
+  margin: 0 auto;
+  float: left;
+}
+#st-1.st-has-labels .st-btn.st-remove-label {
+    min-width: 90px !important;
+    margin-bottom: 10px;
 }

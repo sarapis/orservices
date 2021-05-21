@@ -287,22 +287,41 @@ Contact Edit
                     </p>
                     @foreach ($item->old_values as $key => $v)
                     @php
-                        $fieldNameArray = explode('_',$key);
-                        $fieldName = implode(' ',$fieldNameArray);
+                    $fieldNameArray = explode('_',$key);
+                    $fieldName = implode(' ',$fieldNameArray);
+                    $new_values = explode('| ',$item->new_values[$key]);
+                    $old_values = explode('| ',$v);
+                    $old_values = array_values(array_filter($old_values));
+                    $new_values = array_values(array_filter($new_values));
                     @endphp
                     <ul style="padding-left: 0px;font-size: 16px;">
-                    @if ($v)
-                    <li style="color: #000;list-style: disc;list-style-position: inside;">Changed <b
-                            style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b>
-                        from <span style="color: #FF5044">{{ $v }}</span> to <span
-                            style="color: #35AD8B">{{ $item->new_values[$key] }}</span>
-                    </li>
-                    @elseif($item->new_values[$key])
-                    <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b
-                        style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span
-                        style="color: #35AD8B">{{ $item->new_values[$key] }}</span>
-                    </li>
-                    @endif
+                        @if($v && count($old_values) > count($new_values))
+
+                        @php
+                            $diffData = array_diff($old_values,$new_values);
+                        @endphp
+                        <li style="color: #000;list-style: disc;list-style-position: inside;">Removed <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span style="color: #FF5044">{{ implode(',',$diffData) }}</span>
+                        </li>
+                        @elseif($v && count($old_values) < count($new_values))
+                        @php
+                            $diffData = array_diff($new_values,$old_values);
+                        @endphp
+                        <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span style="color: #35AD8B">{{ implode(',',$diffData) }}</span>
+                        </li>
+                        @elseif($v && count($new_values) == count($old_values))
+                        @php
+                        $diffData = array_diff($new_values,$old_values);
+                        @endphp
+                        <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span style="color: #35AD8B">{{ implode(',',$diffData) }}</span>
+                        </li>
+                        {{-- <li style="color: #000;list-style: disc;list-style-position: inside;">Changed <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> from <span style="color: #FF5044">{{ $v }}</span> to <span style="color: #35AD8B">{{ $new_values ? $new_values : 'none' }}</span>
+                        </li> --}}
+                        @elseif($item->new_values[$key])
+                        <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b
+                                style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b>
+                            <span style="color: #35AD8B">{{ $item->new_values[$key] }}</span>
+                        </li>
+                        @endif
                     </ul>
                     @endforeach
 

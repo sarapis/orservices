@@ -35,6 +35,7 @@ Organization tags
               </th>
               <th>ID</th>
               <th>Tags</th>
+              <th>Order</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -64,6 +65,7 @@ Organization tags
             columns: [
                 { data: 'id', name: 'id' },
                 { data: 'tag', name: 'tag' },
+                { data: 'order', name: 'order' },
                 { data: 'action', name: 'action' },
             ],
             columnDefs : [
@@ -79,6 +81,11 @@ Organization tags
                 },
                 {
                     "targets": 2,
+                    "orderable": true,
+                    "class": "text-left"
+                },
+                {
+                    "targets": 3,
                     "orderable": true,
                     "class": "text-left"
                 },

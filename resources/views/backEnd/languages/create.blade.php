@@ -21,6 +21,13 @@ create language
                             {!! $errors->first('language', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
+                    <div class="form-group {{ $errors->has('order') ? 'has-error' : ''}}">
+                        {!! Form::label('order', 'Order', ['class' => 'col-sm-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::text('order', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('order', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
                     {{-- <div class="form-group {{ $errors->has('language_service') ? 'has-error' : ''}}">
                         {!! Form::label('language_service', 'Service Id', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-6">

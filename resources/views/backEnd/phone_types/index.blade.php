@@ -24,6 +24,7 @@ Phone Type
                             <tr>
                                 <th>ID</th>
                                 <th>Type</th>
+                                <th>Order</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -32,6 +33,7 @@ Phone Type
                             <tr>
                                 <td>{{ $item->id }}</td>
                                 <td>{{ $item->type }}</td>
+                                <td>{{ $item->order }}</td>
                                 <td style="width:30%; text-center">
                                     <a href="{{ url('phone_types/' . $item->id . '/edit') }}">
                                         <i class="fa fa-pencil" data-toggle="tooltip" data-placement="top" title="Edit" style="color: #4caf50;"></i>

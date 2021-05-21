@@ -11,6 +11,7 @@ use App\Model\Organization;
 use App\Model\Service;
 use App\Model\XDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -27,7 +28,7 @@ class XDetailsController extends Controller
         try {
 
             $xdetails = Detail::get();
-            $detail_types = DetailType::pluck('type', 'type');
+            $detail_types = DetailType::orderBy('order')->pluck('type', 'type');
             $parents = Detail::pluck('detail_value', 'detail_recordid');
             $parents->prepend('None', 'none');
             $parents->prepend('All', 'all');
@@ -97,7 +98,7 @@ class XDetailsController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in X-detail index : ' . $th);
         }
     }
 
@@ -113,7 +114,7 @@ class XDetailsController extends Controller
         $services = Service::whereNotNull('service_name')->pluck('service_name', 'service_recordid');
         $locations = Location::whereNotNull('location_name')->pluck('location_name', 'location_recordid');
         $organizations = Organization::whereNotNull('organization_name')->pluck('organization_name', 'organization_recordid');
-        $detail_types = DetailType::pluck('type', 'type');
+        $detail_types = DetailType::orderBy('order')->pluck('type', 'type');
         return view('backEnd.xdetails.create', compact('organizations', 'locations', 'services', 'detail_types', 'languages', 'parents'));
     }
 
@@ -185,7 +186,7 @@ class XDetailsController extends Controller
         $services = Service::whereNotNull('service_name')->pluck('service_name', 'service_recordid');
         $locations = Location::whereNotNull('location_name')->pluck('location_name', 'location_recordid');
         $organizations = Organization::whereNotNull('organization_name')->pluck('organization_name', 'organization_recordid');
-        $detail_types = DetailType::pluck('type', 'type');
+        $detail_types = DetailType::orderBy('order')->pluck('type', 'type');
         return view('backEnd.xdetails.edit', compact('xdetails', 'services', 'locations', 'organizations', 'serviceIds', 'detail_types', 'languages', 'parents'));
     }
 

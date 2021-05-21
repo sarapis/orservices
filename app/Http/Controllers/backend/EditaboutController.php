@@ -114,12 +114,12 @@ class EditaboutController extends Controller
     public function update($id, Request $request)
     {
         try {
-            if ($this->validator($request, Auth::id())->fails()) {
+            // if ($this->validator($request, Auth::id())->fails()) {
 
-                return redirect()->back()
-                    ->withErrors($this->validator($request))
-                    ->withInput();
-            }
+            //     return redirect()->back()
+            //     ->withErrors($this->validator($request))
+            //     ->withInput();
+            // }
             $page = Page::findOrFail($id);
             $page->update($request->all());
             $layout = Layout::find(1);

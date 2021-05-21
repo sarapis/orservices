@@ -149,7 +149,7 @@ class TaxonomyTypeController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in Taxonomytype index : ' . $th);
         }
     }
 
@@ -172,11 +172,13 @@ class TaxonomyTypeController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required'
+            'name' => 'required',
+            'order' => 'required|unique:taxonomy_types,order',
         ]);
         try {
             TaxonomyType::create([
                 'name' => $request->name,
+                'order' => $request->order,
                 'type' => $request->type,
                 'reference_url' => $request->reference_url,
                 'notes' => $request->notes,
@@ -224,11 +226,13 @@ class TaxonomyTypeController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name' => 'required'
+            'name' => 'required',
+            'order' => 'required',
         ]);
         try {
             TaxonomyType::whereId($id)->update([
                 'name' => $request->name,
+                'order' => $request->order,
                 'type' => $request->type,
                 'reference_url' => $request->reference_url,
                 'notes' => $request->notes,

@@ -8,6 +8,7 @@ use App\Model\ServiceAttribute;
 use App\Model\ServiceTaxonomy;
 use App\Model\Taxonomy;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -48,7 +49,7 @@ class ServiceAttributeController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in service attribute index : ' . $th);
         }
     }
 
@@ -161,7 +162,7 @@ class ServiceAttributeController extends Controller
 
             return redirect('service_attributes');
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in destroy service attribute : ' . $th);
         }
     }
 }

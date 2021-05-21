@@ -23,6 +23,9 @@
 			<strong> {{ session()->get('message') }} </strong>
 		</div>
 		@endif
+        <div id='loading' style="display:none;">
+            <img src="/images/loader.gif" />
+        </div>
 		@yield('content')
 	</div>
 </div>

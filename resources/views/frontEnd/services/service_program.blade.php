@@ -12,7 +12,7 @@
                             <thead>
                                 <th>Name</th>
                                 <th>Description</th>
-                                <th>Relation</th>
+                                {{-- <th>Relation</th> --}}
                                 <th style="width:100px">&nbsp;</th>
                             </thead>
                             <tbody id="programsTable">
@@ -29,11 +29,11 @@
                                                 id="program_description_{{ $key }}">
                                         </td>
 
-                                        <td class="text-center">{{ $program->program_service_relationship }}
+                                        {{-- <td class="text-center">{{ $program->program_service_relationship }}
                                             <input type="hidden" name="program_service_relationship[]"
                                                 value="{{ $program->program_service_relationship }}"
                                                 id="program_service_relationship_{{ $key }}">
-                                        </td>
+                                        </td> --}}
                                         <td style="vertical-align:middle;">
                                             <a href="javascript:void(0)"
                                                 class="programEditButton plus_delteicon bg-primary-color">
@@ -71,18 +71,17 @@
                 <div class="form-group">
                     <div class="form-check form-check-inline">
                         <input class="form-check-input programRadio" type="radio" name="programRadioP"
-                            id="programRadio2" value="new_data" checked>
-                        <label class="form-check-label" for="programRadio2"><b style="color: #000">Create New Data</b></label>
+                            id="programRadio2" value="new_data" >
+                        <label class="form-check-label" for="programRadio2"><b style="color: #000">Add New Program</b></label>
                     </div>
                     <div class="form-check form-check-inline">
                         <input class="form-check-input programRadio" type="radio" name="programRadioP"
-                            id="programRadio1" value="existing">
-                        <label class="form-check-label" for="programRadio1"><b style="color: #000">Existing
-                                Data</b></label>
+                            id="programRadio1" value="existing" checked>
+                        <label class="form-check-label" for="programRadio1"><b style="color: #000">Select Existing Program</b></label>
                     </div>
 
                 </div>
-                <div class="" id="existingProgramData" style="display: none;">
+                <div class="" id="existingProgramData" >
                     <select name="programs" id="programSelectData" class="form-control selectpicker"
                         data-live-search="true" data-size="5">
                         <option value="">Select Programs</option>
@@ -92,7 +91,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div id="newProgramData">
+                <div id="newProgramData" style="display: none;">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -109,12 +108,12 @@
                                     id="program_description_p">
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
                             <div class="form-group">
                                 <label>Relation: </label>
                                 {!! Form::select('program_service_relationship_p', ['required' => 'Required', 'prefered' => 'Prefered', 'not_required' => 'Not Required'], null, ['class' => 'form-control selectpicker', 'data-size' => 5, ' data-live-search' => 'true', 'id' => 'program_service_relationship_p']) !!}
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -129,7 +128,7 @@
 {{-- End here --}}
 
 <script>
-    let programRadioValue = 'new_data'
+    let programRadioValue = 'existing'
     $('.programRadio').on('change', function() {
         let value = $(this).val()
         programRadioValue = value
@@ -163,28 +162,27 @@
         if (programRadioValue == 'new_data') {
             program_name_p = $('#program_name_p').val()
             program_description_p = $('#program_description_p').val()
-            program_service_relationship_p = $('#program_service_relationship_p').val()
+            // program_service_relationship_p = $('#program_service_relationship_p').val()
             // contactsTable
         } else {
             let data = JSON.parse($('#programSelectData').val())
             program_name_p = data.name ? data.name : ''
             program_description_p = data.alternate_name ? data.alternate_name : ''
-            program_service_relationship_p = data.program_service_relationship ? data
-                .program_service_relationship : ''
+            // program_service_relationship_p = data.program_service_relationship ? data.program_service_relationship : ''
             program_recordid_p = data.program_recordid ? data.program_recordid : ''
         }
         if (editProgramData == false) {
-
+            // <td class="text-center">' +
+            //     program_service_relationship_p +
+            //     '<input type="hidden" name="program_service_relationship[]" value="' +
+            //     program_service_relationship_p +
+            //     '" id="program_service_relationship_' + pr +
+            //     '">
             $('#programsTable').append('<tr id="programTr_' + pr + '"><td>' + program_name_p +
                 '<input type="hidden" name="program_name[]" value="' + program_name_p +
                 '" id="program_name_' + pr + '"></td><td>' + program_description_p +
                 '<input type="hidden" name="program_description[]" value="' + program_description_p +
-                '" id="program_description_' + pr + '"></td><td class="text-center">' +
-                program_service_relationship_p +
-                '<input type="hidden" name="program_service_relationship[]" value="' +
-                program_service_relationship_p +
-                '" id="program_service_relationship_' + pr +
-                '"><td style="vertical-align:middle;"><a href="javascript:void(0)" class="programEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeProgramData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="programRadio[]" value="' +
+                '" id="program_description_' + pr + '"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="programEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeProgramData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="programRadio[]" value="' +
                 programRadioValue + '" id="selectedProgramRadio_' + pr +
                 '"><input type="hidden" name="program_recordid[]" value="' + program_recordid_p +
                 '" id="existingProgramIds_' + pr + '"></td></tr>');
@@ -198,18 +196,18 @@
 
                 // program_service_relationships[selectedProgramTrId] = program_service_relationship_p
 
-
+                // </td><td class="text-center">' +
+                    // program_service_relationship_p +
+                    // '<input type="hidden" name="program_service_relationship[]" value="' +
+                    // program_service_relationship_p + '" id="program_service_relationship_' +
+                    // selectedProgramTrId +
+                    // '"></td>
                 $('#programTr_' + selectedProgramTrId).empty()
                 $('#programTr_' + selectedProgramTrId).append('<td>' + program_name_p +
                     '<input type="hidden" name="program_name[]" value="' + program_name_p +
                     '" id="program_name_' + selectedProgramTrId + '"></td><td>' + program_description_p +
                     '<input type="hidden" name="program_description[]" value="' + program_description_p +
-                    '" id="program_description_' + selectedProgramTrId + '"></td><td class="text-center">' +
-                    program_service_relationship_p +
-                    '<input type="hidden" name="program_service_relationship[]" value="' +
-                    program_service_relationship_p + '" id="program_service_relationship_' +
-                    selectedProgramTrId +
-                    '"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="programEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeLocationData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="programRadio[]" value="' +
+                    '" id="program_description_' + selectedProgramTrId + '"><td style="vertical-align:middle;"><a href="javascript:void(0)" class="programEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeLocationData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="programRadio[]" value="' +
                     programRadioValue + '" id="selectedProgramRadio_' + selectedProgramTrId +
                     '"><input type="hidden" name="program_recordid[]" value="' + program_recordid_p +
                     '" id="existingProgramIds_' + selectedProgramTrId + '"></td>')
@@ -284,11 +282,13 @@
 
         $('.selectpicker').selectpicker('refresh');
         editProgramData = false
-        $("input[name=programRadio][value='new_data']").prop("checked", true);
-        $("input[name=programRadio][value='existing']").prop("disabled", false);
+        programRadioValue = 'existing'
+        // $("input[name=programRadio][value='new_data']").prop("checked", true);
+        $("input[name=programRadioP][value='existing']").prop("checked", true);
+        $("input[name=programRadioP][value='existing']").prop("disabled", false);
         $('#program_service_relationship_p').selectpicker('refresh')
-        $('#newProgramData').show()
-        $('#existingProgramData').hide()
+        $('#newProgramData').hide()
+        $('#existingProgramData').show()
         $('#programmodal').modal('show');
     });
     $(document).on('click', '.programEditButton', function() {
@@ -304,21 +304,21 @@
         let radioValue = $("#selectedProgramRadio_" + id).val();
         let program_name_p = $('#program_name_' + id).val()
         let program_description_p = $('#program_description_' + id).val()
-        let program_service_relationship_p = $('#program_service_relationship_' + id).val()
+        // let program_service_relationship_p = $('#program_service_relationship_' + id).val()
 
         programRadioValue = 'new_data'
-        $("input[name=programRadio][value='new_data']").prop("checked", true);
-        $("input[name=programRadio][value='existing']").prop("disabled", true);
+        $("input[name=programRadioP][value='new_data']").prop("checked", true);
+        $("input[name=programRadioP][value='existing']").prop("checked", false);
+        $("input[name=programRadioP][value='existing']").prop("disabled", true);
         // if(radioValue == 'new_data'){
         $('#program_name_p').val(program_name_p)
         $('#program_description_p').val(program_description_p)
-        $('#program_service_relationship_p').val(program_service_relationship_p)
+        // $('#program_service_relationship_p').val(program_service_relationship_p)
 
         $('#programSelectData').val('')
-        $('#program_service_relationship_p').selectpicker('refresh')
+        // $('#program_service_relationship_p').selectpicker('refresh')
         $('#newProgramData').show()
         $('#existingProgramData').hide()
-
         $('#programmodal').modal('show');
     });
     // end program section

@@ -14,10 +14,11 @@ class Organization extends Model implements ContractsAuditable
     protected $auditEvents = [
         'updated',
         'deleted',
+        'created',
     ];
 
     protected $fillable = [
-        'organization_recordid', 'organization_name', 'organization_alternate_name', 'organization_logo_x', 'organization_x_uid', 'organization_description', 'organization_email', 'organization_forms_x_filename', 'organization_forms_x_url', 'organization_url', 'organization_status_x', 'organization_status_sort', 'organization_legal_status', 'organization_tax_status', 'organization_tax_id', 'organization_year_incorporated', 'organization_services', 'organization_phones', 'organization_locations', 'organization_contact', 'organization_details', 'organization_tag', 'organization_airs_taxonomy_x', 'flag', 'organization_website_rating', 'organization_code'
+        'organization_recordid', 'organization_name', 'organization_alternate_name', 'organization_logo_x', 'organization_x_uid', 'organization_description', 'organization_email', 'organization_forms_x_filename', 'organization_forms_x_url', 'organization_url', 'organization_status_x', 'organization_status_sort', 'organization_legal_status', 'organization_tax_status', 'organization_tax_id', 'organization_year_incorporated', 'organization_services', 'organization_phones', 'organization_locations', 'organization_contact', 'organization_details', 'organization_tag', 'organization_airs_taxonomy_x', 'flag', 'organization_website_rating', 'organization_code', 'facebook_url', 'twitter_url', 'instagram_url'
     ];
 
     public function services()

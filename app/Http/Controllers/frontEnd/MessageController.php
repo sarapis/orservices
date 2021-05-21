@@ -81,7 +81,9 @@ class MessageController extends Controller
         $sendgridKey = env('SENDGRID_API_KEY');
         $sendgridMailFromName = env('MAIL_FROM_NAME');
         $sendgridMailFromAddress = env('MAIL_FROM_ADDRESS');
-        return view('backEnd.messages.messageSetting', compact('sendgridKey', 'sendgridMailFromName', 'sendgridMailFromAddress'));
+        $share_this_api = env('SHARETHIS_API');
+        $share_this_api_activate = env('SHARETHIS_ACTIVATE');
+        return view('backEnd.messages.messageSetting', compact('sendgridKey', 'sendgridMailFromName', 'sendgridMailFromAddress', 'share_this_api', 'share_this_api_activate'));
     }
 
 
@@ -108,6 +110,8 @@ class MessageController extends Controller
                 "MAIL_PASSWORD" => $request->get('sendgridApiKey'),
                 "MAIL_FROM_ADDRESS" => $request->get('sendgridMailFromAddress'),
                 "MAIL_FROM_NAME" => '"' . $request->get('sendgridMailFromName') . '"',
+                "SHARETHIS_API" => '"' . $request->get('share_this_api') . '"',
+                "SHARETHIS_ACTIVATE" => '"' . $request->get('share_this_api_activate') . '"',
             ];
 
             if (count($values) > 0) {

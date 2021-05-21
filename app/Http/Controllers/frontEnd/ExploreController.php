@@ -27,7 +27,9 @@ use PDF;
 use Stevebauman\Location\Facades\Location as FacadesLocation;
 use Spatie\Geocoder\Geocoder;
 use App\Exports\OrganizationExport;
+use App\Model\OrganizationTag;
 use Excel;
+use Illuminate\Support\Facades\Log;
 
 class ExploreController extends Controller
 {
@@ -272,6 +274,7 @@ class ExploreController extends Controller
 
         $pdf = $request->input('pdf');
         $csv = $request->input('csv');
+        $layout = Layout::findOrFail(1);
 
         $pagination = strval($request->input('paginate'));
 
@@ -288,7 +291,7 @@ class ExploreController extends Controller
 
         $source_data = Source_data::find(1);
 
-        $location_serviceids = Service::pluck('service_recordid');
+        $location_serviceids = [];
         $location_locationids = Location::with('services', 'organization')->pluck('location_recordid');
         $service_locationids = [];
 
@@ -308,12 +311,13 @@ class ExploreController extends Controller
         $organization_tags = $request->get('organization_tags');
 
 
-        $serviceids = Service::where('service_name', 'like', '%' . $chip_service . '%')->orwhere('service_description', 'like', '%' . $chip_service . '%')->orwhere('service_airs_taxonomy_x', 'like', '%' . $chip_service . '%')->pluck('service_recordid');
+        $serviceids = Service::where('service_name', 'like', '%' . $chip_service . '%')->orwhere('service_description', 'like', '%' . $chip_service . '%')->orwhere('service_airs_taxonomy_x', 'like', '%' . $chip_service . '%')->pluck('service_recordid')->toArray();
 
         $organization_recordids = Organization::where('organization_name', 'like', '%' . $chip_service . '%')->pluck('organization_recordid');
         // $organizations = Organization::where('organization_name', 'like', '%' . $chip_service . '%');
 
         $organization_serviceids = ServiceOrganization::whereIn('organization_recordid', $organization_recordids)->pluck('service_recordid');
+
         $taxonomy_recordids = Taxonomy::where('taxonomy_name', 'like', '%' . $chip_service . '%')->pluck('taxonomy_recordid');
         $taxonomy_serviceids = ServiceTaxonomy::whereIn('taxonomy_recordid', $taxonomy_recordids)->pluck('service_recordid');
 
@@ -349,14 +353,15 @@ class ExploreController extends Controller
                 ->orderBy('distance');
 
             $location_locationids = $locations->pluck('location_recordid');
-            $location_serviceids = ServiceLocation::whereIn('location_recordid', $location_locationids)->pluck('service_recordid');
+            $location_serviceids = ServiceLocation::whereIn('location_recordid', $location_locationids)->pluck('service_recordid')->toArray();
             $sort_by_distance_clickable = true;
         }
 
         if ($chip_service != null && isset($serviceids)) {
             $service_ids = Service::whereIn('service_recordid', $serviceids)->orWhereIn('service_recordid', $organization_serviceids)->orWhereIn('service_recordid', $taxonomy_serviceids)->pluck('service_recordid');
 
-            $services = Service::whereIn('service_recordid', $serviceids)->whereIn('service_recordid', $location_serviceids)->orderBy('service_name');
+            $services = Service::whereIn('service_recordid', $service_ids)->orderBy('service_name');
+
 
             $locations = Location::with('services', 'organization')->whereIn('location_recordid', $service_locationids)->whereIn('location_recordid', $location_locationids);
         } else {
@@ -387,7 +392,7 @@ class ExploreController extends Controller
             }
             $organization_service_recordid = ServiceOrganization::whereIn('organization_recordid', $organizations_tags_ids)->pluck('service_recordid');
 
-            $services = Service::whereIn('service_recordid', $organization_service_recordid)->whereIn('service_recordid', $location_serviceids)->orderBy('service_name');
+            $services = Service::whereIn('service_recordid', $organization_service_recordid)->orWhereIn('service_recordid', $location_serviceids)->orderBy('service_name');
         }
 
         // if($request->lat && $request->long){
@@ -850,25 +855,26 @@ class ExploreController extends Controller
         }
         // $selected_organization = join(',', $organization_tags);
         $selected_organization = json_encode($organization_tags);
-        $organization_tags = Organization::whereNotNull('organization_tag')->select("organization_tag")->distinct()->get();
+        // $organization_tags = Organization::whereNotNull('organization_tag')->select("organization_tag")->distinct()->get();
         // dd($selected_organization);
-        $tag_list = [];
-        foreach ($organization_tags as $key => $value) {
-            $tags = explode(",", trim($value->organization_tag));
-            $tag_list = array_merge($tag_list, $tags);
-        }
-        $tag_list = array_unique($tag_list);
-        $organization_tagsArray = [];
-        foreach ($tag_list as $key => $value) {
-            $organization_tagsArray[$value] = $value;
-        }
+        // $tag_list = [];
+        // foreach ($organization_tags as $key => $value) {
+        //     $tags = explode(",", trim($value->organization_tag));
+        //     $tag_list = array_merge($tag_list, $tags);
+        // }
+        // $tag_list = array_unique($tag_list);
+        // $organization_tagsArray = [];
+        // foreach ($tag_list as $key => $value) {
+        //     $organization_tagsArray[$value] = $value;
+        // }
+        $organization_tagsArray = OrganizationTag::pluck('tag', 'id');
         // var_dump('============parents============');
         // var_dump($parents);
         // var_dump('============grandparents============');
         // var_dump($grandparents);
         // var_dump('============$childs============');
         // var_dump($childs);
-        return view('frontEnd.services.services', compact('services', 'locations', 'chip_service', 'chip_address', 'map', 'parent_taxonomy', 'child_taxonomy', 'search_results', 'pagination', 'sort', 'meta_status', 'target_populations', 'grandparent_taxonomies', 'sort_by_distance_clickable', 'service_taxonomy_info_list', 'service_details_info_list', 'avarageLatitude', 'avarageLongitude', 'service_taxonomy_badge_color_list', 'organization_tagsArray', 'selected_organization'))->with('taxonomy_tree', $taxonomy_tree);
+        return view('frontEnd.services.services', compact('services', 'locations', 'chip_service', 'chip_address', 'map', 'parent_taxonomy', 'child_taxonomy', 'search_results', 'pagination', 'sort', 'meta_status', 'target_populations', 'grandparent_taxonomies', 'sort_by_distance_clickable', 'service_taxonomy_info_list', 'service_details_info_list', 'avarageLatitude', 'avarageLongitude', 'service_taxonomy_badge_color_list', 'organization_tagsArray', 'selected_organization', 'layout'))->with('taxonomy_tree', $taxonomy_tree);
     }
 
     public function filter_organization(Request $request)
@@ -883,7 +889,7 @@ class ExploreController extends Controller
         // $organizations = Organization::where('organization_name', 'like', '%'.$chip_organization.'%')->orwhere('organization_description', 'like', '%'.$chip_organization.'%');
         $organizations = Organization::where('organization_name', 'like', '%' . $chip_organization . '%');
         $organization_tags = $organization_tags != null ?  json_decode($organization_tags) : [];
-
+        // dd($request->organization_tags);
         if ($request->organization_tags && count($organization_tags) > 0) {
             // $organization_tags = explode(',', $organization_tags);
             // $organizations = $organizations->whereIn('organization_tag', $organization_tags);
@@ -1047,6 +1053,57 @@ class ExploreController extends Controller
             return ($miles * 0.8684);
         } else {
             return $miles;
+        }
+    }
+    public function fetchService(Request $request)
+    {
+        try {
+            $query = $request->get('query');
+            if ($query) {
+                $serviceNames = Service::where('service_name', 'like',  '%' . $query . '%')->orwhere('service_description', 'like', '%' . $query . '%')->orwhere('service_airs_taxonomy_x', 'like', '%' . $query . '%')->pluck('service_name')->toArray();
+
+                $organization_names = Organization::where('organization_name', 'like', '%' . $query . '%')->pluck('organization_name')->toArray();
+
+                $taxonomy_names = Taxonomy::where('taxonomy_name', 'like', '%' . $query . '%')->pluck('taxonomy_name')->toArray();
+
+                $data = array_merge($serviceNames, $organization_names, $taxonomy_names);
+                $output = '<ul class="dropdown-menu" style="display:block;position:absolute;max-height:300px;overflow:auto;width: 100%;">';
+                if (count($data) > 0) {
+                    foreach ($data as $key => $value) {
+                        $output .= '<li><a href="#">' . $value . '</a></li> ';
+                    }
+                } else {
+                    $output .= '<li><a href="#">No record found!</a></li> ';
+                }
+
+                $output .= '</ul>';
+                echo $output;
+            }
+        } catch (\Throwable $th) {
+            Log::error('Error in fetchService : ' . $th);
+        }
+    }
+    public function fetchOrganization(Request $request)
+    {
+        try {
+            $query = $request->get('query');
+            if ($query) {
+                $data = Organization::where('organization_name', 'like', '%' . $query . '%')->pluck('organization_name')->toArray();
+
+                $output = '<ul class="dropdown-menu" style="display:block;position:absolute;max-height:300px;overflow:auto;width: 100%;">';
+                if (count($data) > 0) {
+                    foreach ($data as $key => $value) {
+                        $output .= '<li><a href="#">' . $value . '</a></li> ';
+                    }
+                } else {
+                    $output .= '<li><a href="#">No record found!</a></li> ';
+                }
+
+                $output .= '</ul>';
+                echo $output;
+            }
+        } catch (\Throwable $th) {
+            Log::error('Error in fetchOrganization : ' . $th);
         }
     }
 }

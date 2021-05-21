@@ -5,7 +5,7 @@ Location Edit
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
 <style type="text/css">
-    button[data-id="facility_organization_name"],
+    button[data-id="location_organization"],
     button[data-id="facility_service"],
     button[data-id="facility_schedules"],
     button[data-id="facility_details"],
@@ -47,18 +47,14 @@ Location Edit
                                             <p>The name of the location (e.g., Northeast Center, Engine 18)</p>
                                         </div>
                                     </div>
-                                    <input class="form-control selectpicker" type="text" id="location_name"
-                                        name="location_name" value="{{$facility->location_name}}">
+                                    {!! Form::text('location_name',null,['class' => 'form-control','id' => 'location_name']) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Organization Name: </label>
                                     {!!
-                                    Form::select('facility_organization_name',$organization_names,$facility->location_organization,['class'
-                                    => 'form-control
-                                    selectpicker','id' => 'facility_organization_name' ,'placeholder' => 'Select
-                                    organization', 'data-live-search' => 'true', 'data-size' => '5']) !!}
+                                    Form::select('location_organization',$organization_names,null,['class' => 'form-control selectpicker','id' => 'location_organization' ,'placeholder' => 'Select organization', 'data-live-search' => 'true', 'data-size' => '5']) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -69,8 +65,7 @@ Location Edit
                                             <p>An alternative name for the location</p>
                                         </div>
                                     </div>
-                                    <input class="form-control selectpicker" type="text" id="location_alternate_name"
-                                        name="location_alternate_name" value="{{$facility->location_alternate_name}}">
+                                    {!! Form::text('location_alternate_name',null,['class' => 'form-control','id' => 'location_alternate_name']) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -82,8 +77,7 @@ Location Edit
                                                 from the location.</p>
                                         </div>
                                     </div>
-                                    <input class="form-control selectpicker" type="text" id="location_transporation"
-                                        name="location_transporation" value="{{$facility->location_transportation}}">
+                                    {!! Form::text('location_transportation',null,['class' => 'form-control','id' => 'location_transportation']) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -95,11 +89,7 @@ Location Edit
                                         </div>
                                     </div>
                                     {!!
-                                    Form::select('facility_service[]',$service_info_list, $facility_service_list,
-                                    ['class'
-                                    => 'form-control
-                                    selectpicker','id' => 'facility_service', 'multiple' => 'true', 'data-live-search'
-                                    => 'true', 'data-size' => '5']) !!}
+                                    Form::select('facility_service[]',$service_info_list, $facility_service_list, ['class' => 'form-control selectpicker','id' => 'facility_service', 'multiple' => 'true', 'data-live-search' => 'true', 'data-size' => '5']) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -110,8 +100,7 @@ Location Edit
                                             <p>A description of this location.</p>
                                         </div>
                                     </div>
-                                    <textarea id="location_description" name="location_description"
-                                        class="form-control selectpicker">{{$facility->location_description}}</textarea>
+                                    {!! Form::textarea('location_description',null,['class' => 'form-control']) !!}
                                 </div>
                             </div>
 
@@ -126,39 +115,25 @@ Location Edit
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Street Address: </label>
-                                    <input class="form-control selectpicker" type="text" id="facility_street_address"
-                                        name="facility_street_address" value="{{$location_street_address}}">
+                                    {!! Form::text('facility_street_address',null,['class' => 'form-control','id' => 'facility_street_address']) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>City: </label>
-                                    <select class="form-control selectpicker" data-live-search="true"
-                                        id="facility_address_city" name="facility_address_city" , data-size="5">
-                                        @foreach($address_city_list as $key => $address_city)
-                                        <option value="{{$address_city}}" @if ($location_address_city==$address_city)
-                                            selected @endif>{{$address_city}}</option>
-                                        @endforeach
-                                    </select>
+                                    {!! Form::select('facility_address_city',$address_city_list,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'facility_address_city','placeholder' => 'select city']) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>State: </label>
-                                    <select class="form-control selectpicker" data-live-search="true"
-                                        id="facility_address_state" name="facility_address_state" , data-size="5">
-                                        @foreach($address_states_list as $key => $address_state)
-                                        <option value="{{$address_state}}" @if ($location_state==$address_state)
-                                            selected @endif>{{$address_state}}</option>
-                                        @endforeach
-                                    </select>
+                                    {!! Form::select('facility_address_state',$address_states_list,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'facility_address_state','placeholder' => 'select state']) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Zip Code: </label>
-                                    <input class="form-control selectpicker" type="text" id="facility_zip_code"
-                                        name="facility_zip_code" value="{{$location_zip_code}}" required>
+                                    {!! Form::text('facility_zip_code',null,['class' => 'form-control','id' => 'facility_zip_code']) !!}
                                 </div>
                             </div>
                             {{-- <div class="col-md-4">
@@ -476,22 +451,41 @@ Location Edit
                 </p>
                 @foreach ($item->old_values as $key => $v)
                 @php
-                    $fieldNameArray = explode('_',$key);
-                    $fieldName = implode(' ',$fieldNameArray);
+                $fieldNameArray = explode('_',$key);
+                $fieldName = implode(' ',$fieldNameArray);
+                $new_values = explode('| ',$item->new_values[$key]);
+                $old_values = explode('| ',$v);
+                $old_values = array_values(array_filter($old_values));
+                $new_values = array_values(array_filter($new_values));
                 @endphp
                 <ul style="padding-left: 0px;font-size: 16px;">
-                @if ($v)
-                <li style="color: #000;list-style: disc;list-style-position: inside;">Changed <b
-                        style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b>
-                    from <span style="color: #FF5044">{{ $v }}</span> to <span
-                        style="color: #35AD8B">{{ $item->new_values[$key] }}</span>
-                </li>
-                @elseif($item->new_values[$key])
-                <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b
-                    style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span
-                    style="color: #35AD8B">{{ $item->new_values[$key] }}</span>
-                </li>
-                @endif
+                    @if($v && count($old_values) > count($new_values))
+
+                    @php
+                        $diffData = array_diff($old_values,$new_values);
+                    @endphp
+                    <li style="color: #000;list-style: disc;list-style-position: inside;">Removed <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span style="color: #FF5044">{{ implode(',',$diffData) }}</span>
+                    </li>
+                    @elseif($v && count($old_values) < count($new_values))
+                    @php
+                        $diffData = array_diff($new_values,$old_values);
+                    @endphp
+                    <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span style="color: #35AD8B">{{ implode(',',$diffData) }}</span>
+                    </li>
+                    @elseif($v && count($new_values) == count($old_values))
+                    @php
+                        $diffData = array_diff($new_values,$old_values);
+                    @endphp
+                    <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span style="color: #35AD8B">{{ implode(',',$diffData) }}</span>
+                    </li>
+                    {{-- <li style="color: #000;list-style: disc;list-style-position: inside;">Changed <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> from <span style="color: #FF5044">{{ $v }}</span> to <span style="color: #35AD8B">{{ $new_values ? $new_values : 'none' }}</span>
+                    </li> --}}
+                    @elseif($item->new_values[$key])
+                    <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b
+                            style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b>
+                        <span style="color: #35AD8B">{{ $item->new_values[$key] }}</span>
+                    </li>
+                    @endif
                 </ul>
                 @endforeach
                 <span><a href="/viewChanges/{{ $item->id }}/{{ $facility->location_recordid }}"
@@ -506,7 +500,7 @@ Location Edit
 </div>
 </div>
 </div>
-<div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade " tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <form action="/facility_delete_filter" method="POST" id="facility_delete_filter">
@@ -532,7 +526,7 @@ Location Edit
     </div>
 </div>
 {{-- detail term modal --}}
-<div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="create_new_term">
+<div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="create_new_term">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <form>

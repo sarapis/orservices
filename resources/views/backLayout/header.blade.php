@@ -39,6 +39,22 @@
   <!-- Custom Theme Style -->
   <link href="{{ URL::asset('/backend/build/css/custom.min.css') }}" rel="stylesheet">
   @yield('style')
+  <style type="text/css">
+    .dropdown-menu.open {
+        max-height: 156px;
+        overflow: hidden;
+        width: 100%;
+    }
+    .bootstrap-select .dropdown-toggle .filter-option {
+        position: relative;
+        top: 0;
+        left: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        text-align: left;
+    }
+</style>
 </head>
 
 <body class="nav-md">

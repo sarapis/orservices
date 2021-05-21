@@ -43,7 +43,7 @@
                         <li><a href="/layout_edit">Appearance</a></li>
                         <li><a href="/map">Map</a></li>
                         <li><a href="/localization">Localization</a></li>
-                        <li><a href="/messagesSetting">APIs</a></li>
+                        <li><a href="/messagesSetting">Other Services</a></li>
                         <li><a href="/system_emails">System Emails</a></li>
                         {{-- <li><a href="/sections">Sections</a></li>
                         --}}
@@ -93,6 +93,7 @@
                     <ul class="nav child_menu">
                         <li><a href="/contact_form">Contact Form</a></li>
                         <li><a href="/registrations">Registrations</a></li>
+                        <li><a href="/show_added_taxonomy">Taxonomy Terms</a></li>
                     </ul>
                 </li>
                 <li><a><img src="/images/Classifications.png" alt="" style="margin-left: -5px;width: 25px"> Classifications <span class="fa fa-chevron-down"></span></a>
@@ -104,6 +105,7 @@
                         <li><a href="{{ route('phone_types.index') }}">Phone Type</a></li>
                         <li><a href="{{ route('detail_types.index') }}">Detail Type</a></li>
                         <li><a href="{{ route('taxonomy_types.index') }}">Taxonomies</a></li>
+                        <li><a href="{{ route('organization_status.index') }}">Organization Status</a></li>
 
                         {{-- <li><a href="{{ route('service_categories.index') }}">Service Category</a></li>
                         <li><a href="{{ route('service_eligibilities.index') }}">Service Eligibility</a></li> --}}

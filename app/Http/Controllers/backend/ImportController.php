@@ -811,7 +811,7 @@ class ImportController extends Controller
             rename(public_path('/HSDS/data/regular_schedules.csv'), public_path('/csv/regular_schedules.csv'));
             return "import completed";
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in import controller import : ' . $th);
         }
     }
 }

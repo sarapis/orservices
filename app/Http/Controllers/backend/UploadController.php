@@ -39,6 +39,7 @@ use App\Model\ServiceTaxonomy;
 use App\Model\Taxonomy;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use ZanySoft\Zip\Zip;
 
@@ -343,7 +344,7 @@ class UploadController extends Controller
             rename(public_path('/HSDS/data/regular_schedules.csv'), public_path('/csv/regular_schedules.csv'));
             return "import completed";
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in upload controller : ' . $th);
         }
     }
 }

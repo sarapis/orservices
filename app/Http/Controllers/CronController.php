@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Model\AutoSyncAirtable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 class CronController extends Controller
@@ -37,7 +38,8 @@ class CronController extends Controller
             Session::flash('status', 'success');
             return redirect('import');
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error('Error in Cron : ' . $th);
+            // Log
         }
     }
 }

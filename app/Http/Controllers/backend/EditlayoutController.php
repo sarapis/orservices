@@ -120,6 +120,16 @@ class EditlayoutController extends Controller
             } else {
                 $layout->logo_active = 0;
             }
+            if ($request->organization_share_button) {
+                $layout->organization_share_button = 1;
+            } else {
+                $layout->organization_share_button = 0;
+            }
+            if ($request->service_share_button) {
+                $layout->service_share_button = 1;
+            } else {
+                $layout->service_share_button = 0;
+            }
             $layout->site_name = $request->site_name;
             $layout->tagline = $request->tagline;
             $layout->contact_text = $request->contact_text;

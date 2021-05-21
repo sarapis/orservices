@@ -6,8 +6,8 @@
 				<div class="site-gridmenu-toggle" data-toggle="gridmenu">
 					<a class="navbar-brand" href="/">
 						@if($layout->logo_active == 1)
-							<img class="navbar-brand-logo navbar-brand-logo-normal" src="../uploads/images/{{$layout->logo}}" title="{{$layout->site_name}}" style="height: auto;width:100px;">
-							<img class="navbar-brand-logo navbar-brand-logo-special" src="./uploads/images/{{$layout->logo}}" title="{{$layout->site_name}}" style="height: auto;width:100px;">
+							<img class="navbar-brand-logo navbar-brand-logo-normal" src="/uploads/images/{{$layout->logo}}" title="{{$layout->site_name}}" style="height: auto;width:100px;">
+							<img class="navbar-brand-logo navbar-brand-logo-special" src="/uploads/images/{{$layout->logo}}" title="{{$layout->site_name}}" style="height: auto;width:100px;">
 						@endif
 						@if($layout->title_active == 1)
 						<span class="navbar-brand-text">{{$layout->site_name}}</span>
@@ -108,9 +108,12 @@
 						<a class="nav-link" href="/logout">Logout</a>
 					</li>
 					@else
+
+                    @if ($layout->activate_login_button == 1)
 					<li class="nav-item">
 						<a class="nav-link" href="/login">Login</a>
 					</li>
+                    @endif
 					@endif
 				</ul>
 			</div>

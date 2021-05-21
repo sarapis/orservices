@@ -35,6 +35,13 @@ Edit Taxonomy
                             {!! $errors->first('name', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
+                    <div class="form-group {{ $errors->has('order') ? 'has-error' : ''}}">
+                        {!! Form::label('order', 'Order', ['class' => 'col-md-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::text('order', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('order', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
                     <div class="form-group {{ $errors->has('type') ? 'has-error' : ''}}">
                         {!! Form::label('type', 'Type', ['class' => 'col-md-3 control-label']) !!}
                         <div class="col-sm-6">
