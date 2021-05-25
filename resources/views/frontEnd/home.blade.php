@@ -106,7 +106,8 @@ Home
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="form-group text-left form-material" data-plugin="formMaterial">
                             <img src="/frontend/assets/images/search.png" alt="" title="" class="form_icon_img">
-                            <input type="text" class="form-control" id="inputName" name="find" placeholder="Search for service">
+                            <input type="text" class="form-control" id="search_service" name="find" placeholder="Search for service">
+                            <div id="searchServiceList"></div>
                         </div>
                         <div class="form-group text-left form-material" data-plugin="formMaterial">
                             <div class="form-group">
@@ -610,6 +611,30 @@ Home
     //     if($('ul li', $(this)).length == 0)
     //         $(this).hide();
     // });
+    $('#search_service').keyup(function () {
+        let query = $(this).val()
+        if(query != ''){
+                var _token = "{{ csrf_token() }}";
+            $.ajax({
+                url: "{{ route('services.fetch') }}",
+                method:"post",
+                data:{_token,query},
+                success:function(data){
+                    $('#searchServiceList').fadeIn();
+                    $('#searchServiceList').html(data)
+                },
+                error : function(err){
+                    console.log(err)
+                }
+            })
+        }else{
+            $('#searchServiceList').fadeOut();
+        }
+    })
+    $(document).on('click', '#searchServiceList li',function () {
+        $('#search_service').val($(this).text())
+        $('#searchServiceList').fadeOut();
+    })
 });
 </script>
 @endsection

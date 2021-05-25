@@ -440,7 +440,12 @@ class TaxonomyController extends Controller
             $taxonomy->taxonomy_parent_name = $request->taxonomy_parent_name;
             $taxonomy->taxonomy = $request->taxonomy;
             $taxonomy->language = $request->language;
-            $taxonomy->badge_color = $request->badge_color;
+            if (str_contains($request->badge_color, '#')) {
+                $badge_color = str_replace('#', '', $request->badge_color);
+            } else {
+                $badge_color = $request->badge_color;
+            }
+            $taxonomy->badge_color = $badge_color;
             $taxonomy->taxonomy_x_notes = $request->taxonomy_x_notes;
             $taxonomy->status = 'Unpublished';
             $taxonomy->created_by = Auth::id();
@@ -479,11 +484,15 @@ class TaxonomyController extends Controller
     public function show($id)
     {
         $taxonomy = Taxonomy::with('user')->find($id);
+
         $taxonomyTypeId = $taxonomy->taxonomy;
         if ($taxonomyTypeId) {
             $parentData = Taxonomy::where('taxonomy', $taxonomyTypeId)->whereNull('taxonomy_parent_name')->pluck('taxonomy_name', 'taxonomy_recordid');
         } else {
             $parentData = Taxonomy::whereNull('taxonomy_parent_name')->pluck('taxonomy_name', 'taxonomy_recordid');
+        }
+        if ($taxonomy->badge_color) {
+            $taxonomy->badge_color = '#' . $taxonomy->badge_color;
         }
         $taxonomy->parentData = $parentData;
         return response()->json($taxonomy);
@@ -522,7 +531,7 @@ class TaxonomyController extends Controller
         $taxonomy->status = $request->status;
         $taxonomy->order = $request->order;
         if (str_contains($request->badge_color, '#')) {
-            $badge_color = str_replace('', '#', $request->badge_color);
+            $badge_color = str_replace('#', '', $request->badge_color);
         } else {
             $badge_color = $request->badge_color;
         }
@@ -577,6 +586,7 @@ class TaxonomyController extends Controller
     }
     public function taxonommyUpdate(Request $request)
     {
+        // dd($request);
         try {
             $id = $request->id;
             $taxonomy = Taxonomy::find($id);
@@ -593,7 +603,7 @@ class TaxonomyController extends Controller
             $taxonomy->status = $request->status;
             $taxonomy->order = $request->order;
             if (str_contains($request->badge_color, '#')) {
-                $badge_color = str_replace('', '#', $request->badge_color);
+                $badge_color = str_replace('#', '', $request->badge_color);
             } else {
                 $badge_color = $request->badge_color;
             }
