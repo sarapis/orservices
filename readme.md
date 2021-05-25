@@ -155,7 +155,7 @@ To deploy the application to Microsoft Azure (https://azure.com) follow the belo
 
 * Load the database dump
 ```bash
-   php artisan db:seed
+   php artisan db:seed --class=SqlDumpSeeder
    ```
 
 Finally you can access your application at https://<YOUR_APP_SERVICE_NAME>.azurewebsites.net/
