@@ -108,6 +108,24 @@ To deploy the application to Microsoft Azure (https://azure.com) follow the belo
 * Fill out the details and click "Review + create" button. Make sure to select the subscription you created ealier and the resource group. Provide the instance name (the name will form part of the application url e.g naming your service orservices-test, the application will be accessible via https://orservices-test.azurewebsites.net/). For publish select "Code", Runtime stack - select PHP 7.4, Region - select any (tip: select the region where most of the users using your application are located to reduce latency), for Linux Plan - leave as default. For Sku and size - leave as default.
 
 *Create SQL Database*
+1. Using Azure Database for MySQL servers (Recommended)
+* Navigate to Azure Database for MySQL servers (https://portal.azure.com/#blade/HubsExtension/BrowseResource/resourceType/Microsoft.DBforMySQL%2Fservers) and click "+ Add" button.
+* Choose between Single Server and Flexible server (Preview) - if you are testing OR services and on a limited budget, we recommened you use select Flexible server. For production and high workload environment, go with Single server.
+* On Flexible server tab, click "Create"
+* Fill out subscription details, resource group, server name, region and workload type. On "Compute + Storage", you can leave it as default, or click on configure server. Fill out the configuration for your optimal workload. Lastly fill out the username and password. Note these somewhere as you will use them to connect the application to the database.
+* Next, click the "Next: Networking". Here, make sure to check the box "Allow public access from any Azure service within Azure to this server" to allow App Service to connect to the database. If you need to connect to the database remotely from another computer, under "Firewall rules", add the computers IP address.
+* Lastly click "Review + Create". It will take sometime to provision the database server. Once the provisioning is done, note the database host (something like <YOUR_SERVER_NAME>.mysql.database.azure.com)
+* Its important to note, the provisioning does not automatically create a database. To create a database, connect to the server (you can do this from App Service console). To connect to the server from App Service console, go to the console and 
+```bash
+   mysql --host=<YOUR_SERVER_NAME>.mysql.database.azure.com --user=<YOUR_USERNAME_NAME> -p
+```
+You will be prompted to type your password. Provide the password you used when creating the server. Once connected to server, you can now create a database by using
+```bash
+   create database <DATABASE_NAME>
+```
+Note somewhere the host (<YOUR_SERVER_NAME>.mysql.database.azure.com), database name (create in the command above), username and password (both supplied when creating the server). 
+
+2. Using Azure SQL Databases
 * Navigate to SQL Databases (https://portal.azure.com/#blade/HubsExtension/BrowseResource/resourceType/Microsoft.Sql%2Fservers%2Fdatabases) and click "+ Add" button.
 * Fill out the details and click "Review + create" button. Make sure to select the subscription you created ealier and the resource group. Provide the database name, for Server, click create new and fill out the pop out form with server name, server admin login (this will be the database username), password and location (Its advisable to pick the same location as your App service). Save these details somewhere since you will need them to connect the application to the database. For Want to use SQL elastic pool? - select No. For Compute + storage - leave as default or configure based on your needs.
 
@@ -143,6 +161,17 @@ To deploy the application to Microsoft Azure (https://azure.com) follow the belo
    ```
 
 * Replace database variables as below. Make sure to change variables under <> to reflect your details (details from creating SQL database step)
+(Use these if you went with Azure Database for MySQL)
+```bash
+   DB_CONNECTION=mysql
+   DB_HOST=<YOUR_SERVER_NAME>.mysql.database.azure.com
+   DB_PORT=3306
+   DB_DATABASE=<YOUR_DATABASE_NAME>
+   DB_USERNAME=<YOUR_DATABASE_USERNAME>
+   DB_PASSWORD=<YOUR_DATABASE_PASSWORD>
+   ```
+
+(Use these if you went with Azure SQL Databases)
 ```bash
    DB_CONNECTION=sqlsrv
    DB_HOST="tcp:<YOUR_DATABASE_NAME>.database.windows.net,1433"
