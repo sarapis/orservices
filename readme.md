@@ -110,20 +110,20 @@ To deploy the application to Microsoft Azure (https://azure.com) follow the belo
 *Create SQL Database*
 1. Using Azure Database for MySQL servers (Recommended)
 * Navigate to Azure Database for MySQL servers (https://portal.azure.com/#blade/HubsExtension/BrowseResource/resourceType/Microsoft.DBforMySQL%2Fservers) and click "+ Add" button.
-* Choose between Single Server and Flexible server (Preview) - if you are testing OR services and on a limited budget, we recommened you use select Flexible server. For production and high workload environment, go with Single server.
+* Choose between Single Server and Flexible server (Preview) - if you are testing OR services and/or on a limited budget, we recommened you select Flexible server. For production and high workload environment, go with Single server.
 * On Flexible server tab, click "Create"
-* Fill out subscription details, resource group, server name, region and workload type. On "Compute + Storage", you can leave it as default, or click on configure server. Fill out the configuration for your optimal workload. Lastly fill out the username and password. Note these somewhere as you will use them to connect the application to the database.
+* Fill out subscription details, resource group, server name, region and workload type. On "Compute + Storage", you can leave it as default, or click "Configure server". Fill out the configuration for your optimal workload. Lastly fill out the username and password. Note these somewhere as you will use them to connect the application to the database.
 * Next, click the "Next: Networking". Here, make sure to check the box "Allow public access from any Azure service within Azure to this server" to allow App Service to connect to the database. If you need to connect to the database remotely from another computer, under "Firewall rules", add the computers IP address.
 * Lastly click "Review + Create". It will take sometime to provision the database server. Once the provisioning is done, note the database host (something like <YOUR_SERVER_NAME>.mysql.database.azure.com)
-* Its important to note, the provisioning does not automatically create a database. To create a database, connect to the server (you can do this from App Service console). To connect to the server from App Service console, go to the console and 
+* It's important to note, the provisioning does not automatically create a database. To create a database, connect to the server (you can do this from App Service console). To connect to the server from App Service, go to the console and 
 ```bash
    mysql --host=<YOUR_SERVER_NAME>.mysql.database.azure.com --user=<YOUR_USERNAME_NAME> -p
 ```
-You will be prompted to type your password. Provide the password you used when creating the server. Once connected to server, you can now create a database by using
+You will be prompted to type your password. Provide the password you used when creating the server. Once connected to server, create a database by using
 ```bash
-   create database <DATABASE_NAME>
+   create database <DATABASE_NAME>;
 ```
-Note somewhere the host (<YOUR_SERVER_NAME>.mysql.database.azure.com), database name (create in the command above), username and password (both supplied when creating the server). 
+Note somewhere the host (<YOUR_SERVER_NAME>.mysql.database.azure.com), database name (created in the command above), username and password (both supplied when creating the server). 
 
 2. Using Azure SQL Databases
 * Navigate to SQL Databases (https://portal.azure.com/#blade/HubsExtension/BrowseResource/resourceType/Microsoft.Sql%2Fservers%2Fdatabases) and click "+ Add" button.
