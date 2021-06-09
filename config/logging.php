@@ -40,6 +40,13 @@ return [
             'channels' => ['single'],
             'ignore_exceptions' => false,
         ],
+        /*
+        'stackdriver' => [
+            'driver' => 'custom',
+            'via' => App\Logging\CreateStackdriverLogger::class,
+            'level' => 'debug',
+        ],
+        */
 
         'single' => [
             'driver' => 'single',
