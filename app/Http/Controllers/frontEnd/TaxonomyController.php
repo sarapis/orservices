@@ -219,6 +219,7 @@ class TaxonomyController extends Controller
                             $i = 0;
                             foreach ($record['fields']['services'] as $value) {
 
+
                                 $taxonomyservice = $strtointclass->string_to_int($value);
 
                                 if ($i != 0) {
@@ -491,6 +492,7 @@ class TaxonomyController extends Controller
         } else {
             $parentData = Taxonomy::whereNull('taxonomy_parent_name')->pluck('taxonomy_name', 'taxonomy_recordid');
         }
+
         if ($taxonomy->badge_color) {
             $taxonomy->badge_color = '#' . $taxonomy->badge_color;
         }
@@ -531,7 +533,7 @@ class TaxonomyController extends Controller
         $taxonomy->status = $request->status;
         $taxonomy->order = $request->order;
         if (str_contains($request->badge_color, '#')) {
-            $badge_color = str_replace('#', '', $request->badge_color);
+            $badge_color = str_replace('', '#', $request->badge_color);
         } else {
             $badge_color = $request->badge_color;
         }
@@ -603,7 +605,9 @@ class TaxonomyController extends Controller
             $taxonomy->status = $request->status;
             $taxonomy->order = $request->order;
             if (str_contains($request->badge_color, '#')) {
-                $badge_color = str_replace('#', '', $request->badge_color);
+
+                $badge_color = str_replace('', '#', $request->badge_color);
+
             } else {
                 $badge_color = $request->badge_color;
             }
