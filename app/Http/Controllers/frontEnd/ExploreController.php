@@ -1070,10 +1070,10 @@ class ExploreController extends Controller
                 $output = '<ul class="dropdown-menu" style="display:block;position:absolute;max-height:300px;overflow:auto;width: 100%;">';
                 if (count($data) > 0) {
                     foreach ($data as $key => $value) {
-                        $output .= '<li><a href="#">' . $value . '</a></li> ';
+                        $output .= '<li><a href="javascript:void(0)" style="color:#000;">' . $value . '</a></li> ';
                     }
                 } else {
-                    $output .= '<li><a href="#">No record found!</a></li> ';
+                    $output .= '<li><a href="javascript:void(0)" style="color:#000;">No record found!</a></li> ';
                 }
 
                 $output .= '</ul>';
