@@ -4,7 +4,7 @@
         <!-- Example Striped Rows -->
 
         <div class="container-fluid p-0" style="margin-right: 0">
-            <h3>{{ $layout->header_pdf }}</h3>
+            <h3>{{ @$layout->header_pdf }}</h3>
             <div class="col-md-8 pt-15 pr-0">
 
                 @foreach ($services as $service)
@@ -65,7 +65,7 @@
                     <hr>
                 @endforeach
             </div>
-            <h3>{{ $layout->footer_pdf }}</h3>
+            <h3>{{ @$layout->footer_pdf }}</h3>
         </div>
     </div>
 </div>

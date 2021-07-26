@@ -45,21 +45,21 @@ Edit Login/Register Page
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Register Page Content
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <textarea id="summernote_register" type="text" name="register_content" class="optional form-control col-md-7 col-xs-12">{{$layout->register_content}}</textarea>
+                            <textarea id="summernote_register" type="text" name="register_content" class="optional form-control col-md-7 col-xs-12">{{@$layout->register_content}}</textarea>
                         </div>
                     </div>
                     <div class="item form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Login Page Content
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <textarea id="summernote_login" type="text" name="login_content" class="optional form-control col-md-7 col-xs-12">{{$layout->login_content}}</textarea>
+                            <textarea id="summernote_login" type="text" name="login_content" class="optional form-control col-md-7 col-xs-12">{{@$layout->login_content}}</textarea>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">Make Directory Private</label>
                         <div class="col-md-8 col-sm-8 col-xs-12">
                             <label>Off&nbsp;&nbsp;
-                              <input type="checkbox" class="js-switch" value="checked" name="activate_login_home"  @if($layout->activate_login_home==1) checked @endif/>&nbsp;&nbsp;On
+                              <input type="checkbox" class="js-switch" value="checked" name="activate_login_home"  @if(@$layout->activate_login_home==1) checked @endif/>&nbsp;&nbsp;On
                             </label>
                         </div>
                     </div>
@@ -67,7 +67,7 @@ Edit Login/Register Page
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">Show Login button in main menu</label>
                         <div class="col-md-8 col-sm-8 col-xs-12">
                             <label>Off&nbsp;&nbsp;
-                              <input type="checkbox" class="js-switch" value="checked" name="activate_login_button"  @if($layout->activate_login_button==1) checked @endif/>&nbsp;&nbsp;On
+                              <input type="checkbox" class="js-switch" value="checked" name="activate_login_button"  @if(@$layout->activate_login_button==1) checked @endif/>&nbsp;&nbsp;On
                             </label>
                         </div>
                     </div>

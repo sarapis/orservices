@@ -15,7 +15,7 @@
     <meta property="og:description" content="ShareThis is its people. It's imperative that we hire smart,innovative people who can work intelligently as we continue to disrupt the very category we created. Come join us!" />
     <meta property="og:site_name" content="ShareThis" />
     <script type='text/javascript' src='{{ env('SHARETHIS_ACTIVATE')}}' async='async'></script>
-    <title>@yield('title')| {{ $layout->site_name }}</title>
+    <title>@yield('title')| {{ @$layout->site_name }}</title>
     <link rel="apple-touch-icon" href="../../frontend/assets/images/apple-touch-icon.png">
     <link rel="shortcut icon" href="../../frontend/assets/images/favicon.ico">
     <!-- Stylesheets -->

@@ -48,7 +48,7 @@
 	                <span class="icon-bar"></span>
 	                <span class="icon-bar"></span>
 	            </button>
-	            <a class="navbar-brand" href="{{url('/')}}">{{$layout->site_name}}</a>
+	            <a class="navbar-brand" href="{{url('/')}}">{{@$layout->site_name}}</a>
 	        </div>
 
 			<div class="collapse navbar-collapse" id="navbar-collapse-1">
@@ -76,7 +76,7 @@
 	<hr/>
 
 	<footer class="site-footer" style="padding-left: 40px;">
-    	<div class="site-footer-legal">{!! $layout->footer !!}</div>
+    	<div class="site-footer-legal">{!! @$layout->footer !!}</div>
 
   	</footer>
 

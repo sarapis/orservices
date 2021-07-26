@@ -46,14 +46,14 @@
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Banner Text1
                             </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                              <input id="occupation" type="text" name="banner_text1" class="optional form-control col-md-7 col-xs-12" value="{{$layout->banner_text1}}">
+                              <input id="occupation" type="text" name="banner_text1" class="optional form-control col-md-7 col-xs-12" value="{{@$layout->banner_text1}}">
                             </div>
                           </div>
                           <div class="item form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Banner Text2
                             </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                              <input id="occupation" type="text" name="banner_text2" class="optional form-control col-md-7 col-xs-12" value="{{$layout->banner_text2}}">
+                              <input id="occupation" type="text" name="banner_text2" class="optional form-control col-md-7 col-xs-12" value="{{@$layout->banner_text2}}">
                             </div>
                           </div>
 						<!-- <div class="form-group {{ $errors->has('body') ? 'has-error' : ''}}">
@@ -75,7 +75,7 @@
                             </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                             <textarea id="summernote1" type="text" name="sidebar_content"
-                                class="optional form-control col-md-7 col-xs-12">{{$layout->sidebar_content}}</textarea>
+                                class="optional form-control col-md-7 col-xs-12">{{@$layout->sidebar_content}}</textarea>
                             </div>
                         </div>
 						<!-- part 1 -->
@@ -92,7 +92,7 @@
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 							<textarea id="summernote1" type="text" name="sidebar_content_part_1"
-								class="optional form-control col-md-7 col-xs-12">{{$layout->sidebar_content_part_1}}</textarea>
+								class="optional form-control col-md-7 col-xs-12">{{@$layout->sidebar_content_part_1}}</textarea>
 							</div>
 						</div> --}}
 
@@ -110,7 +110,7 @@
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 							<textarea id="summernote2" type="text" name="sidebar_content_part_2"
-								class="optional form-control col-md-7 col-xs-12">{{$layout->sidebar_content_part_2}}</textarea>
+								class="optional form-control col-md-7 col-xs-12">{{@$layout->sidebar_content_part_2}}</textarea>
 							</div>
 						</div> --}}
 
@@ -127,7 +127,7 @@
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 							<textarea id="summernote3" type="text" name="sidebar_content_part_3"
-								class="optional form-control col-md-7 col-xs-12">{{$layout->sidebar_content_part_3}}</textarea>
+								class="optional form-control col-md-7 col-xs-12">{{@$layout->sidebar_content_part_3}}</textarea>
 							</div>
 						</div> --}}
 
@@ -137,7 +137,7 @@
 							</label>
 							<div class="col-md-6 col-sm-12">
 								<div class="row">
-									<img src="/uploads/images/{{$layout->homepage_background}}" id="home_bk_img" style="width: 100%;">
+									<img src="/uploads/images/{{@$layout->homepage_background}}" id="home_bk_img" style="width: 100%;">
 								</div>
 								<div class="row">
 									<div class="col-md-6">

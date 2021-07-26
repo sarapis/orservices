@@ -34,7 +34,7 @@ Appearance
                     <div class="col-md-6 col-sm-12">
 
                         <div class="row">
-                            <img src="/uploads/images/{{$layout->logo}}" id="blah">
+                            <img src="/uploads/images/{{@$layout->logo}}" id="blah">
                         </div>
                         <div class="row">
                             <div class="col-md-6">
@@ -47,7 +47,7 @@ Appearance
                             <div class="col-md-6">
                                 <span><b>Hide Logo</b>&nbsp;&nbsp;
                                     <input type="checkbox" class="js-switch" value="checked" name="logo_active"
-                                        @if($layout->logo_active==1) checked @endif/>&nbsp;&nbsp;<b>Show Logo</b></span>
+                                        @if(@$layout->logo_active==1) checked @endif/>&nbsp;&nbsp;<b>Show Logo</b></span>
                             </div>
                         </div>
                         <div class="row">
@@ -63,7 +63,7 @@ Appearance
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <input type="name" id="email" name="site_name" class="form-control col-md-7 col-xs-12"
-                            value="{{$layout->site_name}}">
+                            value="{{@$layout->site_name}}">
                     </div>
                 </div>
 
@@ -72,7 +72,7 @@ Appearance
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <input id="occupation" type="text" name="tagline"
-                            class="optional form-control col-md-7 col-xs-12" value="{{$layout->tagline}}">
+                            class="optional form-control col-md-7 col-xs-12" value="{{@$layout->tagline}}">
                     </div>
                 </div>
                 <!-- <div class="item form-group">
@@ -132,7 +132,7 @@ Appearance
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <input id="occupation" type="text" name="contact_text"
-                            class="optional form-control col-md-7 col-xs-12" value="{{$layout->contact_text}}">
+                            class="optional form-control col-md-7 col-xs-12" value="{{@$layout->contact_text}}">
                     </div>
                 </div>
 
@@ -141,7 +141,7 @@ Appearance
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <input id="occupation" type="text" name="contact_btn_label"
-                            class="optional form-control col-md-7 col-xs-12" value="{{$layout->contact_btn_label}}">
+                            class="optional form-control col-md-7 col-xs-12" value="{{@$layout->contact_btn_label}}">
                     </div>
                 </div>
 
@@ -150,7 +150,7 @@ Appearance
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <input type="url" id="website" name="contact_btn_link" placeholder="www.website.com"
-                            class="form-control col-md-7 col-xs-12" value="{{$layout->contact_btn_link}}">
+                            class="form-control col-md-7 col-xs-12" value="{{@$layout->contact_btn_link}}">
                     </div>
                 </div>
 
@@ -159,7 +159,7 @@ Appearance
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <textarea id="summernote" type="text" name="footer"
-                            class="optional form-control col-md-7 col-xs-12">{{$layout->footer}}</textarea>
+                            class="optional form-control col-md-7 col-xs-12">{{@$layout->footer}}</textarea>
                     </div>
                 </div>
 
@@ -169,7 +169,7 @@ Appearance
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <input id="occupation" type="text" name="header_pdf"
-                            class="optional form-control col-md-7 col-xs-12" value="{{$layout->header_pdf}}">
+                            class="optional form-control col-md-7 col-xs-12" value="{{@$layout->header_pdf}}">
                     </div>
                 </div>
 
@@ -179,7 +179,7 @@ Appearance
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <input id="occupation" type="text" name="footer_pdf"
-                            class="optional form-control col-md-7 col-xs-12" value="{{$layout->footer_pdf}}">
+                            class="optional form-control col-md-7 col-xs-12" value="{{@$layout->footer_pdf}}">
                     </div>
                 </div>
 
@@ -189,7 +189,7 @@ Appearance
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <input id="occupation" type="text" name="footer_csv"
-                            class="optional form-control col-md-7 col-xs-12" value="{{$layout->footer_csv}}">
+                            class="optional form-control col-md-7 col-xs-12" value="{{@$layout->footer_csv}}">
                     </div>
                 </div>
 
@@ -197,7 +197,7 @@ Appearance
                     <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Primary Color
                     </label>
                     <div class="col-md-2 col-sm-6 col-xs-12">
-                        <input type="color" name="primary_color" value="{{$layout->primary_color}}" id="primary_color"
+                        <input type="color" name="primary_color" value="{{@$layout->primary_color}}" id="primary_color"
                             class=" form-control col-md-5 col-xs-5" style="padding:0px">
                     </div>
                 </div>
@@ -207,7 +207,7 @@ Appearance
                     </label>
                     <div class="col-md-2 col-sm-6 col-xs-12">
                         <input type="color" name="secondary_color" id="secondary_color"
-                            value="{{$layout->secondary_color}}" style="padding:0px"
+                            value="{{@$layout->secondary_color}}" style="padding:0px"
                             class="form-control col-md-5 col-xs-5">
                     </div>
                 </div>
@@ -216,7 +216,7 @@ Appearance
                     <label class="control-label col-md-3 col-sm-3 col-xs-12" for="occupation">Button Color
                     </label>
                     <div class="col-md-2 col-sm-6 col-xs-12">
-                        <input type="color" name="button_color" id="button_color" value="{{$layout->button_color}}"
+                        <input type="color" name="button_color" id="button_color" value="{{@$layout->button_color}}"
                             style="padding:0px" class="color-pick form-control col-md-5 col-xs-5">
                     </div>
                 </div>
@@ -226,7 +226,7 @@ Appearance
                     </label>
                     <div class="col-md-2 col-sm-6 col-xs-12">
                         <input type="color" name="button_hover_color" id="button_hover_color"
-                            value="{{$layout->button_hover_color}}" style="padding:0px"
+                            value="{{@$layout->button_hover_color}}" style="padding:0px"
                             class="color-pick form-control col-md-5 col-xs-5">
                     </div>
                 </div>
@@ -235,7 +235,7 @@ Appearance
                     </label>
                     <div class="col-md-2 col-sm-6 col-xs-12">
                         <input type="color" name="title_link_color" id="title_link_color"
-                            value="{{$layout->title_link_color}}" style="padding:0px"
+                            value="{{@$layout->title_link_color}}" style="padding:0px"
                             class="color-pick form-control col-md-5 col-xs-5">
                     </div>
                 </div>
@@ -244,7 +244,7 @@ Appearance
                     </label>
                     <div class="col-md-2 col-sm-6 col-xs-12">
                         <input type="color" name="top_menu_color" id="top_menu_color"
-                            value="{{$layout->top_menu_color}}" style="padding:0px"
+                            value="{{@$layout->top_menu_color}}" style="padding:0px"
                             class="color-pick form-control col-md-5 col-xs-5">
                     </div>
                 </div>
@@ -253,7 +253,7 @@ Appearance
                     </label>
                     <div class="col-md-2 col-sm-6 col-xs-12">
                         <input type="color" name="top_menu_link_color" id="top_menu_link_color"
-                            value="{{$layout->top_menu_link_color}}" style="padding:0px"
+                            value="{{@$layout->top_menu_link_color}}" style="padding:0px"
                             class="color-pick form-control col-md-5 col-xs-5">
                     </div>
                 </div>
@@ -262,7 +262,7 @@ Appearance
                     </label>
                     <div class="col-md-2 col-sm-6 col-xs-12">
                         <input type="color" name="top_menu_link_hover_color" id="top_menu_link_hover_color"
-                            value="{{$layout->top_menu_link_hover_color}}" style="padding:0px"
+                            value="{{@$layout->top_menu_link_hover_color}}" style="padding:0px"
                             class="color-pick form-control col-md-5 col-xs-5">
                     </div>
                 </div>
@@ -271,7 +271,7 @@ Appearance
                     </label>
                     <div class="col-md-2 col-sm-6 col-xs-12">
                         <input type="color" name="menu_title_color" id="menu_title_color"
-                            value="{{$layout->menu_title_color}}" style="padding:0px"
+                            value="{{@$layout->menu_title_color}}" style="padding:0px"
                             class="color-pick form-control col-md-5 col-xs-5">
                     </div>
                 </div>
@@ -280,7 +280,7 @@ Appearance
                     <div class="col-md-8 col-sm-8 col-xs-12">
                         <label>Off&nbsp;&nbsp;
                             <input type="checkbox" class="js-switch" value="1" name="organization_share_button"
-                                @if($layout->organization_share_button==1) checked @endif/>&nbsp;&nbsp;On
+                                @if(@$layout->organization_share_button==1) checked @endif/>&nbsp;&nbsp;On
                         </label>
                     </div>
                 </div>
@@ -289,7 +289,7 @@ Appearance
                     <div class="col-md-8 col-sm-8 col-xs-12">
                         <label>Off&nbsp;&nbsp;
                             <input type="checkbox" class="js-switch" value="1" name="service_share_button"
-                                @if($layout->service_share_button==1) checked @endif/>&nbsp;&nbsp;On
+                                @if(@$layout->service_share_button==1) checked @endif/>&nbsp;&nbsp;On
                         </label>
                     </div>
                 </div>

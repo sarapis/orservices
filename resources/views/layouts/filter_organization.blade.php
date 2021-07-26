@@ -151,7 +151,7 @@
             </div>
             <input type="hidden" name="organization_pdf" id="organization_pdf" value="">
             <input type="hidden" name="organization_csv" id="organization_csv" value="">
-            @if ($layout->organization_share_button == 1)
+            @if (@$layout->organization_share_button == 1)
             <button type="button" class="float-right btn_share_download" data-toggle="modal" data-target="#shareThisModal">
                 <img src="/frontend/assets/images/share.png" alt="" title="" class="mr-10 share_image">
                 Share

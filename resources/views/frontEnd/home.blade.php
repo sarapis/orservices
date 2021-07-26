@@ -40,14 +40,14 @@ Home
     @include('layouts.filter')
     @include('layouts.sidebar')
 </div>
-@if ($home->home_page_style == 'Alerts (ex. hc.flospaces.org)')
+@if (@$home->home_page_style == 'Alerts (ex. hc.flospaces.org)')
 <div class="page-register layout-full page-dark">
     <div class="page vertical-align" data-animsition-in="fade-in" data-animsition-out="fade-out">
         <div class="page-content vertical-align-middle">
             <div class="row">
                 <div class="col-lg-6 col-sm-12 col-md-6" style="text-align: center;">
                     <div class="inner_search">
-                        {!! $home->sidebar_content !!}
+                        {!! @$home->sidebar_content !!}
                     </div>
                 </div>
                 <div class="col-lg-6 col-sm-6 col-md-6 home-browse-list" style="text-align: center;">
@@ -89,19 +89,19 @@ Home
         <div class="container">
             <div class="col-md-6">
                 <div class="page-content home_slide_content">
-                    <h1 class="text-white">{{ $home->banner_text1 }}</h1>
+                    <h1 class="text-white">{{ @$home->banner_text1 }}</h1>
                     {{-- @php
-                        $banner_text2 = $home->banner_text2 ? explode(" ",$home->banner_text2) : [];
+                        $banner_text2 = @$home->banner_text2 ? explode(" ",@$home->banner_text2) : [];
                         $seconLastWord = "";
                         if(count($banner_text2) > 0){
                             $seconLastWord = $banner_text2[count($banner_text2) - 2];
                         }
                         if($seconLastWord != "" && count($banner_text2) > 0){
-                            $home->banner_text2 = str_replace($seconLastWord,'<span class="color_blue">'. $seconLastWord .'</span>', $home->banner_text2);
+                            @$home->banner_text2 = str_replace($seconLastWord,'<span class="color_blue">'. $seconLastWord .'</span>', @$home->banner_text2);
                         }
 
                     @endphp --}}
-                    <h3 class="text-white">{!! $home->banner_text2 !!}</h3>
+                    <h3 class="text-white">{!! @$home->banner_text2 !!}</h3>
                     <form method="post" role="form" autocomplete="off" class="home_serach_form" action="/search">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="form-group text-left form-material" data-plugin="formMaterial">
@@ -453,43 +453,43 @@ Home
     </div>
 </div>
 
-@if ($home->home_page_style == 'Services (ex. larable-dev.sarapisorg)')
+@if (@$home->home_page_style == 'Services (ex. larable-dev.sarapisorg)')
 <div class="home_page_content text-center" id="home_page_content">
     <div class="container">
         <div class="row">
             <div class="col-lg-5 col-sm-12 col-md-5">
                 {{-- <img src="/frontend/assets/images/circle_images.png" alt="" title="" class=""> --}}
-                <img src="{{ $home->part_1_image }}" alt="" title="" class="">
+                <img src="{{ @$home->part_1_image }}" alt="" title="" class="">
             </div>
             <div class="col-lg-7 col-sm-12 col-md-7">
                 <div class="row m-0">
                     {{-- <div class="col-md-2">
-                        <img src="{{$home->part_1_image}}" alt="" title="" class="">
+                        <img src="{{@$home->part_1_image}}" alt="" title="" class="">
                     </div> --}}
                     <div class="col-md-12 col-lg-8 text-left p-0">
                        <!--  <p>The purpose of this system is to provide a searchable and filterable directory of organizations, contacts and facilities to signed in users. Users can export any data about those three elements from the directory.</p> -->
-                       {!! $home->sidebar_content !!}
+                       {!! @$home->sidebar_content !!}
                     </div>
                 </div>
                 {{-- <div class="row m-0">
                     <div class="col-md-2">
-                        <img src="{{$home->part_2_image}}" alt="" title="" class="">
+                        <img src="{{@$home->part_2_image}}" alt="" title="" class="">
                     </div>
                     <div class="col-md-8 text-left p-0">
                         <!-- <p>A special class of users can also send three types of messages to contacts in the directory: email messages, SMS and recorded voice messages.</p> -->
-                        {!! $home->sidebar_content_part_2 !!}
+                        {!! @$home->sidebar_content_part_2 !!}
                     </div>
                 </div>
                 <div class="row m-0">
                     <div class="col-md-2">
-                        <img src="{{$home->part_3_image}}" alt="" title="" class="">
+                        <img src="{{@$home->part_3_image}}" alt="" title="" class="">
                     </div>
                     <div class="col-md-8 text-left p-0">
                         <!-- <p>Contacts can be organized into groups, and these messages can be sent to multiple groups of contacts at a single time. Replies to email, SMS and voice messages are recorded and attached to the message report for analysis.</p> -->
-                        {!! $home->sidebar_content_part_3 !!}
+                        {!! @$home->sidebar_content_part_3 !!}
                     </div>
                 </div> --}}
-                {{-- {!! $home->sidebar_content !!} --}}
+                {{-- {!! @$home->sidebar_content !!} --}}
             </div>
         </div>
     </div>
@@ -553,7 +553,7 @@ Home
             </div>
         </div>
         <div class="panel-body">
-            {!! $home->sidebar_content !!}
+            {!! @$home->sidebar_content !!}
         </div>
     </div>
 </div>

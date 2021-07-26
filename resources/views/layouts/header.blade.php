@@ -5,12 +5,12 @@
 			<div class="navbar-header">
 				<div class="site-gridmenu-toggle" data-toggle="gridmenu">
 					<a class="navbar-brand" href="/">
-						@if($layout->logo_active == 1)
-							<img class="navbar-brand-logo navbar-brand-logo-normal" src="/uploads/images/{{$layout->logo}}" title="{{$layout->site_name}}" style="height: auto;width:100px;">
-							<img class="navbar-brand-logo navbar-brand-logo-special" src="/uploads/images/{{$layout->logo}}" title="{{$layout->site_name}}" style="height: auto;width:100px;">
+						@if(@$layout->logo_active == 1)
+							<img class="navbar-brand-logo navbar-brand-logo-normal" src="/uploads/images/{{@$layout->logo}}" title="{{@$layout->site_name}}" style="height: auto;width:100px;">
+							<img class="navbar-brand-logo navbar-brand-logo-special" src="/uploads/images/{{@$layout->logo}}" title="{{@$layout->site_name}}" style="height: auto;width:100px;">
 						@endif
-						@if($layout->title_active == 1)
-						<span class="navbar-brand-text">{{$layout->site_name}}</span>
+						@if(@$layout->title_active == 1)
+						<span class="navbar-brand-text">{{@$layout->site_name}}</span>
 						@endif
 					</a>
 				</div>
@@ -22,10 +22,10 @@
 					<span class="sr-only">Toggle navigation</span>
 					<span class="hamburger-bar"></span>
 				</button>
-				@if($layout->tagline!=null && $layout->title ==1)
+				@if(@$layout->tagline!=null && @$layout->title ==1)
 					<div class="navbar-brand ticker well ml-10 mr-10">
 						<label style="transition: none !important; display: content;">
-							<b>{{$layout->tagline}}</b>
+							<b>{{@$layout->tagline}}</b>
 						</label>
 					</div>
 				@endif
@@ -50,7 +50,7 @@
                     @if (Auth::user() && Auth::user()->roles->name != 'Organization Admin' || Auth::user() && Auth::user()->roles->name == 'System Admin' )
                     <li class="nav-item">
 						<div class="dropdown">
-							<button class="dropbtn" style="color: {{$layout->top_menu_link_color}}">More</button>
+							<button class="dropbtn" style="color: {{@$layout->top_menu_link_color}}">More</button>
 							<div class="dropdown-content">
 								<a href="/contacts">Contacts</a>
 								<a href="{{ route('facilities.index') }}">Locations</a>
@@ -63,7 +63,7 @@
 					<li class="nav-item">
                         <a class="nav-link" href="{{ route('suggest.create') }}">Suggest</a>
 					</li>
-                    @if($layout->activate_about_home == 1)
+                    @if(@$layout->activate_about_home == 1)
 					<li class="nav-item">
 						<a class="nav-link" href="/about">About</a>
 					</li>
@@ -74,7 +74,7 @@
                     @if (Auth::user() && Auth::user()->roles)
                     <li class="nav-item">
 						<div class="dropdown">
-							<button class="dropbtn" style="color: {{$layout->top_menu_link_color}}">(+)</button>
+							<button class="dropbtn" style="color: {{@$layout->top_menu_link_color}}">(+)</button>
 							<div class="dropdown-content">
 								@if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin' || Auth::user() && Auth::user()->roles &&  Auth::user()->roles->name == 'System Admin')
 								<a href="{{ route('organizations.create') }}">New Organization</a>
@@ -90,7 +90,7 @@
                     @if (Auth::user()->role_id == 1)
                     <li class="nav-item">
 						<div class="dropdown">
-							<button class="dropbtn" style="color: {{$layout->top_menu_link_color}}">My account</button>
+							<button class="dropbtn" style="color: {{@$layout->top_menu_link_color}}">My account</button>
 							<div class="dropdown-content">
 								@if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin' || Auth::user() && Auth::user()->roles &&  Auth::user()->roles->name == 'System Admin')
 								<a class="nav-link" href="/account/{{Auth::user()->id}}">My account</a>
@@ -109,7 +109,7 @@
 					</li>
 					@else
 
-                    @if ($layout->activate_login_button == 1)
+                    @if (@$layout->activate_login_button == 1)
 					<li class="nav-item">
 						<a class="nav-link" href="/login">Login</a>
 					</li>
