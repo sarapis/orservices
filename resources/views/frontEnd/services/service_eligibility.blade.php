@@ -199,23 +199,51 @@
     })
     $('#serviceEligibilityTermSubmit').click(function () {
 
+        // let service_eligibility_term = $('#service_eligibility_term_p').val()
+        // let index = $('#service_eligibility_term_index_p').val()
+        // if($('#service_eligibility_term_p').val() == ''){
+        //         $('#service_eligibility_term_error').show()
+        //     setTimeout(() => {
+        //         $('#service_eligibility_term_error').hide()
+        //     }, 5000);
+        //     return false
+        // }
+        // $('#service_eligibility_term_type_'+index).val('new')
+        // // $('#service_eligibility_term_'+index+" option:last").prev().append('<option value="'+service_eligibility_term+'">'+service_eligibility_term+'</option>');
+        // $('<option value="'+service_eligibility_term+'">'+service_eligibility_term+'</option>').insertAfter($('#service_eligibility_term_'+index+" option:last").prev());
+        // $('#service_eligibility_term_'+index).val(service_eligibility_term)
+        // $('#service_eligibility_term_'+index).selectpicker('refresh')
+        // $('#create_new_service_eligibility_term').modal('hide')
+        // $('#service_eligibility_term_p').val('')
+        // $('#service_eligibility_term_index_p').val('')
+
+        $('#loading').show()
         let service_eligibility_term = $('#service_eligibility_term_p').val()
         let index = $('#service_eligibility_term_index_p').val()
-        if($('#service_eligibility_term_p').val() == ''){
-                $('#service_eligibility_term_error').show()
-            setTimeout(() => {
-                $('#service_eligibility_term_error').hide()
-            }, 5000);
-            return false
-        }
-        $('#service_eligibility_term_type_'+index).val('new')
-        // $('#service_eligibility_term_'+index+" option:last").prev().append('<option value="'+service_eligibility_term+'">'+service_eligibility_term+'</option>');
-        $('<option value="'+service_eligibility_term+'">'+service_eligibility_term+'</option>').insertAfter($('#service_eligibility_term_'+index+" option:last").prev());
-        $('#service_eligibility_term_'+index).val(service_eligibility_term)
-        $('#service_eligibility_term_'+index).selectpicker('refresh')
-        $('#create_new_service_eligibility_term').modal('hide')
-        $('#service_eligibility_term_p').val('')
-        $('#service_eligibility_term_index_p').val('')
+        let eligibility_type_recordid = $('#service_eligibility_type_'+index).val()
+        let _token = "{{ csrf_token() }}"
+        let service_recordid = "{{ $service->service_recordid }}"
+        let organization_recordid = "{{ $service->service_organization }}"
+        $.ajax({
+            url : '{{ route("saveEligibilityTaxonomyTerm") }}',
+            method : 'post',
+            data : {eligibility_type_recordid,service_eligibility_term,_token,service_recordid,organization_recordid},
+            success: function (response) {
+                $('#loading').hide()
+                alert('Thank you for submitting a new term. It is being evaluated by the system administrators. We will let you know if it becomes available.');
+                $('#service_eligibility_type_'+index).val('')
+                $('#service_eligibility_term_'+index).empty()
+                $('#service_eligibility_term_'+index).selectpicker('refresh')
+                $('#service_eligibility_type_'+index).selectpicker('refresh')
+                $('#create_new_service_eligibility_term').modal('hide')
+                $('#service_eligibility_term_p').val('')
+            },
+            error : function (error) {
+                $('#loading').hide()
+                $('#create_new_service_eligibility_term').modal('hide')
+                console.log(error)
+            }
+        })
     })
     $('.serviceEligibilityTermCloseButton').click(function () {
 

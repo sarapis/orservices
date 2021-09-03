@@ -182,8 +182,9 @@ Edits
     }
   $(document).ready(function(){
     edits_table = $('#edits_table').DataTable({
-        "order": [[ 0, "desc" ]],
-
+            "order": [[ 0, "desc" ]],
+            processing: true,
+            serverSide: true,
             ajax: {
                 url: ajaxUrl,
                 method : "get",

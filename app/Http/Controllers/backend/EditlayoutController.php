@@ -130,6 +130,11 @@ class EditlayoutController extends Controller
             } else {
                 $layout->service_share_button = 0;
             }
+            if ($request->show_classification) {
+                $layout->show_classification = 'yes';
+            } else {
+                $layout->show_classification = 'no';
+            }
             $layout->site_name = $request->site_name;
             $layout->tagline = $request->tagline;
             $layout->contact_text = $request->contact_text;

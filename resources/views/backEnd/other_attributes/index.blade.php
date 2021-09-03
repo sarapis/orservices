@@ -70,6 +70,8 @@ Taxonomy
     let ajaxUrl = "{{ route('other_attributes.index') }}";
   $(document).ready(function(){
     other_attributes_table = $('#other_attributes_table').DataTable({
+            processing: true,
+            serverSide: true,
             ajax: {
                 url: ajaxUrl,
                 method : "get",

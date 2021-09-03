@@ -12,6 +12,9 @@ use App\Model\Airtablekeyinfo;
 use App\Model\Airtables;
 use App\Model\Airtable_v2;
 use App\Model\Alt_taxonomy;
+use App\Model\City;
+use App\Model\Code;
+use App\Model\CodeLedger;
 use App\Model\Contact;
 use App\Model\CSV_Source;
 use App\Model\Detail;
@@ -38,13 +41,16 @@ use App\Model\Taxonomy;
 use App\Services\Stringtoint;
 use Carbon\Carbon;
 use App\Model\csv;
+use App\Model\Helptext;
 use App\Model\TaxonomyType;
 use App\Model\Language;
 use App\Model\PhoneType;
 use App\Model\Program;
+use App\Model\State;
 use App\Model\TaxonomyEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
@@ -52,6 +58,7 @@ use SendGrid;
 use SendGrid\Mail\Mail;
 use OwenIt\Auditing\Models\Audit;
 use Illuminate\Support\Facades\Log;
+use Yajra\DataTables\DataTables;
 
 class ServiceController extends Controller
 {
@@ -232,7 +239,7 @@ class ServiceController extends Controller
         return view('frontEnd.services.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'meta_status', 'grandparent_taxonomies', 'sort_by_distance_clickable', 'service_taxonomy_info_list', 'service_taxonomy_badge_color_list', 'organization_tagsArray', 'layout'))->with('taxonomy_tree', $taxonomy_tree);
     }
 
-    public function tb_services()
+    public function tb_services(Request $request)
     {
         $services = Service::with('locations', 'organizations', 'locations', 'taxonomy', 'phone', 'schedules', 'contact', 'details', 'address')->orderBy('service_recordid', 'asc')->paginate(20);
         $source_data = Source_data::find(1);
@@ -307,22 +314,25 @@ class ServiceController extends Controller
         // $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
         $detail_info_list = Detail::pluck('detail_value', 'detail_recordid')->unique();
 
-        $address_cities = Address::select("address_city")->distinct()->get();
-        $address_states = Address::select("address_state_province")->distinct()->get();
+        // $address_cities = Address::select("address_city")->distinct()->get();
+        // $address_states = Address::select("address_state_province")->distinct()->get();
 
-        $address_states_list = [];
-        foreach ($address_states as $key => $value) {
-            $state = explode(", ", trim($value->address_state_province));
-            $address_states_list = array_merge($address_states_list, $state);
-        }
-        $address_states_list = array_unique($address_states_list);
+        // $address_states_list = [];
+        // foreach ($address_states as $key => $value) {
+        //     $state = explode(", ", trim($value->address_state_province));
+        //     $address_states_list = array_merge($address_states_list, $state);
+        // }
+        // $address_states_list = array_unique($address_states_list);
 
-        $address_city_list = [];
-        foreach ($address_cities as $key => $value) {
-            $cities = explode(", ", trim($value->address_city));
-            $address_city_list = array_merge($address_city_list, $cities);
-        }
-        $address_city_list = array_unique($address_city_list);
+        // $address_city_list = [];
+        // foreach ($address_cities as $key => $value) {
+        //     $cities = explode(", ", trim($value->address_city));
+        //     $address_city_list = array_merge($address_city_list, $cities);
+        // }
+        // $address_city_list = array_unique($address_city_list);
+
+        $address_city_list = City::orderBy('city')->pluck('city', 'city');
+        $address_states_list = State::orderBy('state')->pluck('state', 'state');
 
         $detail_types = DetailType::orderBy('order')->pluck('type', 'type');
 
@@ -332,8 +342,16 @@ class ServiceController extends Controller
         $service_category_types = Taxonomy::orderBy('taxonomy_name')->whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
         $service_eligibility_types = Taxonomy::orderBy('taxonomy_name')->whereNull('taxonomy_parent_name')->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
         $programs = Program::pluck('name', 'program_recordid');
+        $all_phones = Phone::whereNotNull('phone_number')->distinct()->get();
+        $phone_language_data = json_encode([]);
 
-        return view('frontEnd.services.create', compact('map', 'organization_name_list', 'facility_info_list', 'service_status_list', 'taxonomy_info_list', 'schedule_info_list', 'contact_info_list', 'detail_info_list', 'address_info_list', 'all_contacts', 'all_locations', 'phone_languages', 'phone_type', 'service_info_list', 'address_city_list', 'address_states_list', 'detail_types', 'service_category_types', 'service_eligibility_types', 'programs'));
+        $conditions = Code::where('resource', 'Condition')->get()->groupBy('category');
+        $goals = Code::where('resource', 'Goal')->get()->groupBy('category');
+        $activities = Code::where('resource', 'Procedure')->get()->groupBy('category');
+
+        $help_text = Helptext::first();
+
+        return view('frontEnd.services.create', compact('map', 'organization_name_list', 'facility_info_list', 'service_status_list', 'taxonomy_info_list', 'schedule_info_list', 'contact_info_list', 'detail_info_list', 'address_info_list', 'all_contacts', 'all_locations', 'phone_languages', 'phone_type', 'service_info_list', 'address_city_list', 'address_states_list', 'detail_types', 'service_category_types', 'service_eligibility_types', 'programs', 'all_phones', 'phone_language_data', 'conditions', 'goals', 'activities', 'help_text', 'layout'));
     }
 
     /**
@@ -410,6 +428,87 @@ class ServiceController extends Controller
                 $program->service()->sync($recordids);
                 $program->save();
             }
+
+            // service code section
+            $service_codes = [];
+            if ($request->code_conditions) {
+                $code_conditions = array_values(array_filter($request->code_conditions));
+                foreach ($code_conditions as $key => $code_id) {
+                    $ids = explode('_', $code_id);
+                    if (count($ids) > 1) {
+                        $service_codes[] = $ids[1];
+                        $code = Code::whereId($ids[1])->first();
+                        if ($code) {
+                            CodeLedger::create([
+                                'rating' => $ids[0],
+                                'service_recordid' => $new_recordid,
+                                'organization_recordid' => $service_organization_id,
+                                'SDOH_code' => $code->id,
+                                'resource' => $code->resource,
+                                'description' => $code->description,
+                                'code_type' => $code->code_system,
+                                'code' => $code->code,
+                                'created_by' => Auth::id(),
+                            ]);
+                        }
+                    }
+                }
+                // $service_codes = array_merge($service_codes, array_map('intval', $request->code_conditions));
+            }
+            if ($request->goal_conditions) {
+                // $service_codes = array_merge($service_codes, array_map('intval', $request->goal_conditions));
+                $goal_conditions = array_values(array_filter($request->goal_conditions));
+                foreach ($goal_conditions as $key => $code_id) {
+                    $ids = explode('_', $code_id);
+                    if (count($ids) > 1) {
+                        $service_codes[] = $ids[1];
+                        $code = Code::whereId($ids[1])->first();
+                        if ($code) {
+                            CodeLedger::create([
+                                'rating' => $ids[0],
+                                'service_recordid' => $new_recordid,
+                                'organization_recordid' => $service_organization_id,
+                                'SDOH_code' => $code->id,
+                                'resource' => $code->resource,
+                                'description' => $code->description,
+                                'code_type' => $code->code_system,
+                                'code' => $code->code,
+                                'created_by' => Auth::id(),
+                            ]);
+                        }
+                    }
+                }
+            }
+            if ($request->activities_conditions) {
+                // $service_codes = array_merge($service_codes, array_map('intval', $request->activities_conditions));
+                $activities_conditions = array_values(array_filter($request->activities_conditions));
+                foreach ($activities_conditions as $key => $code_id) {
+                    // $ids = explode('_', $code_id);
+                    $code = Code::whereId($code_id)->first();
+                    if ($code) {
+                        $service_codes[] = $code_id;
+                        CodeLedger::create([
+                            'rating' => 3,
+                            'service_recordid' => $new_recordid,
+                            'organization_recordid' => $service_organization_id,
+                            'SDOH_code' => $code->id,
+                            'resource' => $code->resource,
+                            'description' => $code->description,
+                            'code_type' => $code->code_system,
+                            'code' => $code->code,
+                            'created_by' => Auth::id(),
+                        ]);
+                    }
+                }
+            }
+            if (count($service_codes) > 0) {
+                $service->SDOH_code = implode(',', $service_codes);
+            }
+            // $service_codes = array_values(array_filter($service_codes));
+
+            // $service->codes()->sync($service_codes);
+
+
 
             // if ($request->service_locations) {
             //     foreach ($request->service_locations as $key => $locationId) {
@@ -1185,6 +1284,7 @@ class ServiceController extends Controller
             Session::flash('status', 'success');
             return redirect('services');
         } catch (\Throwable $th) {
+            dd($th);
             Log::error('Error in create service : ' . $th);
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
@@ -1234,17 +1334,24 @@ class ServiceController extends Controller
                 $phone_number_info_array = [];
 
                 if (isset($service->phone) && count($service->phone) > 0) {
-                    foreach ($service->phone as $valueV) {
-                        if ($valueV->main_priority == '1') {
-                            $mainPhoneNumber[] = $valueV->phone_number;
-                        } else {
-                            $phone_number_info_array[] = $valueV->phone_number;
+                    foreach ($service->phone()->with('type')->get() as $valueV) {
+                        if ($valueV->phone_language) {
+                            $languageId = $valueV->phone_language ? explode(',', $valueV->phone_language) : [];
+                            $languages = Language::whereIn('language_recordid', $languageId)->pluck('language')->toArray();
+                            $valueV->phone_language = implode(', ', $languages);
                         }
+                        if ($valueV->main_priority == '1') {
+                            $mainPhoneNumber[] = $valueV;
+                        }
+                        // else {
+                        //     $phone_number_info_array[] = $valueV;
+                        // }
                     }
                     // $servicePhoneData = $service->phone()->where('main_priority', '1')->first();
                 }
                 // $phone_number_info = $mainPhoneNumber . ', ' . implode(',', $phone_number_info_array);
                 $mainPhoneNumber = array_filter(array_merge($mainPhoneNumber, $phone_number_info_array));
+
 
                 $service_taxonomy_recordid_list = explode(',', $service->service_taxonomy);
                 $service_taxonomy_info_list = [];
@@ -1370,471 +1477,493 @@ class ServiceController extends Controller
         $service = Service::where('service_recordid', '=', $id)->first();
 
         if ($service) {
-            $addressIds = $service->address ? $service->address->pluck('address_recordid')->toArray() : [];
+            if (Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization, $service->organizations()->first()->organization_recordid) && Auth::user()->roles->name == 'Organization Admin'  || (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')) {
+                $addressIds = $service->address ? $service->address->pluck('address_recordid')->toArray() : [];
+                $service_codes = $service->codes()->select(DB::raw('CONCAT(rating, "_", SDOH_code) as code_id'))->pluck('code_id')->toArray();
 
-            // $service_organization_list = Organization::select('organization_recordid', 'organization_name')->get();
-            // dd($service->getOrganizations);
-            $contactOrganization = $service->organizations ? $service->organizations->contact : [];
+                // $service_organization_list = Organization::select('organization_recordid', 'organization_name')->get();
+                // dd($service->getOrganizations);
+                $contactOrganization = $service->organizations ? $service->organizations->contact : [];
 
-            if (Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin') {
-                $organization_recordid = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_recordid') : [];
-                $organization_names = Organization::orderBy("organization_name")->select("organization_name", "organization_recordid")->whereIn('organization_recordid', $organization_recordid)->distinct()->get();
-            } else {
-                $organization_names = Organization::orderBy("organization_name")->select("organization_name", "organization_recordid")->distinct()->get();
-            }
-            // $organization_name_list = [];
-            // foreach ($organization_names as $key => $value) {
-            //     $org_names = explode(", ", trim($value->organization_name));
-            //     $organization_name_list = array_merge($organization_name_list, $org_names);
-            // }
-            $service_organization_list = $organization_names;
-
-            $service_location_list = Location::select('location_recordid', 'location_name')->get();
-            $service_contacts_list = Contact::select('contact_recordid', 'contact_name')->get();
-            // $service_taxonomy_list = Taxonomy::select('taxonomy_recordid', 'taxonomy_name')->get();
-
-            $layout = Layout::findOrFail(1);
-            $exclude_vocabulary = [];
-            if ($layout) {
-                $exclude_vocabulary = explode(',', $layout->exclude_vocabulary);
-            }
-            $service_taxonomy_list = Taxonomy::whereNull('taxonomy_parent_name')->whereNull('exclude_vocabulary')->Where(function ($query) use ($exclude_vocabulary) {
-                for ($i = 0; $i < count($exclude_vocabulary); $i++) {
-                    $query->where('taxonomy_name', 'not like',  '%' . $exclude_vocabulary[$i] . '%');
-                }
-            })->get();
-
-            $taxonomyArray = [];
-            $service_taxonomy_list = $service_taxonomy_list->filter(function ($value) use ($taxonomyArray) {
-                if ($value->taxonomy_parent_name == null) {
-                    // $taxonomyArray[] = $value;
-                    $t = Taxonomy::where('taxonomy_parent_name', $value->taxonomy_recordid)->whereNull('exclude_vocabulary')->orderBy('order')->get();
-                    foreach ($t as $key => $value1) {
-                        $taxonomyArray[] = $value1;
-                    }
-                    $value->taxonomyArray = $taxonomyArray;
-                }
-                return true;
-            });
-
-
-            $service_details_list = Detail::select('detail_recordid', 'detail_value')->get();
-
-            $location_info_list = explode(',', $service->service_locations);
-            $contact_info_list = explode(',', $service->service_contacts);
-            $taxonomy_info_list = explode(',', $service->service_taxonomy);
-
-            $service_locations_data = Location::whereIn('location_recordid', $location_info_list)->with('phones', 'address', 'schedules')->get();
-            $service_locations_data = $service_locations_data->filter(function ($value) {
-                $address = $value->address && count($value->address) > 0  ? $value->address[count($value->address) - 1] : '';
-                $phones = $value->phones && count($value->phones) > 0  ? $value->phones[count($value->phones) - 1] : '';
-                $value->location_address = $address ? $address->address_1 : '';
-                $value->location_city = $address ? $address->address_city : '';
-                $value->location_state = $address ? $address->address_state_province : '';
-                $value->location_zipcode = $address ? $address->address_postal_code : '';
-                $value->location_phone = $phones ? $phones->phone_number : '';
-                return true;
-            });
-
-            $service_address_id = $service->service_address;
-            $service_address_street = Address::where('address_recordid', '=', $service_address_id)->select('address_1')->first();
-            $service_address_city = Address::where('address_recordid', '=', $service_address_id)->select('address_city')->first();
-            $service_address_state = Address::where('address_recordid', '=', $service_address_id)->select('address_state_province')->first();
-            $service_address_postal_code = Address::where('address_recordid', '=', $service_address_id)->select('address_postal_code')->first();
-            $phone_recordids = $service->service_phones;
-
-            if (strpos($phone_recordids, ',') !== false) {
-                $phone_recordid_list = explode(',', $phone_recordids);
-                $phone1_recordid = $phone_recordid_list[0];
-                $phone2_recordid = $phone_recordid_list[1];
-            } else {
-                $phone1_recordid = $phone_recordids;
-                $phone2_recordid = '';
-            }
-            $ServiceSchedule = $service->service_schedule ? explode(',', $service->service_schedule) : [];
-
-            $ServiceDetails = $service->service_details ? explode(',', $service->service_details) : [];
-
-            if ($service->details) {
-                $serviceDetailsList = $service->details ? $service->details->pluck('detail_recordid')->toarray() : [];
-                $ServiceDetails = array_unique(array_merge($ServiceDetails, $serviceDetailsList));
-            }
-
-            $detail_types = DetailType::orderBy('order')->pluck('type', 'type');
-
-            $serviceDetailsData = Detail::whereIn('detail_recordid', $ServiceDetails)->get();
-
-            $service_phone1 = Phone::where('phone_recordid', '=', $phone1_recordid)->select('phone_number')->first();
-            $service_phone2 = Phone::where('phone_recordid', '=', $phone2_recordid)->select('phone_number')->first();
-
-            // $schedule_info_list = Schedule::select('schedule_recordid', 'opens_at', 'closes_at')->whereNotNull('opens_at')->orderBy('opens_at')->distinct()->get();
-            $monday = Schedule::where('schedule_services', $service->service_recordid)->where('byday', 'monday')->first();
-            $tuesday = Schedule::where('schedule_services', $service->service_recordid)->where('byday', 'tuesday')->first();
-            $wednesday = Schedule::where('schedule_services', $service->service_recordid)->where('byday', 'wednesday')->first();
-            $friday = Schedule::where('schedule_services', $service->service_recordid)->where('byday', 'friday')->first();
-            $saturday = Schedule::where('schedule_services', $service->service_recordid)->where('byday', 'saturday')->first();
-            $thursday = Schedule::where('schedule_services', $service->service_recordid)->where('byday', 'thursday')->first();
-            $sunday = Schedule::where('schedule_services', $service->service_recordid)->where('byday', 'sunday')->first();
-            $holiday_schedules = Schedule::where('schedule_services', $service->service_recordid)->where('schedule_holiday', '1')->get();
-
-
-            $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
-            $all_contacts = Contact::orderBy('contact_name')->with('phone', 'service')->distinct()->get();
-            $all_locations = Location::orderBy('location_name')->with('phones', 'address', 'services', 'schedules')->distinct()->get();
-            $phone_languages = Language::orderBy('order')->whereNotNull('language_recordid')->pluck('language', 'language_recordid');
-
-            // location section
-            $exclude_vocabulary = [];
-            if ($layout) {
-                $exclude_vocabulary = explode(',', $layout->exclude_vocabulary);
-            }
-            // $taxonomy_info_list = Taxonomy::whereNull('taxonomy_parent_name')->Where(function ($query) use ($exclude_vocabulary) {
-            //     for ($i = 0; $i < count($exclude_vocabulary); $i++) {
-            //         $query->where('taxonomy_name', 'not like',  '%' . $exclude_vocabulary[$i] . '%');
-            //     }
-            // })->get();
-            // $taxonomyArray = [];
-            // $taxonomy_info_list = $taxonomy_info_list->filter(function ($value) use ($taxonomyArray) {
-            //     if ($value->taxonomy_parent_name == null) {
-            //         // $taxonomyArray[] = $value;
-            //         $t = Taxonomy::where('taxonomy_parent_name', $value->taxonomy_recordid)->whereNull('exclude_vocabulary')->get();
-            //         foreach ($t as $key => $value1) {
-            //             $taxonomyArray[] = $value1;
-            //         }
-            //         $value->taxonomyArray = $taxonomyArray;
-            //     }
-            //     return true;
-            // });
-            $schedule_info_list = Schedule::select('schedule_recordid', 'opens_at', 'closes_at')->whereNotNull('opens_at')->where('opens_at', '!=', '')->orderBy('opens_at')->distinct()->get();
-            $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
-            $service_info_list = Service::select('service_recordid', 'service_name')->orderBy('service_recordid')->distinct()->get();
-            $address_info_list = Address::select('address_recordid', 'address_1', 'address_city', 'address_state_province', 'address_postal_code')->orderBy('address_1')->distinct()->get();
-            $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
-
-            $address_cities = Address::select("address_city")->distinct()->get();
-            $address_states = Address::select("address_state_province")->distinct()->get();
-
-            $address_states_list = [];
-            foreach ($address_states as $key => $value) {
-                $state = explode(", ", trim($value->address_state_province));
-                $address_states_list = array_merge($address_states_list, $state);
-            }
-            $address_states_list = array_unique($address_states_list);
-
-            $address_city_list = [];
-            foreach ($address_cities as $key => $value) {
-                $cities = explode(", ", trim($value->address_city));
-                $address_city_list = array_merge($address_city_list, $cities);
-            }
-            $address_city_list = array_unique($address_city_list);
-            $phone_type = PhoneType::orderBy('order')->pluck('type', 'id');
-
-            $location_alternate_name = [];
-            $location_transporation = [];
-            $location_service = [];
-            $location_schedules = [];
-            $location_description = [];
-            $location_details = [];
-            foreach ($service_locations_data as $key => $locationData) {
-                $location_alternate_name[] = $locationData->location_alternate_name;
-                $location_transporation[] = $locationData->location_transportation;
-                $location_service[] = $locationData->services ? $locationData->services->pluck('service_recordid')->toArray() : [];
-                $location_schedules[] = $locationData->schedules ? $locationData->schedules->pluck('schedule_recordid')->toArray() : [];
-                $location_description[] = $locationData->location_description;
-                $location_details[] = $locationData->location_details;
-            }
-            $location_alternate_name = json_encode($location_alternate_name);
-            $location_transporation = json_encode($location_transporation);
-            $location_service = json_encode($location_service);
-            $location_schedules = json_encode($location_schedules);
-            $location_description = json_encode($location_description);
-            $location_details = json_encode($location_details);
-
-            $contact_service = [];
-            $contact_department = [];
-            foreach ($service->contact as $key => $contactData) {
-
-                $contact_service[] = $contactData->service ? $contactData->service->pluck('service_recordid')->toarray() : [];
-                $contact_department[] = $contactData->contact_department;
-            }
-            $contact_service = json_encode($contact_service);
-            $contact_department = json_encode($contact_department);
-
-            // contact phone section
-            $contact_phones_data = $service->contact()->with('phone')->get();
-            $contact_phone_numbers = [];
-            $contact_phone_extensions = [];
-            $contact_phone_types = [];
-            $contact_phone_languages = [];
-            $contact_phone_descriptions = [];
-            foreach ($contact_phones_data as $key => $phoneContact) {
-                if ($phoneContact->phone && count($phoneContact->phone) > 0) {
-                    foreach ($phoneContact->phone as $key1 => $phone) {
-                        $contact_phone_numbers[$key][] = $phone->phone_number;
-                        $contact_phone_extensions[$key][] = $phone->phone_extension;
-                        $contact_phone_types[$key][] = $phone->phone_type;
-                        $contact_phone_languages[$key][] = $phone->phone_language ? explode(',', $phone->phone_language) : [];
-                        $contact_phone_descriptions[$key][] = $phone->phone_description;
-                    }
+                if (Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin') {
+                    $organization_recordid = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_recordid') : [];
+                    $organization_names = Organization::orderBy("organization_name")->select("organization_name", "organization_recordid")->whereIn('organization_recordid', $organization_recordid)->distinct()->get();
                 } else {
-                    $contact_phone_numbers[$key][] = '';
-                    $contact_phone_extensions[$key][] = '';
-                    $contact_phone_types[$key][] = '';
-                    $contact_phone_languages[$key][] = [];
-                    $contact_phone_descriptions[$key][] = '';
+                    $organization_names = Organization::orderBy("organization_name")->select("organization_name", "organization_recordid")->distinct()->get();
                 }
-            }
-            $contact_phone_numbers = json_encode($contact_phone_numbers);
-            $contact_phone_extensions = json_encode($contact_phone_extensions);
-            $contact_phone_types = json_encode($contact_phone_types);
-            $contact_phone_languages = json_encode($contact_phone_languages);
-            $contact_phone_descriptions = json_encode($contact_phone_descriptions);
+                // $organization_name_list = [];
+                // foreach ($organization_names as $key => $value) {
+                //     $org_names = explode(", ", trim($value->organization_name));
+                //     $organization_name_list = array_merge($organization_name_list, $org_names);
+                // }
+                $service_organization_list = $organization_names;
 
-            // location phone section
-            $location_phones_data = $service_locations_data;
-            $location_phone_numbers = [];
-            $location_phone_extensions = [];
-            $location_phone_types = [];
-            $location_phone_languages = [];
-            $location_phone_descriptions = [];
-            foreach ($location_phones_data as $key => $phonelocation) {
-                if ($phonelocation->phones && count($phonelocation->phones) > 0) {
-                    foreach ($phonelocation->phones as $key1 => $phone) {
-                        $location_phone_numbers[$key][] = $phone->phone_number;
-                        $location_phone_extensions[$key][] = $phone->phone_extension;
-                        $location_phone_types[$key][] = $phone->phone_type;
-                        $location_phone_languages[$key][] = $phone->phone_language ? explode(',', $phone->phone_language) : [];
-                        $location_phone_descriptions[$key][] = $phone->phone_description;
+                $service_location_list = Location::select('location_recordid', 'location_name')->get();
+                $service_contacts_list = Contact::select('contact_recordid', 'contact_name')->get();
+                // $service_taxonomy_list = Taxonomy::select('taxonomy_recordid', 'taxonomy_name')->get();
+
+                $layout = Layout::findOrFail(1);
+                $exclude_vocabulary = [];
+                if ($layout) {
+                    $exclude_vocabulary = explode(',', $layout->exclude_vocabulary);
+                }
+                $service_taxonomy_list = Taxonomy::whereNull('taxonomy_parent_name')->whereNull('exclude_vocabulary')->Where(function ($query) use ($exclude_vocabulary) {
+                    for ($i = 0; $i < count($exclude_vocabulary); $i++) {
+                        $query->where('taxonomy_name', 'not like',  '%' . $exclude_vocabulary[$i] . '%');
                     }
+                })->get();
+
+                $taxonomyArray = [];
+                $service_taxonomy_list = $service_taxonomy_list->filter(function ($value) use ($taxonomyArray) {
+                    if ($value->taxonomy_parent_name == null) {
+                        // $taxonomyArray[] = $value;
+                        $t = Taxonomy::where('taxonomy_parent_name', $value->taxonomy_recordid)->whereNull('exclude_vocabulary')->orderBy('order')->get();
+                        foreach ($t as $key => $value1) {
+                            $taxonomyArray[] = $value1;
+                        }
+                        $value->taxonomyArray = $taxonomyArray;
+                    }
+                    return true;
+                });
+
+
+                $service_details_list = Detail::select('detail_recordid', 'detail_value')->get();
+
+                $location_info_list = explode(',', $service->service_locations);
+                $contact_info_list = explode(',', $service->service_contacts);
+                $taxonomy_info_list = explode(',', $service->service_taxonomy);
+
+                $service_locations_data = Location::whereIn('location_recordid', $location_info_list)->with('phones', 'address', 'schedules')->get();
+                $service_locations_data = $service_locations_data->filter(function ($value) {
+                    $address = $value->address && count($value->address) > 0  ? $value->address[count($value->address) - 1] : '';
+                    $phones = $value->phones && count($value->phones) > 0  ? $value->phones[count($value->phones) - 1] : '';
+                    $value->location_address = $address ? $address->address_1 : '';
+                    $value->location_city = $address ? $address->address_city : '';
+                    $value->location_state = $address ? $address->address_state_province : '';
+                    $value->location_zipcode = $address ? $address->address_postal_code : '';
+                    $value->location_phone = $phones ? $phones->phone_number : '';
+                    return true;
+                });
+
+                $service_address_id = $service->service_address;
+                $service_address_street = Address::where('address_recordid', '=', $service_address_id)->select('address_1')->first();
+                $service_address_city = Address::where('address_recordid', '=', $service_address_id)->select('address_city')->first();
+                $service_address_state = Address::where('address_recordid', '=', $service_address_id)->select('address_state_province')->first();
+                $service_address_postal_code = Address::where('address_recordid', '=', $service_address_id)->select('address_postal_code')->first();
+                $phone_recordids = $service->service_phones;
+
+                if (strpos($phone_recordids, ',') !== false) {
+                    $phone_recordid_list = explode(',', $phone_recordids);
+                    $phone1_recordid = $phone_recordid_list[0];
+                    $phone2_recordid = $phone_recordid_list[1];
                 } else {
-                    $location_phone_numbers[$key][] = '';
-                    $location_phone_extensions[$key][] = '';
-                    $location_phone_types[$key][] = '';
-                    $location_phone_languages[$key][] = [];
-                    $location_phone_descriptions[$key][] = '';
+                    $phone1_recordid = $phone_recordids;
+                    $phone2_recordid = '';
                 }
-            }
-            $location_phone_numbers = json_encode($location_phone_numbers);
-            $location_phone_extensions = json_encode($location_phone_extensions);
-            $location_phone_types = json_encode($location_phone_types);
-            $location_phone_languages = json_encode($location_phone_languages);
-            $location_phone_descriptions = json_encode($location_phone_descriptions);
+                $ServiceSchedule = $service->service_schedule ? explode(',', $service->service_schedule) : [];
+
+                $ServiceDetails = $service->service_details ? explode(',', $service->service_details) : [];
+
+                if ($service->details) {
+                    $serviceDetailsList = $service->details ? $service->details->pluck('detail_recordid')->toarray() : [];
+                    $ServiceDetails = array_unique(array_merge($ServiceDetails, $serviceDetailsList));
+                }
+
+                $detail_types = DetailType::orderBy('order')->pluck('type', 'type');
+
+                $serviceDetailsData = Detail::whereIn('detail_recordid', $ServiceDetails)->get();
+
+                $service_phone1 = Phone::where('phone_recordid', '=', $phone1_recordid)->select('phone_number')->first();
+                $service_phone2 = Phone::where('phone_recordid', '=', $phone2_recordid)->select('phone_number')->first();
+
+                // $schedule_info_list = Schedule::select('schedule_recordid', 'opens_at', 'closes_at')->whereNotNull('opens_at')->orderBy('opens_at')->distinct()->get();
+                $monday = Schedule::where('schedule_services', $service->service_recordid)->where('byday', 'monday')->first();
+                $tuesday = Schedule::where('schedule_services', $service->service_recordid)->where('byday', 'tuesday')->first();
+                $wednesday = Schedule::where('schedule_services', $service->service_recordid)->where('byday', 'wednesday')->first();
+                $friday = Schedule::where('schedule_services', $service->service_recordid)->where('byday', 'friday')->first();
+                $saturday = Schedule::where('schedule_services', $service->service_recordid)->where('byday', 'saturday')->first();
+                $thursday = Schedule::where('schedule_services', $service->service_recordid)->where('byday', 'thursday')->first();
+                $sunday = Schedule::where('schedule_services', $service->service_recordid)->where('byday', 'sunday')->first();
+                $holiday_schedules = Schedule::where('schedule_services', $service->service_recordid)->where('schedule_holiday', '1')->get();
 
 
-            // location schedule section
-            $opens_at_location_monday_datas = [];
-            $closes_at_location_monday_datas = [];
-            $schedule_closed_monday_datas = [];
-            $opens_at_location_tuesday_datas = [];
-            $closes_at_location_tuesday_datas = [];
-            $schedule_closed_tuesday_datas = [];
-            $opens_at_location_wednesday_datas = [];
-            $closes_at_location_wednesday_datas = [];
-            $schedule_closed_wednesday_datas = [];
-            $opens_at_location_thursday_datas = [];
-            $closes_at_location_thursday_datas = [];
-            $schedule_closed_thursday_datas = [];
-            $opens_at_location_friday_datas = [];
-            $closes_at_location_friday_datas = [];
-            $schedule_closed_friday_datas = [];
-            $opens_at_location_saturday_datas = [];
-            $closes_at_location_saturday_datas = [];
-            $schedule_closed_saturday_datas = [];
-            $opens_at_location_sunday_datas = [];
-            $closes_at_location_sunday_datas = [];
-            $schedule_closed_sunday_datas = [];
-            $location_holiday_start_dates = [];
-            $location_holiday_end_dates = [];
-            $location_holiday_open_ats = [];
-            $location_holiday_close_ats = [];
-            $location_holiday_closeds = [];
-            $j = 0;
-            foreach ($service_locations_data as $key => $value) {
-                $weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-                if ($value->schedules && !empty($value->schedules) && count($value->schedules) > 0) {
-                    foreach ($value->schedules as $key1 => $schedule) {
-                        if ($schedule->schedule_holiday == 1) {
-                            $location_holiday_start_dates[$j][] = $schedule->dtstart;
-                            $location_holiday_end_dates[$j][] = $schedule->until;
-                            $location_holiday_open_ats[$j][] = $schedule->opens_at;
-                            $location_holiday_close_ats[$j][] = $schedule->closes_at;
-                            $location_holiday_closeds[$j][] = $schedule->schedule_closed;
-                        } else {
-                            for ($i = 0; $i < 7; $i++) {
-                                if ($schedule->byday == $weekdays[$i]) {
-                                    ${'opens_at_location_' . $weekdays[$i] . '_datas'}[$j] = $schedule->opens_at;
-                                    ${'closes_at_location_' . $weekdays[$i] . '_datas'}[$j] = $schedule->closes_at;
-                                    ${'schedule_closed_' . $weekdays[$i] . '_datas'}[$j] = $schedule->schedule_closed;
+                $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
+                $all_contacts = Contact::orderBy('contact_name')->with('phone', 'service')->distinct()->get();
+                $all_locations = Location::orderBy('location_name')->with('phones', 'address', 'services', 'schedules')->distinct()->get();
+                $phone_languages = Language::orderBy('order')->whereNotNull('language_recordid')->pluck('language', 'language_recordid');
+                // $all_phones = Phone::whereNotNull('phone_number')->distinct()->get();
+
+                $all_phones = $service->organizations ? $service->organizations->contact : [];
+
+                // location section
+                $exclude_vocabulary = [];
+                if ($layout) {
+                    $exclude_vocabulary = explode(',', $layout->exclude_vocabulary);
+                }
+                // $taxonomy_info_list = Taxonomy::whereNull('taxonomy_parent_name')->Where(function ($query) use ($exclude_vocabulary) {
+                //     for ($i = 0; $i < count($exclude_vocabulary); $i++) {
+                //         $query->where('taxonomy_name', 'not like',  '%' . $exclude_vocabulary[$i] . '%');
+                //     }
+                // })->get();
+                // $taxonomyArray = [];
+                // $taxonomy_info_list = $taxonomy_info_list->filter(function ($value) use ($taxonomyArray) {
+                //     if ($value->taxonomy_parent_name == null) {
+                //         // $taxonomyArray[] = $value;
+                //         $t = Taxonomy::where('taxonomy_parent_name', $value->taxonomy_recordid)->whereNull('exclude_vocabulary')->get();
+                //         foreach ($t as $key => $value1) {
+                //             $taxonomyArray[] = $value1;
+                //         }
+                //         $value->taxonomyArray = $taxonomyArray;
+                //     }
+                //     return true;
+                // });
+                $schedule_info_list = Schedule::select('schedule_recordid', 'opens_at', 'closes_at')->whereNotNull('opens_at')->where('opens_at', '!=', '')->orderBy('opens_at')->distinct()->get();
+                $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
+                $service_info_list = Service::select('service_recordid', 'service_name')->orderBy('service_recordid')->distinct()->get();
+                $address_info_list = Address::select('address_recordid', 'address_1', 'address_city', 'address_state_province', 'address_postal_code')->orderBy('address_1')->distinct()->get();
+                $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
+
+                // $address_cities = Address::select("address_city")->distinct()->get();
+                // $address_states = Address::select("address_state_province")->distinct()->get();
+
+                // $address_states_list = [];
+                // foreach ($address_states as $key => $value) {
+                //     $state = explode(", ", trim($value->address_state_province));
+                //     $address_states_list = array_merge($address_states_list, $state);
+                // }
+                // $address_states_list = array_unique($address_states_list);
+
+                // $address_city_list = [];
+                // foreach ($address_cities as $key => $value) {
+                //     $cities = explode(", ", trim($value->address_city));
+                //     $address_city_list = array_merge($address_city_list, $cities);
+                // }
+                // $address_city_list = array_unique($address_city_list);
+                $address_city_list = City::orderBy('city')->pluck('city', 'city');
+                $address_states_list = State::orderBy('state')->pluck('state', 'state');
+                $phone_type = PhoneType::orderBy('order')->pluck('type', 'id');
+
+                $location_alternate_name = [];
+                $location_transporation = [];
+                $location_service = [];
+                $location_schedules = [];
+                $location_description = [];
+                $location_details = [];
+                foreach ($service_locations_data as $key => $locationData) {
+                    $location_alternate_name[] = $locationData->location_alternate_name;
+                    $location_transporation[] = $locationData->location_transportation;
+                    $location_service[] = $locationData->services ? $locationData->services->pluck('service_recordid')->toArray() : [];
+                    $location_schedules[] = $locationData->schedules ? $locationData->schedules->pluck('schedule_recordid')->toArray() : [];
+                    $location_description[] = $locationData->location_description;
+                    $location_details[] = $locationData->location_details;
+                }
+                $location_alternate_name = json_encode($location_alternate_name);
+                $location_transporation = json_encode($location_transporation);
+                $location_service = json_encode($location_service);
+                $location_schedules = json_encode($location_schedules);
+                $location_description = json_encode($location_description);
+                $location_details = json_encode($location_details);
+
+                $contact_service = [];
+                $contact_department = [];
+                foreach ($service->contact as $key => $contactData) {
+
+                    $contact_service[] = $contactData->service ? $contactData->service->pluck('service_recordid')->toarray() : [];
+                    $contact_department[] = $contactData->contact_department;
+                }
+                $contact_service = json_encode($contact_service);
+                $contact_department = json_encode($contact_department);
+
+                // contact phone section
+                $contact_phones_data = $service->contact()->with('phone')->get();
+                $contact_phone_numbers = [];
+                $contact_phone_extensions = [];
+                $contact_phone_types = [];
+                $contact_phone_languages = [];
+                $contact_phone_descriptions = [];
+                foreach ($contact_phones_data as $key => $phoneContact) {
+                    if ($phoneContact->phone && count($phoneContact->phone) > 0) {
+                        foreach ($phoneContact->phone as $key1 => $phone) {
+                            $contact_phone_numbers[$key][] = $phone->phone_number;
+                            $contact_phone_extensions[$key][] = $phone->phone_extension;
+                            $contact_phone_types[$key][] = $phone->phone_type;
+                            $contact_phone_languages[$key][] = $phone->phone_language ? explode(',', $phone->phone_language) : [];
+                            $contact_phone_descriptions[$key][] = $phone->phone_description;
+                        }
+                    } else {
+                        $contact_phone_numbers[$key][] = '';
+                        $contact_phone_extensions[$key][] = '';
+                        $contact_phone_types[$key][] = '';
+                        $contact_phone_languages[$key][] = [];
+                        $contact_phone_descriptions[$key][] = '';
+                    }
+                }
+                $contact_phone_numbers = json_encode($contact_phone_numbers);
+                $contact_phone_extensions = json_encode($contact_phone_extensions);
+                $contact_phone_types = json_encode($contact_phone_types);
+                $contact_phone_languages = json_encode($contact_phone_languages);
+                $contact_phone_descriptions = json_encode($contact_phone_descriptions);
+
+                // location phone section
+                $location_phones_data = $service_locations_data;
+                $location_phone_numbers = [];
+                $location_phone_extensions = [];
+                $location_phone_types = [];
+                $location_phone_languages = [];
+                $location_phone_descriptions = [];
+                foreach ($location_phones_data as $key => $phonelocation) {
+                    if ($phonelocation->phones && count($phonelocation->phones) > 0) {
+                        foreach ($phonelocation->phones as $key1 => $phone) {
+                            $location_phone_numbers[$key][] = $phone->phone_number;
+                            $location_phone_extensions[$key][] = $phone->phone_extension;
+                            $location_phone_types[$key][] = $phone->phone_type;
+                            $location_phone_languages[$key][] = $phone->phone_language ? explode(',', $phone->phone_language) : [];
+                            $location_phone_descriptions[$key][] = $phone->phone_description;
+                        }
+                    } else {
+                        $location_phone_numbers[$key][] = '';
+                        $location_phone_extensions[$key][] = '';
+                        $location_phone_types[$key][] = '';
+                        $location_phone_languages[$key][] = [];
+                        $location_phone_descriptions[$key][] = '';
+                    }
+                }
+                $location_phone_numbers = json_encode($location_phone_numbers);
+                $location_phone_extensions = json_encode($location_phone_extensions);
+                $location_phone_types = json_encode($location_phone_types);
+                $location_phone_languages = json_encode($location_phone_languages);
+                $location_phone_descriptions = json_encode($location_phone_descriptions);
+
+
+                // location schedule section
+                $opens_at_location_monday_datas = [];
+                $closes_at_location_monday_datas = [];
+                $schedule_closed_monday_datas = [];
+                $opens_at_location_tuesday_datas = [];
+                $closes_at_location_tuesday_datas = [];
+                $schedule_closed_tuesday_datas = [];
+                $opens_at_location_wednesday_datas = [];
+                $closes_at_location_wednesday_datas = [];
+                $schedule_closed_wednesday_datas = [];
+                $opens_at_location_thursday_datas = [];
+                $closes_at_location_thursday_datas = [];
+                $schedule_closed_thursday_datas = [];
+                $opens_at_location_friday_datas = [];
+                $closes_at_location_friday_datas = [];
+                $schedule_closed_friday_datas = [];
+                $opens_at_location_saturday_datas = [];
+                $closes_at_location_saturday_datas = [];
+                $schedule_closed_saturday_datas = [];
+                $opens_at_location_sunday_datas = [];
+                $closes_at_location_sunday_datas = [];
+                $schedule_closed_sunday_datas = [];
+                $location_holiday_start_dates = [];
+                $location_holiday_end_dates = [];
+                $location_holiday_open_ats = [];
+                $location_holiday_close_ats = [];
+                $location_holiday_closeds = [];
+                $j = 0;
+                foreach ($service_locations_data as $key => $value) {
+                    $weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                    if ($value->schedules && !empty($value->schedules) && count($value->schedules) > 0) {
+                        foreach ($value->schedules as $key1 => $schedule) {
+                            if ($schedule->schedule_holiday == 1) {
+                                $location_holiday_start_dates[$j][] = $schedule->dtstart;
+                                $location_holiday_end_dates[$j][] = $schedule->until;
+                                $location_holiday_open_ats[$j][] = $schedule->opens_at;
+                                $location_holiday_close_ats[$j][] = $schedule->closes_at;
+                                $location_holiday_closeds[$j][] = $schedule->schedule_closed;
+                            } else {
+                                for ($i = 0; $i < 7; $i++) {
+                                    if ($schedule->byday == $weekdays[$i]) {
+                                        ${'opens_at_location_' . $weekdays[$i] . '_datas'}[$j] = $schedule->opens_at;
+                                        ${'closes_at_location_' . $weekdays[$i] . '_datas'}[$j] = $schedule->closes_at;
+                                        ${'schedule_closed_' . $weekdays[$i] . '_datas'}[$j] = $schedule->schedule_closed;
+                                    }
                                 }
                             }
                         }
+                    } else {
+                        $location_holiday_start_dates[$j][] = '';
+                        $location_holiday_end_dates[$j][] = '';
+                        $location_holiday_open_ats[$j][] = '';
+                        $location_holiday_close_ats[$j][] = '';
+                        $location_holiday_closeds[$j][] = '';
+                        for ($i = 0; $i < 7; $i++) {
+                            ${'opens_at_location_' . $weekdays[$i] . '_datas'}[$j] = '';
+                            ${'closes_at_location_' . $weekdays[$i] . '_datas'}[$j] = '';
+                            ${'schedule_closed_' . $weekdays[$i] . '_datas'}[$j] = '';
+                        }
                     }
-                } else {
-                    $location_holiday_start_dates[$j][] = '';
-                    $location_holiday_end_dates[$j][] = '';
-                    $location_holiday_open_ats[$j][] = '';
-                    $location_holiday_close_ats[$j][] = '';
-                    $location_holiday_closeds[$j][] = '';
-                    for ($i = 0; $i < 7; $i++) {
-                        ${'opens_at_location_' . $weekdays[$i] . '_datas'}[$j] = '';
-                        ${'closes_at_location_' . $weekdays[$i] . '_datas'}[$j] = '';
-                        ${'schedule_closed_' . $weekdays[$i] . '_datas'}[$j] = '';
+                    $j = $j + 1;
+                }
+
+                $opens_at_location_monday_datas = json_encode($opens_at_location_monday_datas);
+                $closes_at_location_monday_datas = json_encode($closes_at_location_monday_datas);
+                $schedule_closed_monday_datas = json_encode($schedule_closed_monday_datas);
+                $opens_at_location_tuesday_datas = json_encode($opens_at_location_tuesday_datas);
+                $closes_at_location_tuesday_datas = json_encode($closes_at_location_tuesday_datas);
+                $schedule_closed_tuesday_datas = json_encode($schedule_closed_tuesday_datas);
+                $opens_at_location_wednesday_datas = json_encode($opens_at_location_wednesday_datas);
+                $closes_at_location_wednesday_datas = json_encode($closes_at_location_wednesday_datas);
+                $schedule_closed_wednesday_datas = json_encode($schedule_closed_wednesday_datas);
+                $opens_at_location_thursday_datas = json_encode($opens_at_location_thursday_datas);
+                $closes_at_location_thursday_datas = json_encode($closes_at_location_thursday_datas);
+                $schedule_closed_thursday_datas = json_encode($schedule_closed_thursday_datas);
+                $opens_at_location_friday_datas = json_encode($opens_at_location_friday_datas);
+                $closes_at_location_friday_datas = json_encode($closes_at_location_friday_datas);
+                $schedule_closed_friday_datas = json_encode($schedule_closed_friday_datas);
+                $opens_at_location_saturday_datas = json_encode($opens_at_location_saturday_datas);
+                $closes_at_location_saturday_datas = json_encode($closes_at_location_saturday_datas);
+                $schedule_closed_saturday_datas = json_encode($schedule_closed_saturday_datas);
+                $opens_at_location_sunday_datas = json_encode($opens_at_location_sunday_datas);
+                $closes_at_location_sunday_datas = json_encode($closes_at_location_sunday_datas);
+                $schedule_closed_sunday_datas = json_encode($schedule_closed_sunday_datas);
+                $location_holiday_start_dates = json_encode($location_holiday_start_dates);
+                $location_holiday_end_dates = json_encode($location_holiday_end_dates);
+                $location_holiday_open_ats = json_encode($location_holiday_open_ats);
+                $location_holiday_close_ats = json_encode($location_holiday_close_ats);
+                $location_holiday_closeds = json_encode($location_holiday_closeds);
+
+                $service_status_list = ['Yes' => 'Yes', 'No' => 'No'];
+                $phone_language_data = [];
+                $phone_language_name = [];
+                if ($service->phone) {
+                    foreach ($service->phone()->with('type')->get() as $key => $value) {
+                        $phone_language_data[$key] = $value->phone_language ? explode(',', $value->phone_language) : [];
+                        $languageId = $value->phone_language ? explode(',', $value->phone_language) : [];
+                        $languages = Language::whereIn('language_recordid', $languageId)->pluck('language')->toArray();
+                        $phone_language_name[$key] = implode(', ', $languages);
                     }
                 }
-                $j = $j + 1;
-            }
+                $phone_language_data = json_encode($phone_language_data);
 
-            $opens_at_location_monday_datas = json_encode($opens_at_location_monday_datas);
-            $closes_at_location_monday_datas = json_encode($closes_at_location_monday_datas);
-            $schedule_closed_monday_datas = json_encode($schedule_closed_monday_datas);
-            $opens_at_location_tuesday_datas = json_encode($opens_at_location_tuesday_datas);
-            $closes_at_location_tuesday_datas = json_encode($closes_at_location_tuesday_datas);
-            $schedule_closed_tuesday_datas = json_encode($schedule_closed_tuesday_datas);
-            $opens_at_location_wednesday_datas = json_encode($opens_at_location_wednesday_datas);
-            $closes_at_location_wednesday_datas = json_encode($closes_at_location_wednesday_datas);
-            $schedule_closed_wednesday_datas = json_encode($schedule_closed_wednesday_datas);
-            $opens_at_location_thursday_datas = json_encode($opens_at_location_thursday_datas);
-            $closes_at_location_thursday_datas = json_encode($closes_at_location_thursday_datas);
-            $schedule_closed_thursday_datas = json_encode($schedule_closed_thursday_datas);
-            $opens_at_location_friday_datas = json_encode($opens_at_location_friday_datas);
-            $closes_at_location_friday_datas = json_encode($closes_at_location_friday_datas);
-            $schedule_closed_friday_datas = json_encode($schedule_closed_friday_datas);
-            $opens_at_location_saturday_datas = json_encode($opens_at_location_saturday_datas);
-            $closes_at_location_saturday_datas = json_encode($closes_at_location_saturday_datas);
-            $schedule_closed_saturday_datas = json_encode($schedule_closed_saturday_datas);
-            $opens_at_location_sunday_datas = json_encode($opens_at_location_sunday_datas);
-            $closes_at_location_sunday_datas = json_encode($closes_at_location_sunday_datas);
-            $schedule_closed_sunday_datas = json_encode($schedule_closed_sunday_datas);
-            $location_holiday_start_dates = json_encode($location_holiday_start_dates);
-            $location_holiday_end_dates = json_encode($location_holiday_end_dates);
-            $location_holiday_open_ats = json_encode($location_holiday_open_ats);
-            $location_holiday_close_ats = json_encode($location_holiday_close_ats);
-            $location_holiday_closeds = json_encode($location_holiday_closeds);
+                $serviceCategoryId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Category')->first();
+                $serviceEligibilityId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Eligibility')->first();
 
-            $service_status_list = ['Yes' => 'Yes', 'No' => 'No'];
-            $phone_language_data = [];
-            if ($service->phone) {
-                foreach ($service->phone as $key => $value) {
-                    $phone_language_data[$key] = $value->phone_language ? explode(',', $value->phone_language) : [];
-                }
-            }
-            $phone_language_data = json_encode($phone_language_data);
-
-            $serviceCategoryId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Category')->first();
-            $serviceEligibilityId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Eligibility')->first();
-
-            $service_category_types = Taxonomy::orderBy('taxonomy_name')->whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId ? $serviceCategoryId->taxonomy_type_recordid : '')->pluck('taxonomy_name', 'taxonomy_recordid');
-            $service_eligibility_types = Taxonomy::orderBy('taxonomy_name')->whereNull('taxonomy_parent_name')->where('taxonomy', $serviceEligibilityId ? $serviceEligibilityId->taxonomy_type_recordid : '')->pluck('taxonomy_name', 'taxonomy_recordid');
+                $service_category_types = Taxonomy::orderBy('taxonomy_name')->whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId ? $serviceCategoryId->taxonomy_type_recordid : '')->pluck('taxonomy_name', 'taxonomy_recordid');
+                $service_eligibility_types = Taxonomy::orderBy('taxonomy_name')->whereNull('taxonomy_parent_name')->where('taxonomy', $serviceEligibilityId ? $serviceEligibilityId->taxonomy_type_recordid : '')->pluck('taxonomy_name', 'taxonomy_recordid');
 
 
-            $service_category_term_data = $service->taxonomy()->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->get();
-            // ->whereNotNull('taxonomy_parent_name')
-            $service_category_type_data = [];
-            $categoryRemovableIds = [];
-            foreach ($service_category_term_data as $value) {
-                if ($value->taxonomy_parent_name) {
-                    $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $value->taxonomy_parent_name)->first();
-                    if ($taxonomyParentData->taxonomy_parent_name) {
-                        $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $taxonomyParentData->taxonomy_parent_name)->first();
+                $service_category_term_data = $service->taxonomy()->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->get();
+                // ->whereNotNull('taxonomy_parent_name')
+                $service_category_type_data = [];
+                $categoryRemovableIds = [];
+                foreach ($service_category_term_data as $value) {
+                    if ($value->taxonomy_parent_name) {
+                        $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $value->taxonomy_parent_name)->first();
                         if ($taxonomyParentData->taxonomy_parent_name) {
                             $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $taxonomyParentData->taxonomy_parent_name)->first();
                             if ($taxonomyParentData->taxonomy_parent_name) {
                                 $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $taxonomyParentData->taxonomy_parent_name)->first();
+                                if ($taxonomyParentData->taxonomy_parent_name) {
+                                    $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $taxonomyParentData->taxonomy_parent_name)->first();
+                                }
                             }
                         }
+                        if ($taxonomyParentData) {
+                            $taxonomyParentData->selectedTermId = $value->taxonomy_recordid;
+                            $taxonomyParentData->selectedTermName = $value->taxonomy_name;
+                            $service_category_type_data[] = $taxonomyParentData;
+                            $categoryRemovableIds[] = $taxonomyParentData->taxonomy_recordid;
+                        }
+                    } else {
+                        $service_category_type_data[] = $value;
                     }
-                    if ($taxonomyParentData) {
-                        $taxonomyParentData->selectedTermId = $value->taxonomy_recordid;
-                        $taxonomyParentData->selectedTermName = $value->taxonomy_name;
-                        $service_category_type_data[] = $taxonomyParentData;
-                        $categoryRemovableIds[] = $taxonomyParentData->taxonomy_recordid;
-                    }
-                } else {
-                    $service_category_type_data[] = $value;
                 }
-            }
 
-            $splicable_key = [];
-            $t = 0;
-            foreach ($service_category_type_data as $k => $v) {
-                if (in_array($v->taxonomy_recordid, $categoryRemovableIds) && !isset($v->selectedTermId)) {
-                    // $splicable_key[] = $value->taxonomy_recordid;
-                    array_splice($service_category_type_data, $t, 1);
-                    $t--;
+                $splicable_key = [];
+                $t = 0;
+                foreach ($service_category_type_data as $k => $v) {
+                    if (in_array($v->taxonomy_recordid, $categoryRemovableIds) && !isset($v->selectedTermId)) {
+                        // $splicable_key[] = $value->taxonomy_recordid;
+                        array_splice($service_category_type_data, $t, 1);
+                        $t--;
+                    }
+                    $t++;
                 }
-                $t++;
-            }
-            $service_eligibility_term_data = $service->taxonomy()->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->get();
-            $service_eligibility_type_data = [];
-            // dd($service_eligibility_term_data);
-            // dd($service->taxonomy);
-            $removableIds = [];
-            foreach ($service_eligibility_term_data as $value) {
-                if ($value->taxonomy_parent_name) {
-                    $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $value->taxonomy_parent_name)->first();
-                    if ($taxonomyParentData->taxonomy_parent_name) {
-                        $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $taxonomyParentData->taxonomy_parent_name)->first();
+                $service_eligibility_term_data = $service->taxonomy()->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->get();
+                $service_eligibility_type_data = [];
+                // dd($service_eligibility_term_data);
+                // dd($service->taxonomy);
+                $removableIds = [];
+                foreach ($service_eligibility_term_data as $value) {
+                    if ($value->taxonomy_parent_name) {
+                        $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $value->taxonomy_parent_name)->first();
                         if ($taxonomyParentData->taxonomy_parent_name) {
                             $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $taxonomyParentData->taxonomy_parent_name)->first();
                             if ($taxonomyParentData->taxonomy_parent_name) {
                                 $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $taxonomyParentData->taxonomy_parent_name)->first();
+                                if ($taxonomyParentData->taxonomy_parent_name) {
+                                    $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $taxonomyParentData->taxonomy_parent_name)->first();
+                                }
                             }
                         }
+                        if ($taxonomyParentData) {
+                            $taxonomyParentData->selectedTermId = $value->taxonomy_recordid;
+                            $taxonomyParentData->selectedTermName = $value->taxonomy_name;
+                            $service_eligibility_type_data[] = $taxonomyParentData;
+                            $removableIds[] = $taxonomyParentData->taxonomy_recordid;
+                        }
+                    } else {
+                        $service_eligibility_type_data[] = $value;
                     }
-                    if ($taxonomyParentData) {
-                        $taxonomyParentData->selectedTermId = $value->taxonomy_recordid;
-                        $taxonomyParentData->selectedTermName = $value->taxonomy_name;
-                        $service_eligibility_type_data[] = $taxonomyParentData;
-                        $removableIds[] = $taxonomyParentData->taxonomy_recordid;
+                }
+                $splicable_key = [];
+                $t = 0;
+                foreach ($service_eligibility_type_data as $k => $v) {
+                    if (in_array($v->taxonomy_recordid, $removableIds) && !isset($v->selectedTermId)) {
+                        // $splicable_key[] = $value->taxonomy_recordid;
+                        array_splice($service_eligibility_type_data, $t, 1);
+                        $t--;
                     }
-                } else {
-                    $service_eligibility_type_data[] = $value;
+                    $t++;
                 }
-            }
-            $splicable_key = [];
-            $t = 0;
-            foreach ($service_eligibility_type_data as $k => $v) {
-                if (in_array($v->taxonomy_recordid, $removableIds) && !isset($v->selectedTermId)) {
-                    // $splicable_key[] = $value->taxonomy_recordid;
-                    array_splice($service_eligibility_type_data, $t, 1);
-                    $t--;
+                // dd($service_eligibility_type_data);
+                // foreach ($splicable_key as $s) {
+                //     array_splice($service_eligibility_type_data, $s, 1);
+                // }
+                $program = $service->program && count($service->program) > 0 ? $service->program[0] : '';
+
+                $program_names = [];
+                $program_descriptions = [];
+                // $program_service_relationships = [];
+                foreach ($service->program as $keys => $programData) {
+                    $program_names[] = $programData->name;
+                    $program_descriptions[] = $programData->alternate_name;
+                    // $program_service_relationships[] = $programData->program_service_relationship;
                 }
-                $t++;
+
+                $program_names = json_encode($program_names);
+                $program_descriptions = json_encode($program_descriptions);
+                // $program_service_relationships = json_encode($program_service_relationships);
+
+                // if ($service->audits() && count($service->audits) > 0) {
+                //     foreach ($service->audits()->orderBy('id', 'desc')->get() as $key => $item) {
+                //         $item->old_values
+                //         // foreach ($item->old_values as $key  => $value) {
+                //         //     if($key)
+                //         // }
+                //     }
+                // }
+
+                $serviceAudits = $this->commonController->serviceSection($service);
+
+
+
+                $all_programs = Program::with('organization')->distinct()->get();
+
+                $conditions = Code::where('resource', 'Condition')->get()->groupBy('category');
+                $goals = Code::where('resource', 'Goal')->get()->groupBy('category');
+                $activities = Code::where('resource', 'Procedure')->get()->groupBy('category');
+                $help_text = Helptext::first();
+
+                return view('frontEnd.services.edit', compact('service', 'map', 'service_address_street', 'service_address_city', 'service_address_state', 'service_address_postal_code', 'service_organization_list', 'service_location_list', 'service_phone1', 'service_phone2', 'service_contacts_list', 'service_taxonomy_list', 'service_details_list', 'location_info_list', 'contact_info_list', 'taxonomy_info_list', 'detail_info_list', 'ServiceSchedule', 'ServiceDetails', 'monday', 'tuesday', 'wednesday', 'friday', 'saturday', 'thursday', 'sunday', 'holiday_schedules', 'all_contacts', 'service_locations_data', 'all_locations', 'phone_languages', 'phone_type', 'location_alternate_name', 'location_transporation', 'location_service', 'location_schedules', 'location_description', 'location_details', 'contact_service', 'contact_department', 'service_info_list', 'address_states_list', 'address_city_list', 'schedule_info_list', 'contact_phone_numbers', 'contact_phone_extensions', 'contact_phone_types', 'contact_phone_languages', 'contact_phone_descriptions', 'location_phone_numbers', 'location_phone_extensions', 'location_phone_types', 'location_phone_languages', 'location_phone_descriptions', 'opens_at_location_monday_datas', 'closes_at_location_monday_datas', 'schedule_closed_monday_datas', 'opens_at_location_tuesday_datas', 'closes_at_location_tuesday_datas', 'schedule_closed_tuesday_datas', 'opens_at_location_wednesday_datas', 'closes_at_location_wednesday_datas', 'schedule_closed_wednesday_datas', 'opens_at_location_thursday_datas', 'closes_at_location_thursday_datas', 'schedule_closed_thursday_datas', 'opens_at_location_friday_datas', 'closes_at_location_friday_datas', 'schedule_closed_friday_datas', 'opens_at_location_saturday_datas', 'closes_at_location_saturday_datas', 'schedule_closed_saturday_datas', 'opens_at_location_sunday_datas', 'closes_at_location_sunday_datas', 'schedule_closed_sunday_datas', 'location_holiday_start_dates', 'location_holiday_end_dates', 'location_holiday_open_ats', 'location_holiday_close_ats', 'location_holiday_closeds', 'service_status_list', 'address_info_list', 'addressIds', 'serviceDetailsData', 'detail_types', 'phone_language_data', 'service_category_term_data', 'service_category_type_data', 'service_category_types', 'service_eligibility_types', 'service_eligibility_term_data', 'service_eligibility_type_data', 'program', 'all_programs', 'program_names', 'program_descriptions', 'serviceAudits', 'contactOrganization', 'all_phones', 'phone_language_name', 'conditions', 'goals', 'activities', 'service_codes', 'help_text', 'layout'));
+            } else {
+                Session::flash('message', 'Warning! Not enough permissions. Please contact Us for more');
+                Session::flash('status', 'warning');
+                return redirect('/');
             }
-            // dd($service_eligibility_type_data);
-            // foreach ($splicable_key as $s) {
-            //     array_splice($service_eligibility_type_data, $s, 1);
-            // }
-            $program = $service->program && count($service->program) > 0 ? $service->program[0] : '';
-
-            $program_names = [];
-            $program_descriptions = [];
-            // $program_service_relationships = [];
-            foreach ($service->program as $keys => $programData) {
-                $program_names[] = $programData->name;
-                $program_descriptions[] = $programData->alternate_name;
-                // $program_service_relationships[] = $programData->program_service_relationship;
-            }
-
-            $program_names = json_encode($program_names);
-            $program_descriptions = json_encode($program_descriptions);
-            // $program_service_relationships = json_encode($program_service_relationships);
-
-            // if ($service->audits() && count($service->audits) > 0) {
-            //     foreach ($service->audits()->orderBy('id', 'desc')->get() as $key => $item) {
-            //         $item->old_values
-            //         // foreach ($item->old_values as $key  => $value) {
-            //         //     if($key)
-            //         // }
-            //     }
-            // }
-
-            $serviceAudits = $this->commonController->serviceSection($service);
-
-
-
-            $all_programs = Program::with('organization')->distinct()->get();
-            return view('frontEnd.services.edit', compact('service', 'map', 'service_address_street', 'service_address_city', 'service_address_state', 'service_address_postal_code', 'service_organization_list', 'service_location_list', 'service_phone1', 'service_phone2', 'service_contacts_list', 'service_taxonomy_list', 'service_details_list', 'location_info_list', 'contact_info_list', 'taxonomy_info_list', 'detail_info_list', 'ServiceSchedule', 'ServiceDetails', 'monday', 'tuesday', 'wednesday', 'friday', 'saturday', 'thursday', 'sunday', 'holiday_schedules', 'all_contacts', 'service_locations_data', 'all_locations', 'phone_languages', 'phone_type', 'location_alternate_name', 'location_transporation', 'location_service', 'location_schedules', 'location_description', 'location_details', 'contact_service', 'contact_department', 'service_info_list', 'address_states_list', 'address_city_list', 'schedule_info_list', 'contact_phone_numbers', 'contact_phone_extensions', 'contact_phone_types', 'contact_phone_languages', 'contact_phone_descriptions', 'location_phone_numbers', 'location_phone_extensions', 'location_phone_types', 'location_phone_languages', 'location_phone_descriptions', 'opens_at_location_monday_datas', 'closes_at_location_monday_datas', 'schedule_closed_monday_datas', 'opens_at_location_tuesday_datas', 'closes_at_location_tuesday_datas', 'schedule_closed_tuesday_datas', 'opens_at_location_wednesday_datas', 'closes_at_location_wednesday_datas', 'schedule_closed_wednesday_datas', 'opens_at_location_thursday_datas', 'closes_at_location_thursday_datas', 'schedule_closed_thursday_datas', 'opens_at_location_friday_datas', 'closes_at_location_friday_datas', 'schedule_closed_friday_datas', 'opens_at_location_saturday_datas', 'closes_at_location_saturday_datas', 'schedule_closed_saturday_datas', 'opens_at_location_sunday_datas', 'closes_at_location_sunday_datas', 'schedule_closed_sunday_datas', 'location_holiday_start_dates', 'location_holiday_end_dates', 'location_holiday_open_ats', 'location_holiday_close_ats', 'location_holiday_closeds', 'service_status_list', 'address_info_list', 'addressIds', 'serviceDetailsData', 'detail_types', 'phone_language_data', 'service_category_term_data', 'service_category_type_data', 'service_category_types', 'service_eligibility_types', 'service_eligibility_term_data', 'service_eligibility_type_data', 'program', 'all_programs', 'program_names', 'program_descriptions', 'serviceAudits', 'contactOrganization'));
         } else {
             Session::flash('message', 'This record has been deleted.');
             Session::flash('status', 'warning');
@@ -1910,6 +2039,84 @@ class ServiceController extends Controller
             }
 
             $service->program()->sync($servicePrograms);
+
+            // service code section
+            $service_codes = [];
+            CodeLedger::where('service_recordid', $id)->delete();
+            if ($request->code_conditions) {
+                $code_conditions = array_values(array_filter($request->code_conditions));
+                foreach ($code_conditions as $key => $code_id) {
+                    $ids = explode('_', $code_id);
+                    if (count($ids) > 1) {
+                        $service_codes[] = $ids[1];
+                        $code = Code::whereId($ids[1])->first();
+                        if ($code) {
+                            CodeLedger::create([
+                                'rating' => $ids[0],
+                                'service_recordid' => $id,
+                                'organization_recordid' => $request->service_organization,
+                                'SDOH_code' => $code->id,
+                                'resource' => $code->resource,
+                                'description' => $code->description,
+                                'code_type' => $code->code_system,
+                                'code' => $code->code,
+                                'created_by' => Auth::id(),
+                            ]);
+                        }
+                    }
+                }
+                // $service_codes = array_merge($service_codes, array_map('intval', $request->code_conditions));
+            }
+            if ($request->goal_conditions) {
+                // $service_codes = array_merge($service_codes, array_map('intval', $request->goal_conditions));
+                $goal_conditions = array_values(array_filter($request->goal_conditions));
+                foreach ($goal_conditions as $key => $code_id) {
+                    $ids = explode('_', $code_id);
+                    if (count($ids) > 1) {
+                        $service_codes[] = $ids[1];
+                        $code = Code::whereId($ids[1])->first();
+                        if ($code) {
+                            CodeLedger::create([
+                                'rating' => $ids[0],
+                                'service_recordid' => $id,
+                                'organization_recordid' => $request->service_organization,
+                                'SDOH_code' => $code->id,
+                                'resource' => $code->resource,
+                                'description' => $code->description,
+                                'code_type' => $code->code_system,
+                                'code' => $code->code,
+                                'created_by' => Auth::id(),
+                            ]);
+                        }
+                    }
+                }
+            }
+            if ($request->activities_conditions) {
+                // $service_codes = array_merge($service_codes, array_map('intval', $request->activities_conditions));
+                $activities_conditions = array_values(array_filter($request->activities_conditions));
+                foreach ($activities_conditions as $key => $code_id) {
+                    // $ids = explode('_', $code_id);
+                    $code = Code::whereId($code_id)->first();
+                    if ($code) {
+                        $service_codes[] = $code_id;
+                        CodeLedger::create([
+                            'rating' => 3,
+                            'service_recordid' => $id,
+                            'organization_recordid' => $request->service_organization,
+                            'SDOH_code' => $code->id,
+                            'resource' => $code->resource,
+                            'description' => $code->description,
+                            'code_type' => $code->code_system,
+                            'code' => $code->code,
+                            'created_by' => Auth::id(),
+                        ]);
+                    }
+                }
+            }
+            if (count($service_codes) > 0) {
+                $service->SDOH_code = implode(',', $service_codes);
+            }
+            // $service_codes = array_values(array_filter($service_codes));
 
             // location section
             $service_locations = [];
@@ -3260,6 +3467,7 @@ class ServiceController extends Controller
     public function create_in_organization($id)
     {
         $map = Map::find(1);
+        $layout = Layout::find(1);
         $organization = Organization::where('organization_recordid', '=', $id)->select('organization_recordid', 'organization_name')->first();
         $all_locations = $organization->location;
         $facility_info_list = Location::select('location_recordid', 'location_name')->orderBy('location_recordid')->distinct()->get();
@@ -3280,22 +3488,25 @@ class ServiceController extends Controller
         $all_contacts = $organization->contact()->orderBy('contact_name')->with('phone')->distinct()->get();
         // $all_locations = Location::orderBy('location_name')->with('phones', 'address', 'schedules')->distinct()->get();
 
-        $address_cities = Address::select("address_city")->distinct()->get();
-        $address_states = Address::select("address_state_province")->distinct()->get();
+        // $address_cities = Address::select("address_city")->distinct()->get();
+        // $address_states = Address::select("address_state_province")->distinct()->get();
 
-        $address_states_list = [];
-        foreach ($address_states as $key => $value) {
-            $state = explode(", ", trim($value->address_state_province));
-            $address_states_list = array_merge($address_states_list, $state);
-        }
-        $address_states_list = array_unique($address_states_list);
+        // $address_states_list = [];
+        // foreach ($address_states as $key => $value) {
+        //     $state = explode(", ", trim($value->address_state_province));
+        //     $address_states_list = array_merge($address_states_list, $state);
+        // }
+        // $address_states_list = array_unique($address_states_list);
 
-        $address_city_list = [];
-        foreach ($address_cities as $key => $value) {
-            $cities = explode(", ", trim($value->address_city));
-            $address_city_list = array_merge($address_city_list, $cities);
-        }
-        $address_city_list = array_unique($address_city_list);
+        // $address_city_list = [];
+        // foreach ($address_cities as $key => $value) {
+        //     $cities = explode(", ", trim($value->address_city));
+        //     $address_city_list = array_merge($address_city_list, $cities);
+        // }
+        // $address_city_list = array_unique($address_city_list);
+        $address_city_list = City::orderBy('city')->pluck('city', 'city');
+        $address_states_list = State::orderBy('state')->pluck('state', 'state');
+
         $detail_types = DetailType::orderBy('order')->pluck('type', 'type');
 
         $serviceCategoryId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Category')->first();
@@ -3303,13 +3514,22 @@ class ServiceController extends Controller
 
         $service_category_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
         $service_eligibility_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
+        $all_phones = Phone::whereNotNull('phone_number')->distinct()->get();
+        $phone_language_data = json_encode([]);
 
-        return view('frontEnd.services.service-create-in-organization', compact('map', 'organization', 'facility_info_list', 'service_status_list', 'taxonomy_info_list', 'schedule_info_list', 'contact_info_list', 'detail_info_list', 'address_info_list', 'phone_languages', 'phone_type', 'all_contacts', 'all_locations', 'address_states_list', 'address_city_list', 'detail_types', 'service_eligibility_types', 'service_category_types'));
+        $conditions = Code::where('resource', 'Condition')->get()->groupBy('category');
+        $goals = Code::where('resource', 'Goal')->get()->groupBy('category');
+        $activities = Code::where('resource', 'Procedure')->get()->groupBy('category');
+
+        $help_text = Helptext::first();
+
+        return view('frontEnd.services.service-create-in-organization', compact('map', 'organization', 'facility_info_list', 'service_status_list', 'taxonomy_info_list', 'schedule_info_list', 'contact_info_list', 'detail_info_list', 'address_info_list', 'phone_languages', 'phone_type', 'all_contacts', 'all_locations', 'address_states_list', 'address_city_list', 'detail_types', 'service_eligibility_types', 'service_category_types', 'all_phones', 'phone_language_data', 'conditions', 'goals', 'activities', 'help_text', 'layout'));
     }
 
     public function create_in_facility($id)
     {
         $map = Map::find(1);
+        $layout = Layout::find(1);
         $facility = Location::where('location_recordid', '=', $id)->first();
 
         $service_status_list = ['Yes' => 'Yes', 'No' => 'No'];
@@ -3325,22 +3545,25 @@ class ServiceController extends Controller
         $all_contacts = Contact::orderBy('contact_name')->with('phone')->distinct()->get();
         $all_locations = Location::orderBy('location_name')->with('phones', 'address', 'schedules')->distinct()->get();
 
-        $address_cities = Address::select("address_city")->distinct()->get();
-        $address_states = Address::select("address_state_province")->distinct()->get();
+        // $address_cities = Address::select("address_city")->distinct()->get();
+        // $address_states = Address::select("address_state_province")->distinct()->get();
 
-        $address_states_list = [];
-        foreach ($address_states as $key => $value) {
-            $state = explode(", ", trim($value->address_state_province));
-            $address_states_list = array_merge($address_states_list, $state);
-        }
-        $address_states_list = array_unique($address_states_list);
+        // $address_states_list = [];
+        // foreach ($address_states as $key => $value) {
+        //     $state = explode(", ", trim($value->address_state_province));
+        //     $address_states_list = array_merge($address_states_list, $state);
+        // }
+        // $address_states_list = array_unique($address_states_list);
 
-        $address_city_list = [];
-        foreach ($address_cities as $key => $value) {
-            $cities = explode(", ", trim($value->address_city));
-            $address_city_list = array_merge($address_city_list, $cities);
-        }
-        $address_city_list = array_unique($address_city_list);
+        // $address_city_list = [];
+        // foreach ($address_cities as $key => $value) {
+        //     $cities = explode(", ", trim($value->address_city));
+        //     $address_city_list = array_merge($address_city_list, $cities);
+        // }
+        // $address_city_list = array_unique($address_city_list);
+        $address_city_list = City::orderBy('city')->pluck('city', 'city');
+        $address_states_list = State::orderBy('state')->pluck('state', 'state');
+
         $detail_types = DetailType::orderBy('order')->pluck('type', 'type');
 
         $serviceCategoryId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Category')->first();
@@ -3348,20 +3571,28 @@ class ServiceController extends Controller
 
         $service_category_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
         $service_eligibility_types = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
+        $all_phones = Phone::whereNotNull('phone_number')->distinct()->get();
+        $phone_language_data = json_encode([]);
 
-        return view('frontEnd.services.service-create-in-facility', compact('map', 'facility', 'service_status_list', 'taxonomy_info_list', 'schedule_info_list', 'contact_info_list', 'detail_info_list', 'phone_languages', 'phone_type', 'all_contacts', 'all_locations', 'address_states_list', 'address_city_list', 'detail_types', 'service_category_types', 'service_eligibility_types'));
+        $conditions = Code::where('resource', 'Condition')->get()->groupBy('category');
+        $goals = Code::where('resource', 'Goal')->get()->groupBy('category');
+        $activities = Code::where('resource', 'Procedure')->get()->groupBy('category');
+
+        $help_text = Helptext::first();
+
+        return view('frontEnd.services.service-create-in-facility', compact('map', 'facility', 'service_status_list', 'taxonomy_info_list', 'schedule_info_list', 'contact_info_list', 'detail_info_list', 'phone_languages', 'phone_type', 'all_contacts', 'all_locations', 'address_states_list', 'address_city_list', 'detail_types', 'service_category_types', 'service_eligibility_types', 'all_phones', 'phone_language_data', 'conditions', 'goals', 'activities', 'help_text', 'layout'));
     }
     public function add_new_service_in_organization(Request $request)
     {
-        $this->validate($request, [
-            'service_name' => 'required',
-        ]);
-        if ($request->service_email) {
-            $this->validate($request, [
-                'service_email' => 'email'
-            ]);
-        }
         try {
+            $this->validate($request, [
+                'service_name' => 'required',
+            ]);
+            if ($request->service_email) {
+                $this->validate($request, [
+                    'service_email' => 'email'
+                ]);
+            }
             $service = new Service;
 
             $service_recordids = Service::select("service_recordid")->distinct()->get();
@@ -3400,6 +3631,83 @@ class ServiceController extends Controller
             $service->service_licenses = $request->service_licenses;
             $service->service_metadata = $request->service_metadata;
             $service->service_airs_taxonomy_x = $request->service_airs_taxonomy_x;
+
+
+            // service code section
+            $service_codes = [];
+            if ($request->code_conditions) {
+                $code_conditions = array_values(array_filter($request->code_conditions));
+                foreach ($code_conditions as $key => $code_id) {
+                    $ids = explode('_', $code_id);
+                    if (count($ids) > 1) {
+                        $service_codes[] = $ids[1];
+                        $code = Code::whereId($ids[1])->first();
+                        if ($code) {
+                            CodeLedger::create([
+                                'rating' => $ids[0],
+                                'service_recordid' => $new_recordid,
+                                'organization_recordid' => $service_organization_id,
+                                'SDOH_code' => $code->id,
+                                'resource' => $code->resource,
+                                'description' => $code->description,
+                                'code_type' => $code->code_system,
+                                'code' => $code->code,
+                                'created_by' => Auth::id(),
+                            ]);
+                        }
+                    }
+                }
+                // $service_codes = array_merge($service_codes, array_map('intval', $request->code_conditions));
+            }
+            if ($request->goal_conditions) {
+                // $service_codes = array_merge($service_codes, array_map('intval', $request->goal_conditions));
+                $goal_conditions = array_values(array_filter($request->goal_conditions));
+                foreach ($goal_conditions as $key => $code_id) {
+                    $ids = explode('_', $code_id);
+                    if (count($ids) > 1) {
+                        $service_codes[] = $ids[1];
+                        $code = Code::whereId($ids[1])->first();
+                        if ($code) {
+                            CodeLedger::create([
+                                'rating' => $ids[0],
+                                'service_recordid' => $new_recordid,
+                                'organization_recordid' => $service_organization_id,
+                                'SDOH_code' => $code->id,
+                                'resource' => $code->resource,
+                                'description' => $code->description,
+                                'code_type' => $code->code_system,
+                                'code' => $code->code,
+                                'created_by' => Auth::id(),
+                            ]);
+                        }
+                    }
+                }
+            }
+            if ($request->activities_conditions) {
+                // $service_codes = array_merge($service_codes, array_map('intval', $request->activities_conditions));
+                $activities_conditions = array_values(array_filter($request->activities_conditions));
+                foreach ($activities_conditions as $key => $code_id) {
+                    // $ids = explode('_', $code_id);
+                    $code = Code::whereId($code_id)->first();
+                    if ($code) {
+                        $service_codes[] = $code_id;
+                        CodeLedger::create([
+                            'rating' => 3,
+                            'service_recordid' => $new_recordid,
+                            'organization_recordid' => $service_organization_id,
+                            'SDOH_code' => $code->id,
+                            'resource' => $code->resource,
+                            'description' => $code->description,
+                            'code_type' => $code->code_system,
+                            'code' => $code->code,
+                            'created_by' => Auth::id(),
+                        ]);
+                    }
+                }
+            }
+            if (count($service_codes) > 0) {
+                $service->SDOH_code = implode(',', $service_codes);
+            }
 
             // if ($request->service_locations) {
             //     $service->service_locations = join(',', $request->service_locations);
@@ -3787,6 +4095,7 @@ class ServiceController extends Controller
             //     $service->service_taxonomy = '';
             // }
             // $service->taxonomy()->sync($request->service_taxonomies);
+            $service_taxonomies = [];
             if ($request->service_category_type && $request->service_category_type[0] != null) {
                 $service_category_type = $request->service_category_type;
                 $service_category_term = $request->service_category_term;
@@ -3904,6 +4213,7 @@ class ServiceController extends Controller
                 $service_phone_type_list = $request->phone_type;
                 $service_phone_language_list = $request->phone_language_data ? json_decode($request->phone_language_data) : [];
                 $service_phone_description_list = $request->phone_description;
+                $service_main_priority_list = $request->main_priority;
                 // foreach ($service_phone_number_list as $key => $service_phone_number) {
 
                 //     if ($phone_info) {
@@ -3917,8 +4227,13 @@ class ServiceController extends Controller
                         $phone_info->phone_number = $service_phone_number_list[$i];
                         $phone_info->phone_extension = $service_phone_extension_list[$i];
                         $phone_info->phone_type = $service_phone_type_list[$i];
-                        $phone_info->phone_language = $service_phone_language_list && isset($service_phone_language_list[$i]) ? implode(',', $service_phone_language_list[$i]) : '';
+                        $phone_info->phone_language = $service_phone_language_list && isset($service_phone_language_list[$i]) && is_array($service_phone_language_list[$i]) ? implode(',', $service_phone_language_list[$i]) : '';
                         $phone_info->phone_description = $service_phone_description_list[$i];
+                        if (isset($service_main_priority_list[0]) && $service_main_priority_list[0] == $i) {
+                            $phone_info->main_priority = '1';
+                        } else {
+                            $phone_info->main_priority = '0';
+                        }
                         $phone_info->save();
                         array_push($phone_recordid_list, $phone_info->phone_recordid);
                     } else {
@@ -3928,8 +4243,13 @@ class ServiceController extends Controller
                         $new_phone->phone_number = $service_phone_number_list[$i];
                         $new_phone->phone_extension = $service_phone_extension_list[$i];
                         $new_phone->phone_type = $service_phone_type_list[$i];
-                        $new_phone->phone_language = $service_phone_language_list && isset($service_phone_language_list[$i]) ? implode(',', $service_phone_language_list[$i]) : '';
+                        $new_phone->phone_language = $service_phone_language_list && isset($service_phone_language_list[$i]) && is_array($service_phone_language_list[$i]) ? implode(',', $service_phone_language_list[$i]) : '';
                         $new_phone->phone_description = $service_phone_description_list[$i];
+                        if (isset($service_main_priority_list[0]) && $service_main_priority_list[0] == $i) {
+                            $new_phone->main_priority = '1';
+                        } else {
+                            $new_phone->main_priority = '0';
+                        }
                         $new_phone->save();
                         $service->service_phones = $service->service_phones . $new_phone_recordid . ',';
                         array_push($phone_recordid_list, $new_phone_recordid);
@@ -4164,8 +4484,10 @@ class ServiceController extends Controller
 
             return redirect('organizations/' . $service_organization_id);
         } catch (\Throwable $th) {
+            dd($th);
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
+            return redirect()->back();
         }
     }
 
@@ -4227,13 +4549,89 @@ class ServiceController extends Controller
             $service->service_metadata = $request->service_metadata;
             $service->service_airs_taxonomy_x = $request->service_airs_taxonomy_x;
 
+            // service code section
+            $service_codes = [];
+            if ($request->code_conditions) {
+                $code_conditions = array_values(array_filter($request->code_conditions));
+                foreach ($code_conditions as $key => $code_id) {
+                    $ids = explode('_', $code_id);
+                    if (count($ids) > 1) {
+                        $service_codes[] = $ids[1];
+                        $code = Code::whereId($ids[1])->first();
+                        if ($code) {
+                            CodeLedger::create([
+                                'rating' => $ids[0],
+                                'service_recordid' => $new_recordid,
+                                'organization_recordid' => $service_organization_id,
+                                'SDOH_code' => $code->id,
+                                'resource' => $code->resource,
+                                'description' => $code->description,
+                                'code_type' => $code->code_system,
+                                'code' => $code->code,
+                                'created_by' => Auth::id(),
+                            ]);
+                        }
+                    }
+                }
+                // $service_codes = array_merge($service_codes, array_map('intval', $request->code_conditions));
+            }
+            if ($request->goal_conditions) {
+                // $service_codes = array_merge($service_codes, array_map('intval', $request->goal_conditions));
+                $goal_conditions = array_values(array_filter($request->goal_conditions));
+                foreach ($goal_conditions as $key => $code_id) {
+                    $ids = explode('_', $code_id);
+                    if (count($ids) > 1) {
+                        $service_codes[] = $ids[1];
+                        $code = Code::whereId($ids[1])->first();
+                        if ($code) {
+                            CodeLedger::create([
+                                'rating' => $ids[0],
+                                'service_recordid' => $new_recordid,
+                                'organization_recordid' => $service_organization_id,
+                                'SDOH_code' => $code->id,
+                                'resource' => $code->resource,
+                                'description' => $code->description,
+                                'code_type' => $code->code_system,
+                                'code' => $code->code,
+                                'created_by' => Auth::id(),
+                            ]);
+                        }
+                    }
+                }
+            }
+            if ($request->activities_conditions) {
+                // $service_codes = array_merge($service_codes, array_map('intval', $request->activities_conditions));
+                $activities_conditions = array_values(array_filter($request->activities_conditions));
+                foreach ($activities_conditions as $key => $code_id) {
+                    // $ids = explode('_', $code_id);
+                    $code = Code::whereId($code_id)->first();
+                    if ($code) {
+                        $service_codes[] = $code_id;
+                        CodeLedger::create([
+                            'rating' => 3,
+                            'service_recordid' => $new_recordid,
+                            'organization_recordid' => $service_organization_id,
+                            'SDOH_code' => $code->id,
+                            'resource' => $code->resource,
+                            'description' => $code->description,
+                            'code_type' => $code->code_system,
+                            'code' => $code->code,
+                            'created_by' => Auth::id(),
+                        ]);
+                    }
+                }
+            }
+            if (count($service_codes) > 0) {
+                $service->SDOH_code = implode(',', $service_codes);
+            }
+
             // if ($request->service_taxonomies) {
             //     $service->service_taxonomy = join(',', $request->service_taxonomies);
             // } else {
             //     $service->service_taxonomy = '';
             // }
             // $service->taxonomy()->sync($request->service_taxonomies);
-
+            $service_taxonomies = [];
             if ($request->service_category_type && $request->service_category_type[0] != null) {
                 $service_category_type = $request->service_category_type;
                 $service_category_term = $request->service_category_term;
@@ -4317,6 +4715,7 @@ class ServiceController extends Controller
                 $service_phone_type_list = $request->phone_type;
                 $service_phone_language_list = $request->phone_language_data ? json_decode($request->phone_language_data) : [];
                 $service_phone_description_list = $request->phone_description;
+                $service_main_priority_list = $request->main_priority;
                 // foreach ($service_phone_number_list as $key => $service_phone_number) {
 
                 //     if ($phone_info) {
@@ -4330,8 +4729,13 @@ class ServiceController extends Controller
                         $phone_info->phone_number = $service_phone_number_list[$i];
                         $phone_info->phone_extension = $service_phone_extension_list[$i];
                         $phone_info->phone_type = $service_phone_type_list[$i];
-                        $phone_info->phone_language = $service_phone_language_list && isset($service_phone_language_list[$i]) ? implode(',', $service_phone_language_list[$i]) : '';
+                        $phone_info->phone_language = $service_phone_language_list && isset($service_phone_language_list[$i]) && is_array($service_phone_language_list[$i]) ? implode(',', $service_phone_language_list[$i]) : '';
                         $phone_info->phone_description = $service_phone_description_list[$i];
+                        if (isset($service_main_priority_list[0]) && $service_main_priority_list[0] == $i) {
+                            $phone_info->main_priority = '1';
+                        } else {
+                            $phone_info->main_priority = '0';
+                        }
                         $phone_info->save();
                         array_push($phone_recordid_list, $phone_info->phone_recordid);
                     } else {
@@ -4341,8 +4745,13 @@ class ServiceController extends Controller
                         $new_phone->phone_number = $service_phone_number_list[$i];
                         $new_phone->phone_extension = $service_phone_extension_list[$i];
                         $new_phone->phone_type = $service_phone_type_list[$i];
-                        $new_phone->phone_language = $service_phone_language_list && isset($service_phone_language_list[$i]) ? implode(',', $service_phone_language_list[$i]) : '';
+                        $new_phone->phone_language = $service_phone_language_list && isset($service_phone_language_list[$i]) && is_array($service_phone_language_list[$i]) ? implode(',', $service_phone_language_list[$i]) : '';
                         $new_phone->phone_description = $service_phone_description_list[$i];
+                        if (isset($service_main_priority_list[0]) && $service_main_priority_list[0] == $i) {
+                            $new_phone->main_priority = '1';
+                        } else {
+                            $new_phone->main_priority = '0';
+                        }
                         $new_phone->save();
                         $service->service_phones = $service->service_phones . $new_phone_recordid . ',';
                         array_push($phone_recordid_list, $new_phone_recordid);
@@ -4897,6 +5306,7 @@ class ServiceController extends Controller
         try {
             $taxonomyType = TaxonomyType::where('name', 'Service Category')->first();
             $taxonomy = Taxonomy::where('taxonomy_recordid', $request->get('category_type_recordid'))->first();
+            $latestTaxonomyId = Taxonomy::max('taxonomy_recordid') + 1;
             Taxonomy::create([
                 'taxonomy_recordid' => Taxonomy::max('taxonomy_recordid') + 1,
                 'taxonomy_name' =>  $request->get('service_category_term'),
@@ -4908,6 +5318,11 @@ class ServiceController extends Controller
                 'created_by' => Auth::id(),
                 'taxonomy' => $taxonomyType->taxonomy_type_recordid ?? ''
             ]);
+            $lastInsetedTaxonomy = Taxonomy::where('taxonomy_recordid', $latestTaxonomyId)->first();
+
+            if ($lastInsetedTaxonomy && $taxonomyType->taxonomy_type_recordid) {
+                $lastInsetedTaxonomy->taxonomy_type()->sync($taxonomyType->taxonomy_type_recordid);
+            }
             $service_name = '';
             $organization_name = '';
             if ($request->has('service_recordid')) {
@@ -4937,6 +5352,91 @@ class ServiceController extends Controller
                 // $message .= '<p style="color:#424242;font-size:18px;">The following change was suggested at  ' . $site_name . ' website.</p>';
                 $message .= '<p style="color:#424242;font-size:12px;">User: ' . $user->first_name . ' ' . $user->last_name . '</p>';
                 $message .= '<p style="color:#424242;font-size:12px;">Term: ' . $request->get('service_category_term') . '</p>';
+                $message .= '<p style="color:#424242;font-size:12px;">Parent term: ' . $taxonomy->taxonomy_name . '</p>';
+                $message .= '<p style="color:#424242;font-size:12px;">Service: ' . $service_name . '</p>';
+                $message .= '<p style="color:#424242;font-size:12px;">Organization: ' . $organization_name . '</p>';
+                $message .= '<p style="color:#424242;font-size:12px;">Timestamp: ' . Carbon::now() . '</p>';
+                // $message .= '<p style="color:#424242;font-size:12px;">Phone: '. $from_phone .'</p>';
+                $message .= '</body></html>';
+
+                $email->addContent("text/html", $message);
+                $sendgrid = new SendGrid(getenv('SENDGRID_API_KEY'));
+
+                $error = '';
+
+                $username = '';
+
+
+                foreach ($contact_email_list as $key => $contact_email) {
+                    $email->addTo($contact_email, $username);
+                }
+                $response = $sendgrid->send($email);
+                if ($response->statusCode() == 401) {
+                    $error = json_decode($response->body());
+                }
+            }
+            return response()->json([
+                'success' => true
+            ], 200);
+        } catch (\Throwable $th) {
+            Log::error('Error in save taxonomy term servie : ' . $th);
+            return response()->json([
+                'message' => $th->getMessage(),
+                'success' => false
+            ], 500);
+        }
+    }
+    public function saveEligibilityTaxonomyTerm(Request $request)
+    {
+        try {
+            $taxonomyType = TaxonomyType::where('name', 'Service Eligibility')->first();
+            $taxonomy = Taxonomy::where('taxonomy_recordid', $request->get('eligibility_type_recordid'))->first();
+            $latestTaxonomyId = Taxonomy::max('taxonomy_recordid') + 1;
+            Taxonomy::create([
+                'taxonomy_recordid' => Taxonomy::max('taxonomy_recordid') + 1,
+                'taxonomy_name' =>  $request->get('service_eligibility_term'),
+                'taxonomy_parent_name' => $request->get('eligibility_type_recordid'),
+                'temp_service_recordid' => $request->get('service_recordid'),
+                'temp_organization_recordid' => $request->get('organization_recordid'),
+                'status' => 'Unpublished',
+                'added_term' => '1',
+                'created_by' => Auth::id(),
+                'taxonomy' => $taxonomyType->taxonomy_type_recordid ?? ''
+            ]);
+            $lastInsetedTaxonomy = Taxonomy::where('taxonomy_recordid', $latestTaxonomyId)->first();
+
+            if ($lastInsetedTaxonomy && $taxonomyType->taxonomy_type_recordid) {
+                $lastInsetedTaxonomy->taxonomy_type()->sync($taxonomyType->taxonomy_type_recordid);
+            }
+            $service_name = '';
+            $organization_name = '';
+            if ($request->has('service_recordid')) {
+                $service = Service::where('service_recordid', $request->get('service_recordid'))->first();
+                if ($service) {
+                    $service_name = $service->service_name;
+                    $serviceOrganizations = $service->getOrganizations()->pluck('organization_name')->toArray();
+                    $organization_name = count($serviceOrganizations) > 0 ? implode(', ', $serviceOrganizations) : '';
+                }
+            }
+            $contact_email_list = TaxonomyEmail::select('email')->pluck('email')->toArray();
+            if (count($contact_email_list) > 0) {
+
+                $from = env('MAIL_FROM_ADDRESS');
+                $name = env('MAIL_FROM_NAME');
+                // $from_phone = env('MAIL_FROM_PHONE');
+
+                $email = new Mail();
+                $email->setFrom($from, $name);
+                // $subject = 'A Suggested Change was Submitted at ' . $site_name;
+                $subject = 'New Taxonomy Term Added to ORServices';
+                $email->setSubject($subject);
+                $user = Auth::user();
+
+                $message = '<html><body>';
+                $message .= '<h1 style="color:#424242;">New Taxonomy Term Added to ORServices</h1>';
+                // $message .= '<p style="color:#424242;font-size:18px;">The following change was suggested at  ' . $site_name . ' website.</p>';
+                $message .= '<p style="color:#424242;font-size:12px;">User: ' . $user->first_name . ' ' . $user->last_name . '</p>';
+                $message .= '<p style="color:#424242;font-size:12px;">Term: ' . $request->get('service_eligibility_term') . '</p>';
                 $message .= '<p style="color:#424242;font-size:12px;">Parent term: ' . $taxonomy->taxonomy_name . '</p>';
                 $message .= '<p style="color:#424242;font-size:12px;">Service: ' . $service_name . '</p>';
                 $message .= '<p style="color:#424242;font-size:12px;">Organization: ' . $organization_name . '</p>';

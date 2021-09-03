@@ -61,7 +61,8 @@
             <!--end download -->
 
             <!-- share btn -->
-            <button type="button" class="float-right btn_share_download" data-toggle="modal" data-target="#shareThisModal">
+            <button type="button" class="float-right btn_share_download" data-toggle="modal"
+                data-target="#shareThisModal">
                 <img src="/frontend/assets/images/share.png" alt="" title="" class="mr-10 share_image">
                 Share
             </button>
@@ -78,10 +79,14 @@
                             <h4 class="card-title">
                                 <a href="#">{{$service->service_name}}</a>
                                 @if (Auth::user() && Auth::user()->roles && $organization &&
-                                Auth::user()->user_organization && str_contains(Auth::user()->user_organization, $service->organizations()->first()->organization_recordid) && Auth::user()->roles->name == 'Organization Admin' || (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin'))
+                                Auth::user()->user_organization && str_contains(Auth::user()->user_organization,
+                                $service->organizations()->first()->organization_recordid) && Auth::user()->roles->name
+                                == 'Organization Admin' || (Auth::user() && Auth::user()->roles &&
+                                Auth::user()->roles->name == 'System Admin'))
                                 <a href="/services/{{$service->service_recordid}}/edit" class="float-right">
                                     @if ($service->access_requirement == 'yes')
-                                    <img src="/images/noun_Lock and Key_1043619.png" width="30px" alt="noun_Lock and Key_1043619" style="margin-right: 6px" />
+                                    <img src="/images/noun_Lock and Key_1043619.png" width="30px"
+                                        alt="noun_Lock and Key_1043619" style="margin-right: 6px" />
                                     @endif
                                     <i class="icon md-edit mr-0"></i>
                                 </a>
@@ -105,15 +110,21 @@
                             </h4>
                             @endif
                             @if ($service->service_description)
-                            <h4 class="service-description" style="line-height: inherit;"> {!! nl2br($service->service_description) !!}</h4>
+                            <h4 class="service-description" style="line-height: inherit;"> {!!
+                                nl2br($service->service_description) !!}</h4>
                             @endif
                             @if(isset($mainPhoneNumber) && count($mainPhoneNumber) > 0)
                             <h4 style="line-height: inherit;">
                                 <span><i class="icon md-phone font-size-18 vertical-align-top mr-0 pr-10"></i>
                                     @foreach ($mainPhoneNumber as $key => $item)
-                                    <a href="tel:{{$item}}">{{ $key == 0 ? $item : ', '.$item}}</a>
+                                    <p><a
+                                        href="tel:{{$item->phone_number}}">{{ $item->phone_number}}</a>&nbsp;&nbsp;{{ $item->phone_extension ? 'ext. '. $item->phone_extension : '' }}&nbsp;{{ $item->type ? '('.$item->type->type.')' : '' }}
+                                    @if ($item->phone_language)
+                                    <br>
+                                    {{ $item->phone_language }}
+                                    @endif
+                                        {{ $item->phone_description ? '- '.$item->phone_description : '' }}</p>
                                     @endforeach
-
                                 </span>
                             </h4>
                             @endif
@@ -198,7 +209,8 @@
                             $holidayScheduleData[] = 1;
                             @endphp
                             @endif
-                            @if ($schedule->byday && ($schedule->schedule_closed == null && $schedule->opens_at) || ($schedule->schedule_closed && $schedule->schedule_holiday == null))
+                            @if ($schedule->byday && ($schedule->schedule_closed == null && $schedule->opens_at) ||
+                            ($schedule->schedule_closed && $schedule->schedule_holiday == null))
                             <h4
                                 style="color:{{ strtolower(\Carbon\Carbon::now()->format('l')) == $schedule->byday ? 'blue' : '' }}">
                                 <b style="font-weight: 600;color: #000; letter-spacing: 0.5px;">{{ ucfirst($schedule->byday) }}
@@ -257,14 +269,23 @@
                             @endif
                             @isset($service->taxonomy)
                             @if (count($service->taxonomy) > 0)
-
+                            @php
+                                $i = 0;
+                                $j = 0;
+                            @endphp
                             <h4>
-                                <span class="pl-0 category_badge subtitle"><b>Service Category:</b>
+                                <span class="pl-0 category_badge subtitle">
                                     @foreach ($service->taxonomy as $service_taxonomy_info)
                                     @if (isset($service_taxonomy_info->taxonomy_type) &&
                                     count($service_taxonomy_info->taxonomy_type) > 0 &&
                                     $service_taxonomy_info->taxonomy_type[0]->name == 'Service Category')
                                     @if($service->service_taxonomy != null)
+                                    @if ($i == 0)
+                                    <b>Service Category:</b>
+                                    @php
+                                        $i ++;
+                                    @endphp
+                                    @endif
                                     <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
                                         at="child_{{$service_taxonomy_info->taxonomy_recordid}}"
                                         style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>
@@ -275,12 +296,18 @@
                             </h4>
 
                             <h4>
-                                <span class="pl-0 category_badge subtitle"><b>Service Eligibility:</b>
+                                <span class="pl-0 category_badge subtitle">
                                     @foreach ($service->taxonomy as $service_taxonomy_info)
                                     @if (isset($service_taxonomy_info->taxonomy_type) &&
                                     count($service_taxonomy_info->taxonomy_type) > 0 &&
                                     $service_taxonomy_info->taxonomy_type[0]->name == 'Service Eligibility')
                                     @if($service->service_taxonomy != null)
+                                    @if ($j == 0)
+                                    <b>Service Eligibility:</b>
+                                    @php
+                                        $j ++;
+                                    @endphp
+                                    @endif
                                     <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
                                         at="child_{{$service_taxonomy_info->taxonomy_recordid}}"
                                         style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>
@@ -295,21 +322,21 @@
                             <h4>
                                 <span class="pl-0 category_badge subtitle"><b>Related Program:</b></span>
                                 <ul>
-                                @if (count($service->program) == 1 && isset($service->program[0]))
-                                <li class="text_tooltips">
-                                <u>{{ $service->program[0]->name }}</u>
-                                @if ($service->program[0]->alternate_name)
-                                    <div class="help-tip">
-                                        <div style="width: 300px;">
-                                            <p>{{ $service->program[0]->alternate_name }}</p>
+                                    @if (count($service->program) == 1 && isset($service->program[0]))
+                                    <li class="text_tooltips">
+                                        <u>{{ $service->program[0]->name }}</u>
+                                        @if ($service->program[0]->alternate_name)
+                                        <div class="help-tip">
+                                            <div style="width: 300px;">
+                                                <p>{{ $service->program[0]->alternate_name }}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                @endif
-                                @if ($service->program[0]->program_service_relationship)
-                                participation is
-                                {{ $service->program[0]->program_service_relationship == 'not_required' ? 'Not Required' : Str::ucfirst($service->program[0]->program_service_relationship) }}.
-                                @endif
-                                </li>
+                                        @endif
+                                        @if ($service->program[0]->program_service_relationship)
+                                        participation is
+                                        {{ $service->program[0]->program_service_relationship == 'not_required' ? 'Not Required' : Str::ucfirst($service->program[0]->program_service_relationship) }}.
+                                        @endif
+                                    </li>
                                 </ul>
                                 @else
                                 <ul>
@@ -420,7 +447,6 @@
                                 @if(isset($service->locations))
                                 @if($service->locations != null)
                                 @foreach($service->locations as $location)
-
                                 <div class="location_border">
                                     <h4>
                                         @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System
@@ -435,6 +461,7 @@
                                         <h4>
                                             <span><i class="icon fas fa-building font-size-18 vertical-align-top  "></i>
                                                 {{$location->location_name}}
+                                                {{ $location->location_alternate_name ? '('.$location->location_alternate_name.')' : '' }}
                                             </span>
                                         </h4>
                                         @endif
@@ -470,13 +497,13 @@
                                         @if(count($location->phones) > 0)
                                         <h4>
                                             <span>
-                                                <i class="icon md-phone font-size-18 vertical-align-top "></i>
+
                                                 @php
                                                 $phones = '';
                                                 @endphp
                                                 @foreach($location->phones as $k => $phone)
                                                 @php
-
+                                                if($phone->phone_number){
                                                 if($k == 0){
                                                 $phoneNo = '<a
                                                     href="tel:'.$phone->phone_number.'">'.$phone->phone_number.'</a>';
@@ -485,13 +512,24 @@
                                                     href="tel:'.$phone->phone_number.'">'.$phone->phone_number .'</a>';
                                                 }
                                                 $phones .= $phoneNo;
+                                                }
                                                 @endphp
                                                 @endforeach
+                                                @if ($phones != '')
+                                                <i class="icon md-phone font-size-18 vertical-align-top "></i>
                                                 {!! rtrim($phones, ',') !!}
+                                                @endif
                                             </span>
                                         </h4>
                                         @endif
                                         @endif
+                                        @endif
+                                        @if ($location->location_description)
+                                        <h4>
+                                            <span>
+                                                {{$location->location_description}}
+                                            </span>
+                                        </h4>
                                         @endif
                                         @if(isset($location->accessibilities()->first()->accessibility))
                                         <h4>
@@ -635,30 +673,36 @@
                                 @if($v && count($old_values) > count($new_values))
 
                                 @php
-                                    $diffData = array_diff($old_values,$new_values);
+                                $diffData = array_diff($old_values,$new_values);
                                 @endphp
-                                <li style="color: #000;list-style: disc;list-style-position: inside;">Removed <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span style="color: #FF5044">{{ implode(',',$diffData) }}</span>
-                                </li>
-                                @elseif($v && count($old_values) < count($new_values))
-                                @php
-                                    $diffData = array_diff($new_values,$old_values);
-                                @endphp
-                                <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span style="color: #35AD8B">{{ implode(',',$diffData) }}</span>
-                                </li>
-                                @elseif($v && count($new_values) == count($old_values))
-                                @php
-                                    $diffData = array_diff($new_values,$old_values);
-                                @endphp
-                                <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span style="color: #35AD8B">{{ implode(',',$diffData) }}</span>
-                                </li>
-                                {{-- <li style="color: #000;list-style: disc;list-style-position: inside;">Changed <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> from <span style="color: #FF5044">{{ $v }}</span> to <span style="color: #35AD8B">{{ $new_values ? $new_values : 'none' }}</span>
-                                </li> --}}
-                                @elseif($item->new_values[$key])
-                                <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b
+                                <li style="color: #000;list-style: disc;list-style-position: inside;">Removed <b
                                         style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b>
-                                    <span style="color: #35AD8B">{{ $item->new_values[$key] }}</span>
+                                    <span style="color: #FF5044">{{ implode(' | ',$diffData) }}</span>
                                 </li>
-                                @endif
+                                @elseif($v && count($old_values) < count($new_values)) @php
+                                    $diffData=array_diff($new_values,$old_values); @endphp <li
+                                    style="color: #000;list-style: disc;list-style-position: inside;">Added <b
+                                        style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b>
+                                    <span style="color: #35AD8B">{{ implode(' | ',$diffData) }}</span>
+                                    </li>
+                                    @elseif($v && count($new_values) == count($old_values))
+                                    @php
+                                    $diffData = array_diff($new_values,$old_values);
+                                    @endphp
+                                    <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b
+                                            style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b>
+                                        <span style="color: #35AD8B">{{ implode(' | ',$diffData) }}</span>
+                                    </li>
+                                    {{-- <li style="color: #000;list-style: disc;list-style-position: inside;">Changed <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b>
+                                    from <span style="color: #FF5044">{{ $v }}</span> to <span
+                                        style="color: #35AD8B">{{ $new_values ? $new_values : 'none' }}</span>
+                                    </li> --}}
+                                    @elseif($item->new_values[$key])
+                                    <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b
+                                            style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b>
+                                        <span style="color: #35AD8B">{{ $item->new_values[$key] }}</span>
+                                    </li>
+                                    @endif
                             </ul>
                             @endforeach
                             {{-- <span><a href="/viewChanges/{{ $item->id }}/{{ $service->service_recordid }}"

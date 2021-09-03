@@ -18,6 +18,9 @@ Taxonomy
             overflow: hidden;
             width: 100%;
         }
+    .dropdown-menu.open .selected .active {
+            background-color: #da4a4a !important;
+        }
         .bootstrap-select .dropdown-toggle .filter-option {
             position: relative;
             top: 0;
@@ -189,13 +192,14 @@ Taxonomy
 
                       <div class="col-sm-7">
                         {{-- <input type="text" class="form-control" id="taxonomy_vocabulary" name="taxonomy_vocabulary" value=""> --}}
-                        {!! Form::select('taxonomy',$taxonomieTypes,null,['class' => 'form-control','id' =>'taxonomy','placeholder' => 'Select taxonomy']) !!}
+                        {!! Form::select('taxonomy',$taxonomieTypes,null,['class' => 'form-control','id' =>'taxonomy','placeholder' => 'Select taxonomy','disabled' => true]) !!}
                       </div>
                     </div>
                     <div class="form-group" id="parentDiv">
                         <label for="inputPassword3" class="col-sm-3 control-label">Parent</label>
                         <div class="col-sm-7">
-                              {!! Form::select('taxonomy_parent_name',$taxonomy_parent_name,null,['class' => 'form-control','id' => 'taxonomy_parent_name','placeholder' => 'select parent']) !!}
+                              {!! Form::select('taxonomy_parent_name',$taxonomy_parent_name,null,['class' => 'form-control','id' => 'taxonomy_parent_name','placeholder' => 'select parent','data-live-search' => 'true']) !!}
+
                         </div>
                       </div>
                     <div class="form-group {{ $errors->has('x_taxonomies') ? 'has-error' : ''}}">
@@ -492,7 +496,7 @@ $("#taxonomy_parent_name").selectpicker();
                     $('#taxonomy_parent_name').empty()
                     $('#taxonomy_parent_name').append('<option value="">Select Parent</option>');
                     $.each(data,function(i,v){
-                        $('#taxonomy_parent_name').append('<option value="'+i+'">'+v+'</option>');
+                        $('#taxonomy_parent_name').append('<option value="'+i+'" style="background-color: ' + (v.includes('---') ? '#c961d6;' : (v.includes('--') ? '#a59524;' : (v.includes('-') ? '#4ada70;' : '#059ff9;'))) + ' color:#fff;">'+v+'</option>');
                     })
                     $('#taxonomy_parent_name').val('')
                     $('#taxonomy_parent_name').selectpicker('refresh')

@@ -260,537 +260,801 @@ Service Create
                             </div>
                         </div>
                     </div>
-                    <div class="card all_form_field">
-                        <div class="card-block">
-                            <h4 class="title_edit text-left mb-25 mt-10">
-                                Category
-                                <div class="d-inline float-right" id="addServiceCategoryTr">
-                                    <a href="javascript:void(0)" id="addServiceCategoryData" class="plus_delteicon bg-primary-color">
-                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                    </a>
-                                </div>
-                            </h4>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <div class="">
-                                            <table class="table table_border_none" id="ServiceCategoryTable">
-                                                <thead>
-                                                    <th>Type</th>
-                                                    <th>Term</th>
-                                                    <th style="width:60px">&nbsp;</th>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            {!! Form::select('service_category_type[]',$service_category_types,null,['class' => 'form-control selectpicker service_category_type','placeholder' => 'select  type','id' => 'service_category_type_0']) !!}
 
-                                                        </td>
-                                                        <td  class="create_btn">
-                                                            {!! Form::select('service_category_term[]',[],null,['class' => 'form-control selectpicker service_category_term','placeholder' => 'select  term','id' => 'service_category_term_0']) !!}
-                                                            <input type="hidden" name="service_category_term_type[]" id="service_category_term_type_0" value="old">
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <a href="#" class="plus_delteicon btn-button">
-                                                                <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr></tr>
-                                                    {{-- <tr id="addServiceCategoryTr">
-                                                        <td colspan="6" class="text-center">
-                                                            <a href="javascript:void(0)" id="addServiceCategoryData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
-                                                        </td>
-                                                    </tr> --}}
-                                                </tbody>
-                                            </table>
+                    {{-- tab-pannel top group --}}
+                    <ul class="nav nav-tabs tabpanel_above">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#types-tab">
+                                <h4 class="card_services_title">Types
+                                </h4>
+                            </a>
+                        </li>
+                        @if ($layout->show_classification == 'yes')
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#conditions-tab">
+                                <h4 class="card_services_title">Conditions
+                                </h4>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#goals-tab">
+                                <h4 class="card_services_title">Goals
+                                </h4>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#activities-tab">
+                                <h4 class="card_services_title">Activities
+                                </h4>
+                            </a>
+                        </li>
+                        @endif
+                    </ul>
+                    <div class="card">
+                        <div class="card-block" style="border-radius: 0 0 12px 12px">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="types-tab">
+                                    <div  style="top:8px;">
+                                        <div>
+                                            <p class="service_help_text">
+                                                {{ $help_text->service_classification ?? '' }}
+                                            </p>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card all_form_field">
-                        <div class="card-block">
-                            <h4 class="title_edit text-left mb-25 mt-10">
-                                Eligibility
-                                <div class="d-inline float-right" id="addServiceEligibilityTr">
-                                    <a href="javascript:void(0)" id="addServiceEligibilityData" class="plus_delteicon bg-primary-color">
-                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                    </a>
-                                </div>
-                            </h4>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <div class="">
-                                            <table class="table table_border_none" id="ServiceEligibilityTable">
-                                                <thead>
-                                                    <th>Type</th>
-                                                    <th>Term</th>
-                                                    <th style="width:60px">&nbsp;</th>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            {!! Form::select('service_eligibility_type[]',$service_eligibility_types,null,['class' => 'form-control selectpicker service_eligibility_type','placeholder' => 'select service eligibility type','id' => 'service_eligibility_type_0']) !!}
+                                    <div class="organization_services">
+                                        {{-- service category --}}
+                                        <div class="card all_form_field">
+                                            <div class="card-block">
+                                                <h4 class="title_edit text-left mb-25 mt-10">
+                                                    Category
+                                                    <div class="d-inline float-right" id="addServiceCategoryTr">
+                                                        <a href="javascript:void(0)" id="addServiceCategoryData" class="plus_delteicon bg-primary-color">
+                                                            <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                                        </a>
+                                                    </div>
+                                                </h4>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <div class="">
+                                                                <table class="table table_border_none" id="ServiceCategoryTable">
+                                                                    <thead>
+                                                                        <th>Type</th>
+                                                                        <th>Term</th>
+                                                                        <th style="width:60px">&nbsp;</th>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>
+                                                                                {!! Form::select('service_category_type[]',$service_category_types,null,['class' => 'form-control selectpicker service_category_type','placeholder' => 'select  type','id' => 'service_category_type_0']) !!}
 
-                                                        </td>
-                                                        <td class="create_btn">
-                                                            {!! Form::select('service_eligibility_term[]',[],null,['class' => 'form-control selectpicker service_eligibility_term','placeholder' => 'select service eligibility term','id' => 'service_eligibility_term_0']) !!}
-                                                            <input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_0" value="old">
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <a href="#" class="plus_delteicon btn-button">
-                                                                <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr></tr>
-                                                    {{-- <tr id="addServiceEligibilityTr">
-                                                        <td colspan="6" class="text-center">
-                                                            <a href="javascript:void(0)" id="addServiceEligibilityData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
-                                                        </td>
-                                                    </tr> --}}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                {{-- end here --}}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card all_form_field">
-                        <div class="card-block">
-                            <h4 class="title_edit text-left mb-25 mt-10">
-                                Details
-                                <div class="d-inline float-right" id="addDetailTr">
-                                    <a href="javascript:void(0)" id="addDetailData" class="plus_delteicon bg-primary-color">
-                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                    </a>
-                                </div>
-                            </h4>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <div class="">
-                                            <table class="table table_border_none" id="DetailTable">
-                                                <thead>
-                                                    <th>Detail Type</th>
-                                                    <th>Detail Term</th>
-                                                    <th style="width:60px">&nbsp;</th>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            {!! Form::select('detail_type[]',$detail_types,null,['class' => 'form-control selectpicker detail_type','placeholder' => 'select detail type','id' => 'detail_type_0']) !!}
-
-                                                        </td>
-                                                        <td class="create_btn">
-                                                            {!! Form::select('detail_term[]',[],null,['class' => 'form-control selectpicker detail_term','placeholder' => 'select detail term','id' => 'detail_term_0']) !!}
-                                                            <input type="hidden" name="term_type[]" id="term_type_0" value="old">
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <a href="#" class="plus_delteicon btn-button">
-                                                                <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr></tr>
-                                                    {{-- <tr id="addDetailTr">
-                                                        <td colspan="6" class="text-center">
-                                                            <a href="javascript:void(0)" id="addDetailData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
-                                                        </td>
-                                                    </tr> --}}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                {{-- end here --}}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card all_form_field">
-                        <div class="card-block">
-                            <h4 class="title_edit text-left mb-25 mt-10">
-                                Phones
-                                <div class="d-inline float-right" id="addPhoneTr">
-                                    <a href="javascript:void(0)" id="addData" class="plus_delteicon bg-primary-color">
-                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                    </a>
-                                </div>
-                            </h4>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <div class="">
-                                            <table class="table table_border_none" id="PhoneTable">
-                                                <thead>
-                                                    <th>Number</th>
-                                                    <th>extension</th>
-                                                    <th style="width:200px;position:relative;">Type
-                                                        <div class="help-tip" style="top:8px;">
-                                                            <div><p>Select “Main” if this is the organization's primary phone number (or leave blank)
-                                                            </p></div>
+                                                                            </td>
+                                                                            <td  class="create_btn">
+                                                                                {!! Form::select('service_category_term[]',[],null,['class' => 'form-control selectpicker service_category_term','placeholder' => 'select  term','id' => 'service_category_term_0']) !!}
+                                                                                <input type="hidden" name="service_category_term_type[]" id="service_category_term_type_0" value="old">
+                                                                            </td>
+                                                                            <td style="vertical-align: middle">
+                                                                                <a href="#" class="plus_delteicon btn-button">
+                                                                                    <img src="/frontend/assets/images/delete.png" alt="" title="">
+                                                                                </a>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr></tr>
+                                                                        {{-- <tr id="addServiceCategoryTr">
+                                                                            <td colspan="6" class="text-center">
+                                                                                <a href="javascript:void(0)" id="addServiceCategoryData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
+                                                                            </td>
+                                                                        </tr> --}}
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
                                                         </div>
-                                                    </th>
-                                                    <th style="width:200px;">Language(s)</th>
-                                                    <th style="width:200px;position:relative;">Description
-                                                        <div class="help-tip" style="top:8px;">
-                                                            <div><p>A description providing extra information about the phone service (e.g. any special arrangements for accessing, or details of availability at particular times).
-                                                            </p></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{-- service eligibility --}}
+                                        <div class="card all_form_field">
+                                            <div class="card-block">
+                                                <h4 class="title_edit text-left mb-25 mt-10">
+                                                    Eligibility
+                                                    <div class="d-inline float-right" id="addServiceEligibilityTr">
+                                                        <a href="javascript:void(0)" id="addServiceEligibilityData" class="plus_delteicon bg-primary-color">
+                                                            <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                                        </a>
+                                                    </div>
+                                                </h4>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <div class="">
+                                                                <table class="table table_border_none" id="ServiceEligibilityTable">
+                                                                    <thead>
+                                                                        <th>Type</th>
+                                                                        <th>Term</th>
+                                                                        <th style="width:60px">&nbsp;</th>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>
+                                                                                {!! Form::select('service_eligibility_type[]',$service_eligibility_types,null,['class' => 'form-control selectpicker service_eligibility_type','placeholder' => 'select service eligibility type','id' => 'service_eligibility_type_0']) !!}
+
+                                                                            </td>
+                                                                            <td class="create_btn">
+                                                                                {!! Form::select('service_eligibility_term[]',[],null,['class' => 'form-control selectpicker service_eligibility_term','placeholder' => 'select service eligibility term','id' => 'service_eligibility_term_0']) !!}
+                                                                                <input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_0" value="old">
+                                                                            </td>
+                                                                            <td style="vertical-align: middle">
+                                                                                <a href="#" class="plus_delteicon btn-button">
+                                                                                    <img src="/frontend/assets/images/delete.png" alt="" title="">
+                                                                                </a>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr></tr>
+                                                                        {{-- <tr id="addServiceEligibilityTr">
+                                                                            <td colspan="6" class="text-center">
+                                                                                <a href="javascript:void(0)" id="addServiceEligibilityData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
+                                                                            </td>
+                                                                        </tr> --}}
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
                                                         </div>
-                                                    </th>
-                                                    <th style="width:60px">&nbsp;</th>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <input type="text" class="form-control" name="service_phones[]" id="">
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control" name="phone_extension[]" id="">
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::select('phone_type[]',$phone_type,[],['class' => 'form-control selectpicker','data-live-search' => 'true','id' => 'phone_type','data-size' => 5,'placeholder' => 'select phone type'])!!}
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::select('phone_language[]',$phone_languages,[],['class' => 'form-control selectpicker phone_language','data-size' => 5,' data-live-search' => 'true',"multiple" => true,"id" => "phone_language_0"]) !!}
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control" name="phone_description[]" id="">
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <a href="#" class="plus_delteicon btn-button">
-                                                                <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr></tr>
-                                                    {{-- <tr id="addPhoneTr">
-                                                        <td colspan="6" class="text-center">
-                                                            <a href="javascript:void(0)" id="addData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
-                                                        </td>
-                                                    </tr> --}}
-                                                </tbody>
-                                            </table>
+                                                    </div>
+                                                    {{-- end here --}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @if ($layout->show_classification == 'yes')
+                                <div class="tab-pane" id="conditions-tab">
+                                    <div class="organization_services">
+                                        <div  style="top:8px;" >
+                                            <div>
+                                                <p class="service_help_text">
+                                                    {{ $help_text->service_conditions ?? '' }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="accordion" id="accordion-condition">
+                                            @php
+                                                $i = 0;
+                                            @endphp
+                                            @foreach ($conditions as $condition_key => $condition_values)
+                                                    <div class="card all_form_field">
+                                                        <div class="card-header" id="condition_{{ $i }}">
+                                                            <h4 class="mb-0 card_services_title">
+                                                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#condition_{{ str_replace(' ','_',$condition_key) }}" aria-expanded="true" aria-controls="condition_{{ str_replace(' ','_',$condition_key) }}">
+                                                                    {{ $condition_key }}
+                                                                </button>
+                                                            </h4>
+                                                        </div>
+                                                        <div id="condition_{{ str_replace(' ','_',$condition_key) }}" class="collapse hide" aria-labelledby="condition_{{ str_replace(' ','_',$condition_key) }}" data-parent="#accordion-condition">
+                                                            <div class="card-body">
+                                                                {{-- <select class="form-control selectpicker" data-live-search="true"id="code_conditions" name="code_conditions[]" data-size="5">
+                                                                    <option value="">Select</option>
+                                                                    @foreach ($condition_values as $data_key => $code_data)
+                                                                    <option value="{{$code_data->id}}">{{$code_data->description}}</option>
+                                                                    @endforeach
+                                                                </select> --}}
+                                                                @foreach ($condition_values as $data_key => $code_data)
+                                                                    <div class="row inner-accordion-section pb-15">
+                                                                        <div class="col-md-6">
+                                                                            <p>
+                                                                                {{ $code_data->description }}
+                                                                            </p>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <select class="form-control selectpicker service_category_type" id="code_conditions" name="code_conditions[]">
+                                                                                <option value="">Empty</option>
+                                                                                <option value="1_{{ $code_data->id }}">1</option>
+                                                                                <option value="2_{{ $code_data->id }}">2</option>
+                                                                                <option value="3_{{ $code_data->id }}">3</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @php
+                                                    $i++;
+                                                @endphp
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="goals-tab">
+                                    <div class="organization_services">
+                                        <div style="top:8px;" >
+                                            <div>
+                                                <p class="service_help_text">
+                                                    {{ $help_text->service_goals ?? '' }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="accordion" id="accordion-goals">
+                                            @php
+                                                $i = 0;
+                                            @endphp
+                                            @foreach ($goals as $goal_key => $goal_values)
+                                                    <div class="card all_form_field">
+                                                        <div class="card-header" id="goal_{{ $i }}">
+                                                            <h4 class="mb-0 card_services_title">
+                                                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#goal_{{ str_replace(' ','_',$goal_key) }}" aria-expanded="true" aria-controls="goal_{{ str_replace(' ','_',$goal_key) }}">
+                                                                    {{ $goal_key }}
+                                                                </button>
+                                                            </h4>
+                                                        </div>
+                                                        <div id="goal_{{ str_replace(' ','_',$goal_key) }}" class="collapse hide" aria-labelledby="goal_{{ str_replace(' ','_',$goal_key) }}" data-parent="#accordion-goals">
+                                                            <div class="card-body">
+                                                                {{-- <select class="form-control selectpicker" data-live-search="true"id="goal_conditions" name="goal_conditions[]" data-size="5">
+                                                                    <option value="">Select</option>
+                                                                    @foreach ($goal_values as $data_key => $code_data)
+                                                                    <option value="{{$code_data->id}}">{{$code_data->description}}</option>
+                                                                    @endforeach
+                                                                </select> --}}
+                                                                @foreach ($goal_values as $data_key => $code_data)
+                                                                    <div class="row inner-accordion-section pb-15">
+                                                                        <div class="col-md-6">
+                                                                            <p>
+                                                                                {{ $code_data->description }}
+                                                                            </p>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <select class="form-control selectpicker service_category_type" id="goal_conditions" name="goal_conditions[]">
+                                                                                <option value="">Empty</option>
+                                                                                <option value="1_{{ $code_data->id }}">1</option>
+                                                                                <option value="2_{{ $code_data->id }}">2</option>
+                                                                                <option value="3_{{ $code_data->id }}">3</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @php
+                                                    $i++;
+                                                @endphp
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="activities-tab">
+                                    <div class="organization_services">
+                                        <div style="top:8px;" >
+                                            <div>
+                                                <p class="service_help_text">
+                                                    {{ $help_text->service_activities ?? '' }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="accordion" id="accordion-activities">
+                                            @php
+                                                $i = 0;
+                                            @endphp
+                                            @foreach ($activities as $activitie_key => $activities_values)
+                                                    <div class="card">
+                                                        <div class="card-header" id="activities_{{ $i }}">
+                                                            <h4 class="mb-0 card_services_title">
+                                                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#activities_{{ str_replace(' ','_',$activitie_key) }}" aria-expanded="true" aria-controls="activities_{{ str_replace(' ','_',$activitie_key) }}">
+                                                                    {{ $activitie_key }}
+                                                                </button>
+                                                            </h4>
+                                                        </div>
+                                                        <div id="activities_{{ str_replace(' ','_',$activitie_key) }}" class="collapse hide" aria-labelledby="activities_{{ str_replace(' ','_',$activitie_key) }}" data-parent="#accordion-activities">
+                                                            <div class="card-body">
+                                                                {{-- <select class="form-control selectpicker" data-live-search="true"id="activities_conditions" name="activities_conditions[]" data-size="5">
+                                                                    <option value="">Select</option>
+                                                                    @foreach ($activities_values as $data_key => $code_data)
+                                                                    <option value="{{$code_data->id}}">{{$code_data->description}}</option>
+                                                                    @endforeach
+                                                                </select> --}}
+                                                                @foreach ($activities_values as $data_key => $code_data)
+                                                                    <div class="row inner-accordion-section pb-15">
+                                                                        <div class="col-md-6">
+                                                                            <p>
+                                                                                {{ $code_data->description }}
+                                                                            </p>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <input type="checkbox" name="activities_conditions[]" id="activities_{{$i}}_{{$data_key}}" value="{{ $code_data->id }}"  class="filled-in chk-col-blue">
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @php
+                                                    $i++;
+                                                @endphp
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- tab-pannel bottom group --}}
+        <ul class="nav nav-tabs tabpanel_above">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#locations-tab">
+                    <h4 class="card_services_title">Locations
+                    </h4>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#phones-tab">
+                    <h4 class="card_services_title">Phones
+                    </h4>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#contacts-tab">
+                    <h4 class="card_services_title">Contacts
+                    </h4>
+                </a>
+            </li>
+        </ul>
+        <div class="card">
+            <div class="card-block" style="border-radius: 0 0 12px 12px">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="locations-tab">
+                        <div class="organization_services">
+                            <div class="card all_form_field">
+                                <div class="card-block">
+                                    {{-- location --}}
+                                    <h4 class="title_edit text-left mb-25 mt-10">
+                                        Locations
+                                        <div class="d-inline float-right">
+                                            <a href="javascript:void(0)" class="locationModalOpenButton plus_delteicon bg-primary-color">
+                                                <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                            </a>
+                                        </div>
+                                    </h4>
+                                    <div class="row">
+                                        {{-- location table --}}
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                {{-- <label>Locations: <a class="locationModalOpenButton"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
+                                                <div class="table-responsive">
+                                                    <table class="table table_border_none">
+                                                        <thead>
+                                                            <th>Name</th>
+                                                            <th>Address</th>
+                                                            <th>City</th>
+                                                            <th>State</th>
+                                                            <th>Zipcode</th>
+                                                            <th>Phone</th>
+                                                            <th style="width:60px">&nbsp;</th>
+                                                        </thead>
+                                                        <tbody id="locationsTable">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{-- location table end here --}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="phones-tab">
+                        <div class="organization_services">
+                            <div class="card all_form_field">
+                                <div class="card-block">
+                                    {{-- phone --}}
+                                    <h4 class="title_edit text-left mb-25 mt-10">
+                                        Phones
+                                        <div class="d-inline float-right">
+                                            <a href="javascript:void(0)" class="phoneModalOpenButton plus_delteicon bg-primary-color">
+                                                <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                            </a>
+                                        </div>
+                                    </h4>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="">
+                                                    <table class="table table_border_none" id="PhoneTable">
+                                                        <thead>
+                                                            <th>Number</th>
+                                                            <th>extension</th>
+                                                            <th style="width:200px;position:relative;">Type
+                                                                <div class="help-tip" style="top:8px;">
+                                                                    <div><p>Select “Main” if this is the organization's primary phone number (or leave blank)
+                                                                    </p></div>
+                                                                </div>
+                                                            </th>
+                                                            <th style="width:200px;">Language(s)</th>
+                                                            <th style="width:200px;position:relative;">Description
+                                                                <div class="help-tip" style="top:8px;">
+                                                                    <div><p>A description providing extra information about the phone service (e.g. any special arrangements for accessing, or details of availability at particular times).
+                                                                    </p></div>
+                                                                </div>
+                                                            </th>
+                                                            <th>Main</th>
+                                                            <th style="width:140px">&nbsp;</th>
+                                                        </thead>
+                                                        <tbody id="phonesTable">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <hr/>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="contacts-tab">
+                        <div class="organization_services">
+                            {{-- contact table --}}
+                            <div class="card all_form_field">
+                                <div class="card-block">
+                                    {{-- contact --}}
+                                    <h4 class="title_edit text-left mb-25 mt-10">
+                                        Contacts <a class="contactModalOpenButton float-right plus_delteicon bg-primary-color"><img src="/frontend/assets/images/plus.png" alt="" title=""></a>
+                                    </h4>
+                                    <div class="row">
+                                        {{-- contact table --}}
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                {{-- <label>Contacts: <a class="contactModalOpenButton"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
+                                                <div class="table-responsive">
+                                                    <table class="table table_border_none" >
+                                                        <thead>
+                                                            <th>Name</th>
+                                                            <th>Title</th>
+                                                            <th>Email</th>
+                                                            <th>Phone</th>
+                                                            <th style="width:60px">&nbsp;</th>
+                                                        </thead>
+                                                        <tbody id="contactsTable">
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{-- end here --}}
+                                        {{-- phone table --}}
+                                    </div>
+                                </div>
+                            </div>
                             {{-- end here --}}
-                            <h4 class="title_edit text-left mb-25 mt-10">
-                                Contacts <a class="contactModalOpenButton float-right plus_delteicon bg-primary-color"><img src="/frontend/assets/images/plus.png" alt="" title=""></a>
-                            </h4>
-                            <div class="row">
-                                {{-- contact table --}}
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        {{-- <label>Contacts: <a class="contactModalOpenButton"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
-                                        <div class="table-responsive">
-                                            <table class="table table_border_none" >
-                                                <thead>
-                                                    <th>Name</th>
-                                                    <th>Title</th>
-                                                    <th>Email</th>
-                                                    <th>Phone</th>
-                                                    <th style="width:60px">&nbsp;</th>
-                                                </thead>
-                                                <tbody id="contactsTable">
-
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                {{-- end here --}}
-                                {{-- phone table --}}
-                            </div>
-                            <hr/>
-                            <h4 class="title_edit text-left mb-25 mt-10">
-                                Locations
-                                <div class="d-inline float-right">
-                                    <a href="javascript:void(0)" class="locationModalOpenButton plus_delteicon bg-primary-color">
-                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                    </a>
-                                </div>
-                            </h4>
-                            <div class="row">
-                                {{-- location table --}}
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        {{-- <label>Locations: <a class="locationModalOpenButton"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
-                                        <div class="table-responsive">
-                                            <table class="table table_border_none">
-                                                <thead>
-                                                    <th>Name</th>
-                                                    <th>Address</th>
-                                                    <th>City</th>
-                                                    <th>State</th>
-                                                    <th>Zipcode</th>
-                                                    <th>Phone</th>
-                                                    <th style="width:60px">&nbsp;</th>
-                                                </thead>
-                                                <tbody id="locationsTable">
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                {{-- location table end here --}}
-                            </div>
-
-                            <input type="hidden" name="phone_language_data" id="phone_language_data">
-
-                            <input type="hidden" name="location_alternate_name[]" id="location_alternate_name">
-                            <input type="hidden" name="location_transporation[]" id="location_transporation">
-                            <input type="hidden" name="location_service[]" id="location_service">
-                            <input type="hidden" name="location_schedules[]" id="location_schedules">
-                            <input type="hidden" name="location_description[]" id="location_description">
-                            <input type="hidden" name="location_details[]" id="location_details">
-                            <input type="hidden" name="contact_service[]" id="contact_service">
-                            <input type="hidden" name="contact_department[]" id="contact_department">
-                            {{-- contact phone --}}
-                            <input type="hidden" name="contact_phone_numbers[]" id="contact_phone_numbers">
-                            <input type="hidden" name="contact_phone_extensions[]" id="contact_phone_extensions">
-                            <input type="hidden" name="contact_phone_types[]" id="contact_phone_types">
-                            <input type="hidden" name="contact_phone_languages[]" id="contact_phone_languages">
-                            <input type="hidden" name="contact_phone_descriptions[]" id="contact_phone_descriptions">
-                            {{-- location phone --}}
-                            <input type="hidden" name="location_phone_numbers[]" id="location_phone_numbers">
-                            <input type="hidden" name="location_phone_extensions[]" id="location_phone_extensions">
-                            <input type="hidden" name="location_phone_types[]" id="location_phone_types">
-                            <input type="hidden" name="location_phone_languages[]" id="location_phone_languages">
-                            <input type="hidden" name="location_phone_descriptions[]" id="location_phone_descriptions">
-
-                            {{-- schedule section --}}
-                            <input type="hidden" name="opens_at_location_monday_datas" id="opens_at_location_monday_datas">
-                            <input type="hidden" name="closes_at_location_monday_datas" id="closes_at_location_monday_datas">
-                            <input type="hidden" name="schedule_closed_monday_datas" id="schedule_closed_monday_datas">
-                            <input type="hidden" name="opens_at_location_tuesday_datas" id="opens_at_location_tuesday_datas">
-                            <input type="hidden" name="closes_at_location_tuesday_datas" id="closes_at_location_tuesday_datas">
-                            <input type="hidden" name="schedule_closed_tuesday_datas" id="schedule_closed_tuesday_datas">
-                            <input type="hidden" name="opens_at_location_wednesday_datas" id="opens_at_location_wednesday_datas">
-                            <input type="hidden" name="closes_at_location_wednesday_datas" id="closes_at_location_wednesday_datas">
-                            <input type="hidden" name="schedule_closed_wednesday_datas" id="schedule_closed_wednesday_datas">
-                            <input type="hidden" name="opens_at_location_thursday_datas" id="opens_at_location_thursday_datas">
-                            <input type="hidden" name="closes_at_location_thursday_datas" id="closes_at_location_thursday_datas">
-                            <input type="hidden" name="schedule_closed_thursday_datas" id="schedule_closed_thursday_datas">
-                            <input type="hidden" name="opens_at_location_friday_datas" id="opens_at_location_friday_datas">
-                            <input type="hidden" name="closes_at_location_friday_datas" id="closes_at_location_friday_datas">
-                            <input type="hidden" name="schedule_closed_friday_datas" id="schedule_closed_friday_datas">
-                            <input type="hidden" name="opens_at_location_saturday_datas" id="opens_at_location_saturday_datas">
-                            <input type="hidden" name="closes_at_location_saturday_datas" id="closes_at_location_saturday_datas">
-                            <input type="hidden" name="schedule_closed_saturday_datas" id="schedule_closed_saturday_datas">
-                            <input type="hidden" name="opens_at_location_sunday_datas" id="opens_at_location_sunday_datas">
-                            <input type="hidden" name="closes_at_location_sunday_datas" id="closes_at_location_sunday_datas">
-                            <input type="hidden" name="schedule_closed_sunday_datas" id="schedule_closed_sunday_datas">
-
-                            <input type="hidden" name="location_holiday_start_dates" id="location_holiday_start_dates">
-                            <input type="hidden" name="location_holiday_end_dates" id="location_holiday_end_dates">
-                            <input type="hidden" name="location_holiday_open_ats" id="location_holiday_open_ats">
-                            <input type="hidden" name="location_holiday_close_ats" id="location_holiday_close_ats">
-                            <input type="hidden" name="location_holiday_closeds" id="location_holiday_closeds">
                         </div>
                     </div>
-                    <div class="card all_form_field">
-                        <div class="card-block">
-                            <h4 class="title_edit text-left mb-25 mt-10">
-                                Regular Schedule
-                            </h4>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <div class="table-responsive">
-                                            <table class="table table_border_none">
-                                                {{-- <thead>
-                                                    <th colspan="4" class="text-center">Regular Schedule</th>
-                                                </thead> --}}
-                                                <thead>
-                                                    <th>Weekday</th>
-                                                    <th>Opens</th>
-                                                    <th>Closes</th>
-                                                    <th style="width:150px;">Closed All Day</th>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            Monday
-                                                            <input type="hidden" name="byday[]" value="monday">
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <input type="checkbox" name="schedule_closed[]" id="" value="1" >
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            Tuesday
-                                                            <input type="hidden" name="byday[]" value="tuesday">
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <input type="checkbox" name="schedule_closed[]" id="" value="2" >
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Wednesday
-                                                            <input type="hidden" name="byday[]" value="wednesday">
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <input type="checkbox" name="schedule_closed[]" id="" value="3" >
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Thursday
-                                                            <input type="hidden" name="byday[]" value="thursday">
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <input type="checkbox" name="schedule_closed[]" id="" value="4" >
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Friday
-                                                            <input type="hidden" name="byday[]" value="friday">
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <input type="checkbox" name="schedule_closed[]" id="" value="5" >
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Saturday
-                                                            <input type="hidden" name="byday[]" value="saturday">
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <input type="checkbox" name="schedule_closed[]" id="" value="6" >
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Sunday
-                                                            <input type="hidden" name="byday[]" value="sunday">
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
-                                                        </td>
-
-                                                        <td style="vertical-align: middle">
-                                                            <input type="checkbox" name="schedule_closed[]" id="" value="7" >
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr/>
-                            <h4 class="title_edit text-left mb-25 mt-10">
-                                Holiday Schedule
-                                <div class="d-inline float-right" >
-                                    <a href="javascript:void(0)" id="addTr" class="plus_delteicon bg-primary-color">
-                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                    </a>
-                                </div>
-                            </h4>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <div class="table-responsive">
-                                            <table class="table table_border_none" id="myTable">
-                                                <thead>
-                                                    <th>Start</th>
-                                                    <th>End</th>
-                                                    <th>Opens</th>
-                                                    <th>Closes</th>
-                                                    <th>Closed All Day</th>
-                                                    <th style="width:60px">&nbsp;</th>
-                                                </thead>
-                                                <tbody>
-
-                                                    <tr>
-                                                        <td>
-                                                            <input type="date" name="holiday_start_date[]" id="" class="form-control">
-                                                        </td>
-                                                        <td>
-                                                            <input type="date" name="holiday_end_date[]" id="" class="form-control">
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="holiday_open_at[]" id="" class="form-control timePicker">
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="holiday_close_at[]" id="" class="form-control timePicker">
-                                                        </td>
-                                                        <td>
-                                                            <input type="checkbox" name="holiday_closed[]" id="" value="1">
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <a href="#" class="plus_delteicon btn-button">
-                                                                <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr></tr>
-                                                    {{-- <tr id="addTr">
-                                                        <td colspan="6" class="text-center">
-                                                            <a href="javascript:void(0)" id="addData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
-                                                        </td>
-                                                    </tr> --}}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12 text-center">
-                        <button type="button" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn" id="back-service-btn"> Back</button>
-                        <button type="submit" class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic green_btn" id="save-service-btn"> Save</button>
-                    </div>
-
-                {!! Form ::close() !!}
-                {{-- </form> --}}
+                </div>
             </div>
+        </div>
+        {{-- tab-pannel additional-info group --}}
+        <ul class="nav nav-tabs tabpanel_above">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#schedules-tab">
+                    <h4 class="card_services_title">Schedules
+                    </h4>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " data-toggle="tab" href="#additional-info-tab">
+                    <h4 class="card_services_title">Additional Info
+                    </h4>
+                </a>
+            </li>
+        </ul>
+        <div class="card">
+            <div class="card-block" style="border-radius: 0 0 12px 12px">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="schedules-tab">
+                        <div class="organization_services">
+                             {{-- schedule --}}
+                            <div class="card all_form_field">
+                                <div class="card-block">
+                                    <h4 class="title_edit text-left mb-25 mt-10">
+                                        Regular Schedule
+                                    </h4>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="table-responsive">
+                                                    <table class="table table_border_none">
+                                                        <thead>
+                                                            <th>Weekday</th>
+                                                            <th>Opens</th>
+                                                            <th>Closes</th>
+                                                            <th style="width:150px;">Closed All Day</th>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    Monday
+                                                                    <input type="hidden" name="byday[]" value="monday">
+                                                                </td>
+                                                                <td>
+                                                                    {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                </td>
+                                                                <td>
+                                                                    {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                </td>
+                                                                <td style="vertical-align: middle">
+                                                                    <input type="checkbox" name="schedule_closed[]" id="" value="1" >
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    Tuesday
+                                                                    <input type="hidden" name="byday[]" value="tuesday">
+                                                                </td>
+                                                                <td>
+                                                                    {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                </td>
+                                                                <td>
+                                                                    {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                </td>
+                                                                <td style="vertical-align: middle">
+                                                                    <input type="checkbox" name="schedule_closed[]" id="" value="2" >
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Wednesday
+                                                                    <input type="hidden" name="byday[]" value="wednesday">
+                                                                </td>
+                                                                <td>
+                                                                    {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                </td>
+                                                                <td>
+                                                                    {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                </td>
+                                                                <td style="vertical-align: middle">
+                                                                    <input type="checkbox" name="schedule_closed[]" id="" value="3" >
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Thursday
+                                                                    <input type="hidden" name="byday[]" value="thursday">
+                                                                </td>
+                                                                <td>
+                                                                    {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                </td>
+                                                                <td>
+                                                                    {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                </td>
+                                                                <td style="vertical-align: middle">
+                                                                    <input type="checkbox" name="schedule_closed[]" id="" value="4" >
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Friday
+                                                                    <input type="hidden" name="byday[]" value="friday">
+                                                                </td>
+                                                                <td>
+                                                                    {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                </td>
+                                                                <td>
+                                                                    {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                </td>
+                                                                <td style="vertical-align: middle">
+                                                                    <input type="checkbox" name="schedule_closed[]" id="" value="5" >
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Saturday
+                                                                    <input type="hidden" name="byday[]" value="saturday">
+                                                                </td>
+                                                                <td>
+                                                                    {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                </td>
+                                                                <td>
+                                                                    {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                </td>
+                                                                <td style="vertical-align: middle">
+                                                                    <input type="checkbox" name="schedule_closed[]" id="" value="6" >
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Sunday
+                                                                    <input type="hidden" name="byday[]" value="sunday">
+                                                                </td>
+                                                                <td>
+                                                                    {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                </td>
+                                                                <td>
+                                                                    {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                </td>
+
+                                                                <td style="vertical-align: middle">
+                                                                    <input type="checkbox" name="schedule_closed[]" id="" value="7" >
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                    <h4 class="title_edit text-left mb-25 mt-10">
+                                        Holiday Schedule
+                                        <div class="d-inline float-right" >
+                                            <a href="javascript:void(0)" id="addTr" class="plus_delteicon bg-primary-color">
+                                                <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                            </a>
+                                        </div>
+                                    </h4>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="table-responsive">
+                                                    <table class="table table_border_none" id="myTable">
+                                                        <thead>
+                                                            <th>Start</th>
+                                                            <th>End</th>
+                                                            <th>Opens</th>
+                                                            <th>Closes</th>
+                                                            <th>Closed All Day</th>
+                                                            <th style="width:60px">&nbsp;</th>
+                                                        </thead>
+                                                        <tbody>
+
+                                                            <tr>
+                                                                <td>
+                                                                    <input type="date" name="holiday_start_date[]" id="" class="form-control">
+                                                                </td>
+                                                                <td>
+                                                                    <input type="date" name="holiday_end_date[]" id="" class="form-control">
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text" name="holiday_open_at[]" id="" class="form-control timePicker">
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text" name="holiday_close_at[]" id="" class="form-control timePicker">
+                                                                </td>
+                                                                <td>
+                                                                    <input type="checkbox" name="holiday_closed[]" id="" value="1">
+                                                                </td>
+                                                                <td style="vertical-align: middle">
+                                                                    <a href="#" class="plus_delteicon btn-button">
+                                                                        <img src="/frontend/assets/images/delete.png" alt="" title="">
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr></tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane " id="additional-info-tab">
+                        <div class="organization_services">
+                            {{-- details --}}
+                            <div class="card all_form_field">
+                                <div class="card-block">
+                                    <h4 class="title_edit text-left mb-25 mt-10">
+                                        Details
+                                        <div class="d-inline float-right" id="addDetailTr">
+                                            <a href="javascript:void(0)" id="addDetailData" class="plus_delteicon bg-primary-color">
+                                                <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                            </a>
+                                        </div>
+                                    </h4>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="">
+                                                    <table class="table table_border_none" id="DetailTable">
+                                                        <thead>
+                                                            <th>Detail Type</th>
+                                                            <th>Detail Term</th>
+                                                            <th style="width:60px">&nbsp;</th>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    {!! Form::select('detail_type[]',$detail_types,null,['class' => 'form-control selectpicker detail_type','placeholder' => 'select detail type','id' => 'detail_type_0']) !!}
+
+                                                                </td>
+                                                                <td class="create_btn">
+                                                                    {!! Form::select('detail_term[]',[],null,['class' => 'form-control selectpicker detail_term','placeholder' => 'select detail term','id' => 'detail_term_0']) !!}
+                                                                    <input type="hidden" name="term_type[]" id="term_type_0" value="old">
+                                                                </td>
+                                                                <td style="vertical-align: middle">
+                                                                    <a href="#" class="plus_delteicon btn-button">
+                                                                        <img src="/frontend/assets/images/delete.png" alt="" title="">
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr></tr>
+                                                            {{-- <tr id="addDetailTr">
+                                                                <td colspan="6" class="text-center">
+                                                                    <a href="javascript:void(0)" id="addDetailData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
+                                                                </td>
+                                                            </tr> --}}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{-- end here --}}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 text-center">
+            <button type="button" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn" id="back-service-btn"> Back</button>
+            <button type="submit" class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic green_btn" id="save-service-btn"> Save</button>
+        </div>
+        <input type="hidden" name="phone_language_data" id="phone_language_data" value="{{ $phone_language_data }}">
+        <input type="hidden" name="location_alternate_name[]" id="location_alternate_name">
+        <input type="hidden" name="location_transporation[]" id="location_transporation">
+        <input type="hidden" name="location_service[]" id="location_service">
+        <input type="hidden" name="location_schedules[]" id="location_schedules">
+        <input type="hidden" name="location_description[]" id="location_description">
+        <input type="hidden" name="location_details[]" id="location_details">
+        <input type="hidden" name="contact_service[]" id="contact_service">
+        <input type="hidden" name="contact_department[]" id="contact_department">
+        {{-- contact phone --}}
+        <input type="hidden" name="contact_phone_numbers[]" id="contact_phone_numbers">
+        <input type="hidden" name="contact_phone_extensions[]" id="contact_phone_extensions">
+        <input type="hidden" name="contact_phone_types[]" id="contact_phone_types">
+        <input type="hidden" name="contact_phone_languages[]" id="contact_phone_languages">
+        <input type="hidden" name="contact_phone_descriptions[]" id="contact_phone_descriptions">
+        {{-- location phone --}}
+        <input type="hidden" name="location_phone_numbers[]" id="location_phone_numbers">
+        <input type="hidden" name="location_phone_extensions[]" id="location_phone_extensions">
+        <input type="hidden" name="location_phone_types[]" id="location_phone_types">
+        <input type="hidden" name="location_phone_languages[]" id="location_phone_languages">
+        <input type="hidden" name="location_phone_descriptions[]" id="location_phone_descriptions">
+
+        {{-- schedule section --}}
+        <input type="hidden" name="opens_at_location_monday_datas" id="opens_at_location_monday_datas">
+        <input type="hidden" name="closes_at_location_monday_datas" id="closes_at_location_monday_datas">
+        <input type="hidden" name="schedule_closed_monday_datas" id="schedule_closed_monday_datas">
+        <input type="hidden" name="opens_at_location_tuesday_datas" id="opens_at_location_tuesday_datas">
+        <input type="hidden" name="closes_at_location_tuesday_datas" id="closes_at_location_tuesday_datas">
+        <input type="hidden" name="schedule_closed_tuesday_datas" id="schedule_closed_tuesday_datas">
+        <input type="hidden" name="opens_at_location_wednesday_datas" id="opens_at_location_wednesday_datas">
+        <input type="hidden" name="closes_at_location_wednesday_datas" id="closes_at_location_wednesday_datas">
+        <input type="hidden" name="schedule_closed_wednesday_datas" id="schedule_closed_wednesday_datas">
+        <input type="hidden" name="opens_at_location_thursday_datas" id="opens_at_location_thursday_datas">
+        <input type="hidden" name="closes_at_location_thursday_datas" id="closes_at_location_thursday_datas">
+        <input type="hidden" name="schedule_closed_thursday_datas" id="schedule_closed_thursday_datas">
+        <input type="hidden" name="opens_at_location_friday_datas" id="opens_at_location_friday_datas">
+        <input type="hidden" name="closes_at_location_friday_datas" id="closes_at_location_friday_datas">
+        <input type="hidden" name="schedule_closed_friday_datas" id="schedule_closed_friday_datas">
+        <input type="hidden" name="opens_at_location_saturday_datas" id="opens_at_location_saturday_datas">
+        <input type="hidden" name="closes_at_location_saturday_datas" id="closes_at_location_saturday_datas">
+        <input type="hidden" name="schedule_closed_saturday_datas" id="schedule_closed_saturday_datas">
+        <input type="hidden" name="opens_at_location_sunday_datas" id="opens_at_location_sunday_datas">
+        <input type="hidden" name="closes_at_location_sunday_datas" id="closes_at_location_sunday_datas">
+        <input type="hidden" name="schedule_closed_sunday_datas" id="schedule_closed_sunday_datas">
+
+        <input type="hidden" name="location_holiday_start_dates" id="location_holiday_start_dates">
+        <input type="hidden" name="location_holiday_end_dates" id="location_holiday_end_dates">
+        <input type="hidden" name="location_holiday_open_ats" id="location_holiday_open_ats">
+        <input type="hidden" name="location_holiday_close_ats" id="location_holiday_close_ats">
+        <input type="hidden" name="location_holiday_closeds" id="location_holiday_closeds">
+        {!! Form ::close() !!}
+                {{-- </form> --}}
+    </div>
+            {{-- phone modal --}}
+            @include('frontEnd.services.phone')
+            {{-- phone modala close --}}
             {{-- location Modal --}}
             <div class="modal fade " tabindex="-1" role="dialog" aria-hidden="true" id="locationmodal" >
                 <div class="modal-dialog modal-lg">
@@ -1673,15 +1937,15 @@ Service Create
         $('.timePicker').timepicker({ 'scrollDefault': 'now' });
     });
 
-    let phone_language_data = []
-    $(document).on('change','div > .phone_language',function () {
-        let value = $(this).val()
-        let id = $(this).attr('id')
-        let idsArray = id ? id.split('_') : []
-        let index = idsArray.length > 0 ? idsArray[2] : ''
-        phone_language_data[index] = value
-        $('#phone_language_data').val(JSON.stringify(phone_language_data))
-    })
+    // let phone_language_data = []
+    // $(document).on('change','div > .phone_language',function () {
+    //     let value = $(this).val()
+    //     let id = $(this).attr('id')
+    //     let idsArray = id ? id.split('_') : []
+    //     let index = idsArray.length > 0 ? idsArray[2] : ''
+    //     phone_language_data[index] = value
+    //     $('#phone_language_data').val(JSON.stringify(phone_language_data))
+    // })
     pt = 1
     $('#addPhoneTr').click(function(){
         $('#PhoneTable tr:last').before('<tr><td><input type="text" class="form-control" name="service_phones[]" id=""></td><td><input type="text" class="form-control" name="phone_extension[]" id=""></td><td>{!! Form::select("phone_type[]",$phone_type,[],["class" => "form-control selectpicker","data-live-search" => "true","id" => "phone_type","data-size" => 5,"placeholder" => "select phone type"])!!}</td><td><select name="phone_language[]" id="phone_language_'+pt+'" class="form-control selectpicker phone_language" data-size="5" data-live-search="true" multiple> @foreach ($phone_languages as $key=>$value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id=""></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');

@@ -29,7 +29,7 @@ class NotesController extends Controller
         if (!$request->ajax()) {
             return view('backEnd.notes.index', compact('session_datas', 'organizations', 'disposition_list', 'method_list', 'users', 'id'));
         }
-        return DataTables::of($session_datas)
+        return DataTables::of($session_datas->orderBy('id', 'desc'))
             ->addColumn('user', function ($row) {
                 return $row->user ? $row->user->first_name . ' ' . $row->user->lsst_name : '';
             })

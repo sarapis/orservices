@@ -63,7 +63,7 @@ Create service term
                     <div class="form-group {{ $errors->has('taxonomy_parent_name') ? 'has-error' : ''}}">
                         {!! Form::label('taxonomy_parent_name', 'Parent', ['class' => 'col-md-3 control-label']) !!}
                         <div class="col-sm-6">
-                            {!! Form::select('taxonomy_parent_name',[],null,['class' => 'form-control','id' => 'taxonomy_parent_name','placeholder' => 'select parent']) !!}
+                            {!! Form::select('taxonomy_parent_name',[],null,['class' => 'form-control','id' => 'taxonomy_parent_name','placeholder' => 'select parent','data-live-search' => 'true']) !!}
                             {!! $errors->first('taxonomy_parent_name', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
@@ -79,7 +79,7 @@ Create service term
                         {!! Form::label('taxonomy_grandparent_name', 'Alt Taxonomy', ['class' => 'col-md-3 control-label']) !!}
                         <div class="col-sm-6">
                             <select class="form-control" name="taxonomy_grandparent_name" id="taxonomy_grandparent_name">
-                                <option>Choose option</option>
+                                <option value="">Choose option</option>
                                 @foreach($alt_taxonomies as $alt_taxonomy)
                                 <option value="{{$alt_taxonomy->alt_taxonomy_name}}">{{$alt_taxonomy->alt_taxonomy_name}}</option>
                                 @endforeach
@@ -201,7 +201,7 @@ Create service term
                     $('#taxonomy_parent_name').empty()
                     $('#taxonomy_parent_name').append('<option value="">Select Parent</option>');
                     $.each(data,function(i,v){
-                        $('#taxonomy_parent_name').append('<option value="'+i+'">'+v+'</option>');
+                        $('#taxonomy_parent_name').append('<option value="'+i+'" style="background-color: ' + (v.includes('---') ? '#c961d6;' : (v.includes('--') ? '#a59524;' : (v.includes('-') ? '#4ada70;' : '#059ff9;'))) + ' color:#fff;">'+v+'</option>');
                     })
                     $('#taxonomy_parent_name').val('')
                     $('#taxonomy_parent_name').selectpicker('refresh')

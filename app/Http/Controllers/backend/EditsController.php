@@ -486,7 +486,7 @@ class EditsController extends Controller
                         } else {
                             $location = Location::where('location_recordid', $row->auditable_id)->first();
                         }
-                        $organization = $location->organization;
+                        $organization = $location ? $location->organization : '';
                         if ($organization && $organization->organization_recordid == $extraData['organization']) {
                             $auditableIds[] = $row->auditable_id;
                         }
@@ -496,7 +496,7 @@ class EditsController extends Controller
                         } else {
                             $contact = Contact::where('contact_recordid', $row->auditable_id)->first();
                         }
-                        $organization = $contact->organization;
+                        $organization = $contact ? $contact->organization : '';
                         if ($organization && $organization->organization_recordid == $extraData['organization']) {
                             $auditableIds[] = $row->auditable_id;
                         }
@@ -591,6 +591,7 @@ class EditsController extends Controller
                 'success' => true
             ], 200);
         } catch (\Throwable $th) {
+            dd($th);
             Log::error('Error in Edit export : ' . $th);
         }
     }

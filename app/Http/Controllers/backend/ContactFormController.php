@@ -16,7 +16,7 @@ class ContactFormController extends Controller
      */
     public function index()
     {
-        $suggests = Suggest::orderBy('created_at')->get();
+        $suggests = Suggest::orderBy('created_at', 'desc')->get();
         $emails = Email::orderBy('email_recordid')->get();
         return view('backEnd.contact_form.index', compact('suggests', 'emails'));
     }

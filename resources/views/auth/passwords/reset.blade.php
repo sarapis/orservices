@@ -24,11 +24,9 @@
             </div>
 
             <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                <label for="password">Password</label>
-
-                <div class="col-md-6">
+                <div class="col-md-12">
+                    <label for="password">Password</label>
                     <input id="password" type="password" class="form-control" name="password" required>
-
                     @if ($errors->has('password'))
                         <span class="help-block">
                             <strong>{{ $errors->first('password') }}</strong>
@@ -38,8 +36,8 @@
             </div>
 
             <div class="form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
-                <label for="password-confirm">Confirm Password</label>
-                <div class="col-md-6">
+                <div class="col-md-12">
+                    <label for="password-confirm">Confirm Password</label>
                     <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
 
                     @if ($errors->has('password_confirmation'))

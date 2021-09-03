@@ -204,14 +204,14 @@ class EditExport implements FromView
                         } else {
                             $location = Location::where('location_recordid', $audit->auditable_id)->first();
                         }
-                        $organization = $location->organization;
+                        $organization = $location ? $location->organization : '';
                     } elseif ($modal == 'Contact') {
                         if ($audit->event == 'created') {
                             $contact = Contact::whereId($audit->auditable_id)->first();
                         } else {
                             $contact = Contact::where('contact_recordid', $audit->auditable_id)->first();
                         }
-                        $organization = $contact->organization;
+                        $organization = $contact ? $contact->organization : null;
                     } elseif ($modal == 'Service') {
                         if ($audit->event == 'created') {
                             $service = Service::whereId($audit->auditable_id)->first();
@@ -220,7 +220,7 @@ class EditExport implements FromView
                         }
                         $organization = $service && $service->getOrganizations && count($service->getOrganizations) > 0 ? $service->getOrganizations[0] : null;
                     }
-                    $data[$i]['organization'] = $organization ? $organization->organization_name : '';
+                    $data[$i]['organization'] = isset($organization) && $organization  ? $organization->organization_name : '';
                     $data[$i]['change_to'] = $audit->new_values[$key1] ?? '';
                     $i++;
                 }

@@ -162,9 +162,9 @@ Services
                             if (isset($service->phone) && count($service->phone) > 0) {
                                 foreach ($service->phone as $valueV) {
                                     if ($valueV->main_priority == '1') {
-                                        $mainPhoneNumber[] = $valueV->phone_number;
+                                        $mainPhoneNumber[] = $valueV;
                                     } else {
-                                        $phone_number_info_array[] = $valueV->phone_number;
+                                        $phone_number_info_array[] = $valueV;
                                     }
                                 }
                             }
@@ -176,7 +176,13 @@ Services
                         <span><i class="icon md-phone font-size-18 vertical-align-top  mr-5 pr-10"></i>
 
                             @foreach ($mainPhoneNumber as $key => $item)
-                            <a href="tel:{{$item}}">{{ $key == 0 ? $item : ', '.$item}}</a>
+                            {{-- <a href="tel:{{$item}}">{{ $key == 0 ? $item : ', '.$item}}</a> --}}
+                            <p><a
+                                href="tel:{{$item->phone_number}}">{{ $item->phone_number}}</a>&nbsp;&nbsp;{{ $item->phone_extension ? 'ext. '. $item->phone_extension : '' }}&nbsp;{{ $item->type ? '('.$item->type->type.')' : '' }}
+                            @if ($item->phone_language)
+                            {{ $item->phone_language }}
+                            @endif
+                            {{ $item->phone_description ? '- '.$item->phone_description : '' }}</p>
                             @endforeach
                         </span>
                     </h4>
@@ -201,14 +207,23 @@ Services
                     @endisset
                     @isset($service->taxonomy)
                     @if (count($service->taxonomy) > 0)
-
+                    @php
+                        $i = 0;
+                        $j = 0;
+                    @endphp
                     <h4>
-                        <span class="pl-0 category_badge subtitle"><b>Service Category:</b>
+                        <span class="pl-0 category_badge subtitle">
                             @foreach ($service->taxonomy as $service_taxonomy_info)
                             @if (isset($service_taxonomy_info->taxonomy_type) &&
                             count($service_taxonomy_info->taxonomy_type) > 0 &&
                             $service_taxonomy_info->taxonomy_type[0]->name == 'Service Category')
                             @if($service->service_taxonomy != null)
+                            @if ($i == 0)
+                            <b>Service Category:</b>
+                            @php
+                                $i ++;
+                            @endphp
+                            @endif
                             <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
                                 at="child_{{$service_taxonomy_info->taxonomy_recordid}}"
                                 style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>
@@ -219,12 +234,18 @@ Services
                     </h4>
 
                     <h4>
-                        <span class="pl-0 category_badge subtitle"><b>Service Eligibility:</b>
+                        <span class="pl-0 category_badge subtitle">
                             @foreach ($service->taxonomy as $service_taxonomy_info)
                             @if (isset($service_taxonomy_info->taxonomy_type) &&
                             count($service_taxonomy_info->taxonomy_type) > 0 &&
                             $service_taxonomy_info->taxonomy_type[0]->name == 'Service Eligibility')
                             @if($service->service_taxonomy != null)
+                            @if ($j == 0)
+                            <b>Service Eligibility:</b>
+                            @php
+                                $j ++;
+                            @endphp
+                            @endif
                             <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
                                 at="child_{{$service_taxonomy_info->taxonomy_recordid}}"
                                 style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>

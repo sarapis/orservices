@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
@@ -18,7 +19,7 @@ class Service extends Model implements ContractsAuditable
     // ];
 
     protected $fillable = [
-        'service_recordid', 'service_name', 'service_alternate_name', 'service_organization', 'service_description', 'service_locations', 'service_url', 'service_email', 'service_status', 'service_taxonomy', 'service_application_process', 'service_wait_time', 'service_fees', 'service_accreditations', 'service_licenses', 'service_phones', 'service_schedule', 'service_contacts', 'service_details', 'service_address', 'service_metadata', 'flag', 'service_program', 'service_airs_taxonomy_x', 'service_code', 'access_requirement'
+        'service_recordid', 'service_name', 'service_alternate_name', 'service_organization', 'service_description', 'service_locations', 'service_url', 'service_email', 'service_status', 'service_taxonomy', 'service_application_process', 'service_wait_time', 'service_fees', 'service_accreditations', 'service_licenses', 'service_phones', 'service_schedule', 'service_contacts', 'service_details', 'service_address', 'service_metadata', 'flag', 'service_program', 'service_airs_taxonomy_x', 'service_code', 'access_requirement', 'SDOH_code'
     ];
 
     public function organizations()
@@ -85,5 +86,20 @@ class Service extends Model implements ContractsAuditable
         $this->primaryKey = 'service_recordid';
 
         return $this->belongsToMany('App\Model\Program', 'service_programs', 'service_recordid', 'program_recordid');
+    }
+    // public function codes()
+    // {
+    //     $this->primaryKey = 'service_recordid';
+
+    //     return $this->belongsToMany('App\Model\Code', 'service_codes', 'service_id', 'code_id');
+    // }
+    /**
+     * Get all of the comments for the Service
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function codes(): HasMany
+    {
+        return $this->hasMany(CodeLedger::class, 'service_recordid', 'service_recordid');
     }
 }

@@ -113,7 +113,7 @@ Users
             'searchable':false,
             'orderable':false,
           }],
-          'order': [1, 'asc'],
+
           dom: "Blfrtip",
             buttons: [
             {

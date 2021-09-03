@@ -198,8 +198,8 @@ Organization Create
                         <div class="card-block">
                             <h4 class="title_edit text-left mb-25 mt-10">
                                 Phones
-                                <div class="d-inline float-right" id="addPhoneTr">
-                                    <a href="javascript:void(0)" id="addData" class="plus_delteicon bg-primary-color">
+                                <div class="d-inline float-right" >
+                                    <a href="javascript:void(0)" class="phoneModalOpenButton plus_delteicon bg-primary-color">
                                         <img src="/frontend/assets/images/plus.png" alt="" title="">
                                     </a>
                                 </div>
@@ -208,7 +208,7 @@ Organization Create
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         {{-- <label>Phones: </label> --}}
-                                        <div class="">
+                                        <div class="table-responsive">
                                             <table class="table table_border_none" id="PhoneTable">
                                                 <thead>
                                                     <th>Number</th>
@@ -227,10 +227,10 @@ Organization Create
                                                         </div>
                                                     </th>
                                                     <th>Main</th>
-                                                    <th style="width:60px">&nbsp;</th>
+                                                    <th style="width:140px">&nbsp;</th>
                                                 </thead>
-                                                <tbody>
-                                                    <tr>
+                                                <tbody id="phonesTable">
+                                                    {{-- <tr>
                                                         <td>
                                                             <input type="text" class="form-control" name="organization_phones[]" id="">
                                                         </td>
@@ -238,16 +238,6 @@ Organization Create
                                                             <input type="text" class="form-control" name="phone_extension[]" id="">
                                                         </td>
                                                         <td>
-                                                            {{-- <select class="form-control selectpicker" data-live-search="true" id="phone_type"
-                                                            name="phone_type[]" data-size="5" >
-                                                                <option value="">Select Type</option>
-                                                                <option value="voice">Voice</option>
-                                                                <option value="cell">Cell</option>
-                                                                <option value="textphone">Text Phone</option>
-                                                                <option value="fax">Fax</option>
-                                                                <option value="other">Other</option>
-                                                                <option value="main">Main</option>
-                                                            </select> --}}
                                                             {!! Form::select('phone_type[]',$phone_type,[],['class' => 'form-control selectpicker','data-live-search' => 'true','id' => 'phone_type','data-size' => 5,'placeholder' => 'select phone type'])!!}
                                                         </td>
                                                         <td>
@@ -267,13 +257,8 @@ Organization Create
                                                                 <img src="/frontend/assets/images/delete.png" alt="" title="">
                                                             </a>
                                                         </td>
-                                                    </tr>
-                                                    <tr></tr>
-                                                    {{-- <tr id="addPhoneTr">
-                                                        <td colspan="6" class="text-center">
-                                                            <a href="javascript:void(0)" id="addData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
-                                                        </td>
                                                     </tr> --}}
+                                                    <tr></tr>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -339,7 +324,7 @@ Organization Create
                             {{-- location table end here --}}
 
 
-                            <input type="hidden" name="phone_language_data" id="phone_language_data">
+                            <input type="hidden" name="phone_language_data" id="phone_language_data" value="{{ $phone_language_data }}">
                             <input type="hidden" name="service_alternate_name[]" id="service_alternate_name">
                             <input type="hidden" name="service_program[]" id="service_program">
                             <input type="hidden" name="service_status[]" id="service_status">
@@ -415,6 +400,9 @@ Organization Create
                 {{-- </form> --}}
                 {!! Form::close() !!}
             </div>
+            {{-- phone modal --}}
+            @include('frontEnd.organizations.organizationPhone')
+            {{-- phone modala close --}}
             {{-- services Modal --}}
             <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="servicemodal" >
                 <div class="modal-dialog modal-lg">
@@ -1131,21 +1119,21 @@ Organization Create
           + "<input class='form-control selectpicker organization_phones'  type='text' name='organization_phones[]'>"
           + "</li>" );
     });
-    let phone_language_data = []
-    $(document).on('change','div > .phone_language',function () {
-        let value = $(this).val()
-        let id = $(this).attr('id')
-        let idsArray = id ? id.split('_') : []
-        let index = idsArray.length > 0 ? idsArray[2] : ''
-        phone_language_data[index] = value
-        $('#phone_language_data').val(JSON.stringify(phone_language_data))
-    })
-    pt = 1
-    $('#addPhoneTr').click(function(){
-        $('#PhoneTable tr:last').before('<tr><td><input type="text" class="form-control" name="organization_phones[]" id=""></td><td><input type="text" class="form-control" name="phone_extension[]" id=""></td><td>{!! Form::select("phone_type[]",$phone_type,[],["class" => "form-control selectpicker","data-live-search" => "true","id" => "phone_type","data-size" => 5,"placeholder" => "select phone type"])!!}</td><td><select name="phone_language[]" id="phone_language_'+pt+'" class="form-control selectpicker phone_language" data-size="5" data-live-search="true" multiple> @foreach ($phone_languages as $key=>$value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id=""></td><td><div class="form-check form-check-inline" style="margin-top: -10px;"><input class="form-check-input " type="radio" name="main_priority[]" id="main_priority'+pt+'" value="1" ><label class="form-check-label" for="main_priority'+pt+'"></label></div></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
-        $('.selectpicker').selectpicker();
-        pt++;
-    })
+    // let phone_language_data = []
+    // $(document).on('change','div > .phone_language',function () {
+    //     let value = $(this).val()
+    //     let id = $(this).attr('id')
+    //     let idsArray = id ? id.split('_') : []
+    //     let index = idsArray.length > 0 ? idsArray[2] : ''
+    //     phone_language_data[index] = value
+    //     $('#phone_language_data').val(JSON.stringify(phone_language_data))
+    // })
+    // pt = 1
+    // $('#addPhoneTr').click(function(){
+    //     $('#PhoneTable tr:last').before('<tr><td><input type="text" class="form-control" name="organization_phones[]" id=""></td><td><input type="text" class="form-control" name="phone_extension[]" id=""></td><td>{!! Form::select("phone_type[]",$phone_type,[],["class" => "form-control selectpicker","data-live-search" => "true","id" => "phone_type","data-size" => 5,"placeholder" => "select phone type"])!!}</td><td><select name="phone_language[]" id="phone_language_'+pt+'" class="form-control selectpicker phone_language" data-size="5" data-live-search="true" multiple> @foreach ($phone_languages as $key=>$value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id=""></td><td><div class="form-check form-check-inline" style="margin-top: -10px;"><input class="form-check-input " type="radio" name="main_priority[]" id="main_priority'+pt+'" value="1" ><label class="form-check-label" for="main_priority'+pt+'"></label></div></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+    //     $('.selectpicker').selectpicker();
+    //     pt++;
+    // })
 
     let cp = 1;
     $('#addDataContact').click(function(){

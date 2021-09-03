@@ -68,6 +68,7 @@
                         <table class="table table-responsive table-bordered table-striped " id="importHistoryTable">
                             <thead>
                                 <tr>
+                                    <th>ID</th>
                                     <th>Time Stamp</th>
                                     <th>Source</th>
                                     <th>Auto</th>
@@ -93,6 +94,8 @@
         let ajaxUrl2 = "{{ route('import.getImportHistory') }}";
         $(document).ready(function() {
             dataSourceTable = $('#dataSourceTable').DataTable({
+                processing: true,
+                serverSide: true,
                 ajax: {
                     url: ajaxUrl,
                     method: "post",
@@ -177,6 +180,7 @@
 
             });
             importHistoryTable = $('#importHistoryTable').DataTable({
+                "order": [[0,'desc']],
                 ajax: {
                     url: ajaxUrl2,
                     method: "post",
@@ -191,7 +195,12 @@
                     },
                 },
 
-                columns: [{
+                columns: [
+                    {
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
                         data: 'created_at',
                         name: 'created_At'
                     },
@@ -229,11 +238,11 @@
                         "orderable": true,
                         "class": "text-left"
                     },
-                    // {
-                    //     "targets": 4,
-                    //     "orderable": true,
-                    //     "class": "text-left"
-                    // },
+                    {
+                        "targets": 4,
+                        "orderable": true,
+                        "class": "text-left"
+                    },
                     // {
                     //     "targets": 8,
                     //     "orderable": true,

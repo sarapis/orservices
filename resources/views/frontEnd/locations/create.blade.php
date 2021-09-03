@@ -237,8 +237,8 @@ Location Create
                         <div class="card-block">
                             <h4 class="title_edit text-left mb-25 mt-10">
                                 Phones
-                                <div class="d-inline float-right" id="addPhoneTr">
-                                    <a href="javascript:void(0)" id="addData" class="plus_delteicon bg-primary-color">
+                                <div class="d-inline float-right">
+                                    <a href="javascript:void(0)" class="phoneModalOpenButton plus_delteicon bg-primary-color">
                                         <img src="/frontend/assets/images/plus.png" alt="" title="">
                                     </a>
                                 </div>
@@ -264,37 +264,11 @@ Location Create
                                                             </p></div>
                                                         </div>
                                                     </th>
-                                                    <th style="width:60px">&nbsp;</th>
+                                                    <th>Main</th>
+                                                    <th style="width:140px">&nbsp;</th>
                                                 </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <input type="text" class="form-control" name="facility_phones[]" id="">
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control" name="phone_extension[]" id="">
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::select('phone_type[]',$phone_type,[],['class' => 'form-control selectpicker','data-live-search' => 'true','id' => 'phone_type','data-size' => 5,'placeholder' => 'select phone type'])!!}
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::select('phone_language[]',$phone_languages,[],['class' => 'form-control selectpicker phone_language','data-size' => 5,' data-live-search' => 'true',"multiple" => true,"id" => "phone_language_0"]) !!}
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control" name="phone_description[]" id="">
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <a href="#" class="plus_delteicon btn-button">
-                                                                <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr></tr>
-                                                    {{-- <tr id="addPhoneTr">
-                                                        <td colspan="6" class="text-center">
-                                                            <a href="javascript:void(0)" id="addData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
-                                                        </td>
-                                                    </tr> --}}
+                                                <tbody id="phonesTable">
+
                                                 </tbody>
                                             </table>
                                         </div>
@@ -320,7 +294,7 @@ Location Create
                                             @endforeach
                                         </select>
                                 </div> -->
-                                <input type="hidden" name="phone_language_data" id="phone_language_data">
+                                <input type="hidden" name="phone_language_data" id="phone_language_data" value="{{ $phone_language_data }}">
                             </div>
                         </div>
                     </div>
@@ -333,6 +307,9 @@ Location Create
                 {{-- </form> --}}
             </div>
         </div>
+        {{-- phone modal --}}
+        @include('frontEnd.locations.locationPhone')
+        {{-- phone modal close --}}
         {{-- detail term modal --}}
         <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="create_new_term" >
             <div class="modal-dialog modal-lg">
@@ -460,37 +437,6 @@ Location Create
         $('#DetailTable').append('<tr><td><select name="detail_type[]" id="detail_type_'+d+'" class="form-control selectpicker detail_type"><option value="">Select Detail Type</option> @foreach ($detail_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td class="create_btn"> <select name="detail_term[]" id="detail_term_'+d+'" class="form-control selectpicker detail_term"><option value="">Select Detail term</option> </select><input type="hidden" name="term_type[]" id="term_type_'+d+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         d++;
-    })
-
-    // $(document).ready(function(){
-    //     $('#error_cell_phone').hide();
-    //     $("#facility-create-content").submit(function(event){
-    //         // var mob = /^((\+)?[1-9]{1,2})?([-\s\.])?((\(\d{1,4}\))|\d{1,4})(([-\s\.])?[0-9]{1,12})$/;
-    //         var mob = /^(?!.*([\(\)\-\/]{2,}|\([^\)]+$|^[^\(]+\)|\([^\)]+\(|\s{2,}).*)\+?([\-\s\(\)\/]*\d){9,15}[\s\(\)]*$/;
-    //         var facility_phones = $("#facility_phones").val();
-    //         if (facility_phones != ''){
-    //             if(mob.test(facility_phones) == false && facility_phones != 10){
-    //                 $('#error_cell_phone').show();
-    //                 event.preventDefault();
-    //             }
-    //         }
-
-    //     });
-    // });
-    let phone_language_data = []
-    $(document).on('change','div > .phone_language',function () {
-        let value = $(this).val()
-        let id = $(this).attr('id')
-        let idsArray = id ? id.split('_') : []
-        let index = idsArray.length > 0 ? idsArray[2] : ''
-        phone_language_data[index] = value
-        $('#phone_language_data').val(JSON.stringify(phone_language_data))
-    })
-    pt = 1
-    $('#addPhoneTr').click(function(){
-        $('#PhoneTable tr:last').before('<tr><td><input type="text" class="form-control" name="facility_phones[]" id=""></td><td><input type="text" class="form-control" name="phone_extension[]" id=""></td><td>{!! Form::select("phone_type[]",$phone_type,[],["class" => "form-control selectpicker","data-live-search" => "true","id" => "phone_type","data-size" => 5,"placeholder" => "select phone type"])!!}</td><td><select name="phone_language[]" id="phone_language_'+pt+'" class="form-control selectpicker phone_language" data-size="5" data-live-search="true" multiple> @foreach ($phone_languages as $key=>$value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id=""></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
-        $('.selectpicker').selectpicker();
-        pt++;
     })
     $(document).on('click', '.removePhoneData', function(){
         $(this).closest('tr').remove()

@@ -128,12 +128,10 @@ class TaxonomyController extends Controller
                 'base' => $base_url,
             ));
 
-            $request = $airtable->getContent('taxonomy_term');
+            $request = $airtable->getContent('taxonomy_terms');
 
             do {
-
                 $response = $request->getResponse();
-
                 $airtable_response = json_decode($response, true);
                 foreach ($airtable_response['records'] as $record) {
                     $strtointclass = new Stringtoint();
@@ -182,18 +180,15 @@ class TaxonomyController extends Controller
                                 $path = $value['url'];
                                 $filename = $value['filename'];
                                 Image::make($path)->save(public_path('/uploads/images/' . $filename));
-
                                 $taxonomy->category_logo = '/uploads/images/' . $filename;
                             }
                         }
                         if (isset($record['fields']['x-icon_light']) && is_array($record['fields']['x-icon_light'])) {
                             $icon_light = $record['fields']['x-icon_light'];
                             foreach ($icon_light as $key => $value) {
-
                                 $path = $value['url'];
                                 $filename = $value['filename'];
                                 Image::make($path)->save(public_path('/uploads/images/' . $filename));
-
                                 $taxonomy->category_logo_white = '/uploads/images/' . $filename;
                             }
                         }
@@ -218,7 +213,6 @@ class TaxonomyController extends Controller
                         if (isset($record['fields']['services'])) {
                             $i = 0;
                             foreach ($record['fields']['services'] as $value) {
-
 
                                 $taxonomyservice = $strtointclass->string_to_int($value);
 
@@ -433,8 +427,11 @@ class TaxonomyController extends Controller
             'taxonomy_name' => 'required'
         ]);
         try {
+            $taxonomy_recordid = Taxonomy::max('taxonomy_recordid') + 1;
             $taxonomy = new Taxonomy();
             $taxonomy->taxonomy_name = $request->taxonomy_name;
+            $taxonomy->taxonomy_recordid = $taxonomy_recordid;
+            $taxonomy->x_taxonomies = $request->x_taxonomies;
             $taxonomy->taxonomy_vocabulary = $request->taxonomy_vocabulary;
             $taxonomy->taxonomy_x_description = $request->taxonomy_x_description;
             $taxonomy->taxonomy_grandparent_name = $request->taxonomy_grandparent_name;
@@ -450,6 +447,8 @@ class TaxonomyController extends Controller
             $taxonomy->taxonomy_x_notes = $request->taxonomy_x_notes;
             $taxonomy->status = 'Unpublished';
             $taxonomy->created_by = Auth::id();
+            $taxonomy->additional_taxonomy_type()->sync($request->x_taxonomies);
+            $taxonomy->taxonomy_type()->sync($request->taxonomy);
 
             if ($request->hasFile('category_logo')) {
                 $category_logo = $request->file('category_logo');
@@ -485,12 +484,67 @@ class TaxonomyController extends Controller
     public function show($id)
     {
         $taxonomy = Taxonomy::with('user')->find($id);
-
         $taxonomyTypeId = $taxonomy->taxonomy;
-        if ($taxonomyTypeId) {
-            $parentData = Taxonomy::where('taxonomy', $taxonomyTypeId)->whereNull('taxonomy_parent_name')->pluck('taxonomy_name', 'taxonomy_recordid');
-        } else {
-            $parentData = Taxonomy::whereNull('taxonomy_parent_name')->pluck('taxonomy_name', 'taxonomy_recordid');
+        // $row->taxonomy_type && count($row->taxonomy_type) > 0 ? $row->taxonomy_type[0]->name : ''
+
+        if ($taxonomy->taxonomy_type && count($taxonomy->taxonomy_type) > 0) {
+            $taxonomyTypeId = $taxonomy->taxonomy_type[0]->taxonomy_type_recordid;
+        }
+
+        $taxonomy_info_list = Taxonomy::orderBy('taxonomy_name')->where('taxonomy', $taxonomyTypeId)->whereNull('taxonomy_parent_name')->get();
+        $taxonomy_array = [];
+        foreach ($taxonomy_info_list as $value) {
+            // if ($value->taxonomy_parent_name) {
+            $taxonomy_array[$value->taxonomy_recordid] = $value->taxonomy_name;
+            $taxonomy_child_list = Taxonomy::orderBy('taxonomy_name')->where('taxonomy_parent_name', 'LIKE', '%' . $value->taxonomy_recordid . '%')->where('taxonomy', $taxonomyTypeId)->get();
+            if ($taxonomy_child_list) {
+                foreach ($taxonomy_child_list as $value1) {
+                    if (!array_key_exists($value1->taxonomy_recordid, $taxonomy_array))
+                        $taxonomy_array[$value1->taxonomy_recordid] = '- '  . $value1->taxonomy_name;
+                    $taxonomy_child_list1 = Taxonomy::orderBy('taxonomy_name')->where('taxonomy_parent_name', 'LIKE', '%' . $value1->taxonomy_recordid . '%')->where('taxonomy', $taxonomyTypeId)->get();
+                    if ($taxonomy_child_list1) {
+                        foreach ($taxonomy_child_list1 as $value2) {
+                            if (!array_key_exists($value2->taxonomy_recordid, $taxonomy_array))
+                                $taxonomy_array[$value2->taxonomy_recordid] = '-- '  . $value2->taxonomy_name;
+                            $taxonomy_child_list2 = Taxonomy::orderBy('taxonomy_name')->where('taxonomy_parent_name', 'LIKE', '%' . $value2->taxonomy_recordid . '%')->where('taxonomy', $taxonomyTypeId)->get();
+                            if ($taxonomy_child_list2) {
+                                // if ($value2->taxonomy_name == 'Childcare') {
+                                //     dd($taxonomy_child_list2);
+                                // }
+                                foreach ($taxonomy_child_list2 as $value3) {
+                                    if (!array_key_exists($value3->taxonomy_recordid, $taxonomy_array))
+                                        $taxonomy_array[$value3->taxonomy_recordid] = '--- '  . $value3->taxonomy_name;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // } else {
+            //     $taxonomy_array[$value->taxonomy_recordid] = $value->taxonomy_name;
+            // }
+        }
+
+        if (array_key_exists($taxonomy->taxonomy_recordid, $taxonomy_array)) {
+            if (isset($taxonomy_array[$taxonomy->taxonomy_recordid])) {
+                unset($taxonomy_array[$taxonomy->taxonomy_recordid]);
+            }
+        }
+        collect($taxonomy_array);
+        $parentData = $taxonomy_array;
+        // if ($taxonomyTypeId) {
+        //     $parentData = Taxonomy::where('taxonomy', $taxonomyTypeId)->whereNull('taxonomy_parent_name')->pluck('taxonomy_name', 'taxonomy_recordid');
+        // } else {
+        //     $parentData = Taxonomy::whereNull('taxonomy_parent_name')->pluck('taxonomy_name', 'taxonomy_recordid');
+        // }
+        if ($taxonomy->parent) {
+            $parent = $taxonomy->parent;
+            if ($parent) {
+                // $current_taxonomy_parent = Taxonomy::where('taxonomy_recordid', $parent->taxonomy_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
+                // $parentData =$parentData->toArray();
+                // $parentData = $parentData->union($current_taxonomy_parent)->unique();
+                $taxonomy->taxonomy_parent_name = $parent->taxonomy_recordid;
+            }
         }
 
         if ($taxonomy->badge_color) {
@@ -533,7 +587,7 @@ class TaxonomyController extends Controller
         $taxonomy->status = $request->status;
         $taxonomy->order = $request->order;
         if (str_contains($request->badge_color, '#')) {
-            $badge_color = str_replace('', '#', $request->badge_color);
+            $badge_color = str_replace('#', '', $request->badge_color);
         } else {
             $badge_color = $request->badge_color;
         }
@@ -588,26 +642,25 @@ class TaxonomyController extends Controller
     }
     public function taxonommyUpdate(Request $request)
     {
-        // dd($request);
         try {
             $id = $request->id;
             $taxonomy = Taxonomy::find($id);
             $taxonomy->taxonomy_name = $request->taxonomy_name;
             $taxonomy->taxonomy_vocabulary = $request->taxonomy_vocabulary;
             $taxonomy->x_taxonomies = $request->x_taxonomies;
-            $taxonomy->taxonomy = $request->taxonomy;
+
+            if ($request->taxonomy) {
+                $taxonomy->taxonomy = $request->taxonomy;
+            }
             $taxonomy->taxonomy_x_description = $request->taxonomy_x_description;
             $taxonomy->taxonomy_grandparent_name = $request->taxonomy_grandparent_name;
             $taxonomy->taxonomy_x_notes = $request->taxonomy_x_notes;
             $taxonomy->taxonomy_parent_name = $request->taxonomy_parent_name;
-            $taxonomy->taxonomy = $request->taxonomy;
             $taxonomy->language = $request->language;
             $taxonomy->status = $request->status;
             $taxonomy->order = $request->order;
             if (str_contains($request->badge_color, '#')) {
-
-                $badge_color = str_replace('', '#', $request->badge_color);
-
+                $badge_color = str_replace('#', '', $request->badge_color);
             } else {
                 $badge_color = $request->badge_color;
             }
@@ -615,7 +668,9 @@ class TaxonomyController extends Controller
             $taxonomy->exclude_vocabulary = $request->exclude_vocabulary;
             $taxonomy->flag = 'modified';
             $taxonomy->additional_taxonomy_type()->sync($request->x_taxonomies);
-            $taxonomy->taxonomy_type()->sync($request->taxonomy);
+            if ($request->taxonomy) {
+                $taxonomy->taxonomy_type()->sync($request->taxonomy);
+            }
 
             if ($request->hasFile('category_logo')) {
                 $category_logo = $request->file('category_logo');
@@ -677,7 +732,7 @@ class TaxonomyController extends Controller
     }
     public function show_added_taxonomy()
     {
-        $add_taxonomies = Taxonomy::where('added_term', '1')->cursor();
+        $add_taxonomies = Taxonomy::orderBy('created_at', 'desc')->where('added_term', '1')->cursor();
         $emails = TaxonomyEmail::get();
         return view('backEnd.added_taxonomy_term.added_taxonomy', compact('add_taxonomies', 'emails'));
     }
@@ -829,11 +884,17 @@ class TaxonomyController extends Controller
                         }
                         if (isset($extraData['parent_filter']) && $extraData['parent_filter']) {
                             $parentData = Taxonomy::whereIn('taxonomy_name', $extraData['parent_filter'])->pluck('taxonomy_recordid')->toArray();
-                            if (in_array('all', $parentData)) {
-                                $query->whereNotNull('taxonomy_parent_name');
-                            } else if (in_array('nont', $parentData)) {
-                                $query->whereNull('taxonomy_parent_name');
+                            if (in_array('all', $extraData['parent_filter']) && in_array('none', $extraData['parent_filter'])) {
+                                $query = $query;
                             } else {
+                                if (in_array('all', $extraData['parent_filter'])) {
+                                    $query->whereNotNull('taxonomy_parent_name');
+                                }
+                                if (in_array('none', $extraData['parent_filter'])) {
+                                    $query->whereNull('taxonomy_parent_name');
+                                }
+                            }
+                            if (!in_array('all', $extraData['parent_filter']) && !in_array('none', $extraData['parent_filter'])) {
                                 $query->whereIn('taxonomy_parent_name', $parentData);
                             }
                         }
@@ -850,11 +911,44 @@ class TaxonomyController extends Controller
     {
         try {
             $taxonomyTypeId = $request->get('taxonomyTypeId');
-            if ($taxonomyTypeId) {
-                $parentData = Taxonomy::where('taxonomy', $taxonomyTypeId)->whereNull('taxonomy_parent_name')->pluck('taxonomy_name', 'taxonomy_recordid');
-            } else {
-                $parentData = Taxonomy::whereNull('taxonomy_parent_name')->pluck('taxonomy_name', 'taxonomy_recordid');
+            $taxonomy_info_list = Taxonomy::orderBy('taxonomy_name')->whereNull('taxonomy_parent_name')->where('taxonomy', $taxonomyTypeId)->get();
+            $taxonomy_array = [];
+            foreach ($taxonomy_info_list as $value) {
+                // if ($value->taxonomy_parent_name) {
+                $taxonomy_array[$value->taxonomy_recordid] = $value->taxonomy_name;
+                $taxonomy_child_list = Taxonomy::orderBy('taxonomy_name')->where('taxonomy_parent_name', 'LIKE', '%' . $value->taxonomy_recordid . '%')->where('taxonomy', $taxonomyTypeId)->get();
+                if ($taxonomy_child_list) {
+                    foreach ($taxonomy_child_list as $value1) {
+                        if (!array_key_exists($value1->taxonomy_recordid, $taxonomy_array))
+                            $taxonomy_array[$value1->taxonomy_recordid] = '- '  . $value1->taxonomy_name;
+                        $taxonomy_child_list1 = Taxonomy::orderBy('taxonomy_name')->where('taxonomy_parent_name', 'LIKE', '%' . $value1->taxonomy_recordid . '%')->where('taxonomy', $taxonomyTypeId)->get();
+                        if ($taxonomy_child_list1) {
+                            foreach ($taxonomy_child_list1 as $value2) {
+                                if (!array_key_exists($value2->taxonomy_recordid, $taxonomy_array))
+                                    $taxonomy_array[$value2->taxonomy_recordid] = '-- '  . $value2->taxonomy_name;
+                                $taxonomy_child_list2 = Taxonomy::orderBy('taxonomy_name')->where('taxonomy_parent_name', 'LIKE', '%' . $value2->taxonomy_recordid . '%')->where('taxonomy', $taxonomyTypeId)->get();
+                                if ($taxonomy_child_list2) {
+                                    foreach ($taxonomy_child_list2 as $value3) {
+                                        if (!array_key_exists($value3->taxonomy_recordid, $taxonomy_array))
+                                            $taxonomy_array[$value3->taxonomy_recordid] = '--- '  . $value3->taxonomy_name;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                // } else {
+                //     $taxonomy_array[$value->taxonomy_recordid] = $value->taxonomy_name;
+                // }
             }
+
+            collect($taxonomy_array);
+            $parentData = $taxonomy_array;
+            // if ($taxonomyTypeId) {
+            //     $parentData = Taxonomy::where('taxonomy', $taxonomyTypeId)->whereNull('taxonomy_parent_name')->pluck('taxonomy_name', 'taxonomy_recordid');
+            // } else {
+            //     $parentData = Taxonomy::whereNull('taxonomy_parent_name')->pluck('taxonomy_name', 'taxonomy_recordid');
+            // }
             return response()->json([
                 'data' => $parentData,
                 'success' => true

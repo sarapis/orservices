@@ -14,8 +14,8 @@ Location
                     <div class="card-block">
                         <h4 class="card-title  m-0">
                             <a href="">{{$facility->location_name}} </a>
-                            @if ((Auth::user() && Auth::user()->user_organization && $facility_organizations &&
-                            str_contains(Auth::user()->user_organization,$facility_organizations[0]->organization_recordid)
+                            @if ((Auth::user() && Auth::user()->user_organization && $facility->organization &&
+                            str_contains(Auth::user()->user_organization,$facility->organization->organization_recordid)
                             && Auth::user()->roles->name == 'Organization Admin') || Auth::user() &&
                             Auth::user()->roles->name == 'System Admin' || Auth::user() && Auth::user()->roles->name !=
                             'Organization Admin')
@@ -129,7 +129,12 @@ Location
                                 <span>
                                     <i class="icon md-phone font-size-18 vertical-align-top pr-10  m-0"></i>
                                     @foreach($service->phone as $phone)
-                                    <a href="tel:{!! $phone->phone_number !!}">{!! $phone->phone_number !!}</a>
+                                    <p><a
+                                        href="tel:{{$phone->phone_number}}">{{ $phone->phone_number}}</a>&nbsp;&nbsp;{{ $phone->phone_extension ? 'ext. '. $phone->phone_extension : '' }}&nbsp;{{ $phone->type ? '('.$phone->type->type.')' : '' }}
+                                    @if ($phone->phone_language)
+                                    {{ $phone->phone_language }}
+                                    @endif
+                                    {{ $phone->phone_description ? '- '.$phone->phone_description : '' }}</p>
                                     @endforeach
                                 </span>
                             </h4>
@@ -190,13 +195,23 @@ Location
                                 @endif
                                 @isset($service->taxonomy)
                                 @if (count($service->taxonomy) > 0)
+                                @php
+                                    $i = 0;
+                                    $j = 0;
+                                @endphp
                                 <h4>
-                                    <span class="pl-0 category_badge subtitle"><b>Service Category:</b>
+                                    <span class="pl-0 category_badge subtitle">
                                         @foreach ($service->taxonomy as $service_taxonomy_info)
                                         @if (isset($service_taxonomy_info->taxonomy_type) &&
                                         count($service_taxonomy_info->taxonomy_type) > 0 &&
                                         $service_taxonomy_info->taxonomy_type[0]->name == 'Service Category')
                                         @if($service->service_taxonomy != null)
+                                        @if ($i == 0)
+                                        <b>Service Category:</b>
+                                        @php
+                                            $i ++;
+                                        @endphp
+                                        @endif
                                         <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
                                             at="child_{{$service_taxonomy_info->taxonomy_recordid}}"
                                             style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>
@@ -206,12 +221,18 @@ Location
                                     </span>
                                 </h4>
                                 <h4>
-                                    <span class="pl-0 category_badge subtitle"><b>Service Eligibility:</b>
+                                    <span class="pl-0 category_badge subtitle">
                                         @foreach ($service->taxonomy as $service_taxonomy_info)
                                         @if (isset($service_taxonomy_info->taxonomy_type) &&
                                         count($service_taxonomy_info->taxonomy_type) > 0 &&
                                         $service_taxonomy_info->taxonomy_type[0]->name == 'Service Eligibility')
                                         @if($service->service_taxonomy != null)
+                                        @if ($j == 0)
+                                        <b>Service Eligibility:</b>
+                                        @php
+                                            $j ++;
+                                        @endphp
+                                        @endif
                                         <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
                                             at="child_{{$service_taxonomy_info->taxonomy_recordid}}"
                                             style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>
@@ -281,8 +302,8 @@ Location
 </div>
 
 <div class="col-md-4 property">
-    @if ((Auth::user() && Auth::user()->user_organization && $facility_organizations &&
-    str_contains(Auth::user()->user_organization,$facility_organizations[0]->organization_recordid) &&
+    @if ((Auth::user() && Auth::user()->user_organization && $facility->organization &&
+    str_contains(Auth::user()->user_organization,$facility->organization->organization_recordid) &&
     Auth::user()->roles->name == 'Organization Admin') || Auth::user() && Auth::user()->roles->name == 'System Admin' ||
     Auth::user() && Auth::user()->roles->name != 'Organization Admin')
     <div style="display: flex;" class="mb-20">
@@ -534,7 +555,6 @@ target="_blank">{{ $address->address_1 }} {{ $address->address_2 }} {{ $address-
         setTimeout(function(){
         var locations = <?php print_r(json_encode($locations)) ?>;
         var maplocation = <?php print_r(json_encode($map)) ?>;
-        console.log(locations);
         if(maplocation.active == 1){
             avglat = maplocation.lat;
             avglng = maplocation.long;
@@ -564,7 +584,6 @@ target="_blank">{{ $address->address_1 }} {{ $address->address_2 }} {{ $address-
         });
 
         $.each( locations, function(index, value ){
-                // console.log(locations);
 
                 var content = '<div id="iw-container">';
                 for(i = 0; i < value.services.length; i ++){
