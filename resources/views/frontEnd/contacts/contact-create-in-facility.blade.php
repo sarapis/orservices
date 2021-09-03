@@ -88,8 +88,8 @@ Contact Create
                         <div class="card-block">
                             <h4 class="title_edit text-left mb-25 mt-10">
                                 Phones
-                                <div class="d-inline float-right" id="addPhoneTr">
-                                    <a href="javascript:void(0)" id="addData" class="plus_delteicon bg-primary-color">
+                                <div class="d-inline float-right">
+                                    <a href="javascript:void(0)" class="phoneModalOpenButton plus_delteicon bg-primary-color">
                                         <img src="/frontend/assets/images/plus.png" alt="" title="">
                                     </a>
                                 </div>
@@ -115,43 +115,16 @@ Contact Create
                                                             </p></div>
                                                         </div>
                                                     </th>
-                                                    <th style="width:60px">&nbsp;</th>
+                                                    <th>Main</th>
+                                                    <th style="width:140px">&nbsp;</th>
                                                 </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <input type="text" class="form-control" name="contact_phones[]" id="">
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control" name="phone_extension[]" id="">
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::select('phone_type[]',$phone_type,[],['class' => 'form-control selectpicker','data-live-search' => 'true','id' => 'phone_type','data-size' => 5,'placeholder' => 'select phone type'])!!}
-                                                        </td>
-                                                        <td>
-                                                            {!! Form::select('phone_language[]',$phone_languages,[],['class' => 'form-control selectpicker phone_language','data-size' => 5,' data-live-search' => 'true',"multiple" => true,"id" => "phone_language_0"]) !!}
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" class="form-control" name="phone_description[]" id="">
-                                                        </td>
-                                                        <td style="vertical-align: middle">
-                                                            <a href="#" class="plus_delteicon btn-button">
-                                                                <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr></tr>
-                                                    {{-- <tr id="addPhoneTr">
-                                                        <td colspan="6" class="text-center">
-                                                            <a href="javascript:void(0)" id="addData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
-                                                        </td>
-                                                    </tr> --}}
+                                                <tbody id="phonesTable">
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
                                 </div>
-                                <input type="hidden" name="phone_language_data" id="phone_language_data">
+                                <input type="hidden" name="phone_language_data" id="phone_language_data" value="{{ $phone_language_data }}">
                             </div>
                         </div>
                     </div>
@@ -164,7 +137,9 @@ Contact Create
         </div>
     </div>
 </div>
-
+{{-- phone modal --}}
+@include('frontEnd.contacts.contactPhone')
+{{-- phone modala close --}}
 
 <script>
     $('#back-contact-btn').click(function() {
@@ -174,21 +149,21 @@ Contact Create
     $(document).ready(function() {
         $('select#contact_service').val([]).change();
     });
-    let phone_language_data = []
-    $(document).on('change','div > .phone_language',function () {
-        let value = $(this).val()
-        let id = $(this).attr('id')
-        let idsArray = id ? id.split('_') : []
-        let index = idsArray.length > 0 ? idsArray[2] : ''
-        phone_language_data[index] = value
-        $('#phone_language_data').val(JSON.stringify(phone_language_data))
-    })
-    pt = 1
-    $('#addPhoneTr').click(function(){
-        $('#PhoneTable tr:last').before('<tr><td><input type="text" class="form-control" name="contact_phones[]" id=""></td><td><input type="text" class="form-control" name="phone_extension[]" id=""></td><td>{!! Form::select("phone_type[]",$phone_type,[],["class" => "form-control selectpicker","data-live-search" => "true","id" => "phone_type","data-size" => 5,"placeholder" => "select phone type"])!!}</td><td><select name="phone_language[]" id="phone_language_'+pt+'" class="form-control selectpicker phone_language" data-size="5" data-live-search="true" multiple> @foreach ($phone_languages as $key=>$value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id=""></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
-        $('.selectpicker').selectpicker();
-        pt++;
-    })
+    // let phone_language_data = []
+    // $(document).on('change','div > .phone_language',function () {
+    //     let value = $(this).val()
+    //     let id = $(this).attr('id')
+    //     let idsArray = id ? id.split('_') : []
+    //     let index = idsArray.length > 0 ? idsArray[2] : ''
+    //     phone_language_data[index] = value
+    //     $('#phone_language_data').val(JSON.stringify(phone_language_data))
+    // })
+    // pt = 1
+    // $('#addPhoneTr').click(function(){
+    //     $('#PhoneTable tr:last').before('<tr><td><input type="text" class="form-control" name="contact_phones[]" id=""></td><td><input type="text" class="form-control" name="phone_extension[]" id=""></td><td>{!! Form::select("phone_type[]",$phone_type,[],["class" => "form-control selectpicker","data-live-search" => "true","id" => "phone_type","data-size" => 5,"placeholder" => "select phone type"])!!}</td><td><select name="phone_language[]" id="phone_language_'+pt+'" class="form-control selectpicker phone_language" data-size="5" data-live-search="true" multiple> @foreach ($phone_languages as $key=>$value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id=""></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+    //     $('.selectpicker').selectpicker();
+    //     pt++;
+    // })
     $(document).on('click', '.removePhoneData', function(){
         $(this).closest('tr').remove()
     });

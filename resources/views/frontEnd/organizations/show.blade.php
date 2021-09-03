@@ -129,7 +129,12 @@
                             if (isset($organization->phones) && count($organization->phones) > 0) {
                                 foreach ($organization->phones as $valueV) {
                                     if ($valueV->main_priority == '1' && count($mainPhoneNumber) == 0) {
-                                        $mainPhoneNumber[] = $valueV->phone_number;
+                                        if ($valueV->phone_language) {
+                                            $languageId = $valueV->phone_language ? explode(',', $valueV->phone_language) : [];
+                                            $languages = \App\Model\Language::whereIn('language_recordid', $languageId)->pluck('language')->toArray();
+                                            $valueV->phone_language = implode(', ', $languages);
+                                        }
+                                        $mainPhoneNumber[] = $valueV;
                                     }
                                     // else {
                                     //     $phone_number_info_array[] = $valueV->phone_number;
@@ -150,7 +155,14 @@
                                 @endif
                                 @endforeach --}}
                                 @foreach ($mainPhoneNumber as $key => $item)
-                                    <a href="tel:{{$item}}">{{ $key == 0 ? $item : ', '.$item}}</a>
+                                    {{-- <a href="tel:{{$item}}">{{ $key == 0 ? $item : ', '.$item}}</a> --}}
+                                    <p><a
+                                        href="tel:{{$item->phone_number}}">{{ $item->phone_number}}</a>&nbsp;&nbsp;{{ $item->phone_extension ? 'ext. '. $item->phone_extension : '' }}&nbsp;{{ $item->type ? '('.$item->type->type.')' : '' }}
+                                    @if ($item->phone_language)
+                                    <br>
+                                    {{ $item->phone_language }}
+                                    @endif
+                                        {{ $item->phone_description ? '- '.$item->phone_description : '' }}</p>
                                 @endforeach
                             </span>
                         </h4>
@@ -274,14 +286,19 @@
                                     <h4 style="line-height: inherit;">
                                         <span><i class="icon md-phone font-size-18 vertical-align-top pr-10  m-0"></i>
                                             @foreach($service->phone as $phone)
-                                            <a href="tel:{{$phone->phone_number}}">
-                                                {!! $phone->phone_number !!}
-                                            </a>
+
+                                            <p><a
+                                                href="tel:{{$phone->phone_number}}">{{ $phone->phone_number}}</a>&nbsp;&nbsp;{{ $phone->phone_extension ? 'ext. '. $phone->phone_extension : '' }}&nbsp;{{ $phone->type ? '('.$phone->type->type.')' : '' }}
+                                            @if ($phone->phone_language)
+                                            {{ $phone->phone_language }}
+                                            @endif
+                                                {{ $phone->phone_description ? '- '.$phone->phone_description : '' }}
+                                            </p>
                                             @endforeach
                                         </span>
                                     </h4>
                                     @endif
-                                    @if (isset($service->address)&& count($service->address) > 0)
+                                    {{-- @if (isset($service->address)&& count($service->address) > 0)
                                     <h4>
                                         <span>
                                             <i class="icon md-pin font-size-18 vertical-align-top pr-10  m-0"></i>
@@ -300,7 +317,32 @@
                                             @endif
                                         </span>
                                     </h4>
+                                    @endif --}}
+                                    @if (isset($service->locations)&& count($service->locations) > 0)
+                                    <h4>
+                                        <span>
+                                            <i class="icon md-pin font-size-18 vertical-align-top pr-10  m-0"></i>
+                                            @if(isset($service->locations))
+                                            @foreach($service->locations as $key => $locationData)
+                                            @if(isset($locationData->address))
+                                            @if($locationData->address != null)
+                                            <ul>
+                                            @foreach($locationData->address as $address)
+                                            <li>
+                                            {{ $address->address_1 }} {{ $address->address_2 }}
+                                            {{ $address->address_city }} {{ $address->address_state_province }}
+                                            {{ $address->address_postal_code }}
+                                            </li>
+                                            @endforeach
+                                            </ul>
+                                            @endif
+                                            @endif
+                                            @endforeach
+                                            @endif
+                                        </span>
+                                    </h4>
                                     @endif
+
 
                                     @if($service->service_details!=NULL)
                                     @php
@@ -329,14 +371,23 @@
                                         @endforeach
                                         @endif
                                         @if (isset($service->taxonomy) && count($service->taxonomy) > 0)
-
+                                        @php
+                                            $i = 0;
+                                            $j = 0;
+                                        @endphp
                                         <h4>
-                                            <span class="pl-0 category_badge subtitle"><b>Service Category:</b>
+                                            <span class="pl-0 category_badge subtitle">
                                                 @foreach ($service->taxonomy as $service_taxonomy_info)
                                                 @if (isset($service_taxonomy_info->taxonomy_type) &&
                                                 count($service_taxonomy_info->taxonomy_type) > 0 &&
                                                 $service_taxonomy_info->taxonomy_type[0]->name == 'Service Category')
                                                 @if($service->service_taxonomy != null)
+                                                @if ($i == 0)
+                                                <b>Service Category:</b>
+                                                @php
+                                                    $i ++;
+                                                @endphp
+                                                @endif
                                                 <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
                                                     at="child_{{$service_taxonomy_info->taxonomy_recordid}}"
                                                     style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>
@@ -346,12 +397,18 @@
                                             </span>
                                         </h4>
                                         <h4>
-                                            <span class="pl-0 category_badge subtitle"><b>Service Eligibility:</b>
+                                            <span class="pl-0 category_badge subtitle">
                                                 @foreach ($service->taxonomy as $service_taxonomy_info)
                                                 @if (isset($service_taxonomy_info->taxonomy_type) &&
                                                 count($service_taxonomy_info->taxonomy_type) > 0 &&
                                                 $service_taxonomy_info->taxonomy_type[0]->name == 'Service Eligibility')
                                                 @if($service->service_taxonomy != null)
+                                                @if ($j == 0)
+                                                <b>Service Eligibility:</b>
+                                                @php
+                                                    $j ++;
+                                                @endphp
+                                                @endif
                                                 <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
                                                     at="child_{{$service_taxonomy_info->taxonomy_recordid}}"
                                                     style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>
@@ -370,11 +427,9 @@
                                 <div>
                                     @if($location_info_list)
                                     @foreach($location_info_list as $location)
-
                                     <div class="location_border">
                                         <h4>
-                                            @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name ==
-                                            'System Admin')
+                                            @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
                                             <a href="/facilities/{{$location->location_recordid}}/edit"
                                                 class="float-right">
                                                 <i class="icon md-edit mr-0"></i>
@@ -434,17 +489,14 @@
                                 @if(isset($organization->contact))
                                 @if ($organization->contact->count() > 0 && ((Auth::user() && Auth::user()->roles &&
                                 Auth::user()->roles->name == 'System Admin') || (Auth::user() && Auth::user()->roles &&
-                                Auth::user()->user_organization && str_contains(Auth::user()->user_organization,
-                                $organization->organization_recordid) && Auth::user()->roles->name == 'Organization
-                                Admin')))
+                                Auth::user()->user_organization && str_contains(Auth::user()->user_organization,$organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin')))
                                 {{-- <h4 class="card_services_title"> Contacts
                                             (@if(isset($organization->contact)){{$organization->contact->count()}}@else
                                 0 @endif)
                                 </h4> --}}
                                 @foreach($organization->contact as $contact_info)
                                 <div class="location_border">
-                                    @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System
-                                    Admin')
+                                    @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
                                     <a href="/contacts/{{$contact_info->contact_recordid}}/edit" class="float-right">
                                         <i class="icon md-edit mr-0"></i>
                                     </a>
@@ -940,7 +992,7 @@
       var locations = <?php print_r(json_encode($locations)) ?>;
       var organization = <?php print_r(json_encode($organization->organization_name)) ?>;
       var maplocation = <?php print_r(json_encode($map)) ?>;
-    //   console.log(locations);
+      console.log(locations);
 
       if(maplocation.active == 1){
         avglat = maplocation.lat;
@@ -953,9 +1005,13 @@
           avglng = -73.998107;
           zoom = 12;
       }
-
-      latitude = locations[0].location_latitude;
-      longitude = locations[0].location_longitude;
+      if(locations.length > 0){
+          latitude = locations[0].location_latitude;
+          longitude = locations[0].location_longitude;
+      }else{
+            latitude = null;
+          longitude = null;
+      }
 
       if(latitude == null){
         latitude = avglat;

@@ -94,6 +94,7 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::get('/getDetailTerm', 'frontEnd\ServiceController@getDetailTerm')->name('getDetailTerm');
     Route::get('/getTaxonomyTerm', 'frontEnd\ServiceController@getTaxonomyTerm')->name('getTaxonomyTerm');
     Route::post('/saveTaxonomyTerm', 'frontEnd\ServiceController@saveTaxonomyTerm')->name('saveTaxonomyTerm');
+    Route::post('/saveEligibilityTaxonomyTerm', 'frontEnd\ServiceController@saveEligibilityTaxonomyTerm')->name('saveEligibilityTaxonomyTerm');
     // Route::get('/add_new_service_in_facility', 'frontEnd\ServiceController@add_new_service_in_facility');
 
     Route::get('/viewChanges/{id}/{recordid}', 'frontEnd\EditChangeController@viewChanges')->name('viewChanges');
@@ -233,7 +234,7 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::post('/email_create_filter', 'backend\ContactFormController@create_email')->name('contact_form.create_email');
 
     Route::get('/tb_projects', ['uses' => 'ProjectController@index']);
-    Route::get('tb_services', 'frontEnd\ServiceController@tb_services')->name('tables.tb_services');
+    // Route::get('tb_services', 'frontEnd\ServiceController@tb_services')->name('tables.tb_services');
     Route::get('tb_locations', 'frontEnd\LocationController@tb_location')->name('tables.tb_locations');
     Route::get('tb_organizations', 'frontEnd\OrganizationController@tb_organizations')->name('tables.tb_organizations');
     Route::get('tb_contact', 'frontEnd\ContactController@tb_contact')->name('tables.tb_contact');
@@ -244,6 +245,11 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::get('tb_schedule', 'frontEnd\ScheduleController@index')->name('tables.tb_schedule');
     Route::get('tb_service_areas', 'frontEnd\AreaController@index')->name('tables.tb_service_area');
     // Route::get('tb_services', 'frontEnd\ServiceController@tb_services')->name('tables.tb_services');
+
+    // service table
+
+
+
     // Route::resource('tb_locations', 'frontEnd\LocationController');
     // Route::resource('tb_organizations', 'frontEnd\OrganizationController');
     // Route::resource('tb_contact', 'frontEnd\ContactController');
@@ -262,6 +268,16 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::resource('other_attributes', 'backend\OtherAttributesController');
     Route::resource('XDetails', 'backend\XDetailsController');
     Route::resource('notes', 'backend\NotesController');
+    Route::resource('cities', 'backend\CityController');
+    Route::resource('states', 'backend\StateController');
+    Route::resource('codes', 'backend\CodesController');
+    Route::get('add_state', 'backend\StateController@add_state')->name('states.add_state');
+    Route::get('add_city', 'backend\CityController@add_city')->name('cities.add_city');
+    // code section
+    Route::get('codes_import', 'backend\CodesController@codes_import')->name('codes.import');
+    Route::post('codes_export', 'backend\CodesController@codes_export')->name('codes.export');
+    Route::post('ImportCodesExcel', 'backend\CodesController@ImportCodesExcel')->name('codes.ImportCodesExcel');
+
     Route::resource('edits', 'backend\EditsController');
     Route::get('userNotes/{id}', 'backend\NotesController@userNotes')->name('notes.userNotes');
     Route::get('userEdits/{id}', 'backend\EditsController@index')->name('edits.userEdits');
@@ -283,6 +299,15 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::resource('tb_languages', 'LanguageController');
     Route::resource('tb_accessibility', 'AccessibilityController');
     Route::resource('system_emails', 'backend\EmailController');
+
+    Route::resource('tb_service', 'backend\ServiceCodeController');
+    Route::resource('code_ledgers', 'backend\CodeLedgerController');
+    Route::post('tb_services_export', 'backend\ServiceCodeController@tb_services_export')->name('tb_service.export');
+    Route::post('code_leaders_export', 'backend\CodeLedgerController@code_leaders_export')->name('code_ledgers.export');
+
+    // help text
+    Route::get('helptexts', 'backend\HelpTextController@helptexts')->name('helptexts.helptexts');
+    Route::post('save_helptexts', 'backend\HelpTextController@save_helptexts')->name('helptexts.save_helptexts');
     // Route::resource('tb_deTaxonomyControllertails', 'DetailController');
     // Route::resource('tb_languages', 'LanguageController');
     // Route::resource('tb_accessibility', 'AccessibilityController');

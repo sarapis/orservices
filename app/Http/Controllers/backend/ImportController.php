@@ -62,11 +62,16 @@ use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
 use Maatwebsite\Excel\Facades\Excel;
 use OwenIt\Auditing\Models\Audit;
+use Spatie\Geocoder\Geocoder;
 use ZanySoft\Zip\Zip;
 use ZipArchive;
 
 class ImportController extends Controller
 {
+    public function __construct(MapController $mapController)
+    {
+        $this->mapController = $mapController;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -139,7 +144,7 @@ class ImportController extends Controller
             if ($request->has('auto_sync') && $request->auto_sync == 1) {
                 $syncData = ImportDataSource::where('auto_sync', '1')->get();
                 if (count($syncData) > 0) {
-                    Session::flash('message', 'There is an import process currently taking place. Wait for it to stop and then try again.');
+                    Session::flash('message', 'You can only have one auto-synced Airtable and you already have one.');
                     Session::flash('status', 'error');
                     return redirect()->back()->withInput();
                 }
@@ -246,7 +251,7 @@ class ImportController extends Controller
                 $syncData = ImportDataSource::where('auto_sync', '1')->first();
 
                 if ($syncData && $syncData->id != $id) {
-                    Session::flash('message', 'There is an import process currently taking place. Wait for it to stop and then try again.');
+                    Session::flash('message', 'You can only have one auto-synced Airtable and you already have one.');
                     Session::flash('status', 'error');
                     return redirect()->back()->withInput();
                 }
@@ -452,6 +457,7 @@ class ImportController extends Controller
                 $importHistory->sync_by = Auth::id();
                 $importHistory->save();
             }
+            $this->apply_geocode();
             Session::flash('message', 'Success! Data Source Imported successfully.');
             Session::flash('status', 'success');
             return redirect('import');
@@ -480,7 +486,7 @@ class ImportController extends Controller
                 // DB::commit();
                 if (count($syncData) > 0) {
                     return response()->json([
-                        'message' => 'There is an import process currently taking place. Wait for it to stop and then try again.',
+                        'message' => 'You can only have one auto-synced Airtable and you already have one.',
                         'success' => false
                     ], 500);
                 }
@@ -502,7 +508,7 @@ class ImportController extends Controller
             }
             // } else {
             //     return response()->json([
-            //         'message' => 'There is an import process currently taking place. Wait for it to stop and then try again.',
+            //         'message' => 'You can only have one auto-synced Airtable and you already have one.',
             //         'success' => false
             //     ], 500);
             // }
@@ -812,6 +818,61 @@ class ImportController extends Controller
             return "import completed";
         } catch (\Throwable $th) {
             Log::error('Error in import controller import : ' . $th);
+        }
+    }
+    public function apply_geocode()
+    {
+        try {
+            $ungeocoded_location_info_list = Location::whereNull('location_latitude')->get();
+            $badgeocoded_location_info_list = Location::where('location_latitude', '=', '')->get();
+            $client = new \GuzzleHttp\Client();
+            $geocoder = new Geocoder($client);
+            $geocode_api_key = env('GEOCODE_GOOGLE_APIKEY');
+            $geocoder->setApiKey($geocode_api_key);
+
+            if ($ungeocoded_location_info_list) {
+                foreach ($ungeocoded_location_info_list as $key => $location_info) {
+
+                    if ($location_info->location_name) {
+                        $address_info = $location_info->location_name;
+                        // $response = $geocoder->getCoordinatesForAddress('30-61 87th Street, Queens, NY, 11369');
+                        $response = $geocoder->getCoordinatesForAddress($address_info);
+                        // if (($response['lat'] > 40.5) && ($response['lat'] < 42.0)) {
+                        //     $latitude = $response['lat'];
+                        //     $longitude = $response['lng'];
+                        // } else {
+                        //     $latitude = '';
+                        //     $longitude = '';
+                        // }
+
+                        $latitude = $response['lat'];
+                        $longitude = $response['lng'];
+
+                        $location_info->location_latitude = $latitude;
+                        $location_info->location_longitude = $longitude;
+                        $location_info->save();
+                    }
+                }
+            }
+
+            if ($badgeocoded_location_info_list) {
+                foreach ($badgeocoded_location_info_list as $key => $location_info) {
+                    if ($location_info->location_name) {
+                        $address_info = $location_info->location_name;
+                        // $response = $geocoder->getCoordinatesForAddress('30-61 87th Street, Queens, NY, 11369');
+                        $response = $geocoder->getCoordinatesForAddress($address_info);
+                        $latitude = $response['lat'];
+                        $longitude = $response['lng'];
+                        $location_info->location_latitude = $latitude;
+                        $location_info->location_longitude = $longitude;
+                        $location_info->save();
+                    }
+                }
+            }
+
+            return;
+        } catch (\Throwable $th) {
+            Log::error('Error in applying geocode in import : ' . $th);
         }
     }
 }

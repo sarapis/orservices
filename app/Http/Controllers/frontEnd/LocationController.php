@@ -21,13 +21,18 @@ use App\Model\LocationSchedule;
 use App\Model\Accessibility;
 use App\Model\Airtables;
 use App\Model\Airtable_v2;
+use App\Model\City;
+use App\Model\Code;
 use App\Model\Contact;
 use App\Model\Map;
 use App\Model\CSV_Source;
 use App\Model\DetailType;
+use App\Model\Helptext;
 use App\Model\Language;
+use App\Model\Layout;
 use App\Model\PhoneType;
 use App\Model\Source_data;
+use App\Model\State;
 use Spatie\Geocoder\Geocoder;
 use App\Services\Stringtoint;
 use Carbon\Carbon;
@@ -220,7 +225,7 @@ class LocationController extends Controller
                         $location->location_recordid = $strtointclass->string_to_int($record['id']);
                         $location->location_name = isset($record['fields']['name']) ? $record['fields']['name'] : null;
 
-                        $location->location_organization = isset($record['fields']['organizations']) ? implode(",", $record['fields']['organizations']) : null;
+                        $location->location_organization = isset($record['fields']['organization']) ? implode(",", $record['fields']['organization']) : null;
 
                         $location->location_organization = $strtointclass->string_to_int($location->location_organization);
 
@@ -293,11 +298,11 @@ class LocationController extends Controller
                             }
                         }
 
-                        $location->location_address = isset($record['fields']['physical_addresses']) ? implode(",", $record['fields']['physical_addresses']) : null;
+                        $location->location_address = isset($record['fields']['address']) ? implode(",", $record['fields']['address']) : null;
 
-                        if (isset($record['fields']['physical_addresses'])) {
+                        if (isset($record['fields']['address'])) {
                             $i = 0;
-                            foreach ($record['fields']['physical_addresses']  as  $value) {
+                            foreach ($record['fields']['address']  as  $value) {
                                 $locationaddress = new Locationaddress();
                                 $locationaddress->location_recordid = $location->location_recordid;
                                 $locationaddress->address_recordid = $strtointclass->string_to_int($value);
@@ -464,6 +469,7 @@ class LocationController extends Controller
                 ->rawColumns(['location_name', 'location_contact', 'location_service', 'location_organization'])
                 ->make(true);
         } catch (\Throwable $th) {
+            dd($th);
             Log::error('Error in Location index : ' . $th);
         }
     }
@@ -631,27 +637,33 @@ class LocationController extends Controller
         $address_info_list = Address::select('address_recordid', 'address_1', 'address_city', 'address_state_province', 'address_postal_code')->orderBy('address_1')->distinct()->get();
         $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
 
-        $address_cities = Address::select("address_city")->distinct()->get();
-        $address_states = Address::select("address_state_province")->distinct()->get();
+        // $address_cities = Address::select("address_city")->distinct()->get();
+        // $address_states = Address::select("address_state_province")->distinct()->get();
 
-        $address_states_list = [];
-        foreach ($address_states as $key => $value) {
-            $state = explode(", ", trim($value->address_state_province));
-            $address_states_list = array_merge($address_states_list, $state);
-        }
-        $address_states_list = array_unique($address_states_list);
+        // $address_states_list = [];
+        // foreach ($address_states as $key => $value) {
+        //     $state = explode(", ", trim($value->address_state_province));
+        //     $address_states_list = array_merge($address_states_list, $state);
+        // }
+        // $address_states_list = array_unique($address_states_list);
 
-        $address_city_list = [];
-        foreach ($address_cities as $key => $value) {
-            $cities = explode(", ", trim($value->address_city));
-            $address_city_list = array_merge($address_city_list, $cities);
-        }
-        $address_city_list = array_unique($address_city_list);
+        // $address_city_list = [];
+        // foreach ($address_cities as $key => $value) {
+        //     $cities = explode(", ", trim($value->address_city));
+        //     $address_city_list = array_merge($address_city_list, $cities);
+        // }
+        // $address_city_list = array_unique($address_city_list);
+
+        $address_city_list = City::orderBy('city')->pluck('city', 'city');
+        $address_states_list = State::orderBy('state')->pluck('state', 'state');
+
         $phone_languages = Language::orderBy('order')->whereNotNull('language_recordid')->pluck('language', 'language_recordid');
         $phone_type = PhoneType::orderBy('order')->pluck('type', 'id');
 
         $detail_types = DetailType::orderBy('order')->pluck('type', 'type');
-        return view('frontEnd.locations.facility-create-in-organization', compact('map', 'organization', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'phone_languages', 'phone_type', 'detail_types'));
+        $all_phones = Phone::whereNotNull('phone_number')->distinct()->get();
+        $phone_language_data = json_encode([]);
+        return view('frontEnd.locations.facility-create-in-organization', compact('map', 'organization', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'phone_languages', 'phone_type', 'detail_types', 'all_phones', 'phone_language_data'));
     }
 
     public function create()
@@ -675,8 +687,10 @@ class LocationController extends Controller
         $address_info_list = Address::select('address_recordid', 'address_1', 'address_city', 'address_state_province', 'address_postal_code')->orderBy('address_1')->distinct()->get();
         $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
 
-        $address_city_list = Address::pluck('address_city', 'address_city')->unique();
-        $address_states_list = Address::pluck('address_state_province', 'address_state_province')->unique();
+        // $address_city_list = Address::pluck('address_city', 'address_city')->unique();
+        // $address_states_list = Address::pluck('address_state_province', 'address_state_province')->unique();
+        $address_city_list = City::orderBy('city')->pluck('city', 'city');
+        $address_states_list = State::orderBy('state')->pluck('state', 'state');
 
         // $address_states_list = [];
         // foreach ($address_states as $key => $value) {
@@ -695,8 +709,10 @@ class LocationController extends Controller
         $phone_type = PhoneType::orderBy('order')->pluck('type', 'id');
 
         $detail_types = DetailType::orderBy('order')->pluck('type', 'type');
+        $all_phones = Phone::whereNotNull('phone_number')->distinct()->get();
+        $phone_language_data = json_encode([]);
 
-        return view('frontEnd.locations.create', compact('map', 'organization_name_list', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'phone_languages', 'phone_type', 'detail_types'));
+        return view('frontEnd.locations.create', compact('map', 'organization_name_list', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'phone_languages', 'phone_type', 'detail_types', 'all_phones', 'phone_language_data'));
     }
     public function add_new_facility_in_organization(Request $request)
     {
@@ -879,6 +895,7 @@ class LocationController extends Controller
                 $facility_phone_type_list =  $request->phone_type;
                 $facility_phone_language_list = $request->phone_language_data ? json_decode($request->phone_language_data) : [];
                 $facility_phone_description_list = $request->phone_description;
+                $facility_main_priority_list = $request->main_priority;
                 // foreach ($facility_phone_number_list as $key => $facility_phone_number) {
 
                 //     if ($phone_info) {
@@ -896,8 +913,13 @@ class LocationController extends Controller
                         $phone_info->phone_number = $facility_phone_number_list[$i];
                         $phone_info->phone_extension = $facility_phone_extension_list[$i];
                         $phone_info->phone_type = $facility_phone_type_list[$i];
-                        $phone_info->phone_language = $facility_phone_language_list && isset($facility_phone_language_list[$i]) ? implode(',', $facility_phone_language_list[$i]) : '';
+                        $phone_info->phone_language = $facility_phone_language_list && isset($facility_phone_language_list[$i]) && is_array($facility_phone_language_list[$i]) ? implode(',', $facility_phone_language_list[$i]) : '';
                         $phone_info->phone_description = $facility_phone_description_list[$i];
+                        if (isset($facility_main_priority_list[0]) && $facility_main_priority_list[0] == $i) {
+                            $phone_info->main_priority = '1';
+                        } else {
+                            $phone_info->main_priority = '0';
+                        }
                         $phone_info->save();
                         array_push($phone_recordid_list, $phone_info->phone_recordid);
                     } else {
@@ -907,8 +929,13 @@ class LocationController extends Controller
                         $new_phone->phone_number = $facility_phone_number_list[$i];
                         $new_phone->phone_extension = $facility_phone_extension_list[$i];
                         $new_phone->phone_type = $facility_phone_type_list[$i];
-                        $new_phone->phone_language = $facility_phone_language_list && isset($facility_phone_language_list[$i]) ? implode(',', $facility_phone_language_list[$i]) : '';
+                        $new_phone->phone_language = $facility_phone_language_list && isset($facility_phone_language_list[$i]) && is_array($facility_phone_language_list[$i]) ? implode(',', $facility_phone_language_list[$i]) : '';
                         $new_phone->phone_description = $facility_phone_description_list[$i];
+                        if (isset($facility_main_priority_list[0]) && $facility_main_priority_list[0] == $i) {
+                            $new_phone->main_priority = '1';
+                        } else {
+                            $new_phone->main_priority = '0';
+                        }
                         $new_phone->save();
                         $existing_location_phones[] = $new_phone_recordid;
                         array_unique($existing_location_phones);
@@ -1121,6 +1148,8 @@ class LocationController extends Controller
                 $facility_phone_type_list =  $request->phone_type;
                 $facility_phone_language_list = $request->phone_language_data ? json_decode($request->phone_language_data) : [];
                 $facility_phone_description_list = $request->phone_description;
+                $facility_main_priority_list = $request->main_priority;
+
                 // foreach ($facility_phone_number_list as $key => $facility_phone_number) {
 
                 //     if ($phone_info) {
@@ -1134,8 +1163,13 @@ class LocationController extends Controller
                         $phone_info->phone_number = $facility_phone_number_list[$i];
                         $phone_info->phone_extension = $facility_phone_extension_list[$i];
                         $phone_info->phone_type = $facility_phone_type_list[$i];
-                        $phone_info->phone_language = $facility_phone_language_list && isset($facility_phone_language_list[$i]) ? implode(',', $facility_phone_language_list[$i]) : '';
+                        $phone_info->phone_language = $facility_phone_language_list && isset($facility_phone_language_list[$i]) && is_array($facility_phone_language_list[$i]) ? implode(',', $facility_phone_language_list[$i]) : '';
                         $phone_info->phone_description = $facility_phone_description_list[$i];
+                        if (isset($facility_main_priority_list[0]) && $facility_main_priority_list[0] == $i) {
+                            $phone_info->main_priority = '1';
+                        } else {
+                            $phone_info->main_priority = '0';
+                        }
                         $phone_info->save();
                         array_push($phone_recordid_list, $phone_info->phone_recordid);
                     } else {
@@ -1145,8 +1179,13 @@ class LocationController extends Controller
                         $new_phone->phone_number = $facility_phone_number_list[$i];
                         $new_phone->phone_extension = $facility_phone_extension_list[$i];
                         $new_phone->phone_type = $facility_phone_type_list[$i];
-                        $new_phone->phone_language = $facility_phone_language_list && isset($facility_phone_language_list[$i]) ? implode(',', $facility_phone_language_list[$i]) : '';
+                        $new_phone->phone_language = $facility_phone_language_list && isset($facility_phone_language_list[$i]) && is_array($facility_phone_language_list[$i]) ? implode(',', $facility_phone_language_list[$i]) : '';
                         $new_phone->phone_description = $facility_phone_description_list[$i];
+                        if (isset($facility_main_priority_list[0]) && $facility_main_priority_list[0] == $i) {
+                            $new_phone->main_priority = '1';
+                        } else {
+                            $new_phone->main_priority = '0';
+                        }
                         $new_phone->save();
                         // $facility->location_phones = $facility->location_phones . $new_phone_recordid . ',';
                         array_push($phone_recordid_list, $new_phone_recordid);
@@ -1205,7 +1244,7 @@ class LocationController extends Controller
             $map = Map::find(1);
 
             $facility_organization_recordid_list = explode(',', $facility->location_organization);
-            $facility_organizations = Organization::whereIn('organization_recordid', $facility_organization_recordid_list)->orderBy('organization_name')->paginate(10);
+            $facility_organizations = Organization::whereIn('organization_recordid', $facility_organization_recordid_list)->orderBy('organization_name')->get();
 
             $comment_list = Comment::where('comments_location', '=', $id)->get();
 
@@ -1246,123 +1285,145 @@ class LocationController extends Controller
     {
         $map = Map::find(1);
         $facility = Location::where('location_recordid', '=', $id)->first();
+        if ($facility) {
 
-        // $organization_names = Organization::pluck("organization_name", "organization_recordid");
-        if (Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin') {
-            $organization_recordid = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_recordid') : [];
-            $organization_names = Organization::orderBy('organization_name')->whereIn('organization_recordid', $organization_recordid)->pluck("organization_name", "organization_recordid");
-        } else {
-            $organization_names = Organization::orderBy('organization_name')->pluck("organization_name", "organization_recordid");
-        }
-        // $organization_name_list = [];
-        // foreach ($organization_names as $key => $value) {
-        //     $org_names = explode(", ", trim($value->organization_name));
-        //     $organization_name_list = array_merge($organization_name_list, $org_names);
-        // }
-        // $organization_name_list = array_unique($organization_name_list);
+            $facility_organization_recordid_list = explode(',', $facility->location_organization);
+            $facility_organizations = Organization::whereIn('organization_recordid', $facility_organization_recordid_list)->orderBy('organization_name')->get();
 
-        $organization_id = $facility->location_organization;
-        $organization_name_info = Organization::where('organization_recordid', '=', $organization_id)->select('organization_name')->first();
-        $facility_organization_name = '';
-        if ($organization_name_info) {
-            $facility_organization_name = $organization_name_info["organization_name"];
-        }
+            if ((Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin') || (Auth::user() && Auth::user()->user_organization && $facility_organizations &&
+                str_contains(Auth::user()->user_organization, $facility_organizations[0]->organization_recordid) && Auth::user()->roles->name == 'Organization Admin')) {
 
-        $facility_organization_list = explode(',', $facility->location_organization);
+                // $organization_names = Organization::pluck("organization_name", "organization_recordid");
+                if (Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin') {
+                    $organization_recordid = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_recordid') : [];
+                    $organization_names = Organization::orderBy('organization_name')->whereIn('organization_recordid', $organization_recordid)->pluck("organization_name", "organization_recordid");
+                } else {
+                    $organization_names = Organization::orderBy('organization_name')->pluck("organization_name", "organization_recordid");
+                }
+                // $organization_name_list = [];
+                // foreach ($organization_names as $key => $value) {
+                //     $org_names = explode(", ", trim($value->organization_name));
+                //     $organization_name_list = array_merge($organization_name_list, $org_names);
+                // }
+                // $organization_name_list = array_unique($organization_name_list);
 
-        $service_info_list = Service::orderBy('service_name')->pluck('service_name', 'service_recordid')->toArray();
-        $facility_service_list = explode(',', $facility->location_services);
+                $organization_id = $facility->location_organization;
+                $organization_name_info = Organization::where('organization_recordid', '=', $organization_id)->select('organization_name')->first();
+                $facility_organization_name = '';
+                if ($organization_name_info) {
+                    $facility_organization_name = $organization_name_info["organization_name"];
+                }
 
-        $serviceData = $facility->services ? $facility->services->pluck('service_recordid')->toArray() : [];
-        if (!empty($serviceData)) {
-            $facility_service_list = array_merge($facility_service_list, $serviceData);
-            $facility_service_list = array_unique($facility_service_list);
-        }
+                $facility_organization_list = explode(',', $facility->location_organization);
 
-        $facility_phone_number = '';
-        if (sizeof($facility->phones)) {
-            $facility_phone_number = $facility->phones[0]['phone_number'];
-        }
+                $service_info_list = Service::orderBy('service_name')->pluck('service_name', 'service_recordid')->toArray();
+                $facility_service_list = explode(',', $facility->location_services);
 
-        $schedule_info_list = Schedule::select('schedule_recordid', 'opens_at', 'closes_at')->whereNotNull('opens_at')->where('opens_at', '!=', '')->orderBy('opens_at')->distinct()->get();
+                $serviceData = $facility->services ? $facility->services->pluck('service_recordid')->toArray() : [];
+                if (!empty($serviceData)) {
+                    $facility_service_list = array_merge($facility_service_list, $serviceData);
+                    $facility_service_list = array_unique($facility_service_list);
+                }
 
-        $address_info_list = Address::select('address_recordid', 'address_1', 'address_city', 'address_state_province', 'address_postal_code')->orderBy('address_1')->distinct()->get();
-        $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
+                $facility_phone_number = '';
+                if (sizeof($facility->phones)) {
+                    $facility_phone_number = $facility->phones[0]['phone_number'];
+                }
 
-        // $address_cities = Address::select("address_city")->distinct()->get();
-        // $address_states = Address::select("address_state_province")->distinct()->get();
+                $schedule_info_list = Schedule::select('schedule_recordid', 'opens_at', 'closes_at')->whereNotNull('opens_at')->where('opens_at', '!=', '')->orderBy('opens_at')->distinct()->get();
 
-        // $address_states_list = [];
-        // foreach ($address_states as $key => $value) {
-        //     $state = explode(", ", trim($value->address_state_province));
-        //     $address_states_list = array_merge($address_states_list, $state);
-        // }
-        // $address_states_list = array_unique($address_states_list);
+                $address_info_list = Address::select('address_recordid', 'address_1', 'address_city', 'address_state_province', 'address_postal_code')->orderBy('address_1')->distinct()->get();
+                $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
 
-        // $address_city_list = [];
-        // foreach ($address_cities as $key => $value) {
-        //     $cities = explode(", ", trim($value->address_city));
-        //     $address_city_list = array_merge($address_city_list, $cities);
-        // }
-        // $address_city_list = array_unique($address_city_list);
-        $address_city_list = Address::pluck('address_city', 'address_city')->unique();
-        $address_states_list = Address::pluck('address_state_province', 'address_state_province')->unique();
+                // $address_cities = Address::select("address_city")->distinct()->get();
+                // $address_states = Address::select("address_state_province")->distinct()->get();
+
+                // $address_states_list = [];
+                // foreach ($address_states as $key => $value) {
+                //     $state = explode(", ", trim($value->address_state_province));
+                //     $address_states_list = array_merge($address_states_list, $state);
+                // }
+                // $address_states_list = array_unique($address_states_list);
+
+                // $address_city_list = [];
+                // foreach ($address_cities as $key => $value) {
+                //     $cities = explode(", ", trim($value->address_city));
+                //     $address_city_list = array_merge($address_city_list, $cities);
+                // }
+                // $address_city_list = array_unique($address_city_list);
+                // $address_city_list = Address::pluck('address_city', 'address_city')->unique();
+                // $address_states_list = Address::pluck('address_state_province', 'address_state_province')->unique();
+                $address_city_list = City::orderBy('city')->pluck('city', 'city');
+                $address_states_list = State::orderBy('state')->pluck('state', 'state');
 
 
-        $facility_location_address = Location::where('location_recordid', '=', $id)->select('location_address')->first();
+                $facility_location_address = Location::where('location_recordid', '=', $id)->select('location_address')->first();
 
-        $facility_location_address_id = $facility_location_address['location_address'];
-        $address = Address::where('address_recordid', '=', $facility_location_address_id)->first();
+                $facility_location_address_id = $facility_location_address['location_address'];
+                $address = Address::where('address_recordid', '=', $facility_location_address_id)->first();
 
-        // $address_city_info = Address::where('address_recordid', '=', $facility_location_address_id)->select('address_city')->first();
+                // $address_city_info = Address::where('address_recordid', '=', $facility_location_address_id)->select('address_city')->first();
 
-        $location_address_city = '';
-        if ($address) {
-            // $location_address_city = $address->address_city;
-            $facility->facility_address_city = $address->address_city;
-        }
+                $location_address_city = '';
+                if ($address) {
+                    // $location_address_city = $address->address_city;
+                    $facility->facility_address_city = $address->address_city;
+                }
 
-        // $address_street_address_info = Address::where('address_recordid', '=', $facility_location_address_id)->select('address_1')->first();
-        $location_street_address = '';
-        if ($address) {
-            $facility->facility_street_address = $address->address_1;
-        }
+                // $address_street_address_info = Address::where('address_recordid', '=', $facility_location_address_id)->select('address_1')->first();
+                $location_street_address = '';
+                if ($address) {
+                    $facility->facility_street_address = $address->address_1;
+                }
 
-        $address_zip_code_info = Address::where('address_recordid', '=', $facility_location_address_id)->select('address_postal_code')->first();
-        $location_zip_code = '';
-        if ($address_zip_code_info) {
-            $facility->facility_zip_code = $address->address_postal_code;
-            // $location_zip_code = $address_zip_code_info['address_postal_code'];
-        }
+                $address_zip_code_info = Address::where('address_recordid', '=', $facility_location_address_id)->select('address_postal_code')->first();
+                $location_zip_code = '';
+                if ($address_zip_code_info) {
+                    $facility->facility_zip_code = $address->address_postal_code;
+                    // $location_zip_code = $address_zip_code_info['address_postal_code'];
+                }
 
-        $address_state_info = Address::where('address_recordid', '=', $facility_location_address_id)->select('address_state_province')->first();
-        $location_state = '';
-        if ($address_state_info) {
-            $facility->facility_address_state = $address->address_state_province;
-            // $location_state = $address_state_info['address_state_province'];
-        }
-        $phone_languages = Language::orderBy('order')->whereNotNull('language_recordid')->pluck('language', 'language_recordid');
-        $phone_type = PhoneType::orderBy('order')->pluck('type', 'id');
+                $address_state_info = Address::where('address_recordid', '=', $facility_location_address_id)->select('address_state_province')->first();
+                $location_state = '';
+                if ($address_state_info) {
+                    $facility->facility_address_state = $address->address_state_province;
+                    // $location_state = $address_state_info['address_state_province'];
+                }
+                $phone_languages = Language::orderBy('order')->whereNotNull('language_recordid')->pluck('language', 'language_recordid');
+                $phone_type = PhoneType::orderBy('order')->pluck('type', 'id');
 
-        $locationDetails = [];
-        if ($facility->location_details) {
-            $detail_recordids = explode(',', $facility->location_details);
-            $locationDetails = Detail::whereIn('detail_recordid', $detail_recordids)->get();
-        }
+                $locationDetails = [];
+                if ($facility->location_details) {
+                    $detail_recordids = explode(',', $facility->location_details);
+                    $locationDetails = Detail::whereIn('detail_recordid', $detail_recordids)->get();
+                }
 
-        $detail_types = DetailType::orderBy('order')->pluck('type', 'type');
+                $detail_types = DetailType::orderBy('order')->pluck('type', 'type');
 
-        $phone_language_data = [];
-        if ($facility->phones) {
-            foreach ($facility->phones as $key => $value) {
-                $phone_language_data[$key] = $value->phone_language ? explode(',', $value->phone_language) : [];
+                $phone_language_data = [];
+                $phone_language_name = [];
+                if ($facility->phones) {
+                    foreach ($facility->phones as $key => $value) {
+                        $phone_language_data[$key] = $value->phone_language ? explode(',', $value->phone_language) : [];
+                        $languageId = $value->phone_language ? explode(',', $value->phone_language) : [];
+                        $languages = Language::whereIn('language_recordid', $languageId)->pluck('language')->toArray();
+                        $phone_language_name[$key] = implode(', ', $languages);
+                    }
+                }
+                $phone_language_data = json_encode($phone_language_data);
+
+                $facilityAudits = $this->commonController->locationSection($facility);
+                $all_phones = Phone::whereNotNull('phone_number')->distinct()->get();
+
+                return view('frontEnd.locations.edit', compact('facility', 'map', 'facility_organization_name', 'service_info_list', 'facility_service_list', 'organization_names', 'facility_organization_list', 'facility_phone_number', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'location_address_city', 'location_street_address', 'location_zip_code', 'location_state', 'phone_languages', 'phone_type', 'detail_types', 'locationDetails', 'phone_language_data', 'facilityAudits', 'phone_language_name', 'all_phones'));
+            } else {
+                Session::flash('message', 'Warning! Not enough permissions. Please contact Us for more');
+                Session::flash('status', 'warning');
+                return redirect('/');
             }
+        } else {
+            return redirect('facilities');
         }
-        $phone_language_data = json_encode($phone_language_data);
-
-        $facilityAudits = $this->commonController->locationSection($facility);
-
-        return view('frontEnd.locations.edit', compact('facility', 'map', 'facility_organization_name', 'service_info_list', 'facility_service_list', 'organization_names', 'facility_organization_list', 'facility_phone_number', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'location_address_city', 'location_street_address', 'location_zip_code', 'location_state', 'phone_languages', 'phone_type', 'detail_types', 'locationDetails', 'phone_language_data', 'facilityAudits'));
     }
 
     /**
@@ -1534,6 +1595,8 @@ class LocationController extends Controller
                 $facility_phone_type_list =  $request->phone_type;
                 $facility_phone_language_list = $request->phone_language_data ? json_decode($request->phone_language_data) : [];
                 $facility_phone_description_list = $request->phone_description;
+                $facility_main_priority_list = $request->main_priority;
+
 
                 for ($i = 0; $i < count($facility_phone_number_list); $i++) {
                     $phone_info = Phone::where('phone_number', '=', $facility_phone_number_list[$i])->first();
@@ -1541,8 +1604,13 @@ class LocationController extends Controller
                         $phone_info->phone_number = $facility_phone_number_list[$i];
                         $phone_info->phone_extension = $facility_phone_extension_list[$i];
                         $phone_info->phone_type = $facility_phone_type_list[$i];
-                        $phone_info->phone_language = $facility_phone_language_list && isset($facility_phone_language_list[$i]) ? implode(',', $facility_phone_language_list[$i]) : '';
+                        $phone_info->phone_language = $facility_phone_language_list && isset($facility_phone_language_list[$i]) && is_array($facility_phone_language_list[$i]) ? implode(',', $facility_phone_language_list[$i]) : '';
                         $phone_info->phone_description = $facility_phone_description_list[$i];
+                        if (isset($facility_main_priority_list[0]) && $facility_main_priority_list[0] == $i) {
+                            $phone_info->main_priority = '1';
+                        } else {
+                            $phone_info->main_priority = '0';
+                        }
                         $phone_info->save();
                         array_push($phone_recordid_list, $phone_info->phone_recordid);
                     } else {
@@ -1552,8 +1620,13 @@ class LocationController extends Controller
                         $new_phone->phone_number = $facility_phone_number_list[$i];
                         $new_phone->phone_extension = $facility_phone_extension_list[$i];
                         $new_phone->phone_type = $facility_phone_type_list[$i];
-                        $new_phone->phone_language = $facility_phone_language_list && isset($facility_phone_language_list[$i]) ? implode(',', $facility_phone_language_list[$i]) : '';
+                        $new_phone->phone_language = $facility_phone_language_list && isset($facility_phone_language_list[$i]) && is_array($facility_phone_language_list[$i]) ? implode(',', $facility_phone_language_list[$i]) : '';
                         $new_phone->phone_description = $facility_phone_description_list[$i];
+                        if (isset($facility_main_priority_list[0]) && $facility_main_priority_list[0] == $i) {
+                            $new_phone->main_priority = '1';
+                        } else {
+                            $new_phone->main_priority = '0';
+                        }
                         $new_phone->save();
                         array_push($phone_recordid_list, $new_phone_recordid);
                     }
@@ -1627,6 +1700,7 @@ class LocationController extends Controller
     {
         $service_recordid = $id;
         $map = Map::find(1);
+        $layout  = Layout::find(1);
         $service = Service::where('service_recordid', $service_recordid)->first();
         $organization_recordid = $service->organizations ? $service->organizations->organization_recordid : '';
 
@@ -1650,28 +1724,33 @@ class LocationController extends Controller
         $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
 
 
-        $address_cities = Address::select("address_city")->distinct()->get();
-        $address_states = Address::select("address_state_province")->distinct()->get();
+        // $address_cities = Address::select("address_city")->distinct()->get();
+        // $address_states = Address::select("address_state_province")->distinct()->get();
 
-        $address_states_list = [];
-        foreach ($address_states as $key => $value) {
-            $state = explode(", ", trim($value->address_state_province));
-            $address_states_list = array_merge($address_states_list, $state);
-        }
-        $address_states_list = array_unique($address_states_list);
+        // $address_states_list = [];
+        // foreach ($address_states as $key => $value) {
+        //     $state = explode(", ", trim($value->address_state_province));
+        //     $address_states_list = array_merge($address_states_list, $state);
+        // }
+        // $address_states_list = array_unique($address_states_list);
 
-        $address_city_list = [];
-        foreach ($address_cities as $key => $value) {
-            $cities = explode(", ", trim($value->address_city));
-            $address_city_list = array_merge($address_city_list, $cities);
-        }
-        $address_city_list = array_unique($address_city_list);
+        // $address_city_list = [];
+        // foreach ($address_cities as $key => $value) {
+        //     $cities = explode(", ", trim($value->address_city));
+        //     $address_city_list = array_merge($address_city_list, $cities);
+        // }
+        // $address_city_list = array_unique($address_city_list);
+
+        $address_city_list = City::orderBy('city')->pluck('city', 'city');
+        $address_states_list = State::orderBy('state')->pluck('state', 'state');
 
         $phone_languages = Language::orderBy('order')->whereNotNull('language_recordid')->pluck('language', 'language_recordid');
         $phone_type = PhoneType::orderBy('order')->pluck('type', 'id');
         $detail_types = DetailType::orderBy('order')->pluck('type', 'type');
+        $all_phones = Phone::whereNotNull('phone_number')->distinct()->get();
+        $phone_language_data = json_encode([]);
 
-        return view('frontEnd.locations.facility-create-in-service', compact('service_recordid', 'map', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'organization_recordid', 'organizations', 'phone_languages', 'phone_type', 'detail_types'));
+        return view('frontEnd.locations.facility-create-in-service', compact('service_recordid', 'map', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'organization_recordid', 'organizations', 'phone_languages', 'phone_type', 'detail_types', 'all_phones', 'phone_language_data'));
     }
     public function add_new_facility_in_service(Request $request)
     {
@@ -1822,6 +1901,7 @@ class LocationController extends Controller
                 $facility_phone_type_list =  $request->phone_type;
                 $facility_phone_language_list = $request->phone_language_data ? json_decode($request->phone_language_data) : [];
                 $facility_phone_description_list = $request->phone_description;
+                $facility_main_priority_list = $request->main_priority;
 
                 for ($i = 0; $i < count($facility_phone_number_list); $i++) {
                     $phone_info = Phone::where('phone_number', '=', $facility_phone_number_list[$i])->first();
@@ -1829,8 +1909,13 @@ class LocationController extends Controller
                         $phone_info->phone_number = $facility_phone_number_list[$i];
                         $phone_info->phone_extension = $facility_phone_extension_list[$i];
                         $phone_info->phone_type = $facility_phone_type_list[$i];
-                        $phone_info->phone_language = $facility_phone_language_list && isset($facility_phone_language_list[$i]) ? implode(',', $facility_phone_language_list[$i]) : '';
+                        $phone_info->phone_language = $facility_phone_language_list && isset($facility_phone_language_list[$i]) && is_array($facility_phone_language_list[$i]) ? implode(',', $facility_phone_language_list[$i]) : '';
                         $phone_info->phone_description = $facility_phone_description_list[$i];
+                        if (isset($facility_main_priority_list[0]) && $facility_main_priority_list[0] == $i) {
+                            $phone_info->main_priority = '1';
+                        } else {
+                            $phone_info->main_priority = '0';
+                        }
                         $phone_info->save();
                         array_push($phone_recordid_list, $phone_info->phone_recordid);
                     } else {
@@ -1840,8 +1925,13 @@ class LocationController extends Controller
                         $new_phone->phone_number = $facility_phone_number_list[$i];
                         $new_phone->phone_extension = $facility_phone_extension_list[$i];
                         $new_phone->phone_type = $facility_phone_type_list[$i];
-                        $new_phone->phone_language = $facility_phone_language_list && isset($facility_phone_language_list[$i]) ? implode(',', $facility_phone_language_list[$i]) : '';
+                        $new_phone->phone_language = $facility_phone_language_list && isset($facility_phone_language_list[$i]) && is_array($facility_phone_language_list[$i]) ? implode(',', $facility_phone_language_list[$i]) : '';
                         $new_phone->phone_description = $facility_phone_description_list[$i];
+                        if (isset($facility_main_priority_list[0]) && $facility_main_priority_list[0] == $i) {
+                            $new_phone->main_priority = '1';
+                        } else {
+                            $new_phone->main_priority = '0';
+                        }
                         $new_phone->save();
                         array_push($phone_recordid_list, $new_phone_recordid);
                     }

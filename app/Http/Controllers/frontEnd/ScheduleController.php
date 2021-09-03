@@ -193,7 +193,7 @@ class ScheduleController extends Controller
                         $schedule->phones = isset($record['fields']['x-phones']) ? implode(",", $record['fields']['x-phones']) : null;
                         $schedule->weekday = isset($record['fields']['y-weekday']) ? $record['fields']['y-weekday'] : null;
 
-                        $schedule->byday = isset($record['fields']['byday']) ? implode(',', $record['fields']['byday']) : null;
+                        $schedule->byday = isset($record['fields']['byday']) ? (is_array($record['fields']['byday']) ? implode(',', $record['fields']['byday']) : $record['fields']['byday']) : null;
                         $schedule->opens_at = isset($record['fields']['opens_at']) ? $record['fields']['opens_at'] : null;
                         $schedule->opens = isset($record['fields']['y-opens']) ? $record['fields']['y-opens'] : null;
                         $schedule->closes_at = isset($record['fields']['closes_at']) ? $record['fields']['closes_at'] : null;

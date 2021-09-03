@@ -39,6 +39,8 @@ use App\Model\Taxonomy;
 use App\Model\TaxonomyTerm;
 use App\Model\TaxonomyType;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
+use Spatie\Geocoder\Geocoder;
 
 class AutoSync extends Command
 {
@@ -86,7 +88,8 @@ class AutoSync extends Command
                 $to = \Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $importData->last_imports);
                 $from = \Carbon\Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now());
                 $diff_in_hours = $to->diffInHours($from);
-                if ($diff_in_hours == intval($hours)) {
+                if ($diff_in_hours >= intval($hours)) {
+                    // if (Carbon::parse($importData->last_imports)->DiffInHours(Carbon::now()) == $hours) {
                     $organization_tag = $importData->organization_tags;
                     if ($importData->mode == 'replace') {
                         Program::truncate();
@@ -120,7 +123,12 @@ class AutoSync extends Command
                         Taxonomy::truncate();
                     }
                     if ($importData && $importData->import_type == 'airtable') {
-                        $airtableKeyInfo = Airtablekeyinfo::whereId(2)->first();
+                        $airtableKeyInfo = Airtablekeyinfo::whereId($importData->airtable_api_key)->first();
+                        $response = Http::get('https://api.airtable.com/v0/' . $airtableKeyInfo->base_url . '/organizations?api_key=' . $airtableKeyInfo->api_key);
+                        if ($response->status() != 200) {
+                            Log::error("Autosync : Airtable key or base id is invalid. Please enter valid information and try again.");
+                            return;
+                        }
                         if ($airtableKeyInfo) {
                             app(\App\Http\Controllers\frontEnd\ServiceController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
                             app(\App\Http\Controllers\frontEnd\AddressController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
@@ -133,7 +141,7 @@ class AutoSync extends Command
                             app(\App\Http\Controllers\frontEnd\TaxonomyController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
                             app(\App\Http\Controllers\backend\ProgramController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
                             app(\App\Http\Controllers\backend\TaxonomyTypeController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
-                            $importData->auto_sync = '0';
+                            // $importData->auto_sync = '0';
                             $importData->updated_at = Carbon::now();
                             $importData->last_imports = Carbon::now();
                             $importData->save();
@@ -148,7 +156,7 @@ class AutoSync extends Command
                     } else if ($importData && $importData->import_type == 'zipfile') {
                         // $this->zip($importData);
                         app(\App\Http\Controllers\backend\ImportController::class)->zip($importData);
-                        $importData->auto_sync = '0';
+                        // $importData->auto_sync = '0';
                         $importData->updated_at = Carbon::now();
                         $importData->last_imports = Carbon::now();
                         $importData->save();
@@ -160,10 +168,66 @@ class AutoSync extends Command
                         $importHistory->save();
                         Log::info('Sync via zipfile Completed: ' . Carbon::now());
                     }
+                    $this->apply_geocode();
                 }
             }
         } catch (\Throwable $th) {
             Log::error('Error from auto sync cronjob: ' . $th->getMessage());
+        }
+    }
+    public function apply_geocode()
+    {
+        try {
+            $ungeocoded_location_info_list = Location::whereNull('location_latitude')->get();
+            $badgeocoded_location_info_list = Location::where('location_latitude', '=', '')->get();
+            $client = new \GuzzleHttp\Client();
+            $geocoder = new Geocoder($client);
+            $geocode_api_key = env('GEOCODE_GOOGLE_APIKEY');
+            $geocoder->setApiKey($geocode_api_key);
+
+            if ($ungeocoded_location_info_list) {
+                foreach ($ungeocoded_location_info_list as $key => $location_info) {
+
+                    if ($location_info->location_name) {
+                        $address_info = $location_info->location_name;
+                        // $response = $geocoder->getCoordinatesForAddress('30-61 87th Street, Queens, NY, 11369');
+                        $response = $geocoder->getCoordinatesForAddress($address_info);
+                        // if (($response['lat'] > 40.5) && ($response['lat'] < 42.0)) {
+                        //     $latitude = $response['lat'];
+                        //     $longitude = $response['lng'];
+                        // } else {
+                        //     $latitude = '';
+                        //     $longitude = '';
+                        // }
+
+                        $latitude = $response['lat'];
+                        $longitude = $response['lng'];
+
+                        $location_info->location_latitude = $latitude;
+                        $location_info->location_longitude = $longitude;
+                        $location_info->save();
+                    }
+                }
+            }
+
+            if ($badgeocoded_location_info_list) {
+                foreach ($badgeocoded_location_info_list as $key => $location_info) {
+                    if ($location_info->location_name) {
+                        $address_info = $location_info->location_name;
+                        // $response = $geocoder->getCoordinatesForAddress('30-61 87th Street, Queens, NY, 11369');
+                        $response = $geocoder->getCoordinatesForAddress($address_info);
+                        $latitude = $response['lat'];
+                        $longitude = $response['lng'];
+                        $location_info->location_latitude = $latitude;
+                        $location_info->location_longitude = $longitude;
+                        $location_info->save();
+                    }
+                }
+            }
+
+            return;
+        } catch (\Throwable $th) {
+            Log::error('Error in applying geocode in import : ' . $th);
         }
     }
 }

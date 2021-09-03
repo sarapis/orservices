@@ -240,6 +240,7 @@ class MapController extends Controller
             $geocode_api_key = env('GEOCODE_GOOGLE_APIKEY');
             $geocoder->setApiKey($geocode_api_key);
 
+
             if ($ungeocoded_location_info_list) {
                 foreach ($ungeocoded_location_info_list as $key => $location_info) {
 
@@ -283,54 +284,65 @@ class MapController extends Controller
             return redirect('map');
         } catch (\Throwable $th) {
             Log::error('Error in applying geocode : ' . $th);
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
+
+            return redirect('map');
         }
     }
 
     public function apply_enrich(Request $request)
     {
-        $valid_location_list = Location::whereNotNull('address_id')->get();
-        $unenriched_location_list = Location::whereNotNull('location_name')->whereNull('enrich_flag')->get();
-        set_time_limit(0);
-        foreach ($unenriched_location_list as $key => $unenriched_location) {
+        try {
+            $valid_location_list = Location::whereNotNull('address_id')->get();
+            $unenriched_location_list = Location::whereNotNull('location_name')->whereNull('enrich_flag')->get();
+            set_time_limit(0);
+            foreach ($unenriched_location_list as $key => $unenriched_location) {
 
-            $address = Address::whereId($unenriched_location->address_id)->first();
+                $address = Address::whereId($unenriched_location->address_id)->first();
 
-            $borough = $address->city;
-            // $house_address_info = explode(' ', $address->address);
-            $house_number = '';
-            // if (isset($house_address_info)) {
-            $house_number = $address->house_number;
-            // }
-            $street = '';
-            // if (isset($house_address_info[1])) {
-            $street = $address->street_name;
-            // }
-            $app_id = 'b985eb41';
-            $app_key = '9e7522143dca2c6347306d73882b6e3f';
+                $borough = $address->city;
+                // $house_address_info = explode(' ', $address->address);
+                $house_number = '';
+                // if (isset($house_address_info)) {
+                $house_number = $address->house_number;
+                // }
+                $street = '';
+                // if (isset($house_address_info[1])) {
+                $street = $address->street_name;
+                // }
+                $app_id = 'b985eb41';
+                $app_key = '9e7522143dca2c6347306d73882b6e3f';
 
-            // $request_url = 'https://api.cityofnewyork.us/geoclient/v1/address.json?houseNumber='.$house_number.'&street='.$street.' st&borough='.$borough.'&app_id='.$app_id.'&app_key='.$app_key;
+                // $request_url = 'https://api.cityofnewyork.us/geoclient/v1/address.json?houseNumber='.$house_number.'&street='.$street.' st&borough='.$borough.'&app_id='.$app_id.'&app_key='.$app_key;
 
-            $response = Curl::to('https://api.cityofnewyork.us/geoclient/v1/address.json')
-                ->withData(['houseNumber' => $house_number, 'street' => $street, 'borough' => $borough, 'app_id' => $app_id, 'app_key' => $app_key])
-                ->get();
-            $data = json_decode($response);
-            if ($data) {
-                if (isset($data->address)) {
-                    $address_info = $data->address;
-                    if (isset($address_info->cityCouncilDistrict)) {
-                        $address->address_city_council_district = $address_info->cityCouncilDistrict;
-                        $unenriched_location->location_city_council_district = $address_info->cityCouncilDistrict;
-                    }
-                    if (isset($address_info->communityDistrict)) {
-                        $address->address_community_district = $address_info->communityDistrict;
-                        $unenriched_location->location_community_district = $address_info->communityDistrict;
+                $response = Curl::to('https://api.cityofnewyork.us/geoclient/v1/address.json')
+                    ->withData(['houseNumber' => $house_number, 'street' => $street, 'borough' => $borough, 'app_id' => $app_id, 'app_key' => $app_key])
+                    ->get();
+                $data = json_decode($response);
+                if ($data) {
+                    if (isset($data->address)) {
+                        $address_info = $data->address;
+                        if (isset($address_info->cityCouncilDistrict)) {
+                            $address->address_city_council_district = $address_info->cityCouncilDistrict;
+                            $unenriched_location->location_city_council_district = $address_info->cityCouncilDistrict;
+                        }
+                        if (isset($address_info->communityDistrict)) {
+                            $address->address_community_district = $address_info->communityDistrict;
+                            $unenriched_location->location_community_district = $address_info->communityDistrict;
+                        }
                     }
                 }
+                $unenriched_location->enrich_flag = 'modified';
+                $address->save();
+                $unenriched_location->save();
             }
-            $unenriched_location->enrich_flag = 'modified';
-            $address->save();
-            $unenriched_location->save();
+            return redirect('map');
+        } catch (\Throwable $th) {
+            Log::error('Error in applying enrich : ' . $th);
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
+            return redirect('map');
         }
-        return redirect('map');
     }
 }

@@ -293,6 +293,15 @@ Appearance
                         </label>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Enable SDOH Classification</label>
+                    <div class="col-md-8 col-sm-8 col-xs-12">
+                        <label>No&nbsp;&nbsp;
+                            <input type="checkbox" class="js-switch" value="1" name="show_classification"
+                                @if($layout->show_classification== 'yes') checked @endif/>&nbsp;&nbsp;Yes
+                        </label>
+                    </div>
+                </div>
 
                 <div class="ln_solid"></div>
                 <div class="form-group">

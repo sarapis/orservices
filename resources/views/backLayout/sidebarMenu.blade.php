@@ -45,6 +45,7 @@
                         <li><a href="/localization">Localization</a></li>
                         <li><a href="/messagesSetting">Other Services</a></li>
                         <li><a href="/system_emails">System Emails</a></li>
+                        <li><a href="/helptexts">Help Text</a></li>
                         {{-- <li><a href="/sections">Sections</a></li>
                         --}}
                         {{-- <li><a href="/meta_filter">Meta Filter</a></li>
@@ -53,8 +54,8 @@
                 </li>
                 <li><a><i class="fa fa-gears"></i> Tools <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                        <li><a href="{{ route('All_Sessions.index') }}">Sessions</a></li>
-                        <li><a href="/meta_filter">Meta Filter</a></li>
+                        {{-- <li><a href="{{ route('All_Sessions.index') }}">Sessions</a></li> --}}
+                        {{-- <li><a href="/meta_filter">Meta Filter</a></li> --}}
                         <!-- <li><a href="/messagesSetting">Campaigns</a></li> -->
                         <li><a href="/analytics">Analytics</a></li>
                     </ul>
@@ -106,6 +107,9 @@
                         <li><a href="{{ route('detail_types.index') }}">Detail Type</a></li>
                         <li><a href="{{ route('taxonomy_types.index') }}">Taxonomies</a></li>
                         <li><a href="{{ route('organization_status.index') }}">Organization Status</a></li>
+                        <li><a href="{{ route('cities.index') }}">City</a></li>
+                        <li><a href="{{ route('states.index') }}">State</a></li>
+                        <li><a href="{{ route('codes.index') }}">SDOH Codes</a></li>
 
                         {{-- <li><a href="{{ route('service_categories.index') }}">Service Category</a></li>
                         <li><a href="{{ route('service_eligibilities.index') }}">Service Eligibility</a></li> --}}
@@ -124,7 +128,7 @@
                 </li> --}}
                 <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                        <li><a href="/tb_services">Services</a></li>
+                        <li><a href="/tb_service">Services</a></li>
                         <li><a href="/tb_locations">Locations</a></li>
                         <li><a href="/tb_organizations">Organizations</a></li>
                         <li><a href="/tb_contact">Contact</a></li>
@@ -143,6 +147,7 @@
                         <li><a href="{{ route('service_attributes.index') }}">Service Attributes</a></li>
                         <li><a href="{{ route('other_attributes.index') }}">Other Attributes</a></li>
                         <li><a href="{{ route('programs.index') }}">Programs</a></li>
+                        <li><a href="{{ route('code_ledgers.index') }}">SDOH Code Ledger</a></li>
                     </ul>
                 </li>
             </ul>

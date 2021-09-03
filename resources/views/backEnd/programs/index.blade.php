@@ -217,6 +217,8 @@ $(document).ready(function() {
     let ajaxUrl = "{{ route('programs.index') }}";
   $(document).ready(function(){
     programs_table = $('#programs_table').DataTable({
+        processing: true,
+            serverSide: true,
             ajax: {
                 url: ajaxUrl,
                 method : "get",

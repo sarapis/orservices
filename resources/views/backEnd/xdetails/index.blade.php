@@ -119,6 +119,8 @@ Details
     let ajaxUrl = "{{ route('XDetails.index') }}";
   $(document).ready(function(){
     XDetails_table = $('#XDetails_table').DataTable({
+        processing: true,
+            serverSide: true,
             ajax: {
                 url: ajaxUrl,
                 method : "get",

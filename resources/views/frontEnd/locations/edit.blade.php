@@ -48,6 +48,9 @@ Location Edit
                                         </div>
                                     </div>
                                     {!! Form::text('location_name',null,['class' => 'form-control','id' => 'location_name']) !!}
+                                    @error('location_name')
+                                        <span class="error-message"><strong>{{ $message }}</strong></span>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -55,6 +58,9 @@ Location Edit
                                     <label>Organization Name: </label>
                                     {!!
                                     Form::select('location_organization',$organization_names,null,['class' => 'form-control selectpicker','id' => 'location_organization' ,'placeholder' => 'Select organization', 'data-live-search' => 'true', 'data-size' => '5']) !!}
+                                    @error('location_organization')
+                                        <span class="error-message"><strong>{{ $message }}</strong></span>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -296,8 +302,8 @@ Location Edit
     <div class="card-block">
         <h4 class="title_edit text-left mb-25 mt-10">
             Phones
-            <div class="d-inline float-right" id="addPhoneTr">
-                <a href="javascript:void(0)" id="addData" class="plus_delteicon bg-primary-color">
+            <div class="d-inline float-right">
+                <a href="javascript:void(0)" class="phoneModalOpenButton plus_delteicon bg-primary-color">
                     <img src="/frontend/assets/images/plus.png" alt="" title="">
                 </a>
             </div>
@@ -330,83 +336,58 @@ Location Edit
                                         </div>
                                     </div>
                                 </th>
-                                <th style="width:60px">&nbsp;</th>
+                                <th>Main</th>
+                                <th style="width:140px">&nbsp;</th>
                             </thead>
-                            <tbody>
+                            <tbody id="phonesTable">
                                 @if (count($facility->phones) > 0)
                                 @foreach ($facility->phones as $key => $value)
-                                <tr>
+                                <tr id="phoneTr_{{ $key }}">
                                     <td>
-                                        <input type="text" class="form-control" name="facility_phones[]" id=""
-                                            value="{{ $value->phone_number }}">
+                                        <input type="hidden" class="form-control" name="facility_phones[]" id="phone_number_{{ $key }}" value="{{ $value->phone_number }}">
+                                                    {{ $value->phone_number }}
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" name="phone_extension[]" id=""
-                                            value="{{ $value->phone_extension }}">
+                                        <input type="hidden" class="form-control" name="phone_extension[]" id="phone_extension_{{ $key }}" value="{{ $value->phone_extension }}" >
+                                        {{ $value->phone_extension }}
                                     </td>
                                     <td>
-                                        {!! Form::select('phone_type[]',$phone_type,$value->phone_type ?
+                                        {{-- {!! Form::select('phone_type[]',$phone_type,$value->phone_type ?
                                         explode(',',$value->phone_type) : [],['class' => 'form-control
                                         selectpicker','data-live-search' => 'true','id' => 'phone_type','data-size' =>
-                                        5,'placeholder' => 'select phone type'])!!}
+                                        5,'placeholder' => 'select phone type'])!!} --}}
+                                        <input type="hidden" class="form-control" name="phone_type[]" id="phone_type_{{ $key }}" value="{{ $value->phone_type }}" >
+                                                {{ $value->type ? $value->type->type : '' }}
                                     </td>
                                     <td>
-                                        {!! Form::select('phone_language[]',$phone_languages,$value->phone_language ?
+                                        {{-- {!! Form::select('phone_language[]',$phone_languages,$value->phone_language ?
                                         explode(',',$value->phone_language) : [],['class' => 'form-control selectpicker
                                         phone_language','data-size' => 5,'data-live-search' => 'true', 'id' =>
-                                        'phone_language_'.$key,'multiple' => true]) !!}
+                                        'phone_language_'.$key,'multiple' => true]) !!} --}}
+                                        <input type="hidden" class="form-control" name="phone_language[]" id="phone_language_{{ $key }}" value="{{ $value->phone_language }}" >
+                                        {{ isset($phone_language_name[$key]) ? $phone_language_name[$key] : ''  }}
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" name="phone_description[]" id=""
-                                            value="{{ $value->phone_description }}">
+                                        <input type="hidden" class="form-control" name="phone_description[]" id="phone_description_{{ $key }}" value="{{ $value->phone_description }}">
+                                        {{ $value->phone_description }}
                                     </td>
-                                    {{-- <td>
-                                                        <a href="javascript:void(0)" data-id="{{ $value->phone_recordid }}"
-                                    class="removePhoneData" style="color:rgb(3, 65, 8);" data-toggle="tooltip"
-                                    title="Remove"> <i class="fa fa-minus-circle" aria-hidden="true"></i></a>
-                                    <a href="javascript:void(0)" data-id="{{ $value->phone_recordid }}"
-                                        class="deletePhoneData" style="color:red;" data-toggle="tooltip" title="Delete">
-                                        <i class="fa fa-trash" aria-hidden="true"></i></a>
-                                    </td> --}}
+                                    <td>
+                                        <div class="form-check form-check-inline" style="margin-top: -10px;">
+                                            <input class="form-check-input " type="radio" name="main_priority[]" id="main_priority{{ $key }}" value="{{ $key }}" {{ $value->main_priority == 1 ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="main_priority{{ $key }}"></label>
+                                        </div>
+                                    </td>
                                     <td style="vertical-align: middle">
-                                        <a href="javascript:void(0)" data-id="{{ $value->phone_recordid }}"
-                                            class="plus_delteicon btn-button removePhoneData">
+                                        <a href="javascript:void(0)" class="phoneEditButton plus_delteicon bg-primary-color">
+                                            <img src="/frontend/assets/images/edit_pencil.png" alt="" title="">
+                                        </a>
+                                        <a href="javascript:void(0)" class="plus_delteicon btn-button removeLocationPhoneData" >
                                             <img src="/frontend/assets/images/delete.png" alt="" title="">
                                         </a>
                                     </td>
                                 </tr>
-                                <tr></tr>
                                 @endforeach
-                                @else
-                                <tr>
-                                    <td>
-                                        <input type="text" class="form-control" name="facility_phones[]" id="">
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control" name="phone_extension[]" id="">
-                                    </td>
-                                    <td>
-                                        {!! Form::select('phone_type[]',$phone_type,null,['class' => 'form-control
-                                        selectpicker ','data-live-search' => 'true','id' => 'phone_type','data-size' =>
-                                        5,'placeholder' => 'select phone type'])!!}
-                                    </td>
-                                    <td>
-                                        {!! Form::select('phone_language[]',$phone_languages,[],['class' =>
-                                        'form-control selectpicker phone_language','data-size' => 5,' data-live-search'
-                                        => 'true','multiple'=>true ,'id' => 'phone_language_0']) !!}
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control" name="phone_description[]" id="">
-                                    </td>
-                                    <td></td>
-                                </tr>
                                 @endif
-
-                                {{-- <tr id="addPhoneTr">
-                                                    <td colspan="6" class="text-center">
-                                                        <a href="javascript:void(0)" id="addData" style="color:blue;" data-toggle="tooltip" title="Add"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
-                                                    </td>
-                                                </tr> --}}
                             </tbody>
                         </table>
                     </div>
@@ -434,6 +415,9 @@ Location Edit
 {!! Form::close() !!}
 {{-- </form> --}}
 </div>
+{{-- phone modal --}}
+@include('frontEnd.locations.locationPhone')
+{{-- phone modala close --}}
 <div class="col-md-4">
     <h4 class="card-title title_edit mb-30"></h4>
     <div class="card all_form_field mt-40">
@@ -672,23 +656,6 @@ Location Edit
 
     //     });
     // });
-
-     // phone table section
-     let phone_language_data = JSON.parse($('#phone_language_data').val())
-    $(document).on('change','div > .phone_language',function () {
-        let value = $(this).val()
-        let id = $(this).attr('id')
-        let idsArray = id ? id.split('_') : []
-        let index = idsArray.length > 0 ? idsArray[2] : ''
-        phone_language_data[index] = value
-        $('#phone_language_data').val(JSON.stringify(phone_language_data))
-    })
-    pt = {{ count($facility->phones) }}
-    $('#addPhoneTr').click(function(){
-        $('#PhoneTable tr:last').before('<tr><td><input type="text" class="form-control" name="facility_phones[]" id=""></td><td><input type="text" class="form-control" name="phone_extension[]" id=""></td><td>{!! Form::select("phone_type[]",$phone_type,[],["class" => "form-control selectpicker","data-live-search" => "true","id" => "phone_type","data-size" => 5,"placeholder" => "select phone type"])!!}</td><td><select name="phone_language[]" id="phone_language_'+pt+'" class="form-control selectpicker phone_language" data-size="5" data-live-search="true" multiple> @foreach ($phone_languages as $key=>$value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id=""></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
-        $('.selectpicker').selectpicker();
-        pt++;
-    })
     $(document).on('click', '.removePhoneData', function(){
         $(this).closest('tr').remove()
         let id = $(this).data('id')

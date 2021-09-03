@@ -8,7 +8,7 @@
         @if (Session::has('message'))
         <div class="alert alert-{{ Session::get('status') == 'error' ? 'danger' : Session::get('status') }} alert-dismissable custom-success-box"
             style="margin: 15px;">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <a href="#" class="close" data-dismiss="alert" aria-label="close" id="message_close_button">&times;</a>
             <strong> {{ session()->get('message') }} </strong>
         </div>
         @endif
@@ -48,8 +48,12 @@
           </div>
         </div>
       </div>
-
-@include('layouts.script')
+      @include('layouts.script')
+<script>
+    setTimeout(() => {
+        $('#message_close_button').click()
+    }, 5000);
+</script>
 {{-- @if(config('app.env') != 'local') --}}
     @include('layouts.analytics')
 {{-- @endif --}}

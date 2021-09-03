@@ -55,6 +55,8 @@ Organization status
     let ajaxUrl = "{{ route('organization_status.index') }}";
   $(document).ready(function(){
     tbl_organization_status = $('#tbl_organization_status').DataTable({
+            processing: true,
+            serverSide: true,
             ajax: {
                 url: ajaxUrl,
                 method : "get",

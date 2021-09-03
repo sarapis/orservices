@@ -220,8 +220,8 @@ Organization Edit
                     <div class="card-block">
                         <h4 class="title_edit text-left mb-25 mt-10">
                             Phones
-                            <div class="d-inline float-right" id="addPhoneTr">
-                                <a href="javascript:void(0)" id="addData" class="plus_delteicon bg-primary-color">
+                            <div class="d-inline float-right">
+                                <a href="javascript:void(0)" class="phoneModalOpenButton plus_delteicon bg-primary-color">
                                     <img src="/frontend/assets/images/plus.png" alt="" title="">
                                 </a>
                             </div>
@@ -258,35 +258,39 @@ Organization Edit
                                                     </div>
                                                 </th>
                                                 <th>Main</th>
-                                                <th style="width:60px">&nbsp;</th>
+                                                <th style="width:140px">&nbsp;</th>
                                             </thead>
-                                            <tbody>
+                                            <tbody id="phonesTable">
                                                 @if (count($organization->phones) > 0)
                                                 @foreach ($organization->phones as $key => $value)
-                                                <tr>
+                                                <tr id="phoneTr_{{ $key }}">
                                                     <td>
-                                                        <input type="text" class="form-control" name="organization_phones[]" id=""
-                                                            value="{{ $value->phone_number }}">
+                                                        <input type="hidden" class="form-control" name="organization_phones[]" id="phone_number_{{ $key }}" value="{{ $value->phone_number }}">
+                                                            {{ $value->phone_number }}
                                                     </td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="phone_extension[]" id=""
-                                                            value="{{ $value->phone_extension }}">
+                                                        <input type="hidden" class="form-control" name="phone_extension[]" id="phone_extension_{{ $key }}" value="{{ $value->phone_extension }}">
+                                                            {{ $value->phone_extension }}
                                                     </td>
                                                     <td>
-                                                        {!! Form::select('phone_type[]',$phone_type,$value->phone_type ?
+                                                        <input type="hidden" class="form-control" name="phone_type[]" id="phone_type_{{ $key }}" value="{{ $value->phone_type }}" >
+                                                        {{ $value->type ? $value->type->type : '' }}
+                                                        {{-- {!! Form::select('phone_type[]',$phone_type,$value->phone_type ?
                                                         explode(',',$value->phone_type) : [],['class' => 'form-control
                                                         selectpicker','data-live-search' => 'true','id' => 'phone_type','data-size' =>
-                                                        5,'placeholder' => 'select phone type'])!!}
+                                                        5,'placeholder' => 'select phone type'])!!} --}}
                                                     </td>
                                                     <td>
-                                                        {!! Form::select('phone_language[]',$phone_languages,$value->phone_language ?
+                                                        {{-- {!! Form::select('phone_language[]',$phone_languages,$value->phone_language ?
                                                         explode(',',$value->phone_language) : [],['class' => 'form-control selectpicker
                                                         phone_language','data-size' => 5,'data-live-search' => 'true','id' =>
-                                                        'phone_language_'.$key,'multiple' => true]) !!}
+                                                        'phone_language_'.$key,'multiple' => true]) !!} --}}
+                                                        <input type="hidden" class="form-control" name="phone_language[]" id="phone_language_{{ $key }}" value="{{ $value->phone_language }}" >
+                                                        {{ isset($phone_language_name[$key]) ? $phone_language_name[$key] : ''  }}
                                                     </td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="phone_description[]" id=""
-                                                            value="{{ $value->phone_description }}">
+                                                        <input type="hidden" class="form-control" name="phone_description[]" id="phone_description_{{ $key }}" value="{{ $value->phone_description }}" readonly>
+                                                        {{ $value->phone_description }}
                                                     </td>
                                                     <td>
                                                         <div class="form-check form-check-inline" style="margin-top: -10px;">
@@ -295,8 +299,10 @@ Organization Edit
                                                         </div>
                                                     </td>
                                                     <td style="vertical-align: middle">
-                                                        <a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"
-                                                            data-id="{{ $value->phone_recordid }}">
+                                                        <a href="javascript:void(0)" class="phoneEditButton plus_delteicon bg-primary-color">
+                                                            <img src="/frontend/assets/images/edit_pencil.png" alt="" title="">
+                                                        </a>
+                                                        <a href="javascript:void(0)" class="plus_delteicon btn-button removeOrganizationPhoneData">
                                                             <img src="/frontend/assets/images/delete.png" alt="" title="">
                                                         </a>
                                                         {{-- <a href="javascript:void(0)" class="plus_delteicon btn-button deletePhoneData" data-id="{{ $value->phone_recordid }}">
@@ -304,49 +310,8 @@ Organization Edit
                                                         </a> --}}
                                                     </td>
                                                 </tr>
-                                                <tr></tr>
                                                 @endforeach
-                                                @else
-                                                <tr>
-                                                    <td>
-                                                        <input type="text" class="form-control" name="organization_phones[]" id="">
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" class="form-control" name="phone_extension[]" id="">
-                                                    </td>
-                                                    <td>
-                                                        {!! Form::select('phone_type[]',$phone_type,[],['class' => 'form-control
-                                                        selectpicker','data-live-search' => 'true','id' => 'phone_type','data-size' =>
-                                                        5,'placeholder' => 'select phone type'])!!}
-                                                    </td>
-                                                    <td>
-                                                        {!! Form::select('phone_language[]',$phone_languages,[],['class' =>
-                                                        'form-control selectpicker phone_language','data-size' => 5,' data-live-search'
-                                                        => 'true','multiple'=>true,'id' => 'phone_language_0']) !!}
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" class="form-control" name="phone_description[]" id="">
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-check form-check-inline" style="margin-top: -10px;">
-                                                            <input class="form-check-input " type="radio" name="main_priority[]" id="main_priority" value="1" checked>
-                                                            <label class="form-check-label" for="main_priority"></label>
-                                                        </div>
-                                                    </td>
-                                                    <td style="vertical-align: middle">
-                                                        <a href="#" class="plus_delteicon btn-button">
-                                                            <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                                <tr></tr>
                                                 @endif
-
-                                                {{-- <tr id="addPhoneTr">
-                                                                        <td colspan="6" class="text-center">
-                                                                            <a href="javascript:void(0)" id="addData" style="color:blue;" data-toggle="tooltip" title="Add"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
-                                                                        </td>
-                                                                    </tr> --}}
                                             </tbody>
                                         </table>
                                     </div>
@@ -616,100 +581,79 @@ Organization Edit
                 </div>
             {!! Form::close() !!}
             </div>
-<div class="col-md-4">
-    <h4 class="card-title title_edit mb-30"></h4>
-    <div class="card all_form_field mt-40">
-        <div class="card-block">
-            <h4 class="card_services_title mb-20">Change Log</h4>
-            @foreach ($organizationAudits as $item)
-            @if (count($item->new_values) != 0)
-            <div class="py-10" style="float: left; width:100%;border-bottom: 1px solid #dadada;">
-                <p class="mb-5" style="color: #000;font-size: 16px;">On
-                    <a href="/viewChanges/{{ $item->id }}/{{ $organization->organization_recordid }}"
-                        style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB; text-decoration:underline;">
-                        <b
-                            style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB; text-decoration:underline;">{{ $item->created_at }}</b>
-                    </a>
-                    ,
-                    @if ($item->user)
-                    <a href="/userEdits/{{ $item->user ? $item->user->id : '' }}"
-                        style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB; text-decoration:underline;">
-                        <b
-                            style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB;text-decoration:underline;">{{ $item->user ? $item->user->first_name.' '.$item->user->last_name : '' }}</b>
-                    </a>
-                    @endif
-                </p>
-                @foreach ($item->old_values as $key => $v)
-                @php
-                $fieldNameArray = explode('_',$key);
-                $fieldName = implode(' ',$fieldNameArray);
-                $new_values = explode('| ',$item->new_values[$key]);
-                $old_values = explode('| ',$v);
-                $old_values = array_values(array_filter($old_values));
-                $new_values = array_values(array_filter($new_values));
-                @endphp
-                <ul style="padding-left: 0px;font-size: 16px;">
-                    @if($v && count($old_values) > count($new_values))
+    <div class="col-md-4">
+        <h4 class="card-title title_edit mb-30"></h4>
+        <div class="card all_form_field mt-40">
+            <div class="card-block">
+                <h4 class="card_services_title mb-20">Change Log</h4>
+                @foreach ($organizationAudits as $item)
+                @if (count($item->new_values) != 0)
+                <div class="py-10" style="float: left; width:100%;border-bottom: 1px solid #dadada;">
+                    <p class="mb-5" style="color: #000;font-size: 16px;">On
+                        <a href="/viewChanges/{{ $item->id }}/{{ $organization->organization_recordid }}"
+                            style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB; text-decoration:underline;">
+                            <b
+                                style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB; text-decoration:underline;">{{ $item->created_at }}</b>
+                        </a>
+                        ,
+                        @if ($item->user)
+                        <a href="/userEdits/{{ $item->user ? $item->user->id : '' }}"
+                            style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB; text-decoration:underline;">
+                            <b
+                                style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB;text-decoration:underline;">{{ $item->user ? $item->user->first_name.' '.$item->user->last_name : '' }}</b>
+                        </a>
+                        @endif
+                    </p>
+                    @foreach ($item->old_values as $key => $v)
+                    @php
+                    $fieldNameArray = explode('_',$key);
+                    $fieldName = implode(' ',$fieldNameArray);
+                    $new_values = explode('| ',$item->new_values[$key]);
+                    $old_values = explode('| ',$v);
+                    $old_values = array_values(array_filter($old_values));
+                    $new_values = array_values(array_filter($new_values));
+                    @endphp
+                    <ul style="padding-left: 0px;font-size: 16px;">
+                        @if($v && count($old_values) > count($new_values))
 
-                    @php
-                        $diffData = array_diff($old_values,$new_values);
-                    @endphp
-                    <li style="color: #000;list-style: disc;list-style-position: inside;">Removed <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span style="color: #FF5044">{{ implode(',',$diffData) }}</span>
-                    </li>
-                    @elseif($v && count($old_values) < count($new_values))
-                    @php
-                        $diffData = array_diff($new_values,$old_values);
-                    @endphp
-                    <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span style="color: #35AD8B">{{ implode(',',$diffData) }}</span>
-                    </li>
-                    @elseif($v && count($new_values) == count($old_values))
-                    @php
-                        $diffData = array_diff($new_values,$old_values);
-                    @endphp
-                    <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span style="color: #35AD8B">{{ implode(',',$diffData) }}</span>
-                    </li>
-                    {{-- <li style="color: #000;list-style: disc;list-style-position: inside;">Changed <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> from <span style="color: #FF5044">{{ $v }}</span> to <span style="color: #35AD8B">{{ $new_values ? $new_values : 'none' }}</span>
-                    </li> --}}
-                    @elseif($item->new_values[$key])
-                    <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b
-                            style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b>
-                        <span style="color: #35AD8B">{{ $item->new_values[$key] }}</span>
-                    </li>
-                    @endif
-                </ul>
+                        @php
+                            $diffData = array_diff($old_values,$new_values);
+                        @endphp
+                        <li style="color: #000;list-style: disc;list-style-position: inside;">Removed <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span style="color: #FF5044">{{ implode(',',$diffData) }}</span>
+                        </li>
+                        @elseif($v && count($old_values) < count($new_values))
+                        @php
+                            $diffData = array_diff($new_values,$old_values);
+                        @endphp
+                        <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span style="color: #35AD8B">{{ implode(',',$diffData) }}</span>
+                        </li>
+                        @elseif($v && count($new_values) == count($old_values))
+                        @php
+                            $diffData = array_diff($new_values,$old_values);
+                        @endphp
+                        <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span style="color: #35AD8B">{{ implode(',',$diffData) }}</span>
+                        </li>
+                        {{-- <li style="color: #000;list-style: disc;list-style-position: inside;">Changed <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> from <span style="color: #FF5044">{{ $v }}</span> to <span style="color: #35AD8B">{{ $new_values ? $new_values : 'none' }}</span>
+                        </li> --}}
+                        @elseif($item->new_values[$key])
+                        <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b
+                                style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b>
+                            <span style="color: #35AD8B">{{ $item->new_values[$key] }}</span>
+                        </li>
+                        @endif
+                    </ul>
+                    @endforeach
+                </div>
+                @endif
                 @endforeach
-                {{-- <span><a href="/viewChanges/{{ $item->id }}/{{ $organization->organization_recordid }}"
-                style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB; text-decoration:underline;">View
-                Changes</a></span> --}}
-                {{-- <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th><b style="font-family: Neue Haas Grotesk Display Medium; color:#000">Field name</b></th>
-                                            <th><b style="font-family: Neue Haas Grotesk Display Medium; color:#000">Old value</b></th>
-                                            <th><b style="font-family: Neue Haas Grotesk Display Medium; color:#000">New value</b></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($item->old_values as $key => $v)
-                                        <tr>
-                                            <td style="color: #000">{{ $key }}</td>
-                <td style="color: red">{{ $v }}</td>
-                <td style="color: green">{{ $item->new_values[$key] }}</td>
-                </tr>
-                @endforeach
-                </tbody>
-                </table>
-            </div> --}}
+            </div>
         </div>
-        @endif
-        @endforeach
     </div>
 </div>
-</div>
-</div>
 
-
+{{-- phone modal --}}
+@include('frontEnd.organizations.organizationPhone')
+{{-- phone modala close --}}
 {{-- services Modal --}}
 <div class="modal fade " tabindex="-1" role="dialog" aria-hidden="true" id="servicemodal">
     <div class="modal-dialog modal-lg">
@@ -1596,22 +1540,22 @@ Organization Edit
     });
 
     // phone table section
-    let phone_language_data = JSON.parse($('#phone_language_data').val())
-    $(document).on('change','div > .phone_language',function () {
-        let value = $(this).val()
-        let id = $(this).attr('id')
-        let idsArray = id ? id.split('_') : []
-        let index = idsArray.length > 0 ? idsArray[2] : ''
-        phone_language_data[index] = value
-        console.log(phone_language_data)
-        $('#phone_language_data').val(JSON.stringify(phone_language_data))
-    })
-    pt = {{ count($organization->phones) }}
-    $('#addPhoneTr').click(function(){
-        $('#PhoneTable tr:last').before('<tr><td><input type="text" class="form-control" name="organization_phones[]" id=""></td><td><input type="text" class="form-control" name="phone_extension[]" id=""></td><td>{!! Form::select("phone_type[]",$phone_type,[],["class" => "form-control selectpicker","data-live-search" => "true","id" => "phone_type","data-size" => 5,"placeholder" => "select phone type"])!!}</td><td><select name="phone_language[]" id="phone_language_'+pt+'" class="form-control selectpicker phone_language" data-size="5" data-live-search="true" multiple> @foreach ($phone_languages as $key=>$value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id=""></td><td><div class="form-check form-check-inline" style="margin-top: -10px;"><input class="form-check-input " type="radio" name="main_priority[]" id="main_priority'+pt+'" value="'+pt+'" ><label class="form-check-label" for="main_priority'+pt+'"></label></div></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
-        $('.selectpicker').selectpicker();
-        pt++;
-    })
+    // let phone_language_data = JSON.parse($('#phone_language_data').val())
+    // $(document).on('change','div > .phone_language',function () {
+    //     let value = $(this).val()
+    //     let id = $(this).attr('id')
+    //     let idsArray = id ? id.split('_') : []
+    //     let index = idsArray.length > 0 ? idsArray[2] : ''
+    //     phone_language_data[index] = value
+    //     console.log(phone_language_data)
+    //     $('#phone_language_data').val(JSON.stringify(phone_language_data))
+    // })
+    // pt = {{ count($organization->phones) }}
+    // $('#addPhoneTr').click(function(){
+    //     $('#PhoneTable tr:last').before('<tr><td><input type="text" class="form-control" name="organization_phones[]" id=""></td><td><input type="text" class="form-control" name="phone_extension[]" id=""></td><td>{!! Form::select("phone_type[]",$phone_type,[],["class" => "form-control selectpicker","data-live-search" => "true","id" => "phone_type","data-size" => 5,"placeholder" => "select phone type"])!!}</td><td><select name="phone_language[]" id="phone_language_'+pt+'" class="form-control selectpicker phone_language" data-size="5" data-live-search="true" multiple> @foreach ($phone_languages as $key=>$value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id=""></td><td><div class="form-check form-check-inline" style="margin-top: -10px;"><input class="form-check-input " type="radio" name="main_priority[]" id="main_priority'+pt+'" value="'+pt+'" ><label class="form-check-label" for="main_priority'+pt+'"></label></div></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+    //     $('.selectpicker').selectpicker();
+    //     pt++;
+    // })
 
     let cp = 1;
     $('#addDataContact').click(function(){

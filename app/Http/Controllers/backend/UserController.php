@@ -46,7 +46,7 @@ class UserController extends Controller
     {
         try {
             $type = $request->type;
-            $users = User::all();
+            $users = User::orderBy('id', 'desc')->get();
             $layout = Layout::find(1);
             $authUser = Auth::user();
             if ($type) {
@@ -57,7 +57,9 @@ class UserController extends Controller
 
             return View('backEnd.users.index', compact('users', 'layout', 'authUser'));
         } catch (\Throwable $th) {
+            dd($th);
             Log::error('Error in user controller index : ' . $th);
+            return redirect('dashboard');
         }
     }
     /**

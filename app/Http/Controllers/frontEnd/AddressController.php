@@ -9,13 +9,16 @@ use App\Model\Address;
 use App\Model\Airtable_v2;
 use App\Model\Airtablekeyinfo;
 use App\Model\Airtables;
+use App\Model\City;
 use App\Model\CSV_Source;
 use App\Model\Locationaddress;
 use App\Model\Serviceaddress;
 use App\Model\Source_data;
+use App\Model\State;
 use App\Services\Stringtoint;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AddressController extends Controller
@@ -152,12 +155,16 @@ class AddressController extends Controller
                         $address->address_1 = isset($record['fields']['address_1']) ? $record['fields']['address_1'] : null;
                         $address->address_2 = isset($record['fields']['address_2']) ? $record['fields']['address_2'] : null;
                         $address->address_city = isset($record['fields']['city']) ? $record['fields']['city'] : null;
+                        if (isset($record['fields']['city']) && $record['fields']['city'])
+                            City::firstOrCreate(['city' => $record['fields']['city']]);
                         $address->address_state_province = isset($record['fields']['state_province']) ? $record['fields']['state_province'] : null;
+                        if (isset($record['fields']['state_province']) && $record['fields']['state_province'])
+                            State::firstOrCreate(['state' => $record['fields']['state_province']]);
                         $address->address_postal_code = isset($record['fields']['postal_code']) ? $record['fields']['postal_code'] : null;
                         $address->address_region = isset($record['fields']['region']) ? $record['fields']['region'] : null;
                         $address->address_country = isset($record['fields']['country']) ? $record['fields']['country'] : null;
                         $address->address_attention = isset($record['fields']['attention']) ? $record['fields']['attention'] : null;
-                        $address->address_type = isset($record['fields']['x-type'])  ? $record['fields']['x-type'] : null;
+                        // $address->address_type = isset($record['fields']['x-type'])  ? (is_array(is_array($record['fields']['x-type'])) ? implode(',', $record['fields']['x-type']) : $record['fields']['x-type']) : null;
 
                         if (isset($record['fields']['locations'])) {
                             $i = 0;
@@ -201,7 +208,7 @@ class AddressController extends Controller
             $airtable->syncdate = $date;
             $airtable->save();
         } catch (\Throwable $th) {
-            \Log::error('Error in Address:' . $th->getMessage());
+            Log::error('Error in Address:' . $th->getMessage());
             return response()->json([
                 'message' => $th->getMessage(),
                 'success' => false

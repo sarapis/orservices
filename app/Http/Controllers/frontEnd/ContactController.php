@@ -148,7 +148,7 @@ class ContactController extends Controller
 
                         $contact->contact_organizations = $strtointclass->string_to_int($contact->contact_organizations);
 
-                        $contact->contact_services = isset($record['fields']['services 2    ']) ? implode(",", $record['fields']['services 2    ']) : null;
+                        $contact->contact_services = isset($record['fields']['services']) ? implode(",", $record['fields']['services']) : null;
 
                         $contact->contact_services = $strtointclass->string_to_int($contact->contact_services);
 
@@ -432,7 +432,9 @@ class ContactController extends Controller
         $service_info_list = Service::select('service_recordid', 'service_name')->orderBy('service_name')->distinct()->get();
         $phone_languages = Language::orderBy('order')->whereNotNull('language_recordid')->pluck('language', 'language_recordid');
         $phone_type = PhoneType::orderBy('order')->pluck('type', 'id');
-        return view('frontEnd.contacts.create', compact('map', 'organization_name_list', 'service_info_list', 'phone_languages', 'phone_type'));
+        $all_phones = Phone::whereNotNull('phone_number')->distinct()->get();
+        $phone_language_data = json_encode([]);
+        return view('frontEnd.contacts.create', compact('map', 'organization_name_list', 'service_info_list', 'phone_languages', 'phone_type', 'all_phones', 'phone_language_data'));
     }
 
     public function create_in_organization($id)
@@ -444,7 +446,9 @@ class ContactController extends Controller
         // $service_info_list = Service::select('service_recordid', 'service_name')->whereNotNull('service_name')->orderBy('service_name')->distinct()->get();
         $phone_languages = Language::orderBy('order')->whereNotNull('language_recordid')->pluck('language', 'language_recordid');
         $phone_type = PhoneType::orderBy('order')->pluck('type', 'id');
-        return view('frontEnd.contacts.contact-create-in-organization', compact('map', 'organization', 'service_info_list', 'phone_languages', 'phone_type'));
+        $all_phones = Phone::whereNotNull('phone_number')->distinct()->get();
+        $phone_language_data = json_encode([]);
+        return view('frontEnd.contacts.contact-create-in-organization', compact('map', 'organization', 'service_info_list', 'phone_languages', 'phone_type', 'all_phones', 'phone_language_data'));
     }
 
     public function create_in_facility($id)
@@ -454,7 +458,9 @@ class ContactController extends Controller
         $service_info_list = Service::select('service_recordid', 'service_name')->whereNotNull('service_name')->orderBy('service_name')->distinct()->get();
         $phone_languages = Language::orderBy('order')->whereNotNull('language_recordid')->pluck('language', 'language_recordid');
         $phone_type = PhoneType::orderBy('order')->pluck('type', 'id');
-        return view('frontEnd.contacts.contact-create-in-facility', compact('map', 'facility', 'service_info_list', 'phone_languages', 'phone_type'));
+        $all_phones = Phone::whereNotNull('phone_number')->distinct()->get();
+        $phone_language_data = json_encode([]);
+        return view('frontEnd.contacts.contact-create-in-facility', compact('map', 'facility', 'service_info_list', 'phone_languages', 'phone_type', 'all_phones', 'phone_language_data'));
     }
     public function add_new_contact_in_facility(Request $request)
     {
@@ -530,6 +536,7 @@ class ContactController extends Controller
                 $contact_phone_type_list = $request->phone_type;
                 $contact_phone_language_list = $request->phone_language_data ? json_decode($request->phone_language_data) : [];
                 $contact_phone_description_list = $request->phone_description;
+                $contact_main_priority_list = $request->main_priority;
 
                 for ($i = 0; $i < count($contact_phone_number_list); $i++) {
                     $phone_info = Phone::where('phone_number', '=', $contact_phone_number_list[$i])->first();
@@ -538,8 +545,13 @@ class ContactController extends Controller
                         $phone_info->phone_number = $contact_phone_number_list[$i];
                         $phone_info->phone_extension = $contact_phone_extension_list[$i];
                         $phone_info->phone_type = $contact_phone_type_list ? $contact_phone_type_list[$i] : '';
-                        $phone_info->phone_language = $contact_phone_language_list && isset($contact_phone_language_list[$i]) ? implode(',', $contact_phone_language_list[$i]) : '';
+                        $phone_info->phone_language = $contact_phone_language_list && isset($contact_phone_language_list[$i]) && is_array($contact_phone_language_list[$i]) ? implode(',', $contact_phone_language_list[$i]) : '';
                         $phone_info->phone_description = $contact_phone_description_list[$i];
+                        if (isset($contact_main_priority_list[0]) && $contact_main_priority_list[0] == $i) {
+                            $phone_info->main_priority = '1';
+                        } else {
+                            $phone_info->main_priority = '0';
+                        }
                         $phone_info->save();
                         array_push($phone_recordid_list, $phone_info->phone_recordid);
                     } else {
@@ -549,8 +561,13 @@ class ContactController extends Controller
                         $new_phone->phone_number = $contact_phone_number_list[$i];
                         $new_phone->phone_extension = $contact_phone_extension_list[$i];
                         $new_phone->phone_type = $contact_phone_type_list ? $contact_phone_type_list[$i] : '';
-                        $new_phone->phone_language = $contact_phone_language_list && isset($contact_phone_language_list[$i]) ? implode(',', $contact_phone_language_list[$i]) : '';
+                        $new_phone->phone_language = $contact_phone_language_list && isset($contact_phone_language_list[$i]) && is_array($contact_phone_language_list[$i]) ? implode(',', $contact_phone_language_list[$i]) : '';
                         $new_phone->phone_description = $contact_phone_description_list[$i];
+                        if (isset($contact_main_priority_list[0]) && $contact_main_priority_list[0] == $i) {
+                            $new_phone->main_priority = '1';
+                        } else {
+                            $new_phone->main_priority = '0';
+                        }
                         $new_phone->save();
                         $contact->contact_phones = $contact->contact_phones . ',' .  $new_phone_recordid;
                         array_push($phone_recordid_list, $new_phone_recordid);
@@ -675,6 +692,7 @@ class ContactController extends Controller
                 $contact_phone_type_list = $request->phone_type;
                 $contact_phone_language_list = $request->phone_language_data ? json_decode($request->phone_language_data) : [];
                 $contact_phone_description_list = $request->phone_description;
+                $contact_main_priority_list = $request->main_priority;
 
                 for ($i = 0; $i < count($contact_phone_number_list); $i++) {
                     $phone_info = Phone::where('phone_number', '=', $contact_phone_number_list[$i])->first();
@@ -683,8 +701,13 @@ class ContactController extends Controller
                         $phone_info->phone_number = $contact_phone_number_list[$i];
                         $phone_info->phone_extension = $contact_phone_extension_list[$i];
                         $phone_info->phone_type = $contact_phone_type_list ? $contact_phone_type_list[$i] : '';
-                        $phone_info->phone_language = $contact_phone_language_list && isset($contact_phone_language_list[$i]) ? implode(',', $contact_phone_language_list[$i]) : '';
+                        $phone_info->phone_language = $contact_phone_language_list && isset($contact_phone_language_list[$i]) && is_array($contact_phone_language_list[$i]) ? implode(',', $contact_phone_language_list[$i]) : '';
                         $phone_info->phone_description = $contact_phone_description_list[$i];
+                        if (isset($contact_main_priority_list[0]) && $contact_main_priority_list[0] == $i) {
+                            $phone_info->main_priority = '1';
+                        } else {
+                            $phone_info->main_priority = '0';
+                        }
                         $phone_info->save();
                         array_push($phone_recordid_list, $phone_info->phone_recordid);
                     } else {
@@ -694,8 +717,13 @@ class ContactController extends Controller
                         $new_phone->phone_number = $contact_phone_number_list[$i];
                         $new_phone->phone_extension = $contact_phone_extension_list[$i];
                         $new_phone->phone_type = $contact_phone_type_list ? $contact_phone_type_list[$i] : '';
-                        $new_phone->phone_language = $contact_phone_language_list && isset($contact_phone_language_list[$i]) ? implode(',', $contact_phone_language_list[$i]) : '';
+                        $new_phone->phone_language = $contact_phone_language_list && isset($contact_phone_language_list[$i]) && is_array($contact_phone_language_list[$i]) ? implode(',', $contact_phone_language_list[$i]) : '';
                         $new_phone->phone_description = $contact_phone_description_list[$i];
+                        if (isset($contact_main_priority_list[0]) && $contact_main_priority_list[0] == $i) {
+                            $new_phone->main_priority = '1';
+                        } else {
+                            $new_phone->main_priority = '0';
+                        }
                         $new_phone->save();
                         $contact->contact_phones = $contact->contact_phones . ',' .  $new_phone_recordid;
                         array_push($phone_recordid_list, $new_phone_recordid);
@@ -822,6 +850,7 @@ class ContactController extends Controller
                 $contact_phone_extension_list = $request->phone_extension;
                 $contact_phone_type_list = $request->phone_type;
                 $contact_phone_language_list = $request->phone_language_data ? json_decode($request->phone_language_data) : [];
+                $contact_main_priority_list = $request->main_priority;
 
                 $contact_phone_description_list = $request->phone_description;
 
@@ -832,8 +861,13 @@ class ContactController extends Controller
                         $phone_info->phone_number = $contact_phone_number_list[$i];
                         $phone_info->phone_extension = $contact_phone_extension_list[$i];
                         $phone_info->phone_type = $contact_phone_type_list ? $contact_phone_type_list[$i] : '';
-                        $phone_info->phone_language = $contact_phone_language_list && isset($contact_phone_language_list[$i]) ? implode(',', $contact_phone_language_list[$i]) : '';
+                        $phone_info->phone_language = $contact_phone_language_list && isset($contact_phone_language_list[$i]) && is_array($contact_phone_language_list[$i]) ? implode(',', $contact_phone_language_list[$i]) : '';
                         $phone_info->phone_description = $contact_phone_description_list[$i];
+                        if (isset($contact_main_priority_list[0]) && $contact_main_priority_list[0] == $i) {
+                            $phone_info->main_priority = '1';
+                        } else {
+                            $phone_info->main_priority = '0';
+                        }
                         $phone_info->save();
                         array_push($phone_recordid_list, $phone_info->phone_recordid);
                     } else {
@@ -843,8 +877,13 @@ class ContactController extends Controller
                         $new_phone->phone_number = $contact_phone_number_list[$i];
                         $new_phone->phone_extension = $contact_phone_extension_list[$i];
                         $new_phone->phone_type = $contact_phone_type_list ? $contact_phone_type_list[$i] : '';
-                        $new_phone->phone_language = $contact_phone_language_list && isset($contact_phone_language_list[$i]) ? implode(',', $contact_phone_language_list[$i]) : '';
+                        $new_phone->phone_language = $contact_phone_language_list && isset($contact_phone_language_list[$i]) && is_array($contact_phone_language_list[$i]) ? implode(',', $contact_phone_language_list[$i]) : '';
                         $new_phone->phone_description = $contact_phone_description_list[$i];
+                        if (isset($contact_main_priority_list[0]) && $contact_main_priority_list[0] == $i) {
+                            $new_phone->main_priority = '1';
+                        } else {
+                            $new_phone->main_priority = '0';
+                        }
                         $new_phone->save();
                         $contact->contact_phones = $contact->contact_phones . $new_phone_recordid . ',';
                         array_push($phone_recordid_list, $new_phone_recordid);
@@ -919,39 +958,49 @@ class ContactController extends Controller
     {
         $contact = Contact::where('contact_recordid', '=', $id)->first();
         if ($contact) {
-            $organization_info_list = Organization::pluck('organization_name', 'organization_recordid');
-            // $service_info_list = Service::pluck('service_name', 'service_recordid');
-            $service_info_list = Service::select('service_recordid', 'service_name')->orderBy('service_name')->distinct()->get();
-            $contact_services = [];
-            foreach ($contact->service as $key => $value) {
-                array_push($contact_services, $value->service_recordid);
-            }
-            // dd($contact_services);
-            $phone_recordid = $contact->contact_phones;
-            if ($phone_recordid) {
-                $contact_phone = Phone::where('phone_recordid', '=', $phone_recordid)->select('phone_recordid', 'phone_number')->first();
-            } else {
-                $contact_phone = null;
-            }
-            $contact_service_recordid_list = [];
-            if ($contact->contact_services) {
-                $contact_service_recordid_list = explode(',', $contact->contact_services);
-            }
-            $phone_languages = Language::orderBy('order')->whereNotNull('language_recordid')->pluck('language', 'language_recordid');
-            $map = Map::find(1);
-            $phone_type = PhoneType::orderBy('order')->pluck('type', 'id');
-
-            $phone_language_data = [];
-            if ($contact->phone) {
-                foreach ($contact->phone as $key => $value) {
-                    $phone_language_data[$key] = $value->phone_language ? explode(',', $value->phone_language) : [];
+            if ((Auth::user() && Auth::user()->user_organization && $contact->organization && str_contains(Auth::user()->user_organization, $contact->organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin') || (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')) {
+                $organization_info_list = Organization::pluck('organization_name', 'organization_recordid');
+                // $service_info_list = Service::pluck('service_name', 'service_recordid');
+                $service_info_list = Service::select('service_recordid', 'service_name')->orderBy('service_name')->distinct()->get();
+                $contact_services = [];
+                foreach ($contact->service as $key => $value) {
+                    array_push($contact_services, $value->service_recordid);
                 }
+                // dd($contact_services);
+                $phone_recordid = $contact->contact_phones;
+                if ($phone_recordid) {
+                    $contact_phone = Phone::where('phone_recordid', '=', $phone_recordid)->select('phone_recordid', 'phone_number')->first();
+                } else {
+                    $contact_phone = null;
+                }
+                $contact_service_recordid_list = [];
+                if ($contact->contact_services) {
+                    $contact_service_recordid_list = explode(',', $contact->contact_services);
+                }
+                $phone_languages = Language::orderBy('order')->whereNotNull('language_recordid')->pluck('language', 'language_recordid');
+                $map = Map::find(1);
+                $phone_type = PhoneType::orderBy('order')->pluck('type', 'id');
+
+                $phone_language_data = [];
+                $phone_language_name = [];
+                if ($contact->phone) {
+                    foreach ($contact->phone as $key => $value) {
+                        $phone_language_data[$key] = $value->phone_language ? explode(',', $value->phone_language) : [];
+                        $languageId = $value->phone_language ? explode(',', $value->phone_language) : [];
+                        $languages = Language::whereIn('language_recordid', $languageId)->pluck('language')->toArray();
+                        $phone_language_name[$key] = implode(', ', $languages);
+                    }
+                }
+                $phone_language_data = json_encode($phone_language_data);
+                $all_phones = Phone::whereNotNull('phone_number')->distinct()->get();
+                $contactAudits = $this->commonController->contactSection($contact);
+
+                return view('frontEnd.contacts.edit', compact('contact', 'map', 'organization_info_list', 'service_info_list', 'contact_services', 'contact_phone', 'contact_service_recordid_list', 'phone_languages', 'phone_type', 'phone_language_data', 'contactAudits', 'all_phones', 'phone_language_name'));
+            } else {
+                Session::flash('message', 'Warning! Not enough permissions. Please contact Us for more');
+                Session::flash('status', 'warning');
+                return redirect('/');
             }
-            $phone_language_data = json_encode($phone_language_data);
-
-            $contactAudits = $this->commonController->contactSection($contact);
-
-            return view('frontEnd.contacts.edit', compact('contact', 'map', 'organization_info_list', 'service_info_list', 'contact_services', 'contact_phone', 'contact_service_recordid_list', 'phone_languages', 'phone_type', 'phone_language_data', 'contactAudits'));
         } else {
             Session::flash('message', 'This record has been deleted.');
             Session::flash('status', 'warning');
@@ -1003,6 +1052,7 @@ class ContactController extends Controller
                 $contact_phone_type_list = $request->phone_type;
                 $contact_phone_language_list = $request->phone_language_data ? json_decode($request->phone_language_data) : [];
                 $contact_phone_description_list = $request->phone_description;
+                $contact_main_priority_list = $request->main_priority;
 
                 for ($i = 0; $i < count($contact_phone_number_list); $i++) {
                     $phone_info = Phone::where('phone_number', '=', $contact_phone_number_list[$i])->first();
@@ -1011,8 +1061,13 @@ class ContactController extends Controller
                         $phone_info->phone_number = $contact_phone_number_list[$i];
                         $phone_info->phone_extension = $contact_phone_extension_list[$i];
                         $phone_info->phone_type = $contact_phone_type_list ? $contact_phone_type_list[$i] : '';
-                        $phone_info->phone_language = $contact_phone_language_list && isset($contact_phone_language_list[$i]) ? implode(',', $contact_phone_language_list[$i]) : '';
+                        $phone_info->phone_language = $contact_phone_language_list && isset($contact_phone_language_list[$i]) && is_array($contact_phone_language_list[$i]) ? implode(',', $contact_phone_language_list[$i]) : '';
                         $phone_info->phone_description = $contact_phone_description_list[$i];
+                        if (isset($contact_main_priority_list[0]) && $contact_main_priority_list[0] == $i) {
+                            $phone_info->main_priority = '1';
+                        } else {
+                            $phone_info->main_priority = '0';
+                        }
                         $phone_info->save();
                         array_push($phone_recordid_list, $phone_info->phone_recordid);
                     } else {
@@ -1022,8 +1077,13 @@ class ContactController extends Controller
                         $new_phone->phone_number = $contact_phone_number_list[$i];
                         $new_phone->phone_extension = $contact_phone_extension_list[$i];
                         $new_phone->phone_type = $contact_phone_type_list ? $contact_phone_type_list[$i] : '';
-                        $new_phone->phone_language = $contact_phone_language_list && isset($contact_phone_language_list[$i]) ? implode(',', $contact_phone_language_list[$i]) : '';
+                        $new_phone->phone_language = $contact_phone_language_list && isset($contact_phone_language_list[$i]) && is_array($contact_phone_language_list[$i]) ? implode(',', $contact_phone_language_list[$i]) : '';
                         $new_phone->phone_description = $contact_phone_description_list[$i];
+                        if (isset($contact_main_priority_list[0]) && $contact_main_priority_list[0] == $i) {
+                            $new_phone->main_priority = '1';
+                        } else {
+                            $new_phone->main_priority = '0';
+                        }
                         $new_phone->save();
                         $contact->contact_phones = $contact->contact_phones . $new_phone_recordid . ',';
                         array_push($phone_recordid_list, $new_phone_recordid);
@@ -1113,8 +1173,10 @@ class ContactController extends Controller
 
         $phone_languages = Language::orderBy('order')->whereNotNull('language_recordid')->pluck('language', 'language_recordid');
         $phone_type = PhoneType::orderBy('order')->pluck('type', 'id');
+        $all_phones = Phone::whereNotNull('phone_number')->distinct()->get();
+        $phone_language_data = json_encode([]);
 
-        return view('frontEnd.contacts.contact-create-in-service', compact('service_recordid', 'organization_recordid', 'map', 'organizations', 'phone_languages', 'phone_type'));
+        return view('frontEnd.contacts.contact-create-in-service', compact('service_recordid', 'organization_recordid', 'map', 'organizations', 'phone_languages', 'phone_type', 'all_phones', 'phone_language_data'));
     }
     public function add_new_contact_in_service(Request $request)
     {
@@ -1160,6 +1222,7 @@ class ContactController extends Controller
                 $contact_phone_type_list = $request->phone_type;
                 $contact_phone_language_list = $request->phone_language_data ? json_decode($request->phone_language_data) : [];
                 $contact_phone_description_list = $request->phone_description;
+                $contact_main_priority_list = $request->main_priority;
 
                 for ($i = 0; $i < count($contact_phone_number_list); $i++) {
                     $phone_info = Phone::where('phone_number', '=', $contact_phone_number_list[$i])->first();
@@ -1168,8 +1231,13 @@ class ContactController extends Controller
                         $phone_info->phone_number = $contact_phone_number_list[$i];
                         $phone_info->phone_extension = $contact_phone_extension_list[$i];
                         $phone_info->phone_type = $contact_phone_type_list ? $contact_phone_type_list[$i] : '';
-                        $phone_info->phone_language = $contact_phone_language_list && isset($contact_phone_language_list[$i]) ? implode(',', $contact_phone_language_list[$i]) : '';
+                        $phone_info->phone_language = $contact_phone_language_list && isset($contact_phone_language_list[$i]) && is_array($contact_phone_language_list[$i]) ? implode(',', $contact_phone_language_list[$i]) : '';
                         $phone_info->phone_description = $contact_phone_description_list[$i];
+                        if (isset($contact_main_priority_list[0]) && $contact_main_priority_list[0] == $i) {
+                            $phone_info->main_priority = '1';
+                        } else {
+                            $phone_info->main_priority = '0';
+                        }
                         $phone_info->save();
                         array_push($phone_recordid_list, $phone_info->phone_recordid);
                     } else {
@@ -1179,8 +1247,13 @@ class ContactController extends Controller
                         $new_phone->phone_number = $contact_phone_number_list[$i];
                         $new_phone->phone_extension = $contact_phone_extension_list[$i];
                         $new_phone->phone_type = $contact_phone_type_list ? $contact_phone_type_list[$i] : '';
-                        $new_phone->phone_language = $contact_phone_language_list && isset($contact_phone_language_list[$i]) ? implode(',', $contact_phone_language_list[$i]) : '';
+                        $new_phone->phone_language = $contact_phone_language_list && isset($contact_phone_language_list[$i]) && is_array($contact_phone_language_list[$i]) ? implode(',', $contact_phone_language_list[$i]) : '';
                         $new_phone->phone_description = $contact_phone_description_list[$i];
+                        if (isset($contact_main_priority_list[0]) && $contact_main_priority_list[0] == $i) {
+                            $new_phone->main_priority = '1';
+                        } else {
+                            $new_phone->main_priority = '0';
+                        }
                         $new_phone->save();
                         $contact->contact_phones = $contact->contact_phones . $new_phone_recordid . ',';
                         array_push($phone_recordid_list, $new_phone_recordid);

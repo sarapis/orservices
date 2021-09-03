@@ -2,6 +2,8 @@
 @section('title')
 Services
 @stop
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
 <style>
     tr.modified{
         background-color: red !important;
@@ -11,6 +13,21 @@ Services
         background-color: red !important;
         color: white;
     }
+    .dropdown-menu.open {
+        max-height: 250px;
+        overflow: auto !important;
+        width: 100%;
+    }
+    .bootstrap-select .dropdown-toggle .filter-option {
+        position: relative;
+        top: 0;
+        left: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        text-align: left;
+    }
+    .form-group{float: left;width: 100%}
 </style>
 @section('content')
 
@@ -19,318 +36,209 @@ Services
     <div class="x_panel">
       <div class="x_title">
         <h2>Services</h2>
+            <div class="nav navbar-right panel_toolbox">
+                <a href="javascript:void(0)" id="export_csv" class="btn btn-success">Export Services</a>
+            </div>
         <div class="clearfix"></div>
+      </div>
+      <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+                <label for="inputPassword3" class="col-sm-3 control-label">Select SDOH Condition</label>
+                <div class="col-sm-7">
+                    {!! Form::select('conditions[]',$conditions,null,['class' => 'form-control','id' => 'conditions', 'data-live-search' => 'true','data-size' => '5','multiple' => 'true']) !!}
+                </div>
+            </div>
+          </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="inputPassword3" class="col-sm-3 control-label">Select Goal</label>
+                <div class="col-sm-7">
+                     {!! Form::select('goals',$goals,null,['class' => 'form-control','id' => 'goals', 'data-live-search' => 'true','data-size' => '5','multiple' => 'true']) !!}
+                </div>
+            </div>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+                <label for="inputPassword3" class="col-sm-3 control-label">Select activities</label>
+                <div class="col-sm-7">
+                     {!! Form::select('activities',$activities,null,['class' => 'form-control','id' => 'activities', 'data-live-search' => 'true','data-size' => '5','multiple' => 'true']) !!}
+                </div>
+            </div>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+                <label for="inputPassword3" class="col-sm-3 control-label">Select organizations</label>
+                <div class="col-sm-7">
+                     {!! Form::select('organizations',$organizations,null,['class' => 'form-control','id' => 'organizations', 'data-live-search' => 'true','data-size' => '5','multiple' => 'true']) !!}
+                </div>
+            </div>
+          </div>
       </div>
       <div class="x_content" style="overflow: scroll;">
 
         <!-- <table class="table table-striped jambo_table bulk_action table-responsive"> -->
-        <table id="example" class="display nowrap table-striped jambo_table table-bordered table-responsive" cellspacing="0" width="100%">
+        <table id="services_table" class="table display nowrap table-striped jambo_table table-bordered " cellspacing="0" width="100%">
             <thead>
                 <tr>
-                    <th class="text-center">No</th>
-                    <th class="text-center">Name</th>
-                    <th class="text-center">Organizations</th>
-                    <th class="text-center">Alternate name</th>
-                    <th class="text-center">Url</th>
-                    <th class="text-center">Email</th>
-                    <th class="text-center">Description</th>
-                    <th class="text-center">Locations</th>
-
-                    <th class="text-center">Status</th>
-                    <th class="text-center">Taxonomy</th>
-                    <th class="text-center">Application Process</th>
-                    <th class="text-center">Wait Time</th>
-                    <th class="text-center">Fees</th>
-                    <th class="text-center">Accreditations</th>
-                    <th class="text-center">Licenses</th>
-                    <th class="text-center">Phones</th>
-                    <th class="text-center">Schedule</th>
-                    <th class="text-center">Contacts</th>
-                    @if($source_data->active == 1 || $source_data->active == 3)
-                    <th class="text-center">Details</th>
-                    @endif
-                    <th class="text-center">Address</th>
-                    @if($source_data->active == 0 )
-                    <th class="text-center">Languages</th>
-                    @endif
-                    <th class="text-center">Actions</th>
+                    <th class="text-center">Service ID</th>
+                    <th class="text-center">Service Name</th>
+                    <th class="text-center">Alt Name</th>
+                    <th class="text-center">Organization</th>
+                    <th class="text-center">SDOH Codes</th>
+                    {{-- <th class="text-center">Action</th> --}}
                 </tr>
             </thead>
             <tbody>
-              @foreach($services as $key => $service)
-                <tr id="service{{$service->id}}" class="{{$service->flag}}">
-                  @if($source_data->active == 1 || $source_data->active == 3)
-                  <td class="text-center">{{$key}}+1</td>
-                  @elseif($source_data->active == 0)
-                  <td class="text-center">{{$service->service_recordid}}</td>
-                  @endif
-                  <td>{{$service->service_name}}</td>
-
-
-                  <td class="text-center">
-                  @if(isset($service->organizations()->first()->organization_name))
-                    <span class="badge bg-green">{{$service->organizations()->first()->organization_name}}</span>
-                  @endif
-                  </td>
-
-                  <td class="text-center">{{$service->service_alternate_name}}</td>
-
-                  <td class="text-center">{{$service->service_url}}</td>
-                  <td class="text-center">{{$service->service_email}}</td>
-
-
-                  <td class="text-center"><span style="white-space:normal;">{!! $service->service_description !!}</span></td>
-
-                  <td class="text-center">
-
-
-                      @foreach($service->locations as $location)
-
-                      <span class="badge bg-purple">{{$location->location_name}}</span>
-
-                      @endforeach
-
-
-                  </td>
-
-                  <td class="text-center">{{$service->service_status}}</td>
-
-
-                  <td class="text-center">
-                    @if($service->service_taxonomy!=0 || $service->service_taxonomy==null)
-                      @foreach($service->taxonomy as $taxonomy)
-                      <span class="badge bg-blue">{{$taxonomy->taxonomy_name}}</span>
-                      @endforeach
-                    @endif
-                  </td>
-
-                  <td class="text-center"><span style="white-space:normal;">{!! $service->service_application_process !!}</span></td>
-                  <td class="text-center">{{$service->service_wait_time}}</td>
-                  <td class="text-center">{{$service->service_fees}}</td>
-                  <td class="text-center">{{$service->service_accreditations}}</td>
-                  <td class="text-center">{{$service->service_licenses}}</td>
-                  <td class="text-center">@foreach($service->phone as $phone)
-                    <span class="badge bg-red">{!! $phone->phone_number !!}</span>
-                  @endforeach</td>
-
-                  <td class="text-center">
-
-
-                      @foreach($service->schedules as $schedule)
-
-                      <span class="badge bg-purple">{{$schedule->schedule_days_of_week}} {{$schedule->opens_at}} {{$schedule->closes_at}}</span>
-
-                      @endforeach
-
-
-                  </td>
-
-                  <td class="text-center"><span class="badge bg-blue">@if(isset($service->contact()->first()->contact_name))
-                  {{$service->contact()->first()->contact_name}}</span>
-
-                  @endif</td>
-
-                  @if($source_data->active == 1 || $source_data->active == 3)
-                  <td class="text-center">
-                    @if($service->service_details != null )
-                      @foreach($service->details as $deta)
-                        <span class="badge bg-red">{{$deta->detail_value}}</span>
-                      @endforeach
-                    @endif
-                  </td>
-                  @endif
-
-                  <td class="text-center"><span style="white-space:normal;">
-                  @if(isset($service->address))
-                    @foreach($service->address as $address)
-                      <span class="badge bg-green">{{ $address->address_1 }}</span>
-                    @endforeach
-                    </span>
-                  @endif
-                  </td>
-
-                  @if($source_data->active == 0 )
-                  <td class="text-center">@if(isset($service->languages)) @foreach($service->languages as $language)
-                    <span class="badge bg-green">{{$language->language}}</span>
-                  @endforeach
-                  @endif
-                  </td>
-                  @endif
-
-                  <td class="text-center">
-                    {{-- <button class="btn btn-block btn-primary btn-sm open_modal"  value="{{$service->service_recordid}}" style="width: 80px;"><i class="fa fa-fw fa-edit"></i>Edit</button> --}}
-                  </td>
-                </tr>
-              @endforeach
             </tbody>
         </table>
-        {!! $services->links() !!}
       </div>
     </div>
   </div>
 </div>
 <!-- Passing BASE URL to AJAX -->
-<input id="url" type="hidden" value="{{ \Request::url() }}">
-
-<div class="modal fade in" id="myModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content form-horizontal">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">×</span></button>
-                <h4 class="modal-title">Service</h4>
-            </div>
-            <form class=" form-horizontal user" id="frmProducts" name="frmProducts"  novalidate="" style="margin-bottom: 0;">
-                <div class="row modal-body">
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Name</label>
-
-                      <div class="col-sm-7">
-                        <input type="text" class="form-control" id="service_name" name="service_name" value="">
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Alternate name</label>
-
-                      <div class="col-sm-7">
-                        <input type="text" class="form-control" id="service_alternate_name" name="service_alternate_name" value="">
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Description</label>
-
-                      <div class="col-sm-7">
-                        <textarea type="text" class="form-control" id="service_description" name="service_description" value="" rows="5"></textarea>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Url</label>
-
-                      <div class="col-sm-7">
-                        <textarea type="text" class="form-control" id="service_url" name="service_url" value="" rows="5"></textarea>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Email</label>
-
-                      <div class="col-sm-7">
-                        <textarea type="text" class="form-control" id="service_email" name="service_email" value="" rows="5"></textarea>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="inputPassword3" class="col-sm-3 control-label">Status</label>
-                        <div class="col-sm-7">
-                            <select class="form-control" id="service_status">
-                                <option></option>
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Application process</label>
-
-                      <div class="col-sm-7">
-                        <textarea type="text" class="form-control" id="service_application_process" name="service_application_process" value="" rows="5"></textarea>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Wait time</label>
-
-                      <div class="col-sm-7">
-                        <input type="text" class="form-control" id="service_wait_time" name="service_wait_time" value="">
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Fees</label>
-
-                      <div class="col-sm-7">
-                        <input type="text" class="form-control" id="service_fees" name="service_fees" value="">
-                      </div>
-                    </div>
-
-
-
-                    <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Accreditations</label>
-
-                      <div class="col-sm-7">
-                        <input type="text" class="form-control" id="service_accreditations" name="service_accreditations" value="">
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">License</label>
-
-                      <div class="col-sm-7">
-                        <input type="text" class="form-control" id="service_licenses" name="service_licenses" value="">
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Metadata</label>
-
-                      <div class="col-sm-7">
-                        <input type="text" class="form-control" id="service_metadata" name="service_metadata" value="">
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="btn-save" value="add">Save changes</button>
-                    <input type="hidden" id="id" name="project_id" value="0">
-                </div>
-            </form>
-        </div>
-        <!-- /.modal-content -->
-  </div>
-  <!-- /.modal-dialog -->
-</div>
 @endsection
 
 @section('scripts')
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">
-$(document).ready(function() {
-    $('#example').DataTable( {
-        responsive: {
-            details: {
-                renderer: function ( api, rowIdx, columns ) {
-                    var data = $.map( columns, function ( col, i ) {
-                        return col.hidden ?
-                            '<tr data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">'+
-                                '<td>'+col.title+':'+'</td> '+
-                                '<td>'+col.data+'</td>'+
-                            '</tr>' :
-                            '';
-                    } ).join('');
-
-                    return data ?
-                        $('<table/>').append( data ) :
-                        false;
+    $('#conditions').selectpicker()
+    $('#goals').selectpicker()
+    $('#activities').selectpicker()
+    $('#organizations').selectpicker()
+    let services_table;
+    let extraData = {};
+    let ajaxUrl
+    ajaxUrl = "{{ route('tb_service.index') }}";
+  $(document).ready(function(){
+    services_table = $('#services_table').DataTable({
+            'order': [0, 'desc'],
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: ajaxUrl,
+                method : "get",
+                headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    },
+                    data : function (d){
+                        if (typeof extraData !== 'undefined') {
+                            // $('#loading').show();
+                            d.extraData = extraData;
+                        }
+                    },
+                },
+            columns: [
+                { data: 'id', name: 'id' },
+                { data: 'service_name', name: 'service_name' },
+                { data: 'service_alternate_name', name: 'service_alternate_name' },
+                { data: 'service_organization', name: 'service_organization' },
+                { data: 'codes', name: 'codes' },
+            ],
+            columnDefs : [
+                {
+                    "targets": 0,
+                    "orderable": true,
+                    "class": "text-left",
+                },
+                {
+                    "targets": 1,
+                    "orderable": true,
+                    "class": "text-left"
+                },
+                {
+                    "targets": 2,
+                    "orderable": true,
+                    "class": "text-left"
+                },
+                {
+                    "targets": 3,
+                    "orderable": true,
+                    "class": "text-left"
+                },
+                {
+                    "targets": 4,
+                    "orderable": true,
+                    "class": "text-left"
+                },
+                // {
+                //     "targets": 5,
+                //     "orderable": true,
+                //     "class": "text-left"
+                // },
+                // {
+                //     "targets": 6,
+                //     "orderable": true,
+                //     "class": "text-left"
+                // },
+                // {
+                //     "targets": 7,
+                //     "orderable": true,
+                //     "class": "text-left"
+                // },
+                // {
+                //     "targets": 8,
+                //     "orderable": true,
+                //     "class": "text-left"
+                // },
+            ],
+        });
+        $('#conditions').change(function(){
+            let val = $(this).val()
+            extraData.conditions = val
+            services_table.ajax.reload()
+        })
+        $('#goals').change(function(){
+            let val = $(this).val()
+            extraData.goals = val
+            services_table.ajax.reload()
+        })
+        $('#activities').change(function(){
+            let val = $(this).val()
+            extraData.activities = val
+            services_table.ajax.reload()
+        })
+        $('#organizations').change(function(){
+            let val = $(this).val()
+            extraData.organizations = val
+            services_table.ajax.reload()
+        })
+        $('#start_date').change(function(){
+            let val = $(this).val()
+            extraData.start_date = val
+            services_table.ajax.reload()
+        })
+        $('#end_date').change(function(){
+            let val = $(this).val()
+            extraData.end_date = val
+            services_table.ajax.reload()
+        })
+        $('#export_csv').click(function () {
+            _token = '{{ csrf_token() }}'
+            $.ajax({
+                url:"{{ route('tb_service.export') }}",
+                method : 'POST',
+                data:{extraData,},
+                success:function(response){
+                    // const url = window.URL.createObjectURL(new Blob([response]));
+                    const a = document.createElement('a');
+                            a.href = response.path;
+                            a.download = 'services.csv';
+                            document.body.appendChild(a);
+                            a.click();
+                },
+                error : function(error){
+                    console.log(error)
                 }
-            }
-        },
-        "paging": false,
-        "pageLength": 20,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": false,
-        "autoWidth": true
-    } );
-} );
+            })
+        })
+    });
 </script>
-<script src="{{asset('js/service_ajaxscript.js')}}"></script>
 @endsection

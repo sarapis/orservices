@@ -16,13 +16,15 @@
         <th>accreditations</th>
         <th>licenses</th>
         <th>taxonomy_ids</th>
+        <th>taxonomies</th>
+        <th>SDOH Code</th>
     </thead>
     <tbody>
         <tr></tr>
         @foreach ($services as $value)
         <tr>
             <td>{{ $value->service_recordid }}</td>
-            <td>{{ $value->service_organization }}</td>
+            <td>{{ $value->organizations ? $value->organizations->organization_name : ''  }}</td>
             <td>{{ $value->service_program }}</td>
             <td>{{ $value->service_name }}</td>
             <td>{{ $value->service_alternate_name }}</td>
@@ -37,6 +39,24 @@
             <td>{{ $value->service_accreditations }}</td>
             <td>{{ $value->service_licenses }}</td>
             <td>{{ $value->service_taxonomy }}</td>
+            @if (isset($value->taxonomy) && count($value->taxonomy) > 0)
+            <td>
+                @foreach ($value->taxonomy as $item)
+                    {{ $item->taxonomy_name .' , ' }}
+                @endforeach
+            </td>
+            @else
+            <td></td>
+            @endif
+            @if (isset($value->codes) && count($value->codes) > 0)
+            <td>
+                @foreach ($value->codes as $item)
+                    {{ $item->resource . ' - ' . $item->description . ' - ' . $item->rating .' , ' }}
+                @endforeach
+            </td>
+            @else
+            <td></td>
+            @endif
         </tr>
         @endforeach
     </tbody>

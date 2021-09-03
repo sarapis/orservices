@@ -24,16 +24,15 @@ class OrganizationAdmin
             Session::flash('status', 'warning');
             return redirect()->back();
         }
-        if ($routeName != 'contacts.index' && $routeName != 'facilities.index' && $routeName != 'organizations.create' || $user && $user->roles->name != 'Organization Admin') {
+        if ($user && $user->roles->name == 'System Admin' || $user && $user->roles->name == 'Organization Admin' || $routeName != 'contacts.index' && $routeName != 'facilities.index' && $routeName != 'facilities.edit' && $routeName != 'facilities.update' && $routeName != 'facilities.show' && $routeName != 'contacts.edit' && $routeName != 'organizations.create' && $routeName != 'organizations.edit' && $routeName != 'services.edit') {
             return $next($request);
         } else {
             if (!empty($api)) {
                 return response()->json(['message' => 'you_dont_have_permission_to_use_this_route'], 403);
             } else {
-
                 Session::flash('message', 'Warning! Not enough permissions. Please contact Us for more');
                 Session::flash('status', 'warning');
-                return redirect()->back();
+                return redirect('/');
             }
         }
     }

@@ -147,6 +147,9 @@ Notes
     }
   $(document).ready(function(){
     notes_table = $('#notes_table').DataTable({
+            'order': [1, 'desc'],
+            processing: true,
+            serverSide: true,
             ajax: {
                 url: ajaxUrl,
                 method : "get",
@@ -172,7 +175,7 @@ Notes
             columnDefs : [
                 {
                     "targets": 0,
-                    "orderable": false,
+                    "orderable": true,
                     "class": "text-left",
                 },
                 {

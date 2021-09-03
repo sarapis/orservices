@@ -55,6 +55,8 @@ Organization tags
     let ajaxUrl = "{{ route('organization_tags.index') }}";
   $(document).ready(function(){
     tbl_organization_tags = $('#tbl_organization_tags').DataTable({
+            processing: true,
+            serverSide: true,
             ajax: {
                 url: ajaxUrl,
                 method : "get",

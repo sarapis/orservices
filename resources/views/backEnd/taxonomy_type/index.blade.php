@@ -79,6 +79,8 @@ Taxonomies
     let ajaxUrl = "{{ route('taxonomy_types.index') }}";
   $(document).ready(function(){
     taxonomy_type_table = $('#taxonomy_type_table').DataTable({
+        processing: true,
+            serverSide: true,
             ajax: {
                 url: ajaxUrl,
                 method : "get",

@@ -79,6 +79,8 @@ Languages
     let ajaxUrl = "{{ route('languages.index') }}";
   $(document).ready(function(){
     tbllanguages = $('#tbllanguages').DataTable({
+            processing: true,
+            serverSide: true,
             ajax: {
                 url: ajaxUrl,
                 method : "get",

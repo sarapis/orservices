@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
@@ -39,5 +40,14 @@ class Phone extends Model implements ContractsAuditable
     public function schedule()
     {
         return $this->belongsTo('App\Model\Schedule', 'phone_schedule', 'schedule_recordid');
+    }
+    /**
+     * Get the user that owns the Phone
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(PhoneType::class, 'phone_type', 'id');
     }
 }

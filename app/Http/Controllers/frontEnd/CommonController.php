@@ -4,6 +4,7 @@ namespace App\Http\Controllers\frontEnd;
 
 use App\Http\Controllers\Controller;
 use App\Model\Address;
+use App\Model\Code;
 use App\Model\Contact;
 use App\Model\Detail;
 use App\Model\Location;
@@ -253,6 +254,34 @@ class CommonController extends Controller
                         }
                     }
                     $old_values[$key] = $oldOrganizationName;
+                } else if ($key == 'SDOH_code') {
+                    $serviceCodeIds = isset($value->new_values[$key]) ? explode(',', $value->new_values[$key]) : [];
+                    $serviceCodeOldIds = isset($value->old_values[$key]) ? explode(',', $value->old_values[$key]) : [];
+                    $serviceCodeIds = array_values(array_filter($serviceCodeIds));
+                    $serviceCodeOldIds = array_values(array_filter($serviceCodeOldIds));
+                    $codeName = '';
+                    $oldCodeName = '';
+                    foreach ($serviceCodeIds as $keyP => $valueP) {
+                        $codeData = Code::whereId($valueP)->with('code_ledger')->first();
+                        if ($codeData && $codeData->category) {
+                            if ($keyP == 0)
+                                $codeName = $codeData->resource . ' - ' . $codeData->category . ($codeData->code_ledger ? ' - ' . $codeData->code_ledger->rating : '');
+                            else
+                                $codeName = $codeName . '| ' . $codeData->resource . ' - ' . $codeData->category . ($codeData->code_ledger ? ' - ' . $codeData->code_ledger->rating : '');
+                        }
+                    }
+                    $new_values[$key] = $codeName;
+
+                    foreach ($serviceCodeOldIds as $keyO => $valueO) {
+                        $oldCodeData = Code::whereId($valueO)->first();
+                        if ($oldCodeData && $oldCodeData->category) {
+                            if ($keyO == 0)
+                                $oldCodeName =  $oldCodeData->resource . ' - ' . $oldCodeData->resource . ($oldCodeData->code_ledger ? ' - ' . $oldCodeData->code_ledger->rating : '');
+                            else
+                                $oldCodeName = $oldCodeName . '| ' . $oldCodeData->resource . ' - ' . $oldCodeData->category . ($oldCodeData->code_ledger ? ' - ' . $oldCodeData->code_ledger->rating : '');
+                        }
+                    }
+                    $old_values[$key] = $oldCodeName;
                 } else if ($key == 'service_name') {
                     $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
                     $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
