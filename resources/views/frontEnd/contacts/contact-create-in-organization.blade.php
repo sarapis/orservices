@@ -62,6 +62,12 @@ Contact Create
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
+                                        <label>Visibility: </label>
+                                        {!! Form::select('visibility',['public' => 'Public','private' => 'Private'],null,['class'=>'form-control selectpicker','id' => 'visibility']) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
                                         <label>Contact Email: </label>
                                         <input class="form-control selectpicker" type="text" id="contact_email" name="contact_email" value="">
                                     </div>

@@ -165,14 +165,36 @@
 
                             @if($service->service_application_process)
                             <h4>
-                                <span class="subtitle"><b>Application</b></span> {!!
+                                <span class="subtitle"><b>Application:</b></span> {!!
                                 $service->service_application_process
                                 !!}
+                            </h4>
+                            @endif
+                            @if($service->areas && count($service->areas) > 0)
+                            <h4>
+                                <span class="subtitle"><b>Service Area: </b></span>
+                                @foreach ($service->areas as $k => $item)
+                                @if ($k >0)
+                                ,
+                                @endif
+                                {{ $item->name }}
+                                @endforeach
                             </h4>
                             @endif
 
                             @if($service->service_wait_time)
                             <h4><span class="subtitle"><b>Wait Time:</b></span> {{$service->service_wait_time}}</h4>
+                            @endif
+                            @if($service->fees && count($service->fees) > 0)
+                            <h4>
+                                <span class="subtitle"><b>Fee Options: </b></span>
+                                @foreach ($service->fees as $k => $item)
+                                @if ($k >0)
+                                ,
+                                @endif
+                                {{ $item->fees }}
+                                @endforeach
+                            </h4>
                             @endif
 
                             @if($service->service_fees)
@@ -272,7 +294,19 @@
                             @php
                                 $i = 0;
                                 $j = 0;
+                                $service_category_data = 0;
+                                $service_eligibility_data = 0;
+                                foreach($service->taxonomy as $service_taxonomy_info){
+                                    // dd($service_taxonomy_info->taxonomy_type[0]->name);
+                                    if (isset($service_taxonomy_info->taxonomy_type) && count($service_taxonomy_info->taxonomy_type) > 0 && $service_taxonomy_info->taxonomy_type[0]->name == 'Service Category'){
+                                        $service_category_data += 1;
+                                    }
+                                    if (isset($service_taxonomy_info->taxonomy_type) && count($service_taxonomy_info->taxonomy_type) > 0 && $service_taxonomy_info->taxonomy_type[0]->name == 'Service Eligibility'){
+                                        $service_eligibility_data += 1;
+                                    }
+                                }
                             @endphp
+                            @if ($service_category_data != 0)
                             <h4>
                                 <span class="pl-0 category_badge subtitle">
                                     @foreach ($service->taxonomy as $service_taxonomy_info)
@@ -294,7 +328,8 @@
                                     @endforeach
                                 </span>
                             </h4>
-
+                            @endif
+                            @if ($service_eligibility_data != 0)
                             <h4>
                                 <span class="pl-0 category_badge subtitle">
                                     @foreach ($service->taxonomy as $service_taxonomy_info)
@@ -316,6 +351,7 @@
                                     @endforeach
                                 </span>
                             </h4>
+                            @endif
                             @endif
                             @endisset
                             @if ($service->program && count($service->program) > 0)
@@ -449,8 +485,7 @@
                                 @foreach($service->locations as $location)
                                 <div class="location_border">
                                     <h4>
-                                        @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System
-                                        Admin')
+                                        @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
                                         <a href="/facilities/{{$location->location_recordid}}/edit" class="float-right">
                                             <i class="icon md-edit mr-0"></i>
                                         </a>
@@ -495,32 +530,31 @@
                                         @if(isset($location->phones))
                                         @if($location->phones != null)
                                         @if(count($location->phones) > 0)
+                                        @php
+                                        $phones = '';
+                                        @endphp
+                                        @foreach($location->phones as $k => $phone)
+                                        @php
+                                        if($phone->phone_number){
+                                        if($k == 0){
+                                        $phoneNo = '<a
+                                            href="tel:'.$phone->phone_number.'">'.$phone->phone_number.'</a>';
+                                        }else{
+                                        $phoneNo = ', '.'<a
+                                            href="tel:'.$phone->phone_number.'">'.$phone->phone_number .'</a>';
+                                        }
+                                        $phones .= $phoneNo;
+                                        }
+                                        @endphp
+                                        @endforeach
+                                        @if ($phones != '')
                                         <h4>
                                             <span>
-
-                                                @php
-                                                $phones = '';
-                                                @endphp
-                                                @foreach($location->phones as $k => $phone)
-                                                @php
-                                                if($phone->phone_number){
-                                                if($k == 0){
-                                                $phoneNo = '<a
-                                                    href="tel:'.$phone->phone_number.'">'.$phone->phone_number.'</a>';
-                                                }else{
-                                                $phoneNo = ', '.'<a
-                                                    href="tel:'.$phone->phone_number.'">'.$phone->phone_number .'</a>';
-                                                }
-                                                $phones .= $phoneNo;
-                                                }
-                                                @endphp
-                                                @endforeach
-                                                @if ($phones != '')
                                                 <i class="icon md-phone font-size-18 vertical-align-top "></i>
                                                 {!! rtrim($phones, ',') !!}
-                                                @endif
                                             </span>
                                         </h4>
+                                        @endif
                                         @endif
                                         @endif
                                         @endif
@@ -533,9 +567,11 @@
                                         @endif
                                         @if(isset($location->accessibilities()->first()->accessibility))
                                         <h4>
-                                            <span><b>Accessibility for disabilities:</b></span>
+
+                                            <span><i class="fa fa-wheelchair-alt icon font-size-18 vertical-align-top"></i>
+                                                {{$location->accessibilities()->first()->accessibility}}
+                                            </span>
                                             <br />
-                                            {{$location->accessibilities()->first()->accessibility}}
                                         </h4>
                                         @endif
                                         @if(isset($location->schedules()->first()->byday))
@@ -565,17 +601,18 @@
                 </div>
 
                 <!-- contact area design -->
-                @if($contact_info_list && count($contact_info_list) > 0)
+                @if($contact_info_list && count($contact_info_list) > 0 && $contactCount > 0)
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card_services_title"> Contacts </h4>
                         @foreach($contact_info_list as $contact_info)
+                        @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
+                        <a href="/contacts/{{$contact_info->contact_recordid}}/edit" class="float-right">
+                            <i class="icon md-edit mr-0"></i>
+                        </a>
+                        @endif
+                        @if((Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin') || (Auth::user() && Auth::user()->roles && Auth::user()->user_organization && $contact_info->organization && str_contains(Auth::user()->user_organization,$contact_info->organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin') || !Auth::check() && $contact_info->visibility != 'private')
                         <div class="location_border">
-                            @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
-                            <a href="/contacts/{{$contact_info->contact_recordid}}/edit" class="float-right">
-                                <i class="icon md-edit mr-0"></i>
-                            </a>
-                            @endif
                             <table class="table ">
                                 <tbody>
                                     @if($contact_info->contact_name)
@@ -635,6 +672,7 @@
                                 </tbody>
                             </table>
                         </div>
+                         @endif
                         @endforeach
                     </div>
                 </div>

@@ -57,8 +57,8 @@ Schedule
                   </td>
 
                   <td>
-                  @if(isset($schedule->locations()->first()->location_name))
-                    <span class="badge bg-green">{{$schedule->locations()->first()->location_name}}</span>
+                  @if(isset($schedule->get_locations()->first()->location_name))
+                    <span class="badge bg-green">{{$schedule->get_locations()->first()->location_name}}</span>
                   @endif
                   </td>
                   @if($source_data->active == 1 || $source_data->active == 3)

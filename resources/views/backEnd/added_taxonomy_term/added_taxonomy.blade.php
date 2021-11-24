@@ -36,7 +36,7 @@ Taxonomy terms
         <table id="taxonomy_table" class="display nowrap table-striped jambo_table table-bordered table-responsive" cellspacing="0" width="100%">
             <thead>
                 <tr>
-                	<th class="text-center">No</th>
+                	<th class="text-center">UID</th>
                     <th class="text-center">Timestamp</th>
                     <th class="text-center">User</th>
                     <th class="text-center">Term Submitted</th>
@@ -50,7 +50,7 @@ Taxonomy terms
             @if($add_taxonomies)
               @foreach($add_taxonomies as $key => $taxonomy)
                 <tr id="taxonomy{{$taxonomy->taxonomy_recordid}}">
-                  <td class="text-center">{{$key+1}}</td>
+                  <td class="text-center">{{$taxonomy->id}}</td>
                   <td class="text-center">{{$taxonomy->created_at}}</td>
                   <td class="text-center">{{$taxonomy->user->first_name ?? '' }}</td>
                   <td class="text-center">{{$taxonomy->taxonomy_name }}</td>

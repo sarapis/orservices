@@ -74,21 +74,21 @@ Create Detail
                     <div class="form-group {{ $errors->has('detail_services') ? 'has-error' : ''}}">
                         {!! Form::label('detail_services', 'Services' , ['class' => 'col-md-3 control-label']) !!}
                         <div class="col-sm-6">
-                            {!! Form::select('detail_services',$services,null,['class' => 'form-control','id' => 'detail_services','multiple' => true]) !!}
+                            {!! Form::select('detail_services',$services,null,['class' => 'form-control','id' => 'detail_services','placeholder' => 'select']) !!}
                             {!! $errors->first('detail_services', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
                     <div class="form-group {{ $errors->has('detail_organizations') ? 'has-error' : ''}}">
                         {!! Form::label('detail_organizations', 'Organizations' , ['class' => 'col-md-3 control-label']) !!}
                         <div class="col-sm-6">
-                            {!! Form::select('detail_organizations',$organizations,null,['class' => 'form-control','multiple' => true,'id' => 'detail_organizations']) !!}
+                            {!! Form::select('detail_organizations',$organizations,null,['class' => 'form-control','id' => 'detail_organizations','placeholder' => 'select']) !!}
                             {!! $errors->first('detail_organizations', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
                     <div class="form-group {{ $errors->has('detail_locations') ? 'has-error' : ''}}">
                         {!! Form::label('detail_locations', 'Locations' , ['class' => 'col-md-3 control-label']) !!}
                         <div class="col-sm-6">
-                            {!! Form::select('detail_locations',$locations,null,['class' => 'form-control','multiple' => true,'id' => 'detail_locations']) !!}
+                            {!! Form::select('detail_locations',$locations,null,['class' => 'form-control','id' => 'detail_locations','placeholder' => 'select']) !!}
                             {!! $errors->first('detail_locations', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>

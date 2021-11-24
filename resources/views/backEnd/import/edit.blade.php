@@ -31,16 +31,15 @@ Edit Source
                     <div class="form-group {{ $errors->has('import_type') ? 'has-error' : ''}}">
                         {!! Form::label('import_type', 'Format', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-6">
-                            {!! Form::select('import_type',['airtable' => 'HSDS v.2.0 Airtable' , 'zipfile' => 'HSDS v.2.0 Zip File'], null, ['class' =>
-                            'form-control select','id' => 'import_type']) !!}
+                            {!! Form::select('import_type',['airtable' => 'HSDS v.2.0 Airtable' , 'zipfile' => 'HSDS v.2.0 Zip File','zipfile_api' => 'HSDS v.2.0 Zip API' ], null, ['class' => 'form-control select','id' => 'import_type']) !!}
                             {!! $errors->first('import_type', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
                     <div class="form-group {{ $errors->has('airtable_api_key') ? 'has-error' : ''}}" id="airtable_key_div">
                         {!! Form::label('airtable_api_key', 'Airtable API Key', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-6">
-                            {!! Form::text('airtable_api_key1', ('***********'.substr($dataSource->airtableKeyInfo->api_key, -4)) , ['class' => 'form-control','id' => 'airtable_api_key1']) !!}
-                            {!! Form::text('airtable_api_key', $dataSource->airtableKeyInfo->api_key , ['class' => 'form-control','id' => 'airtable_api_key','style' => 'display:none;']) !!}
+                            {!! Form::text('airtable_api_key1', $dataSource->airtableKeyInfo ? ('***********'.substr($dataSource->airtableKeyInfo->api_key, -4)) : '' , ['class' => 'form-control','id' => 'airtable_api_key1']) !!}
+                            {!! Form::text('airtable_api_key', $dataSource->airtableKeyInfo ? $dataSource->airtableKeyInfo->api_key : '' , ['class' => 'form-control','id' => 'airtable_api_key','style' => 'display:none;']) !!}
 
                             {!! $errors->first('airtable_api_key', '<p class="help-block">:message</p>') !!}
                         </div>
@@ -51,7 +50,7 @@ Edit Source
                     <div class="form-group {{ $errors->has('airtable_base_id') ? 'has-error' : ''}}" id="airtable_base_id_div">
                         {!! Form::label('airtable_base_id', 'Airtable Base ID', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-6">
-                            {!! Form::text('airtable_base_id', $dataSource->airtableKeyInfo->base_url , ['class' => 'form-control','id' => 'airtable_base_id']) !!}
+                            {!! Form::text('airtable_base_id', $dataSource->airtableKeyInfo ? $dataSource->airtableKeyInfo->base_url : '' , ['class' => 'form-control','id' => 'airtable_base_id']) !!}
                             {!! $errors->first('airtable_base_id', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
@@ -60,6 +59,20 @@ Edit Source
                         <div class="col-sm-6">
                             {!! Form::file('zipfile', null, ['class' => 'form-control']) !!}
                             {!! $errors->first('zipfile', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+                    <div class="form-group {{ $errors->has('endpoint') ? 'has-error' : ''}}" style="display: none" id="endpoint_div">
+                        {!! Form::label('endpoint', 'Endpoint', ['class' => 'col-sm-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::text('endpoint', null, ['class' => 'form-control','id' => 'endpoint']) !!}
+                            {!! $errors->first('endpoint', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+                    <div class="form-group {{ $errors->has('key') ? 'has-error' : ''}}" id="key_div" style="display: none" >
+                        {!! Form::label('key', 'API Key', ['class' => 'col-sm-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::text('key', null, ['class' => 'form-control','id' => 'key']) !!}
+                            {!! $errors->first('key', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
                     <div class="form-group {{ $errors->has('auto_sync') ? 'has-error' : ''}}">
@@ -135,14 +148,33 @@ Edit Source
         let import_type = "{{ $dataSource->import_type }}"
         let auto_sync = "{{ $dataSource->auto_sync }}"
 
+        // if(import_type == 'zipfile' || import_type == 'zipfile_api'){
+        //     $('#airtable_base_id_div').hide()
+        //     $('#airtable_key_div').hide()
+        //     $('#zipfile_div').show()
+        // }else{
+        //     $('#airtable_base_id_div').show()
+        //     $('#airtable_key_div').show()
+        //     $('#zipfile_div').hide()
+        // }
         if(import_type == 'zipfile'){
             $('#airtable_base_id_div').hide()
             $('#airtable_key_div').hide()
+            $('#endpoint_div').hide()
+            $('#key_div').hide()
             $('#zipfile_div').show()
+        }else if(import_type == 'zipfile_api'){
+            $('#airtable_base_id_div').hide()
+            $('#airtable_key_div').hide()
+            $('#endpoint_div').show()
+            $('#key_div').show()
+            $('#zipfile_div').hide()
         }else{
             $('#airtable_base_id_div').show()
             $('#airtable_key_div').show()
+            $('#endpoint_div').hide()
             $('#zipfile_div').hide()
+            $('#key_div').hide()
         }
         if(auto_sync == '1'){
             $('#sync_hours_div').show()
@@ -155,11 +187,21 @@ Edit Source
             if(val == 'zipfile'){
                 $('#airtable_base_id_div').hide()
                 $('#airtable_key_div').hide()
+                $('#endpoint_div').hide()
+                $('#key_div').hide()
                 $('#zipfile_div').show()
+            }else if(val == 'zipfile_api'){
+                $('#airtable_base_id_div').hide()
+                $('#airtable_key_div').hide()
+                $('#endpoint_div').show()
+                $('#key_div').show()
+                $('#zipfile_div').hide()
             }else{
                 $('#airtable_base_id_div').show()
                 $('#airtable_key_div').show()
+                $('#endpoint_div').hide()
                 $('#zipfile_div').hide()
+                $('#key_div').hide()
             }
         })
         $('#auto_sync').change(function () {

@@ -19,7 +19,8 @@ class TaxonomyExport implements FromView
     public function view(): View
     {
         $taxonomies = Taxonomy::select('*');
-            
+
+        $extraData = $this->request->extraData;
         if (isset($extraData['id']) && $extraData['id']) {
             $taxonomies->where('id', $extraData['id']);
         }

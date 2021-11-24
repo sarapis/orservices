@@ -11,6 +11,7 @@
                         <th>Name</th>
                         <th>Title</th>
                         <th>Email</th>
+                        <th>Visibility</th>
                         <th>Phone</th>
                         <th style="width:100px">&nbsp;</th>
                     </thead>
@@ -27,6 +28,9 @@
 
                                 <td class="text-center">{{ $contact->contact_email }}
                                     <input type="hidden" name="contact_email[]" value="{{ $contact->contact_email }}" id="contact_email_{{ $key }}">
+                                </td>
+                                <td class="text-center">{{ $contact->visibility }}
+                                    <input type="hidden" name="contact_visibility[]" value="{{ $contact->visibility }}" id="contact_visibility_{{ $key }}">
                                 </td>
 
                                 <td class="text-center">

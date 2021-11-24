@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use SendGrid;
 use SendGrid\Mail\Mail;
 
@@ -205,7 +206,7 @@ class RegisterController extends Controller
                     $response = $sendgrid->send($email);
                     if ($response->statusCode() == 401) {
                         $error = json_decode($response->body());
-                        \Log::error($error);
+                        Log::error($error);
                     }
                 }
                 // $user->roles()->sync([2]); // 2 = client

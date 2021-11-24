@@ -31,6 +31,7 @@ use App\Model\Helptext;
 use App\Model\Language;
 use App\Model\Layout;
 use App\Model\PhoneType;
+use App\Model\Region;
 use App\Model\Source_data;
 use App\Model\State;
 use Spatie\Geocoder\Geocoder;
@@ -225,9 +226,13 @@ class LocationController extends Controller
                         $location->location_recordid = $strtointclass->string_to_int($record['id']);
                         $location->location_name = isset($record['fields']['name']) ? $record['fields']['name'] : null;
 
-                        $location->location_organization = isset($record['fields']['organization']) ? implode(",", $record['fields']['organization']) : null;
-
-                        $location->location_organization = $strtointclass->string_to_int($location->location_organization);
+                        // $location->location_organization = isset($record['fields']['organizations']) ? implode(",", $record['fields']['organizations']) : null;
+                        if (isset($record['fields']['organizations'])) {
+                            foreach ($record['fields']['organizations'] as $key => $value) {
+                                $location->location_organization = $strtointclass->string_to_int($value);
+                            }
+                        }
+                        // $location->location_organization = $strtointclass->string_to_int($location->location_organization);
 
                         $location->location_alternate_name = isset($record['fields']['alternate_name']) ? $record['fields']['alternate_name'] : null;
                         $location->location_transportation = isset($record['fields']['transportation']) ? $record['fields']['transportation'] : null;
@@ -663,7 +668,8 @@ class LocationController extends Controller
         $detail_types = DetailType::orderBy('order')->pluck('type', 'type');
         $all_phones = Phone::whereNotNull('phone_number')->distinct()->get();
         $phone_language_data = json_encode([]);
-        return view('frontEnd.locations.facility-create-in-organization', compact('map', 'organization', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'phone_languages', 'phone_type', 'detail_types', 'all_phones', 'phone_language_data'));
+        $regions = Region::pluck('region', 'id');
+        return view('frontEnd.locations.facility-create-in-organization', compact('map', 'organization', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'phone_languages', 'phone_type', 'detail_types', 'all_phones', 'phone_language_data', 'regions'));
     }
 
     public function create()
@@ -712,7 +718,9 @@ class LocationController extends Controller
         $all_phones = Phone::whereNotNull('phone_number')->distinct()->get();
         $phone_language_data = json_encode([]);
 
-        return view('frontEnd.locations.create', compact('map', 'organization_name_list', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'phone_languages', 'phone_type', 'detail_types', 'all_phones', 'phone_language_data'));
+        $regions = Region::pluck('region', 'id');
+
+        return view('frontEnd.locations.create', compact('map', 'organization_name_list', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'phone_languages', 'phone_type', 'detail_types', 'all_phones', 'phone_language_data', 'regions'));
     }
     public function add_new_facility_in_organization(Request $request)
     {
@@ -737,6 +745,21 @@ class LocationController extends Controller
             $facility->location_alternate_name = $request->location_alternate_name;
             $facility->location_transportation = $request->location_transportation;
             $facility->location_description = $request->location_description;
+
+            // accessesibility
+            if ($request->accessibility) {
+                Accessibility::create([
+                    'accessibility_recordid' => Accessibility::max('accessibility_recordid') + 1,
+                    'accessibility' => $request->accessibility,
+                    'accessibility_details' => $request->accessibility_details,
+                    'accessibility_location' => $new_recordid
+                ]);
+            }
+            if ($request->regions) {
+                $facility->regions()->sync($request->regions);
+            }
+
+
             // $facility->location_details = $request->location_details;
 
             // $organization_name = $request->facility_organization;
@@ -995,6 +1018,19 @@ class LocationController extends Controller
             $facility->location_description = $request->location_description;
             // $facility->location_details = $request->location_details;
 
+            // accessesibility
+            if ($request->accessibility) {
+                Accessibility::create([
+                    'accessibility_recordid' => Accessibility::max('accessibility_recordid') + 1,
+                    'accessibility' => $request->accessibility,
+                    'accessibility_details' => $request->accessibility_details,
+                    'accessibility_location' => $new_recordid
+                ]);
+            }
+            if ($request->regions) {
+                $facility->regions()->sync($request->regions);
+            }
+
             // detail section
 
             if ($request->detail_type) {
@@ -1202,12 +1238,15 @@ class LocationController extends Controller
 
             $facility->save();
 
-            $audit = Audit::where('auditable_id', $facility->location_recordid)->first();
+            $audit = Audit::where('auditable_id', $facility->location_recordid)->update([
+                'auditable_id' => $location_recordid
+            ]);
 
-            if ($audit) {
-                $audit->auditable_id = $location_recordid;
-                $audit->save();
-            }
+            // if ($audit) {
+            //     $audit->auditable_id = $location_recordid;
+            //     $audit->save();
+            //     dd($audit);
+            // }
             Session::flash('message', 'Facility added successfully!');
             Session::flash('status', 'success');
             return redirect('facilities');
@@ -1286,6 +1325,13 @@ class LocationController extends Controller
         $map = Map::find(1);
         $facility = Location::where('location_recordid', '=', $id)->first();
         if ($facility) {
+
+            if ($facility->accessibilities && isset($facility->accessibilities[0])) {
+                $facility->accessibility = $facility->accessibilities[0]->accessibility;
+                $facility->accessibility_details = $facility->accessibilities[0]->accessibility_details;
+            } else {
+                $facility->accessibility_details = 'Visitors with concerns about the level of access for specific physical conditions, are always recommended to contact the organization directly to obtain the best possible information about physical access';
+            }
 
             $facility_organization_recordid_list = explode(',', $facility->location_organization);
             $facility_organizations = Organization::whereIn('organization_recordid', $facility_organization_recordid_list)->orderBy('organization_name')->get();
@@ -1414,8 +1460,9 @@ class LocationController extends Controller
 
                 $facilityAudits = $this->commonController->locationSection($facility);
                 $all_phones = Phone::whereNotNull('phone_number')->distinct()->get();
+                $regions = Region::pluck('region', 'id');
 
-                return view('frontEnd.locations.edit', compact('facility', 'map', 'facility_organization_name', 'service_info_list', 'facility_service_list', 'organization_names', 'facility_organization_list', 'facility_phone_number', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'location_address_city', 'location_street_address', 'location_zip_code', 'location_state', 'phone_languages', 'phone_type', 'detail_types', 'locationDetails', 'phone_language_data', 'facilityAudits', 'phone_language_name', 'all_phones'));
+                return view('frontEnd.locations.edit', compact('facility', 'map', 'facility_organization_name', 'service_info_list', 'facility_service_list', 'organization_names', 'facility_organization_list', 'facility_phone_number', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'location_address_city', 'location_street_address', 'location_zip_code', 'location_state', 'phone_languages', 'phone_type', 'detail_types', 'locationDetails', 'phone_language_data', 'facilityAudits', 'phone_language_name', 'all_phones', 'regions'));
             } else {
                 Session::flash('message', 'Warning! Not enough permissions. Please contact Us for more');
                 Session::flash('status', 'warning');
@@ -1449,6 +1496,20 @@ class LocationController extends Controller
             $facility->location_alternate_name = $request->location_alternate_name;
             $facility->location_transportation = $request->location_transportation;
             // $facility->location_details = $request->location_details;
+
+            // accessesibility
+            if ($request->accessibility) {
+                Accessibility::updateOrCreate([
+                    'accessibility_location' => $id
+                ], [
+                    'accessibility_recordid' => Accessibility::max('accessibility_recordid') + 1,
+                    'accessibility' => $request->accessibility,
+                    'accessibility_details' => $request->accessibility_details,
+                ]);
+            }
+            if ($request->regions) {
+                $facility->regions()->sync($request->regions);
+            }
 
             // detail section
             $detail_ids = [];

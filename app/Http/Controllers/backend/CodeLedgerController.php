@@ -11,6 +11,7 @@ use App\Model\Service;
 use App\Model\ServiceCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\DataTables;
 
@@ -31,13 +32,64 @@ class CodeLedgerController extends Controller
         if (!$request->ajax()) {
             return view('backEnd.tables.code_ledger', compact('services', 'organizations', 'resources', 'category'));
         }
-        $code_ledgers = CodeLedger::select('*');
+        $code_ledgers = CodeLedger::withTrashed();
         return DataTables::of($code_ledgers)
+            ->addColumn('action', function ($row) {
+                // $links = '';
+                // if ($row) {
+                //     // $links .= '<a href="' . route("languages.edit", $row->id) . '"><i class="fa fa-pencil" data-toggle="tooltip" data-placement="top" title="Edit" style="color: #4caf50;"></i></a>';
+                //     $id = $row->id;
+                //     $route = 'code_ledgers';
+                //     $links .=  view('backEnd.delete', compact('id', 'route'))->render();
+                // }
+                // return $links;
+                if ($row->deleted_at) {
+                    return '<a class="panel-link" style="background-color: red !important; color:#fff !important;">Removed</a>';
+                } else if ($row->updated_at->gt($row->created_at)) {
+                    return '<a class="panel-link" style="background-color: #0014ff !important; color:#fff !important;">Updated</a>';
+                } elseif ($row->updated_at->eq($row->created_at)) {
+                    return '<a class="panel-link" style="background-color: green !important; color:#fff !important;">Added</a>';
+                } else {
+                    return '';
+                }
+            })
             ->addColumn('service', function ($row) {
                 return $row->service ? $row->service->service_name : '';
             })
+            ->addColumn('code_id', function ($row) {
+                return $row->code_data ? $row->code_data->code_id : '';
+            })
+            ->addColumn('resource_element', function ($row) {
+                return $row->code_data ? $row->code_data->resource_element : '';
+            })
+            ->addColumn('procedure_grouping', function ($row) {
+                // $service_grouping = $row->service ? unserialize($row->service->procedure_grouping) : [];
+                // $procedure_grouping = '';
+                // if (is_array($service_grouping) && count($service_grouping) > 0) {
+                //     $category = $row->code_data ?  $row->code_data->category : '';
+                //     $category = str_replace(' ', '_', str_replace('/', '_', str_replace(',', '_', $category)));
+                //     $results = array_filter($service_grouping, function ($value) use ($category) {
+                //         return strpos($value, $category) !== false;
+                //     });
+                //     $results = array_values($results);
+                //     foreach ($results as $key => $value) {
+                //         if (strpos($value, $category) !== false) {
+                //             $value = str_replace('_', ' ', str_replace($category . '|', '', $value));
+                //             $procedure_grouping .= ($key == 0 ? $value : ', ' . $value);
+                //         }
+                //     }
+                // }
+                // return $procedure_grouping;
+                return $row->code_data ? $row->code_data->grouping : '';
+            })
+            ->editColumn('created_at', function ($row) {
+                return date('d-m-Y H:i:s', strtotime($row->created_at));
+            })
             ->addColumn('organization', function ($row) {
                 return $row->organization ?  $row->organization->organization_name : '';
+            })
+            ->addColumn('category', function ($row) {
+                return $row->code_data ?  $row->code_data->category : '';
             })
             // ->addColumn('services', function ($row) {
             //     $name = '';
@@ -70,8 +122,8 @@ class CodeLedgerController extends Controller
                     }
                 }
                 return $query;
-            })
-            // ->rawColumns(['action', 'services'])
+            }, true)
+            ->rawColumns(['action'])
             ->make(true);
     }
 
@@ -138,7 +190,28 @@ class CodeLedgerController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $code_ledger = CodeLedger::whereId($id)->first();
+            $code_id = $code_ledger->SDOH_code;
+            $service = Service::where('service_recordid', $code_ledger->service_recordid)->first();
+            if ($service) {
+                $service_codes = $service->SDOH_code ? explode(',', $service->SDOH_code) : [];
+                if (in_array($code_id, $service_codes)) {
+                    $key = array_search($code_id, $service_codes);
+                    array_splice($service_codes, $key, 1);
+                }
+                $service->SDOH_code = implode(',', $service_codes);
+                $service->save();
+            }
+            $code_ledger->delete();
+            Session::flash('message', 'Code Ledger deleted successfully');
+            Session::flash('status', 'success');
+            return redirect('code_ledgers');
+        } catch (\Throwable $th) {
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
+            return redirect('code_ledgers');
+        }
     }
     public function code_leaders_export(Request $request)
     {
@@ -150,7 +223,6 @@ class CodeLedgerController extends Controller
                 'success' => true
             ], 200);
         } catch (\Throwable $th) {
-            dd($th);
             Log::error('Error in code ledger export : ' . $th);
             return response()->json([
                 'path' => '',

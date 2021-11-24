@@ -59,16 +59,10 @@ Services
                     Sort By
                 </button>
                 <div class="dropdown-menu bullet" aria-labelledby="exampleSizingDropdown2" role="menu">
-                    <a @if(isset($sort) && $sort=='Service Name' ) class="dropdown-item drop-sort active" @else
-                        class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Service
-                        Name</a>
-                    <a @if(isset($sort) && $sort=='Organization Name' ) class="dropdown-item drop-sort active" @else
-                        class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Organization
-                        Name</a>
+                    <a @if(isset($sort) && $sort=='Service Name' ) class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Service Name</a>
+                    <a @if(isset($sort) && $sort=='Organization Name' ) class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Organization Name</a>
                     @if($sort_by_distance_clickable)
-                    <a @if(isset($sort) && $sort=='Distance from Address' ) class="dropdown-item drop-sort active" @else
-                        class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Distance from
-                        Address</a>
+                    <a @if(isset($sort) && $sort=='Distance from Address' ) class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Distance from Address</a>
                     @endif
                 </div>
             </div>
@@ -177,8 +171,13 @@ Services
 
                             @foreach ($mainPhoneNumber as $key => $item)
                             {{-- <a href="tel:{{$item}}">{{ $key == 0 ? $item : ', '.$item}}</a> --}}
-                            <p><a
-                                href="tel:{{$item->phone_number}}">{{ $item->phone_number}}</a>&nbsp;&nbsp;{{ $item->phone_extension ? 'ext. '. $item->phone_extension : '' }}&nbsp;{{ $item->type ? '('.$item->type->type.')' : '' }}
+                            <p>
+                                @if ($key == 0)
+                                    <a href="tel:{{$item->phone_number}}">{{ $item->phone_number}}</a>
+                                @else
+                                {{ $item->phone_number}}
+                                @endif
+                                &nbsp;&nbsp;{{ $item->phone_extension ? 'ext. '. $item->phone_extension : '' }}&nbsp;{{ $item->type ? '('.$item->type->type.')' : '' }}
                             @if ($item->phone_language)
                             {{ $item->phone_language }}
                             @endif
@@ -210,7 +209,19 @@ Services
                     @php
                         $i = 0;
                         $j = 0;
+                        $service_category_data = 0;
+                        $service_eligibility_data = 0;
+                        foreach($service->taxonomy as $service_taxonomy_info){
+                            if (isset($service_taxonomy_info->taxonomy_type) && count($service_taxonomy_info->taxonomy_type) > 0 && $service_taxonomy_info->taxonomy_type[0]->name == 'Service Category'){
+                                $service_category_data += 1;
+                            }
+                            if (isset($service_taxonomy_info->taxonomy_type) && count($service_taxonomy_info->taxonomy_type) > 0 && $service_taxonomy_info->taxonomy_type[0]->name == 'Service Eligibility'){
+                                $service_eligibility_data += 1;
+                            }
+                        }
+
                     @endphp
+                    @if ($service_category_data != 0)
                     <h4>
                         <span class="pl-0 category_badge subtitle">
                             @foreach ($service->taxonomy as $service_taxonomy_info)
@@ -232,7 +243,8 @@ Services
                             @endforeach
                         </span>
                     </h4>
-
+                    @endif
+                    @if ($service_eligibility_data != 0)
                     <h4>
                         <span class="pl-0 category_badge subtitle">
                             @foreach ($service->taxonomy as $service_taxonomy_info)
@@ -254,7 +266,7 @@ Services
                             @endforeach
                         </span>
                     </h4>
-
+                    @endif
                     @endif
                     @endisset
                 </div>

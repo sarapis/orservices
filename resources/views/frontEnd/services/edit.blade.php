@@ -25,6 +25,12 @@ Edit Service
         height: 100%;
         border: 1px solid #ddd;
     }
+    h4 .help-tip {
+        top: 10px;
+    }
+    .card_services_title {
+        position: relative;
+    }
 </style>
 
 @section('content')
@@ -134,6 +140,38 @@ Edit Service
                                     {!! Form::select('access_requirement',['none'=>'None','yes'=>'Yes'],null,['class' => 'form-control selectpicker']) !!}
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Service Area</label>
+                                    <div class="help-tip">
+                                        <div>
+                                            <p>The geographic area where this service is accessible.</p>
+                                        </div>
+                                    </div>
+                                    {!! Form::select('service_area[]',$service_area,$areas,['class' =>
+                                    'form-control selectpicker','multiple' => true]) !!}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Application Process: </label>
+                                    <div class="help-tip">
+                                        <div>
+                                            <p>The steps needed to access the service.</p>
+                                        </div>
+                                    </div>
+                                    <textarea id="service_application_process" name="service_application_process"
+                                        class="form-control selectpicker" rows="5"
+                                        cols="30">{{$service->service_application_process}}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Fee Options</label>
+                                    {!! Form::select('fee_option[]',$fee_options,$fees,['class' =>
+                                    'form-control selectpicker','multiple' => true]) !!}
+                                </div>
+                            </div>
                             <div class="text-right col-md-12 mb-20">
                                 <button type="button" class="btn btn_additional bg-primary-color" data-toggle="collapse"
                                     data-target="#demo">Additional Info
@@ -152,19 +190,6 @@ Edit Service
                                         </div>
                                         <input class="form-control selectpicker" type="text" id="service_licenses" name="service_licenses"
                                             value="{{$service->service_licenses}}">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Application Process: </label>
-                                        <div class="help-tip">
-                                            <div>
-                                                <p>The steps needed to access the service.</p>
-                                            </div>
-                                        </div>
-                                        <textarea id="service_application_process" name="service_application_process"
-                                            class="form-control selectpicker" rows="5"
-                                            cols="30">{{$service->service_application_process}}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -248,23 +273,17 @@ Edit Service
     </li>
     @if ($layout->show_classification == 'yes')
     <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" href="#conditions-tab">
-            <h4 class="card_services_title">Conditions
+        <a class="nav-link" data-toggle="tab" href="#sdoh-category-tab">
+            <h4 class="card_services_title">SDOH Codes
             </h4>
         </a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" href="#goals-tab">
-            <h4 class="card_services_title">Goals
+    {{-- <li class="nav-item">
+        <a class="nav-link " data-toggle="tab" href="#sdoh-codes-tab">
+            <h4 class="card_services_title">SDOH Codes
             </h4>
         </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" href="#activities-tab">
-            <h4 class="card_services_title">Activities
-            </h4>
-        </a>
-    </li>
+    </li> --}}
     @endif
 </ul>
 <div class="card">
@@ -284,172 +303,78 @@ Edit Service
                 </div>
             </div>
             @if ($layout->show_classification == 'yes')
-            <div class="tab-pane" id="conditions-tab">
+            <div class="tab-pane" id="sdoh-category-tab">
                 <div class="organization_services">
-                    <div style="top:8px;" >
+
+                    <div  style="top:8px;" >
                         <div>
                             <p class="service_help_text">
-                                {{ $help_text->service_conditions ?? '' }}
+                                {{ $help_text->sdoh_code_helptext ?? '' }}
                             </p>
                         </div>
                     </div>
-                    <div class="accordion" id="accordion-condition">
-                        @php
-                            $i = 0;
-                        @endphp
-                        @foreach ($conditions as $condition_key => $condition_values)
-                                <div class="card all_form_field">
-                                    <div class="card-header" id="condition_{{ $i }}">
-                                        <h4 class="mb-0 card_services_title">
-                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#condition_{{ str_replace(' ','_',$condition_key) }}" aria-expanded="true" aria-controls="condition_{{ str_replace(' ','_',$condition_key) }}">
-                                                {{ $condition_key }}
-                                            </button>
-                                        </h4>
-                                    </div>
-                                    <div id="condition_{{ str_replace(' ','_',$condition_key) }}" class="collapse hide" aria-labelledby="condition_{{ str_replace(' ','_',$condition_key) }}" data-parent="#accordion-condition">
-                                        <div class="card-body">
-                                            {{-- <select class="form-control selectpicker" data-live-search="true"id="code_conditions" name="code_conditions[]" data-size="5">
-                                                <option value="">Select</option>
-                                                @foreach ($condition_values as $data_key => $code_data)
-                                                <option value="{{$code_data->id}}" {{ in_array($code_data->id,$service_codes) ? 'selected' : '' }}>{{$code_data->description}}</option>
-                                                @endforeach
-                                            </select> --}}
-                                            @foreach ($condition_values as $data_key => $code_data)
-                                                <div class="row inner-accordion-section pb-15">
-                                                    <div class="col-md-6">
-                                                        <p>
-                                                            {{ $code_data->description }}
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <select class="form-control selectpicker service_category_type" id="code_conditions" name="code_conditions[]">
-                                                            <option value="">Empty</option>
-                                                            <option value="1_{{ $code_data->id }}" {{ in_array('1_'.$code_data->id,$service_codes) ? 'selected' : '' }}>1</option>
-                                                            <option value="2_{{ $code_data->id }}" {{ in_array('2_'.$code_data->id,$service_codes) ? 'selected' : '' }}>2</option>
-                                                            <option value="3_{{ $code_data->id }}" {{ in_array('3_'.$code_data->id,$service_codes) ? 'selected' : '' }}>3</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            @endforeach
+                    <div class="card all_form_field">
+                        <div class="card-block">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h4 class="title_edit text-left mb-25 mt-10">
+                                        Categories
+                                        <div class="help-tip">
+                                            <div>
+                                                <p>{{ $help_text->code_category ?? '' }}</p>
+                                            </div>
                                         </div>
+                                    </h4>
+                                    <div class="accordion" id="accordion-sdoh-category">
+                                        @foreach ($codes as $key => $item)
+                                        <div class="row inner-accordion-section pb-15">
+                                            <div class="col-md-8">
+                                                <p>
+                                                    {{ $item }}
+                                                </p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                {!! Form::checkbox('code_category_ids[]',$key, in_array($key,$selected_ids) ? 'selected' : '', ['class' => 'code_category_ids filled-in chk-col-blue']) !!}
+                                            </div>
+                                        </div>
+                                        @endforeach
                                     </div>
                                 </div>
-                            @php
-                                $i++;
-                            @endphp
-                        @endforeach
+                                <div class="col-md-8">
+                                    {{-- <h4 class="title_edit text-left mb-25 mt-10">
+                                        SDOH Codes
+                                    </h4> --}}
+                                    <div class="accordion" id="accordion-sdoh-codes">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="tab-pane" id="goals-tab">
+            {{-- <div class="tab-pane" id="sdoh-codes-tab">
                 <div class="organization_services">
-                    <div style="top:8px;" >
+
+                    <div  style="top:8px;" >
                         <div>
                             <p class="service_help_text">
-                                {{ $help_text->service_goals ?? '' }}
+                                {{ $help_text->sdoh_code_helptext ?? '' }}
                             </p>
                         </div>
                     </div>
-                    <div class="accordion" id="accordion-goals">
-                        @php
-                            $i = 0;
-                        @endphp
-                        @foreach ($goals as $goal_key => $goal_values)
-                                <div class="card all_form_field">
-                                    <div class="card-header" id="goal_{{ $i }}">
-                                        <h4 class="mb-0 card_services_title">
-                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#goal_{{ str_replace(' ','_',$goal_key) }}" aria-expanded="true" aria-controls="goal_{{ str_replace(' ','_',$goal_key) }}">
-                                                {{ $goal_key }}
-                                            </button>
-                                        </h4>
-                                    </div>
-                                    <div id="goal_{{ str_replace(' ','_',$goal_key) }}" class="collapse hide" aria-labelledby="goal_{{ str_replace(' ','_',$goal_key) }}" data-parent="#accordion-goals">
-                                        <div class="card-body">
-                                            {{-- <select class="form-control selectpicker" data-live-search="true"id="goal_conditions" name="goal_conditions[]" data-size="5">
-                                                <option value="">Select</option>
-                                                @foreach ($goal_values as $data_key => $code_data)
-                                                <option value="{{$code_data->id}}" {{ in_array($code_data->id,$service_codes) ? 'selected' : '' }}>{{$code_data->description}}</option>
-                                                @endforeach
-                                            </select> --}}
-                                            @foreach ($goal_values as $data_key => $code_data)
-                                                <div class="row inner-accordion-section pb-15">
-                                                    <div class="col-md-6">
-                                                        <p>
-                                                            {{ $code_data->description }}
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <select class="form-control selectpicker service_category_type" id="goal_conditions" name="goal_conditions[]">
-                                                            <option value="">Empty</option>
-                                                            <option value="1_{{ $code_data->id }}" {{ in_array('1_'.$code_data->id,$service_codes) ? 'selected' : '' }}>1</option>
-                                                            <option value="2_{{ $code_data->id }}" {{ in_array('2_'.$code_data->id,$service_codes) ? 'selected' : '' }}>2</option>
-                                                            <option value="3_{{ $code_data->id }}" {{ in_array('3_'.$code_data->id,$service_codes) ? 'selected' : '' }}>3</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-                            @php
-                                $i++;
-                            @endphp
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane" id="activities-tab">
-                <div class="organization_services">
-                    <div style="top:8px;" >
-                        <div>
-                            <p class="service_help_text">
-                                {{ $help_text->service_activities ?? '' }}
-                            </p>
+                    <div class="card all_form_field">
+                        <div class="card-block">
+                            <h4 class="title_edit text-left mb-25 mt-10">
+                                SDOH Codes
+                            </h4>
+                            <div class="accordion" id="accordion-sdoh-codes">
+
+                            </div>
                         </div>
                     </div>
-                    <div class="accordion" id="accordion-activities">
-                        @php
-                            $i = 0;
-                        @endphp
-                        @foreach ($activities as $activitie_key => $activities_values)
-                                <div class="card">
-                                    <div class="card-header" id="activities_{{ $i }}">
-                                        <h4 class="mb-0 card_services_title">
-                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#activities_{{ str_replace(' ','_',$activitie_key) }}" aria-expanded="true" aria-controls="activities_{{ str_replace(' ','_',$activitie_key) }}">
-                                                {{ $activitie_key }}
-                                            </button>
-                                        </h4>
-                                    </div>
-                                    <div id="activities_{{ str_replace(' ','_',$activitie_key) }}" class="collapse hide" aria-labelledby="activities_{{ str_replace(' ','_',$activitie_key) }}" data-parent="#accordion-activities">
-                                        <div class="card-body">
-                                            {{-- <select class="form-control selectpicker" data-live-search="true"id="activities_conditions" name="activities_conditions[]" data-size="5">
-                                                <option value="">Select</option>
-                                                @foreach ($activities_values as $data_key => $code_data)
-                                                <option value="{{$code_data->id}}" {{ in_array($code_data->id,$service_codes) ? 'selected' : '' }}>{{$code_data->description}}</option>
-                                                @endforeach
-                                            </select> --}}
-                                            @foreach ($activities_values as $data_key => $code_data)
-                                                <div class="row inner-accordion-section pb-15">
-                                                    <div class="col-md-6">
-                                                        <p>
-                                                            {{ $code_data->description }}
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <input type="checkbox" name="activities_conditions[]" id="activities_{{$i}}_{{$data_key}}" class="" {{ in_array('3_'.$code_data->id,$service_codes) ? 'checked' : '' }} value="{{ $code_data->id }}">
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-                            @php
-                                $i++;
-                            @endphp
-                        @endforeach
-                    </div>
                 </div>
-            </div>
+            </div> --}}
             @endif
         </div>
     </div>
@@ -1076,8 +1001,13 @@ Edit Service
 <input type="hidden" name="location_description[]" id="location_description"
     value="{{ $location_description }}">
 <input type="hidden" name="location_details[]" id="location_details" value="{{ $location_details }}">
+<input type="hidden" name="location_accessibility[]" id="location_accessibility" value="{{ $location_accessibility }}">
+<input type="hidden" name="location_accessibility_details[]" id="location_accessibility_details" value="{{ $location_accessibility_details }}">
+<input type="hidden" name="location_regions[]" id="location_regions" value="{{ $location_regions }}">
+
 <input type="hidden" name="contact_service[]" id="contact_service" value="{{ $contact_service }}">
 <input type="hidden" name="contact_department[]" id="contact_department" value="{{ $contact_department }}">
+{{-- <input type="hidden" name="contact_visibility[]" id="contact_visibility" value="{{ $contact_visibility }}"> --}}
 
 {{-- contact phone --}}
 <input type="hidden" name="contact_phone_numbers[]" id="contact_phone_numbers"
@@ -1358,6 +1288,24 @@ Edit Service
                                         name="location_details" value="">
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Regions: </label>
+                                    {!! Form::select('location_region_p',$regions,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'location_region_p','multiple' => true]) !!}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Accessibility: </label>
+                                    {!! Form::select('location_accessibility_p',['Blank' => 'Blank','ADA Complaint' => 'ADA Complaint','Not ADA Compliant' => 'Not ADA Compliant'],null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'location_accessibility_p','placeholder' => 'select accessibility']) !!}
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Accessibility Details: </label>
+                                    {!! Form::textarea('location_accessibility_details_p','Visitors with concerns about the level of access for specific physical conditions, are always recommended to contact the organization directly to obtain the best possible information about physical access',['class' => 'form-control','id' => 'location_accessibility_details_p','placeholder' => 'Accessibility Details']) !!}
+                                </div>
+                            </div>
                             <div class="form-group">
                                 {{-- <label>Phones: <a id="addDataLocation"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
                                 <h4 class="title_edit text-left mb-25 mt-10 px-20">Phones
@@ -1401,7 +1349,7 @@ Edit Service
                                                         id="phone_extension_location_0">
                                                 </td>
                                                 <td>
-                                                    {!! Form::select('phone_type[]',$phone_type,[],['class' =>
+                                                    {!! Form::select('phone_type[]',$phone_type,array_search('Voice', $phone_type->toArray()),['class' =>
                                                     'form-control selectpicker','data-live-search' => 'true','id' =>
                                                     'phone_type_location_0','data-size' => 5,'placeholder' => 'select
                                                     phone type'])!!}
@@ -1698,17 +1646,26 @@ Edit Service
                                     <input type="text" class="form-control" placeholder="Title" id="contact_title_p">
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Contact Department: </label>
                                     <input class="form-control selectpicker" type="text" id="contact_department_p"
                                         name="contact_department" value="">
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Email</label>
                                     <input type="text" class="form-control" placeholder="Email" id="contact_email_p">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Visibility: </label>
+                                    <select class="form-control selectpicker" data-live-search="true" id="contact_visibility_p" name="contact_visibility_p[]" data-size="8">
+                                        <option value="public">Public</option>
+                                        <option value="private">Private</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -1758,7 +1715,7 @@ Edit Service
                                                         id="phone_extension_contact_0">
                                                 </td>
                                                 <td>
-                                                    {!! Form::select('phone_type[]',$phone_type,[],['class' =>
+                                                    {!! Form::select('phone_type[]',$phone_type,array_search('Voice', $phone_type->toArray()),['class' =>
                                                     'form-control selectpicker','data-live-search' => 'true','id' =>
                                                     'phone_type_contact_0','data-size' => 5,'placeholder' => 'select
                                                     phone type'])!!}
@@ -1903,6 +1860,7 @@ Edit Service
 </div>
 </div>
 <script src="/js/jquery.timepicker.min.js"></script>
+@include('frontEnd.services.service_code_script')
 <script>
     $('.timePicker').timepicker({ 'scrollDefault': 'now' });
     let removePhoneDataId = []
@@ -2033,7 +1991,7 @@ Edit Service
     // let cp = JSON.parse($('#contact_phone_numbers').val()).length;
     let cp = 1;
     $('#addDataContact').click(function(){
-        $('#addPhoneTrContact').append('<tr id="contact_'+cp+'"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_'+cp+'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_'+cp+'"></td><td><select name="phone_type[]" id="phone_type_contact_'+cp+'" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_contact_'+cp+'" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_'+cp+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#addPhoneTrContact').append('<tr id="contact_'+cp+'"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_'+cp+'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_'+cp+'"></td><td><select name="phone_type[]" id="phone_type_contact_'+cp+'" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}" {{ "voice" == strtolower($value) ? "selected" : "" }}>{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_contact_'+cp+'" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_'+cp+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         cp ++
     })
@@ -2041,7 +1999,7 @@ Edit Service
     let lp = 1;
     $(document).on('click','#addDataLocation',function () {
     // $('#addDataLocation').click(function(){
-        $('#addPhoneTrLocation').append('<tr id="location_'+lp+'"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_'+lp+'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_'+lp+'"></td><td><select name="phone_type[]" id="phone_type_location_'+lp+'" class="form-control selectpicker" data-live-search="true" data-size="5"><option value="">Select phone type</option> @foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_'+lp+'" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_'+lp+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#addPhoneTrLocation').append('<tr id="location_'+lp+'"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_'+lp+'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_'+lp+'"></td><td><select name="phone_type[]" id="phone_type_location_'+lp+'" class="form-control selectpicker" data-live-search="true" data-size="5"><option value="">Select phone type</option> @foreach ($phone_type as $key => $value)<option value="{{ $key }}" {{ "voice" == strtolower($value) ? "selected" : "" }}>{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_'+lp+'" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_'+lp+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         lp ++
     })
@@ -2212,6 +2170,7 @@ Edit Service
     let c =  "{{ count($service->contact) }}";
     let contact_service = JSON.parse($('#contact_service').val())
     let contact_department = JSON.parse($('#contact_department').val())
+    // let contact_visibility = JSON.parse($('#contact_visibility').val())
 
     let contact_phone_numbers = JSON.parse($('#contact_phone_numbers').val())
     let contact_phone_extensions = JSON.parse($('#contact_phone_extensions').val())
@@ -2224,6 +2183,7 @@ Edit Service
         let contact_service_p = ''
         let contact_title_p = ''
         let contact_department_p = ''
+        let contact_visibility_p = ''
         let contact_email_p = ''
         let contact_phone_p = ''
         let contact_recordid_p = ''
@@ -2244,6 +2204,7 @@ Edit Service
             contact_service_p = $('#contact_service_p').val()
             contact_title_p = $('#contact_title_p').val()
             contact_department_p = $('#contact_department_p').val()
+            contact_visibility_p = $('#contact_visibility_p').val()
             contact_email_p = $('#contact_email_p').val()
             // contact_phone_p = $('#contact_phone_p').val()
 
@@ -2260,6 +2221,7 @@ Edit Service
             contact_name_p = data.contact_name ? data.contact_name : ''
             contact_title_p = data.contact_title ? data.contact_title : ''
             contact_department_p = data.contact_department ? data.contact_department : ''
+            contact_visibility_p = data.visibility ? data.visibility : ''
             contact_email_p = data.contact_email ? data.contact_email : ''
             contact_recordid_p = data.contact_recordid ? data.contact_recordid : ''
             let service_val = data.service && data.service.length > 0 ? data.service : []
@@ -2286,6 +2248,7 @@ Edit Service
         if(editContactData == false){
             contact_service.push(contact_service_p)
             contact_department.push(contact_department_p)
+            // contact_visibility.push(contact_visibility_p)
 
             contact_phone_numbers[c] = phone_number_contact
             contact_phone_extensions[c] = phone_extension_contact
@@ -2293,7 +2256,7 @@ Edit Service
             contact_phone_languages[c] = phone_language_contact
             contact_phone_descriptions[c] = phone_description_contact
 
-            $('#contactsTable').append('<tr id="contactTr_'+c+'"><td>'+contact_name_p+'<input type="hidden" name="contact_name[]" value="'+contact_name_p+'" id="contact_name_'+c+'"></td><td>'+contact_title_p+'<input type="hidden" name="contact_title[]" value="'+contact_title_p+'" id="contact_title_'+c+'"></td><td class="text-center">'+contact_email_p+'<input type="hidden" name="contact_email[]" value="'+contact_email_p+'" id="contact_email_'+c+'"></td><td class="text-center">'+contact_phone_list+'<input type="hidden" name="contact_phone[]" value="'+contact_phone_p+'" id="contact_phone_'+c+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="'+contactRadioValue+'" id="selectedContactRadio_'+c+'"><input type="hidden" name="contact_recordid[]" value="'+contact_recordid_p+'" id="existingContactIds_'+c+'"></td></tr>');
+            $('#contactsTable').append('<tr id="contactTr_'+c+'"><td>'+contact_name_p+'<input type="hidden" name="contact_name[]" value="'+contact_name_p+'" id="contact_name_'+c+'"></td><td>'+contact_title_p+'<input type="hidden" name="contact_title[]" value="'+contact_title_p+'" id="contact_title_'+c+'"></td><td class="text-center">'+contact_email_p+'<input type="hidden" name="contact_email[]" value="'+contact_email_p+'" id="contact_email_'+c+'"></td><td class="text-center">'+contact_visibility_p+'<input type="hidden" name="contact_visibility[]" value="'+contact_visibility_p+'" id="contact_visibility_'+i+'"></td><td class="text-center">'+contact_phone_list+'<input type="hidden" name="contact_phone[]" value="'+contact_phone_p+'" id="contact_phone_'+c+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="'+contactRadioValue+'" id="selectedContactRadio_'+c+'"><input type="hidden" name="contact_recordid[]" value="'+contact_recordid_p+'" id="existingContactIds_'+c+'"></td></tr>');
             c++;
         }else{
             if(selectedContactTrId){
@@ -2301,6 +2264,7 @@ Edit Service
                 contact_recordid_p = $('#existingContactIds_'+selectedContactTrId).val()
                 contact_service[selectedContactTrId] = contact_service_p
                 contact_department[selectedContactTrId] = contact_department_p
+                // contact_visibility[selectedContactTrId] = contact_visibility_p
 
                 contact_phone_numbers[selectedContactTrId] = phone_number_contact
                 contact_phone_extensions[selectedContactTrId] = phone_extension_contact
@@ -2309,11 +2273,12 @@ Edit Service
                 contact_phone_descriptions[selectedContactTrId] = phone_description_contact
 
                 $('#contactTr_'+selectedContactTrId).empty()
-                $('#contactTr_'+selectedContactTrId).append('<td>'+contact_name_p+'<input type="hidden" name="contact_name[]" value="'+contact_name_p+'" id="contact_name_'+selectedContactTrId+'"></td><td>'+contact_title_p+'<input type="hidden" name="contact_title[]" value="'+contact_title_p+'" id="contact_title_'+selectedContactTrId+'"></td><td class="text-center">'+contact_email_p+'<input type="hidden" name="contact_email[]" value="'+contact_email_p+'" id="contact_email_'+selectedContactTrId+'"></td><td class="text-center">'+contact_phone_list+'<input type="hidden" name="contact_phone[]" value="'+contact_phone_p+'" id="contact_phone_'+selectedContactTrId+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeLocationData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="'+contactRadioValue+'" id="selectedContactRadio_'+selectedContactTrId+'"><input type="hidden" name="contact_recordid[]" value="'+contact_recordid_p+'" id="existingContactIds_'+selectedContactTrId+'"></td>')
+                $('#contactTr_'+selectedContactTrId).append('<td>'+contact_name_p+'<input type="hidden" name="contact_name[]" value="'+contact_name_p+'" id="contact_name_'+selectedContactTrId+'"></td><td>'+contact_title_p+'<input type="hidden" name="contact_title[]" value="'+contact_title_p+'" id="contact_title_'+selectedContactTrId+'"></td><td class="text-center">'+contact_email_p+'<input type="hidden" name="contact_email[]" value="'+contact_email_p+'" id="contact_email_'+selectedContactTrId+'"></td><td class="text-center">'+contact_visibility_p+'<input type="hidden" name="contact_visibility[]" value="'+contact_visibility_p+'" id="contact_visibility_'+selectedContactTrId+'"></td><td class="text-center">'+contact_phone_list+'<input type="hidden" name="contact_phone[]" value="'+contact_phone_p+'" id="contact_phone_'+selectedContactTrId+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeLocationData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="'+contactRadioValue+'" id="selectedContactRadio_'+selectedContactTrId+'"><input type="hidden" name="contact_recordid[]" value="'+contact_recordid_p+'" id="existingContactIds_'+selectedContactTrId+'"></td>')
             }
         }
         $('#contact_service').val(JSON.stringify(contact_service))
         $('#contact_department').val(JSON.stringify(contact_department))
+        // $('#contact_visibility').val(JSON.stringify(contact_visibility))
 
         $('#contact_phone_numbers').val(JSON.stringify(contact_phone_numbers))
         $('#contact_phone_extensions').val(JSON.stringify(contact_phone_extensions))
@@ -2328,11 +2293,12 @@ Edit Service
         $('#contact_phone_p').val('')
         $('#contact_service_p').val('')
         $('#contact_department_p').val('')
+        $('#contact_visibility_p').val('')
 
         $('#contact_service_p').selectpicker('refresh')
 
         $('#addPhoneTrContact').empty()
-        $('#addPhoneTrContact').append('<tr id="contact_0"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_0"></td><td><select name="phone_type[]" id="phone_type_contact_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_contact_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_0"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>')
+        $('#addPhoneTrContact').append('<tr id="contact_0"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_0"></td><td><select name="phone_type[]" id="phone_type_contact_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}" {{ "voice" == strtolower($value) ? "selected" : "" }}>{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_contact_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_0"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>')
         $('.selectpicker').selectpicker('refresh');
 
         $('#contactmodal').modal('hide');
@@ -2351,6 +2317,7 @@ Edit Service
 
             let contact_service_val = JSON.parse($('#contact_service').val())
             let contact_department_val = JSON.parse($('#contact_department').val())
+            // let contact_visibility_val = JSON.parse($('#contact_visibility').val())
 
             // contact modal phone section
             let contact_phone_numbers = JSON.parse($('#contact_phone_numbers').val())
@@ -2361,6 +2328,7 @@ Edit Service
 
             contact_service_val.splice(deletedId,1)
             contact_department_val.splice(deletedId,1)
+            // contact_visibility_val.splice(deletedId,1)
             contact_phone_numbers.splice(deletedId,1)
             contact_phone_extensions.splice(deletedId,1)
             contact_phone_types.splice(deletedId,1)
@@ -2369,6 +2337,7 @@ Edit Service
 
             $('#contact_service').val(JSON.stringify(contact_service_val))
             $('#contact_department').val(JSON.stringify(contact_department_val))
+            // $('#contact_visibility').val(JSON.stringify(contact_visibility_val))
             $('#contact_phone_numbers').val(JSON.stringify(contact_phone_numbers))
             $('#contact_phone_extensions').val(JSON.stringify(contact_phone_extensions))
             $('#contact_phone_types').val(JSON.stringify(contact_phone_types))
@@ -2397,6 +2366,7 @@ Edit Service
         $('#contact_phone_p').val('')
         $('#contact_service_p').val('')
         $('#contact_department_p').val('')
+        $('#contact_visibility_p').val('')
 
         $('#contact_service_p').selectpicker('refresh')
         $('#contactmodal').modal('hide');
@@ -2409,6 +2379,7 @@ Edit Service
         $('#contact_phone_p').val('')
         $('#contact_service_p').val('')
         $('#contact_department_p').val('')
+        $('#contact_visibility_p').val('public')
         // $('#addPhoneTrContact').empty()
         // $('#addPhoneTrContact').append('<tr id="contact_0"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_0"></td><td><select name="phone_type[]" id="phone_type_contact_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_contact_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_0"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>')
         $('.selectpicker').selectpicker('refresh');
@@ -2429,19 +2400,21 @@ Edit Service
         selectedContactTrId = id
 
         $('#addPhoneTrContact').empty()
-        $('#addPhoneTrContact').append('<tr id="contact_0"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_0"></td><td><select name="phone_type[]" id="phone_type_contact_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_contact_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_0"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>')
+        $('#addPhoneTrContact').append('<tr id="contact_0"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_0"></td><td><select name="phone_type[]" id="phone_type_contact_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}" {{ "voice" == strtolower($value) ? "selected" : "" }}>{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_contact_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_0"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>')
         $('.selectpicker').selectpicker('refresh');
 
 
         // $('.contactRadio').val()
         let radioValue = $("#selectedContactRadio_"+id).val();
         let contact_name_p = $('#contact_name_'+id).val()
+        let contact_visibility_p = $('#contact_visibility_'+id).val()
         let contact_title_p = $('#contact_title_'+id).val()
         let contact_email_p = $('#contact_email_'+id).val()
         let contact_phone_p = $('#contact_phone_'+id).val()
         let contact_recordid_p = $('#existingContactIds_'+id).val()
         let contact_service_val = JSON.parse($('#contact_service').val())
         let contact_department_val = JSON.parse($('#contact_department').val())
+        // let contact_visibility_val = JSON.parse($('#contact_visibility').val())
 
         // contact modal phone section
         let contact_phone_numbers = JSON.parse($('#contact_phone_numbers').val())
@@ -2462,7 +2435,7 @@ Edit Service
         $('#phone_language_contact_0').val(phone_language_contact[0])
         $('#phone_description_contact_0').val(phone_description_contact[0])
         for (let index = 1; index < phone_number_contact.length; index++) {
-            $('#addPhoneTrContact').append('<tr id="contact_'+index+'"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_'+index+'" value="'+phone_number_contact[index]+'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_'+index+'" value="'+(phone_extension_contact[index] != null ? phone_extension_contact[index] : "" )+'"></td><td><select name="phone_type" id="phone_type_contact_'+index+'" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language" id="phone_language_contact_'+index+'" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_'+index+'" value="'+(phone_description_contact[index] != null ? phone_description_contact[index] : "" )+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+            $('#addPhoneTrContact').append('<tr id="contact_'+index+'"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_'+index+'" value="'+phone_number_contact[index]+'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_'+index+'" value="'+(phone_extension_contact[index] != null ? phone_extension_contact[index] : "" )+'"></td><td><select name="phone_type" id="phone_type_contact_'+index+'" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}" {{ "voice" == strtolower($value) ? "selected" : "" }}>{{ $value }}</option> @endforeach </select></td><td><select name="phone_language" id="phone_language_contact_'+index+'" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_'+index+'" value="'+(phone_description_contact[index] != null ? phone_description_contact[index] : "" )+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
 
             if(phone_type_contact[index] != ''){
                 $("select[id='phone_type_contact_"+index+"'] option[value="+phone_type_contact[index]+"]").prop('selected', true)
@@ -2478,6 +2451,7 @@ Edit Service
         cp = phone_number_contact.length
 
         let contact_department_p = contact_department_val[id]
+        // let contact_visibility_p = contact_visibility_val[id]
         let contact_service_p = contact_service_val[id]
         // contactRadioValue = radioValue
         contactRadioValue = 'new_data'
@@ -2490,9 +2464,11 @@ Edit Service
             $('#contact_email_p').val(contact_email_p)
             $('#contact_phone_p').val(contact_phone_p)
             $('#contact_department_p').val(contact_department_p)
+            $('#contact_visibility_p').val(contact_visibility_p)
             $('#contact_service_p').val(contact_service_p)
             $('#contactSelectData').val('')
             $('#contact_service_p').selectpicker('refresh')
+            $('#contact_visibility_p').selectpicker('refresh')
             $('#newContactData').show()
             $('#existingContactData').hide()
         // }else{
@@ -2533,6 +2509,9 @@ Edit Service
     let location_schedules = JSON.parse($('#location_schedules').val())
     let location_description = JSON.parse($('#location_description').val())
     let location_details = JSON.parse($('#location_details').val())
+    let location_regions = JSON.parse($('#location_regions').val())
+    let location_accessibility = JSON.parse($('#location_accessibility').val())
+    let location_accessibility_details = JSON.parse($('#location_accessibility_details').val())
 
     let location_phone_numbers = JSON.parse($('#location_phone_numbers').val())
     let location_phone_extensions = JSON.parse($('#location_phone_extensions').val())
@@ -2583,6 +2562,9 @@ Edit Service
         let location_state_p = ''
         let location_zipcode_p = ''
         let location_details_p = ''
+        let location_region_p = ''
+        let location_accessibility_p = ''
+        let location_accessibility_details_p = ''
         let location_phone_p = ''
         let location_recordid_p = ''
 
@@ -2652,6 +2634,9 @@ Edit Service
             location_state_p = $('#location_state_p').val()
             location_zipcode_p = $('#location_zipcode_p').val()
             location_details_p = $('#location_details_p').val()
+            location_region_p = $('#location_region_p').val()
+            location_accessibility_p = $('#location_accessibility_p').val()
+            location_accessibility_details_p = $('#location_accessibility_details_p').val()
             // location_phone_p = $('#location_phone_p').val()
 
             for (let index = 0; index < lp; index++) {
@@ -2709,6 +2694,23 @@ Edit Service
             location_transporation_p = data.location_transportation ? data.location_transportation : ''
             location_description_p = data.location_description ? data.location_description : ''
             location_details_p = data.location_details ? data.location_details : ''
+            // for location accessibility
+            let accessibilities = data.accessibilities && data.accessibilities.length > 0 ? data.accessibilities : []
+            location_accessibility_p = accessibilities.map((v) => {
+                return v.accessibility
+            }).join(',');
+
+            location_accessibility_details_p = accessibilities.map((v) => {
+                return v.accessibility_details
+            }).join(',');
+
+            // for regions
+            let regions_data = data.regions && data.regions.length > 0 ? data.regions : []
+            let regionsIds = regions_data.map((v) => {
+                return v.id
+            }).join(',');
+            location_region_p = regionsIds ? regionsIds.split(',') : []
+
 
             let services = data.services && data.services.length > 0 ? data.services : []
             let servicesIds = services.map((v) => {
@@ -2796,6 +2798,9 @@ Edit Service
             location_schedules.push(location_schedules_p)
             location_description.push(location_description_p)
             location_details.push(location_details_p)
+            location_accessibility.push(location_accessibility_p)
+            location_accessibility_details.push(location_accessibility_details_p)
+            location_regions.push(location_region_p)
 
             location_phone_numbers[l] = phone_number_location
             location_phone_extensions[l] = phone_extension_location
@@ -2843,6 +2848,10 @@ Edit Service
                 location_schedules[selectedLocationTrId] = location_schedules_p
                 location_description[selectedLocationTrId] = location_description_p
                 location_details[selectedLocationTrId] = location_details_p
+                location_accessibility[selectedLocationTrId] = location_accessibility_p
+                location_accessibility_details[selectedLocationTrId] = location_accessibility_details_p
+                location_regions[selectedLocationTrId] = location_region_p
+
 
                 location_phone_numbers[selectedLocationTrId] = phone_number_location
                 location_phone_extensions[selectedLocationTrId] = phone_extension_location
@@ -2888,6 +2897,9 @@ Edit Service
         $('#location_schedules').val(JSON.stringify(location_schedules))
         $('#location_description').val(JSON.stringify(location_description))
         $('#location_details').val(JSON.stringify(location_details))
+        $('#location_accessibility').val(JSON.stringify(location_accessibility))
+        $('#location_accessibility_details').val(JSON.stringify(location_accessibility_details))
+        $('#location_regions').val(JSON.stringify(location_regions))
 
         $('#location_phone_numbers').val(JSON.stringify(location_phone_numbers))
         $('#location_phone_extensions').val(JSON.stringify(location_phone_extensions))
@@ -2896,7 +2908,7 @@ Edit Service
         $('#location_phone_descriptions').val(JSON.stringify(location_phone_descriptions))
 
         $('#addPhoneTrLocation').empty()
-        $('#addPhoneTrLocation').append('<tr id="location_0"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_0"></td><td><select name="phone_type[]" id="phone_type_location_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_0"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>')
+        $('#addPhoneTrLocation').append('<tr id="location_0"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_0"></td><td><select name="phone_type[]" id="phone_type_location_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}" {{ "voice" == strtolower($value) ? "selected" : "" }}>{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_0"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>')
         $('.selectpicker').selectpicker('refresh');
 
         $('#opens_at_location_monday_datas').val(JSON.stringify(opens_at_location_monday_datas))
@@ -2974,6 +2986,10 @@ Edit Service
         $('#location_schedules_p').val('')
         $('#location_description_p').val('')
         $('#location_details_p').val('')
+        $('#location_accessibility_p').val('')
+        $('#location_region_p').val('')
+        $('#location_region_p').selectpicker('refresh')
+        $('#location_accessibility_p').selectpicker('refresh')
         $('#location_service_p').selectpicker('refresh')
         $('#location_schedules_p').selectpicker('refresh')
         $('#locationmodal').modal('hide');
@@ -2998,6 +3014,9 @@ Edit Service
             let location_schedules_val = JSON.parse($('#location_schedules').val())
             let location_description_val = JSON.parse($('#location_description').val())
             let location_details_val = JSON.parse($('#location_details').val())
+            let location_accessibility_val = JSON.parse($('#location_accessibility').val())
+            let location_accessibility_details_val = JSON.parse($('#location_accessibility_details').val())
+            let location_regions_val = JSON.parse($('#location_regions').val())
 
             // location modal phone section
             let location_phone_numbers = JSON.parse($('#location_phone_numbers').val())
@@ -3040,6 +3059,9 @@ Edit Service
             location_schedules_val.splice(deletedId,1)
             location_description_val.splice(deletedId,1)
             location_details_val.splice(deletedId,1)
+            location_accessibility_val.splice(deletedId,1)
+            location_accessibility_details_val.splice(deletedId,1)
+            location_regions_val.splice(deletedId,1)
             location_phone_numbers.splice(deletedId,1)
             location_phone_extensions.splice(deletedId,1)
             location_phone_types.splice(deletedId,1)
@@ -3078,6 +3100,10 @@ Edit Service
             $('#location_schedules').val(JSON.stringify(location_schedules_val))
             $('#location_description').val(JSON.stringify(location_description_val))
             $('#location_details').val(JSON.stringify(location_details_val))
+            $('#location_accessibility').val(JSON.stringify(location_accessibility_val))
+            $('#location_accessibility_details').val(JSON.stringify(location_accessibility_details_val))
+            $('#location_regions').val(JSON.stringify(location_regions_val))
+
             $('#location_phone_numbers').val(JSON.stringify(location_phone_numbers))
             $('#location_phone_extensions').val(JSON.stringify(location_phone_extensions))
             $('#location_phone_types').val(JSON.stringify(location_phone_types))
@@ -3144,6 +3170,10 @@ Edit Service
         $('#location_schedules_p').val('')
         $('#location_description_p').val('')
         $('#location_details_p').val('')
+        $('#location_accessibility_p').val('')
+        // $('#location_accessibility_details_p').val('')
+        $('#location_region_p').val('')
+
         $('#location_service_p').selectpicker('refresh')
         $('#location_schedules_p').selectpicker('refresh')
 
@@ -3155,7 +3185,7 @@ Edit Service
         $('#schedule_closed_location_saturday').attr('checked',false)
         $('#schedule_closed_location_sunday').attr('checked',false)
         $('#addPhoneTrLocation').empty()
-        $('#addPhoneTrLocation').append('<tr id="location_0"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_0"></td><td><select name="phone_type[]" id="phone_type_location_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_0"></td><td style="vertical-align:middle;"><a class="float-right plus_delteicon bg-primary-color" id="addDataLocation"><img src="/frontend/assets/images/plus.png" alt="" title=""></a></td></tr>')
+        $('#addPhoneTrLocation').append('<tr id="location_0"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_0"></td><td><select name="phone_type[]" id="phone_type_location_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}" {{ "voice" == strtolower($value) ? "selected" : "" }}>{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_0"></td><td style="vertical-align:middle;"><a class="float-right plus_delteicon bg-primary-color" id="addDataLocation"><img src="/frontend/assets/images/plus.png" alt="" title=""></a></td></tr>')
         $('.selectpicker').selectpicker('refresh');
 
         $('#locationmodal').modal('show');
@@ -3185,7 +3215,7 @@ Edit Service
         selectedLocationTrId = id
 
         $('#addPhoneTrLocation').empty()
-        $('#addPhoneTrLocation').append('<tr id="location_0"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_0"></td><td><select name="phone_type[]" id="phone_type_location_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_0"></td><td style="vertical-align:middle;"><a class="float-right plus_delteicon bg-primary-color" id="addDataLocation"><img src="/frontend/assets/images/plus.png" alt="" title=""></a></td></tr>')
+        $('#addPhoneTrLocation').append('<tr id="location_0"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_0"></td><td><select name="phone_type[]" id="phone_type_location_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}" {{ "voice" == strtolower($value) ? "selected" : "" }}>{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_0"></td><td style="vertical-align:middle;"><a class="float-right plus_delteicon bg-primary-color" id="addDataLocation"><img src="/frontend/assets/images/plus.png" alt="" title=""></a></td></tr>')
         $('.selectpicker').selectpicker('refresh');
 
         $('#scheduleHolidayLocation').empty()
@@ -3208,6 +3238,9 @@ Edit Service
         let location_schedules_val = JSON.parse($('#location_schedules').val())
         let location_description_val = JSON.parse($('#location_description').val())
         let location_details_val = JSON.parse($('#location_details').val())
+        let location_accessibility_val = JSON.parse($('#location_accessibility').val())
+        let location_accessibility_details_val = JSON.parse($('#location_accessibility_details').val())
+        let location_regions_val = JSON.parse($('#location_regions').val())
 
         // location modal phone section
         let location_phone_numbers = JSON.parse($('#location_phone_numbers').val())
@@ -3229,7 +3262,7 @@ Edit Service
         $('#phone_description_location_0').val(phone_description_location[0])
 
         for (let index = 1; index < phone_number_location.length; index++) {
-            $('#addPhoneTrLocation').append('<tr id="location_'+index+'"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_'+index+'" value="'+phone_number_location[index]+'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_'+index+'" value="'+(phone_extension_location[index] != null ? phone_extension_location[index] : "" )+'"></td><td><select name="phone_type[]" id="phone_type_location_'+index+'" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_'+index+'" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_'+index+'" value="'+(phone_description_location[index] != null ? phone_description_location[index] : "" )+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+            $('#addPhoneTrLocation').append('<tr id="location_'+index+'"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_'+index+'" value="'+phone_number_location[index]+'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_'+index+'" value="'+(phone_extension_location[index] != null ? phone_extension_location[index] : "" )+'"></td><td><select name="phone_type[]" id="phone_type_location_'+index+'" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}" {{ "voice" == strtolower($value) ? "selected" : "" }}>{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_'+index+'" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_'+index+'" value="'+(phone_description_location[index] != null ? phone_description_location[index] : "" )+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
 
             if(phone_type_location[index] != ''){
                 $("select[id='phone_type_location_"+index+"'] option[value="+phone_type_location[index]+"]").prop('selected', true)
@@ -3396,6 +3429,9 @@ Edit Service
         let location_schedules_p = location_schedules_val[id]
         let location_description_p = location_description_val[id]
         let location_details_p = location_details_val[id]
+        let location_accessibility_p = location_accessibility_val[id]
+        let location_accessibility_details_p = location_accessibility_details_val[id]
+        let location_region_p = location_regions_val[id]
 
 
         // locationRadioValue = radioValue
@@ -3417,9 +3453,14 @@ Edit Service
             $('#location_schedules_p').val(location_schedules_p)
             $('#location_description_p').val(location_description_p)
             $('#location_details_p').val(location_details_p)
+            $('#location_accessibility_p').val(location_accessibility_p)
+            $('#location_accessibility_details_p').val(location_accessibility_details_p)
+            $('#location_region_p').val(location_region_p)
             $('#locationSelectData').val('')
             $('#newLocationData').show()
             $('#existingLocationData').hide()
+            $('#location_accessibility_p').selectpicker('refresh')
+            $('#location_region_p').selectpicker('refresh')
             $('#location_service_p').selectpicker('refresh')
             $('#location_schedules_p').selectpicker('refresh')
         // }else{

@@ -21,7 +21,7 @@ class Contact extends Model implements ContractsAuditable
     ];
 
     protected $fillable = [
-        'contact_recordid', 'contact_name', 'contact_organizations', 'contact_services', 'contact_title', 'contact_department', 'contact_email', 'contact_phones',
+        'contact_recordid', 'contact_name', 'contact_organizations', 'contact_services', 'contact_title', 'contact_department', 'contact_email', 'contact_phones', 'visibility'
     ];
 
     public function organization()

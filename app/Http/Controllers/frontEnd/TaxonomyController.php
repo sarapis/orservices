@@ -128,7 +128,7 @@ class TaxonomyController extends Controller
                 'base' => $base_url,
             ));
 
-            $request = $airtable->getContent('taxonomy_terms');
+            $request = $airtable->getContent('taxonomy_term');
 
             do {
                 $response = $request->getResponse();
@@ -438,6 +438,7 @@ class TaxonomyController extends Controller
             $taxonomy->taxonomy_parent_name = $request->taxonomy_parent_name;
             $taxonomy->taxonomy = $request->taxonomy;
             $taxonomy->language = $request->language;
+            $taxonomy->order = $request->order;
             if (str_contains($request->badge_color, '#')) {
                 $badge_color = str_replace('#', '', $request->badge_color);
             } else {

@@ -74,7 +74,7 @@ Location Edit
                                     {!! Form::text('location_alternate_name',null,['class' => 'form-control','id' => 'location_alternate_name']) !!}
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            {{-- <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Location Transportation: </label>
                                     <div class="help-tip">
@@ -85,7 +85,7 @@ Location Edit
                                     </div>
                                     {!! Form::text('location_transportation',null,['class' => 'form-control','id' => 'location_transportation']) !!}
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Location Service: </label>
@@ -140,6 +140,24 @@ Location Edit
                                 <div class="form-group">
                                     <label>Zip Code: </label>
                                     {!! Form::text('facility_zip_code',null,['class' => 'form-control','id' => 'facility_zip_code']) !!}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Regions: </label>
+                                    {!! Form::select('regions[]',$regions,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'regions','multiple' => true]) !!}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Accessibility: </label>
+                                    {!! Form::select('accessibility',['Blank' => 'Blank','ADA Complaint' => 'ADA Complaint','Not ADA Compliant' => 'Not ADA Compliant'],null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'accessibility','placeholder' => 'select accessibility']) !!}
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Accessibility Details: </label>
+                                    {!! Form::textarea('accessibility_details',null,['class' => 'form-control','id' => 'accessibility_details','placeholder' => 'Accessibility Details']) !!}
                                 </div>
                             </div>
                             {{-- <div class="col-md-4">
@@ -404,9 +422,7 @@ Location Edit
         class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn"
         id="back-facility-btn"> Back</button>
     <button type="button"
-        class="btn btn-danger btn-lg btn_delete waves-effect waves-classic waves-effect waves-classic delete-td red_btn"
-        id="delete-facility-btn" value="{{$facility->location_recordid}}" data-toggle="modal"
-        data-target=".bs-delete-modal-lg"> Delete</button>
+        class="btn btn-danger btn-lg btn_delete waves-effect waves-classic waves-effect waves-classic delete-td red_btn" id="delete-facility-btn" value="{{$facility->location_recordid}}" data-toggle="modal" data-target=".bs-delete-modal-lg"> Delete</button>
     <button type="submit"
         class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic green_btn"
         id="save-facility-btn"> Save</button>
@@ -484,7 +500,7 @@ Location Edit
 </div>
 </div>
 </div>
-<div class="modal fade " tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <form action="/facility_delete_filter" method="POST" id="facility_delete_filter">

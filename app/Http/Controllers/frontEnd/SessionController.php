@@ -281,6 +281,10 @@ class SessionController extends Controller
             $date_time = date("Y-m-d h:i:sa");
             $session->session_name = 'session' . $new_recordid;
             $session->session_organization = $request->organization_recordid;
+            $session->session_method = $request->interaction_method;
+            $session->session_disposition = $request->interaction_disposition;
+            $session->session_notes = $request->interaction_notes;
+            $session->session_records_edited = $request->interaction_records_edited;
 
             if ($user) {
                 $session->session_performed_by = $user->id;

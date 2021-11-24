@@ -22,7 +22,7 @@ class Schedule extends Model implements ContractsAuditable
         return $this->belongsToMany('App\Model\Service', 'service_schedules', 'schedule_recordid', 'service_recordid');
     }
 
-    public function locations()
+    public function get_locations()
     {
 
         return $this->belongsToMany('App\Model\Location', 'location_schedules', 'schedule_recordid', 'location_recordid');

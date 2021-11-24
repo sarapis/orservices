@@ -79,6 +79,9 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::get('/about', 'frontEnd\AboutController@about');
 
     Route::resource('services', 'frontEnd\ServiceController');
+    Route::post('/add_code_category_ids', 'frontEnd\GeneralController@add_code_category_ids')->name('services.add_code_category_ids');
+    Route::post('/add_code_category_ids_create', 'frontEnd\GeneralController@add_code_category_ids_create')->name('services.add_code_category_ids_create');
+    Route::post('/code_conditions_save', 'frontEnd\GeneralController@code_conditions_save')->name('services.code_conditions_save');
     // Route::get('/services', 'frontEnd\ServiceController@services');
     Route::post('/fetchService', 'frontEnd\ExploreController@fetchService')->name('services.fetch');
     Route::get('/download_service/{id}', 'frontEnd\ServiceController@download');
@@ -271,6 +274,9 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::resource('cities', 'backend\CityController');
     Route::resource('states', 'backend\StateController');
     Route::resource('codes', 'backend\CodesController');
+    Route::resource('service_areas', 'backend\ServiceAreaController');
+    Route::resource('fees_options', 'backend\FeesOptionController');
+    Route::resource('regions', 'backend\RegionController');
     Route::get('add_state', 'backend\StateController@add_state')->name('states.add_state');
     Route::get('add_city', 'backend\CityController@add_city')->name('cities.add_city');
     // code section
@@ -301,6 +307,8 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::resource('system_emails', 'backend\EmailController');
 
     Route::resource('tb_service', 'backend\ServiceCodeController');
+    Route::post('get_service_data', 'backend\ServiceCodeController@get_service_data')->name('tb_service.get_service_data');
+
     Route::resource('code_ledgers', 'backend\CodeLedgerController');
     Route::post('tb_services_export', 'backend\ServiceCodeController@tb_services_export')->name('tb_service.export');
     Route::post('code_leaders_export', 'backend\CodeLedgerController@code_leaders_export')->name('code_ledgers.export');
@@ -377,9 +385,20 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::get('/apply_geocode', 'backend\MapController@apply_geocode')->name('map.apply_geocode');
     Route::get('/apply_enrich', 'backend\MapController@apply_enrich')->name('map.apply_enrich');
 
+    // export section
+    Route::resource('export', 'backend\ExportController');
+    Route::post('/getExportConfiguration', ['uses' => 'backend\ExportController@getExportConfiguration'])->name('export.getExportConfiguration');
+    Route::post('/getExportHistory', ['uses' => 'backend\ExportController@getExportHistory'])->name('export.getExportHistory');
+    Route::post('/changeAutoExport', ['uses' => 'backend\ExportController@changeAutoExport'])->name('export.changeAutoExport');
+    Route::get('/exportData/{id}', ['uses' => 'backend\ExportController@exportData'])->name('export.exportData');
+
+
+
 
     // Route::get('/import', ['uses' => 'backend\PagesController@import'])->name('dataSync.import');
-    Route::get('/export', ['uses' => 'backend\PagesController@export'])->name('dataSync.export');
+    // Route::get('/export', ['uses' => 'backend\PagesController@export'])->name('dataSync.export');
+    // Route::get('/export', ['uses' => 'backend\ExportController@export'])->name('export.index');
+    // Route::get('/export/create', ['uses' => 'backend\ExportController@export'])->name('export.create');
     Route::post('/export_hsds_zip_file', ['uses' => 'backend\PagesController@export_hsds_zip_file'])->name('dataSync.export_hsds_zip_file');
 
     Route::get('/datapackages', 'backend\PagesController@datapackages')->name('dataSync.datapackages');
@@ -426,3 +445,5 @@ Route::get('/forMakePhoneMain', 'frontEnd\CommonController@forMakePhoneMain')->n
 Route::get('/changeTag', 'backend\OrganizationTagsController@changeTag')->name('organization_tags.changeTag');
 Route::post('/update_hsds_api_key', ['uses' => 'backend\PagesController@update_hsds_api_key'])->name('dataSync.update_hsds_api_key');
 Route::post('/updateStatus/{id}', 'frontEnd\TaxonomyController@updateStatus')->name('updateStatus.updateStatus');
+
+Route::get('/export_csv/{id}', ['uses' => 'backend\ExportController@export_csv'])->name('export.export_csv');

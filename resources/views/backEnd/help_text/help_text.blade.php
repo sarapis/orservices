@@ -71,6 +71,28 @@ Help Text
                         </div>
                     </div>
                     <div class="row">
+                        <div class="form-group {{ $errors->has('code_category') ? 'has-error' : ''}}">
+                            <label class="col-sm-3 control-label text-right">SDOH Categories</label>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    {!! Form::textarea('code_category',($helptext->code_category ?? null),['class'=>'form-control', 'rows' => 2, 'cols' => 40]) !!}
+                                    {!! $errors->first('code_category', '<p class="help-block">:message</p>') !!}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group {{ $errors->has('sdoh_code_helptext') ? 'has-error' : ''}}">
+                            <label class="col-sm-3 control-label text-right">SDOH Codes</label>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    {!! Form::textarea('sdoh_code_helptext',($helptext->sdoh_code_helptext ?? null),['class'=>'form-control', 'rows' => 2, 'cols' => 40]) !!}
+                                    {!! $errors->first('sdoh_code_helptext', '<p class="help-block">:message</p>') !!}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="form-group">
                             <label class="col-sm-3 control-label text-right"></label>
                             <div class="col-sm-6">
@@ -88,5 +110,18 @@ Help Text
 
 @endsection
 @section('scripts')
+<script>
+    $(document).ready(function(){
+        $('.code_category_ids').change(function(){
+            if(!$(this).prop('checked')){
+                if(confirm('Deselecting this category will clear codes for this category from this services.')){
+                    $(this).removeAttr('checked');
+                }else{
+                    $(this).prop('checked',true);
+                }
+            }
+        })
+    });
+</script>
 @endsection
 

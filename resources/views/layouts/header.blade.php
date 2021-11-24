@@ -4,7 +4,7 @@
 		<div class="container">
 			<div class="navbar-header">
 				<div class="site-gridmenu-toggle" data-toggle="gridmenu">
-					<a class="navbar-brand" href="/">
+                    <a class="navbar-brand" href="/">
 						@if($layout->logo_active == 1)
 							<img class="navbar-brand-logo navbar-brand-logo-normal" src="/uploads/images/{{$layout->logo}}" title="{{$layout->site_name}}" style="height: auto;width:100px;">
 							<img class="navbar-brand-logo navbar-brand-logo-special" src="/uploads/images/{{$layout->logo}}" title="{{$layout->site_name}}" style="height: auto;width:100px;">

@@ -58,10 +58,12 @@ class NotesController extends Controller
                         $query = $query->where('session_performed_by', $extraData['user']);
                     }
                     if (isset($extraData['start_date']) && $extraData['start_date'] != null) {
-                        $query = $query->whereDate('session_start_datetime', '>=', $extraData['start_date']);
+                        // $query = $query->whereDate('session_start_datetime', '>=', $extraData['start_date']);
+                        $query = $query->whereDate('created_at', '>=', $extraData['start_date']);
                     }
                     if (isset($extraData['end_date']) && $extraData['end_date'] != null) {
-                        $query = $query->whereDate('session_end_datetime', '<=', $extraData['end_date']);
+                        // $query = $query->whereDate('session_end_datetime', '<=', $extraData['end_date']);
+                        $query = $query->whereDate('created_at', '<=', $extraData['end_date']);
                     }
                     if (isset($extraData['parent']) && $extraData['parent'] != null) {
                         $extraData['parent'] = count($extraData['parent']) > 0 ?  array_filter($extraData['parent']) : [];

@@ -18,34 +18,35 @@ class PhoneImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         $array = [
-            'phone_recordid' => $row['phone_recordid'],
-            'phone_services' => $row['service_id'],
+            'phone_recordid' => $row['id'],
             'phone_locations' => $row['location_id'],
-            'phone_number' => $row['number'],
+            'phone_services' => $row['service_id'],
             'phone_organizations' => $row['organization_id'],
             'phone_contacts' => $row['contact_id'],
+            'phone_number' => $row['number'],
             'phone_extension' => $row['extension'],
             'phone_type' => $row['type'],
             'phone_language' => $row['language'],
             'phone_description' => $row['description'],
+            'mail_priority' => $row['priority'],
         ];
 
-        if ($row['phone_recordid'] && $row['service_id']) {
+        if ($row['id'] && $row['service_id']) {
             $service_recordids = explode(',', $row['service_id']);
             foreach ($service_recordids as $key => $value1) {
                 # code...
             }
             $service_phone = new ServicePhone();
             $service_phone->service_recordid = $value1;
-            $service_phone->phone_recordid = $row['phone_recordid'] != null ? $row['phone_recordid'] : null;
+            $service_phone->phone_recordid = $row['id'] != null ? $row['id'] : null;
             $service_phone->save();
         }
-        if ($row['phone_recordid'] && $row['location_id']) {
+        if ($row['id'] && $row['location_id']) {
             $location_recordids = explode(',', $row['location_id']);
             foreach ($location_recordids as $key => $value) {
                 $location_phone = new LocationPhone();
                 $location_phone->location_recordid = $value;
-                $location_phone->phone_recordid = $row['phone_recordid'] != null ? $row['phone_recordid'] : null;
+                $location_phone->phone_recordid = $row['id'] != null ? $row['id'] : null;
                 $location_phone->save();
             }
         }

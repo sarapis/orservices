@@ -13,7 +13,7 @@ class Code extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'code', 'code_system', 'resource', 'resource_element', 'category', 'description', 'is_panel_code', 'is_multiselect', 'created_by', 'updated_by'
+        'code', 'code_system', 'resource', 'resource_element', 'category', 'description', 'grouping', 'definition', 'is_panel_code', 'is_multiselect', 'created_by', 'updated_by', 'code_id', 'uid', 'notes'
     ];
     // /**
     //  * Get all of the comments for the Code
@@ -33,13 +33,13 @@ class Code extends Model
     // {
     //     return $this->belongsToMany(Service::class, 'service_codes', 'code_id', 'service_id');
     // }
-    /**
-     * Get the user that owns the Code
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function code_ledger(): BelongsTo
+    public function code_ledger(): HasMany
     {
-        return $this->belongsTo(CodeLedger::class, 'id', 'SDOH_code');
+        return $this->hasMany(CodeLedger::class, 'SDOH_code');
+    }
+
+    public static function parent($id)
+    {
+        return SELF::where('code_id', $id)->first();
     }
 }

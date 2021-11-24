@@ -23,7 +23,7 @@ class CodeLeadgerExport implements FromView
      */
     public function view(): View
     {
-        $code_ledgers = CodeLedger::select('*');
+        $code_ledgers = CodeLedger::withTrashed();
         $extraData = $this->request->get('extraData');
         if ($extraData) {
 

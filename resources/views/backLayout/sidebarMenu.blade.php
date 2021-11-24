@@ -86,7 +86,7 @@
                         <li><a href="/importOrganization">Import Organization</a></li>
                         <li><a href="/importFacility">Import Loaction</a></li> --}}
                         <!-- <li><a href="/home_edit">Home</a></li> -->
-                        <li><a href="/export">Export</a></li>
+                        <li><a href="{{ route('export.index') }}">Export</a></li>
                     </ul>
                 </li>
                 </li>
@@ -110,6 +110,9 @@
                         <li><a href="{{ route('cities.index') }}">City</a></li>
                         <li><a href="{{ route('states.index') }}">State</a></li>
                         <li><a href="{{ route('codes.index') }}">SDOH Codes</a></li>
+                        <li><a href="{{ route('service_areas.index') }}">Service Areas</a></li>
+                        <li><a href="{{ route('fees_options.index') }}">Fee Options</a></li>
+                        <li><a href="{{ route('regions.index') }}">Regions</a></li>
 
                         {{-- <li><a href="{{ route('service_categories.index') }}">Service Category</a></li>
                         <li><a href="{{ route('service_eligibilities.index') }}">Service Eligibility</a></li> --}}

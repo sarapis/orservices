@@ -49,7 +49,7 @@ Update program
                     <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-6">
                             {!! Form::submit('Submit', ['class' => 'btn btn-success']) !!}
-                            <a href="{{route('religions.index')}}" class="btn btn-primary">Back</a>
+                            <a href="{{route('programs.index')}}" class="btn btn-primary">Back</a>
                         </div>
                     </div>
                 {!! Form::close() !!}

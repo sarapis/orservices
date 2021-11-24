@@ -91,7 +91,7 @@ Contact Form
 	                  <td class="text-center">{{$key+1}}</td>
 	                  <td class="text-center">{{$email->email_info}}</td>
 	                  <td class="text-center">
-	                    <button id="btn_delete" class="btn btn-block btn-danger btn-sm open_modal" data-toggle="modal" data-target=".bs-delete-modal-lg" ><i class="fa fa-fw fa-trash"></i>Delete</button>
+	                    <button id="btn_delete" class="btn btn-block btn-danger btn-sm open_modal" data-toggle="modal" value="{{ $email->email_recordid }}" data-target=".bs-delete-modal-lg" ><i class="fa fa-fw fa-trash"></i>Delete</button>
 	                  </td>
 	                </tr>
 	            @endforeach
@@ -126,7 +126,7 @@ Contact Form
                     @if(!empty($email))
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                        <button type="submit" id="email_delete_btn" class="btn btn-danger btn-delete"  value="{{$email->email_recordid}}">Delete</button>
+                        <button type="submit" id="email_delete_btn" class="btn btn-danger btn-delete"  >Delete</button>
                     </div>
                     @endif
                 </form>
@@ -228,13 +228,12 @@ $(document).ready(function() {
 
     $('#btn_delete').on('click', function(e) {
         e.preventDefault();
+        var value = $(this).val();
+        $('input#email_recordid').val(value);
     });
 
     $('#email_delete_btn').on('click', function(e) {
         e.preventDefault();
-        var value = $(this).val();
-        console.log(value);
-        $('input#email_recordid').val(value);
         $('#email_delete_filter').submit();
     });
 

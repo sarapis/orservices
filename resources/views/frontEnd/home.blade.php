@@ -129,7 +129,7 @@ Home
                 </div>
                 <div class="scoll_category">
                     <img src="/frontend/assets/images/Group.png" alt="" title="" >
-                    <a href="#category" class="ml-10"> Scroll to see all categories</a>
+                    <a href="#category" class="ml-10" style="font-size: 21px;color: #f4f7fb !important;text-decoration: underline;font-weight: 600;letter-spacing: 1;"> Scroll to see all categories</a>
                 </div>
             </div>
         </div>
