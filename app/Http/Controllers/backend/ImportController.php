@@ -20,6 +20,7 @@ use App\Model\Accessibility;
 use App\Model\AdditionalTaxonomy;
 use App\Model\Address;
 use App\Model\Airtablekeyinfo;
+use App\Model\CodeLedger;
 use App\Model\Contact;
 use App\Model\ContactPhone;
 use App\Model\CSV_Source;
@@ -52,6 +53,7 @@ use App\Model\Taxonomy;
 use App\Model\TaxonomyTerm;
 use App\Model\TaxonomyType;
 use Carbon\Carbon;
+use Illuminate\Auth\Events\Failed;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -103,11 +105,26 @@ class ImportController extends Controller
         $this->validate($request, [
             'name' => 'required',
             // 'format' => 'required',
-            'airtable_api_key' => 'required',
-            'airtable_base_id' => 'required',
+            // 'airtable_api_key' => 'required',
+            // 'airtable_base_id' => 'required',
             'auto_sync' => 'required',
             'mode' => 'required',
         ]);
+        if ($request->import_type == 'zipfile') {
+            $this->validate($request, [
+                'zipfile' => 'required'
+            ]);
+        } elseif ($request->import_type == 'zipfile_api') {
+            $this->validate($request, [
+                'endpoint' => 'required',
+                'key' => 'required',
+            ]);
+        } elseif ($request->import_type == 'airtable') {
+            $this->validate($request, [
+                'airtable_api_key' => 'required',
+                'airtable_base_id' => 'required',
+            ]);
+        }
         try {
             $airtable_api_key = '';
             $airtable_base_id = '';
@@ -140,6 +157,33 @@ class ImportController extends Controller
                 $path = public_path('import_source_file');
                 $file->move($path, $name);
                 $zipfile_path = $path . $name;
+            } else if ($request->import_type == 'zipfile_api') {
+                $path = public_path('import_source_file/' . $request->key . '.zip');
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+                curl_setopt($ch, CURLOPT_HEADER, false);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                curl_setopt($ch, CURLOPT_URL, $request->endpoint);
+                curl_setopt($ch, CURLOPT_REFERER, $request->endpoint);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+                $result = curl_exec($ch);
+                curl_close($ch);
+                if (json_decode($result) == "Failed") {
+                    Session::flash('message', 'Error! : api response error please check api endpoint!');
+                    Session::flash('status', 'error');
+                    return redirect('import');
+                }
+                // if($result == )
+                $ifp = fopen($path, "wb");
+                // if ($decode) {
+                //     fwrite($ifp, base64_decode($result));
+                // } else {
+                fwrite($ifp, $result);
+                // }
+
+                fclose($ifp);
+                // $zipfile_path = $path . $name;
+                $zipfile_path = '/import_source_file/' . $request->key . '.zip';
             }
             if ($request->has('auto_sync') && $request->auto_sync == 1) {
                 $syncData = ImportDataSource::where('auto_sync', '1')->get();
@@ -155,6 +199,8 @@ class ImportController extends Controller
                 'airtable_api_key' => $airtable_api_key,
                 'airtable_base_id' => $airtable_base_id,
                 'auto_sync' => $request->auto_sync,
+                'endpoint' => $request->endpoint,
+                'key' => $request->key,
                 'mode' => $request->mode,
                 'source_file' => $zipfile_path,
                 'import_type' => $request->import_type,
@@ -206,11 +252,26 @@ class ImportController extends Controller
         $this->validate($request, [
             'name' => 'required',
             // 'format' => 'required',
-            'airtable_api_key' => 'required',
-            'airtable_base_id' => 'required',
+            // 'airtable_api_key' => 'required',
+            // 'airtable_base_id' => 'required',
             'auto_sync' => 'required',
             'mode' => 'required',
         ]);
+        if ($request->import_type == 'zipfile') {
+            $this->validate($request, [
+                'zipfile' => 'required'
+            ]);
+        } elseif ($request->import_type == 'zipfile_api') {
+            $this->validate($request, [
+                'endpoint' => 'required',
+                'key' => 'required',
+            ]);
+        } elseif ($request->import_type == 'airtable') {
+            $this->validate($request, [
+                'airtable_api_key' => 'required',
+                'airtable_base_id' => 'required',
+            ]);
+        }
         try {
             $dataSource = ImportDataSource::whereId($id)->first();
             $airtable_api_key = $dataSource->airtable_api_key;
@@ -246,6 +307,33 @@ class ImportController extends Controller
                 $path = public_path('import_source_file');
                 $file->move($path, $name);
                 $zipfile_path = '/import_source_file/' . $name;
+            } else if ($request->import_type == 'zipfile_api') {
+                $path = public_path('import_source_file/' . $request->key . '.zip');
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+                curl_setopt($ch, CURLOPT_HEADER, false);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                curl_setopt($ch, CURLOPT_URL, $request->endpoint);
+                curl_setopt($ch, CURLOPT_REFERER, $request->endpoint);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+                $result = curl_exec($ch);
+                curl_close($ch);
+                if (json_decode($result) == "Failed") {
+                    Session::flash('message', 'Error! : api response error please check api endpoint!');
+                    Session::flash('status', 'error');
+                    return redirect('import');
+                }
+                // if($result == )
+                $ifp = fopen($path, "wb");
+                // if ($decode) {
+                //     fwrite($ifp, base64_decode($result));
+                // } else {
+                fwrite($ifp, $result);
+                // }
+
+                fclose($ifp);
+                // $zipfile_path = $path . $name;
+                $zipfile_path = '/import_source_file/' . $request->key . '.zip';
             }
             if ($request->has('auto_sync') && $request->auto_sync == 1) {
                 $syncData = ImportDataSource::where('auto_sync', '1')->first();
@@ -262,6 +350,8 @@ class ImportController extends Controller
                 'airtable_api_key' => $airtable_api_key,
                 'airtable_base_id' => $airtable_base_id,
                 'auto_sync' => $request->auto_sync,
+                'endpoint' => $request->endpoint,
+                'key' => $request->key,
                 'mode' => $request->mode,
                 'source_file' => $zipfile_path,
                 'import_type' => $request->import_type,
@@ -413,6 +503,7 @@ class ImportController extends Controller
                 ServiceSchedule::truncate();
                 Taxonomy::truncate();
                 Audit::truncate();
+                CodeLedger::truncate();
             }
             if ($importData && $importData->import_type == 'airtable') {
                 $organization_tag = $importData->organization_tags;
@@ -444,7 +535,7 @@ class ImportController extends Controller
                 $importHistory->status = 'Completed';
                 $importHistory->sync_by = Auth::id();
                 $importHistory->save();
-            } else if ($importData && $importData->import_type == 'zipfile') {
+            } else if ($importData && $importData->import_type == 'zipfile' || $importData && $importData->import_type == 'zipfile_api') {
                 $this->zip($importData);
 
                 $importData->last_imports = Carbon::now();
@@ -531,7 +622,6 @@ class ImportController extends Controller
             //     );
             //     return $response;
             // }
-
             // $path = $request->file('file_zip')->getRealPath();
             $zip = new ZipArchive();
             $zip->open(public_path($importData->source_file));
@@ -558,9 +648,7 @@ class ImportController extends Controller
             }
 
 
-            // Service::truncate();
-            // ServiceOrganization::truncate();
-
+            //
             Excel::import(new Services, $path);
 
             $date = Carbon::now();
@@ -568,7 +656,7 @@ class ImportController extends Controller
             $csv_source->records = Service::count();
             $csv_source->syncdate = $date;
             $csv_source->save();
-
+            //
             //locations.csv
             $path = public_path('/HSDS/data/locations.csv');
 
@@ -581,8 +669,7 @@ class ImportController extends Controller
             }
 
             // $data = Excel::load($path)->get();
-            // Location::truncate();
-
+            //
             Excel::import(new LocationImport, $path);
 
             $date = Carbon::now();
@@ -590,7 +677,7 @@ class ImportController extends Controller
             $csv_source->records = Location::count();
             $csv_source->syncdate = $date;
             $csv_source->save();
-
+            //
             //organizations.csv
             $path = public_path('/HSDS/data/organizations.csv');
 
@@ -602,9 +689,7 @@ class ImportController extends Controller
                 return $response;
             }
 
-            // Organization::truncate();
-            // OrganizationDetail::truncate();
-
+            //
             Excel::import(new OrganizationImport, $path);
 
             $date = Carbon::now();
@@ -612,7 +697,7 @@ class ImportController extends Controller
             $csv_source->records = Organization::count();
             $csv_source->syncdate = $date;
             $csv_source->save();
-
+            //
             //contacts.csv
             $path = public_path('/HSDS/data/contacts.csv');
 
@@ -623,9 +708,7 @@ class ImportController extends Controller
                 );
                 return $response;
             }
-            // Contact::truncate();
-            // ServiceContact::truncate();
-
+            //
             Excel::import(new ContactImport, $path);
 
             $date = Carbon::now();
@@ -633,7 +716,7 @@ class ImportController extends Controller
             $csv_source->records = Contact::count();
             $csv_source->syncdate = $date;
             $csv_source->save();
-
+            //
             //phones.csv
             $path = public_path('/HSDS/data/phones.csv');
 
@@ -644,10 +727,7 @@ class ImportController extends Controller
                 );
                 return $response;
             }
-            // Phone::truncate();
-            // ServicePhone::truncate();
-            // LocationPhone::truncate();
-
+            //
             Excel::import(new PhoneImport, $path);
 
             $date = Carbon::now();
@@ -655,7 +735,7 @@ class ImportController extends Controller
             $csv_source->records = Phone::count();
             $csv_source->syncdate = $date;
             $csv_source->save();
-
+            //
             //physical_addresses.csv
             $path = public_path('/HSDS/data/physical_addresses.csv');
 
@@ -666,10 +746,7 @@ class ImportController extends Controller
                 );
                 return $response;
             }
-            // Address::truncate();
-            // LocationAddress::truncate();
-            // ServiceAddress::truncate();
-
+            //
             Excel::import(new AddressImport, $path);
 
             $date = Carbon::now();
@@ -677,10 +754,9 @@ class ImportController extends Controller
             $csv_source->records = Address::count();
             $csv_source->syncdate = $date;
             $csv_source->save();
-
+            //
             //languages.csv
             $path = public_path('/HSDS/data/languages.csv');
-
             if (!file_exists($path)) {
                 $response = array(
                     'status' => 'error',
@@ -688,28 +764,26 @@ class ImportController extends Controller
                 );
                 return $response;
             }
-            // Language::truncate();
-
+            //
             Excel::import(new LanguageImport, $path);
-
             $date = Carbon::now();
             $csv_source = CSV_Source::where('name', '=', 'Languages')->first();
             $csv_source->records = Language::count();
             $csv_source->syncdate = $date;
             $csv_source->save();
-
+            //
 
             //taxonomy.csv
-            $path = public_path('/HSDS/data/taxonomy.csv');
+            $path = public_path('/HSDS/data/taxonomy_terms.csv');
 
             if (!file_exists($path)) {
                 $response = array(
                     'status' => 'error',
-                    'result' => 'taxonomy.csv does not exist.',
+                    'result' => 'taxonomy_terms.csv does not exist.',
                 );
                 return $response;
             }
-
+            //
             Excel::import(new TaxonomyImport, $path);
 
             $date = Carbon::now();
@@ -717,20 +791,20 @@ class ImportController extends Controller
             $csv_source->records = Taxonomy::count();
             $csv_source->syncdate = $date;
             $csv_source->save();
-
+            //
             //services_taxonomy.csv
-            $path = public_path('/HSDS/data/services_taxonomy.csv');
+            $path = public_path('/HSDS/data/service_attributes.csv');
 
             if (!file_exists($path)) {
                 $response = array(
                     'status' => 'error',
-                    'result' => 'services_taxonomy.csv does not exist.',
+                    'result' => 'service_attributes.csv does not exist.',
                 );
                 return $response;
             }
 
             // ServiceTaxonomy::truncate();
-
+            //
             Excel::import(new ServiceTaxonomyImport, $path);
 
             $date = date("Y/m/d H:i:s");
@@ -738,7 +812,7 @@ class ImportController extends Controller
             $csv_source->records = ServiceTaxonomy::count();
             $csv_source->syncdate = $date;
             $csv_source->save();
-
+            //
             //services_at_location.csv
             $path = public_path('/HSDS/data/services_at_location.csv');
 
@@ -751,7 +825,7 @@ class ImportController extends Controller
             }
 
             // ServiceLocation::truncate();
-
+            //
             Excel::import(new ServiceLocationImport, $path);
 
             $date = Carbon::now();
@@ -759,7 +833,7 @@ class ImportController extends Controller
             $csv_source->records = ServiceLocation::count();
             $csv_source->syncdate = $date;
             $csv_source->save();
-
+            //
             //accessibility_for_disabilities.csv
             $path = public_path('/HSDS/data/accessibility_for_disabilities.csv');
 
@@ -771,7 +845,7 @@ class ImportController extends Controller
                 return $response;
             }
             // Accessibility::truncate();
-
+            //
             Excel::import(new AccessibilityImport, $path);
 
             $date = Carbon::now();
@@ -779,21 +853,17 @@ class ImportController extends Controller
             $csv_source->records = Accessibility::count();
             $csv_source->syncdate = $date;
             $csv_source->save();
-
+            //
             //regular_schedules.csv
-            $path = public_path('/HSDS/data/regular_schedules.csv');
+            $path = public_path('/HSDS/data/schedules.csv');
 
             if (!file_exists($path)) {
                 $response = array(
                     'status' => 'error',
-                    'result' => 'regular_schedules.csv does not exist.',
+                    'result' => 'schedules.csv does not exist.',
                 );
                 return $response;
             }
-
-            // Schedule::truncate();
-            // ServiceSchedule::truncate();
-            // LocationSchedule::truncate();
 
             Excel::import(new ScheduleImport, $path);
 
@@ -810,13 +880,14 @@ class ImportController extends Controller
             rename(public_path('/HSDS/data/phones.csv'), public_path('/csv/phones.csv'));
             rename(public_path('/HSDS/data/physical_addresses.csv'), public_path('/csv/physical_addresses.csv'));
             rename(public_path('/HSDS/data/languages.csv'), public_path('/csv/languages.csv'));
-            rename(public_path('/HSDS/data/taxonomy.csv'), public_path('/csv/taxonomy.csv'));
-            rename(public_path('/HSDS/data/services_taxonomy.csv'), public_path('/csv/services_taxonomy.csv'));
+            rename(public_path('/HSDS/data/taxonomy_terms.csv'), public_path('/csv/taxonomy_terms.csv'));
+            rename(public_path('/HSDS/data/service_attributes.csv'), public_path('/csv/service_attributes.csv'));
             rename(public_path('/HSDS/data/services_at_location.csv'), public_path('/csv/services_at_location.csv'));
             rename(public_path('/HSDS/data/accessibility_for_disabilities.csv'), public_path('/csv/accessibility_for_disabilities.csv'));
-            rename(public_path('/HSDS/data/regular_schedules.csv'), public_path('/csv/regular_schedules.csv'));
+            rename(public_path('/HSDS/data/schedules.csv'), public_path('/csv/schedules.csv'));
             return "import completed";
         } catch (\Throwable $th) {
+            dd($th);
             Log::error('Error in import controller import : ' . $th);
         }
     }

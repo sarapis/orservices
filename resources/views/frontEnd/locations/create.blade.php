@@ -67,7 +67,7 @@ Location Create
                                     </div>
                                 </div>
 
-                                <div class="col-md-4">
+                                {{-- <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Location Transportation: </label>
                                         <div class="help-tip">
@@ -75,7 +75,7 @@ Location Create
                                         </div>
                                         {!! Form::text('location_transportation',null,['class' => 'form-control','id' => 'location_transportation']) !!}
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Location Service: </label>
@@ -148,6 +148,24 @@ Location Create
                                     <div class="form-group">
                                         <label>Zip Code: </label>
                                         {!! Form::text('facility_zip_code',null,['class' => 'form-control','id' => 'facility_zip_code']) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Regions: </label>
+                                        {!! Form::select('regions',$regions,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'regions','multiple' => true]) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Accessibility: </label>
+                                        {!! Form::select('accessibility',['Blank' => 'Blank','ADA Complaint' => 'ADA Complaint','Not ADA Compliant' => 'Not ADA Compliant'],null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'accessibility','placeholder' => 'select accessibility']) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Accessibility Details: </label>
+                                        {!! Form::textarea('accessibility_details','Visitors with concerns about the level of access for specific physical conditions, are always recommended to contact the organization directly to obtain the best possible information about physical access',['class' => 'form-control','id' => 'accessibility_details','placeholder' => 'Accessibility Details']) !!}
                                     </div>
                                 </div>
                                 {{-- <div class="col-md-12">

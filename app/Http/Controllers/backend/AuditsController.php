@@ -680,9 +680,9 @@ class AuditsController extends Controller
                                 $codeData = Code::whereId($valueP)->with('code_ledger')->first();
                                 if ($codeData && $codeData->category) {
                                     if ($keyP == 0)
-                                        $codeName = $codeData->category . ' - ' . $codeData->resource . ($codeData->code_ledger ? ' - ' . $codeData->code_ledger->rating : '');
+                                        $codeName = $codeData->category . ' - ' . $codeData->resource .  ($codeData->code_ledger && count($codeData->code_ledger) > 0 && isset($codeData->code_ledger[0]) ? ' - ' . $codeData->code_ledger[0]->rating : '');
                                     else
-                                        $codeName = $codeName . ' | ' . $codeData->resource . ' - ' . $codeData->category . ($codeData->code_ledger ? ' - ' . $codeData->code_ledger->rating : '');
+                                        $codeName = $codeName . ' | ' . $codeData->resource . ' - ' . $codeData->category . ($codeData->code_ledger && count($codeData->code_ledger) > 0 && isset($codeData->code_ledger[0]) ? ' - ' . $codeData->code_ledger[0]->rating : '');
                                 }
                             }
                             $new_values[$key] = $codeName;
@@ -691,9 +691,9 @@ class AuditsController extends Controller
                                 $oldCodeData = Code::whereId($valueO)->first();
                                 if ($oldCodeData && $oldCodeData->category) {
                                     if ($keyO == 0)
-                                        $oldCodeName =  $oldCodeData->resource . ' - ' . $oldCodeData->category . ($oldCodeData->code_ledger ? ' - ' . $oldCodeData->code_ledger->rating : '');
+                                        $oldCodeName = $oldCodeData->resource . ' - ' . $oldCodeData->category . ($oldCodeData->code_ledger && count($oldCodeData->code_ledger) > 0 && isset($oldCodeData->code_ledger[0]) ? ' - ' . $oldCodeData->code_ledger[0]->rating : '');
                                     else
-                                        $oldCodeName = $oldCodeName . '| ' . $oldCodeData->resource . ' - ' . $oldCodeData->category . ($oldCodeData->code_ledger ? ' - ' . $oldCodeData->code_ledger->rating : '');
+                                        $oldCodeName = $oldCodeName . '| ' . $oldCodeData->resource . ' - ' . $oldCodeData->category . ($oldCodeData->code_ledger && count($oldCodeData->code_ledger) > 0 && isset($oldCodeData->code_ledger[0]) ? ' - ' . $oldCodeData->code_ledger[0]->rating : '');
                                 }
                             }
                             $old_values[$key] = $oldCodeName;

@@ -19,14 +19,15 @@ class ScheduleImport implements ToModel, WithHeadingRow
     {
         $schedule = Schedule::max('schedule_recordid') + 1;
         $array = [
-            'schedule_recordid' => $row['schedule_recordid'],
+            'schedule_recordid' => $row['id'],
             'schedule_services' => $row['service_id'],
             'schedule_locations' => $row['location_id'],
             'service_at_location' => $row['service_at_location_id'],
+            'weekday' => $row['weekday'],
             'valid_from' => $row['valid_from'],
             'valid_to' => $row['valid_to'],
-            'schedule_start_date' => $row['dtstart'],
-            'schedule_end_date' => $row['until'],
+            'opens' => $row['dtstart'],
+            'closes' => $row['until'],
             'wkst' => $row['wkst'],
             'freq' => $row['freq'],
             'interval' => $row['interval'],
@@ -40,14 +41,17 @@ class ScheduleImport implements ToModel, WithHeadingRow
         if ($row['service_id']) {
             $service_schedule = new ServiceSchedule();
             $service_schedule->service_recordid = $row['service_id'] != 'NULL' ? $row['service_id'] : null;
-            $service_schedule->schedule_recordid = $row['schedule_recordid'];
+            $service_schedule->schedule_recordid = $row['id'];
             $service_schedule->save();
         }
         if ($row['location_id']) {
-            $location_schedule = new LocationSchedule();
-            $location_schedule->location_recordid = $row['location_id'] != 'NULL' ? $row['location_id'] : null;
-            $location_schedule->schedule_recordid = $row['schedule_recordid'];
-            $location_schedule->save();
+            $location_ids = explode(',', $row['location_id']);
+            foreach ($location_ids as $key => $value) {
+                $location_schedule = new LocationSchedule();
+                $location_schedule->location_recordid = $value;
+                $location_schedule->schedule_recordid = $row['id'];
+                $location_schedule->save();
+            }
         }
 
         return new Schedule($array);

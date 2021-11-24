@@ -143,7 +143,7 @@
                 ],
                 columnDefs: [{
                         "targets": 0,
-                        "orderable": false,
+                        "orderable": true,
                         "class": "text-left",
                     },
                     {
@@ -220,7 +220,7 @@
                 ],
                 columnDefs: [{
                         "targets": 0,
-                        "orderable": false,
+                        "orderable": true,
                         "class": "text-left",
                     },
                     {

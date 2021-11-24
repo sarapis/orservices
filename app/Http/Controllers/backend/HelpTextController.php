@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\backend;
 
 use App\Http\Controllers\Controller;
+use App\Model\Code;
 use App\Model\Helptext;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -12,7 +13,8 @@ class HelpTextController extends Controller
     public function helptexts()
     {
         $helptext = Helptext::first();
-        return view('backEnd.help_text.help_text', compact('helptext'));
+        $codes = Code::pluck('category', 'id')->unique();
+        return view('backEnd.help_text.help_text', compact('helptext', 'codes'));
     }
     public function save_helptexts(Request $request)
     {
@@ -23,6 +25,8 @@ class HelpTextController extends Controller
                 $helptext->service_conditions = $request->service_conditions;
                 $helptext->service_goals = $request->service_goals;
                 $helptext->service_activities = $request->service_activities;
+                $helptext->code_category = $request->code_category;
+                $helptext->sdoh_code_helptext = $request->sdoh_code_helptext;
                 $helptext->save();
             } else {
                 Helptext::create([
@@ -30,6 +34,8 @@ class HelpTextController extends Controller
                     'service_conditions' => $request->service_conditions,
                     'service_goals' => $request->service_goals,
                     'service_activities' => $request->service_activities,
+                    'code_category' => $request->code_category,
+                    'sdoh_code_helptext' => $request->sdoh_code_helptext,
                 ]);
             }
             Session::flash('message', 'Success! Help text store successfully.');

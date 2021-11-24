@@ -28,6 +28,18 @@ Services
         text-align: left;
     }
     .form-group{float: left;width: 100%}
+    .panel-link {
+        display: inline-block;
+        padding: 4px 8px;
+        text-align: center;
+        margin: 4px;
+        vertical-align: baseline;
+        border-radius: 4px;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 14px;
+        font-family: "Neue Haas Grotesk Display Roman";
+    }
 </style>
 @section('content')
 
@@ -65,7 +77,7 @@ Services
       <div class="row">
           <div class="col-md-12">
             <div class="form-group">
-                <label for="inputPassword3" class="col-sm-3 control-label">Select activities</label>
+                <label for="inputPassword3" class="col-sm-3 control-label">Select Activities</label>
                 <div class="col-sm-7">
                      {!! Form::select('activities',$activities,null,['class' => 'form-control','id' => 'activities', 'data-live-search' => 'true','data-size' => '5','multiple' => 'true']) !!}
                 </div>
@@ -75,9 +87,41 @@ Services
       <div class="row">
           <div class="col-md-12">
             <div class="form-group">
-                <label for="inputPassword3" class="col-sm-3 control-label">Select organizations</label>
+                <label for="inputPassword3" class="col-sm-3 control-label">Select Organizations</label>
                 <div class="col-sm-7">
                      {!! Form::select('organizations',$organizations,null,['class' => 'form-control','id' => 'organizations', 'data-live-search' => 'true','data-size' => '5','multiple' => 'true']) !!}
+                </div>
+            </div>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+                <label for="inputPassword3" class="col-sm-3 control-label">Select Service Category</label>
+                <div class="col-sm-7">
+                     {!! Form::select('service_category',$service_category_types,null,['class' => 'form-control','id' => 'service_category', 'data-live-search' => 'true','data-size' => '5','multiple' => 'true']) !!}
+                </div>
+            </div>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+                <label for="inputPassword3" class="col-sm-3 control-label">Select Service Eligibility</label>
+                <div class="col-sm-7">
+                     {!! Form::select('service_eligibility',$service_eligibility_types,null,['class' => 'form-control','id' => 'service_eligibility', 'data-live-search' => 'true','data-size' => '5','multiple' => 'true']) !!}
+                </div>
+            </div>
+          </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="inputPassword3" class="col-sm-3 control-label">Only show services with SDOH Codes</label>
+                <div class="row">
+                    <div class="col-sm-1">
+                         <input type="checkbox" name="service_with_codes" id="service_with_codes" value="1">
+                    </div>
                 </div>
             </div>
           </div>
@@ -90,9 +134,11 @@ Services
                 <tr>
                     <th class="text-center">Service ID</th>
                     <th class="text-center">Service Name</th>
-                    <th class="text-center">Alt Name</th>
                     <th class="text-center">Organization</th>
-                    <th class="text-center">SDOH Codes</th>
+                    <th class="text-center">Service Category</th>
+                    <th class="text-center">Service Eligibility</th>
+                    <th class="text-center">SDOH ID</th>
+                    {{-- <th class="text-center">Service Grouping</th> --}}
                     {{-- <th class="text-center">Action</th> --}}
                 </tr>
             </thead>
@@ -113,10 +159,12 @@ Services
     $('#goals').selectpicker()
     $('#activities').selectpicker()
     $('#organizations').selectpicker()
+    $('#service_category').selectpicker()
+    $('#service_eligibility').selectpicker()
     let services_table;
     let extraData = {};
     let ajaxUrl
-    ajaxUrl = "{{ route('tb_service.index') }}";
+    ajaxUrl = "{{ route('tb_service.get_service_data') }}";
   $(document).ready(function(){
     services_table = $('#services_table').DataTable({
             'order': [0, 'desc'],
@@ -124,7 +172,7 @@ Services
             serverSide: true,
             ajax: {
                 url: ajaxUrl,
-                method : "get",
+                method : "post",
                 headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                     },
@@ -138,9 +186,11 @@ Services
             columns: [
                 { data: 'id', name: 'id' },
                 { data: 'service_name', name: 'service_name' },
-                { data: 'service_alternate_name', name: 'service_alternate_name' },
                 { data: 'service_organization', name: 'service_organization' },
+                { data: 'service_category', name: 'service_category' },
+                { data: 'service_eligibility', name: 'service_eligibility' },
                 { data: 'codes', name: 'codes' },
+                // { data: 'procedure_grouping', name: 'procedure_grouping' },
             ],
             columnDefs : [
                 {
@@ -210,6 +260,16 @@ Services
             extraData.organizations = val
             services_table.ajax.reload()
         })
+        $('#service_category').change(function(){
+            let val = $(this).val()
+            extraData.service_category = val
+            services_table.ajax.reload()
+        })
+        $('#service_eligibility').change(function(){
+            let val = $(this).val()
+            extraData.service_eligibility = val
+            services_table.ajax.reload()
+        })
         $('#start_date').change(function(){
             let val = $(this).val()
             extraData.start_date = val
@@ -218,6 +278,11 @@ Services
         $('#end_date').change(function(){
             let val = $(this).val()
             extraData.end_date = val
+            services_table.ajax.reload()
+        })
+        $('#service_with_codes').change(function(){
+            let val = $(this).is(':checked')
+            extraData.service_with_codes = val
             services_table.ajax.reload()
         })
         $('#export_csv').click(function () {

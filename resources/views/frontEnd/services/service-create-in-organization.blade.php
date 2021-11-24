@@ -94,28 +94,48 @@ Service Create
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Status(Verified): </label>
-                                        {{-- <select class="form-control selectpicker" data-live-search="true" id="service_status"
-                                            name="service_status" data-size="5" >
-                                            <option value="">Select status</option>
-                                            @foreach($service_status_list as $key => $service_status)
-                                            <option value="{{$service_status}}">{{$service_status}}</option>
-                                            @endforeach
-                                        </select> --}}
-                                        {!! Form::select('service_status',$service_status_list,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'service_status','placeholder' => 'Select status']) !!}
+                                        <label>Access Requirement</label>
+                                        {{-- <div class="help-tip">
+                                            <div>
+                                                <p>URL of the service</p>
+                                            </div>
+                                        </div> --}}
+                                        {!! Form::select('access_requirement',['none'=>'None','yes'=>'Yes'],'none',['class' =>
+                                        'form-control selectpicker']) !!}
                                     </div>
                                 </div>
-                                {{-- <div class="col-md-4">
+                                <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Taxonomies: </label>
-                                        <select class="form-control selectpicker" multiple data-live-search="true" id="service_taxonomies"
-                                            name="service_taxonomies[]" data-size="5" >
-                                            @foreach($taxonomy_info_list as $key => $taxonomy_info)
-                                            <option value="{{$taxonomy_info->taxonomy_recordid}}">{{$taxonomy_info->taxonomy_name}}</option>
-                                            @endforeach
-                                        </select>
+                                        <label>Service Area</label>
+                                        <div class="help-tip">
+                                            <div>
+                                                <p>The geographic area where this service is accessible.</p>
+                                            </div>
+                                        </div>
+                                        {!! Form::select('service_area[]',$service_area,null,['class' =>
+                                        'form-control selectpicker','multiple' => true]) !!}
                                     </div>
-                                </div> --}}
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Application Process: </label>
+                                        <div class="help-tip">
+                                            <div>
+                                                <p>The steps needed to access the service.</p>
+                                            </div>
+                                        </div>
+                                        <input class="form-control selectpicker" type="text" id="service_application_process"
+                                            name="service_application_process" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Fee Options</label>
+                                        {!! Form::select('fee_option[]',$fee_options,null,['class' =>
+                                        'form-control selectpicker','multiple' => true]) !!}
+                                    </div>
+                                </div>
+
                                 <div class="text-right col-md-12 mb-20">
                                     <button type="button" class="btn btn_additional bg-primary-color" data-toggle="collapse" data-target="#demo">Additional Info
                                         <img src="/frontend/assets/images/white_arrow.png" alt="" title="" />
@@ -129,15 +149,6 @@ Service Create
                                                 <div><p>An organization may have a license issued by a government entity to operate legally. A list of any such licenses can be provided here.</p></div>
                                             </div>
                                             <input class="form-control selectpicker" type="text" id="service_licenses" name="service_licenses" value="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Application Process: </label>
-                                            <div class="help-tip">
-                                                <div><p>The steps needed to access the service.</p></div>
-                                            </div>
-                                            <input class="form-control selectpicker" type="text" id="service_application_process" name="service_application_process" value="">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -179,82 +190,15 @@ Service Create
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Service Grouping Description: </label>
-                                            {{-- <div class="help-tip">
-                                                <div><p></p></div>
-                                            </div> --}}
                                             <textarea name="program_alternate_name" id="program_alternate_name" cols="30" rows="10" class="form-control"></textarea>
-                                        </div>
-                                    </div>
-
-
-                                    <!-- <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Service Phone: </label>
-                                            <input class="form-control selectpicker" type="text" id="service_phones"
-                                                name="service_phones" value="">
-                                            <p id="error_service_phones" style="font-style: italic; color: red;">Invalid phone number! Example: +39 422 789611, 0422-78961, (042)589-6000, +39 (0422)7896, 0422 (789611), 39 422/789 611 </p>
-                                        </div>
-                                    </div> -->
-
-                                    {{-- <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Service Schedule: </label>
-                                            <select class="form-control selectpicker" multiple data-live-search="true" id="service_schedules"
-                                                name="service_schedules[]" data-size="5" >
-                                                @foreach($schedule_info_list as $key => $schedule_info)
-                                                <option value="{{$schedule_info->schedule_recordid}}">{{$schedule_info->opens_at}} ~ {{$schedule_info->closes_at}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div> --}}
-
-                                    {{-- <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Contacts: </label>
-                                            <select class="form-control selectpicker" multiple data-live-search="true" id="service_contacts"
-                                                name="service_contacts[]" data-size="5" >
-                                                @foreach($contact_info_list as $key => $contact_info)
-                                                <option value="{{$contact_info->contact_recordid}}">{{$contact_info->contact_name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div> --}}
-                                    {{-- <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Service Details: </label>
-                                            <select class="form-control selectpicker" multiple data-live-search="true" id="service_details"
-                                                name="service_details[]" data-size="5" >
-                                                @foreach($detail_info_list as $key => $detail_info)
-                                                <option value="{{$detail_info->detail_recordid}}">{{$detail_info->detail_value}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div> --}}
-                                    {{-- <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Service Address: </label>
-                                            <select class="form-control selectpicker" multiple data-live-search="true" id="service_address"
-                                                name="service_address[]" data-size="5" >
-                                                @foreach($address_info_list as $key => $address_info)
-                                                @if($address_info->address_1)
-                                                <option value="{{$address_info->address_recordid}}">{{$address_info->address_1}}, {{$address_info->address_city}}, {{$address_info->address_state_province}}, {{$address_info->address_postal_code}}</option>
-                                                @endif
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div> --}}
-                                    {{-- <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Meta Data: </label>
-                                            <input class="form-control selectpicker" type="text" id="service_metadata" name="service_metadata" value="">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Airs Taxonomy X: </label>
-                                            <input class="form-control selectpicker" type="text" id="service_airs_taxonomy_x" name="service_airs_taxonomy_x" value="">
+                                            <label>Status(Verified): </label>
+                                            {!! Form::select('service_status',$service_status_list,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'service_status','placeholder' => 'Select status']) !!}
                                         </div>
-                                    </div> --}}
+                                    </div>
                                 </div>
                                 {{-- taxonomy section --}}
                             </div>
@@ -271,20 +215,8 @@ Service Create
                         </li>
                         @if ($layout->show_classification == 'yes')
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#conditions-tab">
-                                <h4 class="card_services_title">Conditions
-                                </h4>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#goals-tab">
-                                <h4 class="card_services_title">Goals
-                                </h4>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#activities-tab">
-                                <h4 class="card_services_title">Activities
+                            <a class="nav-link" data-toggle="tab" href="#sdoh-category-tab">
+                                <h4 class="card_services_title">SDOH Codes
                                 </h4>
                             </a>
                         </li>
@@ -408,169 +340,55 @@ Service Create
                                     </div>
                                 </div>
                                 @if ($layout->show_classification == 'yes')
-                                <div class="tab-pane" id="conditions-tab">
+                                <div class="tab-pane" id="sdoh-category-tab">
                                     <div class="organization_services">
+
                                         <div  style="top:8px;" >
                                             <div>
                                                 <p class="service_help_text">
-                                                    {{ $help_text->service_conditions ?? '' }}
+                                                    {{ $help_text->sdoh_code_helptext ?? '' }}
                                                 </p>
                                             </div>
                                         </div>
-                                        <div class="accordion" id="accordion-condition">
-                                            @php
-                                                $i = 0;
-                                            @endphp
-                                            @foreach ($conditions as $condition_key => $condition_values)
-                                                    <div class="card all_form_field">
-                                                        <div class="card-header" id="condition_{{ $i }}">
-                                                            <h4 class="mb-0 card_services_title">
-                                                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#condition_{{ str_replace(' ','_',$condition_key) }}" aria-expanded="true" aria-controls="condition_{{ str_replace(' ','_',$condition_key) }}">
-                                                                    {{ $condition_key }}
-                                                                </button>
-                                                            </h4>
-                                                        </div>
-                                                        <div id="condition_{{ str_replace(' ','_',$condition_key) }}" class="collapse hide" aria-labelledby="condition_{{ str_replace(' ','_',$condition_key) }}" data-parent="#accordion-condition">
-                                                            <div class="card-body">
-                                                                {{-- <select class="form-control selectpicker" data-live-search="true"id="code_conditions" name="code_conditions[]" data-size="5">
-                                                                    <option value="">Select</option>
-                                                                    @foreach ($condition_values as $data_key => $code_data)
-                                                                    <option value="{{$code_data->id}}">{{$code_data->description}}</option>
-                                                                    @endforeach
-                                                                </select> --}}
-                                                                @foreach ($condition_values as $data_key => $code_data)
-                                                                    <div class="row inner-accordion-section pb-15">
-                                                                        <div class="col-md-6">
-                                                                            <p>
-                                                                                {{ $code_data->description }}
-                                                                            </p>
-                                                                        </div>
-                                                                        <div class="col-md-6">
-                                                                            <select class="form-control selectpicker service_category_type" id="code_conditions" name="code_conditions[]">
-                                                                                <option value="">Empty</option>
-                                                                                <option value="1_{{ $code_data->id }}">1</option>
-                                                                                <option value="2_{{ $code_data->id }}">2</option>
-                                                                                <option value="3_{{ $code_data->id }}">3</option>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                @endforeach
+                                        <div class="card all_form_field">
+                                            <div class="card-block">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <h4 class="title_edit text-left mb-25 mt-10">
+                                                            Categories
+                                                            <div class="help-tip">
+                                                                <div>
+                                                                    <p>{{ $help_text->code_category ?? '' }}</p>
+                                                                </div>
                                                             </div>
+                                                        </h4>
+                                                        <div class="accordion" id="accordion-sdoh-category">
+                                                            @foreach ($codes as $key => $item)
+                                                            <div class="row inner-accordion-section pb-15">
+                                                                <div class="col-md-6">
+                                                                    <p>
+                                                                        {{ $item }}
+                                                                    </p>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    {!! Form::checkbox('code_category_ids[]',$key, in_array($key,$selected_ids) ? 'selected' : '', ['class' => 'code_category_ids filled-in chk-col-blue']) !!}
+                                                                </div>
+
+                                                            </div>
+                                                            @endforeach
+
                                                         </div>
                                                     </div>
-                                                @php
-                                                    $i++;
-                                                @endphp
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane" id="goals-tab">
-                                    <div class="organization_services">
-                                        <div style="top:8px;" >
-                                            <div>
-                                                <p class="service_help_text">
-                                                    {{ $help_text->service_goals ?? '' }}
-                                                </p>
+                                                    <div class="col-md-8">
+                                                        {{-- <h4 class="title_edit text-left mb-25 mt-10">
+                                                            SDOH Codes
+                                                        </h4> --}}
+                                                        <div class="accordion" id="accordion-sdoh-codes">
+
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="accordion" id="accordion-goals">
-                                            @php
-                                                $i = 0;
-                                            @endphp
-                                            @foreach ($goals as $goal_key => $goal_values)
-                                                    <div class="card all_form_field">
-                                                        <div class="card-header" id="goal_{{ $i }}">
-                                                            <h4 class="mb-0 card_services_title">
-                                                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#goal_{{ str_replace(' ','_',$goal_key) }}" aria-expanded="true" aria-controls="goal_{{ str_replace(' ','_',$goal_key) }}">
-                                                                    {{ $goal_key }}
-                                                                </button>
-                                                            </h4>
-                                                        </div>
-                                                        <div id="goal_{{ str_replace(' ','_',$goal_key) }}" class="collapse hide" aria-labelledby="goal_{{ str_replace(' ','_',$goal_key) }}" data-parent="#accordion-goals">
-                                                            <div class="card-body">
-                                                                {{-- <select class="form-control selectpicker" data-live-search="true"id="goal_conditions" name="goal_conditions[]" data-size="5">
-                                                                    <option value="">Select</option>
-                                                                    @foreach ($goal_values as $data_key => $code_data)
-                                                                    <option value="{{$code_data->id}}">{{$code_data->description}}</option>
-                                                                    @endforeach
-                                                                </select> --}}
-                                                                @foreach ($goal_values as $data_key => $code_data)
-                                                                    <div class="row inner-accordion-section pb-15">
-                                                                        <div class="col-md-6">
-                                                                            <p>
-                                                                                {{ $code_data->description }}
-                                                                            </p>
-                                                                        </div>
-                                                                        <div class="col-md-6">
-                                                                            <select class="form-control selectpicker service_category_type" id="goal_conditions" name="goal_conditions[]">
-                                                                                <option value="">Empty</option>
-                                                                                <option value="1_{{ $code_data->id }}">1</option>
-                                                                                <option value="2_{{ $code_data->id }}">2</option>
-                                                                                <option value="3_{{ $code_data->id }}">3</option>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                @endforeach
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @php
-                                                    $i++;
-                                                @endphp
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane" id="activities-tab">
-                                    <div class="organization_services">
-                                        <div style="top:8px;" >
-                                            <div>
-                                                <p class="service_help_text">
-                                                    {{ $help_text->service_activities ?? '' }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="accordion" id="accordion-activities">
-                                            @php
-                                                $i = 0;
-                                            @endphp
-                                            @foreach ($activities as $activitie_key => $activities_values)
-                                                    <div class="card">
-                                                        <div class="card-header" id="activities_{{ $i }}">
-                                                            <h4 class="mb-0 card_services_title">
-                                                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#activities_{{ str_replace(' ','_',$activitie_key) }}" aria-expanded="true" aria-controls="activities_{{ str_replace(' ','_',$activitie_key) }}">
-                                                                    {{ $activitie_key }}
-                                                                </button>
-                                                            </h4>
-                                                        </div>
-                                                        <div id="activities_{{ str_replace(' ','_',$activitie_key) }}" class="collapse hide" aria-labelledby="activities_{{ str_replace(' ','_',$activitie_key) }}" data-parent="#accordion-activities">
-                                                            <div class="card-body">
-                                                                {{-- <select class="form-control selectpicker" data-live-search="true"id="activities_conditions" name="activities_conditions[]" data-size="5">
-                                                                    <option value="">Select</option>
-                                                                    @foreach ($activities_values as $data_key => $code_data)
-                                                                    <option value="{{$code_data->id}}">{{$code_data->description}}</option>
-                                                                    @endforeach
-                                                                </select> --}}
-                                                                @foreach ($activities_values as $data_key => $code_data)
-                                                                    <div class="row inner-accordion-section pb-15">
-                                                                        <div class="col-md-6">
-                                                                            <p>
-                                                                                {{ $code_data->description }}
-                                                                            </p>
-                                                                        </div>
-                                                                        <div class="col-md-6">
-                                                                            <input type="checkbox" name="activities_conditions[]" id="activities_{{$i}}_{{$data_key}}" value="{{ $code_data->id }}"  class="filled-in chk-col-blue">
-                                                                        </div>
-                                                                    </div>
-                                                                @endforeach
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @php
-                                                    $i++;
-                                                @endphp
-                                            @endforeach
                                         </div>
                                     </div>
                                 </div>
@@ -1006,6 +824,11 @@ Service Create
         <input type="hidden" name="location_schedules[]" id="location_schedules">
         <input type="hidden" name="location_description[]" id="location_description">
         <input type="hidden" name="location_details[]" id="location_details">
+        <input type="hidden" name="location_accessibility[]" id="location_accessibility">
+        <input type="hidden" name="location_accessibility_details[]" id="location_accessibility_details">
+        <input type="hidden" name="location_regions[]" id="location_regions">
+
+
         <input type="hidden" name="contact_service[]" id="contact_service">
         <input type="hidden" name="contact_department[]" id="contact_department">
         {{-- contact phone --}}
@@ -1149,6 +972,24 @@ Service Create
                                             <div class="form-group">
                                                 <label>Facility Details: </label>
                                                 <input class="form-control selectpicker" type="text" id="location_details_p" name="location_details" value="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Regions: </label>
+                                                {!! Form::select('location_region_p',$regions,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'location_region_p','multiple' => true]) !!}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Accessibility: </label>
+                                                {!! Form::select('location_accessibility_p',['Blank' => 'Blank','ADA Complaint' => 'ADA Complaint','Not ADA Compliant' => 'Not ADA Compliant'],null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'location_accessibility_p','placeholder' => 'select accessibility']) !!}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Accessibility Details: </label>
+                                                {!! Form::textarea('location_accessibility_details_p','Visitors with concerns about the level of access for specific physical conditions, are always recommended to contact the organization directly to obtain the best possible information about physical access',['class' => 'form-control','id' => 'location_accessibility_details_p','placeholder' => 'Accessibility Details']) !!}
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -1635,7 +1476,8 @@ Service Create
         </div>
     </div>
 </div>
-
+@include('frontEnd.services.service_code_script')
+<script src="/js/jquery.timepicker.min.js"></script>
 <script src="/js/jquery.timepicker.min.js"></script>
 <script>
     $('.timePicker').timepicker({ 'scrollDefault': 'now' });
@@ -2406,6 +2248,9 @@ Service Create
     let location_schedules = []
     let location_description = []
     let location_details = []
+    let location_regions = []
+    let location_accessibility = []
+    let location_accessibility_details = []
 
     let location_phone_numbers = []
     let location_phone_extensions = []
@@ -2454,6 +2299,9 @@ Service Create
         let location_state_p = ''
         let location_zipcode_p = ''
         let location_details_p = ''
+        let location_region_p = ''
+        let location_accessibility_p = ''
+        let location_accessibility_details_p = ''
         let location_phone_p = ''
         let location_recordid_p = ''
 
@@ -2524,6 +2372,9 @@ Service Create
             location_state_p = $('#location_state_p').val()
             location_zipcode_p = $('#location_zipcode_p').val()
             location_details_p = $('#location_details_p').val()
+            location_region_p = $('#location_region_p').val()
+            location_accessibility_p = $('#location_accessibility_p').val()
+            location_accessibility_details_p = $('#location_accessibility_details_p').val()
             // location_phone_p = $('#location_phone_p').val()
 
             for (let index = 0; index < lp; index++) {
@@ -2581,6 +2432,23 @@ Service Create
             location_transporation_p = data.location_transportation ? data.location_transportation : ''
             location_description_p = data.location_description ? data.location_description : ''
             location_details_p = data.location_details ? data.location_details : ''
+
+             // for location accessibility
+             let accessibilities = data.accessibilities && data.accessibilities.length > 0 ? data.accessibilities : []
+            location_accessibility_p = accessibilities.map((v) => {
+                return v.accessibility
+            }).join(',');
+
+            location_accessibility_details_p = accessibilities.map((v) => {
+                return v.accessibility_details
+            }).join(',');
+
+            // for regions
+            let regions_data = data.regions && data.regions.length > 0 ? data.regions : []
+            let regionsIds = regions_data.map((v) => {
+                return v.id
+            }).join(',');
+            location_region_p = regionsIds ? regionsIds.split(',') : []
 
             let services = data.services && data.services.length > 0 ? data.services : []
             let servicesIds = services.map((v) => {
@@ -2667,6 +2535,9 @@ Service Create
             location_schedules.push(location_schedules_p)
             location_description.push(location_description_p)
             location_details.push(location_details_p)
+            location_accessibility.push(location_accessibility_p)
+            location_accessibility_details.push(location_accessibility_details_p)
+            location_regions.push(location_region_p)
 
             location_phone_numbers[l] = phone_number_location
             location_phone_extensions[l] = phone_extension_location
@@ -2714,6 +2585,9 @@ Service Create
                 location_schedules[selectedLocationTrId] = location_schedules_p
                 location_description[selectedLocationTrId] = location_description_p
                 location_details[selectedLocationTrId] = location_details_p
+                location_accessibility[selectedLocationTrId] = location_accessibility_p
+                location_accessibility_details[selectedLocationTrId] = location_accessibility_details_p
+                location_regions[selectedLocationTrId] = location_region_p
 
                 location_phone_numbers[selectedLocationTrId] = phone_number_location
                 location_phone_extensions[selectedLocationTrId] = phone_extension_location
@@ -2761,6 +2635,9 @@ Service Create
         $('#location_schedules').val(JSON.stringify(location_schedules))
         $('#location_description').val(JSON.stringify(location_description))
         $('#location_details').val(JSON.stringify(location_details))
+        $('#location_accessibility').val(JSON.stringify(location_accessibility))
+        $('#location_accessibility_details').val(JSON.stringify(location_accessibility_details))
+        $('#location_regions').val(JSON.stringify(location_regions))
 
         $('#location_phone_numbers').val(JSON.stringify(location_phone_numbers))
         $('#location_phone_extensions').val(JSON.stringify(location_phone_extensions))
@@ -2848,6 +2725,10 @@ Service Create
         $('#location_schedules_p').val('')
         $('#location_description_p').val('')
         $('#location_details_p').val('')
+        $('#location_accessibility_p').val('')
+        $('#location_region_p').val('')
+        $('#location_region_p').selectpicker('refresh')
+        $('#location_accessibility_p').selectpicker('refresh')
         $('#location_service_p').selectpicker('refresh')
         $('#location_schedules_p').selectpicker('refresh')
         $('#locationmodal').modal('hide');
@@ -2871,6 +2752,9 @@ Service Create
             let location_schedules_val = JSON.parse($('#location_schedules').val())
             let location_description_val = JSON.parse($('#location_description').val())
             let location_details_val = JSON.parse($('#location_details').val())
+            let location_accessibility_val = JSON.parse($('#location_accessibility').val())
+            let location_accessibility_details_val = JSON.parse($('#location_accessibility_details').val())
+            let location_regions_val = JSON.parse($('#location_regions').val())
 
             // location modal phone section
             let location_phone_numbers = JSON.parse($('#location_phone_numbers').val())
@@ -2913,6 +2797,9 @@ Service Create
             location_schedules_val.splice(deletedId,1)
             location_description_val.splice(deletedId,1)
             location_details_val.splice(deletedId,1)
+            location_accessibility_val.splice(deletedId,1)
+            location_accessibility_details_val.splice(deletedId,1)
+            location_regions_val.splice(deletedId,1)
             location_phone_numbers.splice(deletedId,1)
             location_phone_extensions.splice(deletedId,1)
             location_phone_types.splice(deletedId,1)
@@ -2951,6 +2838,9 @@ Service Create
             $('#location_schedules').val(JSON.stringify(location_schedules_val))
             $('#location_description').val(JSON.stringify(location_description_val))
             $('#location_details').val(JSON.stringify(location_details_val))
+            $('#location_accessibility').val(JSON.stringify(location_accessibility_val))
+            $('#location_accessibility_details').val(JSON.stringify(location_accessibility_details_val))
+            $('#location_regions').val(JSON.stringify(location_regions_val))
             $('#location_phone_numbers').val(JSON.stringify(location_phone_numbers))
             $('#location_phone_extensions').val(JSON.stringify(location_phone_extensions))
             $('#location_phone_types').val(JSON.stringify(location_phone_types))
@@ -3011,6 +2901,10 @@ Service Create
         $('#location_schedules_p').val('')
         $('#location_description_p').val('')
         $('#location_details_p').val('')
+        $('#location_accessibility_p').val('')
+        // $('#location_accessibility_details_p').val('')
+        $('#location_region_p').val('')
+
         $('#location_service_p').selectpicker('refresh')
         $('#location_schedules_p').selectpicker('refresh')
 
@@ -3073,6 +2967,9 @@ Service Create
         let location_schedules_val = JSON.parse($('#location_schedules').val())
         let location_description_val = JSON.parse($('#location_description').val())
         let location_details_val = JSON.parse($('#location_details').val())
+        let location_accessibility_val = JSON.parse($('#location_accessibility').val())
+        let location_accessibility_details_val = JSON.parse($('#location_accessibility_details').val())
+        let location_regions_val = JSON.parse($('#location_regions').val())
 
         // location modal phone section
         let location_phone_numbers = JSON.parse($('#location_phone_numbers').val())
@@ -3258,6 +3155,9 @@ Service Create
         let location_schedules_p = location_schedules_val[id]
         let location_description_p = location_description_val[id]
         let location_details_p = location_details_val[id]
+        let location_accessibility_p = location_accessibility_val[id]
+        let location_accessibility_details_p = location_accessibility_details_val[id]
+        let location_region_p = location_regions_val[id]
 
 
         // locationRadioValue = radioValue
@@ -3278,6 +3178,10 @@ Service Create
             $('#location_schedules_p').val(location_schedules_p)
             $('#location_description_p').val(location_description_p)
             $('#location_details_p').val(location_details_p)
+            $('#location_accessibility_p').val(location_accessibility_p)
+            $('#location_accessibility_details_p').val(location_accessibility_details_p)
+            $('#location_region_p').val(location_region_p)
+
             $('#locationSelectData').val('')
             $('#newLocationData').show()
             $('#existingLocationData').hide()

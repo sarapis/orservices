@@ -98,9 +98,9 @@ body {
     background: #a2e9ff;
 }
 
-#sidebar ul.components {
-    /*padding: 20px 0;*/
-}
+/* #sidebar ul.components {
+    padding: 20px 0;
+} */
 
 #sidebar ul p {
     color: #fff;
@@ -232,16 +232,16 @@ li.status-side:hover {
 /* ---------------------------------------------------
     CONTENT STYLE
 ----------------------------------------------------- */
-#content {
-    /* width: calc(100% - 270px);
+/* #content {
+    width: calc(100% - 270px);
     padding: 0px;
     transition: all 0.3s;
     background: white;
-    min-height: calc(100% - 134px); */
-    /*    position: absolute;
+    min-height: calc(100% - 134px);
+       position: absolute;
     top: 0;
-    right: 0;*/
-}
+    right: 0;
+} */
 #content.active {
     width: 100%;
 }
@@ -294,10 +294,10 @@ li.status-side:hover {
         top: 0px;
         overflow-y: hidden;
     }
-    #content.active {
-        /*left: 270px;*/
-        /*width: calc(100% - 270px);*/
-    }
+    /* #content.active {
+        left: 270px;
+        width: calc(100% - 270px);
+    } */
     /* #sidebarCollapse span {
         display: none;
     } */
@@ -551,9 +551,9 @@ a[aria-expanded="true"]::before {
     .footable-header {
         display: none;
     }
-    #content {
-        /* padding-top: 50px;*/
-    }
+    /* #content {
+        padding-top: 50px;
+    } */
     .goog-te-gadget-simple .goog-te-menu-value span {
         font-size: 12px !important;
     }
@@ -1038,7 +1038,8 @@ footer {
     font-size: 14px;
     font-weight: 500;
     font-family: "Neue Haas Grotesk Display Roman";
-    color: #9195a2;
+    color: #1b1b1b;
+    /* color: #9195a2; */
     float: left;
     width: 100%;
     margin-top: 0px;
@@ -1314,11 +1315,11 @@ footer {
 .btn_padding {
     padding: 22.5px 54px;
 }
-.btn-primary:hover,
+/* .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary.disabled_btn {
-    /* background: #6262df; */
-}
+    background: #6262df;
+} */
 .green_btn {
     border-color: green !important;
     background-color: green !important;
@@ -2593,7 +2594,7 @@ input[type="checkbox"]:checked:before {
 }
 .organization_services .accordion .btn-link {
     font-size: 16px;
-    width: 100%;
+    width: 93%;
     text-align: left;
 }
 
@@ -2631,8 +2632,31 @@ input[type="checkbox"]:checked:before {
     border-color: #000;
     color: #000;
 }
-
-
 .card-block h4 {
     float: none;
+}
+
+.procedure-collapse .collapsed{
+    background-color: #5051db;
+    color: #fff;
+    margin: 6px;
+}
+/* .inner-card.active .inner-card-header {
+    background: #5051db;
+} */
+.inner-card.active .inner-card-header button {
+    color: #5051db;
+}
+/* .inner-card.active .inner-card-header label {
+    color: #fff;
+} */
+.procedure_grouping:checked:before {
+    background-color: #39b919 !important;
+}
+.procedure_grouping {
+    float: right;
+    position: relative;
+    top: 10;
+    padding: 0;
+    margin-right: 16px !important;
 }

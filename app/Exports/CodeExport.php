@@ -34,6 +34,9 @@ class CodeExport implements FromView
         if (isset($extraData['code_system']) && $extraData['code_system'] != null) {
             $query = $query->where('code_system', $extraData['code_system']);
         }
+        if (isset($extraData['grouping']) && $extraData['grouping'] != null) {
+            $query = $query->where('grouping', $extraData['grouping']);
+        }
         if (isset($extraData['code_with_service']) && $extraData['code_with_service'] != null) {
             if ($extraData['code_with_service'] == "true") {
                 $code_ids = CodeLedger::whereNotNull('service_recordid')->pluck('SDOH_code')->toArray();

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Functions\Airtable;
 use App\Imports\OrganizationImport;
+use App\Model\Accessibility;
 use App\Model\Address;
 use App\Model\Organization;
 use App\Model\OrganizationDetail;
@@ -34,6 +35,7 @@ use App\Model\OrganizationPhone;
 use App\Model\PhoneType;
 use App\Model\Schedule;
 use App\Model\OrganizationTag;
+use App\Model\Region;
 use App\Model\State;
 use App\Services\Stringtoint;
 use Carbon\Carbon;
@@ -662,7 +664,7 @@ class OrganizationController extends Controller
         $organization_contacts_list = Contact::orderBy('contact_name')->select('contact_recordid', 'contact_name')->get();
         $rating_info_list = ['1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'];
         $all_contacts = Contact::orderBy('contact_name')->with('phone', 'service')->distinct()->get();
-        $all_locations = Location::orderBy('location_name')->with('phones', 'address', 'services', 'schedules')->distinct()->get();
+        $all_locations = Location::orderBy('location_name')->with('phones', 'address', 'services', 'schedules', 'accessibilities', 'regions')->distinct()->get();
         $all_services = Service::orderBy('service_name')->with('phone', 'address', 'taxonomy', 'schedules', 'details')->get();
         $phone_languages = Language::orderBy('order')->whereNotNull('language_recordid')->pluck('language', 'language_recordid');
         // service pop section
@@ -720,8 +722,9 @@ class OrganizationController extends Controller
         $organizationStatus = OrganizationStatus::orderBy('order')->pluck('status', 'status');
         $all_phones = Phone::whereNotNull('phone_number')->distinct()->get();
         $phone_language_data = json_encode([]);
+        $regions = Region::pluck('region', 'id');
 
-        return view('frontEnd.organizations.create', compact('map', 'services_info_list', 'organization_contacts_list', 'rating_info_list', 'all_contacts', 'all_locations', 'phone_languages', 'all_services', 'taxonomy_info_list', 'schedule_info_list', 'detail_info_list', 'address_info_list', 'service_info_list', 'address_states_list', 'address_city_list', 'phone_type', 'organizationStatus', 'all_phones', 'phone_language_data'));
+        return view('frontEnd.organizations.create', compact('map', 'services_info_list', 'organization_contacts_list', 'rating_info_list', 'all_contacts', 'all_locations', 'phone_languages', 'all_services', 'taxonomy_info_list', 'schedule_info_list', 'detail_info_list', 'address_info_list', 'service_info_list', 'address_states_list', 'address_city_list', 'phone_type', 'organizationStatus', 'all_phones', 'phone_language_data', 'regions'));
     }
 
     /**
@@ -949,6 +952,7 @@ class OrganizationController extends Controller
 
             if ($request->contact_name && $request->contact_name[0] != null) {
                 $contact_department = $request->contact_department && count($request->contact_department) > 0 ? json_decode($request->contact_department[0]) : [];
+                $contact_visibility = $request->contact_visibility && count($request->contact_visibility) > 0 ? $request->contact_visibility : [];
                 $contact_service = $request->contact_service && count($request->contact_service) > 0 ? json_decode($request->contact_service[0]) : [];
                 for ($i = 0; $i < count($request->contact_name); $i++) {
                     $contact_phone_recordid_list = [];
@@ -967,6 +971,7 @@ class OrganizationController extends Controller
                         $contact->contact_title = $request->contact_title[$i];
                         $contact->contact_email = $request->contact_email[$i];
                         $contact->contact_department = $contact_department[$i];
+                        $contact->visibility = $contact_visibility[$i];
                         $contact->contact_organizations = $new_recordid;
                         // $contact->contact_phones = $request->contact_phone[$i];
                         if ($contact_service) {
@@ -1012,6 +1017,7 @@ class OrganizationController extends Controller
                             $updating_contact->contact_email = $request->contact_email[$i];
                             $updating_contact->contact_department = $contact_department[$i];
                             $updating_contact->contact_organizations = $new_recordid;
+                            $updating_contact->visibility = $contact_visibility[$i];
                             // $contact->contact_phones = $request->contact_phone[$i];
                             if ($contact_service) {
                                 $updating_contact->contact_services = join(',', $contact_service[$i]);
@@ -1061,6 +1067,11 @@ class OrganizationController extends Controller
                 $location_schedules = $request->location_schedules && count($request->location_schedules) > 0 ? json_decode($request->location_schedules[0], true) : [];
                 $location_description = $request->location_description && count($request->location_description) > 0 ? json_decode($request->location_description[0], true) : [];
                 $location_details = $request->location_details && count($request->location_details) > 0 ? json_decode($request->location_details[0], true) : [];
+                // accessibility
+                $location_accessibility = $request->location_accessibility && count($request->location_accessibility) > 0 ? json_decode($request->location_accessibility[0], true) : [];
+                $location_accessibility_details = $request->location_accessibility_details && count($request->location_accessibility_details) > 0 ? json_decode($request->location_accessibility_details[0], true) : [];
+                $location_regions = $request->location_regions && count($request->location_regions) > 0 ? json_decode($request->location_regions[0], true) : [];
+
 
                 // location schedule section
                 $opens_at_location_monday_datas = $request->opens_at_location_monday_datas  ? json_decode($request->opens_at_location_monday_datas, true) : [];
@@ -1107,7 +1118,6 @@ class OrganizationController extends Controller
                     $location_phone_types = $request->location_phone_types && count($request->location_phone_types) ? json_decode($request->location_phone_types[0]) : [];
                     $location_phone_languages = $request->location_phone_languages && count($request->location_phone_languages) ? json_decode($request->location_phone_languages[0]) : [];
                     $location_phone_descriptions = $request->location_phone_descriptions && count($request->location_phone_descriptions) ? json_decode($request->location_phone_descriptions[0]) : [];
-
                     if ($request->locationRadio[$i] == 'new_data') {
                         $location = new Location();
                         $location_recordid = Location::max('location_recordid') + 1;
@@ -1121,6 +1131,21 @@ class OrganizationController extends Controller
                         $location->location_transportation = $location_transporation[$i];
                         $location->location_description = $location_description[$i];
                         $location->location_details = $location_details[$i];
+
+                        // accessesibility
+
+                        if (isset($location_accessibility[$i]) && isset($location_accessibility_details[$i])) {
+                            Accessibility::create([
+                                'accessibility_recordid' => Accessibility::max('accessibility_recordid') + 1,
+                                'accessibility' => $location_accessibility[$i],
+                                'accessibility_details' => $location_accessibility_details[$i],
+                                'accessibility_location' => $newLocationId
+                            ]);
+                        }
+                        if (isset($location_regions[$i])) {
+                            $location->regions()->sync($location_regions[$i]);
+                        }
+
                         if ($location_service) {
                             $location->location_services = join(',', $location_service[$i]);
                         } else {
@@ -1281,6 +1306,22 @@ class OrganizationController extends Controller
                             $location->location_transportation = $location_transporation[$i];
                             $location->location_description = $location_description[$i];
                             $location->location_details = $location_details[$i];
+
+
+                            // accessesibility
+                            if (isset($location_accessibility[$i]) && isset($location_accessibility_details[$i])) {
+                                Accessibility::updateOrCreate([
+                                    'accessibility_location' => $request->location_recordid[$i]
+                                ], [
+                                    'accessibility_recordid' => Accessibility::max('accessibility_recordid') + 1,
+                                    'accessibility' => $location_accessibility[$i],
+                                    'accessibility_details' => $location_accessibility_details[$i],
+                                ]);
+                            }
+                            if (isset($location_regions[$i])) {
+                                $location->regions()->sync($location_regions[$i]);
+                            }
+
                             if ($location_service) {
                                 $location->location_services = join(',', $location_service[$i]);
                             } else {
@@ -1843,6 +1884,9 @@ class OrganizationController extends Controller
                 $location_schedules = [];
                 $location_description = [];
                 $location_details = [];
+                $location_accessibility = [];
+                $location_accessibility_details = [];
+                $location_regions = [];
                 foreach ($organization_locations_data as $key => $locationData) {
                     $location_alternate_name[] = $locationData->location_alternate_name;
                     $location_transporation[] = $locationData->location_transportation;
@@ -1850,6 +1894,11 @@ class OrganizationController extends Controller
                     $location_schedules[] = $locationData->schedules ? $locationData->schedules->pluck('schedule_recordid')->toArray() : [];
                     $location_description[] = $locationData->location_description;
                     $location_details[] = $locationData->location_details;
+                    if ($locationData->accessibilities && $locationData->accessibilities()->first()) {
+                        $location_accessibility[] = $locationData->accessibilities()->first()->accessibility;
+                        $location_accessibility_details[] = $locationData->accessibilities()->first()->accessibility_details;
+                    }
+                    $location_regions[] = $locationData->regions ? $locationData->regions->pluck('id')->toArray() : [];
                 }
                 $location_alternate_name = json_encode($location_alternate_name);
                 $location_transporation = json_encode($location_transporation);
@@ -1857,6 +1906,9 @@ class OrganizationController extends Controller
                 $location_schedules = json_encode($location_schedules);
                 $location_description = json_encode($location_description);
                 $location_details = json_encode($location_details);
+                $location_accessibility = json_encode($location_accessibility);
+                $location_accessibility_details = json_encode($location_accessibility_details);
+                $location_regions = json_encode($location_regions);
 
                 $contact_service = [];
                 $contact_department = [];
@@ -2035,9 +2087,10 @@ class OrganizationController extends Controller
                 $phone_language_data = json_encode($phone_language_data);
                 $all_phones = Phone::whereNotNull('phone_number')->distinct()->get();
                 $organizationAudits = $this->commonController->organizationSection($organization);
+                $regions = Region::pluck('region', 'id');
 
                 $organizationStatus = OrganizationStatus::orderBy('order')->pluck('status', 'status');
-                return view('frontEnd.organizations.edit', compact('organization', 'map', 'organization_service_list', 'phone_info_list', 'location_info_list',  'rating_info_list', 'all_contacts', 'organizationContacts', 'organization_locations_data', 'all_locations', 'phone_languages', 'all_services', 'taxonomy_info_list', 'schedule_info_list', 'detail_info_list', 'address_info_list', 'service_info_list', 'address_states_list', 'address_city_list', 'phone_type', 'service_alternate_name', 'service_program', 'service_status', 'service_taxonomies', 'service_application_process', 'service_wait_time', 'service_fees', 'service_accreditations', 'service_licenses', 'service_schedules', 'service_details', 'service_address', 'service_metadata', 'service_airs_taxonomy_x', 'location_alternate_name', 'location_transporation', 'location_service', 'location_schedules', 'location_description', 'location_details', 'contact_service', 'contact_department', 'contact_phone_numbers', 'contact_phone_extensions', 'contact_phone_types', 'contact_phone_languages', 'contact_phone_descriptions', 'location_phone_numbers', 'location_phone_extensions', 'location_phone_types', 'location_phone_languages', 'location_phone_descriptions', 'opens_at_location_monday_datas', 'closes_at_location_monday_datas', 'schedule_closed_monday_datas', 'opens_at_location_tuesday_datas', 'closes_at_location_tuesday_datas', 'schedule_closed_tuesday_datas', 'opens_at_location_wednesday_datas', 'closes_at_location_wednesday_datas', 'schedule_closed_wednesday_datas', 'opens_at_location_thursday_datas', 'closes_at_location_thursday_datas', 'schedule_closed_thursday_datas', 'opens_at_location_friday_datas', 'closes_at_location_friday_datas', 'schedule_closed_friday_datas', 'opens_at_location_saturday_datas', 'closes_at_location_saturday_datas', 'schedule_closed_saturday_datas', 'opens_at_location_sunday_datas', 'closes_at_location_sunday_datas', 'schedule_closed_sunday_datas', 'location_holiday_start_dates', 'location_holiday_end_dates', 'location_holiday_open_ats', 'location_holiday_close_ats', 'location_holiday_closeds', 'phone_language_data', 'organizationAudits', 'organizationStatus', 'contactServices', 'contactOrganization', 'phone_language_name', 'all_phones'));
+                return view('frontEnd.organizations.edit', compact('organization', 'map', 'organization_service_list', 'phone_info_list', 'location_info_list',  'rating_info_list', 'all_contacts', 'organizationContacts', 'organization_locations_data', 'all_locations', 'phone_languages', 'all_services', 'taxonomy_info_list', 'schedule_info_list', 'detail_info_list', 'address_info_list', 'service_info_list', 'address_states_list', 'address_city_list', 'phone_type', 'service_alternate_name', 'service_program', 'service_status', 'service_taxonomies', 'service_application_process', 'service_wait_time', 'service_fees', 'service_accreditations', 'service_licenses', 'service_schedules', 'service_details', 'service_address', 'service_metadata', 'service_airs_taxonomy_x', 'location_alternate_name', 'location_transporation', 'location_service', 'location_schedules', 'location_description', 'location_details', 'contact_service', 'contact_department', 'contact_phone_numbers', 'contact_phone_extensions', 'contact_phone_types', 'contact_phone_languages', 'contact_phone_descriptions', 'location_phone_numbers', 'location_phone_extensions', 'location_phone_types', 'location_phone_languages', 'location_phone_descriptions', 'opens_at_location_monday_datas', 'closes_at_location_monday_datas', 'schedule_closed_monday_datas', 'opens_at_location_tuesday_datas', 'closes_at_location_tuesday_datas', 'schedule_closed_tuesday_datas', 'opens_at_location_wednesday_datas', 'closes_at_location_wednesday_datas', 'schedule_closed_wednesday_datas', 'opens_at_location_thursday_datas', 'closes_at_location_thursday_datas', 'schedule_closed_thursday_datas', 'opens_at_location_friday_datas', 'closes_at_location_friday_datas', 'schedule_closed_friday_datas', 'opens_at_location_saturday_datas', 'closes_at_location_saturday_datas', 'schedule_closed_saturday_datas', 'opens_at_location_sunday_datas', 'closes_at_location_sunday_datas', 'schedule_closed_sunday_datas', 'location_holiday_start_dates', 'location_holiday_end_dates', 'location_holiday_open_ats', 'location_holiday_close_ats', 'location_holiday_closeds', 'phone_language_data', 'organizationAudits', 'organizationStatus', 'contactServices', 'contactOrganization', 'phone_language_name', 'all_phones', 'location_accessibility', 'location_accessibility_details', 'location_regions', 'regions'));
             } else {
                 Session::flash('message', 'Warning! Not enough permissions. Please contact Us for more');
                 Session::flash('status', 'warning');
@@ -2368,6 +2421,7 @@ class OrganizationController extends Controller
             // contact section
             if ($request->contact_name && $request->contact_name[0] != null) {
                 $contact_department = $request->contact_department && count($request->contact_department) > 0 ? json_decode($request->contact_department[0]) : [];
+                $contact_visibility = $request->contact_visibility && count($request->contact_visibility) > 0 ? $request->contact_visibility : [];
                 $contact_service = $request->contact_service && count($request->contact_service) > 0 ? json_decode($request->contact_service[0]) : [];
                 for ($i = 0; $i < count($request->contact_name); $i++) {
                     $contact_phone_recordid_list = [];
@@ -2386,6 +2440,7 @@ class OrganizationController extends Controller
                         $contact->contact_title = $request->contact_title[$i];
                         $contact->contact_email = $request->contact_email[$i];
                         $contact->contact_department = $contact_department[$i];
+                        $contact->visibility = $contact_visibility[$i];
                         $contact->contact_organizations = $id;
                         // $contact->contact_phones = $request->contact_phone[$i];
                         if ($contact_service) {
@@ -2431,6 +2486,7 @@ class OrganizationController extends Controller
                             $updating_contact->contact_title = $request->contact_title[$i];
                             $updating_contact->contact_email = $request->contact_email[$i];
                             $updating_contact->contact_department = $contact_department[$i];
+                            $updating_contact->visibility = $contact_visibility[$i];
                             $updating_contact->contact_organizations = $id;
                             // $contact->contact_phones = $request->contact_phone[$i];
                             if ($contact_service) {
@@ -2485,6 +2541,11 @@ class OrganizationController extends Controller
                 $location_schedules = $request->location_schedules && count($request->location_schedules) > 0 ? json_decode($request->location_schedules[0], true) : [];
                 $location_description = $request->location_description && count($request->location_description) > 0 ? json_decode($request->location_description[0], true) : [];
                 $location_details = $request->location_details && count($request->location_details) > 0 ? json_decode($request->location_details[0], true) : [];
+                // accessibility
+                $location_accessibility = $request->location_accessibility && count($request->location_accessibility) > 0 ? json_decode($request->location_accessibility[0], true) : [];
+                $location_accessibility_details = $request->location_accessibility_details && count($request->location_accessibility_details) > 0 ? json_decode($request->location_accessibility_details[0], true) : [];
+                $location_regions = $request->location_regions && count($request->location_regions) > 0 ? json_decode($request->location_regions[0], true) : [];
+
                 for ($i = 0; $i < count($request->location_name); $i++) {
                     $location_address_recordid_list = [];
                     $location_phone_recordid_list = [];
@@ -2544,6 +2605,21 @@ class OrganizationController extends Controller
                         $location->location_transportation = $location_transporation[$i];
                         $location->location_description = $location_description[$i];
                         $location->location_details = $location_details[$i];
+
+                        // accessesibility
+
+                        if (isset($location_accessibility[$i]) && isset($location_accessibility_details[$i])) {
+                            Accessibility::create([
+                                'accessibility_recordid' => Accessibility::max('accessibility_recordid') + 1,
+                                'accessibility' => $location_accessibility[$i],
+                                'accessibility_details' => $location_accessibility_details[$i],
+                                'accessibility_location' => $newLocationId
+                            ]);
+                        }
+                        if (isset($location_regions[$i])) {
+                            $location->regions()->sync($location_regions[$i]);
+                        }
+
                         if ($location_service) {
                             $location->location_services = join(',', $location_service[$i]);
                         } else {
@@ -2687,6 +2763,22 @@ class OrganizationController extends Controller
                             $location->location_transportation = $location_transporation[$i];
                             $location->location_description = $location_description[$i];
                             $location->location_details = $location_details[$i];
+
+
+                            // accessesibility
+                            if (isset($location_accessibility[$i]) && isset($location_accessibility_details[$i])) {
+                                Accessibility::updateOrCreate([
+                                    'accessibility_location' => $request->location_recordid[$i]
+                                ], [
+                                    'accessibility_recordid' => Accessibility::max('accessibility_recordid') + 1,
+                                    'accessibility' => $location_accessibility[$i],
+                                    'accessibility_details' => $location_accessibility_details[$i],
+                                ]);
+                            }
+                            if (isset($location_regions[$i])) {
+                                $location->regions()->sync($location_regions[$i]);
+                            }
+
                             if ($location_service) {
                                 $location->location_services = join(',', $location_service[$i]);
                             } else {

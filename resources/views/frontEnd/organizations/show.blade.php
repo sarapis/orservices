@@ -226,7 +226,9 @@
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#contacts">
                             <h4 class="card_services_title">Contacts
+                                @if ($organization->contact->count() > 0 && ((Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin') || (Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,$organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin')))
                                 ({{ isset($organization->contact) ? $organization->contact->count() : 0  }})
+                                @endif
                             </h4>
                         </a>
                     </li>
@@ -457,27 +459,36 @@
                                         @if (isset($location->phones) && count($location->phones) > 0)
 
                                         <h4>
-                                            <span><i class="icon md-phone font-size-18 vertical-align-top  "></i>
+                                            <span>
                                                 @php
                                                 $phones = '';
                                                 @endphp
                                                 @foreach($location->phones as $k => $phone)
                                                 @php
-                                                if($k == 0){
-                                                $phoneNo = '<a
-                                                    href="tel:'.$phone->phone_number.'">'.$phone->phone_number.'</a>';
-                                                }else{
-                                                $phoneNo = ', '.'<a
-                                                    href="tel:'.$phone->phone_number.'">'.$phone->phone_number .'</a>';
+                                                if ($phone && $phone->phone_number) {
+                                                    if($k == 0){
+                                                    $phoneNo = '<a href="tel:'.$phone->phone_number.'">'.$phone->phone_number.'</a>';
+                                                    }else{
+                                                    $phoneNo = ', '.'<a href="tel:'.$phone->phone_number.'">'.$phone->phone_number .'</a>';
+                                                    }
+                                                    $phones .= $phoneNo;
                                                 }
-                                                $phones .= $phoneNo;
-
                                                 @endphp
                                                 @endforeach
-                                                @if(isset($phones))
+                                                @if(isset($phones) && $phones != '')
+                                                <i class="icon md-phone font-size-18 vertical-align-top  "></i>
                                                 {!! rtrim($phones, ',') !!}
                                                 @endif
                                             </span>
+                                        </h4>
+                                        @endif
+                                        @if(isset($location->accessibilities()->first()->accessibility))
+                                        <h4>
+
+                                            <span><i class="fa fa-wheelchair-alt icon font-size-18 vertical-align-top"></i>
+                                                {{$location->accessibilities()->first()->accessibility}}
+                                            </span>
+                                            <br />
                                         </h4>
                                         @endif
                                     </div>
@@ -487,9 +498,7 @@
                             </div>
                             <div class="tab-pane fade" id="contacts">
                                 @if(isset($organization->contact))
-                                @if ($organization->contact->count() > 0 && ((Auth::user() && Auth::user()->roles &&
-                                Auth::user()->roles->name == 'System Admin') || (Auth::user() && Auth::user()->roles &&
-                                Auth::user()->user_organization && str_contains(Auth::user()->user_organization,$organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin')))
+                                @if ($organization->contact->count() > 0 && ((Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin') || (Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,$organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin')))
                                 {{-- <h4 class="card_services_title"> Contacts
                                             (@if(isset($organization->contact)){{$organization->contact->count()}}@else
                                 0 @endif)

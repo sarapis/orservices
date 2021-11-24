@@ -17,7 +17,10 @@
         <th>licenses</th>
         <th>taxonomy_ids</th>
         <th>taxonomies</th>
+        <th>service_category</th>
+        <th>service_eligibility</th>
         <th>SDOH Code</th>
+        <th>SDOH ids</th>
     </thead>
     <tbody>
         <tr></tr>
@@ -48,6 +51,39 @@
             @else
             <td></td>
             @endif
+            @if (isset($row->taxonomy) && count($row->taxonomy) > 0)
+            <td>
+                @foreach ($row->taxonomy as $key => $service_taxonomy_info)
+                    @if (isset($service_taxonomy_info->taxonomy_type) && count($service_taxonomy_info->taxonomy_type) > 0 && $service_taxonomy_info->taxonomy_type[0]->name == 'Service Category')
+                        @if ($row->service_taxonomy != null)
+                        @if ($key == 0)
+                            {{ $service_taxonomy_info->taxonomy_name }}
+                        @endif
+                            {{', '. $service_taxonomy_info->taxonomy_name }}
+                        @endif
+                     @endif
+                @endforeach
+            </td>
+            @else
+            <td></td>
+            @endif
+            @if (isset($row->taxonomy) && count($row->taxonomy) > 0)
+            <td>
+                @foreach ($row->taxonomy as $key => $service_taxonomy_info)
+                    @if (isset($service_taxonomy_info->taxonomy_type) && count($service_taxonomy_info->taxonomy_type) > 0 && $service_taxonomy_info->taxonomy_type[0]->name == 'Service Eligibility')
+                        @if ($row->service_taxonomy != null)
+                        @if ($key == 0)
+                            {{ $service_taxonomy_info->taxonomy_name }}
+                        @endif
+                            {{', '. $service_taxonomy_info->taxonomy_name }}
+                        @endif
+                     @endif
+                @endforeach
+            </td>
+            @else
+            <td></td>
+            @endif
+
             @if (isset($value->codes) && count($value->codes) > 0)
             <td>
                 @foreach ($value->codes as $item)
@@ -57,6 +93,7 @@
             @else
             <td></td>
             @endif
+            <td>'{{ $value->SDOH_code }}'</td>
         </tr>
         @endforeach
     </tbody>

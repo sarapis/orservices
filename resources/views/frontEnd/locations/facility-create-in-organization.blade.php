@@ -141,6 +141,24 @@ Location Create
                                             name="facility_zip_code" value="">
                                     </div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Regions: </label>
+                                        {!! Form::select('regions',$regions,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'regions','multiple' => true]) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Accessibility: </label>
+                                        {!! Form::select('accessibility',['Blank' => 'Blank','ADA Complaint' => 'ADA Complaint','Not ADA Compliant' => 'Not ADA Compliant'],null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'accessibility','placeholder' => 'select accessibility']) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Accessibility Details: </label>
+                                        {!! Form::textarea('accessibility_details','Visitors with concerns about the level of access for specific physical conditions, are always recommended to contact the organization directly to obtain the best possible information about physical access',['class' => 'form-control','id' => 'accessibility_details','placeholder' => 'Accessibility Details']) !!}
+                                    </div>
+                                </div>
                                 {{-- <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Phones: <a id="add-phone-input"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a></label>

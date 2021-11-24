@@ -10,8 +10,7 @@
                     <div class="form-group text-left form-material m-0" data-plugin="formMaterial">
                         <img src="/frontend/assets/images/search.png" alt="" title="" class="form_icon_img">
                         <input type="text" class="form-control search-form" name="find" autocomplete="off"
-                            placeholder="Search for Organization" id="search_organization"
-                            @if(isset($chip_organization)) value="{{$chip_organization}}" @endif>
+                            placeholder="Search for Organization" id="search_organization" @if(isset($chip_organization)) value="{{$chip_organization}}" @endif>
                             <div id="organizationList"></div>
                     </div>
                 </div>
@@ -113,12 +112,8 @@
                     Sort By
                 </button>
                 <div class="dropdown-menu bullet" aria-labelledby="exampleSizingDropdown2" role="menu">
-                    <a @if(isset($sort) && $sort=='Most Recently Updated' ) class="dropdown-item drop-sort active" @else
-                        class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Most Recently
-                        Updated</a>
-                    <a @if(isset($sort) && $sort=='Least Recently Updated' ) class="dropdown-item drop-sort active"
-                        @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Least
-                        Recently Updated</a>
+                    <a @if(isset($sort) && $sort=='Most Recently Updated' ) class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Most Recently Updated</a>
+                    <a @if(isset($sort) && $sort=='Least Recently Updated' ) class="dropdown-item drop-sort active" @else class="dropdown-item drop-sort" @endif href="javascript:void(0)" role="menuitem">Least Recently Updated</a>
                 </div>
             </div>
             <!--end  Sort By -->
@@ -130,12 +125,9 @@
                     Results Per Page
                 </button>
                 <div class="dropdown-menu bullet" aria-labelledby="exampleSizingDropdown3" role="menu">
-                    <a
-                        class="dropdown-item drop-paginate {{ isset($pagination) && $pagination == '10' ? 'active' : ''}}">10</a>
-                    <a
-                        class="dropdown-item drop-paginate {{ isset($pagination) && $pagination == '25' ? 'active' : ''}}">25</a>
-                    <a
-                        class="dropdown-item drop-paginate {{ isset($pagination) && $pagination == '50' ? 'active' : ''}}">50</a>
+                    <a class="dropdown-item drop-paginate {{ isset($pagination) && $pagination == '10' ? 'active' : ''}}">10</a>
+                    <a class="dropdown-item drop-paginate {{ isset($pagination) && $pagination == '25' ? 'active' : ''}}">25</a>
+                    <a class="dropdown-item drop-paginate {{ isset($pagination) && $pagination == '50' ? 'active' : ''}}">50</a>
                 </div>
             </div>
             <!--end Results Per Page -->

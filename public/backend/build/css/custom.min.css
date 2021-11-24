@@ -56,7 +56,8 @@
 }
 .footer-content p {
     margin: 0px;
-    color: rgba(27, 27, 27, 0.4);
+    /* color: rgba(27, 27, 27, 0.4); */
+    color: #1b1b1b;
     font-weight: 500;
     font-size: 14px;
 }

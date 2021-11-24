@@ -469,7 +469,7 @@ $('#export_csv').click(function () {
     $.ajax({
         url:"{{ route('tb_taxonomy.taxonomy_export_csv') }}",
         method : 'POST',
-        data:{extraData,},
+        data:{extraData},
         success:function(response){
             // const url = window.URL.createObjectURL(new Blob([response]));
             const a = document.createElement('a');

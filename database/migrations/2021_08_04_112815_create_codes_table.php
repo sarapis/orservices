@@ -21,7 +21,7 @@ class CreateCodesTable extends Migration
             $table->string('resource_element')->nullable();
             $table->string('category')->nullable();
             $table->longText('description')->nullable();
-            $table->enum('is_panel_code', ['yes', 'no'])->nullable()->default('no');
+            $table->string('is_panel_code')->nullable();
             $table->enum('is_multiselect', ['yes', 'no'])->nullable()->default('no');
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();

@@ -81,6 +81,12 @@ Contact Edit
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
+                                    <label>Visibility: </label>
+                                    {!! Form::select('visibility',['public' => 'Public','private' => 'Private'],null,['class'=>'form-control selectpicker','id' => 'visibility']) !!}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
                                     <label>Contact Email: </label>
                                     {!! Form::text('contact_email',null,['class' => 'form-control','id' =>
                                     'contact_email']) !!}
@@ -225,13 +231,8 @@ Contact Edit
             <a href="/contacts/{{$contact->contact_recordid}}"
                 class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn">
                 Back</a>
-            <button type="button"
-                class="btn btn-raised btn-lg btn_danger waves-effect waves-classic waves-effect waves-classic red_btn"
-                id="delete-contact-btn" value="{{$contact->contact_recordid}}" data-toggle="modal"
-                data-target=".bs-delete-modal-lg">Delete</button>
-            <button type="submit"
-                class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic green_btn"
-                id="save-contact-btn "> Save</button>
+            <button type="button" class="btn btn-raised btn-lg btn_danger waves-effect waves-classic waves-effect waves-classic red_btn" id="delete-contact-btn" value="{{$contact->contact_recordid}}" >Delete</button>
+            <button type="submit" class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic green_btn" id="save-contact-btn "> Save</button>
         </div>
 
         {!! Form::close() !!}
@@ -307,7 +308,7 @@ Contact Edit
 {{-- phone modal --}}
 @include('frontEnd.contacts.contactPhone')
 {{-- phone modala close --}}
-<div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="contact_delete_modal">
     <div class="modal-dialog ">
         <div class="modal-content">
             <form action="/contact_delete_filter" method="POST" id="contact_delete_filter">
@@ -344,6 +345,7 @@ Contact Edit
 
         var value = $(this).val();
         $('input#contact_recordid').val(value);
+        $('#contact_delete_modal').modal('show')
     });
     // $(document).ready(function(){
     //     $('#error_cell_phone').hide();
@@ -361,15 +363,15 @@ Contact Edit
     //     });
     // });
      // phone table section
-     let phone_language_data = JSON.parse($('#phone_language_data').val())
-    $(document).on('change','div > .phone_language',function () {
-        let value = $(this).val()
-        let id = $(this).attr('id')
-        let idsArray = id ? id.split('_') : []
-        let index = idsArray.length > 0 ? idsArray[2] : ''
-        phone_language_data[index] = value
-        $('#phone_language_data').val(JSON.stringify(phone_language_data))
-    })
+    //  let phone_language_data = JSON.parse($('#phone_language_data').val())
+    // $(document).on('change','div > .phone_language',function () {
+    //     let value = $(this).val()
+    //     let id = $(this).attr('id')
+    //     let idsArray = id ? id.split('_') : []
+    //     let index = idsArray.length > 0 ? idsArray[2] : ''
+    //     phone_language_data[index] = value
+    //     $('#phone_language_data').val(JSON.stringify(phone_language_data))
+    // })
     pt = {{ count($contact->phone) }}
     $('#addPhoneTr').click(function(){
         $('#PhoneTable tr:last').before('<tr><td><input type="text" class="form-control" name="contact_phones[]" id=""></td><td><input type="text" class="form-control" name="phone_extension[]" id=""></td><td>{!! Form::select("phone_type[]",$phone_type,[],["class" => "form-control selectpicker","data-live-search" => "true","id" => "phone_type","data-size" => 5,"placeholder" => "select phone type"])!!}</td><td><select name="phone_language[]" id="phone_language_'+pt+'" class="form-control selectpicker phone_language" data-size="5" data-live-search="true" multiple> @foreach ($phone_languages as $key=>$value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id=""></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');

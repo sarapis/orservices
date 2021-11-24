@@ -54,7 +54,7 @@ Organization Edit
                                     <label>Organization Name: </label>
                                     <div class="help-tip">
                                         <div>
-                                            <p>The official or public name of the organization.</p>
+                                            <p>The official or public name of the organization/agency.</p>
                                         </div>
                                     </div>
                                     {!! Form::text('organization_name',null,['class' => 'form-control','id' => 'organization_name']) !!}
@@ -240,8 +240,7 @@ Organization Edit
                                                 <th style="width:200px;position:relative;">Type
                                                     <div class="help-tip" style="top:8px;">
                                                         <div>
-                                                            <p>Select “Main” if this is the organization's primary phone number (or
-                                                                leave blank)
+                                                            <p>Select “Main” if this is the organization's primary phone number (or leave blank)
                                                             </p>
                                                         </div>
                                                     </div>
@@ -250,9 +249,7 @@ Organization Edit
                                                 <th style="width:200px;position:relative;">Description
                                                     <div class="help-tip" style="top:8px;">
                                                         <div>
-                                                            <p>A description providing extra information about the phone service (e.g.
-                                                                any special arrangements for accessing, or details of availability at
-                                                                particular times).
+                                                            <p>A description providing extra information about the phone service (e.g. any special arrangements for accessing, or details of availability at particular times).
                                                             </p>
                                                         </div>
                                                     </div>
@@ -334,6 +331,7 @@ Organization Edit
                                                 <th>Name</th>
                                                 <th>Title</th>
                                                 <th>Email</th>
+                                                <th>Visibility</th>
                                                 <th>Phone</th>
                                                 <th style="width:100px">&nbsp;</th>
                                             </thead>
@@ -341,39 +339,32 @@ Organization Edit
                                                 @foreach ($organizationContacts as $key=>$contact)
                                                 <tr id="contactTr_{{ $key }}">
                                                     <td>{{ $contact->contact_name }}
-                                                        <input type="hidden" name="contact_name[]" value="{{ $contact->contact_name }}"
-                                                            id="contact_name_{{ $key }}">
+                                                        <input type="hidden" name="contact_name[]" value="{{ $contact->contact_name }}" id="contact_name_{{ $key }}">
                                                     </td>
 
                                                     <td>{{ $contact->contact_title }}
-                                                        <input type="hidden" name="contact_title[]"
-                                                            value="{{ $contact->contact_title }}" id="contact_title_{{ $key }}">
+                                                        <input type="hidden" name="contact_title[]" value="{{ $contact->contact_title }}" id="contact_title_{{ $key }}">
                                                     </td>
 
                                                     <td class="text-center">{{ $contact->contact_email }}
-                                                        <input type="hidden" name="contact_email[]"
-                                                            value="{{ $contact->contact_email }}" id="contact_email_{{ $key }}">
+                                                        <input type="hidden" name="contact_email[]" value="{{ $contact->contact_email }}" id="contact_email_{{ $key }}">
+                                                    </td>
+                                                    <td class="text-center">{{ $contact->visibility }}
+                                                        <input type="hidden" name="contact_visibility[]" value="{{ $contact->visibility }}" id="contact_visibility_{{ $key }}">
                                                     </td>
 
                                                     <td class="text-center">
                                                         {{ $contact->phone && count($contact->phone) > 0? $contact->phone[0]->phone_number : '' }}
-                                                        <input type="hidden" name="contact_phone[]"
-                                                            value="{{ $contact->phone && count($contact->phone) > 0? $contact->phone[0]->phone_number : '' }}"
-                                                            id="contact_phone_{{ $key }}">
+                                                        <input type="hidden" name="contact_phone[]" value="{{ $contact->phone && count($contact->phone) > 0? $contact->phone[0]->phone_number : '' }}" id="contact_phone_{{ $key }}">
                                                     </td>
                                                     <td style="vertical-align:middle;">
-                                                        <a href="javascript:void(0)"
-                                                            class="contactEditButton plus_delteicon bg-primary-color">
+                                                        <a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color">
                                                             <img src="/frontend/assets/images/edit_pencil.png" alt="" title="">
                                                         </a>
-                                                        <a href="javascript:void(0)"
-                                                            class="removeContactData plus_delteicon btn-button">
+                                                        <a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button">
                                                             <img src="/frontend/assets/images/delete.png" alt="" title="">
                                                         </a>
-                                                        <input type="hidden" name="contactRadio[]" value="existing"
-                                                            id="selectedContactRadio_{{ $key }}"><input type="hidden"
-                                                            name="contact_recordid[]" value="{{ $contact->contact_recordid }}"
-                                                            id="existingContactIds_{{ $key }}">
+                                                        <input type="hidden" name="contactRadio[]" value="existing" id="selectedContactRadio_{{ $key }}"><input type="hidden" name="contact_recordid[]" value="{{ $contact->contact_recordid }}" id="existingContactIds_{{ $key }}">
                                                     </td>
                                                 </tr>
                                                 @endforeach
@@ -485,8 +476,13 @@ Organization Edit
                         <input type="hidden" name="location_description[]" id="location_description"
                             value="{{ $location_description }}">
                         <input type="hidden" name="location_details[]" id="location_details" value="{{ $location_details }}">
+                        <input type="hidden" name="location_accessibility[]" id="location_accessibility" value="{{ $location_accessibility }}">
+                        <input type="hidden" name="location_accessibility_details[]" id="location_accessibility_details" value="{{ $location_accessibility_details }}">
+                        <input type="hidden" name="location_regions[]" id="location_regions" value="{{ $location_regions }}">
+
                         <input type="hidden" name="contact_service[]" id="contact_service" value="{{ $contact_service }}">
                         <input type="hidden" name="contact_department[]" id="contact_department" value="{{ $contact_department }}">
+                        {{-- <input type="hidden" name="contact_visibility[]" id="contact_visibility" value="{{ $contact_visibility }}"> --}}
 
                         {{-- contact phone --}}
                         <input type="hidden" name="contact_phone_numbers[]" id="contact_phone_numbers"
@@ -1018,6 +1014,24 @@ Organization Edit
                                         name="location_details" value="">
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Regions: </label>
+                                    {!! Form::select('location_region_p',$regions,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'location_region_p','multiple' => true]) !!}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Accessibility: </label>
+                                    {!! Form::select('location_accessibility_p',['Blank' => 'Blank','ADA Complaint' => 'ADA Complaint','Not ADA Compliant' => 'Not ADA Compliant'],null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'location_accessibility_p','placeholder' => 'select accessibility']) !!}
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Accessibility Details: </label>
+                                    {!! Form::textarea('location_accessibility_details_p','Visitors with concerns about the level of access for specific physical conditions, are always recommended to contact the organization directly to obtain the best possible information about physical access',['class' => 'form-control','id' => 'location_accessibility_details_p','placeholder' => 'Accessibility Details']) !!}
+                                </div>
+                            </div>
                             <div class="form-group">
                                 {{-- <label>Phones: <a id="addDataLocation"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
                                 <h4 class="title_edit text-left mb-25 mt-10 px-20">Phones
@@ -1032,9 +1046,7 @@ Organization Edit
                                             <th style="width:200px;position:relative;">Type
                                                 <div class="help-tip" style="top:8px;">
                                                     <div>
-                                                        <p>Select “Main” if this is the organization's primary phone
-                                                            number (or leave blank)
-                                                        </p>
+                                                        <p>Select “Main” if this is the organization's primary phone number (or leave blank) </p>
                                                     </div>
                                                 </div>
                                             </th>
@@ -1042,10 +1054,7 @@ Organization Edit
                                             <th style="width:200px;position:relative;">Description
                                                 <div class="help-tip" style="top:8px;">
                                                     <div>
-                                                        <p>A description providing extra information about the phone
-                                                            service (e.g. any special arrangements for accessing, or
-                                                            details of availability at particular times).
-                                                        </p>
+                                                        <p>A description providing extra information about the phone service (e.g. any special arrangements for accessing, or details of availability at particular times). </p>
                                                     </div>
                                                 </div>
                                             </th>
@@ -1362,17 +1371,26 @@ Organization Edit
                                     <input type="text" class="form-control" placeholder="Title" id="contact_title_p">
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Contact Department: </label>
                                     <input class="form-control selectpicker" type="text" id="contact_department_p"
                                         name="contact_department" value="">
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Email</label>
                                     <input type="text" class="form-control" placeholder="Email" id="contact_email_p">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Visibility: </label>
+                                    <select class="form-control selectpicker" data-live-search="true" id="contact_visibility_p" name="contact_visibility_p[]" data-size="8">
+                                        <option value="public">Public</option>
+                                        <option value="private">Private</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -1719,6 +1737,7 @@ Organization Edit
     let c =  "{{ count($organizationContacts) }}";
     let contact_service = JSON.parse($('#contact_service').val())
     let contact_department = JSON.parse($('#contact_department').val())
+    // let contact_visibility = JSON.parse($('#contact_visibility').val())
 
     let contact_phone_numbers = JSON.parse($('#contact_phone_numbers').val())
     let contact_phone_extensions = JSON.parse($('#contact_phone_extensions').val())
@@ -1731,6 +1750,7 @@ Organization Edit
         let contact_service_p = ''
         let contact_title_p = ''
         let contact_department_p = ''
+        let contact_visibility_p = ''
         let contact_email_p = ''
         let contact_phone_p = ''
         let contact_recordid_p = ''
@@ -1758,6 +1778,7 @@ Organization Edit
             contact_service_p = $('#contact_service_p').val()
             contact_title_p = $('#contact_title_p').val()
             contact_department_p = $('#contact_department_p').val()
+            contact_visibility_p = $('#contact_visibility_p').val()
             contact_email_p = $('#contact_email_p').val()
             // contact_phone_p = $('#contact_phone_p').val()
             for (let index = 0; index < cp; index++) {
@@ -1774,6 +1795,7 @@ Organization Edit
             contact_name_p = data.contact_name ? data.contact_name : ''
             contact_title_p = data.contact_title ? data.contact_title : ''
             contact_department_p = data.contact_department ? data.contact_department : ''
+            contact_visibility_p = data.visibility ? data.visibility : ''
             contact_email_p = data.contact_email ? data.contact_email : ''
             contact_recordid_p = data.contact_recordid ? data.contact_recordid : ''
             let service_val = data.service && data.service.length > 0 ? data.service : []
@@ -1800,6 +1822,7 @@ Organization Edit
         if(editContactData == false){
             contact_service.push(contact_service_p)
             contact_department.push(contact_department_p)
+            // contact_visibility.push(contact_visibility_p)
 
             contact_phone_numbers[c] = phone_number_contact
             contact_phone_extensions[c] = phone_extension_contact
@@ -1807,7 +1830,7 @@ Organization Edit
             contact_phone_languages[c] = phone_language_contact
             contact_phone_descriptions[c] = phone_description_contact
 
-            $('#contactsTable').append('<tr id="contactTr_'+c+'"><td>'+contact_name_p+'<input type="hidden" name="contact_name[]" value="'+contact_name_p+'" id="contact_name_'+c+'"></td><td>'+contact_title_p+'<input type="hidden" name="contact_title[]" value="'+contact_title_p+'" id="contact_title_'+c+'"></td><td class="text-center">'+contact_email_p+'<input type="hidden" name="contact_email[]" value="'+contact_email_p+'" id="contact_email_'+c+'"></td><td class="text-center">'+contact_phone_list+'<input type="hidden" name="contact_phone[]" value="'+contact_phone_p+'" id="contact_phone_'+c+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="'+contactRadioValue+'" id="selectedContactRadio_'+c+'"><input type="hidden" name="contact_recordid[]" value="'+contact_recordid_p+'" id="existingContactIds_'+c+'"></td></tr>');
+            $('#contactsTable').append('<tr id="contactTr_'+c+'"><td>'+contact_name_p+'<input type="hidden" name="contact_name[]" value="'+contact_name_p+'" id="contact_name_'+c+'"></td><td>'+contact_title_p+'<input type="hidden" name="contact_title[]" value="'+contact_title_p+'" id="contact_title_'+c+'"></td><td class="text-center">'+contact_email_p+'<input type="hidden" name="contact_email[]" value="'+contact_email_p+'" id="contact_email_'+c+'"></td><td class="text-center">'+contact_visibility_p+'<input type="hidden" name="contact_visibility[]" value="'+contact_visibility_p+'" id="contact_visibility_'+i+'"></td><td class="text-center">'+contact_phone_list+'<input type="hidden" name="contact_phone[]" value="'+contact_phone_p+'" id="contact_phone_'+c+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="'+contactRadioValue+'" id="selectedContactRadio_'+c+'"><input type="hidden" name="contact_recordid[]" value="'+contact_recordid_p+'" id="existingContactIds_'+c+'"></td></tr>');
             c++;
         }else{
             if(selectedContactTrId){
@@ -1815,6 +1838,7 @@ Organization Edit
                 contact_recordid_p = $('#existingContactIds_'+selectedContactTrId).val()
                 contact_service[selectedContactTrId] = contact_service_p
                 contact_department[selectedContactTrId] = contact_department_p
+                // contact_visibility[selectedContactTrId] = contact_visibility_p
 
                 contact_phone_numbers[selectedContactTrId] = phone_number_contact
                 contact_phone_extensions[selectedContactTrId] = phone_extension_contact
@@ -1823,11 +1847,12 @@ Organization Edit
                 contact_phone_descriptions[selectedContactTrId] = phone_description_contact
 
                 $('#contactTr_'+selectedContactTrId).empty()
-                $('#contactTr_'+selectedContactTrId).append('<td>'+contact_name_p+'<input type="hidden" name="contact_name[]" value="'+contact_name_p+'" id="contact_name_'+selectedContactTrId+'"></td><td>'+contact_title_p+'<input type="hidden" name="contact_title[]" value="'+contact_title_p+'" id="contact_title_'+selectedContactTrId+'"></td><td class="text-center">'+contact_email_p+'<input type="hidden" name="contact_email[]" value="'+contact_email_p+'" id="contact_email_'+selectedContactTrId+'"></td><td class="text-center">'+contact_phone_list+'<input type="hidden" name="contact_phone[]" value="'+contact_phone_p+'" id="contact_phone_'+selectedContactTrId+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="'+contactRadioValue+'" id="selectedContactRadio_'+selectedContactTrId+'"><input type="hidden" name="contact_recordid[]" value="'+contact_recordid_p+'" id="existingContactIds_'+selectedContactTrId+'"></td>')
+                $('#contactTr_'+selectedContactTrId).append('<td>'+contact_name_p+'<input type="hidden" name="contact_name[]" value="'+contact_name_p+'" id="contact_name_'+selectedContactTrId+'"></td><td>'+contact_title_p+'<input type="hidden" name="contact_title[]" value="'+contact_title_p+'" id="contact_title_'+selectedContactTrId+'"></td><td class="text-center">'+contact_email_p+'<input type="hidden" name="contact_email[]" value="'+contact_email_p+'" id="contact_email_'+selectedContactTrId+'"></td><td class="text-center">'+contact_visibility_p+'<input type="hidden" name="contact_visibility[]" value="'+contact_visibility_p+'" id="contact_visibility_'+selectedContactTrId+'"></td><td class="text-center">'+contact_phone_list+'<input type="hidden" name="contact_phone[]" value="'+contact_phone_p+'" id="contact_phone_'+selectedContactTrId+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="'+contactRadioValue+'" id="selectedContactRadio_'+selectedContactTrId+'"><input type="hidden" name="contact_recordid[]" value="'+contact_recordid_p+'" id="existingContactIds_'+selectedContactTrId+'"></td>')
             }
         }
         $('#contact_service').val(JSON.stringify(contact_service))
         $('#contact_department').val(JSON.stringify(contact_department))
+        // $('#contact_visibility').val(JSON.stringify(contact_visibility))
 
         $('#contact_phone_numbers').val(JSON.stringify(contact_phone_numbers))
         $('#contact_phone_extensions').val(JSON.stringify(contact_phone_extensions))
@@ -1842,6 +1867,7 @@ Organization Edit
         $('#contact_phone_p').val('')
         $('#contact_service_p').val('')
         $('#contact_department_p').val('')
+        $('#contact_visibility_p').val('')
 
         $('#contact_service_p').selectpicker('refresh')
 
@@ -1865,6 +1891,7 @@ Organization Edit
 
             let contact_service_val = JSON.parse($('#contact_service').val())
             let contact_department_val = JSON.parse($('#contact_department').val())
+            // let contact_visibility_val = JSON.parse($('#contact_visibility').val())
 
             // contact modal phone section
             let contact_phone_numbers = JSON.parse($('#contact_phone_numbers').val())
@@ -1875,6 +1902,7 @@ Organization Edit
 
             contact_service_val.splice(deletedId,1)
             contact_department_val.splice(deletedId,1)
+            // contact_visibility_val.splice(deletedId,1)
             contact_phone_numbers.splice(deletedId,1)
             contact_phone_extensions.splice(deletedId,1)
             contact_phone_types.splice(deletedId,1)
@@ -1883,6 +1911,7 @@ Organization Edit
 
             $('#contact_service').val(JSON.stringify(contact_service_val))
             $('#contact_department').val(JSON.stringify(contact_department_val))
+            // $('#contact_visibility').val(JSON.stringify(contact_visibility_val))
             $('#contact_phone_numbers').val(JSON.stringify(contact_phone_numbers))
             $('#contact_phone_extensions').val(JSON.stringify(contact_phone_extensions))
             $('#contact_phone_types').val(JSON.stringify(contact_phone_types))
@@ -1912,6 +1941,7 @@ Organization Edit
         $('#contact_phone_p').val('')
         $('#contact_service_p').val('')
         $('#contact_department_p').val('')
+        $('#contact_visibility_p').val('')
 
         $('#contact_service_p').selectpicker('refresh')
         $('#contactmodal').modal('hide');
@@ -1924,6 +1954,7 @@ Organization Edit
         $('#contact_phone_p').val('')
         $('#contact_service_p').val('')
         $('#contact_department_p').val('')
+        $('#contact_visibility_p').val('public')
 
         $('#addPhoneTrContact').empty()
         $('#addPhoneTrContact').append('<tr id="contact_0"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_0"></td><td><select name="phone_type[]" id="phone_type_contact_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_contact_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_0"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>')
@@ -1949,12 +1980,14 @@ Organization Edit
         // $('.contactRadio').val()
         let radioValue = $("#selectedContactRadio_"+id).val();
         let contact_name_p = $('#contact_name_'+id).val()
+        let contact_visibility_p = $('#contact_visibility_'+id).val()
         let contact_title_p = $('#contact_title_'+id).val()
         let contact_email_p = $('#contact_email_'+id).val()
         let contact_phone_p = $('#contact_phone_'+id).val()
         let contact_recordid_p = $('#existingContactIds_'+id).val()
         let contact_service_val = JSON.parse($('#contact_service').val())
         let contact_department_val = JSON.parse($('#contact_department').val())
+        // let contact_visibility_val = JSON.parse($('#contact_visibility').val())
 
         // contact modal phone section
         let contact_phone_numbers = JSON.parse($('#contact_phone_numbers').val())
@@ -1993,6 +2026,7 @@ Organization Edit
         cp = phone_number_contact.length
 
         let contact_department_p = contact_department_val[id]
+        // let contact_visibility_p = contact_visibility_val[id]
         let contact_service_p = contact_service_val[id]
         // contactRadioValue = radioValue
         contactRadioValue = 'new_data'
@@ -2005,9 +2039,11 @@ Organization Edit
             $('#contact_email_p').val(contact_email_p)
             $('#contact_phone_p').val(contact_phone_p)
             $('#contact_department_p').val(contact_department_p)
+            $('#contact_visibility_p').val(contact_visibility_p)
             $('#contact_service_p').val(contact_service_p)
             $('#contactSelectData').val('')
             $('#contact_service_p').selectpicker('refresh')
+            $('#contact_visibility_p').selectpicker('refresh')
             $('#newContactData').show()
             $('#existingContactData').hide()
         // }else{
@@ -2048,6 +2084,9 @@ Organization Edit
     let location_schedules = JSON.parse($('#location_schedules').val())
     let location_description = JSON.parse($('#location_description').val())
     let location_details = JSON.parse($('#location_details').val())
+    let location_regions = JSON.parse($('#location_regions').val())
+    let location_accessibility = JSON.parse($('#location_accessibility').val())
+    let location_accessibility_details = JSON.parse($('#location_accessibility_details').val())
 
     let location_phone_numbers = JSON.parse($('#location_phone_numbers').val())
     let location_phone_extensions = JSON.parse($('#location_phone_extensions').val())
@@ -2097,6 +2136,9 @@ Organization Edit
         let location_state_p = ''
         let location_zipcode_p = ''
         let location_details_p = ''
+        let location_region_p = ''
+        let location_accessibility_p = ''
+        let location_accessibility_details_p = ''
         let location_phone_p = ''
         let location_recordid_p = ''
 
@@ -2166,6 +2208,9 @@ Organization Edit
             location_state_p = $('#location_state_p').val()
             location_zipcode_p = $('#location_zipcode_p').val()
             location_details_p = $('#location_details_p').val()
+            location_region_p = $('#location_region_p').val()
+            location_accessibility_p = $('#location_accessibility_p').val()
+            location_accessibility_details_p = $('#location_accessibility_details_p').val()
             // location_phone_p = $('#location_phone_p').val()
 
             for (let index = 0; index < lp; index++) {
@@ -2223,6 +2268,23 @@ Organization Edit
             location_transporation_p = data.location_transportation ? data.location_transportation : ''
             location_description_p = data.location_description ? data.location_description : ''
             location_details_p = data.location_details ? data.location_details : ''
+
+            // for location accessibility
+            let accessibilities = data.accessibilities && data.accessibilities.length > 0 ? data.accessibilities : []
+            location_accessibility_p = accessibilities.map((v) => {
+                return v.accessibility
+            }).join(',');
+
+            location_accessibility_details_p = accessibilities.map((v) => {
+                return v.accessibility_details
+            }).join(',');
+
+            // for regions
+            let regions_data = data.regions && data.regions.length > 0 ? data.regions : []
+            let regionsIds = regions_data.map((v) => {
+                return v.id
+            }).join(',');
+            location_region_p = regionsIds ? regionsIds.split(',') : []
 
             let services = data.services && data.services.length > 0 ? data.services : []
             let servicesIds = services.map((v) => {
@@ -2309,6 +2371,9 @@ Organization Edit
             location_schedules.push(location_schedules_p)
             location_description.push(location_description_p)
             location_details.push(location_details_p)
+            location_accessibility.push(location_accessibility_p)
+            location_accessibility_details.push(location_accessibility_details_p)
+            location_regions.push(location_region_p)
 
             location_phone_numbers[l] = phone_number_location
             location_phone_extensions[l] = phone_extension_location
@@ -2356,6 +2421,9 @@ Organization Edit
                 location_schedules[selectedLocationTrId] = location_schedules_p
                 location_description[selectedLocationTrId] = location_description_p
                 location_details[selectedLocationTrId] = location_details_p
+                location_accessibility[selectedLocationTrId] = location_accessibility_p
+                location_accessibility_details[selectedLocationTrId] = location_accessibility_details_p
+                location_regions[selectedLocationTrId] = location_region_p
 
                 location_phone_numbers[selectedLocationTrId] = phone_number_location
                 location_phone_extensions[selectedLocationTrId] = phone_extension_location
@@ -2401,6 +2469,9 @@ Organization Edit
         $('#location_schedules').val(JSON.stringify(location_schedules))
         $('#location_description').val(JSON.stringify(location_description))
         $('#location_details').val(JSON.stringify(location_details))
+        $('#location_accessibility').val(JSON.stringify(location_accessibility))
+        $('#location_accessibility_details').val(JSON.stringify(location_accessibility_details))
+        $('#location_regions').val(JSON.stringify(location_regions))
 
         $('#location_phone_numbers').val(JSON.stringify(location_phone_numbers))
         $('#location_phone_extensions').val(JSON.stringify(location_phone_extensions))
@@ -2486,6 +2557,10 @@ Organization Edit
         $('#location_schedules_p').val('')
         $('#location_description_p').val('')
         $('#location_details_p').val('')
+        $('#location_accessibility_p').val('')
+        $('#location_region_p').val('')
+        $('#location_region_p').selectpicker('refresh')
+        $('#location_accessibility_p').selectpicker('refresh')
         $('#location_service_p').selectpicker('refresh')
         $('#location_schedules_p').selectpicker('refresh')
         $('#locationmodal').modal('hide');
@@ -2510,6 +2585,9 @@ Organization Edit
             let location_schedules_val = JSON.parse($('#location_schedules').val())
             let location_description_val = JSON.parse($('#location_description').val())
             let location_details_val = JSON.parse($('#location_details').val())
+            let location_accessibility_val = JSON.parse($('#location_accessibility').val())
+            let location_accessibility_details_val = JSON.parse($('#location_accessibility_details').val())
+            let location_regions_val = JSON.parse($('#location_regions').val())
 
             // location modal phone section
             let location_phone_numbers = JSON.parse($('#location_phone_numbers').val())
@@ -2552,6 +2630,9 @@ Organization Edit
             location_schedules_val.splice(deletedId,1)
             location_description_val.splice(deletedId,1)
             location_details_val.splice(deletedId,1)
+            location_accessibility_val.splice(deletedId,1)
+            location_accessibility_details_val.splice(deletedId,1)
+            location_regions_val.splice(deletedId,1)
             location_phone_numbers.splice(deletedId,1)
             location_phone_extensions.splice(deletedId,1)
             location_phone_types.splice(deletedId,1)
@@ -2590,6 +2671,10 @@ Organization Edit
             $('#location_schedules').val(JSON.stringify(location_schedules_val))
             $('#location_description').val(JSON.stringify(location_description_val))
             $('#location_details').val(JSON.stringify(location_details_val))
+            $('#location_accessibility').val(JSON.stringify(location_accessibility_val))
+            $('#location_accessibility_details').val(JSON.stringify(location_accessibility_details_val))
+            $('#location_regions').val(JSON.stringify(location_regions_val))
+
             $('#location_phone_numbers').val(JSON.stringify(location_phone_numbers))
             $('#location_phone_extensions').val(JSON.stringify(location_phone_extensions))
             $('#location_phone_types').val(JSON.stringify(location_phone_types))
@@ -2655,6 +2740,10 @@ Organization Edit
         $('#location_schedules_p').val('')
         $('#location_description_p').val('')
         $('#location_details_p').val('')
+        $('#location_accessibility_p').val('')
+        // $('#location_accessibility_details_p').val('')
+        $('#location_region_p').val('')
+
         $('#location_service_p').selectpicker('refresh')
         $('#location_schedules_p').selectpicker('refresh')
 
@@ -2716,6 +2805,9 @@ Organization Edit
         let location_schedules_val = JSON.parse($('#location_schedules').val())
         let location_description_val = JSON.parse($('#location_description').val())
         let location_details_val = JSON.parse($('#location_details').val())
+        let location_accessibility_val = JSON.parse($('#location_accessibility').val())
+        let location_accessibility_details_val = JSON.parse($('#location_accessibility_details').val())
+        let location_regions_val = JSON.parse($('#location_regions').val())
 
         // location modal phone section
         let location_phone_numbers = JSON.parse($('#location_phone_numbers').val())
@@ -2900,6 +2992,9 @@ Organization Edit
         let location_schedules_p = location_schedules_val[id]
         let location_description_p = location_description_val[id]
         let location_details_p = location_details_val[id]
+        let location_accessibility_p = location_accessibility_val[id]
+        let location_accessibility_details_p = location_accessibility_details_val[id]
+        let location_region_p = location_regions_val[id]
 
 
         // locationRadioValue = radioValue
@@ -2920,9 +3015,15 @@ Organization Edit
             $('#location_schedules_p').val(location_schedules_p)
             $('#location_description_p').val(location_description_p)
             $('#location_details_p').val(location_details_p)
+            $('#location_accessibility_p').val(location_accessibility_p)
+            $('#location_accessibility_details_p').val(location_accessibility_details_p)
+            $('#location_region_p').val(location_region_p)
+
             $('#locationSelectData').val('')
             $('#newLocationData').show()
             $('#existingLocationData').hide()
+            $('#location_accessibility_p').selectpicker('refresh')
+            $('#location_region_p').selectpicker('refresh')
             $('#location_service_p').selectpicker('refresh')
             $('#location_schedules_p').selectpicker('refresh')
             $('#location_city_p').selectpicker('refresh')

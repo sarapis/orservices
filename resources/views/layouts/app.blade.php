@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ config('app.locale') }}">
-@include('layouts.style')
+    @include('layouts.style')
 @include('layouts.header')
-
-    <!-- page content -->
-    <div class="page pl-0 pr-0">
         @if (Session::has('message'))
         <div class="alert alert-{{ Session::get('status') == 'error' ? 'danger' : Session::get('status') }} alert-dismissable custom-success-box"
             style="margin: 15px;">

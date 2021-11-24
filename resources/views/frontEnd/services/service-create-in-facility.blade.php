@@ -89,28 +89,46 @@ Service Create
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Status(Verified): </label>
-                                        {{-- <select class="form-control selectpicker" data-live-search="true" id="service_status"
-                                            name="service_status" data-size="5" >
-                                            <option value="">Select status</option>
-                                            @foreach($service_status_list as $key => $service_status)
-                                            <option value="{{$service_status}}">{{$service_status}}</option>
-                                            @endforeach
-                                        </select> --}}
-                                        {!! Form::select('service_status',$service_status_list,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'service_status','placeholder' => 'Select status']) !!}
+                                        <label>Access Requirement</label>
+                                        {{-- <div class="help-tip">
+                                            <div>
+                                                <p>URL of the service</p>
+                                            </div>
+                                        </div> --}}
+                                        {!! Form::select('access_requirement',['none'=>'None','yes'=>'Yes'],'none',['class' =>
+                                        'form-control selectpicker']) !!}
                                     </div>
                                 </div>
-                                {{-- <div class="col-md-4">
+                                <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Taxonomies: </label>
-                                        <select class="form-control selectpicker" multiple data-live-search="true" id="service_taxonomies"
-                                            name="service_taxonomies[]" data-size="5" >
-                                            @foreach($taxonomy_info_list as $key => $taxonomy_info)
-                                            <option value="{{$taxonomy_info->taxonomy_recordid}}">{{$taxonomy_info->taxonomy_name}}</option>
-                                            @endforeach
-                                        </select>
+                                        <label>Service Area</label>
+                                        <div class="help-tip">
+                                            <div>
+                                                <p>The geographic area where this service is accessible.</p>
+                                            </div>
+                                        </div>
+                                        {!! Form::select('service_area[]',$service_area,null,['class' =>
+                                        'form-control selectpicker','multiple' => true]) !!}
                                     </div>
-                                </div> --}}
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Application Process: </label>
+                                        <div class="help-tip">
+                                            <div>
+                                                <p>The steps needed to access the service.</p>
+                                            </div>
+                                        </div>
+                                        <input class="form-control selectpicker" type="text" id="service_application_process" name="service_application_process" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Fee Options</label>
+                                        {!! Form::select('fee_option[]',$fee_options,null,['class' =>
+                                        'form-control selectpicker','multiple' => true]) !!}
+                                    </div>
+                                </div>
                                 <div class="text-right col-md-12 mb-20">
                                     <button type="button" class="btn btn_additional bg-primary-color" data-toggle="collapse" data-target="#demo">Additional Info
                                         <img src="/frontend/assets/images/white_arrow.png" alt="" title="" />
@@ -126,17 +144,6 @@ Service Create
                                             <input class="form-control selectpicker" type="text" id="service_licenses" name="service_licenses" value="">
                                         </div>
                                     </div>
-
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Application Process: </label>
-                                            <div class="help-tip">
-                                                <div><p>The steps needed to access the service.</p></div>
-                                            </div>
-                                            <input class="form-control selectpicker" type="text" id="service_application_process"
-                                                name="service_application_process" value="">
-                                        </div>
-                                    </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Wait Time: </label>
@@ -147,6 +154,7 @@ Service Create
                                                 name="service_wait_time" value="">
                                         </div>
                                     </div>
+
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Fees: </label>
@@ -185,61 +193,13 @@ Service Create
                                             <textarea name="program_alternate_name" id="program_alternate_name" cols="30" rows="10" class="form-control"></textarea>
                                         </div>
                                     </div>
-
-
-                                    <!-- <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Service Phone: </label>
-                                            <input class="form-control selectpicker" type="text" id="service_phones"
-                                                name="service_phones" value="">
-                                            <p id="error_service_phones" style="font-style: italic; color: red;">Invalid phone number! Example: +39 422 789611, 0422-78961, (042)589-6000, +39 (0422)7896, 0422 (789611), 39 422/789 611 </p>
-                                        </div>
-                                    </div> -->
-                                    {{-- <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Service Schedule: </label>
-                                            <select class="form-control selectpicker" multiple data-live-search="true" id="service_schedules"
-                                                name="service_schedules[]" data-size="5" >
-                                                @foreach($schedule_info_list as $key => $schedule_info)
-                                                <option value="{{$schedule_info->schedule_recordid}}">{{$schedule_info->opens_at}} ~ {{$schedule_info->closes_at}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div> --}}
-                                    {{-- <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Contacts: </label>
-                                            <select class="form-control selectpicker" multiple data-live-search="true" id="service_contacts"
-                                                name="service_contacts[]" data-size="5" >
-                                                @foreach($contact_info_list as $key => $contact_info)
-                                                <option value="{{$contact_info->contact_recordid}}">{{$contact_info->contact_name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div> --}}
-                                    {{-- <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Service Details: </label>
-                                            <select class="form-control selectpicker" multiple data-live-search="true" id="service_details"
-                                                name="service_details[]" data-size="5" >
-                                                @foreach($detail_info_list as $key => $detail_info)
-                                                <option value="{{$detail_info->detail_recordid}}">{{$detail_info->detail_value}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div> --}}
-                                    {{-- <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Meta Data: </label>
-                                            <input class="form-control selectpicker" type="text" id="service_metadata" name="service_metadata" value="">
-                                        </div>
-                                    </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Airs Taxonomy X: </label>
-                                            <input class="form-control selectpicker" type="text" id="service_airs_taxonomy_x" name="service_airs_taxonomy_x" value="">
+                                            <label>Status(Verified): </label>
+                                            {!! Form::select('service_status',$service_status_list,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'service_status','placeholder' => 'Select status']) !!}
                                         </div>
-                                    </div> --}}
+                                    </div>
+
                                 </div>
                                 {{-- taxonomy section --}}
                             </div>
@@ -255,20 +215,8 @@ Service Create
                         </li>
                         @if ($layout->show_classification == 'yes')
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#conditions-tab">
-                                <h4 class="card_services_title">Conditions
-                                </h4>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#goals-tab">
-                                <h4 class="card_services_title">Goals
-                                </h4>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#activities-tab">
-                                <h4 class="card_services_title">Activities
+                            <a class="nav-link" data-toggle="tab" href="#sdoh-category-tab">
+                                <h4 class="card_services_title">SDOH Codes
                                 </h4>
                             </a>
                         </li>
@@ -392,169 +340,55 @@ Service Create
                                     </div>
                                 </div>
                                 @if ($layout->show_classification == 'yes')
-                                <div class="tab-pane" id="conditions-tab">
+                                <div class="tab-pane" id="sdoh-category-tab">
                                     <div class="organization_services">
+
                                         <div  style="top:8px;" >
                                             <div>
                                                 <p class="service_help_text">
-                                                    {{ $help_text->service_conditions ?? '' }}
+                                                    {{ $help_text->sdoh_code_helptext ?? '' }}
                                                 </p>
                                             </div>
                                         </div>
-                                        <div class="accordion" id="accordion-condition">
-                                            @php
-                                                $i = 0;
-                                            @endphp
-                                            @foreach ($conditions as $condition_key => $condition_values)
-                                                    <div class="card all_form_field">
-                                                        <div class="card-header" id="condition_{{ $i }}">
-                                                            <h4 class="mb-0 card_services_title">
-                                                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#condition_{{ str_replace(' ','_',$condition_key) }}" aria-expanded="true" aria-controls="condition_{{ str_replace(' ','_',$condition_key) }}">
-                                                                    {{ $condition_key }}
-                                                                </button>
-                                                            </h4>
-                                                        </div>
-                                                        <div id="condition_{{ str_replace(' ','_',$condition_key) }}" class="collapse hide" aria-labelledby="condition_{{ str_replace(' ','_',$condition_key) }}" data-parent="#accordion-condition">
-                                                            <div class="card-body">
-                                                                {{-- <select class="form-control selectpicker" data-live-search="true"id="code_conditions" name="code_conditions[]" data-size="5">
-                                                                    <option value="">Select</option>
-                                                                    @foreach ($condition_values as $data_key => $code_data)
-                                                                    <option value="{{$code_data->id}}">{{$code_data->description}}</option>
-                                                                    @endforeach
-                                                                </select> --}}
-                                                                @foreach ($condition_values as $data_key => $code_data)
-                                                                    <div class="row inner-accordion-section pb-15">
-                                                                        <div class="col-md-6">
-                                                                            <p>
-                                                                                {{ $code_data->description }}
-                                                                            </p>
-                                                                        </div>
-                                                                        <div class="col-md-6">
-                                                                            <select class="form-control selectpicker service_category_type" id="code_conditions" name="code_conditions[]">
-                                                                                <option value="">Empty</option>
-                                                                                <option value="1_{{ $code_data->id }}">1</option>
-                                                                                <option value="2_{{ $code_data->id }}">2</option>
-                                                                                <option value="3_{{ $code_data->id }}">3</option>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                @endforeach
+                                        <div class="card all_form_field">
+                                            <div class="card-block">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <h4 class="title_edit text-left mb-25 mt-10">
+                                                            Categories
+                                                            <div class="help-tip">
+                                                                <div>
+                                                                    <p>{{ $help_text->code_category ?? '' }}</p>
+                                                                </div>
                                                             </div>
+                                                        </h4>
+                                                        <div class="accordion" id="accordion-sdoh-category">
+                                                            @foreach ($codes as $key => $item)
+                                                            <div class="row inner-accordion-section pb-15">
+                                                                <div class="col-md-6">
+                                                                    <p>
+                                                                        {{ $item }}
+                                                                    </p>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    {!! Form::checkbox('code_category_ids[]',$key, in_array($key,$selected_ids) ? 'selected' : '', ['class' => 'code_category_ids filled-in chk-col-blue']) !!}
+                                                                </div>
+
+                                                            </div>
+                                                            @endforeach
+
                                                         </div>
                                                     </div>
-                                                @php
-                                                    $i++;
-                                                @endphp
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane" id="goals-tab">
-                                    <div class="organization_services">
-                                        <div style="top:8px;" >
-                                            <div>
-                                                <p class="service_help_text">
-                                                    {{ $help_text->service_goals ?? '' }}
-                                                </p>
+                                                    <div class="col-md-8">
+                                                        {{-- <h4 class="title_edit text-left mb-25 mt-10">
+                                                            SDOH Codes
+                                                        </h4> --}}
+                                                        <div class="accordion" id="accordion-sdoh-codes">
+
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="accordion" id="accordion-goals">
-                                            @php
-                                                $i = 0;
-                                            @endphp
-                                            @foreach ($goals as $goal_key => $goal_values)
-                                                    <div class="card all_form_field">
-                                                        <div class="card-header" id="goal_{{ $i }}">
-                                                            <h4 class="mb-0 card_services_title">
-                                                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#goal_{{ str_replace(' ','_',$goal_key) }}" aria-expanded="true" aria-controls="goal_{{ str_replace(' ','_',$goal_key) }}">
-                                                                    {{ $goal_key }}
-                                                                </button>
-                                                            </h4>
-                                                        </div>
-                                                        <div id="goal_{{ str_replace(' ','_',$goal_key) }}" class="collapse hide" aria-labelledby="goal_{{ str_replace(' ','_',$goal_key) }}" data-parent="#accordion-goals">
-                                                            <div class="card-body">
-                                                                {{-- <select class="form-control selectpicker" data-live-search="true"id="goal_conditions" name="goal_conditions[]" data-size="5">
-                                                                    <option value="">Select</option>
-                                                                    @foreach ($goal_values as $data_key => $code_data)
-                                                                    <option value="{{$code_data->id}}">{{$code_data->description}}</option>
-                                                                    @endforeach
-                                                                </select> --}}
-                                                                @foreach ($goal_values as $data_key => $code_data)
-                                                                    <div class="row inner-accordion-section pb-15">
-                                                                        <div class="col-md-6">
-                                                                            <p>
-                                                                                {{ $code_data->description }}
-                                                                            </p>
-                                                                        </div>
-                                                                        <div class="col-md-6">
-                                                                            <select class="form-control selectpicker service_category_type" id="goal_conditions" name="goal_conditions[]">
-                                                                                <option value="">Empty</option>
-                                                                                <option value="1_{{ $code_data->id }}">1</option>
-                                                                                <option value="2_{{ $code_data->id }}">2</option>
-                                                                                <option value="3_{{ $code_data->id }}">3</option>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                @endforeach
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @php
-                                                    $i++;
-                                                @endphp
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane" id="activities-tab">
-                                    <div class="organization_services">
-                                        <div style="top:8px;" >
-                                            <div>
-                                                <p class="service_help_text">
-                                                    {{ $help_text->service_activities ?? '' }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="accordion" id="accordion-activities">
-                                            @php
-                                                $i = 0;
-                                            @endphp
-                                            @foreach ($activities as $activitie_key => $activities_values)
-                                                    <div class="card">
-                                                        <div class="card-header" id="activities_{{ $i }}">
-                                                            <h4 class="mb-0 card_services_title">
-                                                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#activities_{{ str_replace(' ','_',$activitie_key) }}" aria-expanded="true" aria-controls="activities_{{ str_replace(' ','_',$activitie_key) }}">
-                                                                    {{ $activitie_key }}
-                                                                </button>
-                                                            </h4>
-                                                        </div>
-                                                        <div id="activities_{{ str_replace(' ','_',$activitie_key) }}" class="collapse hide" aria-labelledby="activities_{{ str_replace(' ','_',$activitie_key) }}" data-parent="#accordion-activities">
-                                                            <div class="card-body">
-                                                                {{-- <select class="form-control selectpicker" data-live-search="true"id="activities_conditions" name="activities_conditions[]" data-size="5">
-                                                                    <option value="">Select</option>
-                                                                    @foreach ($activities_values as $data_key => $code_data)
-                                                                    <option value="{{$code_data->id}}">{{$code_data->description}}</option>
-                                                                    @endforeach
-                                                                </select> --}}
-                                                                @foreach ($activities_values as $data_key => $code_data)
-                                                                    <div class="row inner-accordion-section pb-15">
-                                                                        <div class="col-md-6">
-                                                                            <p>
-                                                                                {{ $code_data->description }}
-                                                                            </p>
-                                                                        </div>
-                                                                        <div class="col-md-6">
-                                                                            <input type="checkbox" name="activities_conditions[]" id="activities_{{$i}}_{{$data_key}}" value="{{ $code_data->id }}"  class="filled-in chk-col-blue">
-                                                                        </div>
-                                                                    </div>
-                                                                @endforeach
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @php
-                                                    $i++;
-                                                @endphp
-                                            @endforeach
                                         </div>
                                     </div>
                                 </div>
@@ -1223,7 +1057,8 @@ Service Create
         </div>
     </div>
 </div>
-
+@include('frontEnd.services.service_code_script')
+<script src="/js/jquery.timepicker.min.js"></script>
 <script src="/js/jquery.timepicker.min.js"></script>
 <script>
     $('.timePicker').timepicker({ 'scrollDefault': 'now' });

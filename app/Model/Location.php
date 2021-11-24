@@ -74,4 +74,9 @@ class Location extends Model implements ContractsAuditable
 
         // echo "This is a test function";
     }
+
+    public function regions()
+    {
+        return $this->belongsToMany('App\Model\Region', 'location_regions', 'location_recordid', 'region_id');
+    }
 }

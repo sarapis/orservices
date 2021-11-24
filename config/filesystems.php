@@ -58,6 +58,10 @@ return [
             'driver' => 'local',
             'root' => public_path('csv'),
         ],
+        'xlsx' => [
+            'driver' => 'local',
+            'root' => public_path('xlsx'),
+        ],
 
         's3' => [
             'driver' => 's3',

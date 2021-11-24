@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ImportDataSource extends Model
 {
     protected $fillable = [
-        'name', 'format', 'airtable_api_key', 'airtable_base_id', 'mode', 'auto_sync', 'sync_hours', 'last_imports', 'organization_tags', 'created_by', 'updated_by', 'import_type', 'source_file'
+        'name', 'format', 'airtable_api_key', 'airtable_base_id', 'mode', 'auto_sync', 'sync_hours', 'last_imports', 'organization_tags', 'created_by', 'updated_by', 'import_type', 'source_file', 'endpoint', 'key'
     ];
 
     /**

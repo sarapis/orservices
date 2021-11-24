@@ -18,7 +18,7 @@ class CreateAccessibilitiesTable extends Migration
             $table->string('accessibility_recordid')->nullable();
             $table->string('accessibility_location')->nullable();
             $table->string('accessibility')->nullable();
-            $table->string('accessibility_details')->nullable();
+            $table->longText('accessibility_details')->nullable();
             $table->timestamps();
         });
     }

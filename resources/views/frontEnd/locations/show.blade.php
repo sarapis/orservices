@@ -48,7 +48,15 @@ Location
                             @endforeach
                             @endif
                         </h4>
-
+                        @endif
+                        @if(isset($facility->regions) && count($facility->regions) > 0)
+                        <h4>
+                            <span class="subtitle"><b>Region: </b></span>
+                            @foreach($facility->regions as $key => $region)
+                            {{ $key > 0 ? ',' : '' }}
+                            {{ $region->region }}
+                            @endforeach
+                        </h4>
                         @endif
                         @if(isset($facility->phones) && count($facility->phones) > 0)
                         <h4>
@@ -56,6 +64,23 @@ Location
                             @foreach($facility->phones as $key => $phone)
                             <a href="tel:{{$phone->phone_number}}">{{$phone->phone_number}}</a>
                             {{ count($facility->phones) > $key+1 ? ',' : '' }}
+                            @endforeach
+                        </h4>
+                        @endif
+                        @if(isset($facility->accessibilities) && count($facility->accessibilities) > 0)
+                        <h4>
+                            <span class="subtitle"><b>Accessibility: </b></span>
+                            @foreach($facility->accessibilities as $key => $accessibility)
+                            {{$accessibility->accessibility}}
+                            @if($key != 0)
+                                ,
+                            @endif
+                            @endforeach
+                        </h4>
+                        <h4>
+                            <span class="subtitle"><b>Accessibility Details: </b></span>
+                            @foreach($facility->accessibilities as $key => $accessibility)
+                            {{$accessibility->accessibility_details}}
                             @endforeach
                         </h4>
                         @endif

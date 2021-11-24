@@ -55,6 +55,21 @@ create code
                             {!! $errors->first('description', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
+                    <div class="form-group {{ $errors->has('grouping') ? 'has-error' : ''}}">
+                        {!! Form::label('grouping', 'Grouping', ['class' => 'col-sm-3 control-label']) !!}
+                        <div class="col-sm-6">
+
+                            {!! Form::text('grouping', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('grouping', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+                    <div class="form-group {{ $errors->has('definition') ? 'has-error' : ''}}">
+                        {!! Form::label('definition', 'Definition', ['class' => 'col-sm-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::textarea('definition', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('definition', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
                     <div class="form-group {{ $errors->has('is_panel_code') ? 'has-error' : ''}}">
                         {!! Form::label('is_panel_code', 'Panel Code', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-6">
@@ -67,6 +82,29 @@ create code
                         <div class="col-sm-6">
                             {!! Form::select('is_multiselect',['yes' => 'Yes','no' => 'No'],null,['class' => 'form-control','placeholder' => 'Select multiselect']) !!}
                             {!! $errors->first('is_multiselect', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+                    <div class="form-group {{ $errors->has('code_id') ? 'has-error' : ''}}">
+                        {!! Form::label('code_id', 'ID', ['class' => 'col-sm-3 control-label']) !!}
+                        <div class="col-sm-6">
+
+                            {!! Form::text('code_id', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('code_id', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+                    {{-- <div class="form-group {{ $errors->has('uid') ? 'has-error' : ''}}">
+                        {!! Form::label('uid', 'UID', ['class' => 'col-sm-3 control-label']) !!}
+                        <div class="col-sm-6">
+
+                            {!! Form::text('uid', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('uid', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div> --}}
+                    <div class="form-group {{ $errors->has('notes') ? 'has-error' : ''}}">
+                        {!! Form::label('notes', 'Notes', ['class' => 'col-sm-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::textarea('notes', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('notes', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
                     <div class="form-group">

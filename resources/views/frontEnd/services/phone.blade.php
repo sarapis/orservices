@@ -50,7 +50,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Phone Type: </label>
-                                    {!! Form::select('phone_type_p',$phone_type,[],['class' => 'form-control selectpicker','data-live-search' => 'true','id' => 'phone_type_p','data-size' => 5,'placeholder' => 'select phone type'])!!}
+                                    {!! Form::select('phone_type_p',$phone_type,array_search('Voice', $phone_type->toArray()),['class' => 'form-control selectpicker','data-live-search' => 'true','id' => 'phone_type_p','data-size' => 5,'placeholder' => 'select phone type'])!!}
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -202,7 +202,7 @@
         $('#phoneSelectData').val('')
         $('#phone_number_p').val('')
         $('#phone_extension_p').val('')
-        $('#phone_type_p').val('')
+        $('#phone_type_p').val("<?php echo array_search('Voice', $phone_type->toArray()) ?>")
         $('#phone_language_p').val('')
         $('#phone_description_p').val('')
         $('#phone_type_p').selectpicker('refresh')

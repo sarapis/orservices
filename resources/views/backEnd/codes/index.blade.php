@@ -91,13 +91,22 @@ Codes
                 </div>
             </div>
           </div>
+          <div class="col-md-6">
+            <div class="form-group">
+                <label for="inputPassword3" class="col-sm-3 control-label">Select Grouping</label>
+                <div class="col-sm-7">
+                     {!! Form::select('grouping',$groupings,null,['class' => 'form-control','id' => 'grouping','placeholder' => 'Select ', 'data-live-search' => 'true','data-size' => '5']) !!}
+                </div>
+            </div>
+          </div>
       </div>
       <div class="x_content" style="overflow: scroll;">
 
         <!-- <table class="table table-striped jambo_table bulk_action table-responsive"> -->
-        <table id="codes_table" class="display table-striped jambo_table table-bordered " cellspacing="0" width="100%">
+        <table id="codes_table" class="display table-striped jambo_table table-bordered nowrap" cellspacing="0" width="100%">
             <thead>
                 <tr>
+                    <th class="text-center">UID</th>
                     <th class="text-center">ID</th>
                     <th class="text-center">Code</th>
                     <th class="text-center">SDOH Category</th>
@@ -105,7 +114,11 @@ Codes
                     <th class="text-center">Resource Element</th>
                     <th class="text-center">Code System</th>
                     <th class="text-center">Description</th>
+                    <th class="text-center">Grouping</th>
+                    {{-- <th class="text-center">Definition</th> --}}
+                    <th class="text-center">Notes</th>
                     <th class="text-center">Services</th>
+                    {{-- <th class="text-center">Service Grouping</th> --}}
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
@@ -149,13 +162,18 @@ Codes
                 },
             columns: [
                 { data: 'id', name: 'id' },
+                { data: 'code_id', name: 'code_id' },
                 { data: 'code', name: 'code' },
                 { data: 'category', name: 'category' },
                 { data: 'resource', name: 'resource' },
                 { data: 'resource_element', name: 'resource_element' },
                 { data: 'code_system', name: 'code_system' },
                 { data: 'description', name: 'description' },
+                { data: 'grouping', name: 'grouping' },
+                // { data: 'definition', name: 'definition' },
+                { data: 'notes', name: 'notes' },
                 { data: 'services', name: 'services' },
+                // { data: 'procedure_grouping', name: 'procedure_grouping' },
                 { data: 'action', name: 'action' },
             ],
             columnDefs : [
@@ -204,6 +222,21 @@ Codes
                     "orderable": true,
                     "class": "text-left"
                 },
+                {
+                    "targets": 9,
+                    "orderable": true,
+                    "class": "text-left"
+                },
+                {
+                    "targets": 10,
+                    "orderable": true,
+                    "class": "text-left"
+                },
+                {
+                    "targets": 11,
+                    "orderable": true,
+                    "class": "text-left"
+                },
             ],
         });
         $('#category').change(function(){
@@ -224,6 +257,11 @@ Codes
         $('#code_system').change(function(){
             let val = $(this).val()
             extraData.code_system = val
+            codes_table.ajax.reload()
+        })
+        $('#grouping').change(function(){
+            let val = $(this).val()
+            extraData.grouping = val
             codes_table.ajax.reload()
         })
         $('#code_with_service').change(function(){
@@ -251,7 +289,7 @@ Codes
                     // const url = window.URL.createObjectURL(new Blob([response]));
                     const a = document.createElement('a');
                             a.href = response.path;
-                            a.download = 'codes.csv';
+                            a.download = 'codes.xlsx';
                             document.body.appendChild(a);
                             a.click();
                 },

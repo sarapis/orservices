@@ -31,8 +31,7 @@ Add Source
                     <div class="form-group {{ $errors->has('import_type') ? 'has-error' : ''}}">
                         {!! Form::label('import_type', 'Format', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-6">
-                            {!! Form::select('import_type',['airtable' => 'HSDS v.2.0 Airtable' , 'zipfile' => 'HSDS v.2.0 Zip File'], 'airtable', ['class' =>
-                            'form-control select','id' => 'import_type']) !!}
+                            {!! Form::select('import_type',['airtable' => 'HSDS v.2.0 Airtable' , 'zipfile' => 'HSDS v.2.0 Zip File','zipfile_api' => 'HSDS v.2.0 Zip API' ], 'airtable', ['class' => 'form-control select','id' => 'import_type']) !!}
                             {!! $errors->first('import_type', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
@@ -55,6 +54,20 @@ Add Source
                         <div class="col-sm-6">
                             {!! Form::file('zipfile', null, ['class' => 'form-control']) !!}
                             {!! $errors->first('zipfile', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+                    <div class="form-group {{ $errors->has('endpoint') ? 'has-error' : ''}}" style="display: none" id="endpoint_div">
+                        {!! Form::label('endpoint', 'Endpoint', ['class' => 'col-sm-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::text('endpoint', null, ['class' => 'form-control','id' => 'endpoint']) !!}
+                            {!! $errors->first('endpoint', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+                    <div class="form-group {{ $errors->has('key') ? 'has-error' : ''}}" id="key_div" style="display: none" >
+                        {!! Form::label('key', 'API Key', ['class' => 'col-sm-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::text('key', null, ['class' => 'form-control','id' => 'key']) !!}
+                            {!! $errors->first('key', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
 
@@ -113,11 +126,21 @@ Add Source
             if(val == 'zipfile'){
                 $('#airtable_base_id_div').hide()
                 $('#airtable_key_div').hide()
+                $('#endpoint_div').hide()
+                $('#key_div').hide()
                 $('#zipfile_div').show()
+            }else if(val == 'zipfile_api'){
+                $('#airtable_base_id_div').hide()
+                $('#airtable_key_div').hide()
+                $('#endpoint_div').show()
+                $('#key_div').show()
+                $('#zipfile_div').hide()
             }else{
                 $('#airtable_base_id_div').show()
                 $('#airtable_key_div').show()
+                $('#endpoint_div').hide()
                 $('#zipfile_div').hide()
+                $('#key_div').hide()
             }
         })
         $('#auto_sync').change(function () {
