@@ -202,3 +202,11 @@ NB: Check if .htaccess copied and is present on project root (wwwroot). If not c
 ```
 
 Finally you can access your application at https://<YOUR_APP_SERVICE_NAME>.azurewebsites.net/
+
+*Upgrade Guide*
+1. Make a copy of the .env file
+2. Run pipelines (to clone the latest from Github master/main branch). If doing manual upgrade, upload the codebase to the server (wwwroot) with Filezilla or FTP client of choice.
+3. Install dependencies (```bash composer install ```)
+4. Replace .env/env.example with the backed up .env
+5. Clear config cache (```bash php artisan config:cache```)
+6. Run migrations (```bash php artisan migrate ```). If on test, update the test database (```bash php artisan db:seed ```)
