@@ -921,6 +921,8 @@ class ExportController extends Controller
                     })->pluck('organization_recordid')->toArray();
                 }
             }
+
+			/* services */
             if (!empty($organization_ids)) {
                 $organization_service_recordid = ServiceOrganization::whereIn('organization_recordid', $organization_ids)->pluck('service_recordid');
                 $table_service = Service::whereIn('service_recordid', $organization_service_recordid)->get();
@@ -968,9 +970,45 @@ class ExportController extends Controller
                 unlink($path_csv_export . 'services.csv');
             }
             rename($public_path . 'services.csv', $path_csv_export . 'services.csv');
+			/* /services */
 
+
+			/* service_at_location */
+            if (isset($service_recordids_temp) && count($service_recordids_temp) > 0) {
+                $table_servicelocation = ServiceLocation::whereIn('service_recordid', $service_recordids_temp)->get();
+            } else {
+                $table_servicelocation = ServiceLocation::all();
+            }
+
+            $file_servicelocation = fopen('services_at_location.csv', 'w');
+            fputcsv($file_servicelocation, array('id', 'service_id', 'location_id', 'description'));
+            // fputcsv($file_servicelocation, array('ID', 'location_id', 'service_id'));
+			$location_recordids_temp = [];
+            foreach ($table_servicelocation as $row) {
+                //if (isset($location_recordids_temp) && count($location_recordids_temp) > 0 && in_array($row->location_recordid, $location_recordids_temp)) {
+                if (($service_recordids_temp ?? null) && in_array($row->service_recordid, $service_recordids_temp)) {
+					$location_recordids_temp[] = $row->location_recordid;
+                    $ServiceLocationArray = [
+                        'id' => $row->id,
+                        'service_id' => $row->service_recordid,
+                        'location_id' => $row->location_recordid,
+                        'description' => '',
+                    ];
+                    // fputcsv($file_servicelocation, $row->toArray());
+                    fputcsv($file_servicelocation, $ServiceLocationArray);
+                }
+            }
+            fclose($file_servicelocation);
+            if (file_exists($path_csv_export . 'services_at_location.csv')) {
+                unlink($path_csv_export . 'services_at_location.csv');
+            }
+            rename($public_path . 'services_at_location.csv', $path_csv_export . 'services_at_location.csv');
+			/* /service_at_location */
+
+
+			/* locations */
             if (!empty($organization_ids)) {
-                $table_location = Location::whereIn('location_organization', $organization_ids)->get();
+                $table_location = Location::whereIn('location_organization', $organization_ids)->orWhereIn('location_recordid', $location_recordids_temp)->get();
             } else {
                 $table_location = Location::all();
             }
@@ -978,7 +1016,7 @@ class ExportController extends Controller
             fputcsv($file_location, array('id', 'organization_id', 'name', 'alternate_name', 'description', 'transportation', 'latitude', 'longitude'));
 
             // fputcsv($file_location, array('ID', 'id', 'name', 'organization_id', 'alternate_name', 'transportation', 'latitude', 'longitude', 'description', 'location_services', 'location_phones', 'location_details', 'location_schedule', 'location_address', 'flag'));
-            $location_recordids_temp = [];
+            // $location_recordids_temp = [];		// !! $location_recordids_temp is not empty by this moment
             foreach ($table_location as $row) {
                 $location_recordids_temp[] = $row->location_recordid;
                 $locationArray = [
@@ -995,12 +1033,16 @@ class ExportController extends Controller
                 // fputcsv($file_location, $row->toArray());
                 fputcsv($file_location, $locationArray);
             }
+			array_unique($location_recordids_temp);
             fclose($file_location);
             if (file_exists($path_csv_export . 'locations.csv')) {
                 unlink($path_csv_export . 'locations.csv');
             }
             rename($public_path . 'locations.csv', $path_csv_export . 'locations.csv');
+			/* /locations */
 
+
+			/* organizations */
             if (!empty($organization_ids)) {
                 $table_organization = Organization::whereIn('organization_recordid', $organization_ids)->get();
             } else {
@@ -1035,9 +1077,12 @@ class ExportController extends Controller
                 unlink($path_csv_export . 'organizations.csv');
             }
             rename($public_path . 'organizations.csv', $path_csv_export . 'organizations.csv');
+			/* /organizations */
 
+
+			/* contacts */
             if (!empty($organization_ids)) {
-                $table_contact = Contact::whereIn('contact_organizations', $organization_ids)->get();
+                $table_contact = Contact::whereIn('contact_organizations', $organization_ids)->orWhereIn('contact_services', $service_recordids_temp)->get();
             } else {
                 $table_contact = Contact::all();
             }
@@ -1065,6 +1110,10 @@ class ExportController extends Controller
                 unlink($path_csv_export . 'contacts.csv');
             }
             rename($public_path . 'contacts.csv', $path_csv_export . 'contacts.csv');
+			/* /contacts */
+
+
+			/* phones */
             // if (!empty($organization_ids)) {
             //     $table_phone = Phone::whereIn('phone_organizations', $organization_ids)->get();
             // } else {
@@ -1111,6 +1160,10 @@ class ExportController extends Controller
                 unlink($path_csv_export . 'phones.csv');
             }
             rename($public_path . 'phones.csv', $path_csv_export . 'phones.csv');
+			/* /phones */
+
+
+			/* physical_addresses */
             if (isset($location_recordids_temp) && count($location_recordids_temp) > 0) {
                 $address_record_ids = LocationAddress::whereIn('location_recordid', $location_recordids_temp)->pluck('address_recordid')->toArray();
                 $table_address = Address::whereIn('address_recordid', $address_record_ids)->get();
@@ -1189,21 +1242,23 @@ class ExportController extends Controller
                 $location_address_ids = LocationAddress::where('address_recordid', $row->address_recordid)->get();
                 if (count($location_address_ids) > 0) {
                     foreach ($location_address_ids as $key => $location_data) {
-                        $addressArray = [
-                            'id' => $row->address_recordid,
-                            'location_id' => $location_data->location_recordid,
-                            'attention' => $row->address_attention,
-                            'address_1' => $row->address_1,
-                            'address_2' => $row->address_2,
-                            'address_3' => '',
-                            'address_4' => '',
-                            'city' => $row->address_city,
-                            'region' => $row->address_region,
-                            'state_province' => $row->address_state_province,
-                            'postal_code' => $row->address_postal_code,
-                            'country' => $row->address_country,
-                        ];
-                        fputcsv($file_address, $addressArray);
+						if (!($location_recordids_temp ?? null) || in_array($location_data->location_recordid, $location_recordids_temp)) {
+							$addressArray = [
+								'id' => $row->address_recordid,
+								'location_id' => $location_data->location_recordid,
+								'attention' => $row->address_attention,
+								'address_1' => $row->address_1,
+								'address_2' => $row->address_2,
+								'address_3' => '',
+								'address_4' => '',
+								'city' => $row->address_city,
+								'region' => $row->address_region,
+								'state_province' => $row->address_state_province,
+								'postal_code' => $row->address_postal_code,
+								'country' => $row->address_country,
+							];
+							fputcsv($file_address, $addressArray);
+						}
                     }
                 }
             }
@@ -1212,7 +1267,10 @@ class ExportController extends Controller
                 unlink($path_csv_export . 'physical_addresses.csv');
             }
             rename($public_path . 'physical_addresses.csv', $path_csv_export . 'physical_addresses.csv');
+			/* /physical_addresses */
 
+
+			/* languages */
             $table_language = Language::all();
             $file_language = fopen('languages.csv', 'w');
             fputcsv($file_language, array('id', 'service_id', 'location_id', 'language', 'language_recordid'));
@@ -1234,7 +1292,10 @@ class ExportController extends Controller
                 unlink($path_csv_export . 'languages.csv');
             }
             rename($public_path . 'languages.csv', $path_csv_export . 'languages.csv');
+			/* /languages */
 
+
+			/* taxonomy */
             $table_taxonomy = Taxonomy::all();
             $file_taxonomy = fopen('taxonomy_terms.csv', 'w');
             // fputcsv($file_taxonomy, array('ID', 'id', 'name', 'parent_name', 'taxonomy_grandparent_name', 'vocabulary', 'taxonomy_x_description', 'taxonomy_x_notes', 'taxonomy_services', 'parent_id', 'taxonomy_facet', 'category_id', 'taxonomy_id', 'flag'));
@@ -1263,7 +1324,10 @@ class ExportController extends Controller
                 unlink($path_csv_export . 'taxonomy_terms.csv');
             }
             rename($public_path . 'taxonomy_terms.csv', $path_csv_export . 'taxonomy_terms.csv');
+			/* /taxonomy */
 
+
+			/* service_attributes */
             if (count($service_recordids_temp) > 0) {
                 $table_servicetaxonomy = ServiceTaxonomy::whereIn('service_recordid', $service_recordids_temp)->get();
             } else {
@@ -1289,35 +1353,10 @@ class ExportController extends Controller
                 unlink($path_csv_export . 'service_attributes.csv');
             }
             rename($public_path . 'service_attributes.csv', $path_csv_export . 'service_attributes.csv');
+			/* /service_attributes */
 
-            if (isset($service_recordids_temp) && count($service_recordids_temp) > 0) {
-                $table_servicelocation = ServiceLocation::whereIn('service_recordid', $service_recordids_temp)->get();
-            } else {
-                $table_servicelocation = ServiceLocation::all();
-            }
 
-            $file_servicelocation = fopen('services_at_location.csv', 'w');
-            fputcsv($file_servicelocation, array('id', 'service_id', 'location_id', 'description'));
-            // fputcsv($file_servicelocation, array('ID', 'location_id', 'service_id'));
-            foreach ($table_servicelocation as $row) {
-
-                if (isset($location_recordids_temp) && count($location_recordids_temp) > 0 && in_array($row->location_recordid, $location_recordids_temp)) {
-                    $ServiceLocationArray = [
-                        'id' => $row->id,
-                        'service_id' => $row->service_recordid,
-                        'location_id' => $row->location_recordid,
-                        'description' => '',
-                    ];
-                    // fputcsv($file_servicelocation, $row->toArray());
-                    fputcsv($file_servicelocation, $ServiceLocationArray);
-                }
-            }
-            fclose($file_servicelocation);
-            if (file_exists($path_csv_export . 'services_at_location.csv')) {
-                unlink($path_csv_export . 'services_at_location.csv');
-            }
-            rename($public_path . 'services_at_location.csv', $path_csv_export . 'services_at_location.csv');
-
+			/* accessibility_for_disabilities */
             $table_accessibility = Accessibility::all();
             $file_accessibility = fopen('accessibility_for_disabilities.csv', 'w');
             fputcsv($file_accessibility, array('id', 'location_id', 'accessibility', 'details'));
@@ -1337,6 +1376,8 @@ class ExportController extends Controller
                 unlink($path_csv_export . 'accessibility_for_disabilities.csv');
             }
             rename($public_path . 'accessibility_for_disabilities.csv', $path_csv_export . 'accessibility_for_disabilities.csv');
+			/* /accessibility_for_disabilities */
+
 
             $table_schedule = Schedule::all();
             $file_schedule = fopen('schedules.csv', 'w');
