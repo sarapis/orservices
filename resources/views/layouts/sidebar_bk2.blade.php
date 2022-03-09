@@ -211,7 +211,7 @@
 
 </nav>
 </form>
-<script src="{{asset('js/treeview2.js')}}"></script>
+<script src="{{ secure_asset('js/treeview2.js') }}"></script>
 <script>
 $(document).ready(function(){
     $('.regular-checkbox').on('click', function(e){

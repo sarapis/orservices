@@ -942,10 +942,10 @@
 {{-- End here --}}
 
 
-<script type="text/javascript" src="http://sliptree.github.io/bootstrap-tokenfield/dist/bootstrap-tokenfield.js">
+<script type="text/javascript" src="https://sliptree.github.io/bootstrap-tokenfield/dist/bootstrap-tokenfield.js">
 </script>
 <script type="text/javascript"
-    src="http://sliptree.github.io/bootstrap-tokenfield/docs-assets/js/typeahead.bundle.min.js"></script>
+    src="https://sliptree.github.io/bootstrap-tokenfield/docs-assets/js/typeahead.bundle.min.js"></script>
 
 <script>
     var tag_source = <?php print_r(json_encode($existing_tags)) ?>;

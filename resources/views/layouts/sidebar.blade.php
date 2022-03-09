@@ -187,7 +187,7 @@
         </ul>
     </nav>
 </form>
-<script src="{{asset('js/treeview2.js')}}"></script>
+<script src="{{ secure_asset('js/treeview2.js') }}"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/jstree.min.js"></script>
 
 <script>
