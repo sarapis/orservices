@@ -33,7 +33,7 @@ Home
     }
 </style>
 
-<link href="{{asset('/css/treeview.css')}}" rel="stylesheet">
+<link href="{{ secure_asset('/css/treeview.css') }}" rel="stylesheet">
 @section('content')
 
 <div class="home-sidebar">
@@ -561,7 +561,7 @@ Home
 </div> --}}
 
 
-<script src="{{asset('/js/treeview.js')}}"></script>
+<script src="{{ secure_asset('/js/treeview.js') }}"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 
