@@ -8,12 +8,14 @@ use App\Model\Map;
 use Illuminate\Http\Request;
 use App\Model\SessionData;
 use App\Model\SessionInteraction;
-use App\Organization;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Sentinel;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Exports\SessionExport;
+use App\Model\Organization;
+use App\Model\OrganizationStatus;
+use App\Model\Service;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
@@ -284,6 +286,74 @@ class SessionController extends Controller
             $session->session_method = $request->interaction_method;
             $session->session_disposition = $request->interaction_disposition;
             $session->session_notes = $request->interaction_notes;
+            $session->organization_services = $request->organization_services ? implode(',', $request->organization_services) : '';
+            $session->organization_status = $request->organization_status;
+            $session->session_records_edited = $request->interaction_records_edited;
+
+            if ($user) {
+                $session->session_performed_by = $user->id;
+            }
+
+            $session->session_performed_at = Carbon::now();
+            $session->session_edits = '0';
+            $session->save();
+            // add new interaction session
+            $interaction = new SessionInteraction();
+            $session_recordid = $new_recordid;
+            $interaction->interaction_session = $session_recordid;
+
+            $new_recordid = SessionInteraction::max('interaction_recordid') + 1;
+            $interaction->interaction_recordid = $new_recordid;
+
+            $interaction->interaction_method = $request->interaction_method;
+            $interaction->interaction_disposition = $request->interaction_disposition;
+            $interaction->interaction_notes = $request->interaction_notes;
+            $interaction->organization_services = $request->organization_services ? implode(',', $request->organization_services) : '';
+            $interaction->organization_status = $request->organization_status;
+            $interaction->interaction_records_edited = $request->interaction_records_edited;
+            $date_time = date("Y-m-d h:i:sa");
+            $interaction->interaction_timestamp = $date_time;
+
+            $interaction->save();
+
+            $organization = Organization::where('organization_recordid', $request->organization_recordid)->first();
+            $organizationStatus = OrganizationStatus::where('id', $request->organization_status)->first();
+
+            if ($organizationStatus->status == 'Verified') {
+                $organization->last_verified_at = Carbon::now();
+            }
+            $organization->organization_status_x = $request->organization_status;
+            $organization->save();
+
+            // $session = SessionData::where('session_recordid', '=', $session_recordid)->first();
+            // $session_original_edits = $session->session_edits;
+            // $session_new_edits = intval($session_original_edits) + intval($request->interaction_records_edited);
+            // $session->session_edits = $session_new_edits;
+            // $session->save();
+            Session::flash('message', 'Interaction added successfully!');
+            Session::flash('status', 'success');
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            dd($th);
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
+            return redirect()->back();
+        }
+    }
+    public function addInteractionService(Request $request)
+    {
+        try {
+            $session = new SessionData;
+            $new_recordid = SessionData::max('session_recordid') + 1;
+            $session->session_recordid = $new_recordid;
+            $user = Auth::user();
+            $date_time = date("Y-m-d h:i:sa");
+            $session->session_name = 'session' . $new_recordid;
+            $session->session_service = $request->service_recordid;
+            $session->session_method = $request->interaction_method;
+            $session->session_disposition = $request->interaction_disposition;
+            $session->session_notes = $request->interaction_notes;
+            $session->service_status = $request->service_status;
             $session->session_records_edited = $request->interaction_records_edited;
 
             if ($user) {
@@ -309,6 +379,10 @@ class SessionController extends Controller
             $interaction->interaction_timestamp = $date_time;
 
             $interaction->save();
+
+            $service = Service::where('service_recordid', $request->service_recordid)->first();
+            $service->service_status = $request->service_status;
+            $service->save();
 
             // $session = SessionData::where('session_recordid', '=', $session_recordid)->first();
             // $session_original_edits = $session->session_edits;

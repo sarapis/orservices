@@ -4,6 +4,7 @@ namespace App\Http\Controllers\backend;
 
 use App\Http\Controllers\Controller;
 use App\Model\Layout;
+use App\Model\Organization;
 use App\Model\OrganizationStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -160,6 +161,27 @@ class OrganizationStatusController extends Controller
         } catch (\Throwable $th) {
             //throw $th;
             return redirect()->to('organization_status')->with('error', $th->getMessage());
+        }
+    }
+    public function save_default_organization_status(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            Layout::whereId(1)->update([
+                'default_organization_status' => $request->default_organization_status,
+            ]);
+            Organization::whereNull('organization_status_x')->update([
+                'organization_status_x' => $request->default_organization_status
+            ]);
+            DB::commit();
+            Session::flash('message', 'Default Organization Status Updated Successfully!');
+            Session::flash('status', 'success');
+            return redirect('organization_status');
+        } catch (\Throwable $th) {
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
+            return redirect('organization_status');
+            //throw $th;
         }
     }
 }

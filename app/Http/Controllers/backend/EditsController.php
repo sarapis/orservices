@@ -29,11 +29,10 @@ class EditsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, $id = 0)
+    public function index(Request $request, $id = 0, $organization_id = 0)
     {
         try {
-
-            $audits = Audit::orderBy('id', 'desc')->get();
+            $audits = Audit::orderBy('id', 'desc')->cursor();
 
             $fieldTypesData = '';
             if ($request->get('extraData')) {
@@ -48,7 +47,6 @@ class EditsController extends Controller
             // dd($audits);
             $fieldTypes = [];
             $audits = $this->auditsController->filterAudits($audits);
-
             foreach ($audits as $key => $audit) {
                 foreach ($audit->old_values as $key1 => $value1) {
                     if ($fieldTypesData && $fieldTypesData == $key1) {
@@ -186,7 +184,7 @@ class EditsController extends Controller
             // }
             // dd($desiredResult);
             if (!$request->ajax()) {
-                return view('backEnd.edits.index', compact('organizations', 'disposition_list', 'dataTypes', 'users', 'id', 'organization_tags', 'fieldTypes'));
+                return view('backEnd.edits.index', compact('organizations', 'disposition_list', 'dataTypes', 'users', 'id', 'organization_tags', 'fieldTypes', 'organization_id'));
             }
             return DataTables::of(($data))
                 // ->orderColumn('created_at', function ($query, $keyword) {

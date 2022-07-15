@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\frontEnd;
 
+use App\Exports\LocationExport;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Functions\Airtable;
@@ -44,6 +45,7 @@ use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 use Sentinel;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Excel as ExcelExcel;
 use Yajra\DataTables\Facades\DataTables;
 use OwenIt\Auditing\Models\Audit;
 
@@ -470,6 +472,14 @@ class LocationController extends Controller
                 ->editColumn('location_address', function ($row) {
 
                     return isset($row->address[0]) ? $row->address[0]['address_1'] : '';
+                })
+                ->addColumn('location_city', function ($row) {
+
+                    return isset($row->address[0]) ? $row->address[0]['address_city'] : '';
+                })
+                ->addColumn('location_state', function ($row) {
+
+                    return isset($row->address[0]) ? $row->address[0]['address_state_province'] : '';
                 })
                 ->rawColumns(['location_name', 'location_contact', 'location_service', 'location_organization'])
                 ->make(true);
@@ -1361,8 +1371,14 @@ class LocationController extends Controller
                 }
 
                 $facility_organization_list = explode(',', $facility->location_organization);
+                $service_recordid_list = [];
+                foreach ($facility_organizations as $key => $value) {
+                    $service_recordid_list = array_merge($value->services()->pluck('service_recordid')->toArray(), $service_recordid_list);
+                }
 
-                $service_info_list = Service::orderBy('service_name')->pluck('service_name', 'service_recordid')->toArray();
+                $service_info_list = Service::whereIn('service_recordid', $service_recordid_list)->orderBy('service_name')->pluck('service_name', 'service_recordid')->toArray();
+                // $service_info_list = Service::orderBy('service_name')->pluck('service_name', 'service_recordid')->toArray();
+
                 $facility_service_list = explode(',', $facility->location_services);
 
                 $serviceData = $facility->services ? $facility->services->pluck('service_recordid')->toArray() : [];
@@ -1777,7 +1793,7 @@ class LocationController extends Controller
         } else {
             $organizations = Organization::pluck("organization_name", 'organization_recordid')->unique();
         }
-
+        $regions = Region::pluck('region', 'id');
 
         $service_info_list = Service::select('service_recordid', 'service_name')->orderBy('service_name')->distinct()->get();
         $schedule_info_list = Schedule::select('schedule_recordid', 'opens_at', 'closes_at')->whereNotNull('opens_at')->where('opens_at', '!=', '')->orderBy('opens_at')->distinct()->get();
@@ -1811,7 +1827,7 @@ class LocationController extends Controller
         $all_phones = Phone::whereNotNull('phone_number')->distinct()->get();
         $phone_language_data = json_encode([]);
 
-        return view('frontEnd.locations.facility-create-in-service', compact('service_recordid', 'map', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'organization_recordid', 'organizations', 'phone_languages', 'phone_type', 'detail_types', 'all_phones', 'phone_language_data'));
+        return view('frontEnd.locations.facility-create-in-service', compact('service_recordid', 'map', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'organization_recordid', 'organizations', 'phone_languages', 'phone_type', 'detail_types', 'all_phones', 'phone_language_data', 'regions'));
     }
     public function add_new_facility_in_service(Request $request)
     {
@@ -1855,6 +1871,19 @@ class LocationController extends Controller
             }
             $facility->schedules()->sync($request->facility_schedules);
 
+            // accessesibility
+            if ($request->accessibility) {
+                Accessibility::create([
+                    'accessibility_recordid' => Accessibility::max('accessibility_recordid') + 1,
+                    'accessibility' => $request->accessibility,
+                    'accessibility_details' => $request->accessibility_details,
+                    'accessibility_location' => $new_recordid
+                ]);
+            }
+
+            if ($request->regions) {
+                $facility->regions()->sync($request->regions);
+            }
             // detail section
             if ($request->detail_type) {
                 $detail_type = $request->detail_type;
@@ -2013,5 +2042,9 @@ class LocationController extends Controller
             Session::flash('status', 'error');
             return redirect('facilities');
         }
+    }
+    public function export_location()
+    {
+        return Excel::download(new LocationExport, 'Locations.csv');
     }
 }

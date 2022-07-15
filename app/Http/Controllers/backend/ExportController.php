@@ -22,6 +22,7 @@ use App\Model\ServiceArea;
 use App\Model\ServiceLocation;
 use App\Model\ServiceOrganization;
 use App\Model\ServiceSchedule;
+use App\Model\ServiceTag;
 use App\Model\ServiceTaxonomy;
 use App\Model\Taxonomy;
 use Illuminate\Http\Request;
@@ -53,9 +54,10 @@ class ExportController extends Controller
     {
 
         $organization_tags = OrganizationTag::pluck('tag', 'id');
+        $service_tags = ServiceTag::pluck('tag', 'id');
         $key = time() . '_' . Str::random(5);
 
-        return view('backEnd.export.create', compact('organization_tags', 'key'));
+        return view('backEnd.export.create', compact('organization_tags', 'key', 'service_tags'));
     }
 
     /**
@@ -68,7 +70,7 @@ class ExportController extends Controller
     {
         $this->validate($request, [
             'name' => 'required',
-            'filter' => 'required',
+            // 'filter' => 'required',
             'type' => 'required',
         ]);
         try {
@@ -80,9 +82,10 @@ class ExportController extends Controller
             ExportConfiguration::create([
                 'name' => $request->name,
                 'endpoint' => $request->type == 'api_feed' ?  $request->endpoint : '',
-                'filter' => $request->filter,
+                'filter' => $request->filter ? implode(',', $request->filter) : null,
                 'type' => $request->type,
-                'organization_tags' => $request->filter == 'organization_tags' ? ($request->organization_tags ? implode(',', $request->organization_tags) : '') : null,
+                'organization_tags' => $request->filter && is_array($request->filter) && in_array('organization_tags', $request->filter) ? ($request->organization_tags ? implode(',', $request->organization_tags) : '') : null,
+                'service_tags' => $request->filter && is_array($request->filter) && in_array('service_tags', $request->filter) ? ($request->service_tags ? implode(',', $request->service_tags) : '') : null,
                 'key' => $request->key,
                 // 'auto_sync' => $request->auto_sync,
                 // 'hours' => $request->auto_sync == 1 ? $request->hours : '',
@@ -124,8 +127,9 @@ class ExportController extends Controller
     {
         $organization_tags = OrganizationTag::pluck('tag', 'id');
         $export_configuration = ExportConfiguration::whereId($id)->first();
+        $service_tags = ServiceTag::pluck('tag', 'id');
 
-        return view('backEnd.export.edit', compact('organization_tags', 'export_configuration'));
+        return view('backEnd.export.edit', compact('organization_tags', 'export_configuration', 'service_tags'));
     }
 
     /**
@@ -139,7 +143,7 @@ class ExportController extends Controller
     {
         $this->validate($request, [
             'name' => 'required',
-            'filter' => 'required',
+            // 'filter' => 'required',
             'type' => 'required',
         ]);
         try {
@@ -150,9 +154,10 @@ class ExportController extends Controller
             ExportConfiguration::whereId($id)->update([
                 'name' => $request->name,
                 'endpoint' => $file_path .  $request->key,
-                'filter' => $request->filter,
+                'filter' => $request->filter ? implode(',', $request->filter) : null,
                 'type' => $request->type,
-                'organization_tags' => $request->filter == 'organization_tags' ? ($request->organization_tags ? implode(',', $request->organization_tags) : '') : null,
+                'organization_tags' => $request->filter && is_array($request->filter) && in_array('organization_tags', $request->filter) ? ($request->organization_tags ? implode(',', $request->organization_tags) : '') : null,
+                'service_tags' => $request->filter && is_array($request->filter) && in_array('service_tags', $request->filter) ? ($request->service_tags ? implode(',', $request->service_tags) : '') : null,
                 'key' => $request->key,
                 'file_path' => $file_path,
                 'file_name' => $file_name,
@@ -333,9 +338,29 @@ class ExportController extends Controller
                 }
                 if (!empty($organization_ids)) {
                     $organization_service_recordid = ServiceOrganization::whereIn('organization_recordid', $organization_ids)->pluck('service_recordid');
-                    $table_service = Service::whereIn('service_recordid', $organization_service_recordid)->get();
+                    $table_service = Service::whereIn('service_recordid', $organization_service_recordid)->select('*');
                 } else {
-                    $table_service = Service::all();
+                    $table_service = Service::select('*');
+                }
+                $service_ids = [];
+                if ($export_configuration->service_tags) {
+                    $export_configuration->service_tags = explode(',', $export_configuration->service_tags);
+                    if (in_array('download_all', $export_configuration->service_tags)) {
+                        $service_ids = Service::pluck('service_recordid')->toArray();
+                    } else {
+                        $service_tags = $export_configuration->service_tags;
+                        $service_ids = Service::where(function ($query) use ($service_tags) {
+                            foreach ($service_tags as $keyword) {
+                                $query = $query->orWhere('service_tag', 'LIKE', "%$keyword%");
+                            }
+                            return $query;
+                        })->pluck('service_recordid')->toArray();
+                    }
+                }
+                if (!empty($service_ids)) {
+                    $table_service = $table_service->whereIn('service_recordid', $service_ids)->get();
+                } else {
+                    $table_service = $table_service->get();
                 }
                 // if (file_exists(public_path('datapackage.zip'))) {
                 //     unlink(public_path('datapackage.zip'));
@@ -347,7 +372,7 @@ class ExportController extends Controller
                 foreach ($table_service as $row) {
                     $programs = $row->program->pluck('program_recordid')->toArray();
                     if ($row->service_organization) {
-                        $service_recordids_temp = $row->service_recordid;
+                        $service_recordids_temp[] = $row->service_recordid;
                         $serviceArray = [
                             'id' => $row->service_recordid,
                             'organization_id' => $row->service_organization,
@@ -892,6 +917,7 @@ class ExportController extends Controller
                 return response()->json('Failed', 500);
             }
         } catch (\Throwable $th) {
+            dd($th);
             Session::flash('status', 'error');
             Session::flash('message', $th->getMessage());
             return redirect('export');
@@ -922,12 +948,32 @@ class ExportController extends Controller
                 }
             }
 
-			/* services */
+            /* services */
             if (!empty($organization_ids)) {
                 $organization_service_recordid = ServiceOrganization::whereIn('organization_recordid', $organization_ids)->pluck('service_recordid');
-                $table_service = Service::whereIn('service_recordid', $organization_service_recordid)->get();
+                $table_service = Service::whereIn('service_recordid', $organization_service_recordid)->select('*');
             } else {
-                $table_service = Service::all();
+                $table_service = Service::select('*');
+            }
+            $service_ids = [];
+            if ($export_configuration->service_tags) {
+                $export_configuration->service_tags = explode(',', $export_configuration->service_tags);
+                if (in_array('download_all', $export_configuration->service_tags)) {
+                    $service_ids = Service::pluck('service_recordid')->toArray();
+                } else {
+                    $service_tags = $export_configuration->service_tags;
+                    $service_ids = Service::where(function ($query) use ($service_tags) {
+                        foreach ($service_tags as $keyword) {
+                            $query = $query->orWhere('service_tag', 'LIKE', "%$keyword%");
+                        }
+                        return $query;
+                    })->pluck('service_recordid')->toArray();
+                }
+            }
+            if (!empty($service_ids)) {
+                $table_service = $table_service->whereIn('service_recordid', $service_ids)->get();
+            } else {
+                $table_service = $table_service->get();
             }
             // if (file_exists(public_path('datapackage.zip'))) {
             //     unlink(public_path('datapackage.zip'));
@@ -970,10 +1016,10 @@ class ExportController extends Controller
                 unlink($path_csv_export . 'services.csv');
             }
             rename($public_path . 'services.csv', $path_csv_export . 'services.csv');
-			/* /services */
+            /* /services */
 
 
-			/* service_at_location */
+            /* service_at_location */
             if (isset($service_recordids_temp) && count($service_recordids_temp) > 0) {
                 $table_servicelocation = ServiceLocation::whereIn('service_recordid', $service_recordids_temp)->get();
             } else {
@@ -983,11 +1029,11 @@ class ExportController extends Controller
             $file_servicelocation = fopen('services_at_location.csv', 'w');
             fputcsv($file_servicelocation, array('id', 'service_id', 'location_id', 'description'));
             // fputcsv($file_servicelocation, array('ID', 'location_id', 'service_id'));
-			$location_recordids_temp = [];
+            $location_recordids_temp = [];
             foreach ($table_servicelocation as $row) {
                 //if (isset($location_recordids_temp) && count($location_recordids_temp) > 0 && in_array($row->location_recordid, $location_recordids_temp)) {
                 if (($service_recordids_temp ?? null) && in_array($row->service_recordid, $service_recordids_temp)) {
-					$location_recordids_temp[] = $row->location_recordid;
+                    $location_recordids_temp[] = $row->location_recordid;
                     $ServiceLocationArray = [
                         'id' => $row->id,
                         'service_id' => $row->service_recordid,
@@ -1003,10 +1049,10 @@ class ExportController extends Controller
                 unlink($path_csv_export . 'services_at_location.csv');
             }
             rename($public_path . 'services_at_location.csv', $path_csv_export . 'services_at_location.csv');
-			/* /service_at_location */
+            /* /service_at_location */
 
 
-			/* locations */
+            /* locations */
             if (!empty($organization_ids)) {
                 $table_location = Location::whereIn('location_organization', $organization_ids)->orWhereIn('location_recordid', $location_recordids_temp)->get();
             } else {
@@ -1033,16 +1079,16 @@ class ExportController extends Controller
                 // fputcsv($file_location, $row->toArray());
                 fputcsv($file_location, $locationArray);
             }
-			array_unique($location_recordids_temp);
+            array_unique($location_recordids_temp);
             fclose($file_location);
             if (file_exists($path_csv_export . 'locations.csv')) {
                 unlink($path_csv_export . 'locations.csv');
             }
             rename($public_path . 'locations.csv', $path_csv_export . 'locations.csv');
-			/* /locations */
+            /* /locations */
 
 
-			/* organizations */
+            /* organizations */
             if (!empty($organization_ids)) {
                 $table_organization = Organization::whereIn('organization_recordid', $organization_ids)->get();
             } else {
@@ -1077,10 +1123,10 @@ class ExportController extends Controller
                 unlink($path_csv_export . 'organizations.csv');
             }
             rename($public_path . 'organizations.csv', $path_csv_export . 'organizations.csv');
-			/* /organizations */
+            /* /organizations */
 
 
-			/* contacts */
+            /* contacts */
             if (!empty($organization_ids)) {
                 $table_contact = Contact::whereIn('contact_organizations', $organization_ids)->orWhereIn('contact_services', $service_recordids_temp)->get();
             } else {
@@ -1110,10 +1156,10 @@ class ExportController extends Controller
                 unlink($path_csv_export . 'contacts.csv');
             }
             rename($public_path . 'contacts.csv', $path_csv_export . 'contacts.csv');
-			/* /contacts */
+            /* /contacts */
 
 
-			/* phones */
+            /* phones */
             // if (!empty($organization_ids)) {
             //     $table_phone = Phone::whereIn('phone_organizations', $organization_ids)->get();
             // } else {
@@ -1160,10 +1206,10 @@ class ExportController extends Controller
                 unlink($path_csv_export . 'phones.csv');
             }
             rename($public_path . 'phones.csv', $path_csv_export . 'phones.csv');
-			/* /phones */
+            /* /phones */
 
 
-			/* physical_addresses */
+            /* physical_addresses */
             if (isset($location_recordids_temp) && count($location_recordids_temp) > 0) {
                 $address_record_ids = LocationAddress::whereIn('location_recordid', $location_recordids_temp)->pluck('address_recordid')->toArray();
                 $table_address = Address::whereIn('address_recordid', $address_record_ids)->get();
@@ -1242,23 +1288,23 @@ class ExportController extends Controller
                 $location_address_ids = LocationAddress::where('address_recordid', $row->address_recordid)->get();
                 if (count($location_address_ids) > 0) {
                     foreach ($location_address_ids as $key => $location_data) {
-						if (!($location_recordids_temp ?? null) || in_array($location_data->location_recordid, $location_recordids_temp)) {
-							$addressArray = [
-								'id' => $row->address_recordid,
-								'location_id' => $location_data->location_recordid,
-								'attention' => $row->address_attention,
-								'address_1' => $row->address_1,
-								'address_2' => $row->address_2,
-								'address_3' => '',
-								'address_4' => '',
-								'city' => $row->address_city,
-								'region' => $row->address_region,
-								'state_province' => $row->address_state_province,
-								'postal_code' => $row->address_postal_code,
-								'country' => $row->address_country,
-							];
-							fputcsv($file_address, $addressArray);
-						}
+                        if (!($location_recordids_temp ?? null) || in_array($location_data->location_recordid, $location_recordids_temp)) {
+                            $addressArray = [
+                                'id' => $row->address_recordid,
+                                'location_id' => $location_data->location_recordid,
+                                'attention' => $row->address_attention,
+                                'address_1' => $row->address_1,
+                                'address_2' => $row->address_2,
+                                'address_3' => '',
+                                'address_4' => '',
+                                'city' => $row->address_city,
+                                'region' => $row->address_region,
+                                'state_province' => $row->address_state_province,
+                                'postal_code' => $row->address_postal_code,
+                                'country' => $row->address_country,
+                            ];
+                            fputcsv($file_address, $addressArray);
+                        }
                     }
                 }
             }
@@ -1267,10 +1313,10 @@ class ExportController extends Controller
                 unlink($path_csv_export . 'physical_addresses.csv');
             }
             rename($public_path . 'physical_addresses.csv', $path_csv_export . 'physical_addresses.csv');
-			/* /physical_addresses */
+            /* /physical_addresses */
 
 
-			/* languages */
+            /* languages */
             $table_language = Language::all();
             $file_language = fopen('languages.csv', 'w');
             fputcsv($file_language, array('id', 'service_id', 'location_id', 'language', 'language_recordid'));
@@ -1292,10 +1338,10 @@ class ExportController extends Controller
                 unlink($path_csv_export . 'languages.csv');
             }
             rename($public_path . 'languages.csv', $path_csv_export . 'languages.csv');
-			/* /languages */
+            /* /languages */
 
 
-			/* taxonomy */
+            /* taxonomy */
             $table_taxonomy = Taxonomy::all();
             $file_taxonomy = fopen('taxonomy_terms.csv', 'w');
             // fputcsv($file_taxonomy, array('ID', 'id', 'name', 'parent_name', 'taxonomy_grandparent_name', 'vocabulary', 'taxonomy_x_description', 'taxonomy_x_notes', 'taxonomy_services', 'parent_id', 'taxonomy_facet', 'category_id', 'taxonomy_id', 'flag'));
@@ -1324,10 +1370,10 @@ class ExportController extends Controller
                 unlink($path_csv_export . 'taxonomy_terms.csv');
             }
             rename($public_path . 'taxonomy_terms.csv', $path_csv_export . 'taxonomy_terms.csv');
-			/* /taxonomy */
+            /* /taxonomy */
 
 
-			/* service_attributes */
+            /* service_attributes */
             if (count($service_recordids_temp) > 0) {
                 $table_servicetaxonomy = ServiceTaxonomy::whereIn('service_recordid', $service_recordids_temp)->get();
             } else {
@@ -1353,10 +1399,10 @@ class ExportController extends Controller
                 unlink($path_csv_export . 'service_attributes.csv');
             }
             rename($public_path . 'service_attributes.csv', $path_csv_export . 'service_attributes.csv');
-			/* /service_attributes */
+            /* /service_attributes */
 
 
-			/* accessibility_for_disabilities */
+            /* accessibility_for_disabilities */
             $table_accessibility = Accessibility::all();
             $file_accessibility = fopen('accessibility_for_disabilities.csv', 'w');
             fputcsv($file_accessibility, array('id', 'location_id', 'accessibility', 'details'));
@@ -1376,7 +1422,7 @@ class ExportController extends Controller
                 unlink($path_csv_export . 'accessibility_for_disabilities.csv');
             }
             rename($public_path . 'accessibility_for_disabilities.csv', $path_csv_export . 'accessibility_for_disabilities.csv');
-			/* /accessibility_for_disabilities */
+            /* /accessibility_for_disabilities */
 
 
             $table_schedule = Schedule::all();

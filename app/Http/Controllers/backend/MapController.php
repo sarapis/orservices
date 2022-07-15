@@ -246,8 +246,12 @@ class MapController extends Controller
 
                     if ($location_info->location_name) {
                         $address_info = $location_info->location_name;
+                        if ($location_info->address && count($location_info->address) > 0 && isset($location_info->address[0])) {
+                            $add = $location_info->address[0];
+                            $address_info = $add->address_1 . ($add->address_city ? ', ' . $add->address_city : '') . ($add->address_state_province ? ', ' . $add->address_state_province : '') . ($add->address_postal_code ? ', ' . $add->address_postal_code : '');
+                        }
                         // $response = $geocoder->getCoordinatesForAddress('30-61 87th Street, Queens, NY, 11369');
-                        $response = $geocoder->getCoordinatesForAddress($address_info);
+                        $response = $geocoder->getCoordinatesForAddress($address_info . ', ' . (env('LOCALIZATION') ? env('LOCALIZATION') : 'US'));
                         // if (($response['lat'] > 40.5) && ($response['lat'] < 42.0)) {
                         //     $latitude = $response['lat'];
                         //     $longitude = $response['lng'];
@@ -280,7 +284,49 @@ class MapController extends Controller
                     }
                 }
             }
+            Session::flash('message', 'Location Geocoded Successfully!');
+            Session::flash('status', 'success');
+            return redirect('map');
+        } catch (\Throwable $th) {
+            Log::error('Error in applying geocode : ' . $th);
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
 
+            return redirect('map');
+        }
+    }
+    public function apply_geocode_again(Request $request)
+    {
+        try {
+            $ungeocoded_location_info_list = Location::get();
+            $client = new \GuzzleHttp\Client();
+            $geocoder = new Geocoder($client);
+            $geocode_api_key = env('GEOCODE_GOOGLE_APIKEY');
+            $geocoder->setApiKey($geocode_api_key);
+
+
+            if ($ungeocoded_location_info_list) {
+                foreach ($ungeocoded_location_info_list as $key => $location_info) {
+
+                    if ($location_info->location_name) {
+                        $address_info = $location_info->location_name;
+                        if ($location_info->address && count($location_info->address) > 0 && isset($location_info->address[0])) {
+                            $add = $location_info->address[0];
+                            $address_info = $add->address_1 . ($add->address_city ? ', ' . $add->address_city : '') . ($add->address_state_province ? ', ' . $add->address_state_province : '') . ($add->address_postal_code ? ', ' . $add->address_postal_code : '');
+                        }
+                        $response = $geocoder->getCoordinatesForAddress($address_info . ', ' . (env('LOCALIZATION') ? env('LOCALIZATION') : 'US'));
+
+                        $latitude = $response['lat'];
+                        $longitude = $response['lng'];
+
+                        $location_info->location_latitude = $latitude;
+                        $location_info->location_longitude = $longitude;
+                        $location_info->save();
+                    }
+                }
+            }
+            Session::flash('message', 'Location Geocoded Successfully!');
+            Session::flash('status', 'success');
             return redirect('map');
         } catch (\Throwable $th) {
             Log::error('Error in applying geocode : ' . $th);

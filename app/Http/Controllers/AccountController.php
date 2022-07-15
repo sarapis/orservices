@@ -6,6 +6,7 @@ use App\Model\AccountPage;
 use App\Model\Layout;
 use App\Model\Map;
 use App\Model\Organization;
+use App\Model\Service;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -87,10 +88,39 @@ class AccountController extends Controller
         $layout = Layout::first();
         $map = Map::find(1);
         $user = Auth::user();
+        $user = User::whereId(Auth::id())->first();
         $account = AccountPage::whereId(1)->first();
-        $user_organizationid_list = $user->user_organization ? explode(',', $user->user_organization) : [];
-        $organization_list = Organization::whereIn('organization_recordid', $user_organizationid_list)->orderby('organization_recordid')->get();
-        return view('frontEnd.account.account', compact('map', 'user', 'organization_list', 'layout', 'account'));
+        // $user_organizationid_list = $user->user_organization ? explode(',', $user->user_organization) : [];
+        $organization_id_list = [];
+        $service_id_list = [];
+        $organization_list = [];
+        $service_list = [];
+        if ($user && $user->roles && $user->roles->name == 'Network Admin') {
+            $organization_tags = explode(',', $user->organization_tags);
+            foreach ($organization_tags as $key => $value) {
+                $organizations = Organization::where('organization_tag', 'LIKE', '%' . $value . '%')->pluck('id')->toArray();
+                $organization_id_list = array_unique(array_merge($organization_id_list, $organizations));
+            }
+            $organization_list = Organization::whereIn('id', $organization_id_list)->paginate(5);
+        } elseif ($user && $user->roles && ($user->organization_tags || $user->service_tags)) {
+            $organization_tags = explode(',', $user->organization_tags);
+            foreach ($organization_tags as $key => $value) {
+                $organizations = Organization::where('organization_tag', 'LIKE', '%' . $value . '%')->pluck('id')->toArray();
+                $organization_id_list = array_unique(array_merge($organization_id_list, $organizations));
+            }
+            $organization_list = Organization::whereIn('id', $organization_id_list)->paginate(5);
+
+            $service_tags = explode(',', $user->service_tags);
+            foreach ($service_tags as $key => $value) {
+                $services = Service::where('service_tag', 'LIKE', '%' . $value . '%')->pluck('id')->toArray();
+                $service_id_list = array_unique(array_merge($service_id_list, $services));
+            }
+            $service_list = Service::whereIn('id', $service_id_list)->paginate(5);
+        } else {
+            $organization_list = $user->organizations()->paginate(5);
+        }
+        // $organization_list = Organization::whereIn('organization_recordid', $user_organizationid_list)->orderby('organization_recordid')->get();
+        return view('frontEnd.account.account', compact('map', 'user', 'organization_list', 'layout', 'account', 'service_list'));
     }
 
     /**
@@ -176,6 +206,59 @@ class AccountController extends Controller
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
             return redirect('account/' . $id . '/change_password');
+        }
+    }
+    public function fetch_organization(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            $organization_id_list = [];
+            $query = $request->searchData;
+            $organization_tags = explode(',', $user->organization_tags);
+            foreach ($organization_tags as $key => $value) {
+                $organizations = Organization::where('organization_tag', 'LIKE', '%' . $value . '%')->pluck('id')->toArray();
+                $organization_id_list = array_unique(array_merge($organization_id_list, $organizations));
+            }
+            $organization_list = Organization::whereIn('id', $organization_id_list);
+
+            if ($query) {
+                $organization_list = $organization_list->where('organization_name', 'like', '%' . $query . '%');
+            }
+            $organization_list = $organization_list->paginate(5);
+            return response()->json([
+                'data' => view('frontEnd.account.organizationData', compact('organization_list'))->render(),
+                'success' => true
+            ], 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            dd($th);
+        }
+    }
+    public function fetch_account_service(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            $service_id_list = [];
+            $query = $request->searchServiceData;
+
+            $service_tags = explode(',', $user->service_tags);
+            foreach ($service_tags as $key => $value) {
+                $services = Service::where('service_tag', 'LIKE', '%' . $value . '%')->pluck('id')->toArray();
+                $service_id_list = array_unique(array_merge($service_id_list, $services));
+            }
+            $service_list = Service::whereIn('id', $service_id_list);
+
+            if ($query) {
+                $service_list = $service_list->where('service_name', 'like', '%' . $query . '%');
+            }
+            $service_list = $service_list->paginate(5);
+            return response()->json([
+                'data' => view('frontEnd.account.serviceData', compact('service_list'))->render(),
+                'success' => true
+            ], 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            dd($th);
         }
     }
 }

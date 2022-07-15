@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\frontEnd;
 
 use App\Http\Controllers\Controller;
+use App\Model\Page;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -83,7 +84,8 @@ class MessageController extends Controller
         $sendgridMailFromAddress = env('MAIL_FROM_ADDRESS');
         $share_this_api = env('SHARETHIS_API');
         $share_this_api_activate = env('SHARETHIS_ACTIVATE');
-        return view('backEnd.messages.messageSetting', compact('sendgridKey', 'sendgridMailFromName', 'sendgridMailFromAddress', 'share_this_api', 'share_this_api_activate'));
+        $page = Page::findOrFail(4);
+        return view('backEnd.messages.messageSetting', compact('sendgridKey', 'sendgridMailFromName', 'sendgridMailFromAddress', 'share_this_api', 'share_this_api_activate', 'page'));
     }
 
 

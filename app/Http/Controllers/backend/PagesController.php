@@ -18,13 +18,16 @@ use App\Model\Layout;
 use App\Model\Location;
 use App\Model\MetaFilter;
 use App\Model\Organization;
+use App\Model\OrganizationStatus;
 use App\Model\Page;
 use App\Model\Phone;
 use App\Model\Program;
 use App\Model\Schedule;
 use App\Model\Service;
+use App\Model\ServiceAddress;
 use App\Model\ServiceLocation;
 use App\Model\ServiceOrganization;
+use App\Model\ServiceStatus;
 use App\Model\ServiceTaxonomy;
 use App\Model\Source_data;
 use App\Model\Taxonomy;
@@ -637,7 +640,7 @@ class PagesController extends Controller
             }
         }
         $zip->close();
-        
+
         return response()->download($zip_file);
     }
 
@@ -1041,15 +1044,90 @@ class PagesController extends Controller
         $source_data = Source_data::find(1);
         $metafilters = MetaFilter::all();
         $service_count = 0;
-        foreach ($metafilters as $key => $metafilter) {
-            $values = explode(',', $metafilter->values);
+        $filter_count = 0;
+        $address_serviceids = [];
+        $taxonomy_serviceids = [];
+        $organizations_count = Organization::count();
+        foreach ($metafilters as $key => $meta_filter) {
+            $values = explode(',', $meta_filter->values);
 
             $values = array_filter($values);
 
-            $service_count += count($values);
-        }
+            $filter_count += count($values);
 
-        return view('backEnd.pages.metafilter', compact('meta', 'source_data', 'metafilters', 'service_count'));
+            if ($meta_filter->facet == 'Postal_code') {
+                $address_serviceids = [];
+                if ($meta_filter->operations == 'Include') {
+                    $serviceids = ServiceAddress::whereIn('address_recordid', $values)->pluck('service_recordid')->toArray();
+                }
+
+                if ($meta_filter->operations == 'Exclude') {
+                    $serviceids = ServiceAddress::whereNotIn('address_recordid', $values)->pluck('service_recordid')->toArray();
+                }
+
+                $address_serviceids = array_merge($serviceids, $address_serviceids);
+            }
+            if ($meta_filter->facet == 'Taxonomy') {
+
+                if ($meta_filter->operations == 'Include') {
+                    $serviceids = ServiceTaxonomy::whereIn('taxonomy_recordid', $values)->pluck('service_recordid')->toArray();
+                }
+
+                if ($meta_filter->operations == 'Exclude') {
+                    $serviceids = ServiceTaxonomy::whereNotIn('taxonomy_recordid', $values)->pluck('service_recordid')->toArray();
+                }
+
+                $taxonomy_serviceids = array_merge($serviceids, $taxonomy_serviceids);
+            }
+            if ($meta_filter->facet == 'Service_status') {
+
+                if ($meta_filter->operations == 'Include') {
+                    $serviceids = Service::whereIn('service_status', $values)->pluck('service_recordid')->toArray();
+                    // $serviceids = Service::whereIn('service_recordid', $values)->pluck('service_recordid')->toArray();
+                }
+
+                if ($meta_filter->operations == 'Exclude') {
+                    $serviceids = Service::whereNotIn('service_status', $values)->pluck('service_recordid')->toArray();
+                }
+                $taxonomy_serviceids = array_merge($serviceids, $taxonomy_serviceids);
+            }
+            $organizationIds = [];
+
+            if ($meta_filter->facet == 'organization_status') {
+                $organization_service_recordid = [];
+                if ($values && count($values) > 0) {
+                    $organizations_status_ids = [];
+                    $operations = $meta_filter->operations;
+                    if ($values) {
+                        $organizations_status_ids = Organization::where(function ($query) use ($values, $operations) {
+                            foreach ($values as $keyword) {
+
+                                // $organization_status = OrganizationStatus::whereId($keyword)->first();
+                                if ($operations == 'Include') {
+                                    $query = $query->orWhere('organization_status_x', 'LIKE', "%$keyword%");
+                                }
+                                if ($operations == 'Exclude') {
+                                    $query = $query->orWhere('organization_status_x', 'NOT LIKE', "%$keyword%");
+                                }
+                            }
+                            return $query;
+                        })->pluck('organization_recordid')->toArray();
+                        $organizations_count = count(array_unique($organizations_status_ids));
+                    }
+                    $organization_service_recordid = ServiceOrganization::whereIn('organization_recordid', $organizations_status_ids)->pluck('service_recordid')->toArray();
+                }
+                $taxonomy_serviceids = array_merge($organization_service_recordid, $taxonomy_serviceids);
+            }
+        }
+        // $organizations_count = Organization::count();
+        // $organizationIds = [];
+        // if ($meta && $meta->hide_organizations_with_no_filtered_services == 1) {
+        //     $organizationIds = ServiceOrganization::pluck('organization_recordid')->toArray();
+        //     $organizations_count = count(array_unique($organizationIds));
+        // }
+        $service_count = count(array_unique(array_merge($address_serviceids, $taxonomy_serviceids)));
+
+        return view('backEnd.pages.metafilter', compact('meta', 'source_data', 'metafilters', 'service_count', 'filter_count', 'organizations_count'));
     }
 
     public function metafilter_save($id, Request $request)
@@ -1062,9 +1140,40 @@ class PagesController extends Controller
             } else {
                 $meta->meta_filter_activate = 0;
             }
+            if ($request->input('user_metafilter_option') == 'checked') {
+                $meta->user_metafilter_option = 1;
+            } else {
+                $meta->user_metafilter_option = 0;
+            }
+            if ($request->default_label) {
+                $meta->default_label = $request->default_label;
+            }
+            if ($request->meta_filter_on_label) {
+                $meta->meta_filter_on_label = $request->meta_filter_on_label;
+            }
+            if ($request->meta_filter_off_label) {
+                $meta->meta_filter_off_label = $request->meta_filter_off_label;
+            }
+            $meta->save();
+            Session::flash('message', 'Saved successfully!');
+            Session::flash('status', 'success');
+            return redirect('meta_filter');
+        } catch (\Throwable $th) {
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
+            return redirect('meta_filter');
+        }
+    }
+    public function meta_additional_setting($id, Request $request)
+    {
+        try {
+            $meta = Layout::find($id);
 
-            $meta->meta_filter_on_label = $request->meta_filter_on_label;
-            $meta->meta_filter_off_label = $request->meta_filter_off_label;
+            if ($request->input('hide_organizations_with_no_filtered_services') == 'checked') {
+                $meta->hide_organizations_with_no_filtered_services = 1;
+            } else {
+                $meta->hide_organizations_with_no_filtered_services = 0;
+            }
             $meta->save();
             Session::flash('message', 'Saved successfully!');
             Session::flash('status', 'success');
@@ -1084,17 +1193,47 @@ class PagesController extends Controller
 
         return view('backEnd.pages.metafilter_taxonomy', compact('taxonomies', 'source_data', 'checked_taxonomies'))->render();
     }
+    public function organization_status_filter()
+    {
+        $organization_statuses = OrganizationStatus::all();
+        $source_data = Source_data::find(1);
+        $checked_status = [];
+
+        return view('backEnd.pages.organization_status_filter', compact('organization_statuses', 'source_data', 'checked_status'))->render();
+    }
+    public function service_status_filter()
+    {
+        $service_statuses = ServiceStatus::all();
+        $source_data = Source_data::find(1);
+        $checked_status = [];
+
+        return view('backEnd.pages.service_status_filter', compact('service_statuses', 'source_data', 'checked_status'))->render();
+    }
 
     public function metafilter_edit($id, Request $request)
     {
         $source_data = Source_data::find(1);
         $metafilter = MetaFilter::find($id);
-        if ($metafilter->facet = 'Taxonomy') {
+        if ($metafilter->facet == 'Taxonomy') {
 
             $taxonomies = Taxonomy::all();
             $checked_taxonomies = explode(",", $metafilter->values);
 
             return view('backEnd.pages.metafilter_taxonomy', compact('taxonomies', 'source_data', 'checked_taxonomies'))->render();
+        } else if ($metafilter->facet == 'organization_status') {
+
+            $organization_statuses = OrganizationStatus::all();
+            $source_data = Source_data::find(1);
+            $checked_status = explode(",", $metafilter->values);
+
+            return view('backEnd.pages.organization_status_filter', compact('organization_statuses', 'source_data', 'checked_status'))->render();
+        } else if ($metafilter->facet == 'Service_status') {
+
+            $service_statuses = ServiceStatus::all();
+            $source_data = Source_data::find(1);
+            $checked_status = explode(",", $metafilter->values);
+
+            return view('backEnd.pages.service_status_filter', compact('service_statuses', 'source_data', 'checked_status'))->render();
         } else {
 
             $addresses = Address::orderBy('id')->get();

@@ -906,8 +906,12 @@ class ImportController extends Controller
 
                     if ($location_info->location_name) {
                         $address_info = $location_info->location_name;
+                        if ($location_info->address && count($location_info->address) > 0 && isset($location_info->address[0])) {
+                            $add = $location_info->address[0];
+                            $address_info = $add->address_1 . ($add->address_city ? ', ' . $add->address_city : '') . ($add->address_state_province ? ', ' . $add->address_state_province : '') . ($add->address_postal_code ? ', ' . $add->address_postal_code : '');
+                        }
                         // $response = $geocoder->getCoordinatesForAddress('30-61 87th Street, Queens, NY, 11369');
-                        $response = $geocoder->getCoordinatesForAddress($address_info);
+                        $response = $geocoder->getCoordinatesForAddress($address_info . ', ' . (env('LOCALIZATION') ? env('LOCALIZATION') : 'US'));
                         // if (($response['lat'] > 40.5) && ($response['lat'] < 42.0)) {
                         //     $latitude = $response['lat'];
                         //     $longitude = $response['lng'];
