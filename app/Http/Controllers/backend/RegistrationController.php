@@ -4,6 +4,7 @@ namespace App\Http\Controllers\backend;
 
 use App\Http\Controllers\Controller;
 use App\Model\Email;
+use App\Model\Layout;
 use App\Model\Suggest;
 use App\User;
 use Illuminate\Http\Request;
@@ -19,7 +20,8 @@ class RegistrationController extends Controller
     {
         $registrations = User::orderBy('id', 'desc')->get();
         $emails = Email::orderBy('email_recordid')->get();
-        return view('backEnd.registration.index', compact('registrations', 'emails'));
+        $layout = Layout::find(1);
+        return view('backEnd.registration.index', compact('registrations', 'emails', 'layout'));
     }
 
     /**
@@ -40,7 +42,15 @@ class RegistrationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $layout = Layout::find(1);
+        if ($layout) {
+            $layout->show_registration_message = $request->show_registration_message;
+            $layout->save();
+        }
+        return response()->json([
+            'message' => 'saved successfully',
+            'success' => true
+        ], 200);
     }
 
     /**

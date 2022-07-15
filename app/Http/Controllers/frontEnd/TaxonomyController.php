@@ -162,17 +162,25 @@ class TaxonomyController extends Controller
                         //     $taxonomy->taxonomy_parent_name = $strtointclass->string_to_int($taxonomy->taxonomy_parent_name);
                         // }
                         $taxonomy->taxonomy_vocabulary = isset($record['fields']['vocabulary']) ? $record['fields']['vocabulary'] : null;
+                        $taxonomyName = isset($record['fields']['taxonomy']) ? $record['fields']['taxonomy'] : '[]';
+                        $taxonomy_type = TaxonomyType::firstOrCreate(
+                            ['name' => $taxonomyName],
+                            [
+                                'name' => $taxonomyName,
+                                'taxonomy_type_recordid' => TaxonomyType::max('taxonomy_type_recordid') + 1
+                            ]
+                        );
                         $taxonomyIds = isset($record['fields']['taxonomy']) ? $record['fields']['taxonomy'] : [];
 
-                        $taxonomy_ids = null;
-                        foreach ($taxonomyIds as $key => $taxonomyid) {
-                            if ($key == 0) {
-                                $taxonomy_ids = $strtointclass->string_to_int($taxonomyid);
-                            } else {
+                        // $taxonomy_ids = null;
+                        // foreach ($taxonomyIds as $key => $taxonomyid) {
+                        //     if ($key == 0) {
+                        //         $taxonomy_ids = $strtointclass->string_to_int($taxonomyid);
+                        //     } else {
 
-                                $taxonomy_ids = $taxonomy_ids . ',' . $strtointclass->string_to_int($taxonomyid);
-                            }
-                        }
+                        //         $taxonomy_ids = $taxonomy_ids . ',' . $strtointclass->string_to_int($taxonomyid);
+                        //     }
+                        // }
 
                         if (isset($record['fields']['x-icon_dark']) && is_array($record['fields']['x-icon_dark'])) {
                             $icon_dark = $record['fields']['x-icon_dark'];
@@ -192,8 +200,11 @@ class TaxonomyController extends Controller
                                 $taxonomy->category_logo_white = '/uploads/images/' . $filename;
                             }
                         }
+                        if ($taxonomy_type) {
 
-                        $taxonomy->taxonomy = $taxonomy_ids;
+                            $taxonomy->taxonomy = $taxonomy_type->taxonomy_type_recordid;
+                        }
+                        // $taxonomy->taxonomy = $taxonomy_ids;
                         $xtaxonomies = isset($record['fields']['x-taxonomies']) ? $record['fields']['x-taxonomies'] : [];
                         $xtaxonomies_ids = null;
                         foreach ($xtaxonomies as $key => $xtaxonomy) {

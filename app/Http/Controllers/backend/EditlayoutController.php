@@ -120,6 +120,11 @@ class EditlayoutController extends Controller
             } else {
                 $layout->logo_active = 0;
             }
+            if ($request->input('site_title_active') == 'checked') {
+                $layout->site_title_active = 1;
+            } else {
+                $layout->site_title_active = 0;
+            }
             if ($request->organization_share_button) {
                 $layout->organization_share_button = 1;
             } else {
@@ -142,9 +147,9 @@ class EditlayoutController extends Controller
             $layout->contact_btn_label = $request->contact_btn_label;
             $layout->contact_btn_link = $request->contact_btn_link;
             $layout->footer = $request->footer;
-            $layout->header_pdf = $request->header_pdf;
-            $layout->footer_pdf = $request->footer_pdf;
-            $layout->footer_csv = $request->footer_csv;
+            // $layout->header_pdf = $request->header_pdf;
+            // $layout->footer_pdf = $request->footer_pdf;
+            // $layout->footer_csv = $request->footer_csv;
             $layout->primary_color = $request->primary_color;
             $layout->secondary_color = $request->secondary_color;
             $layout->button_color = $request->button_color;
@@ -154,6 +159,8 @@ class EditlayoutController extends Controller
             $layout->top_menu_link_color = $request->top_menu_link_color;
             $layout->menu_title_color = $request->menu_title_color;
             $layout->top_menu_link_hover_color = $request->top_menu_link_hover_color;
+            $layout->top_menu_link_hover_background_color = $request->top_menu_link_hover_background_color;
+            $layout->submenu_highlight_color = $request->submenu_highlight_color;
             $layout->save();
 
             Session::flash('message', 'Appearance updated!');
@@ -192,5 +199,32 @@ class EditlayoutController extends Controller
         $airtables = Airtables::all();
 
         return view('backEnd.datasync', compact('airtables'));
+    }
+    public function dowload_settings()
+    {
+        $layout = Layout::find(1);
+
+        return view('backEnd.pages.downloads_settings', compact('layout'));
+    }
+    public function save_dowload_settings(Request $request, $id)
+    {
+        try {
+            Layout::whereId($id)->update([
+                'header_pdf' => $request->header_pdf,
+                'footer_pdf' => $request->footer_pdf,
+                'footer_csv' => $request->footer_csv,
+                'display_download_menu' => $request->display_download_menu,
+                'display_download_pdf' => $request->display_download_pdf,
+                'display_download_csv' => $request->display_download_csv,
+            ]);
+            Session::flash('message', 'Download Settings updated!');
+            Session::flash('status', 'success');
+
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
+            return redirect()->back();
+        }
     }
 }

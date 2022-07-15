@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Model\Email;
 use App\Model\EmailTemplate;
+use App\Model\Helptext;
 use App\Model\Layout;
 use App\Model\Organization;
 use App\Providers\RouteServiceProvider;
@@ -210,7 +211,13 @@ class RegisterController extends Controller
                     }
                 }
                 // $user->roles()->sync([2]); // 2 = client
-                Session::flash('message', 'Thank you for submitting a registration request. Our team is evaluating it and will contact you with further instructions.');
+                $helptext =  Helptext::first();
+                if ($helptext && $helptext->registration_message) {
+                    $message = $helptext->registration_message;
+                } else {
+                    $message = 'Thank you for submitting a registration request. Our team is evaluating it and will contact you with further instructions.';
+                }
+                Session::flash('register_message', $message);
                 Session::flash('status', 'success');
             }
             return redirect('/');

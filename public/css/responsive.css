@@ -1,6 +1,6 @@
 .navbar-inverse .navbar-toolbar .nav-link {
   font-size: 16px;
-  padding: 10px 12px;
+  padding: 10px 8px;
   font-family: "Neue Haas Grotesk Display Roman";
 }
 .navbar-toolbar
@@ -17,7 +17,7 @@
 @media (max-width: 1600px) {
   .navbar-inverse .navbar-toolbar .nav-link {
     font-size: 16px;
-    padding: 10px 12px;
+    padding: 10px 8px;
     font-family: "Neue Haas Grotesk Display Roman";
   }
   .navbar-toolbar
@@ -38,9 +38,9 @@
   .dropbtn {
     padding: 10px 8px !important;
   }
-  .navbar-toolbar .nav-item #google_translate_element {
+  /* .navbar-toolbar .nav-item #google_translate_element {
     width: 130px;
-  }
+  } */
   .navbar-inverse .navbar-toolbar .nav-link {
     padding: 10px 8px;
   }

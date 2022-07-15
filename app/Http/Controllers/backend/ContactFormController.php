@@ -4,6 +4,7 @@ namespace App\Http\Controllers\backend;
 
 use App\Http\Controllers\Controller;
 use App\Model\Email;
+use App\Model\Layout;
 use App\Model\Suggest;
 use Illuminate\Http\Request;
 
@@ -18,7 +19,8 @@ class ContactFormController extends Controller
     {
         $suggests = Suggest::orderBy('created_at', 'desc')->get();
         $emails = Email::orderBy('email_recordid')->get();
-        return view('backEnd.contact_form.index', compact('suggests', 'emails'));
+        $layout = Layout::find(1);
+        return view('backEnd.contact_form.index', compact('suggests', 'emails', 'layout'));
     }
 
     /**
@@ -39,7 +41,15 @@ class ContactFormController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $layout = Layout::find(1);
+        if ($layout) {
+            $layout->show_suggest_menu = $request->show_suggest_menu;
+            $layout->save();
+        }
+        return response()->json([
+            'message' => 'saved successfully',
+            'success' => true
+        ], 200);
     }
 
     /**
@@ -106,5 +116,17 @@ class ContactFormController extends Controller
         $email->email_info = $request->input('contact_email');
         $email->save();
         return redirect('contact_form');
+    }
+    public function update_suggest_menu(Request $request)
+    {
+        $layout = Layout::find(1);
+        if ($layout) {
+            $layout->update_suggest_menu = $request->update_suggest_menu;
+            $layout->save();
+        }
+        return response()->json([
+            'message' => 'saved successfully',
+            'success' => true
+        ], 200);
     }
 }

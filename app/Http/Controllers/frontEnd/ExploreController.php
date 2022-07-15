@@ -27,6 +27,7 @@ use PDF;
 use Stevebauman\Location\Facades\Location as FacadesLocation;
 use Spatie\Geocoder\Geocoder;
 use App\Exports\OrganizationExport;
+use App\Model\OrganizationStatus;
 use App\Model\OrganizationTag;
 use Excel;
 use Illuminate\Support\Facades\Log;
@@ -274,6 +275,8 @@ class ExploreController extends Controller
             // var_dump($childs);
             // var_dump($checked_grandparents);
 
+            $filter_label = $request->filter_label;
+
             $pdf = $request->input('pdf');
             $csv = $request->input('csv');
             $layout = Layout::findOrFail(1);
@@ -313,17 +316,20 @@ class ExploreController extends Controller
             $organization_tags = $request->get('organization_tags');
 
 
-            $serviceids = Service::where('service_name', 'like', '%' . $chip_service . '%')->orwhere('service_description', 'like', '%' . $chip_service . '%')->orwhere('service_airs_taxonomy_x', 'like', '%' . $chip_service . '%')->pluck('service_recordid')->toArray();
+            $serviceids = Service::where('service_name', 'like', '%' . $chip_service . '%')->orwhere('service_description', 'like', '%' . $chip_service . '%')->orwhere('service_alternate_name', 'like', '%' . $chip_service . '%')->orwhere('service_airs_taxonomy_x', 'like', '%' . $chip_service . '%')->pluck('service_recordid')->toArray();
 
-            $organization_recordids = Organization::where('organization_name', 'like', '%' . $chip_service . '%')->pluck('organization_recordid');
+            $organization_recordids = Organization::where('organization_name', 'like', '%' . $chip_service . '%')->pluck('organization_recordid')->unique();
+
             // $organizations = Organization::where('organization_name', 'like', '%' . $chip_service . '%');
 
-            $organization_serviceids = ServiceOrganization::whereIn('organization_recordid', $organization_recordids)->pluck('service_recordid');
+            $organization_serviceids = ServiceOrganization::whereIn('organization_recordid', $organization_recordids)->pluck('service_recordid')->unique();
 
-            $taxonomy_recordids = Taxonomy::where('taxonomy_name', 'like', '%' . $chip_service . '%')->pluck('taxonomy_recordid');
-            $taxonomy_serviceids = ServiceTaxonomy::whereIn('taxonomy_recordid', $taxonomy_recordids)->pluck('service_recordid');
 
-            $service_locationids = ServiceLocation::whereIn('service_recordid', $serviceids)->pluck('location_recordid');
+            $taxonomy_recordids = Taxonomy::where('taxonomy_name', 'like', '%' . $chip_service . '%')->pluck('taxonomy_recordid')->unique();
+            $taxonomy_serviceids = ServiceTaxonomy::whereIn('taxonomy_recordid', $taxonomy_recordids)->pluck('service_recordid')->unique();
+
+            $service_locationids = ServiceLocation::whereIn('service_recordid', $serviceids)->pluck('location_recordid')->unique();
+
             $avarageLatitude = '';
             $avarageLongitude = '';
             if ($chip_address != null || ($request->lat && $request->long)) {
@@ -417,43 +423,83 @@ class ExploreController extends Controller
             $metas = MetaFilter::all();
             $count_metas = MetaFilter::count();
 
-            if ($meta_status == 'On' && $count_metas > 0) {
-                $address_serviceids = Service::pluck('service_recordid')->toArray();
-                $taxonomy_serviceids = Service::pluck('service_recordid')->toArray();
+            if ($layout->meta_filter_activate == 1 && $count_metas > 0 && ($filter_label == 'on_label')) {
+                // $address_serviceids = Service::pluck('service_recordid')->toArray();
+                // $taxonomy_serviceids = Service::pluck('service_recordid')->toArray();
+                $address_serviceids = [];
+                $taxonomy_serviceids = [];
+                $serviceAddressIds = [];
 
                 foreach ($metas as $key => $meta) {
                     $values = explode(",", $meta->values);
                     if ($meta->facet == 'Postal_code') {
                         $address_serviceids = [];
                         if ($meta->operations == 'Include') {
-                            $serviceids = ServiceAddress::whereIn('address_recordid', $values)->pluck('service_recordid')->toArray();
+                            $serviceAddressIds = ServiceAddress::whereIn('address_recordid', $values)->pluck('service_recordid')->toArray();
                         }
 
                         if ($meta->operations == 'Exclude') {
-                            $serviceids = ServiceAddress::whereNotIn('address_recordid', $values)->pluck('service_recordid')->toArray();
+                            $serviceAddressIds = ServiceAddress::whereNotIn('address_recordid', $values)->pluck('service_recordid')->toArray();
                         }
 
-                        $address_serviceids = array_merge($serviceids, $address_serviceids);
+                        $address_serviceids = array_merge($serviceAddressIds, $address_serviceids);
                         // var_dump($address_serviceids);
                         // exit();
                     }
                     if ($meta->facet == 'Taxonomy') {
-
+                        $serviceTaxonomyIds = [];
                         if ($meta->operations == 'Include') {
-                            $serviceids = Servicetaxonomy::whereIn('taxonomy_recordid', $values)->pluck('service_recordid')->toArray();
+                            $serviceTaxonomyIds = Servicetaxonomy::whereIn('taxonomy_recordid', $values)->pluck('service_recordid')->toArray();
                         }
 
                         if ($meta->operations == 'Exclude') {
-                            $serviceids = Servicetaxonomy::whereNotIn('taxonomy_recordid', $values)->pluck('service_recordid')->toArray();
+                            $serviceTaxonomyIds = Servicetaxonomy::whereNotIn('taxonomy_recordid', $values)->pluck('service_recordid')->toArray();
                         }
 
-                        $taxonomy_serviceids = array_merge($serviceids, $taxonomy_serviceids);
+                        $taxonomy_serviceids = array_merge($serviceTaxonomyIds, $taxonomy_serviceids);
+                    }
+                    if ($meta->facet == 'Service_status') {
+                        $serviceStatusIds = [];
+                        if ($meta->operations == 'Include') {
+                            $serviceStatusIds = Service::whereIn('service_status', $values)->pluck('service_recordid')->toArray();
+                            // $serviceids = Service::whereIn('service_recordid', $values)->pluck('service_recordid')->toArray();
+                        }
+
+                        if ($meta->operations == 'Exclude') {
+                            $serviceStatusIds = Service::whereNotIn('service_status', $values)->pluck('service_recordid')->toArray();
+                        }
+
+                        $taxonomy_serviceids = array_merge($serviceStatusIds, $taxonomy_serviceids);
+                    }
+                    if ($meta->facet == 'organization_status') {
+
+                        $organization_service_recordid = [];
+                        if ($values && count($values) > 0) {
+                            $organizations_status_ids = [];
+                            $operations = $meta->operations;
+                            if ($values) {
+                                $organizations_status_ids = Organization::where(function ($query) use ($values, $operations) {
+                                    foreach ($values as $keyword) {
+                                        // $organization_status = OrganizationStatus::whereId($keyword)->first();
+                                        if ($operations == 'Include') {
+                                            $query = $query->orWhere('organization_status_x', 'LIKE', "%$keyword%");
+                                        }
+                                        if ($operations == 'Exclude') {
+                                            $query = $query->orWhere('organization_status_x', 'NOT LIKE', "%$keyword%");
+                                        }
+                                    }
+                                    return $query;
+                                })->pluck('organization_recordid')->toArray();
+                            }
+                            $organization_service_recordid = ServiceOrganization::whereIn('organization_recordid', $organizations_status_ids)->pluck('service_recordid')->toArray();
+                        }
+                        $taxonomy_serviceids = array_merge($organization_service_recordid, $taxonomy_serviceids);
                     }
                 }
-
                 $services = $services->whereIn('service_recordid', $address_serviceids)->whereIn('service_recordid', $taxonomy_serviceids);
 
                 $services_ids = $services->pluck('service_recordid')->toArray();
+
                 $locations_ids = ServiceLocation::whereIn('service_recordid', $services_ids)->pluck('location_recordid')->toArray();
                 $locations = $locations->whereIn('location_recordid', $locations_ids);
             }
@@ -878,7 +924,7 @@ class ExploreController extends Controller
             // var_dump($grandparents);
             // var_dump('============$childs============');
             // var_dump($childs);
-            return view('frontEnd.services.services', compact('services', 'locations', 'chip_service', 'chip_address', 'map', 'parent_taxonomy', 'child_taxonomy', 'search_results', 'pagination', 'sort', 'meta_status', 'target_populations', 'grandparent_taxonomies', 'sort_by_distance_clickable', 'service_taxonomy_info_list', 'service_details_info_list', 'avarageLatitude', 'avarageLongitude', 'service_taxonomy_badge_color_list', 'organization_tagsArray', 'selected_organization', 'layout'))->with('taxonomy_tree', $taxonomy_tree);
+            return view('frontEnd.services.services', compact('services', 'locations', 'chip_service', 'chip_address', 'map', 'parent_taxonomy', 'child_taxonomy', 'search_results', 'pagination', 'sort', 'meta_status', 'target_populations', 'grandparent_taxonomies', 'sort_by_distance_clickable', 'service_taxonomy_info_list', 'service_details_info_list', 'avarageLatitude', 'avarageLongitude', 'service_taxonomy_badge_color_list', 'organization_tagsArray', 'selected_organization', 'layout', 'filter_label'))->with('taxonomy_tree', $taxonomy_tree);
         } catch (\Throwable $th) {
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
@@ -893,11 +939,59 @@ class ExploreController extends Controller
             $chip_organization = $request->input('find');
             $sort = $request->input('sort');
             $organization_tags = $request->get('organization_tags');
+            $layout = Layout::find(1);
 
 
             $checked_taxonomies = $request->input('selected_taxonomies');
             // $organizations = Organization::where('organization_name', 'like', '%'.$chip_organization.'%')->orwhere('organization_description', 'like', '%'.$chip_organization.'%');
-            $organizations = Organization::where('organization_name', 'like', '%' . $chip_organization . '%');
+            // $organizations = Organization::where('organization_name', 'like', '%' . $chip_organization . '%')->orwhere('organization_alternate_name', 'like', '%' . $chip_organization . '%');
+            $organizations = Organization::select('*');
+            $metas = MetaFilter::all();
+            $count_metas = MetaFilter::count();
+            $filter_label = $request->filter_label;
+
+            if ($layout->meta_filter_activate == 1 && $count_metas > 0 && ($layout->default_label == 'on_label' || $filter_label == 'on_label')) {
+                // $address_serviceids = Service::pluck('service_recordid')->toArray();
+                // $taxonomy_serviceids = Service::pluck('service_recordid')->toArray();
+                $address_serviceids = [];
+                $taxonomy_serviceids = [];
+
+                foreach ($metas as $key => $meta) {
+                    $values = explode(",", $meta->values);
+                    if (count($values) > 0) {
+                        if ($meta->facet == 'organization_status') {
+                            $organization_service_recordid = [];
+                            $organizations_status_ids = [];
+                            if ($values && count($values) > 0) {
+
+                                $operations = $meta->operations;
+                                if ($values) {
+                                    $organizations_status_ids = Organization::where(function ($query) use ($values, $operations) {
+                                        foreach ($values as $keyword) {
+                                            // $organization_status = OrganizationStatus::whereId($keyword)->first();
+                                            if ($operations == 'Include') {
+                                                $query = $query->orWhere('organization_status_x', 'LIKE', "%$keyword%");
+                                            }
+                                            if ($operations == 'Exclude') {
+                                                $query = $query->orWhere('organization_status_x', 'NOT LIKE', "%$keyword%");
+                                            }
+                                        }
+                                        return $query;
+                                    })->pluck('organization_recordid')->toArray();
+                                    // dd($organizations_status_ids);
+                                }
+                                // $organization_service_recordid = ServiceOrganization::whereIn('organization_recordid', $organizations_status_ids)->pluck('service_recordid')->toArray();
+                            }
+                            // dd($organizations->get(), $organizations_status_ids);
+                            $organizations = $organizations->whereIn('organization_recordid', array_unique($organizations_status_ids));
+                            // $taxonomy_serviceids = array_merge($organization_service_recordid, $taxonomy_serviceids);
+                        }
+                    }
+                }
+            }
+
+            $organizations = $organizations->where('organization_name', 'like', '%' . $chip_organization . '%')->orwhere('organization_alternate_name', 'like', '%' . $chip_organization . '%');
+
             $organization_tags = $organization_tags != null ?  json_decode($organization_tags) : [];
             // dd($request->organization_tags);
             if ($request->organization_tags && count($organization_tags) > 0) {
@@ -1012,7 +1106,7 @@ class ExploreController extends Controller
             //     $organization_tags = implode(',', $organization_tags);
             // }
             $organization_tags = json_encode($organization_tags);
-            return view('frontEnd.organizations.index', compact('map', 'organizations', 'chip_organization', 'search_results', 'organization_tag_list', 'pagination', 'sort', 'organization_tags'));
+            return view('frontEnd.organizations.index', compact('map', 'organizations', 'chip_organization', 'search_results', 'organization_tag_list', 'pagination', 'sort', 'organization_tags', 'filter_label'));
         } catch (\Throwable $th) {
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
@@ -1075,11 +1169,96 @@ class ExploreController extends Controller
         try {
             $query = $request->get('query');
             if ($query) {
-                $serviceNames = Service::where('service_name', 'like',  '%' . $query . '%')->orwhere('service_description', 'like', '%' . $query . '%')->orwhere('service_airs_taxonomy_x', 'like', '%' . $query . '%')->pluck('service_name')->toArray();
+                $serviceNames = Service::where('service_name', 'like',  '%' . $query . '%')->orwhere('service_description', 'like', '%' . $query . '%')->orwhere('service_airs_taxonomy_x', 'like', '%' . $query . '%');
 
-                $organization_names = Organization::where('organization_name', 'like', '%' . $query . '%')->pluck('organization_name')->toArray();
+                $organization_names = Organization::where('organization_name', 'like', '%' . $query . '%');
 
                 $taxonomy_names = Taxonomy::where('taxonomy_name', 'like', '%' . $query . '%')->pluck('taxonomy_name')->toArray();
+
+                $metas = MetaFilter::all();
+                $layout = Layout::findOrFail(1);
+                $count_metas = MetaFilter::count();
+
+                if ($layout->meta_filter_activate == 1 && $count_metas > 0 && $layout->default_label == 'on_label') {
+                    // $address_serviceids = Service::pluck('service_recordid')->toArray();
+                    // $taxonomy_serviceids = Service::pluck('service_recordid')->toArray();
+                    $address_serviceids = [];
+                    $taxonomy_serviceids = [];
+                    $organization_serviceids = [];
+
+                    foreach ($metas as $key => $meta) {
+                        $values = explode(",", $meta->values);
+                        if (count($values) > 0) {
+
+                            if ($meta->facet == 'Postal_code') {
+                                $address_serviceids = [];
+                                if ($meta->operations == 'Include') {
+                                    $serviceids = ServiceAddress::whereIn('address_recordid', $values)->pluck('service_recordid')->toArray();
+                                }
+
+                                if ($meta->operations == 'Exclude') {
+                                    $serviceids = ServiceAddress::whereNotIn('address_recordid', $values)->pluck('service_recordid')->toArray();
+                                }
+
+                                $address_serviceids = array_merge($serviceids, $address_serviceids);
+                            }
+                            if ($meta->facet == 'Taxonomy') {
+
+                                if ($meta->operations == 'Include') {
+                                    $serviceids = ServiceTaxonomy::whereIn('taxonomy_recordid', $values)->pluck('service_recordid')->toArray();
+                                }
+
+                                if ($meta->operations == 'Exclude') {
+                                    $serviceids = ServiceTaxonomy::whereNotIn('taxonomy_recordid', $values)->pluck('service_recordid')->toArray();
+                                }
+
+                                $taxonomy_serviceids = array_merge($serviceids, $taxonomy_serviceids);
+                            }
+                            if ($meta->facet == 'Service_status') {
+
+                                if ($meta->operations == 'Include') {
+                                    $serviceids = Service::whereIn('service_status', $values)->pluck('service_recordid')->toArray();
+                                    // $serviceids = Service::whereIn('service_recordid', $values)->pluck('service_recordid')->toArray();
+                                }
+
+                                if ($meta->operations == 'Exclude') {
+                                    $serviceids = Service::whereNotIn('service_status', $values)->pluck('service_recordid')->toArray();
+                                }
+                                $taxonomy_serviceids = array_merge($serviceids, $taxonomy_serviceids);
+                            }
+                            if ($meta->facet == 'organization_status') {
+
+                                $organization_service_recordid = [];
+                                if ($values && count($values) > 0) {
+                                    $organizations_status_ids = [];
+                                    $operations = $meta->operations;
+                                    if ($values) {
+                                        $organizations_status_ids = Organization::where(function ($query) use ($values, $operations) {
+                                            foreach ($values as $keyword) {
+                                                // $organization_status = OrganizationStatus::whereId($keyword)->first();
+                                                if ($operations == 'Include') {
+                                                    $query = $query->orWhere('organization_status_x', 'LIKE', "%$keyword%");
+                                                }
+                                                if ($operations == 'Exclude') {
+                                                    $query = $query->orWhere('organization_status_x', 'NOT LIKE', "%$keyword%");
+                                                }
+                                            }
+                                            return $query;
+                                        })->pluck('organization_recordid')->toArray();
+                                    }
+                                    $organization_service_recordid = ServiceOrganization::whereIn('organization_recordid', $organizations_status_ids)->pluck('service_recordid')->toArray();
+                                }
+                                $taxonomy_serviceids = array_merge($organization_service_recordid, $taxonomy_serviceids);
+                                $organization_serviceids = $organizations_status_ids;
+                            }
+                        }
+                    }
+                    $serviceNames = $serviceNames->whereIn('service_recordid', $address_serviceids)->whereIn('service_recordid', $taxonomy_serviceids);
+                    $organization_names = $organization_names->whereIn('organization_recordid', $organization_serviceids);
+                }
+                $serviceNames = $serviceNames->pluck('service_name')->toArray();
+
+                $organization_names = $organization_names->pluck('organization_name')->toArray();
 
                 $data = array_merge($serviceNames, $organization_names, $taxonomy_names);
                 $output = '<ul class="dropdown-menu" style="display:block;position:absolute;max-height:300px;overflow:auto;width: 100%;">';
@@ -1103,7 +1282,46 @@ class ExploreController extends Controller
         try {
             $query = $request->get('query');
             if ($query) {
-                $data = Organization::where('organization_name', 'like', '%' . $query . '%')->pluck('organization_name')->toArray();
+                $organization_names = Organization::where('organization_name', 'like', '%' . $query . '%');
+
+                $metas = MetaFilter::all();
+                $layout = Layout::findOrFail(1);
+                $count_metas = MetaFilter::count();
+
+                if ($layout->meta_filter_activate == 1 && $count_metas > 0 && $layout->default_label == 'on_label') {
+                    $organization_serviceids = [];
+
+                    foreach ($metas as $key => $meta) {
+                        $values = explode(",", $meta->values);
+                        if (count($values) > 0) {
+                            if ($meta->facet == 'organization_status') {
+                                if ($values && count($values) > 0) {
+                                    $organizations_status_ids = [];
+                                    $operations = $meta->operations;
+                                    if ($values) {
+                                        $organizations_status_ids = Organization::where(function ($query) use ($values, $operations) {
+                                            foreach ($values as $keyword) {
+                                                // $organization_status = OrganizationStatus::whereId($keyword)->first();
+                                                if ($operations == 'Include') {
+                                                    $query = $query->orWhere('organization_status_x', 'LIKE', "%$keyword%");
+                                                }
+                                                if ($operations == 'Exclude') {
+                                                    $query = $query->orWhere('organization_status_x', 'NOT LIKE', "%$keyword%");
+                                                }
+                                            }
+                                            return $query;
+                                        })->pluck('organization_recordid')->toArray();
+                                    }
+                                }
+                                $organization_serviceids = $organizations_status_ids;
+                            }
+                        }
+                    }
+                    $organization_names = $organization_names->whereIn('organization_recordid', $organization_serviceids);
+                }
+
+                $data = $organization_names->pluck('organization_name')->toArray();
+
 
                 $output = '<ul class="dropdown-menu" style="display:block;position:absolute;max-height:300px;overflow:auto;width: 100%;">';
                 if (count($data) > 0) {

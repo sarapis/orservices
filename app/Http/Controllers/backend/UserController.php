@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Model\EmailTemplate;
 use App\Model\Layout;
 use App\Model\Organization;
+use App\Model\OrganizationTag;
 use App\Model\Role;
+use App\Model\ServiceTag;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -240,7 +242,11 @@ class UserController extends Controller
         $roles = Role::get()->pluck('name', 'id');
         $organization_list = Organization::select('organization_recordid', 'organization_name')->get();
         $account_organization_list = explode(',', $user->user_organization);
-        return View('backEnd.users.edit', compact('user', 'roles', 'layout', 'organization_list', 'account_organization_list'));
+        $account_organization_tag_list = explode(',', $user->organization_tags);
+        $account_service_tag_list = explode(',', $user->service_tags);
+        $organization_tags = OrganizationTag::pluck('tag', 'id');
+        $service_tags = ServiceTag::pluck('tag', 'id');
+        return View('backEnd.users.edit', compact('user', 'roles', 'layout', 'organization_list', 'account_organization_list', 'organization_tags', 'account_organization_tag_list', 'service_tags', 'account_service_tag_list'));
     }
 
     /**
@@ -252,7 +258,6 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         // $update_user = Validator::make($request->all(), [
         //     'first_name' => 'min:2|max:35|string',
         //     'last_name' => 'min:2|max:35|string',
@@ -338,6 +343,18 @@ class UserController extends Controller
             }
             if ($request->user_organizations) {
                 $user->organizations()->sync($request->user_organizations);
+            } else {
+                $user->organizations()->sync([]);
+            }
+            if ($request->organization_tags) {
+                $user->organization_tags = implode(',', $request->organization_tags);
+            } else {
+                $user->organization_tags = '';
+            }
+            if ($request->service_tags) {
+                $user->service_tags = implode(',', $request->service_tags);
+            } else {
+                $user->service_tags = '';
             }
             $user->update();
             Session::flash('message', 'Success! User is updated successfully.');
@@ -590,6 +607,67 @@ class UserController extends Controller
             return view('backEnd.users.editsLogs', compact('audits', 'user'));
         } catch (\Throwable $th) {
             Log::error('Error in ChangeLog : ' . $th);
+        }
+    }
+    public function send_activation($id)
+    {
+        try {
+            $ActivationEmail = EmailTemplate::whereId(2)->where('status', 1)->first();
+            $user = User::whereId($id)->first();
+            if ($ActivationEmail) {
+                $from = env('MAIL_FROM_ADDRESS');
+                $name = env('MAIL_FROM_NAME');
+                $email = new Mail();
+                $email->setFrom($from, $name);
+                // $subject = 'A Suggested Change was Submitted at ' . $site_name;
+                $subject = $ActivationEmail->subject;
+
+                $email->setSubject($subject);
+
+                // $body = $request->message;
+                $data = array(
+                    '{first_name}' => $user->first_name . ' ' . $user->last_name,
+                    '{password}' => '',
+                );
+                $body = $ActivationEmail->body;
+
+                foreach ($data as $key => $value) {
+                    //replace the email template body string to user detail
+                    $body = str_replace($key, $value, $body);
+                }
+
+                $message = '<html><body>';
+                $message .= $body;
+                $message .= '</body></html>';
+
+                $email->addContent("text/html", $message);
+                $sendgrid = new SendGrid(getenv('SENDGRID_API_KEY'));
+
+                $error = '';
+
+                $username = '';
+                // $contact_email_list = Email::select('email_info')->pluck('email_info')->toArray();
+
+                // foreach ($contact_email_list as $key => $contact_email) {
+                $email->addTo($user->email, $username);
+                // }
+                $response = $sendgrid->send($email);
+                if ($response->statusCode() == 401) {
+                    $error = json_decode($response->body());
+                    dd($error);
+                }
+                Session::flash('message', 'Success! Activation Email Send successfully.');
+                Session::flash('status', 'success');
+            } else {
+                Session::flash('message', 'Error! Something Went Wrong, Please Try Again.');
+                Session::flash('status', 'error');
+            }
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            dd($th);
+            Session::flash('message', 'Error! Something Went Wrong, Please Try Again.');
+            Session::flash('status', 'error');
+            return redirect()->back();
         }
     }
 }

@@ -7,6 +7,8 @@ use App\Model\Map;
 use App\Model\Source_data;
 use App\Model\Address;
 use App\Model\Airtablekeyinfo;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -143,13 +145,26 @@ class DataController extends Controller
 
         $zones_array = array();
         $timestamp = time();
+        // $dummy_datetime_object = new DateTime();
         foreach (timezone_identifiers_list() as $key => $zone) {
-            // date_default_timezone_set($zone);
+            date_default_timezone_set($zone);
             // $zones_array[$key]['zone'] = $zone;
-            // $zones_array[$key]['offset'] = (int) ((int) date('O', $timestamp)) / 100;
             // $zones_array[$key]['diff_from_GMT'] = 'UTC/GMT ' . date('P', $timestamp);
+
+            // $tz = new DateTimeZone($zone);
+            // $zones_array[$key]['offset'] = $tz->getOffset($dummy_datetime_object);
             $zones_array[$zone] = ('UTC/GMT ' . date('P', $timestamp)) . ' ' . $zone;
         }
+
+        // $zones_array = array();
+        // $timestamp = time();
+        // foreach (timezone_identifiers_list() as $key => $zone) {
+        //     // date_default_timezone_set($zone);
+        //     // $zones_array[$key]['zone'] = $zone;
+        //     // $zones_array[$key]['offset'] = (int) ((int) date('O', $timestamp)) / 100;
+        //     // $zones_array[$key]['diff_from_GMT'] = 'UTC/GMT ' . date('P', $timestamp);
+        //     $zones_array[$zone] = ('UTC/GMT ' . date('P', $timestamp)) . ' ' . $zone;
+        // }
         return view('backEnd.settings.add_country', compact('countries', 'zones_array'));
     }
     public function save_country(Request $request)
@@ -164,6 +179,7 @@ class DataController extends Controller
             $str = file_get_contents($envFile);
             $values = [
                 "TIME_ZONE" => $request->get('timezone') ? $request->get('timezone') : 'UTC',
+                "LOCALIZATION" => $request->get('country') ? $request->get('country') : 'US',
             ];
 
             if (count($values) > 0) {

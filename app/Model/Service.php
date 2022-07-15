@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use OwenIt\Auditing\Auditable;
@@ -12,6 +13,7 @@ class Service extends Model implements ContractsAuditable
 {
     use Auditable;
     protected $primaryKey = 'service_recordid';
+    public $timestamps = false;
 
     // protected $auditEvents = [
     //     'updated',
@@ -20,7 +22,7 @@ class Service extends Model implements ContractsAuditable
     // ];
 
     protected $fillable = [
-        'service_recordid', 'service_name', 'service_alternate_name', 'service_organization', 'service_description', 'service_locations', 'service_url', 'service_email', 'service_status', 'service_taxonomy', 'service_application_process', 'service_wait_time', 'service_fees', 'service_accreditations', 'service_licenses', 'service_phones', 'service_schedule', 'service_contacts', 'service_details', 'service_address', 'service_metadata', 'flag', 'service_program', 'service_airs_taxonomy_x', 'service_code', 'access_requirement', 'SDOH_code', 'code_category_ids','procedure_grouping'
+        'service_recordid', 'service_name', 'service_alternate_name', 'service_organization', 'service_description', 'service_locations', 'service_url', 'service_email', 'service_status', 'service_taxonomy', 'service_application_process', 'service_wait_time', 'service_fees', 'service_accreditations', 'service_licenses', 'service_phones', 'service_schedule', 'service_contacts', 'service_details', 'service_address', 'service_metadata', 'flag', 'service_program', 'service_airs_taxonomy_x', 'service_code', 'access_requirement', 'SDOH_code', 'code_category_ids', 'procedure_grouping', 'service_tag'
     ];
 
     public function organizations()
@@ -121,5 +123,18 @@ class Service extends Model implements ContractsAuditable
     public function fees(): BelongsToMany
     {
         return $this->belongsToMany(FeeOption::class, 'service_fees', 'service_recordid', 'fees_id');
+    }
+    public function SessionData()
+    {
+        return $this->hasMany('App\Model\SessionData', 'session_service', 'service_recordid');
+    }
+    /**
+     * Get the get_status that owns the Service
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function get_status(): BelongsTo
+    {
+        return $this->belongsTo(ServiceStatus::class, 'service_status', 'id');
     }
 }

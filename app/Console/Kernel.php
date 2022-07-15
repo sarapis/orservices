@@ -27,6 +27,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('AutoSync:data')->hourly();
+        $schedule->command('db:backup')->daily();
     }
 
     /**

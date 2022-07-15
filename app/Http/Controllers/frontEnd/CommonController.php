@@ -3,19 +3,26 @@
 namespace App\Http\Controllers\frontEnd;
 
 use App\Http\Controllers\Controller;
+use App\Imports\Services;
 use App\Model\Address;
 use App\Model\Code;
 use App\Model\Contact;
 use App\Model\Detail;
+use App\Model\InteractionMethod;
 use App\Model\Location;
 use App\Model\Organization;
+use App\Model\OrganizationStatus;
 use App\Model\OrganizationTag;
 use App\Model\Phone;
 use App\Model\Program;
 use App\Model\Schedule;
 use App\Model\Service;
+use App\Model\ServiceStatus;
+use App\Model\SessionData;
+use App\Model\SessionInteraction;
 use App\Model\Taxonomy;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class CommonController extends Controller
@@ -969,6 +976,87 @@ class CommonController extends Controller
             return 'done';
         } catch (\Throwable $th) {
             Log::error('Error in forMakePhoneMain : ' . $th);
+        }
+    }
+    public function set_service_status()
+    {
+        try {
+            $serviceStatusIDs = ServiceStatus::pluck('id')->toArray();
+            $services = Service::whereNotIn('service_status', $serviceStatusIDs)->whereNotnull('service_status')->cursor();
+            foreach ($services as $key => $value) {
+                $service = Service::whereId($value->id)->first();
+                $status = ServiceStatus::whereId($service->service_status)->first();
+                if ($status == null) {
+                    $service_status = ServiceStatus::firstOrCreate(
+                        ['status' => $service->service_status],
+                        ['status' => $service->service_status, 'created_by' => Auth::id()]
+                    );
+                    $service->service_status = $service_status->id;
+                    $service->save();
+                }
+            }
+            dd('done');
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+    }
+    public function set_organization_status()
+    {
+        try {
+            $organizationStatusIDs = OrganizationStatus::pluck('id')->toArray();
+            $organizations = Organization::whereNotIn('organization_status_x', $organizationStatusIDs)->whereNotnull('organization_status_x')->cursor();
+            foreach ($organizations as $key => $value) {
+                $organization = Organization::whereId($value->id)->first();
+                $status = OrganizationStatus::whereId($organization->organization_status_x)->first();
+                if ($status == null) {
+                    $organization_status_x = OrganizationStatus::firstOrCreate(
+                        ['status' => $organization->organization_status_x],
+                        ['status' => $organization->organization_status_x, 'created_by' => Auth::id()]
+                    );
+                    $organization->organization_status_x = $organization_status_x->id;
+                    $organization->save();
+                }
+            }
+            dd('done');
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+    }
+    public function set_interaction_method()
+    {
+        try {
+            // for session interaction
+            $interaction_method_ids = InteractionMethod::pluck('id')->toArray();
+            $sessionInteractions = SessionInteraction::whereNotIn('interaction_method', $interaction_method_ids)->whereNotnull('interaction_method')->cursor();
+            foreach ($sessionInteractions as $key => $value) {
+                $session_interaction = SessionInteraction::whereId($value->id)->first();
+                if ($session_interaction->interaction_method) {
+                    $InteractionMethod = InteractionMethod::firstOrCreate(
+                        ['name' => $value->interaction_method],
+                        ['name' => $value->interaction_method, 'created_by' => Auth::id()]
+                    );
+                    $session_interaction->interaction_method = $InteractionMethod->id;
+                    $session_interaction->save();
+                }
+            }
+            // for session data
+
+            $sessionDatasIds = InteractionMethod::pluck('id')->toArray();
+            $sessionDatas = SessionData::whereNotIn('session_method', $sessionDatasIds)->whereNotnull('session_method')->cursor();
+            foreach ($sessionDatas as $key => $value) {
+                $session_data = SessionData::whereId($value->id)->first();
+                if ($session_data->session_method) {
+                    $InteractionMethod = InteractionMethod::firstOrCreate(
+                        ['name' => $value->session_method],
+                        ['name' => $value->session_method, 'created_by' => Auth::id()]
+                    );
+                    $session_data->session_method = $InteractionMethod->id;
+                    $session_data->save();
+                }
+            }
+            dd('done');
+        } catch (\Throwable $th) {
+            dd($th);
         }
     }
 }

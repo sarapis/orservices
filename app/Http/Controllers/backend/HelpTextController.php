@@ -27,6 +27,7 @@ class HelpTextController extends Controller
                 $helptext->service_activities = $request->service_activities;
                 $helptext->code_category = $request->code_category;
                 $helptext->sdoh_code_helptext = $request->sdoh_code_helptext;
+                $helptext->registration_message = $request->registration_message;
                 $helptext->save();
             } else {
                 Helptext::create([
@@ -36,6 +37,7 @@ class HelpTextController extends Controller
                     'service_activities' => $request->service_activities,
                     'code_category' => $request->code_category,
                     'sdoh_code_helptext' => $request->sdoh_code_helptext,
+                    'registration_message' => $request->registration_message,
                 ]);
             }
             Session::flash('message', 'Success! Help text store successfully.');

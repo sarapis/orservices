@@ -6,11 +6,17 @@ use App\Exports\ServiceExport;
 use App\Http\Controllers\Controller;
 use App\Model\Code;
 use App\Model\Organization;
+use App\Model\OrganizationTag;
 use App\Model\Service;
+use App\Model\ServiceStatus;
+use App\Model\ServiceTag;
 use App\Model\Taxonomy;
 use App\Model\TaxonomyType;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\DataTables;
 
@@ -27,14 +33,68 @@ class ServiceCodeController extends Controller
         $goals = Code::where('resource', 'Goal')->pluck('description', 'id');
         $activities = Code::where('resource', 'Procedure')->pluck('description', 'id');
         $organizations = Organization::pluck('organization_name', 'organization_recordid');
+        $service_statuses = ServiceStatus::pluck('status', 'id');
+        $service_tags = ServiceTag::pluck('tag', 'id');
+        $organization_tags = OrganizationTag::pluck('tag', 'id');
 
         $serviceCategoryId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Category')->first();
         $serviceEligibilityId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Eligibility')->first();
 
-        $service_category_types = Taxonomy::orderBy('taxonomy_name')->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
-        $service_eligibility_types = Taxonomy::orderBy('taxonomy_name')->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid');
+        $service_category_types_list = $serviceCategoryId ?  Taxonomy::orderBy('taxonomy_name')->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->whereNull('taxonomy_parent_name')->get() : [];
 
-        return view('backEnd.tables.tb_services', compact('conditions', 'goals', 'activities', 'organizations', 'service_category_types', 'service_eligibility_types'));
+        $service_category_types = ['no_category' => 'No Category'];
+        foreach ($service_category_types_list as $value) {
+            $service_category_types[$value->taxonomy_recordid] = $value->taxonomy_name;
+            $taxonomy_child_list = Taxonomy::where('taxonomy_parent_name', 'LIKE', '%' . $value->taxonomy_recordid . '%')->get();
+            if ($taxonomy_child_list) {
+                foreach ($taxonomy_child_list as $value1) {
+                    $service_category_types[$value1->taxonomy_recordid] = '- '  . $value1->taxonomy_name;
+                    $taxonomy_child_list1 = Taxonomy::where('taxonomy_parent_name', 'LIKE', '%' . $value1->taxonomy_recordid . '%')->get();
+                    if ($taxonomy_child_list1) {
+                        foreach ($taxonomy_child_list1 as $value2) {
+                            $service_category_types[$value2->taxonomy_recordid] = '-- '  . $value2->taxonomy_name;
+                            $taxonomy_child_list2 = Taxonomy::where('taxonomy_parent_name', 'LIKE', '%' . $value2->taxonomy_recordid . '%')->get();
+                            if ($taxonomy_child_list2) {
+                                foreach ($taxonomy_child_list2 as $value3) {
+                                    $service_category_types[$value3->taxonomy_recordid] = '--- '  . $value3->taxonomy_name;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // $service_eligibility_types = $serviceEligibilityId ? Taxonomy::orderBy('taxonomy_name')->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->pluck('taxonomy_name', 'taxonomy_recordid') : [];
+        $service_eligibility_types_list = $serviceEligibilityId ? Taxonomy::orderBy('taxonomy_name')->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->whereNull('taxonomy_parent_name')->get() : [];
+
+        $service_eligibility_types = ['no_eligibility' => 'No Eligibility'];
+        foreach ($service_eligibility_types_list as $value) {
+            $service_eligibility_types[$value->taxonomy_recordid] = $value->taxonomy_name;
+            $taxonomy_child_list = Taxonomy::where('taxonomy_parent_name', 'LIKE', '%' . $value->taxonomy_recordid . '%')->get();
+            if ($taxonomy_child_list) {
+                foreach ($taxonomy_child_list as $value1) {
+                    $service_eligibility_types[$value1->taxonomy_recordid] = '- '  . $value1->taxonomy_name;
+                    $taxonomy_child_list1 = Taxonomy::where('taxonomy_parent_name', 'LIKE', '%' . $value1->taxonomy_recordid . '%')->get();
+                    if ($taxonomy_child_list1) {
+                        foreach ($taxonomy_child_list1 as $value2) {
+                            $service_eligibility_types[$value2->taxonomy_recordid] = '-- '  . $value2->taxonomy_name;
+                            $taxonomy_child_list2 = Taxonomy::where('taxonomy_parent_name', 'LIKE', '%' . $value2->taxonomy_recordid . '%')->get();
+                            if ($taxonomy_child_list2) {
+                                foreach ($taxonomy_child_list2 as $value3) {
+                                    $service_eligibility_types[$value3->taxonomy_recordid] = '--- '  . $value3->taxonomy_name;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
+        return view('backEnd.tables.tb_services', compact('conditions', 'goals', 'activities', 'organizations', 'service_category_types', 'service_eligibility_types', 'service_statuses', 'service_tags', 'organization_tags'));
     }
 
     /**
@@ -214,6 +274,53 @@ class ServiceCodeController extends Controller
                 return $organizations ? $organizations->organization_name : '';
                 // if($organizations)
             })
+            ->addColumn('organization_tag', function ($row) {
+
+                $organizations = $row->organizations;
+                $organization_tag = [];
+                if ($organizations && $organizations->organization_tag) {
+                    $organization_tags = explode(',', $organizations->organization_tag);
+                    foreach ($organization_tags as $key => $value) {
+                        $tag = OrganizationTag::whereId($value)->first();
+                        if ($tag) {
+                            $organization_tag[] = $tag->tag;
+                        }
+                    }
+                }
+                return implode(',', $organization_tag);
+                // if($organizations)
+            })
+            ->editColumn('bookmark', function ($row) {
+                if ($row->bookmark && $row->bookmark == 1) {
+                    return '<a href="javascript:void(0)" class="clickBookmark" data-id="' . $row->id . '" data-value="' . ($row->bookmark ? $row->bookmark : 0) . '"><img src="/images/bookmark.svg"></a>';
+                } else {
+
+                    return '<a href="javascript:void(0)" class="clickBookmark" data-id="' . $row->id . '" data-value="0"><img src="/images/unbookmark.svg"></a>';
+                }
+            })
+            ->editColumn('service_name', function ($row) {
+                return '<a href="/services/' . $row->service_recordid . '" target="_blank">' . $row->service_name . '</a>';
+            })
+            ->editColumn('service_status', function ($row) {
+                return $row->get_status ? $row->get_status->status : '';
+                // if($organizations)
+            })
+            ->editColumn('service_tag', function ($row) {
+                $tags = [];
+                if ($row->service_tag) {
+                    $tagsArray = explode(',', $row->service_tag);
+                    foreach ($tagsArray as $key => $value) {
+                        $service_tag = ServiceTag::whereId($value)->first();
+                        if ($service_tag) {
+                            $tags[] = '<a href="javascript:void(0)" data-id="' . $row->service_recordid . '" class="serviceTags" data-tags="' .  $row->service_tag . '"> ' . $service_tag->tag . '</a>';;
+                        }
+                    }
+                    return count($tags) > 0 ? implode(',', $tags) : '';
+                } else {
+                    return '<button type="button" class="btn btn-sm btn-primary serviceTags" data-id="' . $row->service_recordid . '" data-tags="">Add Tag</button>';
+                }
+                // if($organizations)
+            })
             // ->addColumn('services', function ($row) {
             //     $name = '';
             //     if (count($row->services) > 0) {
@@ -242,6 +349,14 @@ class ServiceCodeController extends Controller
                                 }
                             }
                         }
+                        if (in_array('no_category', $extraData['service_category'])) {
+                            $services = Service::cursor();
+                            foreach ($services as $key => $service) {
+                                if ($service->taxonomy()->count() == 0) {
+                                    $service_recordids[] = $service->service_recordid;
+                                }
+                            }
+                        }
                         $query->whereIn('service_recordid', $service_recordids);
                     }
                     if (isset($extraData['service_with_codes']) && $extraData['service_with_codes'] != null && $extraData['service_with_codes'] == "true") {
@@ -253,6 +368,14 @@ class ServiceCodeController extends Controller
                         foreach ($taxonomies as $key => $value) {
                             if ($value->service && count($value->service) > 0) {
                                 foreach ($value->service as $key => $service) {
+                                    $service_recordids[] = $service->service_recordid;
+                                }
+                            }
+                        }
+                        if (in_array('no_eligibility', $extraData['service_eligibility'])) {
+                            $services = Service::cursor();
+                            foreach ($services as $key => $service) {
+                                if ($service->taxonomy()->count() == 0) {
                                     $service_recordids[] = $service->service_recordid;
                                 }
                             }
@@ -271,6 +394,30 @@ class ServiceCodeController extends Controller
                     if (isset($extraData['organizations']) && $extraData['organizations'] != null) {
                         $query->whereIn('service_organization', $extraData['organizations']);
                     }
+                    if (isset($extraData['service_status']) && $extraData['service_status'] != null) {
+                        $query->where('service_status', $extraData['service_status']);
+                    }
+                    if (isset($extraData['service_tag']) && $extraData['service_tag'] != null) {
+                        $service_tags = count($extraData['service_tag']) > 0 ?  array_filter($extraData['service_tag']) : [];
+                        $query = $query->where(function ($q) use ($service_tags) {
+                            foreach ($service_tags as $key => $value) {
+                                $q->orWhere('service_tag', 'LIKE', '%' . $value . '%');
+                            }
+                        });
+                    }
+                    if (isset($extraData['organisation_tag']) && $extraData['organisation_tag'] != null) {
+                        $organisation_tags = count($extraData['organisation_tag']) > 0 ?  array_filter($extraData['organisation_tag']) : [];
+
+                        $organization_ids = Organization::where(function ($q) use ($organisation_tags) {
+                            foreach ($organisation_tags as $key => $value) {
+                                $q->orWhere('organization_tag', 'LIKE', '%' . $value . '%');
+                            }
+                        })->pluck('organization_recordid')->toArray();
+                        $query = $query->whereIn('service_organization', $organization_ids);
+                    }
+                    if (isset($extraData['service_bookmark_only']) && $extraData['service_bookmark_only'] != null && $extraData['service_bookmark_only'] == "true") {
+                        $query = $query->where('bookmark', 1);
+                    }
                     if (count($code_ids) > 0) {
                         $codes = Code::whereIn('id', $code_ids)->get();
                         foreach ($codes as $key => $value) {
@@ -285,7 +432,69 @@ class ServiceCodeController extends Controller
                 }
                 return $query;
             }, true)
-            ->rawColumns(['codes', 'service_category', 'service_eligibility', 'procedure_grouping'])
+            ->rawColumns(['codes', 'service_category', 'service_eligibility', 'procedure_grouping', 'bookmark', 'service_tag', 'service_name'])
             ->make(true);
+    }
+    public function saveServiceBookmark(Request $request)
+    {
+        try {
+            $id = $request->id;
+            $service = Service::whereId($id)->first();
+            $service->bookmark = $request->value;
+            $service->updated_at = Carbon::now();
+            $service->save();
+            // Session::flash('message', 'Service Bookmarked successfully!');
+            // Session::flash('status', 'success');
+            return response()->json([
+                'success' => true,
+                'message' => 'Service Bookmarked successfully!'
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage(),
+                'success' => false
+            ], 500);
+        }
+    }
+    public function saveServiceTags(Request $request)
+    {
+        try {
+            $service_recordid = $request->service_recordid;
+            $service = Service::where('service_recordid', $service_recordid)->first();
+            $service->service_tag = $request->service_tag && is_array($request->service_tag) ? implode(',', $request->service_tag) : '';
+            $service->save();
+            Session::flash('message', 'Service tag updated successfully!');
+            Session::flash('status', 'success');
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'success');
+            return redirect()->back();
+        }
+    }
+    public function createNewServiceTag(Request $request)
+    {
+        try {
+            $tag = $request->tag;
+            $serviceTag  = ServiceTag::create([
+                'tag' => $tag,
+                'created_by' => Auth::id()
+            ]);
+            $service_recordid = $request->service_recordid;
+            $service = Service::where('service_recordid', $service_recordid)->first();
+            $srvicTag = $service->service_tag != null ? explode(',', $service->service_tag) : [];
+            $srvicTag[] = $serviceTag->id;
+            if (!empty($srvicTag)) {
+                $service->service_tag = implode(',', $srvicTag);
+                $service->save();
+            }
+            Session::flash('message', 'Service tag added successfully!');
+            Session::flash('status', 'success');
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'success');
+            return redirect()->back();
+        }
     }
 }
