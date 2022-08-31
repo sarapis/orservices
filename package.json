@@ -25,7 +25,7 @@
     "dependencies": {
         "axios": "^0.21.1",
         "bootstrap-colorpicker": "^3.3.0",
-        "moment-timezone": "^0.5.33",
+        "moment-timezone": "^0.5.35",
         "rangeslider-js": "^3.2.5",
         "vue-code-diff": "^1.1.0",
         "vue-simple-range-slider": "^0.1.10",
