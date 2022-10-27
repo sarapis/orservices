@@ -25,8 +25,8 @@ class CreateLocationsTable extends Migration
             $table->text('location_description')->nullable();
             $table->text('location_services')->nullable();
             $table->text('location_phones')->nullable();
-            $table->string('location_details', 45)->nullable();
-            $table->string('location_schedule')->nullable();
+            $table->longText('location_details', 45)->nullable();
+            $table->longText('location_schedule')->nullable();
             $table->text('location_address')->nullable();
             $table->string('flag', 45)->nullable();
             $table->timestamps();

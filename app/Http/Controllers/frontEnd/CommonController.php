@@ -1059,4 +1059,18 @@ class CommonController extends Controller
             dd($th);
         }
     }
+    public function add_user_details_to_org_service()
+    {
+        try {
+            Organization::whereNull('created_by')->update([
+                'created_by' => '1'
+            ]);
+            Service::whereNull('created_by')->update([
+                'created_by' => '1'
+            ]);
+            dd('done');
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+    }
 }

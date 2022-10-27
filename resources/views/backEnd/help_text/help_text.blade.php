@@ -93,6 +93,17 @@ Help Text
                         </div>
                     </div>
                     <div class="row">
+                        <div class="form-group {{ $errors->has('registration_message') ? 'has-error' : ''}}">
+                            <label class="col-sm-3 control-label text-right">Registration Message</label>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    {!! Form::textarea('registration_message',($helptext->registration_message ?? null),['class'=>'form-control', 'rows' => 2, 'cols' => 40]) !!}
+                                    {!! $errors->first('registration_message', '<p class="help-block">:message</p>') !!}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="form-group">
                             <label class="col-sm-3 control-label text-right"></label>
                             <div class="col-sm-6">

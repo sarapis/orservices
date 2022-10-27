@@ -2,6 +2,15 @@
 <html lang="{{ config('app.locale') }}">
     @include('layouts.style')
 @include('layouts.header')
+        @if (Session::has('register_message'))
+        <div class="alert alert-{{ Session::get('status') == 'error' ? 'danger' : Session::get('status') }} alert-dismissable custom-success-box"
+            style="margin: 15px;">
+            {{-- <a href="#" class="close" data-dismiss="alert" aria-label="close" >&times;</a> --}}
+            <strong> {{ session()->get('register_message') }} </strong>
+            <a href="#" data-dismiss="alert" aria-label="close" class="btn btn-danger btn-sm" style="float: right;margin: 9px 27px 2px 0px;">Ok</a>
+        </div>
+        @endif
+
         @if (Session::has('message'))
         <div class="alert alert-{{ Session::get('status') == 'error' ? 'danger' : Session::get('status') }} alert-dismissable custom-success-box"
             style="margin: 15px;">

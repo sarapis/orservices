@@ -1,7 +1,1 @@
-"id","term","description","parent_id","taxonomy","language"
-"4","Addiction & Recovery","","Health","Service Category",""
-"42","Vision Care","","Health","Service Category",""
-"66","Dental Care","","Health","Service Category",""
-"97","Mental Health Care","","Health","Service Category",""
-"100","Sexual & Reproductive Health","","Health","Service Category",""
-"312","Medical Care","","Health","Service Category",""
+id,term,description,parent_id,taxonomy,language

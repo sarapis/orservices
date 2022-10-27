@@ -12,30 +12,29 @@ Location
             <div class="col-md-8">
                 <div class="card detail_services">
                     <div class="card-block">
-                        <h4 class="card-title  m-0">
+                        <h4 class="card-title">
                             <a href="">{{$facility->location_name}} </a>
                             @if ((Auth::user() && Auth::user()->user_organization && $facility->organization &&
                             str_contains(Auth::user()->user_organization,$facility->organization->organization_recordid)
-                            && Auth::user()->roles->name == 'Organization Admin') || Auth::user() &&
-                            Auth::user()->roles->name == 'System Admin' || Auth::user() && Auth::user()->roles->name !=
-                            'Organization Admin')
+                            && ((Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin'))) || Auth::user() &&
+                            Auth::user()->roles->name == 'System Admin' || Auth::user() && ((Auth::user()->roles->name != 'Organization Admin' || Auth::user()->roles->name != 'Section Admin') || Auth::user()->roles->name != 'Section Admin'))
                             <a href="/facilities/{{$facility->location_recordid}}/edit" class="float-right">
                                 <i class="icon md-edit mr-0"></i>
                             </a>
                             @endif
                         </h4>
                         @if (isset($facility_organizations) && count($facility_organizations) > 0)
-                        <h4>
+                        <div class="tagp_class">
                             <span class="subtitle"><b>Organization: </b></span>
                             @foreach($facility_organizations as $organization)
                             <a class="panel-link"
                                 href="/organizations/{{$organization->organization_recordid}}">{{$organization->organization_name}}</a>
                             <br>
                             @endforeach
-                        </h4>
+                        </div>
                         @endif
                         @if(isset($facility->address) && count($facility->address) > 0)
-                        <h4>
+                        <div class="tagp_class">
                             <span class="subtitle"><b>Address: </b></span>
                             @if(isset($facility->address))
                             @foreach($facility->address as $address)
@@ -47,28 +46,28 @@ Location
 
                             @endforeach
                             @endif
-                        </h4>
+                        </div>
                         @endif
                         @if(isset($facility->regions) && count($facility->regions) > 0)
-                        <h4>
+                        <div class="tagp_class">
                             <span class="subtitle"><b>Region: </b></span>
                             @foreach($facility->regions as $key => $region)
                             {{ $key > 0 ? ',' : '' }}
                             {{ $region->region }}
                             @endforeach
-                        </h4>
+                        </div>
                         @endif
                         @if(isset($facility->phones) && count($facility->phones) > 0)
-                        <h4>
+                        <div class="tagp_class">
                             <span class="subtitle"><b>Phones: </b></span>
                             @foreach($facility->phones as $key => $phone)
                             <a href="tel:{{$phone->phone_number}}">{{$phone->phone_number}}</a>
                             {{ count($facility->phones) > $key+1 ? ',' : '' }}
                             @endforeach
-                        </h4>
+                        </div>
                         @endif
                         @if(isset($facility->accessibilities) && count($facility->accessibilities) > 0)
-                        <h4>
+                        <div class="tagp_class">
                             <span class="subtitle"><b>Accessibility: </b></span>
                             @foreach($facility->accessibilities as $key => $accessibility)
                             {{$accessibility->accessibility}}
@@ -76,32 +75,32 @@ Location
                                 ,
                             @endif
                             @endforeach
-                        </h4>
-                        <h4>
+                        </div>
+                        <div class="tagp_class">
                             <span class="subtitle"><b>Accessibility Details: </b></span>
                             @foreach($facility->accessibilities as $key => $accessibility)
                             {{$accessibility->accessibility_details}}
                             @endforeach
-                        </h4>
+                        </div>
                         @endif
 
                         @if($facility->location_alternate_name)
-                        <h4>
+                        <div class="tagp_class">
                             <span class="subtitle"><b>Alternative Name: </b></span>
                             {{$facility->location_alternate_name}}
-                        </h4>
+                        </div>
                         @endif
                         @if($facility->location_description)
-                        <h4>
+                        <div class="tagp_class">
                             <span class="subtitle"><b>Description: </b></span>
                             {{$facility->location_description}}
-                        </h4>
+                        </div>
                         @endif
                         @if($facility->location_transportation)
-                        <h4>
+                        <div class="tagp_class">
                             <span class="subtitle"><b>Transportation: </b></span>
                             {{$facility->location_transportation}}
-                        </h4>
+                        </div>
                         @endif
 
                         @if($locationDetails)
@@ -125,10 +124,10 @@ Location
                             @endphp
                             @endforeach
                             @foreach($show_details as $detail)
-                            <h4>
+                            <div class="tagp_class">
                                 <span class="subtitle"><b>{{ $detail['detail_type'] }}:</b></span> {!!
                                 $detail['detail_value'] !!}
-                            </h4>
+                            </div>
                             @endforeach
                             @endif
                     </div>
@@ -147,10 +146,9 @@ Location
                             <h4 class="card-title">
                                 <a href="/services/{{$service->service_recordid}}">{{$service->service_name}}</a>
                             </h4>
-                            <h4 style="line-height: inherit;">{!! Str::limit($service->service_description, 200) !!}
-                            </h4>
+                            <div class="tagp_class">{!! Str::limit($service->service_description, 200) !!}</div>
                             @if ($service->phone && count($service->phone) > 0)
-                            <h4 style="line-height: inherit;">
+                            <div class="tagp_class">
                                 <span>
                                     <i class="icon md-phone font-size-18 vertical-align-top pr-10  m-0"></i>
                                     @foreach($service->phone as $phone)
@@ -162,9 +160,9 @@ Location
                                     {{ $phone->phone_description ? '- '.$phone->phone_description : '' }}</p>
                                     @endforeach
                                 </span>
-                            </h4>
+                            </div>
                             @endif
-                            <h4>
+                            <div class="tagp_class">
                                 <span><i class="icon md-pin font-size-18 vertical-align-top pr-10  m-0"></i>
                                     @if(isset($service->locations) && $service->locations != null)
                                     @foreach($service->locations as $location)
@@ -190,7 +188,7 @@ Location
                                     @endforeach
                                     @endif
                                 </span>
-                            </h4>
+                            </div>
                             @if($service->service_details != NULL)
                             @php
                             $show_details = [];
@@ -212,10 +210,10 @@ Location
                                 @endphp
                                 @endforeach
                                 @foreach($show_details as $detail)
-                                <h4>
+                                <div class="tagp_class">
                                     <span class="subtitle"><b>{{ $detail['detail_type'] }}:</b></span> {!!
                                     $detail['detail_value'] !!}
-                                </h4>
+                                </div>
                                 @endforeach
                                 @endif
                                 @isset($service->taxonomy)
@@ -224,7 +222,7 @@ Location
                                     $i = 0;
                                     $j = 0;
                                 @endphp
-                                <h4>
+                                <div class="tagp_class">
                                     <span class="pl-0 category_badge subtitle">
                                         @foreach ($service->taxonomy as $service_taxonomy_info)
                                         @if (isset($service_taxonomy_info->taxonomy_type) &&
@@ -244,8 +242,8 @@ Location
                                         @endif
                                         @endforeach
                                     </span>
-                                </h4>
-                                <h4>
+                                </div>
+                                <div class="tagp_class">
                                     <span class="pl-0 category_badge subtitle">
                                         @foreach ($service->taxonomy as $service_taxonomy_info)
                                         @if (isset($service_taxonomy_info->taxonomy_type) &&
@@ -265,7 +263,7 @@ Location
                                         @endif
                                         @endforeach
                                     </span>
-                                </h4>
+                                </div>
                                 @endif
                                 @endisset
                         </div>
@@ -309,6 +307,7 @@ Location
     {!! Form::open(['route' => ['location_comment',$facility->location_recordid],'class' => 'comment-reply']) !!}
     {{ csrf_field() }}
     <div class="form-group">
+        <label class="d-none">comments </label>
         <textarea class="form-control" id="reply_content" name="reply_content" rows="3">
                                     </textarea>
     </div>
@@ -329,8 +328,8 @@ Location
 <div class="col-md-4 property">
     @if ((Auth::user() && Auth::user()->user_organization && $facility->organization &&
     str_contains(Auth::user()->user_organization,$facility->organization->organization_recordid) &&
-    Auth::user()->roles->name == 'Organization Admin') || Auth::user() && Auth::user()->roles->name == 'System Admin' ||
-    Auth::user() && Auth::user()->roles->name != 'Organization Admin')
+    ((Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin'))) || Auth::user() && Auth::user()->roles->name == 'System Admin' ||
+    Auth::user() && ((Auth::user()->roles->name != 'Organization Admin' || Auth::user()->roles->name != 'Section Admin')))
     <div style="display: flex;" class="mb-20">
         <div class="dropdown add_new_btn" style="width: 100%; float: right;">
             <button class="btn btn-primary dropdown-toggle btn-block" type="button" id="dropdownMenuButton-group"
@@ -414,7 +413,7 @@ target="_blank">{{ $address->address_1 }} {{ $address->address_2 }} {{ $address-
             @endif) --}}
         </h4>
         @foreach($facility->organization->contact as $contact_info)
-        <div class="location_border">
+        <div class="location_border p-0">
             <table class="table ">
                 <tbody>
                     @if($contact_info->contact_name)
@@ -545,10 +544,10 @@ target="_blank">{{ $address->address_1 }} {{ $address->address_2 }} {{ $address-
 </div>
 </div>
 
-<script type="text/javascript" src="https://sliptree.github.io/bootstrap-tokenfield/dist/bootstrap-tokenfield.js">
+<script type="text/javascript" src="http://sliptree.github.io/bootstrap-tokenfield/dist/bootstrap-tokenfield.js">
 </script>
 <script type="text/javascript"
-    src="https://sliptree.github.io/bootstrap-tokenfield/docs-assets/js/typeahead.bundle.min.js"></script>
+    src="http://sliptree.github.io/bootstrap-tokenfield/docs-assets/js/typeahead.bundle.min.js"></script>
 
 <script>
     var tag_source = <?php print_r(json_encode($existing_tags)) ?>;

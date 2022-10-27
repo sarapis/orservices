@@ -59,7 +59,7 @@ ul#ui-id-1 {
                                 @endforeach
                             @endif
                         </h4>
-                        <h4 class="panel-text"><span class="badge bg-red">Organization:</span>
+                        <p class="panel-text"><span class="badge bg-red">Organization:</span>
                             @if(isset($service->organizations))
                                 @foreach($service->organizations as $organization)
                                     @if(isset($organization->organization_name))
@@ -71,11 +71,11 @@ ul#ui-id-1 {
                                     @endif
                                 @endforeach
                             @endif
-                        </h4>
+                        </p>
 
-                        <h4 class="panel-text"><span class="badge bg-blue">Description:</span> {!! $service->service_description !!}</h4>
+                        <p class="panel-text"><span class="badge bg-blue">Description:</span> {!! $service->service_description !!}</p>
 
-                        <h4 class="panel-text"><span class="badge bg-red">Phone:</span>
+                        <p class="panel-text"><span class="badge bg-red">Phone:</span>
                             @foreach($service->phone as $phone)
                                 @if($loop->last)
                                 {{$phone->phone_number}}
@@ -83,48 +83,48 @@ ul#ui-id-1 {
                                 {{$phone->phone_number}},
                                 @endif
                             @endforeach
-                        </h4>
+                        </p>
 
-                        <h4 class="panel-text"><span class="badge bg-red">Extension:</span>
+                        <p class="panel-text"><span class="badge bg-red">Extension:</span>
                             @foreach($service->phone as $phone) {!! $phone->phone_extension !!} @endforeach
-                        </h4>
+                        </p>
 
-                        <h4 class="panel-text" style="word-wrap: break-word;"><span class="badge bg-blue" >Url:</span> @if($service->service_url!=NULL)<a href="{!! $service->service_url !!}">{!! $service->service_url !!}</a> @endif</h4>
+                        <p class="panel-text" style="word-wrap: break-word;"><span class="badge bg-blue" >Url:</span> @if($service->service_url!=NULL)<a href="{!! $service->service_url !!}">{!! $service->service_url !!}</a> @endif</p>
 
                         @if($service->service_email!=NULL)
-                        <h4 class="panel-text"><span class="badge bg-blue">Email:</span> {{$service->service_email}}</h4>
+                        <p class="panel-text"><span class="badge bg-blue">Email:</span> {{$service->service_email}}</p>
                         @endif
 
                         <hr>
 
                         <h3>Additional Info</h3>
 
-                        <h4 class="panel-text"><span class="badge bg-blue">Application Process:</span> {!! $service->service_application_process !!}</h4>
+                        <p class="panel-text"><span class="badge bg-blue">Application Process:</span> {!! $service->service_application_process !!}</p>
 
-                        <h4 class="panel-text"><span class="badge bg-blue">Wait Time:</span> {{$service->service_wait_time}}</h4>
+                        <p class="panel-text"><span class="badge bg-blue">Wait Time:</span> {{$service->service_wait_time}}</p>
 
-                        <h4 class="panel-text"><span class="badge bg-blue">Fees:</span> {{$service->service_fees}}</h4>
+                        <p class="panel-text"><span class="badge bg-blue">Fees:</span> {{$service->service_fees}}</p>
 
-                        <h4 class="panel-text"><span class="badge bg-blue">Accreditations:</span> {{$service->service_accreditations}}</h4>
+                        <p class="panel-text"><span class="badge bg-blue">Accreditations:</span> {{$service->service_accreditations}}</p>
 
-                        <h4 class="panel-text"><span class="badge bg-blue">Licenses:</span> {{$service->service_licenses}}</h4>
+                        <p class="panel-text"><span class="badge bg-blue">Licenses:</span> {{$service->service_licenses}}</p>
 
                         <hr>
 
                         @if(isset($service->address))
-                        <h4><span class="badge bg-blue">Address:</span>
+                        <p><span class="badge bg-blue">Address:</span>
 
                                 @foreach($service->address as $address)
                                    <br>{{ $address->address_1 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
                                 @endforeach
 
-                        </h4>
+                        </p>
                         @endif
 
                         @if(isset($service->contact()->first()->contact_name))
-                        <h4><span class="badge bg-red">Contact:</span>
+                        <p><span class="badge bg-red">Contact:</span>
                             {{$service->contact()->first()->contact_name}}
-                        </h4>
+                        </p>
                         @endif
 
                         <h3>Details</h3>
@@ -147,7 +147,7 @@ ul#ui-id-1 {
                             @endphp
                           @endforeach
                           @foreach($show_details as $detail)
-                            <h4><span class="badge bg-red">{{ $detail['detail_type'] }}:</span> {!! $detail['detail_value'] !!}</h4>
+                            <p><span class="badge bg-red">{{ $detail['detail_type'] }}:</span> {!! $detail['detail_value'] !!}</p>
                           @endforeach
                         @endif
                     </div>

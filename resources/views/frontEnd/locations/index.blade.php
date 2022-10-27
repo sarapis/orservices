@@ -111,6 +111,11 @@ Locations
                 </h4>
                 <div class="card">
                     <div class="card-block">
+                        <div class="row mb-10 mr-10">
+                            <div class="col-md-12">
+                                <a href="{{ route('facilities.export') }}" class="btn btn-info float-right">Export Locations</a>
+                            </div>
+                        </div>
                         <div class="table-responsive">
                             <table class="table jambo_table bulk_action" id="tbl-location">
                                 <thead>
@@ -119,6 +124,8 @@ Locations
                                         <th class="default-active">Location Name</th>
                                         <th class="default-active">Organization</th>
                                         <th class="default-active">Address</th>
+                                        <th class="default-active">City</th>
+                                        <th class="default-active">State</th>
                                         <th class="default-active">Contacts</th>
                                         <th class="default-active">Services</th>
                                         {{-- <th class="default-active">Location Description</th> --}}
@@ -255,6 +262,8 @@ Locations
                     { data: 'location_name', name: 'location_name' },
                     { data: 'location_organization', name: 'location_organization' },
                     { data: 'location_address', name: 'location_address' },
+                    { data: 'location_city', name: 'location_city' },
+                    { data: 'location_state', name: 'location_state' },
                     { data: 'location_contact', name: 'location_contact' },
                     { data: 'location_service', name: 'location_service' },
                     // { data: 'contact_organizations', name: 'contact_organizations' },
@@ -288,16 +297,16 @@ Locations
                         "orderable": true,
                         "class": "text-left"
                     },
-                    // {
-                    //     "targets": 4,
-                    //     "orderable": false,
-                    //     "class": "text-center"
-                    // },
-                    // {
-                    //     "targets": 5,
-                    //     "orderable": true,
-                    //     "class": "text-center"
-                    // },
+                    {
+                        "targets": 4,
+                        "orderable": false,
+                        "class": "text-center"
+                    },
+                    {
+                        "targets": 5,
+                        "orderable": true,
+                        "class": "text-center"
+                    },
                     // {
                     //     "targets": 6,
                     //     "orderable": true,

@@ -48,8 +48,8 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
 
 
-    <link href="https://sliptree.github.io/bootstrap-tokenfield/dist/css/tokenfield-typeahead.css" rel="stylesheet">
-    <link href="https://sliptree.github.io/bootstrap-tokenfield/dist/css/bootstrap-tokenfield.css" rel="stylesheet">
+    <link href="http://sliptree.github.io/bootstrap-tokenfield/dist/css/tokenfield-typeahead.css" rel="stylesheet">
+    <link href="http://sliptree.github.io/bootstrap-tokenfield/dist/css/bootstrap-tokenfield.css" rel="stylesheet">
 
     <!-- Fonts -->
     <link rel="stylesheet" href="../../../../frontend/global/fonts/web-icons/web-icons.css">
@@ -58,13 +58,13 @@
     <link rel="stylesheet" href="../../../frontend/global/fonts/material-design/material-design.min.css">
     <link rel="stylesheet" href="../../../frontend/global/fonts/brand-icons/brand-icons.min.css">
     <link rel="stylesheet" href="../../../frontend/global/vend/asrange/asRange.css">
-    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
     <link rel="stylesheet" href="../../../css/explorestyle.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/themes/default/style.min.css" />
 
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
-    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
 
     <link rel="stylesheet" href="../../frontend/assets/examples/css/pages/register.css">
 
@@ -442,7 +442,7 @@
         }
 
         .goog-te-menu-value {
-            max-width: 22px;
+            /* max-width: 22px; */
             display: inline-block;
         }
     </style>

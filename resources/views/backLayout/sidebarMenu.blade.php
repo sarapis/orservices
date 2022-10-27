@@ -46,8 +46,8 @@
                         <li><a href="/messagesSetting">Other Services</a></li>
                         <li><a href="/system_emails">System Emails</a></li>
                         <li><a href="/helptexts">Help Text</a></li>
-                        {{-- <li><a href="/sections">Sections</a></li>
-                        --}}
+                        <li><a href="{{ route('layout_edit.dowload_settings') }}">Downloads</a></li>
+                        {{-- <li><a href="/sections">Sections</a></li> --}}
                         {{-- <li><a href="/meta_filter">Meta Filter</a></li>
                         <li><a href="{{ route('messagesSetting') }}">Campaigns</a></li> --}}
                     </ul>
@@ -55,14 +55,15 @@
                 <li><a><i class="fa fa-gears"></i> Tools <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                         {{-- <li><a href="{{ route('All_Sessions.index') }}">Sessions</a></li> --}}
-                        {{-- <li><a href="/meta_filter">Meta Filter</a></li> --}}
+                        <li><a href="/meta_filter">Meta Filter</a></li>
                         <!-- <li><a href="/messagesSetting">Campaigns</a></li> -->
                         <li><a href="/analytics">Analytics</a></li>
                     </ul>
                 </li>
-                <li><a><img src="/images/activity.png" alt="activity" style="margin-left: -5px;width: 25px"/>  Activity <span class="fa fa-chevron-down"></span></a>
+                <li><a><img src="/images/activity.png" alt="activity" style="margin-left: -5px;width: 25px" /> Activity
+                        <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                        <li><a href="{{ route('notes.index') }}">Notes</a></li>
+                        <li><a href="{{ route('notes.index') }}">Interactions</a></li>
                         <li><a href="{{ route('edits.index') }}">Edits</a></li>
                     </ul>
                 </li>
@@ -92,12 +93,13 @@
                 </li>
                 <li><a><i class="fa fa-envelope"></i> Inbox <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                        <li><a href="/contact_form">Contact Form</a></li>
+                        <li><a href="/contact_form">Suggestion Form</a></li>
                         <li><a href="/registrations">Registrations</a></li>
                         <li><a href="/show_added_taxonomy">Taxonomy Terms</a></li>
                     </ul>
                 </li>
-                <li><a><img src="/images/Classifications.png" alt="" style="margin-left: -5px;width: 25px"> Classifications <span class="fa fa-chevron-down"></span></a>
+                <li><a><img src="/images/Classifications.png" alt="" style="margin-left: -5px;width: 25px">
+                        Classifications <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                         <li><a href="/tb_taxonomy">Services</a></li>
                         <li><a href="{{ route('languages.index') }}">Language</a></li>
@@ -113,6 +115,10 @@
                         <li><a href="{{ route('service_areas.index') }}">Service Areas</a></li>
                         <li><a href="{{ route('fees_options.index') }}">Fee Options</a></li>
                         <li><a href="{{ route('regions.index') }}">Regions</a></li>
+                        <li><a href="{{ route('dispositions.index') }}">Disposition</a></li>
+                        <li><a href="{{ route('interaction_methods.index') }}">Interaction Method</a></li>
+                        <li><a href="{{ route('service_status.index') }}">Service Status</a></li>
+                        <li><a href="{{ route('service_tags.index') }}">Service Tag</a></li>
 
                         {{-- <li><a href="{{ route('service_categories.index') }}">Service Category</a></li>
                         <li><a href="{{ route('service_eligibilities.index') }}">Service Eligibility</a></li> --}}
@@ -159,24 +165,21 @@
             <h3>System</h3>
             <ul class="nav side-menu">
                 {{-- @if (Sentinel::getUser()->hasAnyAccess(['user.*'])) --}}
-                    <li><a><i class="fa fa-users"></i> Users <span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            <li><a href="{{ route('user.index') }}">All users</a></li>
-                            <li><a href="{{ route('user.create') }}">New user</a></li>
-                        </ul>
-                    </li>
-                    {{--
-                @endif
-                @if (Sentinel::getUser()->hasAnyAccess(['role.*']))
-                    --}}
-                    <li><a><i class="fa fa-cog"></i> Roles <span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            <li><a href="{{ route('role.index') }}">All Roles</a></li>
-                            <li><a href="{{ route('role.create') }}">New Role</a></li>
-                        </ul>
-                    </li>
-                    {{--
-                @endif --}}
+                <li><a><i class="fa fa-users"></i> Users <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                        <li><a href="{{ route('user.index') }}">All users</a></li>
+                        <li><a href="{{ route('user.create') }}">New user</a></li>
+                    </ul>
+                </li>
+                {{-- @endif
+                @if (Sentinel::getUser()->hasAnyAccess(['role.*'])) --}}
+                <li><a><i class="fa fa-cog"></i> Roles <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                        <li><a href="{{ route('role.index') }}">All Roles</a></li>
+                        <li><a href="{{ route('role.create') }}">New Role</a></li>
+                    </ul>
+                </li>
+                {{-- @endif --}}
                 <li><a><i class="fa fa-list"></i> Log Viewer <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                         <li><a href="/log-viewer"> Dashboard</a></li>

@@ -107,7 +107,7 @@ Contact Create
                                             <table class="table table_border_none" id="PhoneTable">
                                                 <thead>
                                                     <th>Number</th>
-                                                    <th>extension</th>
+                                                    <th>Extension</th>
                                                     <th style="width:200px;position:relative;">Type
                                                         <div class="help-tip" style="top:8px;">
                                                             <div><p>Select “Main” if this is the organization's primary phone number (or leave blank)

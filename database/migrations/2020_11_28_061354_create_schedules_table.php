@@ -40,7 +40,7 @@ class CreateSchedulesTable extends Migration
             $table->string('byweekno')->nullable();
             $table->string('bymonthday')->nullable();
             $table->string('byyearday')->nullable();
-            $table->string('description')->nullable();
+            $table->longText('description')->nullable();
             $table->string('timezone')->nullable();
             $table->string('schedule_services')->nullable();
             $table->string('schedule_locations')->nullable();

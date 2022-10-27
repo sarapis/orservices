@@ -28,7 +28,7 @@
                                     @endforeach
                                 @endif
                             </h4>
-                            <h4><span class="badge bg-red">Organization:</span>
+                            <p><span class="badge bg-red">Organization:</span>
                                 @if ($service->service_organization != 0)
                                     @if (isset($service->organizations))
                                         @foreach ($service->organizations as $organization)
@@ -46,20 +46,20 @@
                                         @endforeach
                                     @endif
                                 @endif
-                            </h4>
-                            <h4><span class="badge bg-red">Phone:</span>
+                            </p>
+                            <p><span class="badge bg-red">Phone:</span>
                                 @foreach ($service->phone as $phone) {!!
                                     $phone->phone_number !!} @endforeach
-                            </h4>
-                            <h4><span class="badge bg-blue">Address:</span>
+                            </p>
+                            <p><span class="badge bg-blue">Address:</span>
                                 @if ($service->service_address != null)
                                     @foreach ($service->address as $address)
                                         {{ $address->address_1 }}
                                     @endforeach
                                 @endif
-                            </h4>
-                            <h4><span class="badge bg-blue">Description:</span> {!! $service->service_description !!}
-                            </h4>
+                            </p>
+                            <p><span class="badge bg-blue">Description:</span> {!! $service->service_description !!}
+                            </p>
                         </div>
                     </div>
                     <hr>

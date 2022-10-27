@@ -18,17 +18,26 @@ Services
                     aria-expanded="false">
                     Types Of Services
                 </button>
-                <div class="dropdown-menu bullet" aria-labelledby="exampleSizingDropdown1" role="menu"
-                    id="sidebar_tree">
+                <div class="dropdown-menu bullet" aria-labelledby="exampleSizingDropdown1" role="menu" id="sidebar_tree">
                 </div>
             </div>
+            @if ($layout->meta_filter_activate == 1 && $layout->user_metafilter_option == 1)
+            <div class="dropdown">
+                <button type="button" class="btn dropdown-toggle" id="exampleSizingDropdown1" data-toggle="dropdown" aria-expanded="false">
+                    {{ (isset($filter_label) ? ($filter_label == 'off_label' ? $layout->meta_filter_off_label : $layout->meta_filter_on_label) : ($layout->default_label ? ($layout->default_label == 'off_label' ? $layout->meta_filter_off_label : $layout->meta_filter_on_label): $layout->meta_filter_off_label)) }}
+                </button>
+                <div class="dropdown-menu " aria-labelledby="exampleSizingDropdown1" role="menu">
+                <a class="dropdown-item drop-label{{ (isset($filter_label) && $filter_label == 'off_label') || !isset($filter_label) && $layout->default_label == 'off_label'  ? ' active' : '' }}" href="javascript:void(0)" role="menuitem" data-id="off_label">{{ $layout->meta_filter_off_label }}</a>
+                <a class="dropdown-item drop-label{{ (isset($filter_label) && $filter_label == 'on_label') || !isset($filter_label) && $layout->default_label == 'on_label'  ? ' active' : '' }}" href="javascript:void(0)" role="menuitem" data-id="on_label">{{ $layout->meta_filter_on_label }}</a>
+                </div>
+            </div>
+            @endif
             <!--end  Types Of Services -->
-            @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin' || (Auth::user() &&
-            Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin'))
+            @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin' || (Auth::user() && Auth::user()->roles && (Auth::user()->roles->name != 'Organization Admin' || Auth::user()->roles->name != 'Section Admin')))
             @php
             $org_activate = [];
             if(isset($selected_organization)){
-            $org_activate = json_decode($selected_organization);
+                $org_activate = json_decode($selected_organization);
             }
             @endphp
             <div class="dropdown">
@@ -36,19 +45,17 @@ Services
                     aria-expanded="false">
                     Organization Tags
                 </button>
-                <div class="dropdown-menu bullet" aria-labelledby="exampleSizingDropdown1" role="menu">
+                <div class="dropdown-menu bullet" aria-labelledby="exampleSizingDropdown1" role="menu" id="organization_tags_tree">
                     {{-- {!! Form::select('organization_tags',$organization_tagsArray,'',['class' => 'btn dropdown-toggle']) !!} --}}
-                    @foreach ($organization_tagsArray as $key => $value)
-                    <a class="dropdown-item drop-tags{{ isset($selected_organization) && in_array($key,$org_activate) ? ' active' : '' }}"
-                        href="javascript:void(0)" role="menuitem" data-id="{{ $key }}">{{ $value }}</a>
-                    @endforeach
+                    {{-- @foreach ($organization_tagsArray as $key => $value)
+                    <a class="dropdown-item drop-tags {{ isset($selected_organization) && in_array($key,$org_activate) ? ' active' : '' }}" href="javascript:void(0)" role="menuitem" data-id="{{ $key }}">{{ $value }}</a>
+                    @endforeach --}}
                     {{-- <select class="form-control selectpicker" multiple data-live-search="true" id="organization_tag" data-size="3" name="organization_tag[]">
                         <option value="" selected disabled hidden>Filter by Tags</option>
                         @foreach($organization_tag_list as $key => $organization_tag)
                             <option value="{{$organization_tag}}">{{$organization_tag}}</option>
                     @endforeach
                     </select> --}}
-
                 </div>
             </div>
             @endif
@@ -86,16 +93,22 @@ Services
             <!--end Results Per Page -->
 
             <!-- download -->
+            @if ($layout->display_download_menu == 1)
             <div class="dropdown btn_download float-right">
                 <button type="button" class="float-right btn_share_download dropdown-toggle" id="exampleBulletDropdown4"
                     data-toggle="dropdown" aria-expanded="false">
                     <img src="/frontend/assets/images/download.png" alt="" title="" class="mr-10"> Download
                 </button>
                 <div class="dropdown-menu bullet" aria-labelledby="exampleBulletDropdown4" role="menu">
+                    @if ($layout->display_download_csv == 1)
                     <a class="dropdown-item download_csv" href="javascript:void(0)" role="menuitem">Download CSV</a>
+                    @endif
+                    @if ($layout->display_download_pdf == 1)
                     <a class="dropdown-item download_pdf" href="javascript:void(0)" role="menuitem">Download PDF</a>
+                    @endif
                 </div>
             </div>
+            @endif
 
             <!--end download -->
             @if ($layout->service_share_button == 1)
@@ -139,15 +152,15 @@ Services
                             {{ isset($service->miles)  ? floatval(number_format($service->miles,2)) .' miles'  : '' }}
                         </p>
                     </h4>
-                    <h4 class="org_title"><span class="subtitle"><b>Organization:</b></span>
+                    <p class="org_title"><span class="subtitle"><b>Organization:</b></span>
                         @if(isset($service->organizations))
                         <a class="panel-link" class="notranslate"
                             href="/organizations/{{$service->organizations()->first()->organization_recordid}}">
                             {{$service->organizations()->first()->organization_name}}</a>
                         @endif
-                    </h4>
-                    <h4 style="line-height: inherit;">{!! Str::limit(str_replace(array('\n', '/n', '*'), array(' ', ' ',
-                        ' '), $service->service_description), 200) !!}</h4>
+                    </p>
+                    <div class="tagp_class">{!! Str::limit(str_replace(array('\n', '/n', '*'), array(' ', ' ',
+                        ' '), $service->service_description), 200) !!}</div>
                         @php
                             $phone_number_info = '';
                             $mainPhoneNumber = [];
@@ -166,42 +179,42 @@ Services
                         @endphp
                     @isset($mainPhoneNumber)
                     @if (count($mainPhoneNumber) > 0)
-                    <h4>
-                        <span><i class="icon md-phone font-size-18 vertical-align-top  mr-5 pr-10"></i>
-
+                    <div class="tagp_class">
+                        <span><i class="icon md-phone font-size-18 vertical-align-top mr-10"></i>
                             @foreach ($mainPhoneNumber as $key => $item)
                             {{-- <a href="tel:{{$item}}">{{ $key == 0 ? $item : ', '.$item}}</a> --}}
-                            <p>
+                            <span>
                                 @if ($key == 0)
                                     <a href="tel:{{$item->phone_number}}">{{ $item->phone_number}}</a>
                                 @else
-                                {{ $item->phone_number}}
+                                {{ ', '.$item->phone_number}}
                                 @endif
-                                &nbsp;&nbsp;{{ $item->phone_extension ? 'ext. '. $item->phone_extension : '' }}&nbsp;{{ $item->type ? '('.$item->type->type.')' : '' }}
+                                {!! $item->phone_extension ? '&nbsp;&nbsp;ext. '. $item->phone_extension : '' !!}{!! $item->type ? '&nbsp;('.$item->type->type.')' : '' !!}
                             @if ($item->phone_language)
                             {{ $item->phone_language }}
                             @endif
-                            {{ $item->phone_description ? '- '.$item->phone_description : '' }}</p>
+                            {{ $item->phone_description ? '- '.$item->phone_description : '' }}</span>
                             @endforeach
                         </span>
-                    </h4>
+                    </div>
                     @endif
                     @endisset
                     @isset($service->address)
                     @if (count($service->address) > 0)
-                    <h4><span><i class="icon md-pin font-size-18 vertical-align-top mr-5 pr-10"></i>
-                            @if(isset($service->address))
-                            <ul>
-                                @foreach($service->address as $address)
+                    <div class="tagp_class">
+                        @if(isset($service->address))
+                        <ul class="p-0" style="margin-left: 25px;">
+                            @foreach($service->address as $address)
+                            <span><i class="icon md-pin font-size-18 vertical-align-top mr-10"></i>
                                 <li>
                                     {{ $address->address_1 }} {{ $address->address_2 }} {{ $address->address_city }}
                                     {{ $address->address_state_province }} {{ $address->address_postal_code }}
                                 </li>
+                            </span>
                                 @endforeach
                             </ul>
                             @endif
-                        </span>
-                    </h4>
+                    </div>
                     @endif
                     @endisset
                     @isset($service->taxonomy)
@@ -212,6 +225,7 @@ Services
                         $service_category_data = 0;
                         $service_eligibility_data = 0;
                         foreach($service->taxonomy as $service_taxonomy_info){
+                            // dd($service->taxonomy,$service_taxonomy_info->taxonomy_type);
                             if (isset($service_taxonomy_info->taxonomy_type) && count($service_taxonomy_info->taxonomy_type) > 0 && $service_taxonomy_info->taxonomy_type[0]->name == 'Service Category'){
                                 $service_category_data += 1;
                             }
@@ -222,7 +236,7 @@ Services
 
                     @endphp
                     @if ($service_category_data != 0)
-                    <h4>
+                    <div class="tagp_class">
                         <span class="pl-0 category_badge subtitle">
                             @foreach ($service->taxonomy as $service_taxonomy_info)
                             @if (isset($service_taxonomy_info->taxonomy_type) &&
@@ -242,10 +256,10 @@ Services
                             @endif
                             @endforeach
                         </span>
-                    </h4>
+                    </div>
                     @endif
                     @if ($service_eligibility_data != 0)
-                    <h4>
+                    <div class="tagp_class">
                         <span class="pl-0 category_badge subtitle">
                             @foreach ($service->taxonomy as $service_taxonomy_info)
                             @if (isset($service_taxonomy_info->taxonomy_type) &&
@@ -265,7 +279,7 @@ Services
                             @endif
                             @endforeach
                         </span>
-                    </h4>
+                    </div>
                     @endif
                     @endif
                     @endisset
@@ -285,8 +299,7 @@ Services
                 <ul>
                     <li style="color: #ffffff; list-style: disc;">Remove any location filters</li>
                     <li style="color: #ffffff; list-style: disc;">Use more general terms in the search bar</li>
-                    <li style="color: #ffffff; list-style: disc;">Click on Types of Services on the left side of the
-                        screen instead of using the search field</li>
+                    <li style="color: #ffffff; list-style: disc;">Click on Types of Services on the left side of the screen instead of using the search field</li>
                 </ul>
             </div>
             @endif
@@ -386,9 +399,15 @@ Services
                 }
                 if(value.address){
                     for(i = 0; i < value.address.length; i ++){
-                        content +=  '<div class="iw-subTitle">Address</div>'+
-                                 value.address[i].address_1+ ', '+value.address[i].address_city+','+value.address[i].address_state_province+','+value.address[i].address_postal_code ;
-                        content += '<div><a href="https://www.google.com/maps/dir/?api=1&destination=' + value.address[i].address_1+ ', '+value.address[i].address_city+','+value.address[i].address_state_province+','+value.address[i].address_postal_code + '" target="_blank">View on Google Maps</a></div>';
+                        // content +=  '<div class="iw-subTitle">Address</div>'+
+                        //          value.address[i].address_1+ ', '+value.address[i].address_city+','+value.address[i].address_state_province+','+value.address[i].address_postal_code ;
+                        content += '<div class="iw-subTitle">Address</div>' +
+                                    value.address[i].address_1 + (value.address[i]
+                                    .address_city ? ', ' + value.address[i]
+                                    .address_city : '') +  (value.address[i].address_state_province ? ',' + value.address[i].address_state_province : '') +
+                                    (value.address[i].address_postal_code ? ',' + value.address[i].address_postal_code : '');
+                        // content += '<div><a href="https://www.google.com/maps/dir/?api=1&destination=' + value.address[i].address_1+ ', '+value.address[i].address_city+','+value.address[i].address_state_province+','+value.address[i].address_postal_code + '" target="_blank">View on Google Maps</a></div>';
+                        content += '<div><a href="https://www.google.com/maps/dir/?api=1&destination=' + value.address[i].address_1 + (value.address[i].address_city ? ', ' + value.address[i].address_city : '') + (value.address[i].address_state_province ? ',' + value.address[i].address_state_province : '') + (value.address[i].address_postal_code ? ',' + value.address[i].address_postal_code : '') + '" target="_blank">View on Google Maps</a></div>';
                     }
                 }
                 if(value.services.length > 1){
@@ -492,6 +511,7 @@ Services
             $("#filter").submit();
 
         });
+
     });
 
 </script>

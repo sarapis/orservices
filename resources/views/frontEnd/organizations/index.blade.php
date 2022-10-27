@@ -21,7 +21,8 @@ Organizations
                     <p class="card-text" style="font-weight:400;">
                         {!! Str::limit($organization->organization_description, 200) !!}
                     </p>
-                    <h4><span>Number of Services:
+                    <div class="tagp_class">
+                        <span>Number of Services:
                             @php
                             if(count($organization->services) == 0){
                             $organization_services = $organization->getServices->count();
@@ -38,9 +39,9 @@ Organizations
                         <a href="/organizations/{{$organization->organization_recordid}}">
                             <img src="/frontend/assets/images/arrow_right.png" alt="" title="" class="float-right">
                         </a>
-                    </h4>
+                    </div>
                     @auth
-                    <h4> <span>Last Updated: </span> {{ $organization->updated_at }}</h4>
+                    <div class="tagp_class"><span>Last Updated: </span> {{ $organization->updated_at }}</div>
                     @endauth
                 </div>
             </div>

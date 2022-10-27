@@ -12,14 +12,12 @@
                         <div class="form-check form-check-inline">
                             <input class="form-check-input phoneRadio" type="radio" name="phoneRadio"
                                 id="phoneRadio2" value="new_data" checked>
-                            <label class="form-check-label" for="phoneRadio2"><b style="color: #000">Create New
-                                    Data</b></label>
+                            <label class="form-check-label" for="phoneRadio2"><b style="color: #000">Create New Phone</b></label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input phoneRadio" type="radio" name="phoneRadio"
                                 id="phoneRadio1" value="existing">
-                            <label class="form-check-label" for="phoneRadio1"><b style="color: #000">Existing
-                                    Data</b></label>
+                            <label class="form-check-label" for="phoneRadio1"><b style="color: #000">Use Existing Phone</b></label>
                         </div>
                     </div>
                     <div class="" id="existingPhoneData" style="display: none;">

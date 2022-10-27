@@ -10,16 +10,12 @@
                 <div class="modal-body all_form_field">
                     <div class="form-group">
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input phoneRadio" type="radio" name="phoneRadio"
-                                id="phoneRadio2" value="new_data" checked>
-                            <label class="form-check-label" for="phoneRadio2"><b style="color: #000">Create New
-                                    Data</b></label>
+                            <input class="form-check-input phoneRadio" type="radio" name="phoneRadio" id="phoneRadio2" value="new_data" checked>
+                            <label class="form-check-label" for="phoneRadio2"><b style="color: #000">Create New Phone</b></label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input phoneRadio" type="radio" name="phoneRadio"
-                                id="phoneRadio1" value="existing">
-                            <label class="form-check-label" for="phoneRadio1"><b style="color: #000">Existing
-                                    Data</b></label>
+                            <input class="form-check-input phoneRadio" type="radio" name="phoneRadio" id="phoneRadio1" value="existing">
+                            <label class="form-check-label" for="phoneRadio1"><b style="color: #000">Use Existing Phone</b></label>
                         </div>
                     </div>
                     <div class="" id="existingPhoneData" style="display: none;">
@@ -36,32 +32,32 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Phone Number:</label>
+                                    <label>Phone Number</label>
                                     <input class="form-control selectpicker" type="text" id="phone_number_p" name="phone_number" value="">
                                     <span id="phone_number_error" style="display: none;color:red">Phone Number is required!</span>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Phone Extension: </label>
+                                    <label>Phone Extension </label>
                                     <input class="form-control selectpicker" type="text" id="phone_extension_p" name="phone_extension" value="">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Phone Type: </label>
+                                    <label>Phone Type </label>
                                     {!! Form::select('phone_type_p',$phone_type,array_search('Voice', $phone_type->toArray()),['class' => 'form-control selectpicker','data-live-search' => 'true','id' => 'phone_type_p','data-size' => 5,'placeholder' => 'select phone type'])!!}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Phone Language: </label>
+                                    <label>Phone Language </label>
                                     {!! Form::select('phone_language_p[]',$phone_languages,[],['class' => 'form-control selectpicker phone_language','data-size' => 5,'data-live-search' => 'true',"multiple" => true,"id" => "phone_language_p"]) !!}
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>Phone Description: </label>
+                                    <label>Phone Description </label>
                                     <input type="text" class="form-control" name="phone_description_p" id="phone_description_p" value="">
                                 </div>
                             </div>
@@ -77,10 +73,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button"
-                        class="btn btn-danger btn-lg btn_delete red_btn phoneCloseButton">Close</button>
-                    <button type="button" id="phoneSubmit"
-                        class="btn btn-primary btn-lg btn_padding green_btn">Save</button>
+                    <button type="button" class="btn btn-danger btn-lg btn_delete red_btn phoneCloseButton">Close</button>
+                    <button type="button" id="phoneSubmit" class="btn btn-primary btn-lg btn_padding green_btn">Save</button>
                 </div>
             </form>
         </div>

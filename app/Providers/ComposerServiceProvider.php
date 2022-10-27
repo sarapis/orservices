@@ -136,7 +136,9 @@ class ComposerServiceProvider extends ServiceProvider
             // foreach ($tag_list as $key => $value) {
             //     $organization_tagsArray[$value] = $value;
             // }
-            $organization_tagsArray = OrganizationTag::pluck('tag', 'id');
+            // $organization_tagsArray = OrganizationTag::pluck('tag', 'id');
+            $organization_tagsArray = OrganizationTag::get();
+            $organization_tagsArray = json_encode($organization_tagsArray);
 
             // $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name')->whereNotNull('taxonomy_services')->get();
             $layout = Layout::first();

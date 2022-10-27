@@ -72,6 +72,7 @@
 					{!! $errors->first('organization', '<p class="help-block">:message</p>') !!}
 				</div>
             </div>
+            @if ($layout->show_registration_message == '1')
             <div class="col-md-12">
 				<div class="form-group  {{ $errors->has('message') ? 'has-error' : ''}}">
 					<label for="message">Your Message</label>
@@ -79,6 +80,7 @@
 					{!! $errors->first('message', '<p class="help-block">:message</p>') !!}
 				</div>
             </div>
+            @endif
 			<div class="col-md-6">
 				<div class="form-group  {{ $errors->has('password') ? 'has-error' : ''}}">
 					<label for="password">Password</label>

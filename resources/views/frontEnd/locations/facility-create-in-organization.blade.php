@@ -35,27 +35,7 @@ Location Create
                                     </div>
                                 </div>
                                 <input type="hidden" id="facility_organization" name="facility_organization" value="{{$organization->organization_recordid}}">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Location Alternate Name: </label>
-                                        <input class="form-control selectpicker" type="text" id="location_alternate_name"
-                                            name="location_alternate_name" value="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Location Transportation: </label>
-                                        <input class="form-control selectpicker" type="text" id="location_transporation"
-                                            name="location_transporation" value="">
-                                    </div>
-                                </div>
-                                {{-- <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Location Details: </label>
-                                        <input class="form-control selectpicker" type="text" id="location_details"
-                                            name="location_details  " value="">
-                                    </div>
-                                </div> --}}
+
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Location Service: </label>
@@ -73,29 +53,7 @@ Location Create
                                         <textarea id="location_description" name="location_description" class="form-control selectpicker" rows="5" cols="30"></textarea>
                                     </div>
                                 </div>
-                                {{-- <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Location Schedule: </label>
-                                        <select class="form-control selectpicker" multiple data-live-search="true" id="facility_schedules"
-                                            name="facility_schedules[]" data-size="5" >
-                                            @foreach($schedule_info_list as $key => $schedule_info)
-                                            <option value="{{$schedule_info->schedule_recordid}}">{{$schedule_info->opens_at}} ~ {{$schedule_info->closes_at}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div> --}}
-                                <!-- <div class="form-group">
-                                        <label>Location Address: </label>
-                                        <select class="form-control selectpicker" multiple data-live-search="true" id="facility_address"
-                                            name="facility_address[]" data-size="5" >
-                                            @foreach($address_info_list as $key => $address_info)
-                                            @if($address_info->address_1)
-                                            <option value="{{$address_info->address_recordid}}">{{$address_info->address_1}}, {{$address_info->address_city}}, {{$address_info->address_state_province}}, {{$address_info->address_postal_code}}</option>
-                                            @endif
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div> -->
+
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Street Address: </label>
@@ -103,15 +61,6 @@ Location Create
                                             name="facility_street_address" value="">
                                     </div>
                                 </div>
-
-                                <!-- <div class="form-group">
-                                        <label>Phone Number: </label>
-                                        <input class="form-control selectpicker" type="text" id="facility_phones"
-                                            name="facility_phones" value="">
-                                        <p id="error_cell_phone" style="font-style: italic; color: red;">Invalid phone number! Example: +39 422 789611, 0422-78961, (042)589-6000, +39 (0422)7896, 0422 (789611), 39 422/789 611 </p>
-                                    </div>
-                                </div> -->
-
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>City: </label>
@@ -141,34 +90,46 @@ Location Create
                                             name="facility_zip_code" value="">
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Regions: </label>
-                                        {!! Form::select('regions',$regions,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'regions','multiple' => true]) !!}
+                                <div class="text-right col-md-12 mb-20">
+                                    <button type="button" class="btn btn_additional bg-primary-color" data-toggle="collapse"
+                                        data-target="#additional_location">Additional Info
+                                        <img src="/frontend/assets/images/white_arrow.png" alt="" title="" />
+                                    </button>
+                                </div>
+                                <div id="additional_location" class="collapse row m-0 col-md-12">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Location Alternate Name: </label>
+                                            <input class="form-control selectpicker" type="text" id="location_alternate_name"
+                                                name="location_alternate_name" value="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Location Transportation: </label>
+                                            <input class="form-control selectpicker" type="text" id="location_transporation"
+                                                name="location_transporation" value="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Regions: </label>
+                                            {!! Form::select('regions',$regions,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'regions','multiple' => true]) !!}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Accessibility: </label>
+                                            {!! Form::select('accessibility',['Blank' => 'Blank','ADA Complaint' => 'ADA Complaint','Not ADA Compliant' => 'Not ADA Compliant'],null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'accessibility','placeholder' => 'select accessibility']) !!}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Accessibility Details: </label>
+                                            {!! Form::textarea('accessibility_details','Visitors with concerns about the level of access for specific physical conditions, are always recommended to contact the organization directly to obtain the best possible information about physical access',['class' => 'form-control','id' => 'accessibility_details','placeholder' => 'Accessibility Details']) !!}
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Accessibility: </label>
-                                        {!! Form::select('accessibility',['Blank' => 'Blank','ADA Complaint' => 'ADA Complaint','Not ADA Compliant' => 'Not ADA Compliant'],null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'accessibility','placeholder' => 'select accessibility']) !!}
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>Accessibility Details: </label>
-                                        {!! Form::textarea('accessibility_details','Visitors with concerns about the level of access for specific physical conditions, are always recommended to contact the organization directly to obtain the best possible information about physical access',['class' => 'form-control','id' => 'accessibility_details','placeholder' => 'Accessibility Details']) !!}
-                                    </div>
-                                </div>
-                                {{-- <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>Phones: <a id="add-phone-input"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a></label>
-                                        <ol id="phones-ul" class="row p-0 m-0" style="list-style: none;">
-                                            <li class="facility-phones-li mb-2 col-md-4">
-                                                <input class="form-control selectpicker facility_phones"  type="text" name="facility_phones[]" value="">
-                                            </li>
-                                        </ol>
-                                    </div>
-                                </div>  --}}
                             </div>
                         </div>
                     </div>
@@ -244,7 +205,7 @@ Location Create
                                             <table class="table table_border_none" id="PhoneTable">
                                                 <thead>
                                                     <th>Number</th>
-                                                    <th>extension</th>
+                                                    <th>Extension</th>
                                                     <th style="width:200px;position:relative;">Type
                                                         <div class="help-tip" style="top:8px;">
                                                             <div><p>Select “Main” if this is the organization's primary phone number (or leave blank)

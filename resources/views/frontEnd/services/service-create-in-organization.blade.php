@@ -30,7 +30,7 @@ Service Create
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Service Name: </label>
+                                        <label>Service Name </label>
                                         <div class="help-tip">
                                             <div><p>The official or public name of the service.</p></div>
                                         </div>
@@ -40,19 +40,10 @@ Service Create
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Service Alternate Name: </label>
-                                        <div class="help-tip">
-                                            <div><p> Alternative or commonly used name for a service.</p></div>
-                                        </div>
-                                        <input class="form-control selectpicker" type="text" id="service_alternate_name" name="service_alternate_name" value="">
-                                    </div>
-                                </div>
                                 <input type="hidden" id="service_organization" name="service_organization" value="{{$organization->organization_name}}">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>Service Description: </label>
+                                        <label>Service Description </label>
                                         <div class="help-tip">
                                             <div><p>A description of the service.</p></div>
                                         </div>
@@ -94,31 +85,19 @@ Service Create
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Access Requirement</label>
-                                        {{-- <div class="help-tip">
+                                        <label>Eligibility Requirement</label>
+                                        <div class="help-tip">
                                             <div>
-                                                <p>URL of the service</p>
+                                                <p>Is this service accessible to anyone or is there an eligibility requirement.</p>
                                             </div>
-                                        </div> --}}
+                                        </div>
                                         {!! Form::select('access_requirement',['none'=>'None','yes'=>'Yes'],'none',['class' =>
                                         'form-control selectpicker']) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Service Area</label>
-                                        <div class="help-tip">
-                                            <div>
-                                                <p>The geographic area where this service is accessible.</p>
-                                            </div>
-                                        </div>
-                                        {!! Form::select('service_area[]',$service_area,null,['class' =>
-                                        'form-control selectpicker','multiple' => true]) !!}
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Application Process: </label>
+                                        <label>Application Process </label>
                                         <div class="help-tip">
                                             <div>
                                                 <p>The steps needed to access the service.</p>
@@ -135,6 +114,15 @@ Service Create
                                         'form-control selectpicker','multiple' => true]) !!}
                                     </div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Fee Details </label>
+                                        <div class="help-tip">
+                                            <div><p>Details of any charges for service users to access this service.</p></div>
+                                        </div>
+                                        <input class="form-control selectpicker" type="text" id="service_fees" name="service_fees" value="">
+                                    </div>
+                                </div>
 
                                 <div class="text-right col-md-12 mb-20">
                                     <button type="button" class="btn btn_additional bg-primary-color" data-toggle="collapse" data-target="#demo">Additional Info
@@ -144,7 +132,28 @@ Service Create
                                 <div id="demo" class="collapse row m-0">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Licenses: </label>
+                                            <label>Service Area</label>
+                                            <div class="help-tip">
+                                                <div>
+                                                    <p>The geographic area where this service is accessible.</p>
+                                                </div>
+                                            </div>
+                                            {!! Form::select('service_area[]',$service_area,null,['class' =>
+                                            'form-control selectpicker','multiple' => true]) !!}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Service Alternate Name </label>
+                                            <div class="help-tip">
+                                                <div><p> Alternative or commonly used name for a service.</p></div>
+                                            </div>
+                                            <input class="form-control selectpicker" type="text" id="service_alternate_name" name="service_alternate_name" value="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Licenses </label>
                                             <div class="help-tip">
                                                 <div><p>An organization may have a license issued by a government entity to operate legally. A list of any such licenses can be provided here.</p></div>
                                             </div>
@@ -153,25 +162,17 @@ Service Create
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Wait Time: </label>
+                                            <label>Wait Time </label>
                                             <div class="help-tip">
                                                 <div><p>Time a client may expect to wait before receiving a service.</p></div>
                                             </div>
                                             <input class="form-control selectpicker" type="text" id="service_wait_time" name="service_wait_time" value="">
                                         </div>
                                     </div>
+
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Fees: </label>
-                                            <div class="help-tip">
-                                                <div><p>Details of any charges for service users to access this service.</p></div>
-                                            </div>
-                                            <input class="form-control selectpicker" type="text" id="service_fees" name="service_fees" value="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Accrediations: </label>
+                                            <label>Accrediations </label>
                                             <div class="help-tip">
                                                 <div><p>Details of any accreditations. Accreditation is the formal evaluation of an organization or program against best practice standards set by an accrediting organization.</p></div>
                                             </div>
@@ -180,7 +181,7 @@ Service Create
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Service Grouping:</label>
+                                            <label>Service Grouping</label>
                                             <div class="help-tip">
                                                 <div><p>Some organizations organize their services into service groupings (e.g., Senior Services).. A service grouping brings together a number of related services.</p></div>
                                             </div>
@@ -189,16 +190,16 @@ Service Create
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label>Service Grouping Description: </label>
+                                            <label>Service Grouping Description </label>
                                             <textarea name="program_alternate_name" id="program_alternate_name" cols="30" rows="10" class="form-control"></textarea>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    {{-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Status(Verified): </label>
                                             {!! Form::select('service_status',$service_status_list,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'service_status','placeholder' => 'Select status']) !!}
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 {{-- taxonomy section --}}
                             </div>
@@ -262,7 +263,7 @@ Service Create
 
                                                                             </td>
                                                                             <td  class="create_btn">
-                                                                                {!! Form::select('service_category_term[]',[],null,['class' => 'form-control selectpicker service_category_term','placeholder' => 'select  term','id' => 'service_category_term_0']) !!}
+                                                                                {!! Form::select('service_category_term[0][]',[],null,['class' => 'form-control selectpicker service_category_term','id' => 'service_category_term_0','multiple' => true,'data-size' => '5','data-live-search' => 'true']) !!}
                                                                                 <input type="hidden" name="service_category_term_type[]" id="service_category_term_type_0" value="old">
                                                                             </td>
                                                                             <td style="vertical-align: middle">
@@ -313,7 +314,7 @@ Service Create
 
                                                                             </td>
                                                                             <td class="create_btn">
-                                                                                {!! Form::select('service_eligibility_term[]',[],null,['class' => 'form-control selectpicker service_eligibility_term','placeholder' => 'select service eligibility term','id' => 'service_eligibility_term_0']) !!}
+                                                                                {!! Form::select('service_eligibility_term[0][]',[],null,['class' => 'form-control selectpicker service_eligibility_term','id' => 'service_eligibility_term_0','multiple' => 'true','data-size' => '5','data-live-search' => 'true']) !!}
                                                                                 <input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_0" value="old">
                                                                             </td>
                                                                             <td style="vertical-align: middle">
@@ -326,6 +327,58 @@ Service Create
                                                                         {{-- <tr id="addServiceEligibilityTr">
                                                                             <td colspan="6" class="text-center">
                                                                                 <a href="javascript:void(0)" id="addServiceEligibilityData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
+                                                                            </td>
+                                                                        </tr> --}}
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {{-- end here --}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{-- details --}}
+                                        <div class="card all_form_field">
+                                            <div class="card-block">
+                                                <h4 class="title_edit text-left mb-25 mt-10">
+                                                    Details
+                                                    <div class="d-inline float-right" id="addDetailTr">
+                                                        <a href="javascript:void(0)" id="addDetailData" class="plus_delteicon bg-primary-color">
+                                                            <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                                        </a>
+                                                    </div>
+                                                </h4>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <div class="">
+                                                                <table class="table table_border_none" id="DetailTable">
+                                                                    <thead>
+                                                                        <th>Detail Type</th>
+                                                                        <th>Detail Term</th>
+                                                                        <th style="width:60px">&nbsp;</th>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>
+                                                                                {!! Form::select('detail_type[]',$detail_types,null,['class' => 'form-control selectpicker detail_type','placeholder' => 'select detail type','id' => 'detail_type_0']) !!}
+
+                                                                            </td>
+                                                                            <td class="create_btn">
+                                                                                {!! Form::select('detail_term[]',[],null,['class' => 'form-control selectpicker detail_term','id' => 'detail_term_0','multiple' => 'true','data-size' => '5','data-live-search' => 'true']) !!}
+                                                                                <input type="hidden" name="term_type[]" id="term_type_0" value="old">
+                                                                            </td>
+                                                                            <td style="vertical-align: middle">
+                                                                                <a href="#" class="plus_delteicon btn-button">
+                                                                                    <img src="/frontend/assets/images/delete.png" alt="" title="">
+                                                                                </a>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr></tr>
+                                                                        {{-- <tr id="addDetailTr">
+                                                                            <td colspan="6" class="text-center">
+                                                                                <a href="javascript:void(0)" id="addDetailData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
                                                                             </td>
                                                                         </tr> --}}
                                                                     </tbody>
@@ -398,160 +451,160 @@ Service Create
                     </div>
 
                     {{-- tab-pannel bottom group --}}
-        <ul class="nav nav-tabs tabpanel_above">
-            <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" href="#locations-tab">
-                    <h4 class="card_services_title">Locations
-                    </h4>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#phones-tab">
-                    <h4 class="card_services_title">Phones
-                    </h4>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#contacts-tab">
-                    <h4 class="card_services_title">Contacts
-                    </h4>
-                </a>
-            </li>
-        </ul>
-        <div class="card">
-            <div class="card-block" style="border-radius: 0 0 12px 12px">
-                <div class="tab-content">
-                    <div class="tab-pane active" id="locations-tab">
-                        <div class="organization_services">
-                            <div class="card all_form_field">
-                                <div class="card-block">
-                                    {{-- location --}}
-                                    <h4 class="title_edit text-left mb-25 mt-10">
-                                        Locations
-                                        <div class="d-inline float-right">
-                                            <a href="javascript:void(0)" class="locationModalOpenButton plus_delteicon bg-primary-color">
-                                                <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                            </a>
-                                        </div>
-                                    </h4>
-                                    <div class="row">
-                                        {{-- location table --}}
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                {{-- <label>Locations: <a class="locationModalOpenButton"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
-                                                <div class="table-responsive">
-                                                    <table class="table table_border_none">
-                                                        <thead>
-                                                            <th>Name</th>
-                                                            <th>Address</th>
-                                                            <th>City</th>
-                                                            <th>State</th>
-                                                            <th>Zipcode</th>
-                                                            <th>Phone</th>
-                                                            <th style="width:60px">&nbsp;</th>
-                                                        </thead>
-                                                        <tbody id="locationsTable">
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {{-- location table end here --}}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="phones-tab">
-                        <div class="organization_services">
-                            <div class="card all_form_field">
-                                <div class="card-block">
-                                    {{-- phone --}}
-                                    <h4 class="title_edit text-left mb-25 mt-10">
-                                        Phones
-                                        <div class="d-inline float-right">
-                                            <a href="javascript:void(0)" class="phoneModalOpenButton plus_delteicon bg-primary-color">
-                                                <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                            </a>
-                                        </div>
-                                    </h4>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <div class="">
-                                                    <table class="table table_border_none" id="PhoneTable">
-                                                        <thead>
-                                                            <th>Number</th>
-                                                            <th>extension</th>
-                                                            <th style="width:200px;position:relative;">Type
-                                                                <div class="help-tip" style="top:8px;">
-                                                                    <div><p>Select “Main” if this is the organization's primary phone number (or leave blank)
-                                                                    </p></div>
-                                                                </div>
-                                                            </th>
-                                                            <th style="width:200px;">Language(s)</th>
-                                                            <th style="width:200px;position:relative;">Description
-                                                                <div class="help-tip" style="top:8px;">
-                                                                    <div><p>A description providing extra information about the phone service (e.g. any special arrangements for accessing, or details of availability at particular times).
-                                                                    </p></div>
-                                                                </div>
-                                                            </th>
-                                                            <th>Main</th>
-                                                            <th style="width:140px">&nbsp;</th>
-                                                        </thead>
-                                                        <tbody id="phonesTable">
-                                                        </tbody>
-                                                    </table>
+                    <ul class="nav nav-tabs tabpanel_above">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#locations-tab">
+                                <h4 class="card_services_title">Locations
+                                </h4>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#phones-tab">
+                                <h4 class="card_services_title">Phones
+                                </h4>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#contacts-tab">
+                                <h4 class="card_services_title">Contacts
+                                </h4>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="card">
+                        <div class="card-block" style="border-radius: 0 0 12px 12px">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="locations-tab">
+                                    <div class="organization_services">
+                                        <div class="card all_form_field">
+                                            <div class="card-block">
+                                                {{-- location --}}
+                                                <h4 class="title_edit text-left mb-25 mt-10">
+                                                    Locations
+                                                    <div class="d-inline float-right">
+                                                        <a href="javascript:void(0)" class="locationModalOpenButton plus_delteicon bg-primary-color">
+                                                            <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                                        </a>
+                                                    </div>
+                                                </h4>
+                                                <div class="row">
+                                                    {{-- location table --}}
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            {{-- <label>Locations: <a class="locationModalOpenButton"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
+                                                            <div class="table-responsive">
+                                                                <table class="table table_border_none">
+                                                                    <thead>
+                                                                        <th>Name</th>
+                                                                        <th>Address</th>
+                                                                        <th>City</th>
+                                                                        <th>State</th>
+                                                                        <th>Zipcode</th>
+                                                                        <th>Phone</th>
+                                                                        <th style="width:60px">&nbsp;</th>
+                                                                    </thead>
+                                                                    <tbody id="locationsTable">
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {{-- location table end here --}}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="contacts-tab">
-                        <div class="organization_services">
-                            {{-- contact table --}}
-                            <div class="card all_form_field">
-                                <div class="card-block">
-                                    {{-- contact --}}
-                                    <h4 class="title_edit text-left mb-25 mt-10">
-                                        Contacts <a class="contactModalOpenButton float-right plus_delteicon bg-primary-color"><img src="/frontend/assets/images/plus.png" alt="" title=""></a>
-                                    </h4>
-                                    <div class="row">
+                                <div class="tab-pane" id="phones-tab">
+                                    <div class="organization_services">
+                                        <div class="card all_form_field">
+                                            <div class="card-block">
+                                                {{-- phone --}}
+                                                <h4 class="title_edit text-left mb-25 mt-10">
+                                                    Phones
+                                                    <div class="d-inline float-right">
+                                                        <a href="javascript:void(0)" class="phoneModalOpenButton plus_delteicon bg-primary-color">
+                                                            <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                                        </a>
+                                                    </div>
+                                                </h4>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <div class="">
+                                                                <table class="table table_border_none" id="PhoneTable">
+                                                                    <thead>
+                                                                        <th>Number</th>
+                                                                        <th>Extension</th>
+                                                                        <th style="width:200px;position:relative;">Type
+                                                                            <div class="help-tip" style="top:8px;">
+                                                                                <div><p>Select “Main” if this is the organization's primary phone number (or leave blank)
+                                                                                </p></div>
+                                                                            </div>
+                                                                        </th>
+                                                                        <th style="width:200px;">Language(s)</th>
+                                                                        <th style="width:200px;position:relative;">Description
+                                                                            <div class="help-tip" style="top:8px;">
+                                                                                <div><p>A description providing extra information about the phone service (e.g. any special arrangements for accessing, or details of availability at particular times).
+                                                                                </p></div>
+                                                                            </div>
+                                                                        </th>
+                                                                        <th>Main</th>
+                                                                        <th style="width:140px">&nbsp;</th>
+                                                                    </thead>
+                                                                    <tbody id="phonesTable">
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="contacts-tab">
+                                    <div class="organization_services">
                                         {{-- contact table --}}
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                {{-- <label>Contacts: <a class="contactModalOpenButton"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
-                                                <div class="table-responsive">
-                                                    <table class="table table_border_none" >
-                                                        <thead>
-                                                            <th>Name</th>
-                                                            <th>Title</th>
-                                                            <th>Email</th>
-                                                            <th>Phone</th>
-                                                            <th style="width:60px">&nbsp;</th>
-                                                        </thead>
-                                                        <tbody id="contactsTable">
+                                        <div class="card all_form_field">
+                                            <div class="card-block">
+                                                {{-- contact --}}
+                                                <h4 class="title_edit text-left mb-25 mt-10">
+                                                    Contacts <a class="contactModalOpenButton float-right plus_delteicon bg-primary-color"><img src="/frontend/assets/images/plus.png" alt="" title=""></a>
+                                                </h4>
+                                                <div class="row">
+                                                    {{-- contact table --}}
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            {{-- <label>Contacts: <a class="contactModalOpenButton"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
+                                                            <div class="table-responsive">
+                                                                <table class="table table_border_none" >
+                                                                    <thead>
+                                                                        <th>Name</th>
+                                                                        <th>Title</th>
+                                                                        <th>Email</th>
+                                                                        <th>Phone</th>
+                                                                        <th style="width:60px">&nbsp;</th>
+                                                                    </thead>
+                                                                    <tbody id="contactsTable">
 
-                                                        </tbody>
-                                                    </table>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {{-- end here --}}
+                                                    {{-- phone table --}}
                                                 </div>
                                             </div>
                                         </div>
                                         {{-- end here --}}
-                                        {{-- phone table --}}
                                     </div>
                                 </div>
                             </div>
-                            {{-- end here --}}
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        {{-- tab-pannel additional-info group --}}
+                    {{-- tab-pannel additional-info group --}}
         <ul class="nav nav-tabs tabpanel_above">
             <li class="nav-item">
                 <a class="nav-link active" data-toggle="tab" href="#schedules-tab">
@@ -559,12 +612,12 @@ Service Create
                     </h4>
                 </a>
             </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link " data-toggle="tab" href="#additional-info-tab">
                     <h4 class="card_services_title">Additional Info
                     </h4>
                 </a>
-            </li>
+            </li> --}}
         </ul>
         <div class="card">
             <div class="card-block" style="border-radius: 0 0 12px 12px">
@@ -753,63 +806,12 @@ Service Create
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane " id="additional-info-tab">
+                    {{-- <div class="tab-pane " id="additional-info-tab">
                         <div class="organization_services">
-                            {{-- details --}}
-                            <div class="card all_form_field">
-                                <div class="card-block">
-                                    <h4 class="title_edit text-left mb-25 mt-10">
-                                        Details
-                                        <div class="d-inline float-right" id="addDetailTr">
-                                            <a href="javascript:void(0)" id="addDetailData" class="plus_delteicon bg-primary-color">
-                                                <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                            </a>
-                                        </div>
-                                    </h4>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <div class="">
-                                                    <table class="table table_border_none" id="DetailTable">
-                                                        <thead>
-                                                            <th>Detail Type</th>
-                                                            <th>Detail Term</th>
-                                                            <th style="width:60px">&nbsp;</th>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    {!! Form::select('detail_type[]',$detail_types,null,['class' => 'form-control selectpicker detail_type','placeholder' => 'select detail type','id' => 'detail_type_0']) !!}
 
-                                                                </td>
-                                                                <td class="create_btn">
-                                                                    {!! Form::select('detail_term[]',[],null,['class' => 'form-control selectpicker detail_term','placeholder' => 'select detail term','id' => 'detail_term_0']) !!}
-                                                                    <input type="hidden" name="term_type[]" id="term_type_0" value="old">
-                                                                </td>
-                                                                <td style="vertical-align: middle">
-                                                                    <a href="#" class="plus_delteicon btn-button">
-                                                                        <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                                    </a>
-                                                                </td>
-                                                            </tr>
-                                                            <tr></tr>
-                                                            {{-- <tr id="addDetailTr">
-                                                                <td colspan="6" class="text-center">
-                                                                    <a href="javascript:void(0)" id="addDetailData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
-                                                                </td>
-                                                            </tr> --}}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {{-- end here --}}
-                                    </div>
-                                </div>
-                            </div>
 
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -892,11 +894,11 @@ Service Create
                                 <div class="form-group">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input locationRadio" type="radio" name="locationRadio" id="locationRadio2" value="new_data" checked>
-                                        <label class="form-check-label" for="locationRadio2"><b style="color: #000">Create New Data</b></label>
+                                        <label class="form-check-label" for="locationRadio2"><b style="color: #000">Create New Location</b></label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input locationRadio" type="radio" name="locationRadio" id="locationRadio1" value="existing">
-                                        <label class="form-check-label" for="locationRadio1"><b style="color: #000">Existing Data</b></label>
+                                        <label class="form-check-label" for="locationRadio1"><b style="color: #000">Use Existing Location</b></label>
                                     </div>
                                 </div>
                                 <div class="" id="existingLocationData" style="display: none;">
@@ -911,29 +913,12 @@ Service Create
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label>Location Name:</label>
+                                                <label>Location Name</label>
                                                 <input class="form-control selectpicker" type="text" id="location_name_p"  name="location_name" value="">
                                                 <span id="location_name_error" style="display: none;color:red" >Location Name is required!</span>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label>Location Alternate Name: </label>
-                                                <input class="form-control selectpicker" type="text" id="location_alternate_name_p" name="location_alternate_name" value="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label>Location Transportation: </label>
-                                                <input class="form-control selectpicker" type="text" id="location_transporation_p" name="location_transporation" value="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label>Location Description: </label>
-                                                <textarea id="location_description_p" name="location_description" class="form-control selectpicker" rows="5"></textarea>
-                                            </div>
-                                        </div>
+
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Address</label>
@@ -942,7 +927,7 @@ Service Create
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>City: </label>
+                                                <label>City </label>
                                                 <select class="form-control selectpicker" data-live-search="true" id="location_city_p" name="location_city", data-size="5">
                                                     <option value="">Select city</option>
                                                     @foreach($address_city_list as $key => $address_city)
@@ -953,7 +938,7 @@ Service Create
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label>State: </label>
+                                                <label>State </label>
                                                 <select class="form-control selectpicker" data-live-search="true" id="location_state_p" name="location_state", data-size="5">
                                                     <option value="">Select state</option>
                                                     @foreach($address_states_list as $key => $address_state)
@@ -964,32 +949,59 @@ Service Create
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label>Zip Code: </label>
+                                                <label>Zip Code </label>
                                                 <input type="text" class="form-control" placeholder="Zipcode" id="location_zipcode_p">
                                             </div>
                                         </div>
+
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label>Facility Details: </label>
-                                                <input class="form-control selectpicker" type="text" id="location_details_p" name="location_details" value="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label>Regions: </label>
-                                                {!! Form::select('location_region_p',$regions,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'location_region_p','multiple' => true]) !!}
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label>Accessibility: </label>
+                                                <label>Accessibility</label>
                                                 {!! Form::select('location_accessibility_p',['Blank' => 'Blank','ADA Complaint' => 'ADA Complaint','Not ADA Compliant' => 'Not ADA Compliant'],null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'location_accessibility_p','placeholder' => 'select accessibility']) !!}
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label>Accessibility Details: </label>
+                                                <label>Accessibility Details </label>
                                                 {!! Form::textarea('location_accessibility_details_p','Visitors with concerns about the level of access for specific physical conditions, are always recommended to contact the organization directly to obtain the best possible information about physical access',['class' => 'form-control','id' => 'location_accessibility_details_p','placeholder' => 'Accessibility Details']) !!}
+                                            </div>
+                                        </div>
+                                        <div class="text-right col-md-12 mb-20">
+                                            <button type="button" class="btn btn_additional bg-primary-color" data-toggle="collapse"
+                                                data-target="#additional_location_modal">Additional Info
+                                                <img src="/frontend/assets/images/white_arrow.png" alt="" title="" />
+                                            </button>
+                                        </div>
+                                        <div id="additional_location_modal" class="collapse row m-0 col-md-12">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Location Alternate Name </label>
+                                                    <input class="form-control selectpicker" type="text" id="location_alternate_name_p" name="location_alternate_name" value="">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Location Transportation </label>
+                                                    <input class="form-control selectpicker" type="text" id="location_transporation_p" name="location_transporation" value="">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Facility Details </label>
+                                                    <input class="form-control selectpicker" type="text" id="location_details_p" name="location_details" value="">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Regions </label>
+                                                    {!! Form::select('location_region_p',$regions,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'location_region_p','multiple' => true]) !!}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label>Location Description </label>
+                                                    <textarea id="location_description_p" name="location_description" class="form-control selectpicker" rows="5"></textarea>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -1001,7 +1013,7 @@ Service Create
                                                 <table class="table table_border_none" id="PhoneTableLocation">
                                                     <thead>
                                                         <th>Number</th>
-                                                        <th>extension</th>
+                                                        <th>Extension</th>
                                                         <th style="width:200px;position:relative;">Type
                                                             <div class="help-tip" style="top:8px;">
                                                                 <div><p>Select “Main” if this is the organization's primary phone number (or leave blank)
@@ -1019,13 +1031,13 @@ Service Create
                                                     </thead>
                                                     <tbody id="addPhoneTrLocation">
                                                         <tr id="location_0">
-                                                            <td>
+                                                            <td style="width: 20%;">
                                                                 <input type="text" class="form-control" name="service_phones[]" id="service_phones_location_0">
                                                             </td>
                                                             <td>
                                                                 <input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_0">
                                                             </td>
-                                                            <td>
+                                                            <td style="width: 15%;">
                                                                 {!! Form::select('phone_type[]',$phone_type,[],['class' => 'form-control selectpicker','data-live-search' => 'true','id' => 'phone_type_location_0','data-size' => 5,'placeholder' => 'select phone type'])!!}
                                                             </td>
                                                             <td>
@@ -1044,180 +1056,6 @@ Service Create
                                                 </table>
                                             </div>
                                         </div>
-                                        {{-- schedule section --}}
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <h4 class="title_edit text-left mb-25 mt-10">
-                                                    Regular Schedule
-                                                </h4>
-                                                <div class="table-responsive">
-                                                    <table class="table">
-                                                        {{-- <thead>
-                                                            <th colspan="4" class="text-center">Regular Schedule</th>
-                                                        </thead> --}}
-                                                        <thead>
-                                                            <th>Weekday</th>
-                                                            <th>Opens</th>
-                                                            <th>Closes</th>
-                                                            <th>Closed All Day</th>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    Monday
-                                                                    <input type="hidden" name="byday" value="monday" >
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::text('opens_at', null, ['class' => 'form-control timePicker','id' => 'opens_at_location_monday']) !!}
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::text('closes_at', null, ['class' => 'form-control timePicker','id' => 'closes_at_location_monday']) !!}
-                                                                </td>
-                                                                <td style="vertical-align: middle">
-                                                                    <input type="checkbox" name="schedule_closed_location_monday" value="1" id="schedule_closed_location_monday" >
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    Tuesday
-                                                                    <input type="hidden" name="byday" value="tuesday" >
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::text('opens_at', null, ['class' => 'form-control timePicker' ,'id' => 'opens_at_location_tuesday']) !!}
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::text('closes_at', null, ['class' => 'form-control timePicker','id' => 'closes_at_location_tuesday']) !!}
-                                                                </td>
-                                                                <td style="vertical-align: middle">
-                                                                    <input type="checkbox" name="schedule_closed_location_tuesday" value="2" id="schedule_closed_location_tuesday">
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Wednesday
-                                                                    <input type="hidden" name="byday" value="wednesday">
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::text('opens_at', null, ['class' => 'form-control timePicker','id' => 'opens_at_location_wednesday']) !!}
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::text('closes_at', null, ['class' => 'form-control timePicker','id' => 'closes_at_location_wednesday']) !!}
-                                                                </td>
-                                                                <td style="vertical-align: middle">
-                                                                    <input type="checkbox" name="schedule_closed_location_wednesday" value="3" id="schedule_closed_location_wednesday" >
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Thursday
-                                                                    <input type="hidden" name="byday" value="thursday">
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::text('opens_at', null, ['class' => 'form-control timePicker','id' => 'opens_at_location_thursday']) !!}
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::text('closes_at',null, ['class' => 'form-control timePicker','id' => 'closes_at_location_thursday']) !!}
-                                                                </td>
-                                                                <td style="vertical-align: middle">
-                                                                    <input type="checkbox" name="schedule_closed_location_thursday" value="4" id="schedule_closed_location_thursday">
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Friday
-                                                                    <input type="hidden" name="byday" value="friday">
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::text('opens_at',null, ['class' => 'form-control timePicker','id' => 'opens_at_location_friday']) !!}
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::text('closes_at', null, ['class' => 'form-control timePicker','id' => 'closes_at_location_friday']) !!}
-                                                                </td>
-                                                                <td style="vertical-align: middle">
-                                                                    <input type="checkbox" name="schedule_closed_location_friday" id="schedule_closed_location_friday" value="5" >
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Saturday
-                                                                    <input type="hidden" name="byday" value="saturday">
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::text('opens_at', null, ['class' => 'form-control timePicker','id' => 'opens_at_location_saturday']) !!}
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::text('closes_at', null, ['class' => 'form-control timePicker','id' => 'closes_at_location_saturday']) !!}
-                                                                </td>
-                                                                <td style="vertical-align: middle">
-                                                                    <input type="checkbox" name="schedule_closed_location_saturday" id="schedule_closed_location_saturday" value="6" >
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Sunday
-                                                                    <input type="hidden" name="byday" value="sunday">
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::text('opens_at',  null, ['class' => 'form-control timePicker','id' => 'opens_at_location_sunday']) !!}
-                                                                </td>
-                                                                <td>
-                                                                    {!! Form::text('closes_at', null, ['class' => 'form-control timePicker','id' => 'closes_at_location_sunday']) !!}
-                                                                </td>
-
-                                                                <td style="vertical-align: middle">
-                                                                    <input type="checkbox" name="schedule_closed_location_sunday" id="schedule_closed_location_sunday" value="7" >
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <h4 class="title_edit text-left mb-25 mt-10">
-                                                    Holiday Schedule
-                                                </h4>
-                                                {{-- <label>Holiday Schedule: <a id="addScheduleHolidayLocation"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a></label> --}}
-                                                <div class="table-responsive">
-                                                    <table class="table table_border_none" id="">
-                                                        <thead>
-                                                            <th>Start</th>
-                                                            <th>End</th>
-                                                            <th>Opens</th>
-                                                            <th>Closes</th>
-                                                            <th>Closed All Day</th>
-                                                            <th>&nbsp;</th>
-                                                        </thead>
-                                                        <tbody id="scheduleHolidayLocation">
-                                                            <tr>
-                                                                <td>
-                                                                    <input type="date" name="holiday_start_date" id="holiday_start_date_location_0" class="form-control">
-                                                                </td>
-                                                                <td>
-                                                                    <input type="date" name="holiday_end_date" id="holiday_end_date_location_0" class="form-control">
-                                                                </td>
-                                                                <td>
-                                                                    <input type="text" name="holiday_open_at" id="holiday_open_at_location_0" class="form-control timePicker">
-                                                                </td>
-                                                                <td>
-                                                                    <input type="text" name="holiday_close_at" id="holiday_close_at_location_0" class="form-control timePicker">
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" name="holiday_closed" id="holiday_closed_location_0" value="1">
-                                                                </td>
-                                                                <td>
-                                                                    <a href="javascript:void(0)" id="addScheduleHolidayLocation" class="plus_delteicon bg-primary-color">
-                                                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                                                    </a>
-                                                                </td>
-                                                            </tr>
-                                                            {{-- <tr id="addTr">
-                                                                <td colspan="6" class="text-center">
-                                                                    <a href="javascript:void(0)" id="addData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
-                                                                </td>
-                                                            </tr> --}}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {{-- end here --}}
                                     </div>
                                 </div>
                             </div>
@@ -1244,11 +1082,11 @@ Service Create
                                 <div class="form-group">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input contactRadio" type="radio" name="contactRadio" id="contactRadio2" value="new_data" checked>
-                                        <label class="form-check-label" for="contactRadio2"><b style="color: #000">Create New Data</b></label>
+                                        <label class="form-check-label" for="contactRadio2"><b style="color: #000">Create New Contact</b></label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input contactRadio" type="radio" name="contactRadio" id="contactRadio1" value="existing">
-                                        <label class="form-check-label" for="contactRadio1"><b style="color: #000">Existing Data</b></label>
+                                        <label class="form-check-label" for="contactRadio1"><b style="color: #000">Use Existing Contact</b></label>
                                     </div>
 
                                 </div>
@@ -1261,22 +1099,6 @@ Service Create
                                     </select>
                                 </div>
                                 <div id="newContactData">
-                                    {{-- <div class="form-group mb-10">
-                                        <label>Name</label>
-                                        <input type="text" class="form-control" placeholder="Name" id="contact_name_p">
-                                    </div>
-                                    <div class="form-group mb-10">
-                                        <label>Title</label>
-                                        <input type="text" class="form-control" placeholder="Title" id="contact_title_p">
-                                    </div>
-                                    <div class="form-group mb-10">
-                                        <label>Email</label>
-                                        <input type="text" class="form-control" placeholder="Email" id="contact_email_p">
-                                    </div>
-                                    <div class="form-group mb-10">
-                                        <label>Phone</label>
-                                        <input type="text" class="form-control" placeholder="Phone" id="contact_phone_p">
-                                    </div> --}}
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -1285,17 +1107,6 @@ Service Create
                                                 <span id="contact_name_error" style="display: none;color:red" >Contact Name is required!</span>
                                             </div>
                                         </div>
-                                        {{-- <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Service: </label>
-                                                <select class="form-control selectpicker" multiple data-live-search="true" id="contact_service_p"
-                                                name="contact_service_p[]" data-size="8">
-                                                @foreach($service_info_list as $key => $service_info)
-                                                <option value="{{$service_info->service_recordid}}">{{$service_info->service_name}}</option>
-                                                @endforeach
-                                        </select>
-                                            </div>
-                                        </div> --}}
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Title</label>
@@ -1304,7 +1115,7 @@ Service Create
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Contact Department: </label>
+                                                <label>Contact Department </label>
                                                 <input class="form-control selectpicker" type="text" id="contact_department_p" name="contact_department" value="">
                                             </div>
                                         </div>
@@ -1314,22 +1125,24 @@ Service Create
                                                 <input type="text" class="form-control" placeholder="Email" id="contact_email_p">
                                             </div>
                                         </div>
-                                        {{-- <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
-                                                <label>Phone</label>
-                                                <input type="text" class="form-control" placeholder="Phone" id="contact_phone_p">
+                                                <label>Visibility </label>
+                                                <select class="form-control selectpicker" data-live-search="true" id="contact_visibility_p" name="contact_visibility_p[]" data-size="8">
+                                                    <option value="public">Public</option>
+                                                    <option value="private">Private</option>
+                                                </select>
                                             </div>
-                                        </div> --}}
+                                        </div>
                                         <div class="form-group">
                                             <h4 class="title_edit text-left mb-25 mt-10 px-20">Phones
                                                 <a id="addDataContact" class="plus_delteicon bg-primary-color float-right"><img src="/frontend/assets/images/plus.png" alt="" title=""></a>
                                             </h4>
-                                            {{-- <label>Phones: <a id="addDataContact"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
                                             <div class="col-md-12">
                                                 <table class="table table_border_none" id="PhoneTableContact">
                                                     <thead>
                                                         <th>Number</th>
-                                                        <th>extension</th>
+                                                        <th>Extension</th>
                                                         <th style="width:200px;position:relative;">Type
                                                             <div class="help-tip" style="top:8px;">
                                                                 <div><p>Select “Main” if this is the organization's primary phone number (or leave blank)
@@ -1347,14 +1160,14 @@ Service Create
                                                     </thead>
                                                     <tbody id="addPhoneTrContact">
                                                         <tr>
-                                                            <td>
+                                                            <td style="width: 20%;">
                                                                 <input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_0">
                                                             </td>
                                                             <td>
                                                                 <input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_0">
                                                             </td>
-                                                            <td>
-                                                                {!! Form::select('phone_type[]',$phone_type,[],['class' => 'form-control selectpicker','data-live-search' => 'true','id' => 'phone_type_contact_0','data-size' => 5,'placeholder' => 'select phone type'])!!}
+                                                            <td style="width: 15%;">
+                                                                {!! Form::select('phone_type[]',$phone_type,array_search('Voice', $phone_type->toArray()),['class' => 'form-control selectpicker','data-live-search' => 'true','id' => 'phone_type_contact_0','data-size' => 5,'placeholder' => 'select phone type'])!!}
                                                             </td>
                                                             <td>
                                                                 {!! Form::select('phone_language[]',$phone_languages,[],['class' => 'form-control selectpicker','data-size' => 5,' data-live-search' => 'true', 'id' => 'phone_language_contact_0']) !!}
@@ -1531,10 +1344,10 @@ Service Create
         let idsArray = id ? id.split('_') : []
         let index = idsArray.length > 0 ? idsArray[2] : ''
 
-        if(value == 'create_new'){
+        if(value.includes('create_new')){
             $('#detail_term_index_p').val(index)
             $('#create_new_term').modal('show')
-        }else if(text == value){
+        }else if(value.includes(text)){
             $('#term_type_'+index).val('new')
         }else{
             $('#term_type_'+index).val('old')
@@ -1551,13 +1364,25 @@ Service Create
             }, 5000);
             return false
         }
-        $('#term_type_'+index).val('new')
-        $('#detail_term_'+index).append('<option value="'+detail_term+'">'+detail_term+'</option>');
-        $('#detail_term_'+index).val(detail_term)
-        $('#detail_term_'+index).selectpicker('refresh')
-        $('#create_new_term').modal('hide')
-        $('#detail_term_p').val('')
-        $('#detail_term_index_p').val('')
+        let detail_type_name = $( "#detail_type_"+index+" option:selected" ).val()
+        $.ajax({
+            url : '{{ route("addDetailTerm") }}',
+            method : 'get',
+            data : {detail_type_name,detail_term},
+            success: function (response) {
+                $('#term_type_'+index).val('new')
+                $('#detail_term_'+index).prepend('<option value="'+response.data+'">'+detail_term+'</option>');
+                $('#detail_term_'+index).val(detail_term)
+                $('#detail_term_'+index).selectpicker('refresh')
+                $('#create_new_term').modal('hide')
+                $('#detail_term_p').val('')
+                $('#detail_term_index_p').val('')
+            },
+            error : function (error) {
+                console.log(error)
+            }
+        })
+
     })
     $('.detailTermCloseButton').click(function () {
 
@@ -1572,7 +1397,7 @@ Service Create
     })
     let d = 1
     $('#addDetailTr').click(function(){
-        $('#DetailTable tr:last').before('<tr><td><select name="detail_type[]" id="detail_type_'+d+'" class="form-control selectpicker detail_type"><option value="">Select Detail Type</option> @foreach ($detail_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td  class="create_btn"> <select name="detail_term[]" id="detail_term_'+d+'" class="form-control selectpicker detail_term"><option value="">Select Detail term</option> </select><input type="hidden" name="term_type[]" id="term_type_'+d+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#DetailTable tr:last').before('<tr><td><select name="detail_type[]" id="detail_type_'+d+'" class="form-control selectpicker detail_type"><option value="">Select Detail Type</option> @foreach ($detail_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td  class="create_btn"> <select name="detail_term[]" id="detail_term_'+d+'" class="form-control selectpicker detail_term" data-size="5" data-live-search="true" multiple></select><input type="hidden" name="term_type[]" id="term_type_'+d+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         d++;
     })
@@ -1595,7 +1420,7 @@ Service Create
             success: function (response) {
                 let data = response.data
                 $('#service_category_term_'+index).empty()
-                $('#service_category_term_'+index).append('<option value="">Select term</option>');
+                // $('#service_category_term_'+index).append('<option value="">Select term</option>');
                 $.each(data,function(i,v){
                     $('#service_category_term_'+index).append('<option value="'+i+'">'+v+'</option>');
                 })
@@ -1615,13 +1440,13 @@ Service Create
         let idsArray = id ? id.split('_') : []
         let index = idsArray.length > 0 ? idsArray[3] : ''
 
-        if(value == 'create_new'){
+        if(value.includes('create_new')){
             $('#service_category_term_index_p').val(index)
             $('#create_new_service_category_term').modal('show')
-        }else if(text == value){
-            $('#service_category__type_'+index).val('new')
+        }else if(value.includes(text)){
+            $('#service_category_term_type_'+index).val('new')
         }else{
-            $('#service_category__type_'+index).val('old')
+            $('#service_category_term_type_'+index).val('old')
         }
     })
     $('#serviceCategoryTermSubmit').click(function () {
@@ -1700,7 +1525,7 @@ Service Create
             success: function (response) {
                 let data = response.data
                 $('#service_eligibility_term_'+index).empty()
-                $('#service_eligibility_term_'+index).append('<option value="">Select term</option>');
+                // $('#service_eligibility_term_'+index).append('<option value="">Select term</option>');
                 $.each(data,function(i,v){
                     $('#service_eligibility_term_'+index).append('<option value="'+i+'">'+v+'</option>');
                 })
@@ -1720,10 +1545,10 @@ Service Create
         let idsArray = id ? id.split('_') : []
         let index = idsArray.length > 0 ? idsArray[3] : ''
 
-        if(value == 'create_new'){
+        if(value.includes('create_new')){
             $('#service_eligibility_term_index_p').val(index)
             $('#create_new_service_eligibility_term').modal('show')
-        }else if(text == value){
+        }else if(value.includes(text)){
             $('#service_eligibility__type_'+index).val('new')
         }else{
             $('#service_eligibility__type_'+index).val('old')
@@ -1762,13 +1587,13 @@ Service Create
 
     let sc = 1
     $('#addServiceCategoryTr').click(function(){
-        $('#ServiceCategoryTable tr:last').before('<tr><td><select name="service_category_type[]" id="service_category_type_'+sc+'" class="form-control selectpicker service_category_type"><option value="">Select Type</option> @foreach ($service_category_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td  class="create_btn"> <select name="service_category_term[]" id="service_category_term_'+sc+'" class="form-control selectpicker service_category_term"></select><input type="hidden" name="service_category_term_type[]" id="service_category_term_type_'+sc+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#ServiceCategoryTable tr:last').before('<tr><td><select name="service_category_type[]" id="service_category_type_'+sc+'" class="form-control selectpicker service_category_type"><option value="">Select Type</option> @foreach ($service_category_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td  class="create_btn"> <select name="service_category_term['+sc+'][]" id="service_category_term_'+sc+'" class="form-control selectpicker service_category_term" data-size="5" data-live-search="true" multiple></select><input type="hidden" name="service_category_term_type[]" id="service_category_term_type_'+sc+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         sc++;
     })
     let se = 1
     $('#addServiceEligibilityTr').click(function(){
-        $('#ServiceEligibilityTable tr:last').before('<tr><td><select name="service_eligibility_type[]" id="service_eligibility_type_'+se+'" class="form-control selectpicker service_eligibility_type"><option value="">Select Type</option> @foreach ($service_eligibility_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td  class="create_btn"> <select name="service_eligibility_term[]" id="service_eligibility_term_'+se+'" class="form-control selectpicker service_eligibility_term"></select><input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_'+se+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#ServiceEligibilityTable tr:last').before('<tr><td><select name="service_eligibility_type[]" id="service_eligibility_type_'+se+'" class="form-control selectpicker service_eligibility_type"><option value="">Select Type</option> @foreach ($service_eligibility_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td  class="create_btn"> <select name="service_eligibility_term['+se+'][]" id="service_eligibility_term_'+se+'" class="form-control selectpicker service_eligibility_term" data-size="5" data-live-search="true" multiple></select><input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_'+se+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         se++;
     })
@@ -1790,19 +1615,19 @@ Service Create
     // })
     pt = 1
     $('#addPhoneTr').click(function(){
-        $('#PhoneTable tr:last').before('<tr><td><input type="text" class="form-control" name="service_phones[]" id=""></td><td><input type="text" class="form-control" name="phone_extension[]" id=""></td><td>{!! Form::select("phone_type[]",$phone_type,[],["class" => "form-control selectpicker","data-live-search" => "true","id" => "phone_type","data-size" => 5,"placeholder" => "select phone type"])!!}</td><td><select name="phone_language[]" id="phone_language_'+pt+'" class="form-control selectpicker phone_language" data-size="5" data-live-search="true" multiple> @foreach ($phone_languages as $key=>$value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id=""></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#PhoneTable tr:last').before('<tr ><td><input type="text" class="form-control" name="service_phones[]" id="" style="width: 20%;"></td><td><input type="text" class="form-control" name="phone_extension[]" id=""></td><td>{!! Form::select("phone_type[]",$phone_type,[],["class" => "form-control selectpicker","data-live-search" => "true","id" => "phone_type","data-size" => 5,"placeholder" => "select phone type"])!!}</td><td><select name="phone_language[]" id="phone_language_'+pt+'" class="form-control selectpicker phone_language" data-size="5" data-live-search="true" multiple> @foreach ($phone_languages as $key=>$value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id=""></td><td><div class="form-check form-check-inline" style="margin-top: -10px;"> <input class="form-check-input " type="radio" name="main_priority[]" id="main_priority" value="1" > <label class="form-check-label" for="main_priority"></label></div></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         pt++;
     })
     let cp = 1;
     $('#addDataContact').click(function(){
-        $('#addPhoneTrContact').append('<tr id="contact_'+cp+'"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_'+cp+'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_'+cp+'"></td><td><select name="phone_type[]" id="phone_type_contact_'+cp+'" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_contact_'+cp+'" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_'+cp+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#addPhoneTrContact').append('<tr id="contact_'+cp+'"><td style="width: 20%;"><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_'+cp+'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_'+cp+'"></td><td style="width: 15%;"><select name="phone_type[]" id="phone_type_contact_'+cp+'" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}" {{ "voice" == strtolower($value) ? "selected" : "" }} >{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_contact_'+cp+'" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_'+cp+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         cp ++
     })
     let lp = 1;
     $('#addDataLocation').click(function(){
-        $('#addPhoneTrLocation').append('<tr id="location_'+lp+'"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_'+lp+'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_'+lp+'"></td><td><select name="phone_type[]" id="phone_type_location_'+lp+'" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_'+lp+'" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_'+lp+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#addPhoneTrLocation').append('<tr id="location_'+lp+'"><td style="width: 20%;"><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_'+lp+'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_'+lp+'"></td><td style="width: 15%;"><select name="phone_type[]" id="phone_type_location_'+lp+'" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}" {{ "voice" == strtolower($value) ? "selected" : "" }}>{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_'+lp+'" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_'+lp+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         lp ++
     })
@@ -1950,6 +1775,7 @@ Service Create
         let contact_service_p = ''
         let contact_title_p = ''
         let contact_department_p = ''
+        let contact_visibility_p = ''
         let contact_email_p = ''
         let contact_phone_p = ''
         let contact_recordid_p = ''
@@ -1972,6 +1798,7 @@ Service Create
             contact_service_p = $('#contact_service_p').val()
             contact_title_p = $('#contact_title_p').val()
             contact_department_p = $('#contact_department_p').val()
+            contact_visibility_p = $('#contact_visibility_p').val()
             contact_email_p = $('#contact_email_p').val()
             // contact_phone_p = $('#contact_phone_p').val()
             for (let index = 0; index < cp; index++) {
@@ -1987,6 +1814,7 @@ Service Create
             contact_name_p = data.contact_name ? data.contact_name : ''
             contact_title_p = data.contact_title ? data.contact_title : ''
             contact_department_p = data.contact_department ? data.contact_department : ''
+            contact_visibility_p = data.visibility ? data.visibility : ''
             contact_email_p = data.contact_email ? data.contact_email : ''
             contact_recordid_p = data.contact_recordid ? data.contact_recordid : ''
             let service_val = data.service && data.service.length > 0 ? data.service : []
@@ -2018,7 +1846,7 @@ Service Create
             contact_phone_types[i] = phone_type_contact
             contact_phone_languages[i] = phone_language_contact
             contact_phone_descriptions[i] = phone_description_contact
-            $('#contactsTable').append('<tr id="contactTr_'+i+'"><td>'+contact_name_p+'<input type="hidden" name="contact_name[]" value="'+contact_name_p+'" id="contact_name_'+i+'"></td><td>'+contact_title_p+'<input type="hidden" name="contact_title[]" value="'+contact_title_p+'" id="contact_title_'+i+'"></td><td class="text-center">'+contact_email_p+'<input type="hidden" name="contact_email[]" value="'+contact_email_p+'" id="contact_email_'+i+'"></td><td class="text-center">'+contact_phone_list+'<input type="hidden" name="contact_phone[]" value="'+contact_phone_p+'" id="contact_phone_'+i+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="'+contactRadioValue+'" id="selectedContactRadio_'+i+'"><input type="hidden" name="contact_recordid[]" value="'+contact_recordid_p+'" id="existingContactIds_'+i+'"></td></tr>');
+            $('#contactsTable').append('<tr id="contactTr_'+i+'"><td>'+contact_name_p+'<input type="hidden" name="contact_name[]" value="'+contact_name_p+'" id="contact_name_'+i+'"></td><td>'+contact_title_p+'<input type="hidden" name="contact_title[]" value="'+contact_title_p+'" id="contact_title_'+i+'"></td><td class="text-center">'+contact_email_p+'<input type="hidden" name="contact_email[]" value="'+contact_email_p+'" id="contact_email_'+i+'"></td><td class="text-center">'+contact_visibility_p+'<input type="hidden" name="contact_visibility[]" value="'+contact_visibility_p+'" id="contact_visibility_'+i+'"></td><td class="text-center">'+contact_phone_list+'<input type="hidden" name="contact_phone[]" value="'+contact_phone_p+'" id="contact_phone_'+i+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeLocationData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="'+contactRadioValue+'" id="selectedContactRadio_'+i+'"><input type="hidden" name="contact_recordid[]" value="'+contact_recordid_p+'" id="existingContactIds_'+i+'"></td></tr>');
             i++;
         }else{
             if(selectedContactTrId){
@@ -2034,7 +1862,7 @@ Service Create
                 contact_phone_descriptions[selectedContactTrId] = phone_description_contact
 
                 $('#contactTr_'+selectedContactTrId).empty()
-                $('#contactTr_'+selectedContactTrId).append('<td>'+contact_name_p+'<input type="hidden" name="contact_name[]" value="'+contact_name_p+'" id="contact_name_'+selectedContactTrId+'"></td><td>'+contact_title_p+'<input type="hidden" name="contact_title[]" value="'+contact_title_p+'" id="contact_title_'+selectedContactTrId+'"></td><td class="text-center">'+contact_email_p+'<input type="hidden" name="contact_email[]" value="'+contact_email_p+'" id="contact_email_'+selectedContactTrId+'"></td><td class="text-center">'+contact_phone_list+'<input type="hidden" name="contact_phone[]" value="'+contact_phone_p+'" id="contact_phone_'+selectedContactTrId+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="'+contactRadioValue+'" id="selectedContactRadio_'+selectedContactTrId+'"><input type="hidden" name="contact_recordid[]" value="'+contact_recordid_p+'" id="existingContactIds_'+selectedContactTrId+'"></td>')
+                $('#contactTr_'+selectedContactTrId).append('<td>'+contact_name_p+'<input type="hidden" name="contact_name[]" value="'+contact_name_p+'" id="contact_name_'+selectedContactTrId+'"></td><td>'+contact_title_p+'<input type="hidden" name="contact_title[]" value="'+contact_title_p+'" id="contact_title_'+selectedContactTrId+'"></td><td class="text-center">'+contact_email_p+'<input type="hidden" name="contact_email[]" value="'+contact_email_p+'" id="contact_email_'+selectedContactTrId+'"></td><td class="text-center">'+contact_visibility_p+'<input type="hidden" name="contact_visibility[]" value="'+contact_visibility_p+'" id="contact_visibility_'+selectedContactTrId+'"></td><td class="text-center">'+contact_phone_list+'<input type="hidden" name="contact_phone[]" value="'+contact_phone_p+'" id="contact_phone_'+selectedContactTrId+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeLocationData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="'+contactRadioValue+'" id="selectedContactRadio_'+selectedContactTrId+'"><input type="hidden" name="contact_recordid[]" value="'+contact_recordid_p+'" id="existingContactIds_'+selectedContactTrId+'"></td>')
             }
         }
         $('#contact_service').val(JSON.stringify(contact_service))
@@ -2053,12 +1881,13 @@ Service Create
         $('#contact_phone_p').val('')
         $('#contact_service_p').val('')
         $('#contact_department_p').val('')
+        $('#contact_visibility_p').val('public')
 
 
         $('#contact_service_p').selectpicker('refresh')
 
         $('#addPhoneTrContact').empty()
-        $('#addPhoneTrContact').append('<tr id="contact_0"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_0"></td><td><select name="phone_type[]" id="phone_type_contact_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_contact_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_0"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>')
+        $('#addPhoneTrContact').append('<tr id="contact_0"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_0"></td><td><select name="phone_type[]" id="phone_type_contact_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}" {{ "voice" == strtolower($value) ? "selected" : "" }}>{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_contact_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_0"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>')
         $('.selectpicker').selectpicker('refresh');
         $('#contactmodal').modal('hide');
 
@@ -2146,12 +1975,13 @@ Service Create
 
 
         $('#addPhoneTrContact').empty()
-        $('#addPhoneTrContact').append('<tr id="contact_0"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_0"></td><td><select name="phone_type[]" id="phone_type_contact_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_contact_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_0"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>')
+        $('#addPhoneTrContact').append('<tr id="contact_0"><td style="width: 20%;"><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_0"></td><td style="width: 15%;"><select name="phone_type[]" id="phone_type_contact_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_contact_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_0"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>')
         $('.selectpicker').selectpicker('refresh');
 
         // $('.contactRadio').val()
         let radioValue = $("#selectedContactRadio_"+id).val();
         let contact_name_p = $('#contact_name_'+id).val()
+        let contact_visibility_p = $('#contact_visibility_'+id).val()
         let contact_title_p = $('#contact_title_'+id).val()
         let contact_email_p = $('#contact_email_'+id).val()
         let contact_phone_p = $('#contact_phone_'+id).val()
@@ -2177,7 +2007,7 @@ Service Create
         $('#phone_language_contact_0').val(phone_language_contact[0])
         $('#phone_description_contact_0').val(phone_description_contact[0])
         for (let index = 1; index < phone_number_contact.length; index++) {
-            $('#addPhoneTrContact').append('<tr id="contact_'+index+'"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_'+index+'" value="'+phone_number_contact[index]+'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_'+index+'" value="'+(phone_extension_contact[index] != null ? phone_extension_contact[index] : "" )+'"></td><td><select name="phone_type" id="phone_type_contact_'+index+'" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language" id="phone_language_contact_'+index+'" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}" >{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_'+index+'" value="'+(phone_description_contact[index] != null ? phone_description_contact[index] : "")+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+            $('#addPhoneTrContact').append('<tr id="contact_'+index+'"><td style="width: 20%;"><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_'+index+'" value="'+phone_number_contact[index]+'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_'+index+'" value="'+(phone_extension_contact[index] != null ? phone_extension_contact[index] : "" )+'"></td><td style="width: 15%;"><select name="phone_type" id="phone_type_contact_'+index+'" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}" {{ "voice" == strtolower($value) ? "selected" : "" }}>{{ $value }}</option> @endforeach </select></td><td><select name="phone_language" id="phone_language_contact_'+index+'" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}" >{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_'+index+'" value="'+(phone_description_contact[index] != null ? phone_description_contact[index] : "")+'"></td><td class="text-center"><a href="javascript:void(0)" class="removePhoneData" style="color:red;"> <i class="fa fa-minus-circle" aria-hidden="true"></i> </a></td></tr>');
 
             if(phone_type_contact[index] != ''){
                 $("select[id='phone_type_contact_"+index+"'] option[value="+phone_type_contact[index]+"]").prop('selected', true)
@@ -2205,6 +2035,7 @@ Service Create
             $('#contact_email_p').val(contact_email_p)
             $('#contact_phone_p').val(contact_phone_p)
             $('#contact_department_p').val(contact_department_p)
+            $('#contact_visibility_p').val(contact_visibility_p)
             $('#contact_service_p').val(contact_service_p)
             $('#contactSelectData').val('')
             $('#contact_service_p').selectpicker('refresh')
@@ -2646,7 +2477,7 @@ Service Create
         $('#location_phone_descriptions').val(JSON.stringify(location_phone_descriptions))
 
         $('#addPhoneTrLocation').empty()
-        $('#addPhoneTrLocation').append('<tr id="location_0"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_0"></td><td><select name="phone_type[]" id="phone_type_location_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_0"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>')
+        $('#addPhoneTrLocation').append('<tr id="location_0"><td style="width: 20%;"><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_0"></td><td style="width: 15%;"><select name="phone_type[]" id="phone_type_location_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}" {{ "voice" == strtolower($value) ? "selected" : "" }}>{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_0"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>')
         $('.selectpicker').selectpicker('refresh');
 
         $('#opens_at_location_monday_datas').val(JSON.stringify(opens_at_location_monday_datas))
@@ -2944,7 +2775,7 @@ Service Create
         selectedLocationTrId = id
 
         $('#addPhoneTrLocation').empty()
-        $('#addPhoneTrLocation').append('<tr id="location_0"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_0"></td><td><select name="phone_type[]" id="phone_type_location_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_0"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>')
+        $('#addPhoneTrLocation').append('<tr id="location_0"><td style="width: 20%;"><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_0"></td><td style="width: 15%;"><select name="phone_type[]" id="phone_type_location_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}" {{ "voice" == strtolower($value) ? "selected" : "" }}>{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_0"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>')
         $('.selectpicker').selectpicker('refresh');
 
         $('#scheduleHolidayLocation').empty()
@@ -2989,7 +2820,7 @@ Service Create
         $('#phone_language_location_0').val(phone_language_location[0])
         $('#phone_description_location_0').val(phone_description_location[0])
         for (let index = 1; index < phone_number_location.length; index++) {
-            $('#addPhoneTrLocation').append('<tr id="location_'+index+'"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_'+index+'" value="'+phone_number_location[index]+'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_'+index+'" value="'+(phone_extension_location[index] != null ? phone_extension_location[index] : "") +'"></td><td><select name="phone_type[]" id="phone_type_location_'+index+'" class="form-control selectpicker" data-live-search="true" data-size="5"><option value="">Select phone type</option> @foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_'+index+'" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_'+index+'" value="'+(phone_description_location[index] != null ? phone_description_location[index] : "") +'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+            $('#addPhoneTrLocation').append('<tr id="location_'+index+'"><td style="width: 20%;"><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_'+index+'" value="'+phone_number_location[index]+'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_'+index+'" value="'+(phone_extension_location[index] != null ? phone_extension_location[index] : "") +'"></td><td style="width: 15%;"><select name="phone_type[]" id="phone_type_location_'+index+'" class="form-control selectpicker" data-live-search="true" data-size="5"><option value="">Select phone type</option> @foreach ($phone_type as $key => $value)<option value="{{ $key }} " {{ "voice" == strtolower($value) ? "selected" : "" }}>{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_'+index+'" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_'+index+'" value="'+(phone_description_location[index] != null ? phone_description_location[index] : "") +'"></td><td class="text-center"><a href="javascript:void(0)" class="removePhoneData" style="color:red;"> <i class="fa fa-minus-circle" aria-hidden="true"></i> </a></td></tr>');
 
             if(phone_type_location[index] != ''){
                 $("select[id='phone_type_location_"+index+"'] option[value="+phone_type_location[index]+"]").prop('selected', true)

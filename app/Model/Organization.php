@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use OwenIt\Auditing\Auditable;
@@ -19,7 +20,7 @@ class Organization extends Model implements ContractsAuditable
     ];
 
     protected $fillable = [
-        'organization_recordid', 'organization_name', 'organization_alternate_name', 'organization_logo_x', 'organization_x_uid', 'organization_description', 'organization_email', 'organization_forms_x_filename', 'organization_forms_x_url', 'organization_url', 'organization_status_x', 'organization_status_sort', 'organization_legal_status', 'organization_tax_status', 'organization_tax_id', 'organization_year_incorporated', 'organization_services', 'organization_phones', 'organization_locations', 'organization_contact', 'organization_details', 'organization_tag', 'organization_airs_taxonomy_x', 'flag', 'organization_website_rating', 'organization_code', 'facebook_url', 'twitter_url', 'instagram_url', 'last_verified_at', 'bookmark'
+        'organization_recordid', 'organization_name', 'organization_alternate_name', 'organization_logo_x', 'organization_x_uid', 'organization_description', 'organization_email', 'organization_forms_x_filename', 'organization_forms_x_url', 'organization_url', 'organization_status_x', 'organization_status_sort', 'organization_legal_status', 'organization_tax_status', 'organization_tax_id', 'organization_year_incorporated', 'organization_services', 'organization_phones', 'organization_locations', 'organization_contact', 'organization_details', 'organization_tag', 'organization_airs_taxonomy_x', 'flag', 'organization_website_rating', 'organization_code', 'facebook_url', 'twitter_url', 'instagram_url', 'last_verified_at', 'bookmark', 'last_verified_by', 'created_by', 'updated_by'
     ];
 
     public function services()
@@ -74,5 +75,14 @@ class Organization extends Model implements ContractsAuditable
     public function status_data(): BelongsTo
     {
         return $this->belongsTo(OrganizationStatus::class, 'organization_status_x', 'id');
+    }
+    /**
+     * Get the get_last_verified_by that owns the Organization
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function get_last_verified_by(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'last_verified_by', 'id');
     }
 }

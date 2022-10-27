@@ -142,8 +142,11 @@ Map Settings
                 <div class="item form-group">
                   <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Geocode
                   </label>
-                  <div class="col-md-4 col-sm-4 col-xs-12">
+                  <div class="col-md-2 col-sm-2 col-xs-12">
                     <a class="btn btn-danger open-td" href="/apply_geocode/" id="apply-btn" style="color: white;">Geocode</a>
+                  </div>
+                  <div class="col-md-2 col-sm-2 col-xs-12">
+                    <a class="btn btn-info open-td" href="/apply_geocode_again/" id="apply-btn" style="color: white;">Geocode Everything Again</a>
                   </div>
                 </div>
               </div>

@@ -158,7 +158,7 @@ Location Create
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Accessibility: </label>
+                                        <label>ADA Compliant: </label>
                                         {!! Form::select('accessibility',['Blank' => 'Blank','ADA Complaint' => 'ADA Complaint','Not ADA Compliant' => 'Not ADA Compliant'],null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'accessibility','placeholder' => 'select accessibility']) !!}
                                     </div>
                                 </div>
@@ -268,7 +268,7 @@ Location Create
                                             <table class="table table_border_none" id="PhoneTable">
                                                 <thead>
                                                     <th>Number</th>
-                                                    <th>extension</th>
+                                                    <th>Extension</th>
                                                     <th style="width:200px;position:relative;">Type
                                                         <div class="help-tip" style="top:8px;">
                                                             <div><p>Select “Main” if this is the organization's primary phone number (or leave blank)

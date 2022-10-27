@@ -1,16 +1,16 @@
-"Ledger ID","SDOH Code","SDOH Code Category","SDOH Code Resource","SDOH Code Description","SDOH Code Type","Rating","Service","Organization","Timestamp"
-"4","741062008","Employment Status","Condition","Not in labor force (finding)","SNOMED CT US","1","""KUEHNER PLACE, SHELTER FOR ABUSE ELDERLY AND NEGLECTED""","KUEHNER PLACE, SHELTER FOR ABUSE ELDERLY AND NEGLECTED","2021-10-06 01:50:23"
-"5","160899000","Employment Status","Condition","Recently unemployed (finding)","SNOMED CT US","2","""KUEHNER PLACE, SHELTER FOR ABUSE ELDERLY AND NEGLECTED""","KUEHNER PLACE, SHELTER FOR ABUSE ELDERLY AND NEGLECTED","2021-10-06 01:50:23"
-"6","445271000124104","Food Insecurity","Condition","Nutrition impaired due to limited access to nutrition related supplies (finding)","SNOMED CT","3","""KUEHNER PLACE, SHELTER FOR ABUSE ELDERLY AND NEGLECTED""","KUEHNER PLACE, SHELTER FOR ABUSE ELDERLY AND NEGLECTED","2021-10-06 01:50:23"
-"7","706875005","Food Insecurity","Condition","Insufficient food supply (finding)","SNOMED CT","2","""KUEHNER PLACE, SHELTER FOR ABUSE ELDERLY AND NEGLECTED""","KUEHNER PLACE, SHELTER FOR ABUSE ELDERLY AND NEGLECTED","2021-10-06 01:50:23"
-"8","161036002","Inadequate Housing","Goal","Housing adequate (finding)","SNOMED CT US","2","""KUEHNER PLACE, SHELTER FOR ABUSE ELDERLY AND NEGLECTED""","KUEHNER PLACE, SHELTER FOR ABUSE ELDERLY AND NEGLECTED","2021-10-06 01:50:23"
-"9","96161","Homelessness","Procedure","Administration of caregiver-focused health risk assessment instrument (eg, depression inventory) for the benefit of the patient, with scoring and documentation, per standardized instrument","CPT","3","""KUEHNER PLACE, SHELTER FOR ABUSE ELDERLY AND NEGLECTED""","KUEHNER PLACE, SHELTER FOR ABUSE ELDERLY AND NEGLECTED","2021-10-06 01:50:23"
-"10","96160","Homelessness","Procedure","Administration of patient-focused health risk assessment instrument (eg, health hazard appraisal) with scoring and documentation, per standardized instrument","CPT","3","""KUEHNER PLACE, SHELTER FOR ABUSE ELDERLY AND NEGLECTED""","KUEHNER PLACE, SHELTER FOR ABUSE ELDERLY AND NEGLECTED","2021-10-06 01:50:23"
-"11","741062008","Employment Status","Condition","Not in labor force (finding)","SNOMED CT US","1","check code selected issue","Academy of Hope","2021-10-06 01:51:44"
-"12","160899000","Employment Status","Condition","Recently unemployed (finding)","SNOMED CT US","2","check code selected issue","Academy of Hope","2021-10-06 01:51:44"
-"13","445271000124104","Food Insecurity","Condition","Nutrition impaired due to limited access to nutrition related supplies (finding)","SNOMED CT","1","check code selected issue","Academy of Hope","2021-10-06 01:51:44"
-"14","706875005","Food Insecurity","Condition","Insufficient food supply (finding)","SNOMED CT","2","check code selected issue","Academy of Hope","2021-10-06 01:51:44"
-"15","445281000124101","Food Insecurity","Condition","Nutrition impaired due to limited access to healthful foods (finding)","SNOMED CT","3","check code selected issue","Academy of Hope","2021-10-06 01:51:44"
-"16","G-2","Employment Status","Goal","Has unemployment benefits","Gravity","3","check code selected issue","Academy of Hope","2021-10-06 01:51:44"
-"17","N/A","Employment Status","Procedure","Assessment of employment status","Unknown","3","check code selected issue","Academy of Hope","2021-10-06 01:51:44"
-"18","N/A","Employment Status","Procedure","Assessment of patient barriers","Unknown","3","check code selected issue","Academy of Hope","2021-10-06 01:51:44"
+Ledger ID,SDOH Code,SDOH Code Category,SDOH Code Resource,SDOH Code Description,SDOH Code Type,Rating,Service,Organization,Timestamp
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,

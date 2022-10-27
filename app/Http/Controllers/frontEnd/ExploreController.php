@@ -400,7 +400,7 @@ class ExploreController extends Controller
                 }
                 $organization_service_recordid = ServiceOrganization::whereIn('organization_recordid', $organizations_tags_ids)->pluck('service_recordid');
 
-                $services = Service::whereIn('service_recordid', $organization_service_recordid)->orWhereIn('service_recordid', $location_serviceids)->orderBy('service_name');
+                $services = Service::whereIn('service_recordid', $organization_service_recordid)->orWhereIn('service_organization', $organizations_tags_ids)->orWhereIn('service_recordid', $location_serviceids)->orderBy('service_name');
             }
 
             // if($request->lat && $request->long){
@@ -798,6 +798,7 @@ class ExploreController extends Controller
             } else if ($sort == 'Organization Name') {
                 $services1 = $services1->sortBy('organization_name');
             }
+            // dd($services->where('service_recordid', '1350703837531758')->first());
             $services = $services->setCollection($services1);
             $service_taxonomy_info_list = [];
             $service_taxonomy_badge_color_list = [];
@@ -917,13 +918,19 @@ class ExploreController extends Controller
             // foreach ($tag_list as $key => $value) {
             //     $organization_tagsArray[$value] = $value;
             // }
-            $organization_tagsArray = OrganizationTag::pluck('tag', 'id');
+            // $organization_tagsArray = OrganizationTag::pluck('tag', 'id')->toArray();
+            // $organization_tagsArray = json_encode($organization_tagsArray);
+            $organization_tagsArray = OrganizationTag::get();
+            $organization_tagsArray = json_encode($organization_tagsArray);
             // var_dump('============parents============');
             // var_dump($parents);
             // var_dump('============grandparents============');
             // var_dump($grandparents);
             // var_dump('============$childs============');
             // var_dump($childs);
+
+
+
             return view('frontEnd.services.services', compact('services', 'locations', 'chip_service', 'chip_address', 'map', 'parent_taxonomy', 'child_taxonomy', 'search_results', 'pagination', 'sort', 'meta_status', 'target_populations', 'grandparent_taxonomies', 'sort_by_distance_clickable', 'service_taxonomy_info_list', 'service_details_info_list', 'avarageLatitude', 'avarageLongitude', 'service_taxonomy_badge_color_list', 'organization_tagsArray', 'selected_organization', 'layout', 'filter_label'))->with('taxonomy_tree', $taxonomy_tree);
         } catch (\Throwable $th) {
             Session::flash('message', $th->getMessage());
@@ -949,7 +956,6 @@ class ExploreController extends Controller
             $metas = MetaFilter::all();
             $count_metas = MetaFilter::count();
             $filter_label = $request->filter_label;
-
             if ($layout->meta_filter_activate == 1 && $count_metas > 0 && ($layout->default_label == 'on_label' || $filter_label == 'on_label')) {
                 // $address_serviceids = Service::pluck('service_recordid')->toArray();
                 // $taxonomy_serviceids = Service::pluck('service_recordid')->toArray();
@@ -989,20 +995,28 @@ class ExploreController extends Controller
                     }
                 }
             }
-
-            $organizations = $organizations->where('organization_name', 'like', '%' . $chip_organization . '%')->orwhere('organization_alternate_name', 'like', '%' . $chip_organization . '%');
+            if ($chip_organization) {
+                $organizations->where('organization_name', 'like', '%' . $chip_organization . '%');
+                // ->where('organization_alternate_name', 'like', '%' . $chip_organization . '%')
+            }
 
             $organization_tags = $organization_tags != null ?  json_decode($organization_tags) : [];
-            // dd($request->organization_tags);
             if ($request->organization_tags && count($organization_tags) > 0) {
                 // $organization_tags = explode(',', $organization_tags);
                 // $organizations = $organizations->whereIn('organization_tag', $organization_tags);
-                $organizations = $organizations->where(function ($query) use ($organization_tags) {
-                    foreach ($organization_tags as $keyword) {
-                        $query = $query->orWhere('organization_tag', 'LIKE', "%$keyword%");
-                    }
-                    return $query;
-                });
+                $orgIds = [];
+                foreach ($organization_tags as $keyword) {
+                    $ids = Organization::where('organization_tag', 'LIKE', '%' . $keyword . '%')->pluck('id')->toArray();
+                    $orgIds = array_merge($orgIds, $ids);
+                }
+                $organizations->whereIn('id', $orgIds);
+
+                // $organizations = $organizations->where(function ($query) use ($organization_tags) {
+                //     foreach ($organization_tags as $keyword) {
+                //         $query->where('organization_tag', 'LIKE', '% ' . $keyword . ' %');
+                //     }
+                //     return $query;
+                // });
             }
 
             $selected_taxonomies = [];
@@ -1108,6 +1122,7 @@ class ExploreController extends Controller
             $organization_tags = json_encode($organization_tags);
             return view('frontEnd.organizations.index', compact('map', 'organizations', 'chip_organization', 'search_results', 'organization_tag_list', 'pagination', 'sort', 'organization_tags', 'filter_label'));
         } catch (\Throwable $th) {
+            dd($th);
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
             return redirect('/');
@@ -1282,7 +1297,7 @@ class ExploreController extends Controller
         try {
             $query = $request->get('query');
             if ($query) {
-                $organization_names = Organization::where('organization_name', 'like', '%' . $query . '%');
+                $organization_names = Organization::where('organization_name', 'like', '%' . $query . '%')->orWhere('organization_alternate_name', 'like', '%' . $query . '%');
 
                 $metas = MetaFilter::all();
                 $layout = Layout::findOrFail(1);

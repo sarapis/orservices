@@ -35,6 +35,7 @@ use App\Model\InteractionMethod;
 use App\Model\Language;
 use App\Model\MetaFilter;
 use App\Model\OrganizationPhone;
+use App\Model\OrganizationTableFilter;
 use App\Model\PhoneType;
 use App\Model\Schedule;
 use App\Model\OrganizationTag;
@@ -52,6 +53,7 @@ use Sentinel;
 use OwenIt\Auditing\Models\Audit;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class OrganizationController extends Controller
 {
@@ -625,9 +627,10 @@ class OrganizationController extends Controller
             $organization_tags = OrganizationTag::pluck('tag', 'id');
             $service_tags = ServiceTag::pluck('tag', 'id');
             $organizationStatus = OrganizationStatus::orderBy('order')->pluck('status', 'id');
+            $saved_filters = OrganizationTableFilter::where('user_id', Auth::id())->get();
 
             if (!$request->ajax()) {
-                return view('backEnd.tables.tb_organization', compact('organizations', 'organization_tags', 'organizationStatus', 'service_tags'));
+                return view('backEnd.tables.tb_organization', compact('organizations', 'organization_tags', 'organizationStatus', 'service_tags', 'saved_filters'));
             }
             $xdetails = Detail::select('*');
             return DataTables::of($organizations)
@@ -682,7 +685,7 @@ class OrganizationController extends Controller
                     }
                 })
                 ->editColumn('organization_description', function ($row) {
-                    $organization_description = \Str::limit($row->organization_description, 20, ' ...');
+                    $organization_description = Str::limit($row->organization_description, 20, ' ...');
 
                     return $organization_description;
                 })
@@ -690,10 +693,16 @@ class OrganizationController extends Controller
                     return '<a href="' . $row->organization_url . '" target="_blank" style="text-decoration: underline;color: #0097c9;">' . $row->organization_url . '</a>';
                 })
                 ->editColumn('organization_name', function ($row) {
-                    return '<a href="/organizations/' . $row->organization_recordid . '/edit" target="_blank" style="text-decoration: underline;color: #0097c9;">' . $row->organization_name . '</a>';
+                    return '<a href="/organizations/' . $row->organization_recordid . '" target="_blank" style="text-decoration: underline;color: #0097c9;">' . $row->organization_name . '</a>';
                 })
                 ->editColumn('organization_status_x', function ($row) {
                     return $row->status_data ? $row->status_data->status : '';
+                })
+                ->editColumn('last_verified_by', function ($row) {
+                    return $row->get_last_verified_by ? $row->get_last_verified_by->first_name . ' ' . $row->get_last_verified_by->last_name : '';
+                })
+                ->editColumn('updated_at', function ($row) {
+                    return date('Y-m-d H:i:s', strtotime($row->updated_at));
                 })
                 ->addColumn('last_note_date', function ($row) {
                     $note = SessionData::where('session_organization', $row->organization_recordid)->orderBy('id', 'desc')->first();
@@ -738,15 +747,31 @@ class OrganizationController extends Controller
                         return '<button type="button" class="btn btn-sm btn-primary organizationTags" data-id="' . $row->organization_recordid . '" data-tags="">Add Tag</button>';
                     }
                 })
+                ->editColumn('organization_status_x', function ($row) {
+
+                    $organization_status = [];
+                    if ($row->organization_status_x) {
+                        $organization_statuses = explode(',', $row->organization_status_x);
+                        foreach ($organization_statuses as $key => $value) {
+                            $status = OrganizationStatus::whereId($value)->first();
+                            if ($status) {
+                                $organization_status[] = '<a href="javascript:void(0)" data-id="' . $row->organization_recordid . '" class="organizationStatuses" data-status="' .  $status->id . '"> ' . $status->status . '</a>';
+                            }
+                        }
+                        return implode(',', $organization_status);
+                    } else {
+                        return '<button type="button" class="btn btn-sm btn-primary organizationStatuses" data-id="' . $row->organization_recordid . '" data-status="">Add Status</button>';
+                    }
+                })
                 ->filter(function ($query) use ($request) {
                     $extraData = $request->get('extraData');
 
                     if ($extraData) {
 
-                        if (isset($extraData['organisation_tag']) && $extraData['organisation_tag'] != null) {
-                            $organisation_tags = count($extraData['organisation_tag']) > 0 ?  array_filter($extraData['organisation_tag']) : [];
-                            $query = $query->where(function ($q) use ($organisation_tags) {
-                                foreach ($organisation_tags as $key => $value) {
+                        if (isset($extraData['organization_tag']) && $extraData['organization_tag'] != null) {
+                            $organization_tags = count($extraData['organization_tag']) > 0 ?  array_filter($extraData['organization_tag']) : [];
+                            $query = $query->where(function ($q) use ($organization_tags) {
+                                foreach ($organization_tags as $key => $value) {
                                     $q->orWhere('organization_tag', 'LIKE', '%' . $value . '%');
                                 }
                             });
@@ -782,7 +807,7 @@ class OrganizationController extends Controller
                     }
                     return $query;
                 }, true)
-                ->rawColumns(['services', 'phones', 'location', 'organization_details', 'contact_name', 'last_note_date', 'last_edit_date', 'organization_name', 'organization_tag', 'organization_url', 'bookmark'])
+                ->rawColumns(['services', 'phones', 'location', 'organization_details', 'contact_name', 'last_note_date', 'last_edit_date', 'organization_name', 'organization_tag', 'organization_url', 'bookmark', 'organization_status_x'])
                 ->make(true);
         } catch (\Throwable $th) {
             Log::error('Error in organization table index : ' . $th);
@@ -866,6 +891,68 @@ class OrganizationController extends Controller
             $organization->updated_at = date("Y-m-d H:i:s");
             $organization->save();
             Session::flash('message', 'Tag added successfully!');
+            Session::flash('status', 'success');
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
+            return redirect()->back();
+        }
+    }
+    public function saveOrganizationFilter(Request $request)
+    {
+        try {
+            $extraData = json_decode($request->extraData, true);
+            $organization_tag = isset($extraData['organization_tag']) ? implode(',', $extraData['organization_tag']) : '';
+            $status = isset($extraData['status']) ? implode(',', $extraData['status']) : '';
+            $service_tag = isset($extraData['service_tag']) ? implode(',', $extraData['service_tag']) : '';
+            $bookmark_only = isset($extraData['organization_bookmark_only']) ? $extraData['organization_bookmark_only'] : '';
+            $start_date = isset($extraData['start_date']) ? $extraData['start_date'] : null;
+            $end_date = isset($extraData['end_date']) ? $extraData['end_date'] : null;
+
+            $start_verified = isset($extraData['start_verified']) ? $extraData['start_verified'] : null;
+            $end_verified = isset($extraData['end_verified']) ? $extraData['end_verified'] : null;
+            $start_updated = isset($extraData['start_updated']) ? $extraData['start_updated'] : null;
+            $end_updated = isset($extraData['end_updated']) ? $extraData['end_updated'] : null;
+
+            OrganizationTableFilter::create([
+                'user_id' => Auth::id(),
+                'filter_name' => $request->filter_name,
+                'organization_tags' => $organization_tag,
+                'service_tags' => $service_tag,
+                'status' => $status,
+                'bookmark_only' => $bookmark_only,
+                'start_date' => $start_date,
+                'end_date' => $end_date,
+                'start_verified' => $start_verified,
+                'end_verified' => $end_verified,
+                'start_updated' => $start_updated,
+                'end_updated' => $end_updated,
+            ]);
+            Session::flash('message', 'Filter Saved Successfully!');
+            Session::flash('status', 'success');
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            dd($th);
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
+            return redirect()->back();
+        }
+    }
+    public function saveOrganizationStatus(Request $request)
+    {
+        try {
+            $id = $request->organization_recordid;
+            $organization = Organization::where('organization_recordid', $id)->first();
+            $organization->organization_status_x = $request->organisation_status ? $request->organisation_status : '';
+            $organization->updated_at = date("Y-m-d H:i:s");
+            $organizationStatus = OrganizationStatus::whereId($request->organisation_status)->first();
+            if ($organizationStatus->status == 'Verified') {
+                $organization->last_verified_at = Carbon::now();
+                $organization->last_verified_by = Auth::id();
+            }
+            $organization->save();
+            Session::flash('message', 'Organization Status added successfully!');
             Session::flash('status', 'success');
             return redirect()->back();
         } catch (\Throwable $th) {
@@ -1108,6 +1195,13 @@ class OrganizationController extends Controller
                             array_push($service_phone_recordid_list, $new_phone_recordid);
                         }
                         array_push($service_recordids, Service::max('service_recordid') + 1);
+
+                        $service_address[$i] = is_array($service_address[$i]) ? array_values(array_filter($service_address[$i])) : [];
+                        $service_details[$i] = is_array($service_details[$i]) ? array_values(array_filter($service_details[$i])) : [];
+                        $service_schedules[$i] = is_array($service_schedules[$i]) ? array_values(array_filter($service_schedules[$i])) : [];
+                        $service_taxonomies[$i] = is_array($service_taxonomies[$i]) ? array_values(array_filter($service_taxonomies[$i])) : [];
+                        $service_phone_recordid_list = is_array($service_phone_recordid_list) ? array_values(array_filter($service_phone_recordid_list)) : [];
+
                         $service->address()->sync($service_address[$i]);
                         $service->details()->sync($service_details[$i]);
                         $service->schedules()->sync($service_schedules[$i]);
@@ -1175,6 +1269,13 @@ class OrganizationController extends Controller
                                 array_push($service_phone_recordid_list, $new_phone_recordid);
                             }
                             array_push($service_recordids, Service::max('service_recordid') + 1);
+
+                            $service_address[$i] = is_array($service_address[$i]) ? array_values(array_filter($service_address[$i])) : [];
+                            $service_details[$i] = is_array($service_details[$i]) ? array_values(array_filter($service_details[$i])) : [];
+                            $service_schedules[$i] = is_array($service_schedules[$i]) ? array_values(array_filter($service_schedules[$i])) : [];
+                            $service_taxonomies[$i] = is_array($service_taxonomies[$i]) ? array_values(array_filter($service_taxonomies[$i])) : [];
+                            $service_phone_recordid_list = is_array($service_phone_recordid_list) ? array_values(array_filter($service_phone_recordid_list)) : [];
+
                             $updating_service->address()->sync($service_address[$i]);
                             $updating_service->details()->sync($service_details[$i]);
                             $updating_service->schedules()->sync($service_schedules[$i]);
@@ -1186,6 +1287,7 @@ class OrganizationController extends Controller
                     }
                 }
             }
+            $service_recordids = is_array($service_recordids) ? array_values(array_filter($service_recordids)) : [];
             $organization->getServices()->sync($service_recordids);
             // contact section
 
@@ -1218,6 +1320,7 @@ class OrganizationController extends Controller
                         } else {
                             $contact->contact_services = '';
                         }
+                        $contact_service[$i] = is_array($contact_service[$i]) ? array_values(array_filter($contact_service[$i])) : [];
                         $contact->service()->sync($contact_service[$i]);
 
                         // this is contact phone section
@@ -1246,6 +1349,7 @@ class OrganizationController extends Controller
                                 array_push($contact_phone_recordid_list, $new_phone_recordid);
                             }
                         }
+                        $contact_phone_recordid_list = is_array($contact_phone_recordid_list) ? array_values(array_filter($contact_phone_recordid_list)) : [];
                         $contact->phone()->sync($contact_phone_recordid_list);
                         $contact->save();
                     } else {
@@ -1263,6 +1367,7 @@ class OrganizationController extends Controller
                             } else {
                                 $updating_contact->contact_services = '';
                             }
+                            $contact_service[$i] = is_array($contact_service[$i]) ? array_values(array_filter($contact_service[$i])) : [];
                             $updating_contact->service()->sync($contact_service[$i]);
 
                             for ($p = 0; $p < count($contact_phone_numbers[$i]); $p++) {
@@ -1290,6 +1395,7 @@ class OrganizationController extends Controller
                                     array_push($contact_phone_recordid_list, $new_phone_recordid);
                                 }
                             }
+                            $contact_phone_recordid_list = is_array($contact_phone_recordid_list) ? array_values(array_filter($contact_phone_recordid_list)) : [];
                             $updating_contact->phone()->sync($contact_phone_recordid_list);
                             $updating_contact->save();
                         }
@@ -1390,6 +1496,7 @@ class OrganizationController extends Controller
                         } else {
                             $location->location_services = '';
                         }
+                        $location_service[$i] = is_array($location_service[$i]) ? array_values(array_filter($location_service[$i])) : [];
                         $location->services()->sync($location_service[$i]);
 
                         if ($location_schedules[$i]) {
@@ -1397,6 +1504,7 @@ class OrganizationController extends Controller
                         } else {
                             $location->location_schedule = '';
                         }
+                        $location_schedules[$i] = is_array($location_schedules[$i]) ? array_values(array_filter($location_schedules[$i])) : [];
                         $location->schedules()->sync($location_schedules[$i]);
 
                         // location address
@@ -1521,15 +1629,17 @@ class OrganizationController extends Controller
                                 // }
                             }
                         }
+                        $schedule_locations = is_array($schedule_locations) ? array_values(array_filter($schedule_locations)) : [];
                         $location->location_schedule = join(',', $schedule_locations);
 
                         $location->schedules()->sync($schedule_locations);
 
-                        $location_phone_recordid_list = array_unique($location_phone_recordid_list);
+                        $location_phone_recordid_list = is_array($location_phone_recordid_list) ? array_values(array_filter($location_phone_recordid_list)) : [];
                         $location->location_phones = '';
                         $location->location_phones = count($location_phone_recordid_list) > 0 ? implode(',', $location_phone_recordid_list) : '';
 
                         $location->phones()->sync($location_phone_recordid_list);
+                        $location_address_recordid_list = is_array($location_address_recordid_list) ? array_values(array_filter($location_address_recordid_list)) : [];
 
                         $location->address()->sync($location_address_recordid_list);
                         $location->save();
@@ -1566,6 +1676,7 @@ class OrganizationController extends Controller
                             } else {
                                 $location->location_services = '';
                             }
+                            $location_service[$i] = is_array($location_service[$i]) ? array_values(array_filter($location_service[$i])) : [];
                             $location->services()->sync($location_service[$i]);
 
                             if ($location_schedules[$i]) {
@@ -1573,6 +1684,7 @@ class OrganizationController extends Controller
                             } else {
                                 $location->location_schedule = '';
                             }
+                            $location_schedules[$i] = is_array($location_schedules[$i]) ? array_values(array_filter($location_schedules[$i])) : [];
                             $location->schedules()->sync($location_schedules[$i]);
 
                             $address_info = Address::where('address_1', '=', $request->location_address[$i])->first();
@@ -1696,10 +1808,12 @@ class OrganizationController extends Controller
                                 }
                             }
                             $location->location_schedule = join(',', $schedule_locations);
+                            $location_phone_recordid_list = is_array($location_phone_recordid_list) ? array_values(array_filter($location_phone_recordid_list)) : [];
+                            $location_address_recordid_list = is_array($location_address_recordid_list) ? array_values(array_filter($location_address_recordid_list)) : [];
                             $location->phones()->sync($location_phone_recordid_list);
                             $location->address()->sync($location_address_recordid_list);
 
-                            $location_phone_recordid_list = array_unique($location_phone_recordid_list);
+                            // $location_phone_recordid_list = array_unique($location_phone_recordid_list);
                             $location->location_phones = '';
                             $location->location_phones = count($location_phone_recordid_list) > 0 ? implode(',', $location_phone_recordid_list) : '';
 
@@ -1773,6 +1887,7 @@ class OrganizationController extends Controller
                     }
                 }
             }
+            $phone_recordids = is_array($phone_recordids) ? array_values(array_filter($phone_recordids)) : [];
             $organization->phones()->sync($phone_recordids);
 
             // if ($request->organization_locations) {
@@ -1782,6 +1897,7 @@ class OrganizationController extends Controller
             // }
 
             $organization->updated_at = Carbon::now();
+            $organization->created_by = Auth::id();
 
             $organization->save();
 
@@ -1934,7 +2050,7 @@ class OrganizationController extends Controller
                     }
                 }
             }
-            $existing_tags = array_filter($existing_tags);
+            $existing_tags = is_array($existing_tags) ? array_filter($existing_tags) : [];
             $tagList = [];
             foreach ($existing_tags as $t) {
                 $tagList[$t] = $t;
@@ -1969,7 +2085,7 @@ class OrganizationController extends Controller
         $map = Map::find(1);
         $organization = Organization::where('organization_recordid', '=', $id)->with('contact', 'services')->first();
         if ($organization) {
-            if (Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization, $id) && Auth::user()->roles->name == 'Organization Admin' || Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin') {
+            if (Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization, $id) && (Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin') || Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin' || (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'Section Admin' && count(array_intersect(explode(',', Auth::user()->organization_tags), explode(',', $organization->organization_tag))) > 0)) {
 
                 // $organization_service_list = explode(',', $organization->services());
                 $contactServices = $organization->services()->pluck('service_name', 'service_recordid');
@@ -2679,6 +2795,7 @@ class OrganizationController extends Controller
                     }
                 }
             }
+            $phone_recordids = is_array($phone_recordids) ? array_values(array_filter($phone_recordids)) : [];
             $organization->phones()->sync($phone_recordids);
             // dd($request);
             // contact section
@@ -2711,6 +2828,7 @@ class OrganizationController extends Controller
                         } else {
                             $contact->contact_services = '';
                         }
+                        $contact_service[$i] = is_array($contact_service[$i]) ? array_values(array_filter($contact_service[$i])) : [];
                         $contact->service()->sync($contact_service[$i]);
 
                         // this is contact phone section
@@ -2740,6 +2858,7 @@ class OrganizationController extends Controller
                                 array_push($contact_phone_recordid_list, $new_phone_recordid);
                             }
                         }
+                        $contact_phone_recordid_list = is_array($contact_phone_recordid_list) ? array_values(array_filter($contact_phone_recordid_list)) : [];
                         $contact->phone()->sync($contact_phone_recordid_list);
                         $contact->save();
                     } else {
@@ -2757,6 +2876,7 @@ class OrganizationController extends Controller
                             } else {
                                 $updating_contact->contact_services = '';
                             }
+                            $contact_service[$i] = is_array($contact_service[$i]) ? array_values(array_filter($contact_service[$i])) : [];
                             $updating_contact->service()->sync($contact_service[$i]);
                             // this is contact phone section
                             $updating_contact->contact_phones = '';
@@ -2788,6 +2908,7 @@ class OrganizationController extends Controller
                                     }
                                 }
                             }
+                            $contact_phone_recordid_list = is_array($contact_phone_recordid_list) ? array_values(array_filter($contact_phone_recordid_list)) : [];
                             $updating_contact->phone()->sync($contact_phone_recordid_list);
                             $updating_contact->save();
                         }
@@ -2888,6 +3009,7 @@ class OrganizationController extends Controller
                         } else {
                             $location->location_services = '';
                         }
+                        $location_service[$i] = is_array($location_service[$i]) ? array_values(array_filter($location_service[$i])) : [];
                         $location->services()->sync($location_service[$i]);
 
                         if ($location_schedules[$i]) {
@@ -2895,6 +3017,7 @@ class OrganizationController extends Controller
                         } else {
                             $location->location_schedule = '';
                         }
+                        $location_schedules[$i] = is_array($location_schedules[$i]) ? array_values(array_filter($location_schedules[$i])) : [];
                         $location->schedules()->sync($location_schedules[$i]);
 
                         // location address
@@ -3009,9 +3132,11 @@ class OrganizationController extends Controller
                                 $schedule_locations[] = $schedule_recordid;
                             }
                         }
+                        $location_phone_recordid_list = is_array($location_phone_recordid_list) ? array_values(array_filter($location_phone_recordid_list)) : [];
                         $location->location_schedule = join(',', $schedule_locations);
                         $location->phones()->sync($location_phone_recordid_list);
 
+                        $location_address_recordid_list = is_array($location_address_recordid_list) ? array_values(array_filter($location_address_recordid_list)) : [];
                         $location->address()->sync($location_address_recordid_list);
                         $location->save();
                     } else {
@@ -3047,6 +3172,7 @@ class OrganizationController extends Controller
                             } else {
                                 $location->location_services = '';
                             }
+                            $location_service[$i] = is_array($location_service[$i]) ? array_values(array_filter($location_service[$i])) : [];
                             $location->services()->sync($location_service[$i]);
 
                             if ($location_schedules[$i]) {
@@ -3054,6 +3180,7 @@ class OrganizationController extends Controller
                             } else {
                                 $location->location_schedule = '';
                             }
+                            $location_schedules[$i] = is_array($location_schedules[$i]) ? array_values(array_filter($location_schedules[$i])) : [];
                             $location->schedules()->sync($location_schedules[$i]);
 
                             $address_info = Address::where('address_1', '=', $request->location_address[$i])->first();
@@ -3165,6 +3292,10 @@ class OrganizationController extends Controller
                             }
                             $location->location_schedule = join(',', $schedule_locations);
 
+                            $location_phone_recordid_list = is_array($location_phone_recordid_list) ? array_values(array_filter($location_phone_recordid_list)) : [];
+                            $schedule_locations = is_array($schedule_locations) ? array_values(array_filter($schedule_locations)) : [];
+                            $location_address_recordid_list = is_array($location_address_recordid_list) ? array_values(array_filter($location_address_recordid_list)) : [];
+
                             $location->schedules()->sync($schedule_locations);
                             $location->phones()->sync($location_phone_recordid_list);
                             $location->address()->sync($location_address_recordid_list);
@@ -3232,9 +3363,9 @@ class OrganizationController extends Controller
                 $interaction->save();
 
                 $organizationStatus = OrganizationStatus::where('id', $request->organization_status)->first();
-
-                if ($organizationStatus->status == 'Verified') {
+                if (($request->reverify == '1' && $organizationStatus->status == 'Verified') || ($organizationStatus->status == 'Verified' && $organization->organization_status_x != $request->organization_status)) {
                     $organization->last_verified_at = Carbon::now();
+                    $organization->last_verified_by = Auth::id();
                 }
                 $organization->organization_status_x = $request->organization_status;
             }
@@ -3244,16 +3375,17 @@ class OrganizationController extends Controller
             if ($organization->wasChanged()) {
                 $organization->updated_at = date("Y-m-d H:i:s");
             }
+            // $organization->updated_by = Auth::id();
             $organization->save();
             Session::flash('message', 'Organization updated successfully!');
             Session::flash('status', 'success');
             return redirect('organizations/' . $id);
         } catch (\Throwable $th) {
-
+            dd($th);
             Log::error('Error in update organization : ' . $th);
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
-            return redirect('organizations/');
+            return redirect('organizations');
         }
     }
 
@@ -3440,12 +3572,26 @@ class OrganizationController extends Controller
             ], 500);
         }
     }
+    public function manage_filters()
+    {
+        $filtersData = OrganizationTableFilter::where('user_id', Auth::id())->get();
+
+        return view('backEnd.tables.tb_manage_org_filter', compact('filtersData'));
+    }
+    public function delete_manage_filters($id)
+    {
+        $filtersData = OrganizationTableFilter::where('id', $id)->delete();
+
+        Session::flash('message', 'Filter Deleted successfully!');
+        Session::flash('status', 'success');
+        return redirect()->back();
+    }
     public function saveOrganizationTags(Request $request)
     {
         try {
             $organization_recordid = $request->organization_recordid;
             $organization = Organization::where('organization_recordid', $organization_recordid)->first();
-            $organization->organization_tag = $request->organisation_tag && is_array($request->organisation_tag) ? implode(',', $request->organisation_tag) : '';
+            $organization->organization_tag = $request->organization_tag && is_array($request->organization_tag) ? implode(',', $request->organization_tag) : '';
             $organization->save();
             Session::flash('message', 'Organization tag updated successfully!');
             Session::flash('status', 'success');

@@ -4,11 +4,11 @@
   </div>
 
   <ul class="nav navbar-nav navbar-right">
-
+    @auth
     <li class="">
       <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
         <img src="{{ URL::asset('/images/avatar.png') }}"
-          alt="">{{Auth::user()->first_name.' ' .Auth::user()->last_name }}
+          alt="">{{Auth::check() ? Auth::user()->first_name.' ' .Auth::user()->last_name : '' }}
         <span class=" fa fa-angle-down"></span>
       </a>
       <ul class="dropdown-menu dropdown-usermenu pull-right">
@@ -26,7 +26,7 @@
         {!! Form::close() !!}
       </ul>
     </li>
-
+    @endauth
     <!-- <li role="presentation" class="dropdown">
                   <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
                     <i class="fa fa-envelope-o"></i>
