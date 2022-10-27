@@ -32,7 +32,7 @@ Add Country
                             <label class="col-sm-3 control-label text-right">Select County</label>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    {!! Form::select('country',$countries,'US',['class' => 'form-control']) !!}
+                                    {!! Form::select('country',$countries,env('LOCALIZATION') ? env('LOCALIZATION') : 'US',['class' => 'form-control']) !!}
                                     {!! $errors->first('country', '<p class="help-block">:message</p>') !!}
                                 </div>
                             </div>

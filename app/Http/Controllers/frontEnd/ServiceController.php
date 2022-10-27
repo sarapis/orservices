@@ -225,8 +225,10 @@ class ServiceController extends Controller
         // foreach ($tag_list as $key => $value) {
         //     $organization_tagsArray[$value] = $value;
         // }
-        $organization_tagsArray = OrganizationTag::pluck('tag', 'id');
-
+        // $organization_tagsArray = OrganizationTag::get();
+        // $organization_tagsArray = json_encode($organization_tagsArray);
+        $organization_tagsArray = OrganizationTag::get();
+        $organization_tagsArray = json_encode($organization_tagsArray);
 
         //======================updated alt taxonomy tree======================
 
@@ -296,7 +298,7 @@ class ServiceController extends Controller
     {
         $map = Map::find(1);
 
-        if (Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin') {
+        if (Auth::user() && Auth::user()->user_organization && (Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin')) {
             $organization_recordid = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_recordid') : [];
             $organization_names = Organization::orderBy("organization_name")->select("organization_name")->whereIn('organization_recordid', $organization_recordid)->distinct()->get();
         } else {
@@ -467,6 +469,8 @@ class ServiceController extends Controller
             $service_organization_id = $service_organization["organization_recordid"];
             $service->service_organization = $service_organization_id;
 
+            $request->service_area = is_array($request->service_area) ? array_values(array_filter($request->service_area)) : [];
+            $request->fee_option = is_array($request->fee_option) ? array_values(array_filter($request->fee_option)) : [];
             if ($request->service_area)
                 $service->areas()->sync($request->service_area);
             if ($request->fee_option)
@@ -482,6 +486,7 @@ class ServiceController extends Controller
                 $program->services = $new_recordid;
                 $recordids = [];
                 $recordids[] = $new_recordid;
+                $recordids = is_array($recordids) ? array_values(array_filter($recordids)) : [];
                 $program->service()->sync($recordids);
                 $program->save();
             }
@@ -521,7 +526,7 @@ class ServiceController extends Controller
 
             $service_codes = [];
             if ($request->code_conditions) {
-                $code_conditions = array_values(array_filter($request->code_conditions));
+                $code_conditions = is_array($request->code_conditions) ? array_values(array_filter($request->code_conditions)) : [];
                 foreach ($code_conditions as $key => $code_id) {
                     $ids = explode('_', $code_id);
                     if (count($ids) > 1) {
@@ -546,7 +551,7 @@ class ServiceController extends Controller
             }
             if ($request->goal_conditions) {
                 // $service_codes = array_merge($service_codes, array_map('intval', $request->goal_conditions));
-                $goal_conditions = array_values(array_filter($request->goal_conditions));
+                $goal_conditions = is_array($request->goal_conditions) ? array_values(array_filter($request->goal_conditions)) : [];
                 foreach ($goal_conditions as $key => $code_id) {
                     $ids = explode('_', $code_id);
                     if (count($ids) > 1) {
@@ -570,7 +575,7 @@ class ServiceController extends Controller
             }
             if ($request->activities_conditions) {
                 // $service_codes = array_merge($service_codes, array_map('intval', $request->activities_conditions));
-                $activities_conditions = array_values(array_filter($request->activities_conditions));
+                $activities_conditions = is_array($request->activities_conditions) ? array_values(array_filter($request->activities_conditions)) : [];
                 foreach ($activities_conditions as $key => $code_id) {
                     // $ids = explode('_', $code_id);
                     $code = Code::whereId($code_id)->first();
@@ -696,6 +701,7 @@ class ServiceController extends Controller
                             ]);
                         }
                         if (isset($location_regions[$i])) {
+                            $location_regions[$i] = is_array($location_regions[$i]) ? array_values(array_filter($location_regions[$i])) : [];
                             $location->regions()->sync($location_regions[$i]);
                         }
 
@@ -835,15 +841,17 @@ class ServiceController extends Controller
                                 // }
                             }
                         }
+                        $schedule_locations = is_array($schedule_locations) ? array_values(array_filter($schedule_locations)) : [];
                         $location->location_schedule = join(',', $schedule_locations);
 
                         $location->schedules()->sync($schedule_locations);
 
+                        $location_phone_recordid_list = is_array($location_phone_recordid_list) ? array_values(array_filter($location_phone_recordid_list)) : [];
                         $location->phones()->sync($location_phone_recordid_list);
-                        $location_phone_recordid_list = array_unique($location_phone_recordid_list);
                         $location->location_phones = '';
                         $location->location_phones = count($location_phone_recordid_list) > 0 ? implode(',', $location_phone_recordid_list) : '';
 
+                        $location_address_recordid_list = is_array($location_address_recordid_list) ? array_values(array_filter($location_address_recordid_list)) : [];
                         $location->address()->sync($location_address_recordid_list);
                         $location->save();
 
@@ -868,6 +876,7 @@ class ServiceController extends Controller
                                 ]);
                             }
                             if (isset($location_regions[$i])) {
+                                $location_regions[$i] = is_array($location_regions[$i]) ? array_values(array_filter($location_regions[$i])) : [];
                                 $location->regions()->sync($location_regions[$i]);
                             }
 
@@ -1005,15 +1014,17 @@ class ServiceController extends Controller
                                     // }
                                 }
                             }
+                            $schedule_locations = is_array($schedule_locations) ? array_values(array_filter($schedule_locations)) : [];
                             $location->location_schedule = join(',', $schedule_locations);
 
                             $location->schedules()->sync($schedule_locations);
+                            $location_phone_recordid_list = is_array($location_phone_recordid_list) ? array_values(array_filter($location_phone_recordid_list)) : [];
                             $location->phones()->sync($location_phone_recordid_list);
 
-                            $location_phone_recordid_list = array_unique($location_phone_recordid_list);
                             $location->location_phones = '';
                             $location->location_phones = count($location_phone_recordid_list) > 0 ? implode(',', $location_phone_recordid_list) : '';
 
+                            $location_address_recordid_list = is_array($location_address_recordid_list) ? array_values(array_filter($location_address_recordid_list)) : [];
                             $location->address()->sync($location_address_recordid_list);
                             $location->save();
                         }
@@ -1021,6 +1032,7 @@ class ServiceController extends Controller
                     }
                 }
             }
+            $service_locations = is_array($service_locations) ? array_values(array_filter($service_locations)) : [];
             $service->service_locations = join(',', $service_locations);
             $service->locations()->sync($service_locations);
 
@@ -1087,7 +1099,7 @@ class ServiceController extends Controller
                 }
             }
             if (count($service_taxonomies) > 0) {
-                $service_taxonomies = array_unique(array_values(array_filter($service_taxonomies)));
+                $service_taxonomies = is_array($service_taxonomies) ? array_unique(array_values(array_filter($service_taxonomies))) : [];
             }
             $service->service_taxonomy = join(',', $service_taxonomies);
             $service->taxonomy()->sync($service_taxonomies);
@@ -1177,6 +1189,7 @@ class ServiceController extends Controller
                     // }
                 }
             }
+            $phone_recordid_list = is_array($phone_recordid_list) ? array_values(array_filter($phone_recordid_list)) : [];
             $service->phone()->sync($phone_recordid_list);
 
             // if ($request->service_schedules) {
@@ -1256,6 +1269,7 @@ class ServiceController extends Controller
             if (count($schedule_services)) {
                 $service->service_schedule = join(',', $schedule_services);
             }
+            $schedule_services = is_array($schedule_services) ? array_values(array_filter($schedule_services)) : [];
             $service->schedules()->sync($schedule_services);
 
             // if ($request->service_contacts) {
@@ -1313,6 +1327,7 @@ class ServiceController extends Controller
                                 array_push($contact_phone_recordid_list, $new_phone_recordid);
                             }
                         }
+                        $contact_phone_recordid_list = is_array($contact_phone_recordid_list) ? array_values(array_filter($contact_phone_recordid_list)) : [];
                         $contact->phone()->sync($contact_phone_recordid_list);
                         $contact->save();
                         array_push($service_contacts, Contact::max('contact_recordid'));
@@ -1351,6 +1366,7 @@ class ServiceController extends Controller
                                     array_push($contact_phone_recordid_list, $new_phone_recordid);
                                 }
                             }
+                            $contact_phone_recordid_list = is_array($contact_phone_recordid_list) ? array_values(array_filter($contact_phone_recordid_list)) : [];
                             $contact->phone()->sync($contact_phone_recordid_list);
                             $contact->save();
                         }
@@ -1358,6 +1374,7 @@ class ServiceController extends Controller
                     }
                 }
             }
+            $service_contacts = is_array($service_contacts) ? array_values(array_filter($service_contacts)) : [];
             $service->service_contacts = join(',', $service_contacts);
             $service->contact()->sync($service_contacts);
 
@@ -1390,16 +1407,19 @@ class ServiceController extends Controller
                     }
                 }
             }
+            $detail_ids = is_array($detail_ids) ? array_values(array_filter($detail_ids)) : [];
             $service->service_details = join(',', $detail_ids);
             $service->details()->sync($detail_ids);
 
-            if ($request->service_address) {
-                $service->service_address = join(',', $request->service_address);
+            $service_address = $request->service_address;
+            $service_address = is_array($service_address) ? array_values(array_filter($service_address)) : [];
+            if ($service_address) {
+                $service->service_address = join(',', $service_address);
             } else {
                 $service->service_address = '';
             }
-            $service->address()->sync($request->service_address);
-
+            $service->address()->sync($service_address);
+            $service->created_by = Auth::id();
             $service->save();
 
             $audit = Audit::where('auditable_id', $service->service_recordid)->first();
@@ -1521,7 +1541,7 @@ class ServiceController extends Controller
                 $contact_info_list = Contact::whereIn('contact_recordid', $service_contacts_recordid_list)->get();
                 $contactCount = 0;
                 foreach ($contact_info_list as $key => $value) {
-                    if ((Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin') || (Auth::user() && Auth::user()->roles && Auth::user()->user_organization && $value->organization && str_contains(Auth::user()->user_organization, $value->organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin') || !Auth::check() && $value->visibility != 'private') {
+                    if ((Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin') || (Auth::user() && Auth::user()->roles && Auth::user()->user_organization && $value->organization && str_contains(Auth::user()->user_organization, $value->organization->organization_recordid) && (Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin')) || !Auth::check() && $value->visibility != 'private') {
                         $contactCount += 1;
                     }
                 }
@@ -1616,7 +1636,9 @@ class ServiceController extends Controller
         $service = Service::where('service_recordid', '=', $id)->first();
 
         if ($service) {
-            if (Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization, $service->organizations()->first()->organization_recordid) && Auth::user()->roles->name == 'Organization Admin'  || (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')) {
+
+            if (Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization, $service->organizations()->first()->organization_recordid) && (Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin')  || (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin') || (Auth::user() && Auth::user()->roles && Auth::user()->service_tags && $service->service_tag && count(array_intersect(explode(',', Auth::user()->service_tags), explode(',', $service->service_tag))) > 0) || (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'Section Admin' && Auth::user()->organization_tags && $service->organizations()->first()->organization_tag && count(array_intersect(explode(',', Auth::user()->organization_tags), explode(',', $service->organizations()->first()->organization_tag))) > 0)) {
+
                 $addressIds = $service->address ? $service->address->pluck('address_recordid')->toArray() : [];
                 $service_codes = $service->codes()->select(DB::raw('CONCAT(rating, "_", SDOH_code) as code_id'))->where('code', '!=', 'None')->where('code_type', '!=', 'Gravity Grouping')->pluck('code_id')->toArray();
 
@@ -1624,7 +1646,7 @@ class ServiceController extends Controller
                 // dd($service->getOrganizations);
                 $contactOrganization = $service->organizations ? $service->organizations->contact : [];
 
-                if (Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin') {
+                if (Auth::user() && Auth::user()->user_organization && (Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin')) {
                     $organization_recordid = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_recordid') : [];
                     $organization_names = Organization::orderBy("organization_name")->select("organization_name", "organization_recordid")->whereIn('organization_recordid', $organization_recordid)->distinct()->get();
                 } else {
@@ -1671,6 +1693,12 @@ class ServiceController extends Controller
                 $location_info_list = explode(',', $service->service_locations);
                 $contact_info_list = explode(',', $service->service_contacts);
                 $taxonomy_info_list = explode(',', $service->service_taxonomy);
+
+                $location_data = $service->locations->pluck('location_recordid')->toArray();
+                if (count($location_data) > 0) {
+                    $location_info_list = array_merge($location_data, $location_data);
+                    $location_info_list = is_array($location_info_list) ? array_values(array_unique($location_info_list)) : [];
+                }
 
                 $service_locations_data = Location::whereIn('location_recordid', $location_info_list)->with('phones', 'address', 'schedules')->get();
                 $service_locations_data = $service_locations_data->filter(function ($value) {
@@ -1955,7 +1983,6 @@ class ServiceController extends Controller
                     }
                     $j = $j + 1;
                 }
-
                 $opens_at_location_monday_datas = json_encode($opens_at_location_monday_datas);
                 $closes_at_location_monday_datas = json_encode($closes_at_location_monday_datas);
                 $schedule_closed_monday_datas = json_encode($schedule_closed_monday_datas);
@@ -2026,6 +2053,9 @@ class ServiceController extends Controller
                                 $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $taxonomyParentData->taxonomy_parent_name)->first();
                                 if ($taxonomyParentData->taxonomy_parent_name) {
                                     $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $taxonomyParentData->taxonomy_parent_name)->first();
+                                    if ($taxonomyParentData->taxonomy_parent_name) {
+                                        $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $taxonomyParentData->taxonomy_parent_name)->first();
+                                    }
                                 }
                             }
                         }
@@ -2072,11 +2102,11 @@ class ServiceController extends Controller
                 foreach ($service_eligibility_term_data as $value) {
                     if ($value->taxonomy_parent_name) {
                         $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $value->taxonomy_parent_name)->first();
-                        if ($taxonomyParentData->taxonomy_parent_name) {
+                        if ($taxonomyParentData && $taxonomyParentData->taxonomy_parent_name) {
                             $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $taxonomyParentData->taxonomy_parent_name)->first();
-                            if ($taxonomyParentData->taxonomy_parent_name) {
+                            if ($taxonomyParentData && $taxonomyParentData->taxonomy_parent_name) {
                                 $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $taxonomyParentData->taxonomy_parent_name)->first();
-                                if ($taxonomyParentData->taxonomy_parent_name) {
+                                if ($taxonomyParentData && $taxonomyParentData->taxonomy_parent_name) {
                                     $taxonomyParentData = Taxonomy::where('taxonomy_recordid', $taxonomyParentData->taxonomy_parent_name)->first();
                                 }
                             }
@@ -2222,11 +2252,13 @@ class ServiceController extends Controller
             if ($request->service_area)
                 $service_area = $request->service_area;
 
-            $service->areas()->sync($request->service_area);
+            $service_area = is_array($service_area) ? array_values(array_filter($service_area)) : [];
+            $service->areas()->sync($service_area);
             $fee_option = [];
             if ($request->fee_option)
                 $fee_option = $request->fee_option;
 
+            $fee_option = is_array($fee_option) ? array_values(array_filter($fee_option)) : [];
             $service->fees()->sync($request->fee_option);
 
             $servicePrograms = [];
@@ -2325,7 +2357,7 @@ class ServiceController extends Controller
                     }
                 }
             }
-
+            $servicePrograms = is_array($servicePrograms) ? array_values(array_filter($servicePrograms)) : [];
             $service->program()->sync($servicePrograms);
             // service code section
             $service_codes = [];
@@ -2338,7 +2370,7 @@ class ServiceController extends Controller
 
             // CodeLedger::where('service_recordid', $id)->delete();
             if ($request->code_conditions) {
-                $code_conditions = array_values(array_filter($request->code_conditions));
+                $code_conditions = is_array($request->code_conditions) ? array_values(array_filter($request->code_conditions)) : [];
                 foreach ($code_conditions as $key => $code_id) {
                     $ids = explode('_', $code_id);
                     if (count($ids) > 1) {
@@ -2379,7 +2411,7 @@ class ServiceController extends Controller
 
             if ($request->goal_conditions) {
                 // $service_codes = array_merge($service_codes, array_map('intval', $request->goal_conditions));
-                $goal_conditions = array_values(array_filter($request->goal_conditions));
+                $goal_conditions = is_array($request->goal_conditions) ? array_values(array_filter($request->goal_conditions)) : [];
                 foreach ($goal_conditions as $key => $code_id) {
                     $ids = explode('_', $code_id);
                     if (count($ids) > 1) {
@@ -2419,7 +2451,7 @@ class ServiceController extends Controller
 
             if ($request->activities_conditions) {
                 // $service_codes = array_merge($service_codes, array_map('intval', $request->activities_conditions));
-                $activities_conditions = array_values(array_filter($request->activities_conditions));
+                $activities_conditions = is_array($request->activities_conditions) ? array_values(array_filter($request->activities_conditions)) : [];
                 foreach ($activities_conditions as $key => $code_id) {
                     // $ids = explode('_', $code_id);
                     $code = Code::whereId($code_id)->first();
@@ -2554,6 +2586,7 @@ class ServiceController extends Controller
                             ]);
                         }
                         if (isset($location_regions[$i])) {
+                            $location_regions[$i] = is_array($location_regions[$i]) ? array_values(array_filter($location_regions[$i])) : [];
                             $location->regions()->sync($location_regions[$i]);
                         }
 
@@ -2564,6 +2597,7 @@ class ServiceController extends Controller
                         // }
                         // $location->services()->sync($location_service[$i]);
 
+                        $location_schedules[$i] = is_array($location_schedules[$i]) ? array_values(array_filter($location_schedules[$i])) : [];
                         if ($location_schedules[$i]) {
                             $location->location_schedule = join(',', $location_schedules[$i]);
                         } else {
@@ -2694,8 +2728,10 @@ class ServiceController extends Controller
                             }
                         }
                         $location->location_schedule = join(',', $schedule_locations);
-
+                        $schedule_locations = is_array($schedule_locations) ? array_values(array_filter($schedule_locations)) : [];
                         $location->schedules()->sync($schedule_locations);
+
+                        $location_phone_recordid_list = is_array($location_phone_recordid_list) ? array_values(array_filter($location_phone_recordid_list)) : [];
 
                         $location->phones()->sync($location_phone_recordid_list);
 
@@ -2703,6 +2739,7 @@ class ServiceController extends Controller
                         $location->location_phones = '';
                         $location->location_phones = count($location_phone_recordid_list) > 0 ? implode(',', $location_phone_recordid_list) : '';
 
+                        $location_address_recordid_list = is_array($location_address_recordid_list) ? array_values(array_filter($location_address_recordid_list)) : [];
                         $location->address()->sync($location_address_recordid_list);
                         $location->save();
 
@@ -2729,6 +2766,7 @@ class ServiceController extends Controller
                                 ]);
                             }
                             if (isset($location_regions[$i])) {
+                                $location_regions[$i] = is_array($location_regions[$i]) ? array_values(array_filter($location_regions[$i])) : [];
                                 $location->regions()->sync($location_regions[$i]);
                             }
 
@@ -2739,6 +2777,7 @@ class ServiceController extends Controller
                             // }
                             // $location->services()->sync($location_service[$i]);
 
+                            $location_schedules[$i] = is_array($location_schedules[$i]) ? array_values(array_filter($location_schedules[$i])) : [];
                             if ($location_schedules[$i]) {
                                 $location->location_schedule = join(',', $location_schedules[$i]);
                             } else {
@@ -2864,14 +2903,18 @@ class ServiceController extends Controller
                                     // }
                                 }
                             }
+                            $schedule_locations = is_array($schedule_locations) ? array_values(array_filter($schedule_locations)) : [];
                             $location->location_schedule = join(',', $schedule_locations);
 
                             $location->schedules()->sync($schedule_locations);
+
+                            $location_phone_recordid_list = is_array($location_phone_recordid_list) ? array_values(array_filter($location_phone_recordid_list)) : [];
                             $location->phones()->sync($location_phone_recordid_list);
 
                             $location_phone_recordid_list = array_unique($location_phone_recordid_list);
                             $location->location_phones = '';
                             $location->location_phones = count($location_phone_recordid_list) > 0 ? implode(',', $location_phone_recordid_list) : '';
+                            $location_address_recordid_list = is_array($location_address_recordid_list) ? array_values(array_filter($location_address_recordid_list)) : [];
 
                             $location->address()->sync($location_address_recordid_list);
                             $location->save();
@@ -2884,6 +2927,7 @@ class ServiceController extends Controller
                     $service->service_locations = join(',', $service_locations);
                 }
             }
+            $service_locations = is_array($service_locations) ? array_values(array_filter($service_locations)) : [];
             $service->locations()->sync($service_locations);
             // contact section
             $service_contacts = [];
@@ -2985,9 +3029,12 @@ class ServiceController extends Controller
                 }
             }
             $service->service_contacts = join(',', $service_contacts);
+
+            $service_contacts = is_array($service_contacts) ? array_values(array_filter($service_contacts)) : [];
             $service->contact()->sync($service_contacts);
 
             $service_taxonomies = [];
+            // dd($request);
             if ($request->service_category_type && $request->service_category_type[0] != null) {
                 $service_category_type = $request->service_category_type;
                 $service_category_term = $request->service_category_term;
@@ -3010,6 +3057,10 @@ class ServiceController extends Controller
                             $service_taxonomies[] = $service_category_type[$key];
                             // $service_taxonomies[] = $service_category_term[$key];
                             $service_taxonomies = array_merge($service_taxonomies, $service_category_term[$key]);
+                        }
+                    } else {
+                        if (isset($service_category_type[$key])) {
+                            $service_taxonomies[] = $service_category_type[$key];
                         }
                     }
                 }
@@ -3037,13 +3088,17 @@ class ServiceController extends Controller
                             // $service_taxonomies[] = $service_eligibility_term[$key];
                             $service_taxonomies = array_merge($service_taxonomies, $service_eligibility_term[$key]);
                         }
+                    } else {
+                        if (isset($service_eligibility_type[$key])) {
+                            $service_taxonomies[] = $service_eligibility_type[$key];
+                        }
                     }
                 }
             }
             if (count($service_taxonomies) > 0) {
-                $service_taxonomies = array_unique(array_values(array_filter($service_taxonomies)));
+                $service_taxonomies = is_array($service_taxonomies) ? array_unique(array_values(array_filter($service_taxonomies))) : [];
+                $service->service_taxonomy = join(',', $service_taxonomies);
             }
-            $service->service_taxonomy = join(',', $service_taxonomies);
             $service->taxonomy()->sync($service_taxonomies);
 
             $detail_ids = [];
@@ -3069,7 +3124,12 @@ class ServiceController extends Controller
                     }
                 }
             }
-            $service->service_details = join(',', $detail_ids);
+            $service->service_details = '';
+            if (count($detail_ids) > 0) {
+                // $detail_ids = array_filter($detail_ids);
+                $detail_ids = is_array($detail_ids) ? array_values(array_filter($detail_ids)) : [];
+                $service->service_details = join(',', $detail_ids);
+            }
             $service->details()->sync($detail_ids);
 
             // service phone section
@@ -3130,6 +3190,7 @@ class ServiceController extends Controller
                     $service->service_phones = '';
                 }
             }
+            $phone_recordid_list = is_array($phone_recordid_list) ? array_values(array_filter($phone_recordid_list)) : [];
             $service->phone()->sync($phone_recordid_list);
 
             if ($request->removePhoneDataId) {
@@ -3182,6 +3243,7 @@ class ServiceController extends Controller
             // } else {
             // }
             if (!empty($service_address_info)) {
+                $service_address_info = is_array($service_address_info) ? array_values(array_filter($service_address_info)) : [];
                 $service->service_address = implode(',', $service_address_info);
                 $service->address()->sync($service_address_info);
             }
@@ -3259,6 +3321,7 @@ class ServiceController extends Controller
             }
             $old_service_schedule = explode(',', $service->service_schedule);
             // dd($schedule_services, $service->service_schedule, array_diff($old_service_schedule, $schedule_services), $old_service_schedule);
+            $schedule_services = is_array($schedule_services) ? array_values(array_filter($schedule_services)) : [];
             if (count($schedule_services)) {
                 $service->service_schedule = join(',', $schedule_services);
             }
@@ -3305,6 +3368,7 @@ class ServiceController extends Controller
 
                 $service->service_status = $request->service_status;
             }
+            // $service->updated_by = Auth::id();
 
             $service->save();
 
@@ -4127,7 +4191,7 @@ class ServiceController extends Controller
 
             $service_codes = [];
             if ($request->code_conditions) {
-                $code_conditions = array_values(array_filter($request->code_conditions));
+                $code_conditions = is_array($request->code_conditions) ? array_values(array_filter($request->code_conditions)) : [];
                 foreach ($code_conditions as $key => $code_id) {
                     $ids = explode('_', $code_id);
                     if (count($ids) > 1) {
@@ -4152,7 +4216,7 @@ class ServiceController extends Controller
             }
             if ($request->goal_conditions) {
                 // $service_codes = array_merge($service_codes, array_map('intval', $request->goal_conditions));
-                $goal_conditions = array_values(array_filter($request->goal_conditions));
+                $goal_conditions = is_array($request->goal_conditions) ? array_values(array_filter($request->goal_conditions)) : [];
                 foreach ($goal_conditions as $key => $code_id) {
                     $ids = explode('_', $code_id);
                     if (count($ids) > 1) {
@@ -4176,7 +4240,7 @@ class ServiceController extends Controller
             }
             if ($request->activities_conditions) {
                 // $service_codes = array_merge($service_codes, array_map('intval', $request->activities_conditions));
-                $activities_conditions = array_values(array_filter($request->activities_conditions));
+                $activities_conditions = is_array($request->activities_conditions) ? array_values(array_filter($request->activities_conditions)) : [];
                 foreach ($activities_conditions as $key => $code_id) {
                     // $ids = explode('_', $code_id);
                     $code = Code::whereId($code_id)->first();
@@ -4681,7 +4745,7 @@ class ServiceController extends Controller
                 }
             }
             if (count($service_taxonomies) > 0) {
-                $service_taxonomies = array_unique(array_values(array_filter($service_taxonomies)));
+                $service_taxonomies = is_array($service_taxonomies) ? array_unique(array_values(array_filter($service_taxonomies))) : [];
             }
             $service->service_taxonomy = join(',', $service_taxonomies);
             $service->taxonomy()->sync($service_taxonomies);
@@ -5136,7 +5200,7 @@ class ServiceController extends Controller
 
             $service_codes = [];
             if ($request->code_conditions) {
-                $code_conditions = array_values(array_filter($request->code_conditions));
+                $code_conditions = is_array($request->code_conditions) ? array_values(array_filter($request->code_conditions)) : [];
                 foreach ($code_conditions as $key => $code_id) {
                     $ids = explode('_', $code_id);
                     if (count($ids) > 1) {
@@ -5161,7 +5225,7 @@ class ServiceController extends Controller
             }
             if ($request->goal_conditions) {
                 // $service_codes = array_merge($service_codes, array_map('intval', $request->goal_conditions));
-                $goal_conditions = array_values(array_filter($request->goal_conditions));
+                $goal_conditions = is_array($request->goal_conditions) ? array_values(array_filter($request->goal_conditions)) : [];
                 foreach ($goal_conditions as $key => $code_id) {
                     $ids = explode('_', $code_id);
                     if (count($ids) > 1) {
@@ -5185,7 +5249,7 @@ class ServiceController extends Controller
             }
             if ($request->activities_conditions) {
                 // $service_codes = array_merge($service_codes, array_map('intval', $request->activities_conditions));
-                $activities_conditions = array_values(array_filter($request->activities_conditions));
+                $activities_conditions = is_array($request->activities_conditions) ? array_values(array_filter($request->activities_conditions)) : [];
                 foreach ($activities_conditions as $key => $code_id) {
                     // $ids = explode('_', $code_id);
                     $code = Code::whereId($code_id)->first();
@@ -5265,7 +5329,7 @@ class ServiceController extends Controller
                 }
             }
             if (count($service_taxonomies) > 0) {
-                $service_taxonomies = array_unique(array_values(array_filter($service_taxonomies)));
+                $service_taxonomies = is_array($service_taxonomies) ? array_unique(array_values(array_filter($service_taxonomies))) : [];
             }
             $service->service_taxonomy = join(',', $service_taxonomies);
             $service->taxonomy()->sync($service_taxonomies);

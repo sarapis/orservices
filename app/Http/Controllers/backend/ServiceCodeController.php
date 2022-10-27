@@ -299,7 +299,7 @@ class ServiceCodeController extends Controller
                 }
             })
             ->editColumn('service_name', function ($row) {
-                return '<a href="/services/' . $row->service_recordid . '" target="_blank">' . $row->service_name . '</a>';
+                return  ;
             })
             ->editColumn('service_status', function ($row) {
                 return $row->get_status ? $row->get_status->status : '';

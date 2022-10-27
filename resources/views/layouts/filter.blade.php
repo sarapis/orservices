@@ -3,6 +3,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-5 col-sm-5">
+					<label class="d-none">Search for Services</label>
 					<div class="form-group text-left form-material m-0" data-plugin="formMaterial">
 						<img src="/frontend/assets/images/search.png" alt="" title="" class="form_icon_img">
 						<input type="text" autocomplete="off" class="form-control search-form" name="find" placeholder="Search for Services" id="search_address" @if(isset($chip_service)) value="{{$chip_service}}" @endif>
@@ -10,6 +11,7 @@
 					</div>
 				</div>
 				<div class="col-md-5 col-sm-5">
+					<label class="d-none">Search Location</label>
 					<div class="form-group text-left form-material m-0" data-plugin="formMaterial">
 						<img src="/frontend/assets/images/location.png" alt="" title="" class="form_icon_img">
 						<input type="text" class="form-control pr-50" id="searchAddress" name="search_address" placeholder="Search Location..." value="{{ isset($chip_address) ? $chip_address : '' }}">
@@ -49,14 +51,14 @@
 
 <script type="text/javascript">
 	function getLocation() {
-	  if (navigator.geolocation) {
+	if (navigator.geolocation) {
 
-	      navigator.geolocation.getCurrentPosition(showPosition);
-	  } else {
+	  navigator.geolocation.getCurrentPosition(showPosition);
+	} else {
 
-	      alert("Geolocation is not supported by this browser.");
+	   alert("Geolocation is not supported by this browser.");
 
-	    }
+	}
 	}
 
 

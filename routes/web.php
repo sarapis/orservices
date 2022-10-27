@@ -80,6 +80,8 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
 
     Route::get('/about', 'frontEnd\AboutController@about');
 
+
+
     Route::resource('services', 'frontEnd\ServiceController');
     Route::post('/service_tag/{id}', 'frontEnd\ServiceController@service_tag')->name('service_tag');
     Route::post('/addServiceTag', 'frontEnd\ServiceController@addServiceTag')->name('addServiceTag');
@@ -180,13 +182,20 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     // suggestion
     Route::resource('/suggest', 'frontEnd\SuggestController');
     Route::get('/add_new_suggestion', 'frontEnd\SuggestController@add_new_suggestion');
+    Route::get('/create_user', 'frontEnd\SuggestController@create_user');
+    Route::post('/suggest/store_user', 'frontEnd\SuggestController@store_user')->name('suggest.store_user');
 
+    Route::resource('users_lists', 'frontEnd\UsersController');
+    // tracking
+    Route::resource('tracking', 'frontEnd\TrackingController');
+    Route::post('/export_tracking', ['uses' => 'frontEnd\TrackingController@export_tracking'])->name('tracking.export');
     // message
     // Route::get('messagesSetting', 'frontEnd\MessageController@messagesSetting')->name('messagesSetting');
     Route::post('saveMessageCredential', 'frontEnd\MessageController@saveMessageCredential')->name('saveMessageCredential');
 
     Route::post('/checkSendgrid', 'HomeController@checkSendgrid')->name('checkSendgrid');
     Route::post('/checkTwillio', 'HomeController@checkTwillio')->name('checkTwillio');
+    Route::get('user/invite_user/{id}', 'backend\UserController@invite_user')->name('user.invite_user');
 });
 
 // admin route
@@ -217,6 +226,7 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::get('user/{user}/changelog', 'backend\UserController@changelog')->name('user.changelog');
     Route::post('user/{user}/saveProfile', 'backend\UserController@saveProfile')->name('user.saveProfile');
     Route::get('user/send_activation/{id}', 'backend\UserController@send_activation')->name('user.send_activation');
+
 
     //roles
     Route::resource('role', 'backend\RoleController');
@@ -261,8 +271,14 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::get('tb_service_areas', 'frontEnd\AreaController@index')->name('tables.tb_service_area');
     // Route::get('tb_services', 'frontEnd\ServiceController@tb_services')->name('tables.tb_services');
     Route::post('saveOrganizationTags', 'frontEnd\OrganizationController@saveOrganizationTags')->name('tables.saveOrganizationTags');
+    Route::post('saveOrganizationStatus', 'frontEnd\OrganizationController@saveOrganizationStatus')->name('tables.saveOrganizationStatus');
     Route::post('createNewOrganizationTag', 'frontEnd\OrganizationController@createNewOrganizationTag')->name('tables.createNewOrganizationTag');
     Route::post('saveOrganizationBookmark', 'frontEnd\OrganizationController@saveOrganizationBookmark')->name('tables.saveOrganizationBookmark');
+
+    Route::post('saveOrganizationFilter', 'frontEnd\OrganizationController@saveOrganizationFilter')->name('tables.saveOrganizationFilter');
+    Route::get('manage_filters', 'frontEnd\OrganizationController@manage_filters')->name('tables.manage_filters');
+    Route::delete('delete_manage_filters/{id}', 'frontEnd\OrganizationController@delete_manage_filters')->name('tables.delete_manage_filters');
+
     Route::post('saveServiceBookmark', 'backend\ServiceCodeController@saveServiceBookmark')->name('tables.saveServiceBookmark');
     Route::post('saveServiceTags', 'backend\ServiceCodeController@saveServiceTags')->name('tables.saveServiceTags');
     Route::post('createNewServiceTag', 'backend\ServiceCodeController@createNewServiceTag')->name('tables.createNewServiceTag');
@@ -444,7 +460,8 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::resource('data', 'backend\DataController');
     Route::post('/save_source_data', 'backend\DataController@save_source_data')->name('data.save_source_data');
 
-    Route::get('/analytics/download_analytic_csv/{year}', 'backend\AnalyticsController@download_analytic_csv')->name('analytics.download_analytic_csv');
+    Route::get('/analytics/download_analytic_csv/{year}/{user_id}', 'backend\AnalyticsController@download_analytic_csv')->name('analytics.download_analytic_csv');
+    Route::get('/analytics/download_search_analytic_csv/{year}', 'backend\AnalyticsController@download_search_analytic_csv')->name('analytics.download_search_analytic_csv');
     Route::resource('analytics', 'backend\AnalyticsController');
 
     // Route::post('/organization_delete_filter', 'OrganizationController@delete_organization');
@@ -480,8 +497,10 @@ Route::get('/forMakePhoneMain', 'frontEnd\CommonController@forMakePhoneMain')->n
 Route::get('/set_service_status', 'frontEnd\CommonController@set_service_status')->name('set_service_status');
 Route::get('/set_interaction_method', 'frontEnd\CommonController@set_interaction_method')->name('set_interaction_method');
 Route::get('/set_organization_status', 'frontEnd\CommonController@set_organization_status')->name('set_organization_status');
+Route::get('/add_user_details_to_org_service', 'frontEnd\CommonController@add_user_details_to_org_service')->name('add_user_details_to_org_service');
 Route::get('/changeTag', 'backend\OrganizationTagsController@changeTag')->name('organization_tags.changeTag');
 Route::post('/update_hsds_api_key', ['uses' => 'backend\PagesController@update_hsds_api_key'])->name('dataSync.update_hsds_api_key');
 Route::post('/updateStatus/{id}', 'frontEnd\TaxonomyController@updateStatus')->name('updateStatus.updateStatus');
 
 Route::get('/export_csv/{id}', ['uses' => 'backend\ExportController@export_csv'])->name('export.export_csv');
+Route::get('/data_for_api/{id}', ['uses' => 'backend\ExportController@data_for_api'])->name('export.data_for_api');

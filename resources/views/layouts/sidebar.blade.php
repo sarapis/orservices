@@ -182,12 +182,13 @@
             <input type="hidden" name="target_all" id="target_all">
             <input type="hidden" name="pdf" id="pdf">
             <input type="hidden" name="csv" id="csv">
+            <input type="hidden" name="filter_label" id="filter_label">
             <input type="hidden" name="organization_tags" id="organization_tags" value="{{ isset($selected_organization) ? $selected_organization : '' }}">
             <input type="hidden" id="selected_taxonomies" name="selected_taxonomies">
         </ul>
     </nav>
 </form>
-<script src="{{ secure_asset('js/treeview2.js') }}"></script>
+<script src="{{asset('js/treeview2.js')}}"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/jstree.min.js"></script>
 
 <script>
@@ -297,7 +298,6 @@ $(document).ready(function(){
         }
     }
 
-
      $('#sidebar_tree').jstree({
         'plugins': ["checkbox", "wholerow", "sort"],
         'core': {
@@ -328,16 +328,65 @@ $(document).ready(function(){
     // }else{
     //     organization_tags = JSON.parse(organization_tags)
     // }
-    $('.drop-tags').on('click', function(){
+    // $('.drop-tags').on('click', function(){
+    //     // let text = $(this).text();
+    //     let text = $(this).data('id');
+    //     if($.inArray(text,organization_tags) == -1){
+    //         organization_tags.push(text)
+    //     }else{
+    //         organization_tags.splice(organization_tags.indexOf(text),1)
+    //     }
+    //     $("#organization_tags").val(JSON.stringify(organization_tags));
+    //     // $("#organization_tags").val($(this).text());
+    //     $("#filter").submit();
+    // });
+
+    // organization_tags_tree
+    let tree_tags_list = [];
+    var selected_org_tags_ids = []
+    var selected_organization = '<?php isset($selected_organization) ? print_r($selected_organization) : print_r('') ; ?>'
+    if(selected_organization.length > 0) {
+        selected_org_tags_ids = selected_organization;
+    }
+    let organization_tagsArray =  `<?php isset($organization_tagsArray) ? print_r($organization_tagsArray) : print_r(''); ?>`
+    organization_tagsArray = JSON.parse(organization_tagsArray)
+    if(organization_tagsArray.length > 0){
+        $.each(organization_tagsArray,function name(key,value) {
+            var alt_data = {};
+            alt_data.text = value.tag;
+            alt_data.state = {};
+            alt_data.id = 'orgtag_'+value.id;
+            if (selected_org_tags_ids.indexOf(value.id) > -1) {
+                alt_data.state.selected = true;
+            }
+            tree_tags_list.push(alt_data)
+        })
+    }
+    $('#organization_tags_tree').jstree({
+        'plugins': ["checkbox", "wholerow", "sort"],
+        'core': {
+            select_node: 'sidebar_taxonomy_tree',
+            data: tree_tags_list
+        }
+    });
+    $('#organization_tags_tree').on("select_node.jstree deselect_node.jstree", function (e, data) {
+        var all_selected_ids = $('#organization_tags_tree').jstree("get_checked");
+        var selected_org_tags_ids = []
+        all_selected_ids.filter(function(id) {
+            if(id.indexOf('orgtag_') > -1){
+                selected_org_tags_ids.push(id.split('orgtag_')[1])
+            }
+            // return id.indexOf('orgtag_') > -1;
+        });
+        // selected_org_tags_ids = selected_org_tags_ids.toString();
+        $("#organization_tags").val(JSON.stringify(selected_org_tags_ids));
+        $("#filter").submit();
+    });
+    $('.drop-label').on('click', function(){
         // let text = $(this).text();
         let text = $(this).data('id');
-        if($.inArray(text,organization_tags) == -1){
-            organization_tags.push(text)
-        }else{
-            organization_tags.splice(organization_tags.indexOf(text),1)
-        }
-        $("#organization_tags").val(JSON.stringify(organization_tags));
-        // $("#organization_tags").val($(this).text());
+
+        $('#filter_label').val(text)
         $("#filter").submit();
     });
     $('.download_csv').on('click', function(){

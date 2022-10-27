@@ -7,6 +7,7 @@ use App\Model\Layout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Throwable;
 
@@ -69,8 +70,10 @@ class LoginController extends Controller
             $remember = ($request->get('remember') == 'on') ? true : false;
 
             if ($user = Auth::attempt(['email' => $email, 'password' => $password], $remember)) {
-                
-                return redirect()->intended('home');
+                Session::flash('message', "You’re logged in.");
+                Session::flash('status', 'success');
+                return redirect('/services');
+                // return redirect()->intended('home');
             }
 
             return Redirect::back()->withErrors(['global' => 'Invalid password or this user does not exist']);

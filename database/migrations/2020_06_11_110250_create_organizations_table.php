@@ -35,7 +35,7 @@ class CreateOrganizationsTable extends Migration
             $table->text('organization_phones')->nullable();
             $table->text('organization_locations')->nullable();
             $table->text('organization_contact')->nullable();
-            $table->string('organization_details')->nullable();
+            $table->longText('organization_details')->nullable();
             $table->string('organization_tag')->nullable();
             $table->text('organization_airs_taxonomy_x')->nullable();
             $table->string('flag')->nullable();

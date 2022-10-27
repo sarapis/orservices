@@ -415,7 +415,7 @@ class ContactController extends Controller
     public function create()
     {
         $map = Map::find(1);
-        if (Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin') {
+        if (Auth::user() && Auth::user()->user_organization && (Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin')) {
             $organization_recordid = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_recordid') : [];
             $organization_names = Organization::select("organization_name")->whereIn('organization_recordid', $organization_recordid)->distinct()->get();
         } else {
@@ -961,7 +961,7 @@ class ContactController extends Controller
     {
         $contact = Contact::where('contact_recordid', '=', $id)->first();
         if ($contact) {
-            if ((Auth::user() && Auth::user()->user_organization && $contact->organization && str_contains(Auth::user()->user_organization, $contact->organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin') || (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')) {
+            if ((Auth::user() && Auth::user()->user_organization && $contact->organization && str_contains(Auth::user()->user_organization, $contact->organization->organization_recordid) && (Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin')) || (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')) {
                 $organization_info_list = Organization::pluck('organization_name', 'organization_recordid');
                 // $service_info_list = Service::pluck('service_name', 'service_recordid');
                 $service_info_list = Service::select('service_recordid', 'service_name')->orderBy('service_name')->distinct()->get();
@@ -1161,7 +1161,7 @@ class ContactController extends Controller
 
         $organization_recordid = $service->organizations ? $service->organizations->organization_recordid : '';
         // $organization_names = Organization::select("organization_name")->distinct()->get();
-        if (Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin') {
+        if (Auth::user() && Auth::user()->user_organization && (Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin')) {
             $organizations = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_name', 'organization_recordid') : [];
         } else {
             $organizations = Organization::pluck("organization_name", 'organization_recordid')->unique();

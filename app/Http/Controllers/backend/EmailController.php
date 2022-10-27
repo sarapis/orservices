@@ -21,7 +21,8 @@ class EmailController extends Controller
         $layout = Layout::find(1);
         $createMail = EmailTemplate::whereId(1)->first();
         $activationMail = EmailTemplate::whereId(2)->first();
-        return view('backEnd.emails.system_emails', compact('layout', 'activationMail', 'createMail'));
+        $invitationMail = EmailTemplate::whereId(3)->first();
+        return view('backEnd.emails.system_emails', compact('layout', 'activationMail', 'createMail', 'invitationMail'));
     }
 
     /**
@@ -72,6 +73,22 @@ class EmailController extends Controller
                     'status' => $request->activation_status == 'checked' ? 1 : '',
                     'subject' => $request->activation_subject,
                     'body'  => $request->activation_body,
+                    'created_by' => Auth::id()
+                ]);
+            }
+            $invitationMail = EmailTemplate::whereId(3)->first();
+            if ($invitationMail) {
+                $invitationMail->status = $request->invitation_status == 'checked' ? 1 : '';
+                $invitationMail->subject = $request->invitation_subject;
+                $invitationMail->body = $request->invitation_body;
+                $invitationMail->created_by = Auth::id();
+                $invitationMail->save();
+            } else {
+                EmailTemplate::create([
+                    'id' => 3,
+                    'status' => $request->invitation_status == 'checked' ? 1 : '',
+                    'subject' => $request->invitation_subject,
+                    'body'  => $request->invitation_body,
                     'created_by' => Auth::id()
                 ]);
             }

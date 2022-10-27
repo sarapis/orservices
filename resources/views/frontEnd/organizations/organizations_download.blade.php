@@ -15,17 +15,17 @@
 
                         <h3><span class="badge bg-red">Organization:</span> <a class="panel-link" href=" {{ url('/organizations/'.$organization->organization_recordid) }}"> {{$organization->organization_name}} {{ $organization->organization_alternate_name ? '('.$organization->organization_alternate_name.')' : '' }}</a></h3>
 
-                        <h4><span class="badge bg-red">Status:</span>
+                        <p><span class="badge bg-red">Status:</span>
                             {{$organization->organization_status_x}}
-                        </h4>
-                        <h4><span class="badge bg-red">Discription:</span>
+                        </p>
+                        <p><span class="badge bg-red">Discription:</span>
                             {!! nl2br($organization->organization_description) !!}
-                        </h4>
-                        <h4><span class="badge bg-red">URL:</span>
+                        </p>
+                        <p><span class="badge bg-red">URL:</span>
                             {{ $organization->organization_url }}
-                        </h4>
+                        </p>
                         @if($organization->phones)
-                        <h4><span class="badge bg-red">Phone:</span>
+                        <p><span class="badge bg-red">Phone:</span>
                             <span><i class="icon md-phone font-size-18 vertical-align-top pr-10  m-0"></i>
                                 @foreach($organization->phones as $phone)
                                 @if ($phone->phone_number)
@@ -33,9 +33,8 @@
                                 @endif
                                 @endforeach
                             </span>
-                        </h4>
+                        </p>
                         @endif
-
                     </div>
                 </div>
                 <hr>

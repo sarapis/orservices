@@ -18,13 +18,20 @@ class OrganizationAdmin
     public function handle($request, Closure $next)
     {
         $user = Auth::user();
+
         $routeName = $request->route()->getName();
         if ($routeName == 'account.show' && $user->roles == null) {
             Session::flash('message', 'Warning! Your Account is Under Review');
             Session::flash('status', 'warning');
             return redirect()->back();
         }
-        if ($user && $user->roles->name == 'System Admin' || $user && $user->roles->name == 'Organization Admin' || $routeName != 'contacts.index' && $routeName != 'facilities.index' && $routeName != 'facilities.edit' && $routeName != 'facilities.update' && $routeName != 'facilities.show' && $routeName != 'contacts.edit' && $routeName != 'organizations.create' && $routeName != 'organizations.edit' && $routeName != 'services.edit') {
+
+        if ($user && $user->roles && $user->roles->name == 'Organization Admin' && ($routeName == 'users_lists.edit' || $routeName == 'users_lists.index' || $routeName == 'users_lists.create' || $routeName == 'tracking.edit' || $routeName == 'tracking.index' || $routeName == 'tracking.create')) {
+            Session::flash('message', 'Warning! Not enough permissions. Please contact Us for more');
+            Session::flash('status', 'warning');
+            return redirect('/');
+        }
+        if (($user && $user->roles && $user->roles->name == 'System Admin' || $user && $user->roles && ($user->roles->name == 'Organization Admin' || $user->roles->name == 'Section Admin') || $user && $routeName != 'contacts.index' && $routeName != 'facilities.index' && $routeName != 'facilities.edit' && $routeName != 'facilities.update' && $routeName != 'facilities.show' && $routeName != 'contacts.edit' && $routeName != 'organizations.create' && $routeName != 'organizations.edit' && $routeName != 'services.edit' && $routeName != 'users_lists.edit' && $routeName != 'users_lists.index' && $routeName != 'users_lists.create') || ($user == null && ($routeName == 'organizations.index' || $routeName == 'organizations.show')) || $user == null && ($routeName == 'services.index' || $routeName == 'services.show')) {
             return $next($request);
         } else {
             if (!empty($api)) {

@@ -7,10 +7,11 @@
                 <input type="hidden" name="meta_status" id="status" @if(isset($meta_status)) value="{{$meta_status}}"
                     @else value="On" @endif>
                 <div class="col-md-5 col-sm-8">
+                    <label class="d-none">Search for Organization</label>
                     <div class="form-group text-left form-material m-0" data-plugin="formMaterial">
                         <img src="/frontend/assets/images/search.png" alt="" title="" class="form_icon_img">
                         <input type="text" class="form-control search-form" name="find" autocomplete="off"
-                            placeholder="Search for Organization" id="search_organization" @if(isset($chip_organization)) value="{{$chip_organization}}" @endif>
+                            placeholder="Seach for Organization" id="search_organization" @if(isset($chip_organization)) value="{{$chip_organization}}" @endif>
                             <div id="organizationList"></div>
                     </div>
                 </div>
@@ -45,6 +46,7 @@
 		          	<input type="hidden" name="meta_status" id="status" @if(isset($meta_status)) value="{{$meta_status}}"
         @else value="On" @endif>
         <div class="col-md-4 m-auto">
+        <label class="d-none">Search for Organization</label>
             <div class="input-search">
                 <i class="input-search-icon md-search" aria-hidden="true"></i>
                 <input type="text" class="form-control search-form" name="find" placeholder="Search for Organization"
@@ -73,13 +75,13 @@
             <!-- Types Of Services -->
             @auth
             @if (Auth::user()->roles && Auth::user()->roles->name == 'System Admin' || (Auth::user() &&
-            Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin'))
+            Auth::user()->roles && (Auth::user()->roles->name != 'Organization Admin' || Auth::user()->roles->name != 'Section Admin')))
             @php
-            $org_activate = [];
-            if(isset($organization_tags) && $organization_tags != null){
+            // $org_activate = [];
+            // if(isset($organization_tags) && $organization_tags != null){
 
-            $org_activate = json_decode($organization_tags);
-            }
+            // $org_activate = json_decode($organization_tags);
+            // }
 
             @endphp
             <div class="dropdown">
@@ -87,12 +89,12 @@
                     aria-expanded="false">
                     Organization Tags
                 </button>
-                <div class="dropdown-menu bullet" aria-labelledby="exampleSizingDropdown1" role="menu">
+                <div class="dropdown-menu bullet" aria-labelledby="exampleSizingDropdown1" role="menu" id="organization_tags_tree">
                     {{-- {!! Form::select('organization_tags',$organization_tagsArray,'',['class' => 'btn dropdown-toggle']) !!} --}}
-                    @foreach ($organization_tagsArray as $key => $value)
+                    {{-- @foreach ($organization_tagsArray as $key => $value)
                     <a class="dropdown-item drop-tags{{ isset($organization_tags) && in_array($key,$org_activate)  ? ' active' : '' }}"
                         href="javascript:void(0)" role="menuitem" data-id="{{ $key }}">{{ $value }}</a>
-                    @endforeach
+                    @endforeach --}}
                     {{-- <select class="form-control selectpicker" multiple data-live-search="true" id="organization_tag" data-size="3" name="organization_tag[]">
                         <option value="" selected disabled hidden>Filter by Tags</option>
                         @foreach($organization_tag_list as $key => $organization_tag)
@@ -131,18 +133,36 @@
                 </div>
             </div>
             <!--end Results Per Page -->
+            @if ($layout->meta_filter_activate == 1 && $layout->user_metafilter_option == 1)
+            <div class="dropdown">
+                <button type="button" class="btn dropdown-toggle" id="exampleSizingDropdown1" data-toggle="dropdown" aria-expanded="false">
+                    {{ (isset($filter_label) ? ($filter_label == 'off_label' ? $layout->meta_filter_off_label : $layout->meta_filter_on_label) : ($layout->default_label ? ($layout->default_label == 'off_label' ? $layout->meta_filter_off_label : $layout->meta_filter_on_label): $layout->meta_filter_off_label)) }}
+                </button>
+                <div class="dropdown-menu " aria-labelledby="exampleSizingDropdown1" role="menu">
+                <a class="dropdown-item drop-label{{ (isset($filter_label) && $filter_label == 'off_label') || !isset($filter_label) && $layout->default_label == 'off_label'  ? ' active' : '' }}" href="javascript:void(0)" role="menuitem" data-id="off_label">{{ $layout->meta_filter_off_label }}</a>
+                <a class="dropdown-item drop-label{{ (isset($filter_label) && $filter_label == 'on_label') || !isset($filter_label) && $layout->default_label == 'on_label'  ? ' active' : '' }}" href="javascript:void(0)" role="menuitem" data-id="on_label">{{ $layout->meta_filter_on_label }}</a>
+                </div>
+            </div>
+            @endif
+            @if ($layout->display_download_menu == 1)
             <div class="dropdown btn_download float-right">
                 <button type="button" class="float-right btn_share_download dropdown-toggle" id="exampleBulletDropdown4"
                     data-toggle="dropdown" aria-expanded="false">
                     <img src="/frontend/assets/images/download.png" alt="" title="" class="mr-10"> Download
                 </button>
                 <div class="dropdown-menu bullet" aria-labelledby="exampleBulletDropdown4" role="menu">
+                    @if ($layout->display_download_csv == 1)
                     <a class="dropdown-item download_csv" href="javascript:void(0)" role="menuitem">Download CSV</a>
+                    @endif
+                    @if ($layout->display_download_pdf == 1)
                     <a class="dropdown-item download_pdf" href="javascript:void(0)" role="menuitem">Download PDF</a>
+                    @endif
                 </div>
             </div>
+            @endif
             <input type="hidden" name="organization_pdf" id="organization_pdf" value="">
             <input type="hidden" name="organization_csv" id="organization_csv" value="">
+            <input type="hidden" name="filter_label" id="filter_label">
             @if ($layout->organization_share_button == 1)
             <button type="button" class="float-right btn_share_download" data-toggle="modal" data-target="#shareThisModal">
                 <img src="/frontend/assets/images/share.png" alt="" title="" class="mr-10 share_image">
@@ -168,6 +188,13 @@
 		$("#status").val(status);
 		$("#filter_organization").submit();
 	});
+    $('.drop-label').on('click', function(){
+        // let text = $(this).text();
+        let text = $(this).data('id');
+
+        $('#filter_label').val(text)
+        $("#filter_organization").submit();
+    });
 
     var tree_data_list = [];
 
@@ -273,7 +300,6 @@
         }
     }
 
-
     $('#sidebar_tree').jstree({
         'plugins': ["checkbox", "wholerow", "sort"],
         'core': {
@@ -282,7 +308,48 @@
         }
     });
 
+    // organization_tags_tree
+    let tree_tags_list = [];
+    var selected_org_tags_ids = []
+    var selected_organization = '<?php isset($organization_tags) ? print_r($organization_tags) : print_r('') ; ?>'
 
+    if(selected_organization.length > 0) {
+        selected_org_tags_ids = selected_organization;
+    }
+    let organization_tagsArray =  `<?php isset($organization_tagsArray) ? print_r($organization_tagsArray) : print_r(''); ?>`
+    organization_tagsArray = JSON.parse(organization_tagsArray)
+    if(organization_tagsArray.length > 0){
+        $.each(organization_tagsArray,function name(key,value) {
+            var alt_data = {};
+            alt_data.text = value.tag;
+            alt_data.state = {};
+            alt_data.id = 'orgtag_'+value.id;
+            if (selected_org_tags_ids.indexOf(value.id) > -1) {
+                alt_data.state.selected = true;
+            }
+            tree_tags_list.push(alt_data)
+        })
+    }
+    $('#organization_tags_tree').jstree({
+        'plugins': ["checkbox", "wholerow", "sort"],
+        'core': {
+            select_node: 'sidebar_taxonomy_tree',
+            data: tree_tags_list
+        }
+    });
+    $('#organization_tags_tree').on("select_node.jstree deselect_node.jstree", function (e, data) {
+        var all_selected_ids = $('#organization_tags_tree').jstree("get_checked");
+        var selected_org_tags_ids = []
+        all_selected_ids.filter(function(id) {
+            if(id.indexOf('orgtag_') > -1){
+                selected_org_tags_ids.push(id.split('orgtag_')[1])
+            }
+            // return id.indexOf('orgtag_') > -1;
+        });
+        // selected_org_tags_ids = selected_org_tags_ids.toString();
+        $("#organization_tags").val(JSON.stringify(selected_org_tags_ids));
+        $("#filter_organization").submit();
+    });
 
     $('.download_pdf').on('click', function(e){
         $('#organization_pdf').val('pdf');
@@ -326,19 +393,19 @@
     //     $("#filter_organization").submit();
     // });
 
-    let organization_tags = $('#organization_tags').val() != '' ? JSON.parse($('#organization_tags').val()) : [];
-    $('.drop-tags').on('click', function(){
-        let text = $(this).data('id');
-        // let text = $(this).text();
-        if($.inArray(text,organization_tags) == -1){
-            organization_tags.push(text)
-        }else{
-            organization_tags.splice(organization_tags.indexOf(text),1)
-        }
-        $("#organization_tags").val(JSON.stringify(organization_tags));
-        // $("#organization_tags").val($(this).text());
-        $("#filter_organization").submit();
-    });
+    // let organization_tags = $('#organization_tags').val() != '' ? JSON.parse($('#organization_tags').val()) : [];
+    // $('.drop-tags').on('click', function(){
+    //     let text = $(this).data('id');
+    //     // let text = $(this).text();
+    //     if($.inArray(text,organization_tags) == -1){
+    //         organization_tags.push(text)
+    //     }else{
+    //         organization_tags.splice(organization_tags.indexOf(text),1)
+    //     }
+    //     $("#organization_tags").val(JSON.stringify(organization_tags));
+    //     // $("#organization_tags").val($(this).text());
+    //     $("#filter_organization").submit();
+    // });
 
     $('#sidebar_tree').on("select_node.jstree deselect_node.jstree", function (e, data) {
         var all_selected_ids = $('#sidebar_tree').jstree("get_checked");

@@ -31,22 +31,34 @@ Meta Filter
                 {{ Form::open(array('url' => ['meta', 1], 'class' => 'form-horizontal form-label-left', 'method' => 'post', 'enctype'=> 'multipart/form-data')) }}
                 <div class="form-group">
                     <label class="control-label col-md-2 col-sm-2 col-xs-12" style="padding-top: 2px; margin-right: 10px;">Activate</label>
-                    <input type="checkbox" class="js-switch" value="checked" name="meta_filter_activate" @if($meta->meta_filter_activate==1) checked @endif />
+                    <input type="checkbox" class="js-switch" value="checked" id="meta_filter_activate" name="meta_filter_activate" @if($meta->meta_filter_activate==1) checked @endif />
                 </div>
-
                 <div class="form-group">
+                    <label class="control-label col-md-6 col-sm-6 col-xs-12" style="padding-top: 2px; margin-right: 10px;">Show meta filter options</label>
+                    <input type="checkbox" class="js-switch" value="checked" name="user_metafilter_option" @if($meta->user_metafilter_option==1) checked @endif />
+                </div>
+                @if ($meta->user_metafilter_option==1)
+                <div class="form-group" id="off_label_div">
                   <label class="control-label col-md-2 col-sm-2 col-xs-12">Off Label</label>
                   <div class="col-md-6 col-sm-9 col-xs-12">
                   <input type="text" class="form-control" placeholder="Off Label" name="meta_filter_off_label" value="{{$meta->meta_filter_off_label}}">
-                  </div>
                 </div>
 
-                <div class="form-group">
+                <label class="radio-inline">
+                  <input type="radio" name="default_label" id="inlineRadio1" value="off_label" {{ $meta->default_label == 'off_label' ? 'checked' : '' }}> Default
+                </label>
+                </div>
+
+                <div class="form-group" id="on_label_div">
                   <label class="control-label col-md-2 col-sm-2 col-xs-12">On Label</label>
                   <div class="col-md-6 col-sm-9 col-xs-12">
                   <input type="text" class="form-control" placeholder="On Label" name="meta_filter_on_label" value="{{$meta->meta_filter_on_label}}">
-                  </div>
                 </div>
+                <label class="radio-inline">
+                  <input type="radio" name="default_label" id="inlineRadio1" value="on_label" {{ $meta->default_label == 'on_label' ? 'checked' : '' }}> Default
+                </label>
+                </div>
+                @endif
 
                 <div class="form-group">
                   <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-2">
@@ -58,8 +70,14 @@ Meta Filter
               <div class="col-md-6">
                 <h1>Filtered Services: {{$service_count}}</h1>
               </div>
-              @if($meta->meta_filter_activate==1)
-              <div class="col-md-12">
+              <div class="col-md-6">
+                <h1>Filtered Organiazations: {{$organizations_count}}</h1>
+              </div>
+              <div class="col-md-6">
+                <h1>Filtered count: {{$filter_count}}</h1>
+              </div>
+              {{-- @if($meta->meta_filter_activate==1) --}}
+              <div class="col-md-12" id="filter_table_div">
                 <div class="x_title">
                   <h2>Filters</h2>
                   <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin-left: 10px;">Add</button>
@@ -135,6 +153,7 @@ Meta Filter
                                         <option value="Taxonomy">Taxonomy</option>
                                         <option value="Postal_code">Postal code</option>
                                         <option value="Service_area">Service area</option>
+                                        <option value="organization_status">Organization status</option>
                                         <option value="Service_status">Service status</option>
                                       </select>
                                     </div>
@@ -282,7 +301,40 @@ Meta Filter
                   </tbody>
                 </table>
               </div>
-              @endif
+              {{-- @endif --}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Additional Settings</h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+              </li>
+              <li><a class="close-link"><i class="fa fa-close"></i></a>
+              </li>
+            </ul>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <div class="form-horizontal form-label-left">
+              <div class="col-md-12">
+                {{ Form::open(array('url' => ['meta_additional_setting', 1], 'class' => 'form-horizontal form-label-left', 'method' => 'post', 'enctype'=> 'multipart/form-data')) }}
+                <div class="form-group">
+                    <label class="control-label col-md-4 col-sm-4 col-xs-12" style="padding-top: 2px; margin-right: 10px;">Hide Organizations with No Filtered Services</label>
+                    <input type="checkbox" class="js-switch" value="checked" id="hide_organizations_with_no_filtered_services" name="hide_organizations_with_no_filtered_services" @if($meta->hide_organizations_with_no_filtered_services==1) checked @endif />
+                </div>
+                <div class="form-group">
+                  <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-2">
+                    <button type="submit" class="btn btn-success">Save</button>
+                  </div>
+                </div>
+                {!! Form::close() !!}
+              </div>
             </div>
           </div>
         </div>
@@ -296,12 +348,23 @@ Meta Filter
 <script>
   $('select[name="facet"]').on('change', function(e) {
     var value = e.target.value;
-    if (value == "Service_status") {
+    if (value == "Service_status" || value == "organization_status") {
       $('select[name="method"]').val('Checklist');
       $('div[id="method"]').hide();
       $('label[id="select_mothod_label"]').hide();
       $('#step-3').hide();
     }
   });
+  // $('#meta_filter_activate').change(function(){
+  //     if($(this).prop('checked')){
+  //       $('#on_label_div').show()
+  //       $('#off_label_div').show()
+  //       $('#filter_table_div').show()
+  //   }else{
+  //         $('#on_label_div').hide()
+  //         $('#off_label_div').hide()
+  //         $('#filter_table_div').hide()
+  //     }
+  // })
  </script>
 @endsection

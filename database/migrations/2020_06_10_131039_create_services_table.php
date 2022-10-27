@@ -29,7 +29,7 @@ class CreateServicesTable extends Migration
             $table->text('service_application_process')->nullable();
             $table->string('service_wait_time')->nullable();
             $table->string('service_fees')->nullable();
-            $table->string('service_accreditations')->nullable();
+            $table->longText('service_accreditations')->nullable();
             $table->string('service_licenses')->nullable();
             $table->text('service_phones')->nullable();
             $table->text('service_schedule')->nullable();

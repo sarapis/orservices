@@ -24,8 +24,8 @@ class CreatePhonesTable extends Migration
             $table->string('phone_extension')->nullable();
             $table->string('phone_type')->nullable();
             $table->string('phone_language')->nullable();
-            $table->string('phone_description')->nullable();
-            $table->string('phone_schedule')->nullable();
+            $table->longText('phone_description')->nullable();
+            $table->longText('phone_schedule')->nullable();
             $table->string('flag', 45)->nullable();
             $table->timestamps();
         });

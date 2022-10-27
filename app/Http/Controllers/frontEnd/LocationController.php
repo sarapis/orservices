@@ -685,7 +685,7 @@ class LocationController extends Controller
     public function create()
     {
         $map = Map::find(1);
-        if (Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin') {
+        if (Auth::user() && Auth::user()->user_organization && (Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin')) {
             $organization_recordid = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_recordid') : [];
             $organization_name_list = Organization::orderBy('organization_name')->whereIn('organization_recordid', $organization_recordid)->pluck('organization_name', 'organization_recordid');
         } else {
@@ -765,8 +765,9 @@ class LocationController extends Controller
                     'accessibility_location' => $new_recordid
                 ]);
             }
-            if ($request->regions) {
-                $facility->regions()->sync($request->regions);
+            $regions =  is_array($request->regions) ? array_values(array_filter($request->regions)) : [];
+            if ($regions) {
+                $facility->regions()->sync($regions);
             }
 
 
@@ -777,19 +778,22 @@ class LocationController extends Controller
             // $facility_organization_id = $facility_organization["organization_recordid"];
             $facility->location_organization = $request->facility_organization;
 
-            if ($request->facility_service) {
-                $facility->location_services = join(',', $request->facility_service);
+            $facility_service = is_array($request->facility_service) ? array_values(array_filter($request->facility_service)) : [];
+            if ($facility_service) {
+                $facility->location_services = join(',', $facility_service);
             } else {
                 $facility->location_services = '';
             }
-            $facility->services()->sync($request->facility_service);
+            $facility->services()->sync($facility_service);
 
-            if ($request->facility_schedules) {
-                $facility->location_schedule = join(',', $request->facility_schedules);
+            $facility_schedules = is_array($request->facility_schedules) ? array_values(array_filter($request->facility_schedules)) : [];
+
+            if ($facility_schedules) {
+                $facility->location_schedule = join(',', $facility_schedules);
             } else {
                 $facility->location_schedule = '';
             }
-            $facility->schedules()->sync($request->facility_schedules);
+            $facility->schedules()->sync($facility_schedules);
 
             // detail section
 
@@ -872,6 +876,8 @@ class LocationController extends Controller
                 $address->save();
             }
             array_push($address_recordid_list, $address_id);
+
+            $address_recordid_list = array_values(array_filter($address_recordid_list));
             $facility->address()->sync($address_recordid_list);
 
             $client = new \GuzzleHttp\Client();
@@ -979,7 +985,7 @@ class LocationController extends Controller
                     // }
                 }
             }
-
+            $phone_recordid_list = array_values(array_filter($phone_recordid_list));
             $facility->phones()->sync($phone_recordid_list);
 
             $facility->save();
@@ -1037,8 +1043,9 @@ class LocationController extends Controller
                     'accessibility_location' => $new_recordid
                 ]);
             }
-            if ($request->regions) {
-                $facility->regions()->sync($request->regions);
+            $regions = is_array($request->regions) ? array_values(array_filter($request->regions)) : [];
+            if ($regions) {
+                $facility->regions()->sync($regions);
             }
 
             // detail section
@@ -1092,19 +1099,22 @@ class LocationController extends Controller
             // $facility_organization_id = $facility_organization["organization_recordid"];
             $facility->location_organization = $request->location_organization;
 
-            if ($request->location_services) {
-                $facility->location_services = join(',', $request->location_services);
+            $location_services = is_array($request->location_services) ? array_values(array_filter($request->location_services)) : [];
+            if ($location_services) {
+                $facility->location_services = join(',', $location_services);
             } else {
                 $facility->location_services = '';
             }
-            $facility->services()->sync($request->location_services);
+            $facility->services()->sync($location_services);
 
-            if ($request->facility_schedules) {
-                $facility->location_schedule = join(',', $request->facility_schedules);
+            $facility_schedules = is_array($request->facility_schedules) ? array_values(array_filter($request->facility_schedules)) : [];
+
+            if ($facility_schedules) {
+                $facility->location_schedule = join(',', $facility_schedules);
             } else {
                 $facility->location_schedule = '';
             }
-            $facility->schedules()->sync($request->facility_schedules);
+            $facility->schedules()->sync($facility_schedules);
 
             // if ($request->facility_address) {
             //     $facility->location_address = join(',', $request->facility_address);
@@ -1141,6 +1151,8 @@ class LocationController extends Controller
                 $address->save();
             }
             array_push($address_recordid_list, $address_id);
+
+            $address_recordid_list = array_values(array_filter($address_recordid_list));
             $facility->address()->sync($address_recordid_list);
 
             $client = new \GuzzleHttp\Client();
@@ -1243,6 +1255,8 @@ class LocationController extends Controller
             $phone_recordid_list = array_unique($phone_recordid_list);
             $facility->location_phones = '';
             $facility->location_phones = count($phone_recordid_list) > 0 ? implode(',', $phone_recordid_list) : '';
+
+            $phone_recordid_list = array_values(array_filter($phone_recordid_list));
 
             $facility->phones()->sync($phone_recordid_list);
 
@@ -1347,10 +1361,10 @@ class LocationController extends Controller
             $facility_organizations = Organization::whereIn('organization_recordid', $facility_organization_recordid_list)->orderBy('organization_name')->get();
 
             if ((Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin') || (Auth::user() && Auth::user()->user_organization && $facility_organizations &&
-                str_contains(Auth::user()->user_organization, $facility_organizations[0]->organization_recordid) && Auth::user()->roles->name == 'Organization Admin')) {
+                str_contains(Auth::user()->user_organization, $facility_organizations[0]->organization_recordid) && (Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin'))) {
 
                 // $organization_names = Organization::pluck("organization_name", "organization_recordid");
-                if (Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin') {
+                if (Auth::user() && Auth::user()->user_organization && (Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin')) {
                     $organization_recordid = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_recordid') : [];
                     $organization_names = Organization::orderBy('organization_name')->whereIn('organization_recordid', $organization_recordid)->pluck("organization_name", "organization_recordid");
                 } else {
@@ -1523,8 +1537,9 @@ class LocationController extends Controller
                     'accessibility_details' => $request->accessibility_details,
                 ]);
             }
-            if ($request->regions) {
-                $facility->regions()->sync($request->regions);
+            $regions = is_array($request->regions) ? array_values(array_filter($request->regions)) : [];
+            if ($regions) {
+                $facility->regions()->sync($regions);
             }
 
             // detail section
@@ -1590,19 +1605,22 @@ class LocationController extends Controller
             }
             $facility->location_details = join(',', $detail_ids);
 
-            if ($request->facility_service) {
-                $facility->location_services = join(',', $request->facility_service);
+            $facility_service = is_array($request->facility_service) ? array_values(array_filter($request->facility_service)) : [];
+            if ($facility_service) {
+                $facility->location_services = join(',', $facility_service);
             } else {
                 $facility->location_services = '';
             }
-            $facility->services()->sync($request->facility_service);
+            $facility->services()->sync($facility_service);
 
-            if ($request->facility_schedules) {
-                $facility->location_schedule = join(',', $request->facility_schedules);
+            $facility_schedules = is_array($request->facility_schedules) ? array_values(array_filter($request->facility_schedules)) : [];
+
+            if ($facility_schedules) {
+                $facility->location_schedule = join(',', $facility_schedules);
             } else {
                 $facility->location_schedule = '';
             }
-            $facility->schedules()->sync($request->facility_schedules);
+            $facility->schedules()->sync($facility_schedules);
 
             $facility_address_city = $request->facility_address_city;
             $facility_street_address = $request->facility_street_address;
@@ -1637,6 +1655,8 @@ class LocationController extends Controller
                 $address->save();
             }
             array_push($address_recordid_list, $address_id);
+
+            $address_recordid_list = array_values(array_filter($address_recordid_list));
             $facility->address()->sync($address_recordid_list);
 
             $client = new \GuzzleHttp\Client();
@@ -1713,6 +1733,8 @@ class LocationController extends Controller
             $facility->location_phones = '';
             $facility->location_phones = count($phone_recordid_list) > 0 ? implode(',', $phone_recordid_list) : '';
 
+            $phone_recordid_list = array_values(array_filter($phone_recordid_list));
+
             $facility->phones()->sync($phone_recordid_list);
 
             if ($request->removePhoneDataId) {
@@ -1739,6 +1761,7 @@ class LocationController extends Controller
             Session::flash('status', 'success');
             return redirect('facilities/' . $id);
         } catch (\Throwable $th) {
+            dd($th);
             Log::error('Error in location update : ' . $th);
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'success');
@@ -1788,7 +1811,7 @@ class LocationController extends Controller
         //     $organization_name_list = array_merge($organization_name_list, $org_names);
         // }
         // $organization_name_list = array_unique($organization_name_list);
-        if (Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin') {
+        if (Auth::user() && Auth::user()->user_organization && (Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin')) {
             $organizations = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_name', 'organization_recordid') : [];
         } else {
             $organizations = Organization::pluck("organization_name", 'organization_recordid')->unique();
@@ -1862,14 +1885,18 @@ class LocationController extends Controller
             $facility_organization_id = $facility_organization["organization_recordid"];
             $facility->location_organization = $facility_organization_id;
 
-            $facility->services()->sync($request->facility_service);
+            $facility_service = is_array($request->facility_service) ? array_values(array_filter($request->facility_service)) : [];
 
-            if ($request->facility_schedules) {
-                $facility->location_schedule = join(',', $request->facility_schedules);
+            $facility->services()->sync($facility_service);
+
+            $facility_schedules = is_array($request->facility_schedules) ? array_values(array_filter($request->facility_schedules)) : [];
+
+            if ($facility_schedules) {
+                $facility->location_schedule = join(',', $facility_schedules);
             } else {
                 $facility->location_schedule = '';
             }
-            $facility->schedules()->sync($request->facility_schedules);
+            $facility->schedules()->sync($facility_schedules);
 
             // accessesibility
             if ($request->accessibility) {
@@ -1880,9 +1907,9 @@ class LocationController extends Controller
                     'accessibility_location' => $new_recordid
                 ]);
             }
-
-            if ($request->regions) {
-                $facility->regions()->sync($request->regions);
+            $regions = is_array($request->regions) ? array_values(array_filter($request->regions)) : [];
+            if ($regions) {
+                $facility->regions()->sync($regions);
             }
             // detail section
             if ($request->detail_type) {
@@ -1958,6 +1985,8 @@ class LocationController extends Controller
                 $address->save();
             }
             array_push($address_recordid_list, $address_id);
+
+            $address_recordid_list = array_values(array_filter($address_recordid_list));
             $facility->address()->sync($address_recordid_list);
 
             $client = new \GuzzleHttp\Client();
@@ -2030,6 +2059,8 @@ class LocationController extends Controller
             $phone_recordid_list = array_unique($phone_recordid_list);
             $facility->location_phones = '';
             $facility->location_phones = count($phone_recordid_list) > 0 ? implode(',', $phone_recordid_list) : '';
+
+            $phone_recordid_list = array_values(array_filter($phone_recordid_list));
             $facility->phones()->sync($phone_recordid_list);
 
             $facility->save();

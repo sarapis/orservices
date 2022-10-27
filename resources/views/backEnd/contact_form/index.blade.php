@@ -1,6 +1,6 @@
 @extends('backLayout.app')
 @section('title')
-Contact Form
+Suggestion Form
 @stop
 <style>
     tr.modified{
@@ -19,6 +19,53 @@ Contact Form
     	margin: 0 auto;
     	width: 150px;
     }
+
+    /* for switch */
+    .material-switch > input[type="checkbox"] {
+        display: none;
+    }
+
+    .material-switch > label {
+        cursor: pointer;
+        height: 0px;
+        position: relative;
+        width: 40px;
+    }
+
+    .material-switch > label::before {
+        background: rgb(0, 0, 0);
+        box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        content: '';
+        height: 16px;
+        margin-top: -8px;
+        position:absolute;
+        opacity: 0.3;
+        transition: all 0.4s ease-in-out;
+        width: 40px;
+        left: -4px;
+    }
+    .material-switch > label::after {
+        background: rgb(255, 255, 255);
+        border-radius: 16px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+        content: '';
+        height: 24px;
+        left: -4px;
+        margin-top: -8px;
+        position: absolute;
+        top: -4px;
+        transition: all 0.3s ease-in-out;
+        width: 24px;
+    }
+    .material-switch > input[type="checkbox"]:checked + label::before {
+        background: inherit;
+        opacity: 0.5;
+    }
+    .material-switch > input[type="checkbox"]:checked + label::after {
+        background: inherit;
+        left: 20px;
+    }
 </style>
 @section('content')
 
@@ -27,7 +74,7 @@ Contact Form
   <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
       <div class="x_title">
-        <h2>Contact Form</h2>
+        <h2>Suggestion Form</h2>
         <div class="clearfix"></div>
       </div>
       <div class="x_content" style="overflow: scroll;">
@@ -99,8 +146,21 @@ Contact Form
             </tbody>
         </table>
       </div>
-
-      <div style="text-align: center;">
+      <div class="col-md-12 pull-left" style="margin: 15px 0px;">
+        <label class="control-label col-md-8 col-sm-8 col-xs-8 text-left">Show/Hide Suggestion Form</label>
+        {{-- <div class="col-md-8 col-sm-8 col-xs-12">
+            <label>Off&nbsp;&nbsp;
+            <input type="checkbox" class="js-switch" value="1" name="show_suggest_menu" id="show_suggest_menu" {{ $layout && $layout->show_suggest_menu == '1' ? 'checked'  : '' }} />&nbsp;&nbsp;On
+            </label>
+        </div> --}}
+        <div class="col-md-3 col-sm-3 col-xs-3">
+            <div class="material-switch pull-right">
+                <input id="show_suggest_menu" name="show_suggest_menu" type="checkbox" {{ $layout && $layout->show_suggest_menu == '1' ? 'checked'  : '' }} />
+                <label for="show_suggest_menu" class="label-primary"  style="margin: 15px 0px;"></label>
+            </div>
+        </div>
+    </div>
+      <div class="col-md-12 text-center"  style="margin: 15px 0px;">
         <button id="btn_create" class="btn btn-block btn-primary btn-sm open_modal" data-toggle="modal" data-target=".bs-create-modal-lg" >Add</button>
       </div>
 
@@ -151,6 +211,7 @@ Contact Form
 	                            name="contact_email" value="" required>
 	                    </div>
                     </div>
+
                     <div class="modal-footer" style="margin-top: 40px;">
                         <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
                         <button type="submit" id="email_create_btn" class="btn btn-primary btn-create">Add</button>
@@ -236,7 +297,25 @@ $(document).ready(function() {
         e.preventDefault();
         $('#email_delete_filter').submit();
     });
-
+    $('#show_suggest_menu').change(function(){
+        let value = $(this).is(":checked");
+        let show_suggest_menu;
+        if(value){
+            show_suggest_menu = 1
+        }else{
+            show_suggest_menu = 0
+        }
+        var _token = "{{ csrf_token() }}";
+        $.ajax({
+            url: "{{ route('contact_form.store') }}",
+            method:"post",
+            data:{_token,show_suggest_menu},
+            success:function(data){
+            },
+            error : function(err){
+            }
+        })
+    })
 
 
 } );

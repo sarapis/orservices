@@ -51,7 +51,7 @@ Organization Edit
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Organization Name: </label>
+                                    <label>Organization Name </label>
                                     <div class="help-tip">
                                         <div>
                                             <p>The official or public name of the organization/agency.</p>
@@ -62,7 +62,7 @@ Organization Edit
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Alternate Name : </label>
+                                    <label>Alternate Name  </label>
                                     <div class="help-tip">
                                         <div>
                                             <p>Alternative or commonly used name for the organization.</p>
@@ -73,7 +73,7 @@ Organization Edit
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>Description: </label>
+                                    <label>Description </label>
                                     <div class="help-tip">
                                         <div>
                                             <p>A brief summary about the organization.</p>
@@ -84,7 +84,7 @@ Organization Edit
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Email: </label>
+                                    <label>Email </label>
                                     <div class="help-tip">
                                         <div>
                                             <p>The contact email address for the organization.</p>
@@ -98,7 +98,7 @@ Organization Edit
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>URL (website): </label>
+                                    <label>URL (website) </label>
                                     <div class="help-tip">
                                         <div>
                                             <p>The URL (website address) of the organization.</p>
@@ -108,29 +108,21 @@ Organization Edit
                                 </div>
                             </div>
 
-                            @if (Auth::user() && Auth::user()->roles->name == 'System Admin')
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Website Rating: </label>
-                                    {!! Form::select('organization_website_rating',$rating_info_list,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' =>'organization_website_rating','placeholder' => 'Select website rating']) !!}
-                                </div>
-                            </div>
-                            @endif
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Facebook URL: </label>
+                                    <label>Facebook URL </label>
                                     {!! Form::text('facebook_url',null,['class' => 'form-control']) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Twitter URL: </label>
+                                    <label>Twitter URL </label>
                                     {!! Form::text('twitter_url',null,['class' => 'form-control']) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Instagram URL: </label>
+                                    <label>Instagram URL </label>
                                     {!! Form::text('instagram_url',null,['class' => 'form-control']) !!}
                                 </div>
                             </div>
@@ -143,7 +135,7 @@ Organization Edit
                             <div id="demo" class="collapse row m-0" style="width:100%">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Tax Status: </label>
+                                        <label>Tax Status </label>
                                         <div class="help-tip">
                                             <div>
                                                 <p>Government assigned tax designation for tax-exempt organizations.</p>
@@ -152,9 +144,17 @@ Organization Edit
                                         {!! Form::text('organization_tax_status',null,['class' => 'form-control','id' => 'organization_tax_status','placeholder' => 'Ex. 501(c)(3)']) !!}
                                     </div>
                                 </div>
+                                @if (Auth::user() && Auth::user()->roles->name == 'System Admin')
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Tax ID: </label>
+                                        <label>Website Rating </label>
+                                        {!! Form::select('organization_website_rating',$rating_info_list,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' =>'organization_website_rating','placeholder' => 'Select website rating']) !!}
+                                    </div>
+                                </div>
+                                @endif
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Tax ID </label>
                                         <div class="help-tip">
                                             <div>
                                                 <p>A government issued identifier used for tax administration (i.e.,
@@ -166,7 +166,7 @@ Organization Edit
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Year Incorporated: </label>
+                                        <label>Year Incorporated </label>
                                         <div class="help-tip">
                                             <div>
                                                 <p>The year in which the organization was legally formed</p>
@@ -177,7 +177,7 @@ Organization Edit
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Legal Status: </label>
+                                        <label>Legal Status </label>
                                         <div class="help-tip">
                                             <div>
                                                 <p>Type of organization</p>
@@ -189,7 +189,7 @@ Organization Edit
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Code: </label>
+                                        <label>Code </label>
                                         <div class="help-tip">
                                             <div>
                                                 <p>Internal code. If you don't know what it is please don't change it.</p>
@@ -198,7 +198,7 @@ Organization Edit
                                         {!! Form::text('organization_code',null,['class' => 'form-control','id' => 'organization_code']) !!}
                                     </div>
                                 </div>
-                                @if ((Auth::user() &&
+                                {{-- @if ((Auth::user() &&
                                 Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin'))
                                 <div class="col-md-4">
                                     <div class="form-group">
@@ -211,369 +211,410 @@ Organization Edit
                                         {!! Form::select('organization_status_x',$organizationStatus,null,['class' => 'form-control selectpicker','id' => 'organization_status_x','placeholder' => 'Select Status']) !!}
                                     </div>
                                 </div>
-                                @endif
+                                @endif --}}
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="card all_form_field">
-                    <div class="card-block">
-                        <h4 class="title_edit text-left mb-25 mt-10">
-                            Phones
-                            <div class="d-inline float-right">
-                                <a href="javascript:void(0)" class="phoneModalOpenButton plus_delteicon bg-primary-color">
-                                    <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                </a>
-                            </div>
-                        </h4>
+                <ul class="nav nav-tabs tabpanel_above">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#locations-tab">
+                            <h4 class="card_services_title">Locations
+                            </h4>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#phones-tab">
+                            <h4 class="card_services_title">Phones
+                            </h4>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#contacts-tab">
+                            <h4 class="card_services_title">Contacts
+                            </h4>
+                        </a>
+                    </li>
+                </ul>
+                <div class="card">
+                    <div class="card-block" style="border-radius: 0 0 12px 12px">
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="locations-tab">
+                                <div class="organization_services">
+                                    <div class="card all_form_field">
+                                        <div class="card-block">
+                                            <h4 class="title_edit text-left mb-25 mt-10">
+                                                Locations
+                                                <a href="javascript:void(0)" class="locationModalOpenButton plus_delteicon bg-primary-color float-right">
+                                                    <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                                </a>
+                                            </h4>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        {{-- <label>Locations: <a class="locationModalOpenButton"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
+                                                        <div class="table-responsive">
+                                                            <table class="table table_border_none">
+                                                                <thead>
+                                                                    <th>Name</th>
+                                                                    <th>Address</th>
+                                                                    <th>City</th>
+                                                                    <th>State</th>
+                                                                    <th>Zipcode</th>
+                                                                    <th>Phone</th>
+                                                                    <th style="width:100px">&nbsp;</th>
+                                                                </thead>
+                                                                <tbody id="locationsTable">
+                                                                    @foreach ($organization_locations_data as $key => $location)
+                                                                    <tr id="locationTr_{{ $key }}">
+                                                                        <td>{{ $location->location_name }}<input type="hidden" name="location_name[]"
+                                                                                value="{{ $location->location_name }}" id="location_name_{{ $key }}"></td>
+                                                                        <td>{{ $location->location_address }}<input type="hidden" name="location_address[]"
+                                                                                value="{{ $location->location_address }}" id="location_address_{{ $key }}">
+                                                                        </td>
+                                                                        <td class="text-center">{{ $location->location_city }}<input type="hidden"
+                                                                                name="location_city[]" value="{{ $location->location_city }}"
+                                                                                id="location_city_{{ $key }}"></td>
 
-                        <div class="row">
-                            {{-- phone table --}}
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    {{-- <label>Phones: </label> --}}
-                                    <div class="">
-                                        <table class="table table_border_none" id="PhoneTable">
-                                            <thead>
-                                                <th>Number</th>
-                                                <th>extension</th>
-                                                <th style="width:200px;position:relative;">Type
-                                                    <div class="help-tip" style="top:8px;">
-                                                        <div>
-                                                            <p>Select “Main” if this is the organization's primary phone number (or leave blank)
-                                                            </p>
+                                                                        <td class="text-center">{{ $location->location_state }}<input type="hidden"
+                                                                                name="location_state[]" value="{{ $location->location_state }}"
+                                                                                id="location_state_{{ $key }}"></td>
+                                                                        <td class="text-center">{{ $location->location_zipcode }}<input type="hidden"
+                                                                                name="location_zipcode[]" value="{{ $location->location_zipcode }}"
+                                                                                id="location_zipcode_{{ $key }}"></td>
+                                                                        <td class="text-center">{{ $location->location_phone }}<input type="hidden"
+                                                                                name="location_phone[]" value="{{ $location->location_phone }}"
+                                                                                id="location_phone_{{ $key }}"></td>
+                                                                        <td style="vertical-align:middle;">
+                                                                            <a href="javascript:void(0)"
+                                                                                class="locationEditButton plus_delteicon bg-primary-color">
+                                                                                <img src="/frontend/assets/images/edit_pencil.png" alt="" title="">
+                                                                            </a>
+                                                                            <a href="javascript:void(0)"
+                                                                                class="removeLocationData plus_delteicon btn-button">
+                                                                                <img src="/frontend/assets/images/delete.png" alt="" title="">
+                                                                            </a>
+                                                                            <input type="hidden" name="locationRadio[]" value="existing"
+                                                                                id="selectedLocationRadio_{{ $key }}">
+                                                                            <input type="hidden" name="location_recordid[]"
+                                                                                value="{{ $location->location_recordid }}"
+                                                                                id="existingLocationIds_{{ $key }}">
+                                                                        </td>
+                                                                    </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
                                                         </div>
                                                     </div>
-                                                </th>
-                                                <th style="width:200px;">Language(s)</th>
-                                                <th style="width:200px;position:relative;">Description
-                                                    <div class="help-tip" style="top:8px;">
-                                                        <div>
-                                                            <p>A description providing extra information about the phone service (e.g. any special arrangements for accessing, or details of availability at particular times).
-                                                            </p>
+                                                </div>
+                                                {{-- location table end here --}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="phones-tab">
+                                <div class="organization_services">
+                                    <div class="card all_form_field">
+                                        <div class="card-block">
+                                            <h4 class="title_edit text-left mb-25 mt-10">
+                                                Phones
+                                                <div class="d-inline float-right">
+                                                    <a href="javascript:void(0)" class="phoneModalOpenButton plus_delteicon bg-primary-color">
+                                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                                    </a>
+                                                </div>
+                                            </h4>
+                                            <div class="row">
+                                                {{-- phone table --}}
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        {{-- <label>Phones: </label> --}}
+                                                        <div class="">
+                                                            <table class="table table_border_none" id="PhoneTable">
+                                                                <thead>
+                                                                    <th>Number</th>
+                                                                    <th>Extension</th>
+                                                                    <th style="width:200px;position:relative;">Type
+                                                                        <div class="help-tip" style="top:8px;">
+                                                                            <div>
+                                                                                <p>Select “Main” if this is the organization's primary phone number (or leave blank)
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </th>
+                                                                    <th style="width:200px;">Language(s)</th>
+                                                                    <th style="width:200px;position:relative;">Description
+                                                                        <div class="help-tip" style="top:8px;">
+                                                                            <div>
+                                                                                <p>A description providing extra information about the phone service (e.g. any special arrangements for accessing, or details of availability at particular times).
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </th>
+                                                                    <th>Main</th>
+                                                                    <th style="width:140px">&nbsp;</th>
+                                                                </thead>
+                                                                <tbody id="phonesTable">
+                                                                    @if (count($organization->phones) > 0)
+                                                                    @foreach ($organization->phones as $key => $value)
+                                                                    <tr id="phoneTr_{{ $key }}">
+                                                                        <td>
+                                                                            <input type="hidden" class="form-control" name="organization_phones[]" id="phone_number_{{ $key }}" value="{{ $value->phone_number }}">
+                                                                                {{ $value->phone_number }}
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="hidden" class="form-control" name="phone_extension[]" id="phone_extension_{{ $key }}" value="{{ $value->phone_extension }}">
+                                                                                {{ $value->phone_extension }}
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="hidden" class="form-control" name="phone_type[]" id="phone_type_{{ $key }}" value="{{ $value->phone_type }}" >
+                                                                            {{ $value->type ? $value->type->type : '' }}
+                                                                            {{-- {!! Form::select('phone_type[]',$phone_type,$value->phone_type ?
+                                                                            explode(',',$value->phone_type) : [],['class' => 'form-control
+                                                                            selectpicker','data-live-search' => 'true','id' => 'phone_type','data-size' =>
+                                                                            5,'placeholder' => 'select phone type'])!!} --}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{-- {!! Form::select('phone_language[]',$phone_languages,$value->phone_language ?
+                                                                            explode(',',$value->phone_language) : [],['class' => 'form-control selectpicker
+                                                                            phone_language','data-size' => 5,'data-live-search' => 'true','id' =>
+                                                                            'phone_language_'.$key,'multiple' => true]) !!} --}}
+                                                                            <input type="hidden" class="form-control" name="phone_language[]" id="phone_language_{{ $key }}" value="{{ $value->phone_language }}" >
+                                                                            {{ isset($phone_language_name[$key]) ? $phone_language_name[$key] : ''  }}
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="hidden" class="form-control" name="phone_description[]" id="phone_description_{{ $key }}" value="{{ $value->phone_description }}" readonly>
+                                                                            {{ $value->phone_description }}
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="form-check form-check-inline" style="margin-top: -10px;">
+                                                                                <input class="form-check-input " type="radio" name="main_priority[]" id="main_priority{{ $key }}" value="{{ $key }}" {{ $value->main_priority == 1 ? 'checked' : '' }}>
+                                                                                <label class="form-check-label" for="main_priority{{ $key }}"></label>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td style="vertical-align: middle">
+                                                                            <a href="javascript:void(0)" class="phoneEditButton plus_delteicon bg-primary-color">
+                                                                                <img src="/frontend/assets/images/edit_pencil.png" alt="" title="">
+                                                                            </a>
+                                                                            <a href="javascript:void(0)" class="plus_delteicon btn-button removeOrganizationPhoneData">
+                                                                                <img src="/frontend/assets/images/delete.png" alt="" title="">
+                                                                            </a>
+                                                                            {{-- <a href="javascript:void(0)" class="plus_delteicon btn-button deletePhoneData" data-id="{{ $value->phone_recordid }}">
+                                                                            <img src="/frontend/assets/images/delete.png" alt="" title="">
+                                                                            </a> --}}
+                                                                        </td>
+                                                                    </tr>
+                                                                    @endforeach
+                                                                    @endif
+                                                                </tbody>
+                                                            </table>
                                                         </div>
                                                     </div>
-                                                </th>
-                                                <th>Main</th>
-                                                <th style="width:140px">&nbsp;</th>
-                                            </thead>
-                                            <tbody id="phonesTable">
-                                                @if (count($organization->phones) > 0)
-                                                @foreach ($organization->phones as $key => $value)
-                                                <tr id="phoneTr_{{ $key }}">
-                                                    <td>
-                                                        <input type="hidden" class="form-control" name="organization_phones[]" id="phone_number_{{ $key }}" value="{{ $value->phone_number }}">
-                                                            {{ $value->phone_number }}
-                                                    </td>
-                                                    <td>
-                                                        <input type="hidden" class="form-control" name="phone_extension[]" id="phone_extension_{{ $key }}" value="{{ $value->phone_extension }}">
-                                                            {{ $value->phone_extension }}
-                                                    </td>
-                                                    <td>
-                                                        <input type="hidden" class="form-control" name="phone_type[]" id="phone_type_{{ $key }}" value="{{ $value->phone_type }}" >
-                                                        {{ $value->type ? $value->type->type : '' }}
-                                                        {{-- {!! Form::select('phone_type[]',$phone_type,$value->phone_type ?
-                                                        explode(',',$value->phone_type) : [],['class' => 'form-control
-                                                        selectpicker','data-live-search' => 'true','id' => 'phone_type','data-size' =>
-                                                        5,'placeholder' => 'select phone type'])!!} --}}
-                                                    </td>
-                                                    <td>
-                                                        {{-- {!! Form::select('phone_language[]',$phone_languages,$value->phone_language ?
-                                                        explode(',',$value->phone_language) : [],['class' => 'form-control selectpicker
-                                                        phone_language','data-size' => 5,'data-live-search' => 'true','id' =>
-                                                        'phone_language_'.$key,'multiple' => true]) !!} --}}
-                                                        <input type="hidden" class="form-control" name="phone_language[]" id="phone_language_{{ $key }}" value="{{ $value->phone_language }}" >
-                                                        {{ isset($phone_language_name[$key]) ? $phone_language_name[$key] : ''  }}
-                                                    </td>
-                                                    <td>
-                                                        <input type="hidden" class="form-control" name="phone_description[]" id="phone_description_{{ $key }}" value="{{ $value->phone_description }}" readonly>
-                                                        {{ $value->phone_description }}
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-check form-check-inline" style="margin-top: -10px;">
-                                                            <input class="form-check-input " type="radio" name="main_priority[]" id="main_priority{{ $key }}" value="{{ $key }}" {{ $value->main_priority == 1 ? 'checked' : '' }}>
-                                                            <label class="form-check-label" for="main_priority{{ $key }}"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="contacts-tab">
+                                <div class="organization_services">
+                                    <div class="card all_form_field">
+                                        <div class="card-block">
+                                            {{-- contact table --}}
+                                            <h4 class="title_edit text-left mb-25 mt-10">
+                                                Contacts <a class="contactModalOpenButton float-right plus_delteicon bg-primary-color"><img
+                                                        src="/frontend/assets/images/plus.png" alt="" title=""></a>
+                                            </h4>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        {{-- <label>Contacts:<a class="contactModalOpenButton"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a></label> --}}
+                                                        <div class="table-responsive">
+                                                            <table class="table table table_border_none">
+                                                                <thead>
+                                                                    <th>Name</th>
+                                                                    <th>Title</th>
+                                                                    <th>Email</th>
+                                                                    <th>Visibility</th>
+                                                                    <th>Phone</th>
+                                                                    <th style="width:100px">&nbsp;</th>
+                                                                </thead>
+                                                                <tbody id="contactsTable">
+                                                                    @foreach ($organizationContacts as $key=>$contact)
+                                                                    <tr id="contactTr_{{ $key }}">
+                                                                        <td>{{ $contact->contact_name }}
+                                                                            <input type="hidden" name="contact_name[]" value="{{ $contact->contact_name }}" id="contact_name_{{ $key }}">
+                                                                        </td>
+
+                                                                        <td>{{ $contact->contact_title }}
+                                                                            <input type="hidden" name="contact_title[]" value="{{ $contact->contact_title }}" id="contact_title_{{ $key }}">
+                                                                        </td>
+
+                                                                        <td class="text-center">{{ $contact->contact_email }}
+                                                                            <input type="hidden" name="contact_email[]" value="{{ $contact->contact_email }}" id="contact_email_{{ $key }}">
+                                                                        </td>
+                                                                        <td class="text-center">{{ $contact->visibility }}
+                                                                            <input type="hidden" name="contact_visibility[]" value="{{ $contact->visibility }}" id="contact_visibility_{{ $key }}">
+                                                                        </td>
+
+                                                                        <td class="text-center">
+                                                                            {{ $contact->phone && count($contact->phone) > 0? $contact->phone[0]->phone_number : '' }}
+                                                                            <input type="hidden" name="contact_phone[]" value="{{ $contact->phone && count($contact->phone) > 0? $contact->phone[0]->phone_number : '' }}" id="contact_phone_{{ $key }}">
+                                                                        </td>
+                                                                        <td style="vertical-align:middle;">
+                                                                            <a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color">
+                                                                                <img src="/frontend/assets/images/edit_pencil.png" alt="" title="">
+                                                                            </a>
+                                                                            <a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button">
+                                                                                <img src="/frontend/assets/images/delete.png" alt="" title="">
+                                                                            </a>
+                                                                            <input type="hidden" name="contactRadio[]" value="existing" id="selectedContactRadio_{{ $key }}"><input type="hidden" name="contact_recordid[]" value="{{ $contact->contact_recordid }}" id="existingContactIds_{{ $key }}">
+                                                                        </td>
+                                                                    </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
                                                         </div>
-                                                    </td>
-                                                    <td style="vertical-align: middle">
-                                                        <a href="javascript:void(0)" class="phoneEditButton plus_delteicon bg-primary-color">
-                                                            <img src="/frontend/assets/images/edit_pencil.png" alt="" title="">
-                                                        </a>
-                                                        <a href="javascript:void(0)" class="plus_delteicon btn-button removeOrganizationPhoneData">
-                                                            <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                        </a>
-                                                        {{-- <a href="javascript:void(0)" class="plus_delteicon btn-button deletePhoneData" data-id="{{ $value->phone_recordid }}">
-                                                        <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                        </a> --}}
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                                @endif
-                                            </tbody>
-                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {{-- end here --}}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <hr />
-                        {{-- contact table --}}
-                        <h4 class="title_edit text-left mb-25 mt-10">
-                            Contacts <a class="contactModalOpenButton float-right plus_delteicon bg-primary-color"><img
-                                    src="/frontend/assets/images/plus.png" alt="" title=""></a>
-                        </h4>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    {{-- <label>Contacts:<a class="contactModalOpenButton"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a></label> --}}
-                                    <div class="table-responsive">
-                                        <table class="table table table_border_none">
-                                            <thead>
-                                                <th>Name</th>
-                                                <th>Title</th>
-                                                <th>Email</th>
-                                                <th>Visibility</th>
-                                                <th>Phone</th>
-                                                <th style="width:100px">&nbsp;</th>
-                                            </thead>
-                                            <tbody id="contactsTable">
-                                                @foreach ($organizationContacts as $key=>$contact)
-                                                <tr id="contactTr_{{ $key }}">
-                                                    <td>{{ $contact->contact_name }}
-                                                        <input type="hidden" name="contact_name[]" value="{{ $contact->contact_name }}" id="contact_name_{{ $key }}">
-                                                    </td>
-
-                                                    <td>{{ $contact->contact_title }}
-                                                        <input type="hidden" name="contact_title[]" value="{{ $contact->contact_title }}" id="contact_title_{{ $key }}">
-                                                    </td>
-
-                                                    <td class="text-center">{{ $contact->contact_email }}
-                                                        <input type="hidden" name="contact_email[]" value="{{ $contact->contact_email }}" id="contact_email_{{ $key }}">
-                                                    </td>
-                                                    <td class="text-center">{{ $contact->visibility }}
-                                                        <input type="hidden" name="contact_visibility[]" value="{{ $contact->visibility }}" id="contact_visibility_{{ $key }}">
-                                                    </td>
-
-                                                    <td class="text-center">
-                                                        {{ $contact->phone && count($contact->phone) > 0? $contact->phone[0]->phone_number : '' }}
-                                                        <input type="hidden" name="contact_phone[]" value="{{ $contact->phone && count($contact->phone) > 0? $contact->phone[0]->phone_number : '' }}" id="contact_phone_{{ $key }}">
-                                                    </td>
-                                                    <td style="vertical-align:middle;">
-                                                        <a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color">
-                                                            <img src="/frontend/assets/images/edit_pencil.png" alt="" title="">
-                                                        </a>
-                                                        <a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button">
-                                                            <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                        </a>
-                                                        <input type="hidden" name="contactRadio[]" value="existing" id="selectedContactRadio_{{ $key }}"><input type="hidden" name="contact_recordid[]" value="{{ $contact->contact_recordid }}" id="existingContactIds_{{ $key }}">
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {{-- end here --}}
-                        <hr />
-                        {{-- end here --}}
-                        <h4 class="title_edit text-left mb-25 mt-10">
-                            Locations
-                            <a href="javascript:void(0)" class="locationModalOpenButton plus_delteicon bg-primary-color float-right">
-                                <img src="/frontend/assets/images/plus.png" alt="" title="">
-                            </a>
-                        </h4>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    {{-- <label>Locations: <a class="locationModalOpenButton"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
-                                    <div class="table-responsive">
-                                        <table class="table table_border_none">
-                                            <thead>
-                                                <th>Name</th>
-                                                <th>Address</th>
-                                                <th>City</th>
-                                                <th>State</th>
-                                                <th>Zipcode</th>
-                                                <th>Phone</th>
-                                                <th style="width:100px">&nbsp;</th>
-                                            </thead>
-                                            <tbody id="locationsTable">
-                                                @foreach ($organization_locations_data as $key => $location)
-                                                <tr id="locationTr_{{ $key }}">
-                                                    <td>{{ $location->location_name }}<input type="hidden" name="location_name[]"
-                                                            value="{{ $location->location_name }}" id="location_name_{{ $key }}"></td>
-                                                    <td>{{ $location->location_address }}<input type="hidden" name="location_address[]"
-                                                            value="{{ $location->location_address }}" id="location_address_{{ $key }}">
-                                                    </td>
-                                                    <td class="text-center">{{ $location->location_city }}<input type="hidden"
-                                                            name="location_city[]" value="{{ $location->location_city }}"
-                                                            id="location_city_{{ $key }}"></td>
-
-                                                    <td class="text-center">{{ $location->location_state }}<input type="hidden"
-                                                            name="location_state[]" value="{{ $location->location_state }}"
-                                                            id="location_state_{{ $key }}"></td>
-                                                    <td class="text-center">{{ $location->location_zipcode }}<input type="hidden"
-                                                            name="location_zipcode[]" value="{{ $location->location_zipcode }}"
-                                                            id="location_zipcode_{{ $key }}"></td>
-                                                    <td class="text-center">{{ $location->location_phone }}<input type="hidden"
-                                                            name="location_phone[]" value="{{ $location->location_phone }}"
-                                                            id="location_phone_{{ $key }}"></td>
-                                                    <td style="vertical-align:middle;">
-                                                        <a href="javascript:void(0)"
-                                                            class="locationEditButton plus_delteicon bg-primary-color">
-                                                            <img src="/frontend/assets/images/edit_pencil.png" alt="" title="">
-                                                        </a>
-                                                        <a href="javascript:void(0)"
-                                                            class="removeLocationData plus_delteicon btn-button">
-                                                            <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                        </a>
-                                                        <input type="hidden" name="locationRadio[]" value="existing"
-                                                            id="selectedLocationRadio_{{ $key }}">
-                                                        <input type="hidden" name="location_recordid[]"
-                                                            value="{{ $location->location_recordid }}"
-                                                            id="existingLocationIds_{{ $key }}">
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            {{-- location table end here --}}
-                        </div>
-
-                        <input type="hidden" name="removePhoneDataId" id="removePhoneDataId">
-                        <input type="hidden" name="deletePhoneDataId" id="deletePhoneDataId">
-                        <input type="hidden" name="phone_language_data" id="phone_language_data" value="{{ $phone_language_data }}">
-
-                        <input type="hidden" name="service_alternate_name[]" id="service_alternate_name"
-                            value="{{ $service_alternate_name }}">
-                        <input type="hidden" name="service_program[]" id="service_program" value="{{ $service_program }}">
-                        <input type="hidden" name="service_status[]" id="service_status" value="{{ $service_status }}">
-                        <input type="hidden" name="service_taxonomies[]" id="service_taxonomies" value="{{ $service_taxonomies }}">
-                        <input type="hidden" name="service_application_process[]" id="service_application_process"
-                            value="{{ $service_application_process }}">
-                        <input type="hidden" name="service_wait_time[]" id="service_wait_time" value="{{ $service_wait_time }}">
-                        <input type="hidden" name="service_fees[]" id="service_fees" value="{{ $service_fees }}">
-                        <input type="hidden" name="service_accreditations[]" id="service_accreditations"
-                            value="{{ $service_accreditations }}">
-                        <input type="hidden" name="service_licenses[]" id="service_licenses" value="{{ $service_licenses }}">
-                        <input type="hidden" name="service_schedules[]" id="service_schedules" value="{{ $service_schedules }}">
-                        <input type="hidden" name="service_details[]" id="service_details" value="{{ $service_details }}">
-                        <input type="hidden" name="service_address[]" id="service_address" value="{{ $service_address }}">
-                        <input type="hidden" name="service_metadata[]" id="service_metadata" value="{{ $service_metadata }}">
-                        <input type="hidden" name="service_airs_taxonomy_x[]" id="service_airs_taxonomy_x"
-                            value="{{ $service_airs_taxonomy_x }}">
-
-                        <input type="hidden" name="location_alternate_name[]" id="location_alternate_name"
-                            value="{{ $location_alternate_name }}">
-                        <input type="hidden" name="location_transporation[]" id="location_transporation"
-                            value="{{ $location_transporation }}">
-                        <input type="hidden" name="location_service[]" id="location_service" value="{{ $location_service }}">
-                        <input type="hidden" name="location_schedules[]" id="location_schedules" value="{{ $location_schedules }}">
-                        <input type="hidden" name="location_description[]" id="location_description"
-                            value="{{ $location_description }}">
-                        <input type="hidden" name="location_details[]" id="location_details" value="{{ $location_details }}">
-                        <input type="hidden" name="location_accessibility[]" id="location_accessibility" value="{{ $location_accessibility }}">
-                        <input type="hidden" name="location_accessibility_details[]" id="location_accessibility_details" value="{{ $location_accessibility_details }}">
-                        <input type="hidden" name="location_regions[]" id="location_regions" value="{{ $location_regions }}">
-
-                        <input type="hidden" name="contact_service[]" id="contact_service" value="{{ $contact_service }}">
-                        <input type="hidden" name="contact_department[]" id="contact_department" value="{{ $contact_department }}">
-                        {{-- <input type="hidden" name="contact_visibility[]" id="contact_visibility" value="{{ $contact_visibility }}"> --}}
-
-                        {{-- contact phone --}}
-                        <input type="hidden" name="contact_phone_numbers[]" id="contact_phone_numbers"
-                            value="{{ $contact_phone_numbers }}">
-                        <input type="hidden" name="contact_phone_extensions[]" id="contact_phone_extensions"
-                            value="{{ $contact_phone_extensions }}">
-                        <input type="hidden" name="contact_phone_types[]" id="contact_phone_types" value="{{ $contact_phone_types }}">
-                        <input type="hidden" name="contact_phone_languages[]" id="contact_phone_languages"
-                            value="{{ $contact_phone_languages }}">
-                        <input type="hidden" name="contact_phone_descriptions[]" id="contact_phone_descriptions"
-                            value="{{ $contact_phone_descriptions }}">
-                        {{-- location phone --}}
-                        <input type="hidden" name="location_phone_numbers[]" id="location_phone_numbers"
-                            value="{{ $location_phone_numbers }}">
-                        <input type="hidden" name="location_phone_extensions[]" id="location_phone_extensions"
-                            value="{{ $location_phone_extensions }}">
-                        <input type="hidden" name="location_phone_types[]" id="location_phone_types"
-                            value="{{ $location_phone_types }}">
-                        <input type="hidden" name="location_phone_languages[]" id="location_phone_languages"
-                            value="{{ $location_phone_languages }}">
-                        <input type="hidden" name="location_phone_descriptions[]" id="location_phone_descriptions"
-                            value="{{ $location_phone_descriptions }}">
-
-                        {{-- schedule section --}}
-                        <input type="hidden" name="opens_at_location_monday_datas" id="opens_at_location_monday_datas"
-                            value="{{ $opens_at_location_monday_datas }}">
-                        <input type="hidden" name="closes_at_location_monday_datas" id="closes_at_location_monday_datas"
-                            value="{{ $closes_at_location_monday_datas }}">
-                        <input type="hidden" name="schedule_closed_monday_datas" id="schedule_closed_monday_datas"
-                            value="{{ $schedule_closed_monday_datas }}">
-                        <input type="hidden" name="opens_at_location_tuesday_datas" id="opens_at_location_tuesday_datas"
-                            value="{{ $opens_at_location_tuesday_datas }}">
-                        <input type="hidden" name="closes_at_location_tuesday_datas" id="closes_at_location_tuesday_datas"
-                            value="{{ $closes_at_location_tuesday_datas }}">
-                        <input type="hidden" name="schedule_closed_tuesday_datas" id="schedule_closed_tuesday_datas"
-                            value="{{ $schedule_closed_tuesday_datas }}">
-                        <input type="hidden" name="opens_at_location_wednesday_datas" id="opens_at_location_wednesday_datas"
-                            value="{{ $opens_at_location_wednesday_datas }}">
-                        <input type="hidden" name="closes_at_location_wednesday_datas" id="closes_at_location_wednesday_datas"
-                            value="{{ $closes_at_location_wednesday_datas }}">
-                        <input type="hidden" name="schedule_closed_wednesday_datas" id="schedule_closed_wednesday_datas"
-                            value="{{ $schedule_closed_wednesday_datas }}">
-                        <input type="hidden" name="opens_at_location_thursday_datas" id="opens_at_location_thursday_datas"
-                            value="{{ $opens_at_location_thursday_datas }}">
-                        <input type="hidden" name="closes_at_location_thursday_datas" id="closes_at_location_thursday_datas"
-                            value="{{ $closes_at_location_thursday_datas }}">
-                        <input type="hidden" name="schedule_closed_thursday_datas" id="schedule_closed_thursday_datas"
-                            value="{{ $schedule_closed_thursday_datas }}">
-                        <input type="hidden" name="opens_at_location_friday_datas" id="opens_at_location_friday_datas"
-                            value="{{ $opens_at_location_friday_datas }}">
-                        <input type="hidden" name="closes_at_location_friday_datas" id="closes_at_location_friday_datas"
-                            value="{{ $closes_at_location_friday_datas }}">
-                        <input type="hidden" name="schedule_closed_friday_datas" id="schedule_closed_friday_datas"
-                            value="{{ $schedule_closed_friday_datas }}">
-                        <input type="hidden" name="opens_at_location_saturday_datas" id="opens_at_location_saturday_datas"
-                            value="{{ $opens_at_location_saturday_datas }}">
-                        <input type="hidden" name="closes_at_location_saturday_datas" id="closes_at_location_saturday_datas"
-                            value="{{ $closes_at_location_saturday_datas }}">
-                        <input type="hidden" name="schedule_closed_saturday_datas" id="schedule_closed_saturday_datas"
-                            value="{{ $schedule_closed_saturday_datas }}">
-                        <input type="hidden" name="opens_at_location_sunday_datas" id="opens_at_location_sunday_datas"
-                            value="{{ $opens_at_location_sunday_datas }}">
-                        <input type="hidden" name="closes_at_location_sunday_datas" id="closes_at_location_sunday_datas"
-                            value="{{ $closes_at_location_sunday_datas }}">
-                        <input type="hidden" name="schedule_closed_sunday_datas" id="schedule_closed_sunday_datas"
-                            value="{{ $schedule_closed_sunday_datas }}">
-
-                        <input type="hidden" name="location_holiday_start_dates" id="location_holiday_start_dates"
-                            value="{{ $location_holiday_start_dates }}">
-                        <input type="hidden" name="location_holiday_end_dates" id="location_holiday_end_dates"
-                            value="{{ $location_holiday_end_dates }}">
-                        <input type="hidden" name="location_holiday_open_ats" id="location_holiday_open_ats"
-                            value="{{ $location_holiday_open_ats }}">
-                        <input type="hidden" name="location_holiday_close_ats" id="location_holiday_close_ats"
-                            value="{{ $location_holiday_close_ats }}">
-                        <input type="hidden" name="location_holiday_closeds" id="location_holiday_closeds"
-                            value="{{ $location_holiday_closeds }}">
                     </div>
                 </div>
+                <input type="hidden" name="removePhoneDataId" id="removePhoneDataId">
+                <input type="hidden" name="deletePhoneDataId" id="deletePhoneDataId">
+                <input type="hidden" name="phone_language_data" id="phone_language_data" value="{{ $phone_language_data }}">
+
+                <input type="hidden" name="service_alternate_name[]" id="service_alternate_name"
+                    value="{{ $service_alternate_name }}">
+                <input type="hidden" name="service_program[]" id="service_program" value="{{ $service_program }}">
+                <input type="hidden" name="service_status[]" id="service_status" value="{{ $service_status }}">
+                <input type="hidden" name="service_taxonomies[]" id="service_taxonomies" value="{{ $service_taxonomies }}">
+                <input type="hidden" name="service_application_process[]" id="service_application_process"
+                    value="{{ $service_application_process }}">
+                <input type="hidden" name="service_wait_time[]" id="service_wait_time" value="{{ $service_wait_time }}">
+                <input type="hidden" name="service_fees[]" id="service_fees" value="{{ $service_fees }}">
+                <input type="hidden" name="service_accreditations[]" id="service_accreditations"
+                    value="{{ $service_accreditations }}">
+                <input type="hidden" name="service_licenses[]" id="service_licenses" value="{{ $service_licenses }}">
+                <input type="hidden" name="service_schedules[]" id="service_schedules" value="{{ $service_schedules }}">
+                <input type="hidden" name="service_details[]" id="service_details" value="{{ $service_details }}">
+                <input type="hidden" name="service_address[]" id="service_address" value="{{ $service_address }}">
+                <input type="hidden" name="service_metadata[]" id="service_metadata" value="{{ $service_metadata }}">
+                <input type="hidden" name="service_airs_taxonomy_x[]" id="service_airs_taxonomy_x"
+                    value="{{ $service_airs_taxonomy_x }}">
+
+                <input type="hidden" name="location_alternate_name[]" id="location_alternate_name"
+                    value="{{ $location_alternate_name }}">
+                <input type="hidden" name="location_transporation[]" id="location_transporation"
+                    value="{{ $location_transporation }}">
+                <input type="hidden" name="location_service[]" id="location_service" value="{{ $location_service }}">
+                <input type="hidden" name="location_schedules[]" id="location_schedules" value="{{ $location_schedules }}">
+                <input type="hidden" name="location_description[]" id="location_description"
+                    value="{{ $location_description }}">
+                <input type="hidden" name="location_details[]" id="location_details" value="{{ $location_details }}">
+                <input type="hidden" name="location_accessibility[]" id="location_accessibility" value="{{ $location_accessibility }}">
+                <input type="hidden" name="location_accessibility_details[]" id="location_accessibility_details" value="{{ $location_accessibility_details }}">
+                <input type="hidden" name="location_regions[]" id="location_regions" value="{{ $location_regions }}">
+
+                <input type="hidden" name="contact_service[]" id="contact_service" value="{{ $contact_service }}">
+                <input type="hidden" name="contact_department[]" id="contact_department" value="{{ $contact_department }}">
+                {{-- <input type="hidden" name="contact_visibility[]" id="contact_visibility" value="{{ $contact_visibility }}"> --}}
+
+                {{-- contact phone --}}
+                <input type="hidden" name="contact_phone_numbers[]" id="contact_phone_numbers"
+                    value="{{ $contact_phone_numbers }}">
+                <input type="hidden" name="contact_phone_extensions[]" id="contact_phone_extensions"
+                    value="{{ $contact_phone_extensions }}">
+                <input type="hidden" name="contact_phone_types[]" id="contact_phone_types" value="{{ $contact_phone_types }}">
+                <input type="hidden" name="contact_phone_languages[]" id="contact_phone_languages"
+                    value="{{ $contact_phone_languages }}">
+                <input type="hidden" name="contact_phone_descriptions[]" id="contact_phone_descriptions"
+                    value="{{ $contact_phone_descriptions }}">
+                {{-- location phone --}}
+                <input type="hidden" name="location_phone_numbers[]" id="location_phone_numbers"
+                    value="{{ $location_phone_numbers }}">
+                <input type="hidden" name="location_phone_extensions[]" id="location_phone_extensions"
+                    value="{{ $location_phone_extensions }}">
+                <input type="hidden" name="location_phone_types[]" id="location_phone_types"
+                    value="{{ $location_phone_types }}">
+                <input type="hidden" name="location_phone_languages[]" id="location_phone_languages"
+                    value="{{ $location_phone_languages }}">
+                <input type="hidden" name="location_phone_descriptions[]" id="location_phone_descriptions"
+                    value="{{ $location_phone_descriptions }}">
+
+                {{-- schedule section --}}
+                <input type="hidden" name="opens_at_location_monday_datas" id="opens_at_location_monday_datas"
+                    value="{{ $opens_at_location_monday_datas }}">
+                <input type="hidden" name="closes_at_location_monday_datas" id="closes_at_location_monday_datas"
+                    value="{{ $closes_at_location_monday_datas }}">
+                <input type="hidden" name="schedule_closed_monday_datas" id="schedule_closed_monday_datas"
+                    value="{{ $schedule_closed_monday_datas }}">
+                <input type="hidden" name="opens_at_location_tuesday_datas" id="opens_at_location_tuesday_datas"
+                    value="{{ $opens_at_location_tuesday_datas }}">
+                <input type="hidden" name="closes_at_location_tuesday_datas" id="closes_at_location_tuesday_datas"
+                    value="{{ $closes_at_location_tuesday_datas }}">
+                <input type="hidden" name="schedule_closed_tuesday_datas" id="schedule_closed_tuesday_datas"
+                    value="{{ $schedule_closed_tuesday_datas }}">
+                <input type="hidden" name="opens_at_location_wednesday_datas" id="opens_at_location_wednesday_datas"
+                    value="{{ $opens_at_location_wednesday_datas }}">
+                <input type="hidden" name="closes_at_location_wednesday_datas" id="closes_at_location_wednesday_datas"
+                    value="{{ $closes_at_location_wednesday_datas }}">
+                <input type="hidden" name="schedule_closed_wednesday_datas" id="schedule_closed_wednesday_datas"
+                    value="{{ $schedule_closed_wednesday_datas }}">
+                <input type="hidden" name="opens_at_location_thursday_datas" id="opens_at_location_thursday_datas"
+                    value="{{ $opens_at_location_thursday_datas }}">
+                <input type="hidden" name="closes_at_location_thursday_datas" id="closes_at_location_thursday_datas"
+                    value="{{ $closes_at_location_thursday_datas }}">
+                <input type="hidden" name="schedule_closed_thursday_datas" id="schedule_closed_thursday_datas"
+                    value="{{ $schedule_closed_thursday_datas }}">
+                <input type="hidden" name="opens_at_location_friday_datas" id="opens_at_location_friday_datas"
+                    value="{{ $opens_at_location_friday_datas }}">
+                <input type="hidden" name="closes_at_location_friday_datas" id="closes_at_location_friday_datas"
+                    value="{{ $closes_at_location_friday_datas }}">
+                <input type="hidden" name="schedule_closed_friday_datas" id="schedule_closed_friday_datas"
+                    value="{{ $schedule_closed_friday_datas }}">
+                <input type="hidden" name="opens_at_location_saturday_datas" id="opens_at_location_saturday_datas"
+                    value="{{ $opens_at_location_saturday_datas }}">
+                <input type="hidden" name="closes_at_location_saturday_datas" id="closes_at_location_saturday_datas"
+                    value="{{ $closes_at_location_saturday_datas }}">
+                <input type="hidden" name="schedule_closed_saturday_datas" id="schedule_closed_saturday_datas"
+                    value="{{ $schedule_closed_saturday_datas }}">
+                <input type="hidden" name="opens_at_location_sunday_datas" id="opens_at_location_sunday_datas"
+                    value="{{ $opens_at_location_sunday_datas }}">
+                <input type="hidden" name="closes_at_location_sunday_datas" id="closes_at_location_sunday_datas"
+                    value="{{ $closes_at_location_sunday_datas }}">
+                <input type="hidden" name="schedule_closed_sunday_datas" id="schedule_closed_sunday_datas"
+                    value="{{ $schedule_closed_sunday_datas }}">
+
+                <input type="hidden" name="location_holiday_start_dates" id="location_holiday_start_dates"
+                    value="{{ $location_holiday_start_dates }}">
+                <input type="hidden" name="location_holiday_end_dates" id="location_holiday_end_dates"
+                    value="{{ $location_holiday_end_dates }}">
+                <input type="hidden" name="location_holiday_open_ats" id="location_holiday_open_ats"
+                    value="{{ $location_holiday_open_ats }}">
+                <input type="hidden" name="location_holiday_close_ats" id="location_holiday_close_ats"
+                    value="{{ $location_holiday_close_ats }}">
+                <input type="hidden" name="location_holiday_closeds" id="location_holiday_closeds"
+                    value="{{ $location_holiday_closeds }}">
+                    <input type="hidden" name="interaction_method" id="interaction_method" value="">
+                    <input type="hidden" name="interaction_disposition" id="interaction_disposition" value="">
+                    <input type="hidden" name="interaction_notes" id="interaction_notes" value="">
+                    <input type="hidden" name="organization_status" id="organization_status" value="">
+                    <input type="hidden" name="reverify" id="reverify" value="">
+                    <input type="hidden" name="organization_notes" id="organization_notes" value="">
 
                 <div class="col-md-12 text-center">
-                    <a href="/organizations/{{$organization->organization_recordid}}"
-                        class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn"
-                        id="view-organization-btn "> Close</a>
-                    <button type="button"
-                        class="btn btn-danger btn-lg btn_delete waves-effect waves-classic waves-effect waves-classic delete-td red_btn"
-                        id="delete-organization-btn " value="{{$organization->organization_recordid}}" data-toggle="modal"
-                        data-target=".bs-delete-modal-lg"> Delete</button>
-                    <button type="submit"
-                        class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic green_btn"
-                        id="save-organization-btn"> Save</button>
+                    <a href="/organizations/{{$organization->organization_recordid}}" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn" id="view-organization-btn "> Close</a>
+                    <button type="button" class="btn btn-danger btn-lg btn_delete waves-effect waves-classic waves-effect waves-classic delete-td red_btn" id="delete-organization-btn " value="{{$organization->organization_recordid}}" data-toggle="modal" data-target=".bs-delete-modal-lg"> Delete</button>
+                    <button type="button" class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic green_btn" id="save-organization-btn"  data-toggle="modal" data-target="#interactionModal"> Save</button>
+                    <button type="submit" style="display: none;" class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic green_btn" id="save-organization-btn-submit"> Save</button>
                 </div>
             {!! Form::close() !!}
             </div>
@@ -593,7 +634,7 @@ Organization Edit
                         </a>
                         ,
                         @if ($item->user)
-                        <a href="/userEdits/{{ $item->user ? $item->user->id : '' }}"
+                        <a href="/userEdits/{{ $item->user ? $item->user->id : '' }}/0"
                             style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB; text-decoration:underline;">
                             <b
                                 style="font-family: Neue Haas Grotesk Display Medium; color:#5051DB;text-decoration:underline;">{{ $item->user ? $item->user->first_name.' '.$item->user->last_name : '' }}</b>
@@ -621,16 +662,18 @@ Organization Edit
                         @php
                             $diffData = array_diff($new_values,$old_values);
                         @endphp
+                        @if (count($diffData) > 0)
                         <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span style="color: #35AD8B">{{ implode(',',$diffData) }}</span>
                         </li>
+                        @endif
                         @elseif($v && count($new_values) == count($old_values))
                         @php
                             $diffData = array_diff($new_values,$old_values);
                         @endphp
+                        @if (count($diffData) > 0)
                         <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> <span style="color: #35AD8B">{{ implode(',',$diffData) }}</span>
                         </li>
-                        {{-- <li style="color: #000;list-style: disc;list-style-position: inside;">Changed <b style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b> from <span style="color: #FF5044">{{ $v }}</span> to <span style="color: #35AD8B">{{ $new_values ? $new_values : 'none' }}</span>
-                        </li> --}}
+                        @endif
                         @elseif($item->new_values[$key])
                         <li style="color: #000;list-style: disc;list-style-position: inside;">Added <b
                                 style="font-family: Neue Haas Grotesk Display Medium;">{{ Str::ucfirst($fieldName) }}</b>
@@ -665,14 +708,12 @@ Organization Edit
                         <div class="form-check form-check-inline">
                             <input class="form-check-input serviceRadio" type="radio" name="serviceRadio"
                                 id="serviceRadio2" value="new_data" checked>
-                            <label class="form-check-label" for="serviceRadio2"><b style="color: #000">Create New
-                                    Data</b></label>
+                            <label class="form-check-label" for="serviceRadio2"><b style="color: #000">Create New Service</b></label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input serviceRadio" type="radio" name="serviceRadio"
                                 id="serviceRadio1" value="existing">
-                            <label class="form-check-label" for="serviceRadio1"><b style="color: #000">Existing
-                                    Data</b></label>
+                            <label class="form-check-label" for="serviceRadio1"><b style="color: #000">Use Existing Service</b></label>
                         </div>
                     </div>
                     <div class="" id="existingServiceData" style="display: none;">
@@ -903,16 +944,12 @@ Organization Edit
                 <div class="modal-body all_form_field">
                     <div class="form-group">
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input locationRadio" type="radio" name="locationRadio"
-                                id="locationRadio2" value="new_data" checked>
-                            <label class="form-check-label" for="locationRadio2"><b style="color: #000">Create New
-                                    Data</b></label>
+                            <input class="form-check-input locationRadio" type="radio" name="locationRadio" id="locationRadio2" value="new_data" checked>
+                            <label class="form-check-label" for="locationRadio2"><b style="color: #000">Create New Location</b></label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input locationRadio" type="radio" name="locationRadio"
-                                id="locationRadio1" value="existing">
-                            <label class="form-check-label" for="locationRadio1"><b style="color: #000">Existing
-                                    Data</b></label>
+                            <input class="form-check-input locationRadio" type="radio" name="locationRadio" id="locationRadio1" value="existing">
+                            <label class="form-check-label" for="locationRadio1"><b style="color: #000">Use Existing Location</b></label>
                         </div>
                     </div>
                     <div class="" id="existingLocationData" style="display: none;">
@@ -1007,13 +1044,13 @@ Organization Edit
                                         id="location_zipcode_p">
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            {{-- <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Location Details: </label>
                                     <input class="form-control selectpicker" type="text" id="location_details_p"
                                         name="location_details" value="">
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Regions: </label>
@@ -1022,7 +1059,7 @@ Organization Edit
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Accessibility: </label>
+                                    <label>ADA Compliant: </label>
                                     {!! Form::select('location_accessibility_p',['Blank' => 'Blank','ADA Complaint' => 'ADA Complaint','Not ADA Compliant' => 'Not ADA Compliant'],null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'location_accessibility_p','placeholder' => 'select accessibility']) !!}
                                 </div>
                             </div>
@@ -1042,7 +1079,7 @@ Organization Edit
                                     <table class="table table_border_none" id="PhoneTableLocation">
                                         <thead>
                                             <th>Number</th>
-                                            <th>extension</th>
+                                            <th>Extension</th>
                                             <th style="width:200px;position:relative;">Type
                                                 <div class="help-tip" style="top:8px;">
                                                     <div>
@@ -1318,16 +1355,12 @@ Organization Edit
                 <div class="modal-body all_form_field">
                     <div class="form-group">
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input contactRadio" type="radio" name="contactRadio"
-                                id="contactRadio2" value="new_data" checked>
-                            <label class="form-check-label" for="contactRadio2"><b style="color: #000">Create New
-                                    Data</b></label>
+                            <input class="form-check-input contactRadio" type="radio" name="contactRadio" id="contactRadio2" value="new_data" checked>
+                            <label class="form-check-label" for="contactRadio2"><b style="color: #000">Create New Contact</b></label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input contactRadio" type="radio" name="contactRadio"
-                                id="contactRadio1" value="existing">
-                            <label class="form-check-label" for="contactRadio1"><b style="color: #000">Existing
-                                    Data</b></label>
+                            <input class="form-check-input contactRadio" type="radio" name="contactRadio" id="contactRadio1" value="existing">
+                            <label class="form-check-label" for="contactRadio1"><b style="color: #000">Use Existing Contact</b></label>
                         </div>
 
                     </div>
@@ -1406,12 +1439,11 @@ Organization Edit
                                     <table class="table table_border_none" id="PhoneTableContact">
                                         <thead>
                                             <th>Number</th>
-                                            <th>extension</th>
+                                            <th>Extension</th>
                                             <th style="width:200px;position:relative;">Type
                                                 <div class="help-tip" style="top:8px;">
                                                     <div>
-                                                        <p>Select “Main” if this is the organization's primary phone
-                                                            number (or leave blank)
+                                                        <p>Select “Main” if this is the organization's primary phone number (or leave blank)
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1420,9 +1452,7 @@ Organization Edit
                                             <th style="width:200px;position:relative;">Description
                                                 <div class="help-tip" style="top:8px;">
                                                     <div>
-                                                        <p>A description providing extra information about the phone
-                                                            service (e.g. any special arrangements for accessing, or
-                                                            details of availability at particular times).
+                                                        <p>A description providing extra information about the phone service (e.g. any special arrangements for accessing, or details of availability at particular times).
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1432,27 +1462,19 @@ Organization Edit
                                         <tbody id="addPhoneTrContact">
                                             <tr id="contact_0">
                                                 <td>
-                                                    <input type="text" class="form-control" name="service_phones[]"
-                                                        id="service_phones_contact_0">
+                                                    <input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_0">
                                                 </td>
                                                 <td>
-                                                    <input type="text" class="form-control" name="phone_extension[]"
-                                                        id="phone_extension_contact_0">
+                                                    <input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_0">
                                                 </td>
                                                 <td>
-                                                    {!! Form::select('phone_type[]',$phone_type,[],['class' =>
-                                                    'form-control selectpicker','data-live-search' => 'true','id' =>
-                                                    'phone_type_contact_0','data-size' => 5,'placeholder' => 'select
-                                                    phone type'])!!}
+                                                    {!! Form::select('phone_type[]',$phone_type,[],['class' => 'form-control selectpicker','data-live-search' => 'true','id' => 'phone_type_contact_0','data-size' => 5,'placeholder' => 'select phone type'])!!}
                                                 </td>
                                                 <td>
-                                                    {!! Form::select('phone_language[]',$phone_languages,[],['class' =>
-                                                    'form-control selectpicker','data-size' => 5,' data-live-search' =>
-                                                    'true', 'id' => 'phone_language_contact_0','multiple' => true]) !!}
+                                                    {!! Form::select('phone_language[]',$phone_languages,[],['class' => 'form-control selectpicker','data-size' => 5,' data-live-search' => 'true', 'id' => 'phone_language_contact_0','multiple' => true]) !!}
                                                 </td>
                                                 <td>
-                                                    <input type="text" class="form-control" name="phone_description[]"
-                                                        id="phone_description_contact_0">
+                                                    <input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_0">
                                                 </td>
                                                 <td></td>
                                             </tr>
@@ -1464,10 +1486,8 @@ Organization Edit
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button"
-                        class="btn btn-danger btn-lg btn_delete red_btn contactCloseButton">Close</button>
-                    <button type="button" id="contactSubmit"
-                        class="btn btn-primary btn-lg btn_padding green_btn">Save</button>
+                    <button type="button" class="btn btn-danger btn-lg btn_delete red_btn contactCloseButton">Close</button>
+                    <button type="button" id="contactSubmit" class="btn btn-primary btn-lg btn_padding green_btn">Save</button>
                 </div>
             </form>
         </div>
@@ -1512,6 +1532,75 @@ Organization Edit
     </div>
 </div>
 {{-- end here --}}
+
+{{-- interaction modal --}}
+<div class="modal fade" id="interactionModal" tabindex="-1" role="dialog" aria-labelledby="interactionModalLabel"
+aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="interactionModalLabel">Add Interaction</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+            <div class="modal-body all_form_field">
+                {{ csrf_field() }}
+                <div id="facility-create-content" class="sesion_form">
+                    <div class="row m-0">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Method: </label>
+                                <select class="form-control selectpicker" data-live-search="true" id="interaction_method_pop_up" name="interaction_method" data-size="5">
+                                    @foreach ($method_list as $key => $method)
+                                        <option value="{{ $key }}">{{ $method }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Disposition: </label>
+                                <select class="form-control selectpicker" data-live-search="true" id="interaction_disposition_pop_up" name="interaction_disposition" data-size="5">
+                                    @foreach ($disposition_list as $key => $disposition)
+                                        <option value="{{ $key }}">{{ $disposition }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Notes: </label>
+                                <input class="form-control" type="text" id="interaction_notes_pop_up" name="interaction_notes" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Update Status: </label>
+                                {!! Form::select('organization_status', $organizationStatus, $organization->organization_status_x ? $organization->organization_status_x : ($layout->default_organization_status ?? null), ['class' => 'form-control selectpicker', 'id' => 'organization_status_pop_up', 'placeholder' => 'Select Status']) !!}
+                            </div>
+                        </div>
+                        @if (isset($organizationStatus[$organization->organization_status_x]) && $organizationStatus[$organization->organization_status_x] == 'Verified')
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input reverify" type="checkbox" name="reverify" value="1" id="reverify_pop_up">
+                                    <label class="form-check-label" for="reverify1"><b style="color: #000">Reverify</b></label>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger btn-lg btn_delete red_btn contactCloseButton waves-effect waves-classic" data-dismiss="modal" id="closeInteraction">Close</button>
+                <button type="submit" class="btn btn-primary btn-lg btn_padding green_btn waves-effect waves-classic" id="submitInteraction"> Add</button>
+            </div>
+    </div>
+</div>
+</div>
+{{-- end here --}}
 </div>
 </div>
 
@@ -1540,14 +1629,22 @@ Organization Edit
         var value = $(this).val();
         $('input#organization_recordid').val(value);
     });
-    // $("#add-phone-input").click(function(){
-    //     $("ol#phones-ul").append(
-    //         "<li class='organization-phones-li mb-2'>"
-    //       + "<div class='col-md-12 col-sm-12 col-xs-12 organization-phones-div'>"
-    //       + "<input class='form-control selectpicker organization_phones'  type='text' name='organization_phones[]'>"
-    //       + "</div>"
-    //       + "</li>" );
-    // });
+
+    $('#closeInteraction').click(function(){
+        $('#save-organization-btn-submit').click();
+    });
+    $('#submitInteraction').click(function(){
+        $('#interaction_method').val($('#interaction_method_pop_up').val());
+        $('#interaction_disposition').val($('#interaction_disposition_pop_up').val());
+        $('#interaction_notes').val($('#interaction_notes_pop_up').val());
+        $('#organization_status').val($('#organization_status_pop_up').val());
+        if($('#reverify_pop_up').is(":checked")){
+            $('#reverify').val('1');
+        }
+        $('#organization_notes').val(1);
+        $('#save-organization-btn-submit').click();
+    });
+
     $("#add-location-input").click(function(){
         $("ol#other-locations-ul").append(
             "<li class='organization-locations-li mb-2'>"
@@ -1830,7 +1927,7 @@ Organization Edit
             contact_phone_languages[c] = phone_language_contact
             contact_phone_descriptions[c] = phone_description_contact
 
-            $('#contactsTable').append('<tr id="contactTr_'+c+'"><td>'+contact_name_p+'<input type="hidden" name="contact_name[]" value="'+contact_name_p+'" id="contact_name_'+c+'"></td><td>'+contact_title_p+'<input type="hidden" name="contact_title[]" value="'+contact_title_p+'" id="contact_title_'+c+'"></td><td class="text-center">'+contact_email_p+'<input type="hidden" name="contact_email[]" value="'+contact_email_p+'" id="contact_email_'+c+'"></td><td class="text-center">'+contact_visibility_p+'<input type="hidden" name="contact_visibility[]" value="'+contact_visibility_p+'" id="contact_visibility_'+i+'"></td><td class="text-center">'+contact_phone_list+'<input type="hidden" name="contact_phone[]" value="'+contact_phone_p+'" id="contact_phone_'+c+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="'+contactRadioValue+'" id="selectedContactRadio_'+c+'"><input type="hidden" name="contact_recordid[]" value="'+contact_recordid_p+'" id="existingContactIds_'+c+'"></td></tr>');
+            $('#contactsTable').append('<tr id="contactTr_'+c+'"><td>'+contact_name_p+'<input type="hidden" name="contact_name[]" value="'+contact_name_p+'" id="contact_name_'+c+'"></td><td>'+contact_title_p+'<input type="hidden" name="contact_title[]" value="'+contact_title_p+'" id="contact_title_'+c+'"></td><td class="text-center">'+contact_email_p+'<input type="hidden" name="contact_email[]" value="'+contact_email_p+'" id="contact_email_'+c+'"></td><td class="text-center">'+contact_visibility_p+'<input type="hidden" name="contact_visibility[]" value="'+contact_visibility_p+'" id="contact_visibility_'+c+'"></td><td class="text-center">'+contact_phone_list+'<input type="hidden" name="contact_phone[]" value="'+contact_phone_p+'" id="contact_phone_'+c+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="'+contactRadioValue+'" id="selectedContactRadio_'+c+'"><input type="hidden" name="contact_recordid[]" value="'+contact_recordid_p+'" id="existingContactIds_'+c+'"></td></tr>');
             c++;
         }else{
             if(selectedContactTrId){

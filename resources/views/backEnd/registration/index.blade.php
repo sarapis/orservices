@@ -19,7 +19,54 @@ Registrations
     	margin: 0 auto;
     	width: 150px;
     }
+    /* for switch */
+    .material-switch > input[type="checkbox"] {
+        display: none;
+    }
+
+    .material-switch > label {
+        cursor: pointer;
+        height: 0px;
+        position: relative;
+        width: 40px;
+    }
+
+    .material-switch > label::before {
+        background: rgb(0, 0, 0);
+        box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        content: '';
+        height: 16px;
+        margin-top: -8px;
+        position:absolute;
+        opacity: 0.3;
+        transition: all 0.4s ease-in-out;
+        width: 40px;
+        left: -4px;
+    }
+    .material-switch > label::after {
+        background: rgb(255, 255, 255);
+        border-radius: 16px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+        content: '';
+        height: 24px;
+        left: -4px;
+        margin-top: -8px;
+        position: absolute;
+        top: -4px;
+        transition: all 0.3s ease-in-out;
+        width: 24px;
+    }
+    .material-switch > input[type="checkbox"]:checked + label::before {
+        background: inherit;
+        opacity: 0.5;
+    }
+    .material-switch > input[type="checkbox"]:checked + label::after {
+        background: inherit;
+        left: 20px;
+    }
 </style>
+
 @section('content')
 
 <div class="row">
@@ -109,7 +156,15 @@ Registrations
             </tbody>
         </table>
       </div>
-
+      <div class="col-md-12 pull-left" style="margin: 15px 0px;">
+        <label class="control-label col-md-8 col-sm-8 col-xs-8 text-left">Show message field on the registration form</label>
+        <div class="col-md-3 col-sm-3 col-xs-3">
+            <div class="material-switch pull-right">
+                <input id="show_registration_message" name="show_registration_message" type="checkbox" {{ $layout && $layout->show_registration_message == '1' ? 'checked'  : '' }} />
+                <label for="show_registration_message" class="label-primary"  style="margin: 15px 0px;"></label>
+            </div>
+        </div>
+    </div>
       <div style="text-align: center;">
         <button id="btn_create" class="btn btn-block btn-primary btn-sm open_modal" data-toggle="modal" data-target=".bs-create-modal-lg" >Add</button>
       </div>
@@ -220,7 +275,25 @@ $(document).ready(function() {
         e.preventDefault();
         $('#email_delete_filter').submit();
     });
-
+    $('#show_registration_message').change(function(){
+        let value = $(this).is(":checked");
+        let show_registration_message;
+        if(value){
+            show_registration_message = 1
+        }else{
+            show_registration_message = 0
+        }
+        var _token = "{{ csrf_token() }}";
+        $.ajax({
+            url: "{{ route('registrations.store') }}",
+            method:"post",
+            data:{_token,show_registration_message},
+            success:function(data){
+            },
+            error : function(err){
+            }
+        })
+    })
 
 
 } );

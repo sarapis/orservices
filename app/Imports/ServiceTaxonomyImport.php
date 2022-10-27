@@ -15,7 +15,7 @@ class ServiceTaxonomyImport implements ToModel, WithHeadingRow
      */
     public function model(array $row)
     {
-        $serviceTaxonomy = Servicetaxonomy::max('taxonomy_recordid');
+        $serviceTaxonomy = ServiceTaxonomy::max('taxonomy_recordid');
         $array = [
             'taxonomy_recordid' => $row['taxonomy_term_id'],
             'service_recordid' => $row['service_id'],

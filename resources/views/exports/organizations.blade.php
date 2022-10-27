@@ -8,7 +8,7 @@
         <th>email</th>
         <th>tax_status</th>
         <th>tax_id</th>
-        <th>year_incorporated</th>        
+        <th>year_incorporated</th>
         <th>legal_status</th>
     </thead>
     <tbody>

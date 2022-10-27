@@ -35,41 +35,41 @@ Session Profile Page
                                     <span class="subtitle"><b>Timer: </b></span>
                                     <label id="minutes">00</label>:<label id="seconds">00</label>
                                 </h4> -->
-                                <h4>
+                                <p>
                                     <span class="subtitle"><b>Session ID: </b></span>
                                     {{$session->session_recordid}}
-                                </h4>
-                                <h4>
+                                </p>
+                                <p>
                                     <span class="subtitle"><b>User Name: </b></span>
                                     {{$session->user->first_name}} {{$session->user->last_name}}
-                                </h4>
-                                <h4>
+                                </p>
+                                <p>
                                     <span class="subtitle"><b>Organization: </b></span>
                                     <a class="panel-link" href="/organizations/{{$session->organization->organization_recordid}}">{{$session->organization->organization_name}}</a>
-                                </h4>
-                                <h4>
+                                </p>
+                                <p>
                                     <span class="subtitle"><b>Start Time: </b></span>
                                     <label id="start-time">{{$session->session_start}}</label>
-                                </h4>
-                                <h4>
+                                </p>
+                                <p>
                                     <span class="subtitle"><b>End Time: </b></span>
                                     <label id="end-time">{{$session->session_end}}</label>
-                                </h4>
-                                <h4>
+                                </p>
+                                <p>
                                     <span class="subtitle"><b>Duration: </b></span>
                                     <label id="duration">{{$session->session_duration}}</label>
-                                </h4>
+                                </p>
                                 <a href="/session_info/{{$session->session_recordid}}/edit"  class="btn btn-success btn-xs float-right">
                                     <i class="icon md-edit mr-0"></i>
                                 </a>
-                                <h4>
+                                <p>
                                     <span class="subtitle"><b>Status: </b></span>
                                     {{$session->session_verification_status}}
-                                </h4>
-                                <h4>
+                                </p>
+                                <p>
                                     <span class="subtitle"><b>Notes: </b></span>
                                     {{$session->session_notes}}
-                                </h4>
+                                </p>
                             </div>
                             <!-- <div class="col-md-5">
                                 <a href="/session_info/{{$session->session_recordid}}/edit"  class="btn btn-success btn-xs float-right">

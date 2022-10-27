@@ -73,26 +73,51 @@ Edit User
                     <div id="role" class="form-group {{ $errors->has('role') ? 'has-error' : ''}}">
                         {!! Form::label('role','User role', ['class' => 'col-md-3 control-label']) !!}
                         <div class="col-sm-6">
-                            {!! Form::select('role', $roles, $user->role_id, ['class' => 'form-control','placeholder' => 'Select user role']) !!}
+                            {!! Form::select('role', $roles, $user->role_id, ['class' => 'form-control','placeholder' => 'Select user role','id' =>'role_id']) !!}
                             {!! $errors->first('role', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
                     <div id="organization" class="form-group {{ $errors->has('role') ? 'has-error' : ''}}">
                      {!! Form::label('organization','Organizations', ['class' => 'col-md-3 control-label']) !!}
-                    <div class="col-sm-6">
-                        <select class="form-control selectpicker" multiple data-live-search="true" data-size="5" id="user_organizations" name="user_organizations[]">
-                            @foreach($organization_list as $key => $organization)
-                                <option value="{{$organization->organization_recordid}}" @if (in_array($organization->organization_recordid, $account_organization_list)) selected @endif>{{$organization->organization_name}}</option>
-                            @endforeach
-                        </select>
-                        {!! $errors->first('organization', '<p class="help-block">:message</p>') !!}
+                        <div class="col-sm-6">
+                            <select class="form-control selectpicker" multiple data-live-search="true" data-size="5" id="user_organizations" name="user_organizations[]">
+                                @foreach($organization_list as $key => $organization)
+                                    <option value="{{$organization->organization_recordid}}" @if (in_array($organization->organization_recordid, $account_organization_list)) selected @endif>{{$organization->organization_name}}</option>
+                                @endforeach
+                            </select>
+                            {!! $errors->first('organization', '<p class="help-block">:message</p>') !!}
+                        </div>
                     </div>
-                </div>
+                    {{-- <div id="organization_tag_div" style="display: none;" class="form-group {{ $errors->has('role') ? 'has-error' : ''}}">
+                        {!! Form::label('organization_tag','Organization Tag', ['class' => 'col-md-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::select('organization_tags[]',$organization_tags,$account_organization_tag_list,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'organization_tags','multiple' => 'true']) !!}
+                            {!! $errors->first('organization', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div> --}}
+                    <div class="form-group {{ $errors->has('organization_tags') ? 'has-error' : '' }}"
+                        id="organization_tags_div">
+                        {!! Form::label('organization_tags', 'Organization Tags ', ['class' => 'col-sm-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::select('organization_tags[]', $organization_tags, $account_organization_tag_list, ['class' => 'form-control  select', 'multiple' => 'true']) !!}
+                            {!! $errors->first('organization_tags', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+                    <div class="form-group {{ $errors->has('service_tags') ? 'has-error' : '' }}" id="service_tags_div"
+                    >
+                        {!! Form::label('service_tags', 'Service Tags ', ['class' => 'col-sm-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::select('service_tags[]', $service_tags, $account_service_tag_list, ['class' => 'form-control  select', 'multiple' => 'true']) !!}
+                            {!! $errors->first('service_tags', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
 
                     <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-6">
                             {!! Form::submit('Submit', ['class' => 'btn btn-success']) !!}
                             <a href="{{route('user.index')}}" class="btn btn-primary">Return to all users</a>
+                            <a href="{{route('user.send_activation',$user->id)}}" class="btn btn-info">Send Invite Email</a>
+                            {{-- <a href="{{route('user.invite_user',$user->id)}}" class="btn btn-info">Invite a User</a> --}}
                         </div>
                     </div>
                 {{ Form::close() }}
@@ -104,10 +129,40 @@ Edit User
 
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+<script src="{{ URL::asset('/backend/vendors/sumoselect/jquery.sumoselect.js') }}"></script>
+    <link href="{{ URL::asset('/backend/vendors/sumoselect/sumoselect.css') }}" rel="stylesheet" />
 <script type="text/javascript">
     $(document).ready(function() {
         $("#user_organizations").selectpicker("");
+        $('.select').SumoSelect({
+            selectAll: false,
+            placeholder: 'Nothing selected'
+        });
         $("#role").selectpicker("");
+        let role_name = $('#role_id').find('option:selected').text();
+        if(role_name && role_name == 'Network Admin'){
+            $('#organization_tag_div').show();
+                $('#organization').hide();
+                $('#user_organizations').val('');
+                $("#user_organizations").selectpicker('refresh');
+            }else{
+                $('#organization').show();
+                $('#organization_tag_div').hide();
+            }
+        $('#role_id').change(function(){
+            var $option = $(this).find('option:selected');
+            let text = $option.text();
+            if(text == 'Network Admin'){
+                $('#organization_tag_div').show();
+                $('#organization').hide();
+                $('#user_organizations').val('');
+                $("#user_organizations").selectpicker('refresh');
+            }else{
+                $('#organization').show();
+                $('#organization_tag_div').hide();
+
+            }
+        })
     });
 </script>
 @endsection

@@ -6,6 +6,7 @@ use App\Model\AccountPage;
 use App\Model\Layout;
 use App\Model\Map;
 use App\Model\Organization;
+use App\Model\Role;
 use App\Model\Service;
 use App\User;
 use Illuminate\Http\Request;
@@ -34,7 +35,12 @@ class AccountController extends Controller
     public function index()
     {
         $account = AccountPage::whereId(1)->first();
-        return view('backEnd.account.index', compact('account'));
+        $account->appear_for = $account->appear_for ? unserialize($account->appear_for) : null;
+        $account->sidebar_widget = $account->sidebar_widget ? unserialize($account->sidebar_widget) : null;
+
+
+        $roles = Role::get();
+        return view('backEnd.account.index', compact('account', 'roles'));
     }
 
     /**
@@ -59,12 +65,14 @@ class AccountController extends Controller
             $account = AccountPage::whereId(1)->first();
             if ($account) {
                 $account->top_content = $request->top_content;
-                $account->sidebar_widget = $request->sidebar_widget;
+                $account->sidebar_widget = serialize($request->sidebar_widget);
+                $account->appear_for = serialize($request->appear_for);
                 $account->save();
             } else {
                 $account = new AccountPage();
                 $account->top_content = $request->top_content;
-                $account->sidebar_widget = $request->sidebar_widget;
+                $account->sidebar_widget = serialize($request->sidebar_widget);
+                $account->appear_for = serialize($request->appear_for);
                 $account->save();
             }
             Session::flash('message', 'Account updated successfully!');
@@ -90,6 +98,8 @@ class AccountController extends Controller
         $user = Auth::user();
         $user = User::whereId(Auth::id())->first();
         $account = AccountPage::whereId(1)->first();
+        $account->appear_for = $account->appear_for ? unserialize($account->appear_for) : null;
+        $account->sidebar_widget = $account->sidebar_widget ? unserialize($account->sidebar_widget) : null;
         // $user_organizationid_list = $user->user_organization ? explode(',', $user->user_organization) : [];
         $organization_id_list = [];
         $service_id_list = [];
@@ -214,10 +224,17 @@ class AccountController extends Controller
             $user = Auth::user();
             $organization_id_list = [];
             $query = $request->searchData;
-            $organization_tags = explode(',', $user->organization_tags);
+            $organization_tags = $user->organization_tags ? explode(',', $user->organization_tags) : [];
             foreach ($organization_tags as $key => $value) {
                 $organizations = Organization::where('organization_tag', 'LIKE', '%' . $value . '%')->pluck('id')->toArray();
                 $organization_id_list = array_unique(array_merge($organization_id_list, $organizations));
+            }
+            if ($user->user_organization) {
+                $user_organization = $user->user_organization ? explode(',', $user->user_organization) : [];
+                foreach ($user_organization as $key => $value) {
+                    $organizations = Organization::where('organization_recordid', $value)->pluck('id')->toArray();
+                    $organization_id_list = array_unique(array_merge($organization_id_list, $organizations));
+                }
             }
             $organization_list = Organization::whereIn('id', $organization_id_list);
 

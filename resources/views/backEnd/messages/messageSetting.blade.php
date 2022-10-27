@@ -1,6 +1,6 @@
 @extends('backLayout.app')
 @section('title')
-Other Services
+    Other Services
 @stop
 <style>
     .color-pick {
@@ -25,53 +25,6 @@ Other Services
             </div>
             {!! Form::open(['route' => 'saveMessageCredential', 'class' => 'form-horizontal form-label-left']) !!}
             <div class="x_panel">
-                {{-- <div class="x_title" style="margin-bottom:30px;">
-                    <h5>Twillio</h5>
-                </div>
-                <div class="form-group">
-                    <div class="row">
-                        <label class="control-label sel-label-org pl-4 col-md-3"><b>Twillio SID:</b> </label>
-                        <div class="col-md-5 col-sm-6 col-xs-12 ">
-                            <input class="form-control " type="text" value="{{ $twillioSid }}" name="twillioSid"
-                                id="twillioSid" required>
-                            @if ($errors->first('twillioSid'))
-                                <div class="alert alert-danger">{{ $errors->first('twillioSid') }}</div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="row">
-                        <label class="control-label sel-label-org pl-4 col-md-3"><b>Twillio Key:</b> </label>
-                        <div class="col-md-5 col-sm-6 col-xs-12 ">
-                            <input class="form-control" type="text" value="{{ $twillioKey }}" name="twillioKey"
-                                id="twillioKey" required>
-                            @if ($errors->first('twillioKey'))
-                                <div class="alert alert-danger">{{ $errors->first('twillioKey') }}</div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="row">
-                        <label class="control-label sel-label-org pl-4 col-md-3"><b>Twillio Number:</b> </label>
-                        <div class="col-md-5 col-sm-6 col-xs-12 ">
-                            <input class="form-control" type="text" value="{{ $twllioNumber }}" name="twillioNumber"
-                                id="twillioNumber" required>
-                            @if ($errors->first('twillioNumber'))
-                                <div class="alert alert-danger">{{ $errors->first('twillioNumber') }}</div>
-                            @endif
-                        </div>
-                    </div>
-                </div> --}}
-                {{-- <div class="form-group">
-                    <div class="row">
-                        <label class="control-label sel-label-org pl-4 col-md-3"></label>
-                        <div class="col-md-5 col-sm-6 col-xs-12 ">
-                            <button type="button" class="btn btn-primary" onclick="checkTwillio()">Check</button>
-                        </div>
-                    </div>
-                </div> --}}
                 <div class="x_title" style="margin-bottom:30px;">
                     <h5>SendGrid</h5>
                 </div>
@@ -79,8 +32,11 @@ Other Services
                     <div class="row">
                         <label class="control-label sel-label-org pl-4 col-md-3"><b>SendGrid Api key:</b> </label>
                         <div class="col-md-5 col-sm-6 col-xs-12 ">
-                            <input class="form-control" type="text" value="{{ '********************'.substr($sendgridKey,-7) }}" name="sendgridApiKey1" id="sendgridApiKey1" disabled>
-                            <input class="form-control" type="text" value="{{ $sendgridKey }}" name="sendgridApiKey" id="sendgridApiKey2" style="display: none;" required>
+                            <input class="form-control" type="text"
+                                value="{{ '********************' . substr($sendgridKey, -7) }}" name="sendgridApiKey1"
+                                id="sendgridApiKey1" disabled>
+                            <input class="form-control" type="text" value="{{ $sendgridKey }}" name="sendgridApiKey"
+                                id="sendgridApiKey2" style="display: none;" required>
                             <button type="button" id="clickChangeKey">Change</button>
                             @if ($errors->first('sendgridApiKey'))
                                 <div class="alert alert-danger">{{ $errors->first('sendgridApiKey') }}</div>
@@ -92,7 +48,8 @@ Other Services
                     <div class="row">
                         <label class="control-label sel-label-org pl-4 col-md-3"><b>SendGrid Mail From Name:</b> </label>
                         <div class="col-md-5 col-sm-6 col-xs-12 ">
-                            <input class="form-control" type="text" value="{{ $sendgridMailFromName }}" name="sendgridMailFromName" id="sendgridMailFromName" required>
+                            <input class="form-control" type="text" value="{{ $sendgridMailFromName }}"
+                                name="sendgridMailFromName" id="sendgridMailFromName" required>
                             @if ($errors->first('sendgridMailFromName'))
                                 <div class="alert alert-danger">{{ $errors->first('sendgridMailFromName') }}</div>
                             @endif
@@ -103,7 +60,8 @@ Other Services
                     <div class="row">
                         <label class="control-label sel-label-org pl-4 col-md-3"><b>SendGrid Mail From Address:</b> </label>
                         <div class="col-md-5 col-sm-6 col-xs-12 ">
-                            <input class="form-control" type="text" value="{{ $sendgridMailFromAddress }}" name="sendgridMailFromAddress" id="sendgridMailFromAddress" required>
+                            <input class="form-control" type="text" value="{{ $sendgridMailFromAddress }}"
+                                name="sendgridMailFromAddress" id="sendgridMailFromAddress" required>
                             @if ($errors->first('sendgridMailFromAddress'))
                                 <div class="alert alert-danger">{{ $errors->first('sendgridMailFromAddress') }}</div>
                             @endif
@@ -115,7 +73,8 @@ Other Services
                         <label class="control-label sel-label-org pl-4 col-md-3"></label>
                         <div class="col-md-5 col-sm-6 col-xs-12 ">
                             <button type="button" class="btn btn-primary" onclick="checkSendgrid()">Check</button>
-                            <button type="submit" class="btn btn-success btn-rounded" style="width:45%;"><i class="fa fa-save"></i> Save</button>
+                            <button type="submit" class="btn btn-success btn-rounded" style="width:45%;"><i
+                                    class="fa fa-save"></i> Save</button>
                         </div>
                     </div>
                 </div>
@@ -124,10 +83,14 @@ Other Services
                 </div>
                 <div class="form-group">
                     <div class="row">
-                        <label class="control-label sel-label-org pl-4 col-md-3"><b>ShareThis Domain Activate URL:</b> </label>
+                        <label class="control-label sel-label-org pl-4 col-md-3"><b>ShareThis Domain Activate URL:</b>
+                        </label>
                         <div class="col-md-5 col-sm-6 col-xs-12 ">
-                            <input class="form-control" type="text" value="{{ $share_this_api_activate }}" name="share_this_api_activate" id="share_this_api_activate">
-                            <p>You can find this URL on the ShareThis app within a code embed string. The URL should look like this: https://platform-api.sharethis.com/js/sharethis.js#property=xxxxxxxxxxxxxx&product=sop.</p>
+                            <input class="form-control" type="text" value="{{ $share_this_api_activate }}"
+                                name="share_this_api_activate" id="share_this_api_activate">
+                            <p>You can find this URL on the ShareThis app within a code embed string. The URL should look
+                                like this:
+                                https://platform-api.sharethis.com/js/sharethis.js#property=xxxxxxxxxxxxxx&product=sop.</p>
                             @if ($errors->first('share_this_api_activate'))
                                 <div class="alert alert-danger">{{ $errors->first('share_this_api_activate') }}</div>
                             @endif
@@ -157,6 +120,26 @@ Other Services
                 </div>
             </div>
             {!! Form::close() !!}
+            <div class="x_panel">
+                <div class="x_title" style="margin-bottom:30px;">
+                    <h5>Google Analytics</h5>
+                </div>
+                {!! Form::model($page, ['url' => ['analytics', 4], 'class' => 'form-horizontal', 'method' => 'put']) !!}
+                <div class="form-group {{ $errors->has('body') ? 'has-error' : '' }}">
+                    {!! Form::label('body', 'Google Analytics: ', ['class' => 'col-sm-3 control-label']) !!}
+                    <div class="col-sm-6">
+                        {!! Form::text('body', null, ['class' => 'form-control']) !!}
+                        {!! $errors->first('body', '<p class="help-block">:message</p>') !!}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-6">
+                        {!! Form::submit('Update', ['class' => 'btn btn-primary form-control']) !!}
+                        {!! Form::close() !!}
+                    </div>
+                </div>
+                {!! Form::close() !!}
+            </div>
         </div>
     </div>
     <div class="modal fade " id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalTitle"
@@ -181,8 +164,8 @@ Other Services
 @endsection
 @section('scripts')
     <script>
-        $(document).ready(function(){
-            $('#clickChangeKey').click(function(){
+        $(document).ready(function() {
+            $('#clickChangeKey').click(function() {
                 $('#sendgridApiKey1').hide()
                 $('#sendgridApiKey2').show()
                 $('#sendgridApiKey2').val('')
@@ -199,7 +182,7 @@ Other Services
 
             $.ajax({
                 method: 'POST',
-                url: '{{ route("checkTwillio") }}',
+                url: '{{ route('checkTwillio') }}',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                 },
@@ -236,7 +219,7 @@ Other Services
 
             $.ajax({
                 method: 'POST',
-                url: '{{ route("checkSendgrid") }}',
+                url: '{{ route('checkSendgrid') }}',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                 },
@@ -264,7 +247,6 @@ Other Services
 
             })
         }
-
     </script>
     <style>
         .bg-danger {

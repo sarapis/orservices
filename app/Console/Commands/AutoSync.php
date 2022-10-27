@@ -40,6 +40,7 @@ use App\Model\TaxonomyTerm;
 use App\Model\TaxonomyType;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Session;
 use Spatie\Geocoder\Geocoder;
 
 class AutoSync extends Command
@@ -153,8 +154,34 @@ class AutoSync extends Command
                             $importHistory->save();
                             Log::info('Sync via airtable Completed: ' . Carbon::now());
                         }
-                    } else if ($importData && $importData->import_type == 'zipfile') {
+                    } else if ($importData && $importData->import_type == 'zipfile' || $importData && $importData->import_type == 'zipfile_api') {
                         // $this->zip($importData);
+                        if ($importData && $importData->import_type == 'zipfile_api') {
+                            $path = public_path('import_source_file/' . $importData->key . '.zip');
+                            $ch = curl_init();
+                            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+                            curl_setopt($ch, CURLOPT_HEADER, false);
+                            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                            curl_setopt($ch, CURLOPT_URL, $importData->endpoint);
+                            curl_setopt($ch, CURLOPT_REFERER, $importData->endpoint);
+                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+                            $result = curl_exec($ch);
+                            curl_close($ch);
+                            if (json_decode($result) == "Failed") {
+                                Session::flash('message', 'Error! : api response error please check api endpoint!');
+                                Session::flash('status', 'error');
+                                return;
+                            }
+                            // if($result == )
+                            $ifp = fopen($path, "wb");
+                            // if ($decode) {
+                            //     fwrite($ifp, base64_decode($result));
+                            // } else {
+                            fwrite($ifp, $result);
+                            // }
+
+                            fclose($ifp);
+                        }
                         app(\App\Http\Controllers\backend\ImportController::class)->zip($importData);
                         // $importData->auto_sync = '0';
                         $importData->updated_at = Carbon::now();

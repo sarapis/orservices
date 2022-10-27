@@ -128,7 +128,7 @@ Contact Create
                                             <table class="table table_border_none" id="PhoneTable">
                                                 <thead>
                                                     <th>Number</th>
-                                                    <th>extension</th>
+                                                    <th>Extension</th>
                                                     <th style="width:200px;position:relative;">Type
                                                         <div class="help-tip" style="top:8px;">
                                                             <div><p>Select “Main” if this is the organization's primary phone number (or leave blank)
@@ -186,7 +186,7 @@ Contact Create
                         </div>
                     </div>
                     <div class="col-md-12 text-center">
-                        @if (Auth::user() && Auth::user()->roles && Auth::user()->user_organization &&  Auth::user()->roles->name == 'Organization Admin')
+                        @if (Auth::user() && Auth::user()->roles && Auth::user()->user_organization &&  (Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin'))
                             <a href="/" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn" id="view-contact-btn"> Back</a>
                         @else
                             <a href="/contacts" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn" id="view-contact-btn"> Back</a>

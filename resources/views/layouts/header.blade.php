@@ -1,18 +1,20 @@
-<body>
+    <body>
 
 	<nav class="site-navbar navbar navbar-inverse navbar-fixed-top navbar navbar-expand-lg navbar-mega {{ Request::Segment(1) != null ? 'inner_navstyle' : '' }} " role="navigation">
 		<div class="container">
 			<div class="navbar-header">
 				<div class="site-gridmenu-toggle" data-toggle="gridmenu">
-                    <a class="navbar-brand" href="/">
+                    <h1 class="m-0">
+						<a href="/" class="navbar-brand">
 						@if($layout->logo_active == 1)
 							<img class="navbar-brand-logo navbar-brand-logo-normal" src="/uploads/images/{{$layout->logo}}" title="{{$layout->site_name}}" style="height: auto;width:100px;">
 							<img class="navbar-brand-logo navbar-brand-logo-special" src="/uploads/images/{{$layout->logo}}" title="{{$layout->site_name}}" style="height: auto;width:100px;">
 						@endif
-						@if($layout->title_active == 1)
+						@if($layout->site_title_active == 1)
 						<span class="navbar-brand-text">{{$layout->site_name}}</span>
 						@endif
-					</a>
+						</a>
+					</h1>
 				</div>
 				{{-- <button type="button" data-target="#sidebarCollapse"  id="" class="navbar-toggler hamburger hamburger-close navbar-toggler-center hided" data-toggle="collapse">
 						<span class="sr-only">Toggle navigation</span>
@@ -47,22 +49,25 @@
 						<a class="nav-link" href="/organizations">Organizations</a>
                     </li>
                     @if (Auth::user() && Auth::user()->roles)
-                    @if (Auth::user() && Auth::user()->roles->name != 'Organization Admin' || Auth::user() && Auth::user()->roles->name == 'System Admin' )
+                    @if (Auth::user() && Auth::user()->roles->name == 'Section Admin' || Auth::user() && Auth::user()->roles->name == 'System Admin' )
                     <li class="nav-item">
 						<div class="dropdown">
 							<button class="dropbtn" style="color: {{$layout->top_menu_link_color}}">More</button>
 							<div class="dropdown-content">
+								<a href="/tracking">Tracking</a>
 								<a href="/contacts">Contacts</a>
 								<a href="{{ route('facilities.index') }}">Locations</a>
+								<a href="{{ route('users_lists.index') }}">Users</a>
 							</div>
 						</div>
 					</li>
 					@endif
 					@endif
-
+                    @if($layout->show_suggest_menu == 1)
 					<li class="nav-item">
                         <a class="nav-link" href="{{ route('suggest.create') }}">Suggest</a>
 					</li>
+                    @endif
                     @if($layout->activate_about_home == 1)
 					<li class="nav-item">
 						<a class="nav-link" href="/about">About</a>
@@ -76,7 +81,7 @@
 						<div class="dropdown">
 							<button class="dropbtn" style="color: {{$layout->top_menu_link_color}}">(+)</button>
 							<div class="dropdown-content">
-								@if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin' || Auth::user() && Auth::user()->roles &&  Auth::user()->roles->name == 'System Admin')
+								@if (Auth::user() && Auth::user()->roles && (Auth::user()->roles->name != 'Organization Admin' || Auth::user()->roles->name != 'Section Admin') || Auth::user() && Auth::user()->roles &&  Auth::user()->roles->name == 'System Admin')
 								<a href="{{ route('organizations.create') }}">New Organization</a>
 								@endif
 								<a href="{{ route('contacts.create') }}">New Contact</a>
@@ -92,7 +97,7 @@
 						<div class="dropdown">
 							<button class="dropbtn" style="color: {{$layout->top_menu_link_color}}">My account</button>
 							<div class="dropdown-content">
-								@if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin' || Auth::user() && Auth::user()->roles &&  Auth::user()->roles->name == 'System Admin')
+								@if (Auth::user() && Auth::user()->roles && (Auth::user()->roles->name != 'Organization Admin' || Auth::user()->roles->name != 'Section Admin') || Auth::user() && Auth::user()->roles &&  Auth::user()->roles->name == 'System Admin')
 								<a class="nav-link" href="/account/{{Auth::user()->id}}">My account</a>
                                 <a href="/dashboard" class="nav-link"> Administration </a>
 								@endif
@@ -138,8 +143,8 @@
 		color:  {{$layout->primary_color}};
 	}
 	.category_icon:hover {
-		color: #fff;
-		background: {{$layout->primary_color}};
+		/* color: #fff; */
+		border: 1px solid {{$layout->primary_color}};
 	}
 	.bg-primary-color {
 	  background-color: {{$layout->primary_color}};
@@ -154,6 +159,10 @@
 	.card-block .card-title a,.card-block .card-title a.title_org,.detail_services .card-block .card-title a,.card-block .organization_services .card-title a,.table a, .card-block .panel-link, {
 		  color: {{$layout->title_link_color}};
 	}
+
+    .nav-item .dropdown .dropdown-content a:hover, .top_services_filter .dropdown-menu a:hover, .dropdown-item.active, .dropdown-item:active {
+        background: {{$layout->submenu_highlight_color .' !important'}};
+    }
     .card-block .nav-tabs .nav-item .nav-link.active{
         background: {{$layout->button_color}};
     }
@@ -166,8 +175,13 @@
 	.site-navbar .navbar-header .navbar-brand{
 		color: {{$layout->menu_title_color}};
 	}
-	.navbar-inverse.inner_navstyle .navbar-toolbar .nav-link:hover{
+	.navbar-inverse.inner_navstyle .navbar-toolbar .nav-link:hover, .inner_navstyle .dropdown:hover .dropbtn{
 		color: {{$layout->top_menu_link_hover_color}};
+        background-color: {{$layout->top_menu_link_hover_background_color}};
+	}
+	.navbar-inverse .navbar-toolbar .nav-link:hover, .navbar-inverse .dropdown:hover .dropbtn{
+		color: {{$layout->top_menu_link_hover_color}};
+        background-color: {{$layout->top_menu_link_hover_background_color}};
 	}
 	.inner_navstyle .goog-te-gadget-simple .goog-te-menu-value span:hover {
 		color: {{$layout->top_menu_link_hover_color}};

@@ -47,6 +47,46 @@ Organization status
     </div>
   </div>
 </div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>Additional Settings</h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <div class="form-horizontal form-label-left">
+            <div class="col-md-12">
+              {{ Form::open(array('url' => ['save_default_organization_status'], 'class' => 'form-horizontal form-label-left', 'method' => 'post', 'enctype'=> 'multipart/form-data')) }}
+              <div class="form-group">
+                  <label class="col-md-2 col-sm-2" style="">Default</label>
+                  <div class="col-md-6 col-sm-6 ">
+                  <select name="default_organization_status" id="" class="form-control">
+                    <option value="">Select Status</option>
+                    @foreach ($organization_status as $item)
+                    <option value="{{ $item->id }}" {{ $layout->default_organization_status == $item->id ? 'selected' : '' }}>{{ $item->status }}</option>
+                    @endforeach
+                  </select>
+                  </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-2">
+                  <button type="submit" class="btn btn-success">Save</button>
+                </div>
+              </div>
+              {!! Form::close() !!}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')

@@ -51,13 +51,14 @@ class UserController extends Controller
             $users = User::orderBy('id', 'desc')->get();
             $layout = Layout::find(1);
             $authUser = Auth::user();
+            $organizations = Organization::pluck('organization_name', 'organization_name');
             if ($type) {
                 $role = Role::where('name', $type)->first();
 
                 $users = User::where('role_id', $role->id)->get();
             }
 
-            return View('backEnd.users.index', compact('users', 'layout', 'authUser'));
+            return View('backEnd.users.index', compact('users', 'layout', 'authUser', 'organizations'));
         } catch (\Throwable $th) {
             dd($th);
             Log::error('Error in user controller index : ' . $th);
@@ -283,6 +284,8 @@ class UserController extends Controller
             }
             if ($request->user_organizations) {
                 $user->user_organization = join(',', $request->user_organizations);
+            } else {
+                $user->user_organization = '';
             }
             if ($request->new_password && $request->new_password_confirmation) {
                 if ($request->new_password == $request->new_password_confirmation) {
@@ -664,7 +667,65 @@ class UserController extends Controller
             }
             return redirect()->back();
         } catch (\Throwable $th) {
-            dd($th);
+            Session::flash('message', 'Error! Something Went Wrong, Please Try Again.');
+            Session::flash('status', 'error');
+            return redirect()->back();
+        }
+    }
+    public function invite_user($id)
+    {
+        try {
+            $invitationEmail = EmailTemplate::whereId(3)->where('status', 1)->first();
+            $user = User::whereId($id)->first();
+            if ($invitationEmail) {
+                $from = env('MAIL_FROM_ADDRESS');
+                $name = env('MAIL_FROM_NAME');
+                $email = new Mail();
+                $email->setFrom($from, $name);
+                // $subject = 'A Suggested Change was Submitted at ' . $site_name;
+                $subject = $invitationEmail->subject;
+
+                $email->setSubject($subject);
+
+                // $body = $request->message;
+                $data = array(
+                    '{first_name}' => $user->first_name . ' ' . $user->last_name,
+                    '{password}' => '',
+                );
+                $body = $invitationEmail->body;
+
+                foreach ($data as $key => $value) {
+                    //replace the email template body string to user detail
+                    $body = str_replace($key, $value, $body);
+                }
+
+                $message = '<html><body>';
+                $message .= $body;
+                $message .= '</body></html>';
+
+                $email->addContent("text/html", $message);
+                $sendgrid = new SendGrid(getenv('SENDGRID_API_KEY'));
+
+                $error = '';
+
+                $username = '';
+                // $contact_email_list = Email::select('email_info')->pluck('email_info')->toArray();
+
+                // foreach ($contact_email_list as $key => $contact_email) {
+                $email->addTo($user->email, $username);
+                // }
+                $response = $sendgrid->send($email);
+                if ($response->statusCode() == 401) {
+                    $error = json_decode($response->body());
+                }
+                Session::flash('message', 'Success! Invitation link Send successfully.');
+                Session::flash('status', 'success');
+            } else {
+                Session::flash('message', 'Error! Something Went Wrong, Please Try Again.');
+                Session::flash('status', 'error');
+            }
+            return redirect()->back();
+        } catch (\Throwable $th) {
             Session::flash('message', 'Error! Something Went Wrong, Please Try Again.');
             Session::flash('status', 'error');
             return redirect()->back();

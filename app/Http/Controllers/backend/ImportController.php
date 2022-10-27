@@ -16,6 +16,8 @@ use App\Imports\ServiceLocationImport;
 use App\Imports\Services;
 use App\Imports\ServiceTaxonomyImport;
 use App\Imports\TaxonomyImport;
+use App\Imports\TaxonomyTermImport;
+use App\Imports\TaxonomyTypeImport;
 use App\Model\Accessibility;
 use App\Model\AdditionalTaxonomy;
 use App\Model\Address;
@@ -156,7 +158,7 @@ class ImportController extends Controller
                 $type = $file->getClientOriginalExtension();
                 $path = public_path('import_source_file');
                 $file->move($path, $name);
-                $zipfile_path = $path . $name;
+                $zipfile_path = '/import_source_file/' . $name;
             } else if ($request->import_type == 'zipfile_api') {
                 $path = public_path('import_source_file/' . $request->key . '.zip');
                 $ch = curl_init();
@@ -502,6 +504,8 @@ class ImportController extends Controller
                 ServiceTaxonomy::truncate();
                 ServiceSchedule::truncate();
                 Taxonomy::truncate();
+                TaxonomyType::truncate();
+                TaxonomyTerm::truncate();
                 Audit::truncate();
                 CodeLedger::truncate();
             }
@@ -536,6 +540,32 @@ class ImportController extends Controller
                 $importHistory->sync_by = Auth::id();
                 $importHistory->save();
             } else if ($importData && $importData->import_type == 'zipfile' || $importData && $importData->import_type == 'zipfile_api') {
+                if ($importData && $importData->import_type == 'zipfile_api') {
+                    $path = public_path('import_source_file/' . $importData->key . '.zip');
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+                    curl_setopt($ch, CURLOPT_HEADER, false);
+                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                    curl_setopt($ch, CURLOPT_URL, $importData->endpoint);
+                    curl_setopt($ch, CURLOPT_REFERER, $importData->endpoint);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+                    $result = curl_exec($ch);
+                    curl_close($ch);
+                    if (json_decode($result) == "Failed") {
+                        Session::flash('message', 'Error! : api response error please check api endpoint!');
+                        Session::flash('status', 'error');
+                        return redirect('import');
+                    }
+                    // if($result == )
+                    $ifp = fopen($path, "wb");
+                    // if ($decode) {
+                    //     fwrite($ifp, base64_decode($result));
+                    // } else {
+                    fwrite($ifp, $result);
+                    // }
+
+                    fclose($ifp);
+                }
                 $this->zip($importData);
 
                 $importData->last_imports = Carbon::now();
@@ -789,6 +819,45 @@ class ImportController extends Controller
             $date = Carbon::now();
             $csv_source = CSV_Source::where('name', '=', 'Taxonomy')->first();
             $csv_source->records = Taxonomy::count();
+            $csv_source->syncdate = $date;
+            $csv_source->save();
+            //
+            //taxonomy_types.csv
+            $path = public_path('/HSDS/data/taxonomy_types.csv');
+
+            if (!file_exists($path)) {
+                $response = array(
+                    'status' => 'error',
+                    'result' => 'taxonomy_types.csv does not exist.',
+                );
+                return $response;
+            }
+            //
+            Excel::import(new TaxonomyTypeImport, $path);
+
+            $date = Carbon::now();
+            $csv_source = CSV_Source::where('name', '=', 'Taxonomy_type')->first();
+            $csv_source->records = TaxonomyType::count();
+            $csv_source->syncdate = $date;
+            $csv_source->save();
+            //
+
+            //taxonomy_terms_types.csv
+            $path = public_path('/HSDS/data/taxonomy_terms_types.csv');
+
+            if (!file_exists($path)) {
+                $response = array(
+                    'status' => 'error',
+                    'result' => 'taxonomy_terms_types.csv does not exist.',
+                );
+                return $response;
+            }
+            //
+            Excel::import(new TaxonomyTermImport, $path);
+
+            $date = Carbon::now();
+            $csv_source = CSV_Source::where('name', '=', 'Taxonomy_terms')->first();
+            $csv_source->records = TaxonomyTerm::count();
             $csv_source->syncdate = $date;
             $csv_source->save();
             //

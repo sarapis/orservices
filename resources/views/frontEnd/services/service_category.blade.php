@@ -31,7 +31,7 @@
                                             <td class="create_btn">
                                                 @php
                                                     $taxonomy_parent_name = \App\Model\Taxonomy::where('taxonomy_recordid', $value->taxonomy_recordid)->first();
-                                                    $taxonomy_info_list = \App\Model\Taxonomy::where('taxonomy_parent_name', $value->taxonomy_recordid)->get();
+                                                    $taxonomy_info_list = \App\Model\Taxonomy::where('taxonomy_parent_name','LIKE','%'. $value->taxonomy_recordid.'%')->get();
                                                     // $taxonomy_array = [];
                                                     // foreach ($taxonomy_info_list as $value1) {
                                                     // $taxonomy_array[$value1->taxonomy_recordid] = '- ' .
@@ -48,15 +48,20 @@
                                                                 if ($taxonomy_child_list1) {
                                                                     foreach ($taxonomy_child_list1 as $value3) {
                                                                         $taxonomy_array[$value3->taxonomy_recordid] = '--- ' . $value3->taxonomy_name;
+                                                                        $taxonomy_child_list2 = \App\Model\Taxonomy::where('taxonomy_parent_name', 'LIKE', '%' . $value3->taxonomy_recordid . '%')->get();
+                                                                        if (count($taxonomy_child_list2)) {
+                                                                            foreach ($taxonomy_child_list2 as $value4) {
+                                                                                $taxonomy_array[$value4->taxonomy_recordid] = '---- ' . $value4->taxonomy_name;
+                                                                            }
+                                                                        }
                                                                     }
                                                                 }
                                                             }
                                                         }
                                                     }
                                                     $taxonomy_array['create_new'] = '+ Create New';
-
                                                 @endphp
-                                                {!! Form::select('service_category_term[]', $taxonomy_array, $value->selectedTermId, ['class' => 'form-control selectpicker service_category_term', 'placeholder' => 'Select Term', 'id' => 'service_category_term_' . $key]) !!}
+                                                {!! Form::select('service_category_term['.$key.'][]', $taxonomy_array, isset($selected_category_ids[$value->taxonomy_recordid]) ? $selected_category_ids[$value->taxonomy_recordid] : [], ['class' => 'form-control selectpicker service_category_term', 'id' => 'service_category_term_' . $key,'multiple' => true,'data-size' => '5','data-live-search' => 'true']) !!}
                                                 <input type="hidden" name="service_category_term_type[]"
                                                     id="service_category_term_type_{{ $key }}" value="old">
                                             </td>
@@ -78,7 +83,7 @@
 
                                         </td>
                                         <td class="create_btn">
-                                            {!! Form::select('service_category_term[]', [], null, ['class' => 'form-control selectpicker service_category_term', 'placeholder' => 'Select Term', 'id' => 'service_category_term_0']) !!}
+                                            {!! Form::select('service_category_term[0][]',[],null,['class' => 'form-control selectpicker service_category_term','id' => 'service_category_term_0','multiple' => true,'data-size' => '5','data-live-search' => 'true']) !!}
                                             <input type="hidden" name="service_category_term_type[]"
                                                 id="service_category_term_type_0" value="old">
                                         </td>
@@ -152,7 +157,7 @@
             success: function (response) {
                 let data = response.data
                 $('#service_category_term_'+index).empty()
-                $('#service_category_term_'+index).append('<option value="">Select term</option>');
+                // $('#service_category_term_'+index).append('<option value="">Select term</option>');
                 $.each(data,function(i,v){
                     $('#service_category_term_'+index).append('<option value="'+i+'">'+v+'</option>');
                 })
@@ -172,13 +177,21 @@
         let idsArray = id ? id.split('_') : []
         let index = idsArray.length > 0 ? idsArray[3] : ''
 
-        if(value == 'create_new'){
+        // if(value == 'create_new'){
+        //     $('#service_category_term_index_p').val(index)
+        //     $('#create_new_service_category_term').modal('show')
+        // }else if(text == value){
+        //     $('#service_category__type_'+index).val('new')
+        // }else{
+        //     $('#service_category__type_'+index).val('old')
+        // }
+        if(value.includes('create_new')){
             $('#service_category_term_index_p').val(index)
             $('#create_new_service_category_term').modal('show')
-        }else if(text == value){
-            $('#service_category__type_'+index).val('new')
+        }else if(value.includes(text)){
+            $('#service_category_term_type_'+index).val('new')
         }else{
-            $('#service_category__type_'+index).val('old')
+            $('#service_category_term_type_'+index).val('old')
         }
     })
     $('#serviceCategoryTermSubmit').click(function () {
@@ -239,7 +252,7 @@
 
     let sc = {{ count($service_category_type_data) > 0 ? count($service_category_type_data) : 1  }}
     $('#addServiceCategoryTr').click(function(){
-        $('#ServiceCategoryTable tr:last').before('<tr><td><select name="service_category_type[]" id="service_category_type_'+sc+'" class="form-control selectpicker service_category_type"><option value="">Select Type</option> @foreach ($service_category_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td class="create_btn"> <select name="service_category_term[]" id="service_category_term_'+sc+'" class="form-control selectpicker service_category_term"></select><input type="hidden" name="service_category_term_type[]" id="service_category_term_type_'+sc+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#ServiceCategoryTable tr:last').before('<tr><td><select name="service_category_type[]" id="service_category_type_'+sc+'" class="form-control selectpicker service_category_type"><option value="">Select Type</option> @foreach ($service_category_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td class="create_btn"> <select name="service_category_term['+sc+'][]" id="service_category_term_'+sc+'" class="form-control selectpicker service_category_term" data-size="5" data-live-search="true" multiple></select><input type="hidden" name="service_category_term_type[]" id="service_category_term_type_'+sc+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         sc++;
     })

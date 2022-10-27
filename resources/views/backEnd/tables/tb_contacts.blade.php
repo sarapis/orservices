@@ -53,7 +53,7 @@ Contacts
                   <td class="text-center">{{$contact->contact_name}}</td>
                   <td class="text-center">
                     @if($contact->contact_organizations!=0)
-                    <span class="badge bg-red">{{$contact->organization()->first()->organization_name}}</span>
+                    <span class="badge bg-red">{{$contact->organization()->first()->organization_name ?? ''}}</span>
                     @endif
                   </td>
                   <td class="text-center">
@@ -66,7 +66,7 @@ Contacts
                   <td class="text-center">{{$contact->contact_email}}</td>
                   <td class="text-center">
                     @if(isset($contact->phone()->first()->phone_number))
-                      <span class="badge bg-purple">{{$contact->phone()->first()->phone_number}}</span>
+                      <span class="badge bg-purple">{{$contact->phone()->first()->phone_number ?? ''}}</span>
                     @endif
                   </td>
                   @if($source_data->active == 0 )

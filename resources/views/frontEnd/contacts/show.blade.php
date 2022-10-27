@@ -45,43 +45,42 @@ Contact
                     <div class="card-block">
                         <h4 class="card-title">
                             <a href="">@if($contact->contact_name!='?'){{$contact->contact_name}}@endif </a>
-                            @if ((Auth::user() && Auth::user()->user_organization && $contact->organization && str_contains(Auth::user()->user_organization,$contact->organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin') || Auth::user() && Auth::user()->roles->name == 'System Admin' || Auth::user() && Auth::user()->roles->name != 'Organization Admin')
+                            @if ((Auth::user() && Auth::user()->user_organization && $contact->organization && str_contains(Auth::user()->user_organization,$contact->organization->organization_recordid) && (Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin')) || Auth::user() && Auth::user()->roles->name == 'System Admin' || Auth::user() && (Auth::user()->roles->name != 'Organization Admin' || Auth::user()->roles->name != 'Section Admin'))
                             <a href="{{ route('contacts.edit',$contact->contact_recordid) }}" class="float-right">
                                 <i class="icon md-edit mr-0"></i>
                             </a>
                             @endif
                         </h4>
                         @if ($contact->contact_title)
-                        <h4>
+                        <div class="tagp_class">
                             <span class="subtitle"><b>Title: </b></span>
                             {{$contact->contact_title}}
-                        </h4>
+                        </div>
                         @endif
                         @if (Auth::user() && $contact->organization)
-                        <h4>
+                        <div class="tagp_class">
                             <span class="subtitle"><b>Organization: </b></span>
-
                                 <a class="panel-link" href="/organizations/{{$contact->organization->organization_recordid}}">{{ $contact->organization->organization_name }}</a>
-                        </h4>
+                        </div>
                         @endif
                         @if ($contact->contact_department)
 
-                        <h4>
+                        <div class="tagp_class">
                             <span class="subtitle"><b>Department: </b></span>
                             {{$contact->contact_department}}
-                        </h4>
+                        </div>
                         @endif
                         @if ($contact->contact_email)
-                        <h4>
+                        <div class="tagp_class">
                             <span class="subtitle"><b>Email: </b></span>
                             {{$contact->contact_email}}
-                        </h4>
+                        </div>
                         @endif
                         @php
                             $phone_extension = [];
                         @endphp
                         @if($contact->phone && count($contact->phone) > 0)
-                        <h4 style="line-height: inherit;">
+                        <div class="tagp_class">
                             <span class="subtitle"><b>Phone Number: </b></span>
                             @foreach($contact->phone as $key => $phone)
                                 {{$phone->phone_number}} {{ $phone->phone_number && count($contact->phone) > $key+1 ? ',' : '' }}
@@ -90,19 +89,19 @@ Contact
                                     $phone_extension[] = 1;
                                 @endphp
                             @endforeach
-                        </h4>
+                        </div>
                         @endif
-                        {{-- <h4>
+                        {{-- <p>
                             <span class="subtitle"><b>Phone Area Code: </b></span>
                             {{$contact->contact_phone_areacode}}
-                        </h4> --}}
+                        </p> --}}
                         @if (count($phone_extension) > 0)
-                        <h4>
+                        <div class="tagp_class">
                             <span class="subtitle"><b>Phone Extension: </b></span>
                             @foreach($contact->phone as $key => $phone)
                                 {{$phone->phone_extension}} {{ $phone->phone_extension && count($contact->phone) > $key+1 ? ',' : '' }}
                             @endforeach
-                        </h4>
+                        </div>
                         @endif
                     </div>
                 </div>
@@ -117,7 +116,7 @@ Contact
                         <div class="organization_services">
                             <h4 class="card-title">
                                 <a href="/services/{{$service->service_recordid}}">{{$service->service_name}}</a>
-                                @if ((Auth::user() && Auth::user()->user_organization && $contact->organization && str_contains(Auth::user()->user_organization,$contact->organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin') || Auth::user() && Auth::user()->roles->name == 'System Admin' || Auth::user() && Auth::user()->roles->name != 'Organization Admin')
+                                @if ((Auth::user() && Auth::user()->user_organization && $contact->organization && str_contains(Auth::user()->user_organization,$contact->organization->organization_recordid) && (Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin')) || Auth::user() && Auth::user()->roles->name == 'System Admin' || Auth::user() && (Auth::user()->roles->name != 'Organization Admin' || Auth::user()->roles->name != 'Section Admin'))
                                     <a href="/services/{{$service->service_recordid}}/edit" class="float-right">
                                         @if ($service->access_requirement == 'yes')
                                         <img src="/images/noun_Lock and Key_1043619.png" width="30px" alt="noun_Lock and Key_1043619" style="margin-right: 6px">
@@ -127,22 +126,22 @@ Contact
                                 @endif
                             </h4>
                             @if ($service->service_description)
-                            <h4 style="line-height: inherit;">{!! Str::limit($service->service_description, 200) !!}</h4>
+                            <div class="tagp_class">{!! Str::limit($service->service_description, 200) !!}</div>
                             @endif
                             @if ($service->phone && count($service->phone) > 0)
-                            <h4 style="line-height: inherit;">
+                            <div class="tagp_class">
                                 <span><i class="icon md-phone font-size-18 vertical-align-top pr-10  m-0"></i>
                                 @foreach($service->phone as $phone) {!! $phone->phone_number !!} @endforeach</span>
-                            </h4>
+                            </div>
                             @endif
                             @if(isset($service->address) && count($service->address) > 0)
-                            <h4>
+                            <div class="tagp_class">
                                 <span> <i class="icon md-pin font-size-18 vertical-align-top pr-10  m-0"></i>
                                     @foreach($service->address as $address)
                                         {{ $address->address_1 }} {{ $address->address_2 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
                                     @endforeach
                                 </span>
-                            </h4>
+                            </div>
                             @endif
 
                             @if($service->service_details!= null)
@@ -164,7 +163,7 @@ Contact
                                 @endphp
                             @endforeach
                             @foreach($show_details as $detail)
-                                <h4><span class="subtitle"><b>{{ $detail['detail_type'] }}: </b></span> {!! $detail['detail_value'] !!}</h4>
+                            <div class="tagp_class"><span class="subtitle"><b>{{ $detail['detail_type'] }}: </b></span> {!! $detail['detail_value'] !!}</div>
                             @endforeach
                             @endif
                             @if (isset($service->taxonomy) && count($service->taxonomy) > 0)
@@ -172,7 +171,7 @@ Contact
                                 $i = 0;
                                 $j = 0;
                             @endphp
-                            <h4>
+                            <div class="tagp_class">
                                 <span class="pl-0 category_badge subtitle">
                                     @foreach ($service->taxonomy as $service_taxonomy_info)
                                     @if (isset($service_taxonomy_info->taxonomy_type) && count($service_taxonomy_info->taxonomy_type) > 0 &&  $service_taxonomy_info->taxonomy_type[0]->name == 'Service Category')
@@ -189,8 +188,8 @@ Contact
                                     @endif
                                     @endforeach
                                 </span>
-                            </h4>
-                            <h4>
+                            </div>
+                            <div class="tagp_class">
                                 <span class="pl-0 category_badge subtitle">
                                 @foreach ($service->taxonomy as $service_taxonomy_info)
                                 @if (isset($service_taxonomy_info->taxonomy_type) && count($service_taxonomy_info->taxonomy_type) > 0 &&  $service_taxonomy_info->taxonomy_type[0]->name == 'Service Eligibility')
@@ -207,7 +206,7 @@ Contact
                                 @endif
                                 @endforeach
                                 </span>
-                            </h4>
+                            </div>
                             @endif
                         </div>
                         @endforeach
@@ -285,10 +284,10 @@ Contact
     </div>
 </div>
 
-<script type="text/javascript" src="https://sliptree.github.io/bootstrap-tokenfield/dist/bootstrap-tokenfield.js">
+<script type="text/javascript" src="http://sliptree.github.io/bootstrap-tokenfield/dist/bootstrap-tokenfield.js">
 </script>
 <script type="text/javascript"
-    src="https://sliptree.github.io/bootstrap-tokenfield/docs-assets/js/typeahead.bundle.min.js"></script>
+    src="http://sliptree.github.io/bootstrap-tokenfield/docs-assets/js/typeahead.bundle.min.js"></script>
 
 <script>
 </script>

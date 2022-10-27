@@ -20,16 +20,16 @@
                             </thead>
                             <tbody>
                                 {{-- <tr>
-                                                    <td>
-                                                        {!! Form::select('service_eligibility_type[]',$service_eligibility_types,null,['class' => 'form-control selectpicker service_eligibility_type','placeholder' => 'select service eligibility type','id' => 'service_eligibility_type_0']) !!}
+                                    <td>
+                                        {!! Form::select('service_eligibility_type[]',$service_eligibility_types,null,['class' => 'form-control selectpicker service_eligibility_type','placeholder' => 'select service eligibility type','id' => 'service_eligibility_type_0']) !!}
 
-                                                    </td>
-                                                    <td>
-                                                        {!! Form::select('service_eligibility_term[]',[],null,['class' => 'form-control selectpicker service_eligibility_term','placeholder' => 'select service eligibility term','id' => 'service_eligibility_term_0']) !!}
-                                                        <input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_0" value="old">
-                                                    </td>
-                                                    <td></td>
-                                                </tr> --}}
+                                    </td>
+                                    <td>
+                                        {!! Form::select('service_eligibility_term[]',[],null,['class' => 'form-control selectpicker service_eligibility_term','placeholder' => 'select service eligibility term','id' => 'service_eligibility_term_0']) !!}
+                                        <input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_0" value="old">
+                                    </td>
+                                    <td></td>
+                                </tr> --}}
                                 @if (count($service_eligibility_term_data) > 0 )
                                 @foreach ($service_eligibility_type_data as $key => $value)
                                 <tr>
@@ -43,7 +43,7 @@
                                     <td class="create_btn">
                                         @php
                                         $taxonomy_parent_name = \App\Model\Taxonomy::where('taxonomy_recordid', $value->taxonomy_recordid)->first();
-                                        $taxonomy_info_list = \App\Model\Taxonomy::where('taxonomy_parent_name', $value->taxonomy_recordid)->get();
+                                        $taxonomy_info_list = \App\Model\Taxonomy::where('taxonomy_parent_name', 'LIKE','%'. $value->taxonomy_recordid.'%')->get();
 
                                         $taxonomy_array = [];
                                         foreach ($taxonomy_info_list as $value1) {
@@ -65,9 +65,8 @@
                                         $taxonomy_array['create_new'] = '+ Create New';
                                         @endphp
                                         {!!
-                                        Form::select('service_eligibility_term[]',$taxonomy_array,$value->selectedTermId,['class'
-                                        => 'form-control selectpicker service_eligibility_term','placeholder' => 'Select
-                                        Term','id' => 'service_eligibility_term_'.$key]) !!}
+                                        Form::select('service_eligibility_term['.$key.'][]',$taxonomy_array,isset($selected_eligibility_ids[$value->taxonomy_recordid]) ? $selected_eligibility_ids[$value->taxonomy_recordid] : [],['class'
+                                        => 'form-control selectpicker service_eligibility_term','id' => 'service_eligibility_term_'.$key,'multiple' => true,'data-size' => '5','data-live-search' => 'true']) !!}
                                         <input type="hidden" name="service_eligibility_term_type[]"
                                             id="service_eligibility_term_type_{{ $key }}" value="old">
                                     </td>
@@ -77,8 +76,8 @@
                                         </a>
                                     </td>
                                     {{-- <td class="text-center">
-                                                        <a href="javascript:void(0)" class="removePhoneData" style="color:red;"> <i class="fa fa-minus-circle" aria-hidden="true"></i> </a>
-                                                    </td> --}}
+                                        <a href="javascript:void(0)" class="removePhoneData" style="color:red;"> <i class="fa fa-minus-circle" aria-hidden="true"></i> </a>
+                                    </td> --}}
                                 </tr>
                                 @endforeach
                                 @else
@@ -91,9 +90,7 @@
 
                                     </td>
                                     <td class="create_btn">
-                                        {!! Form::select('service_eligibility_term[]',[],null,['class' => 'form-control
-                                        selectpicker service_eligibility_term','placeholder' => 'Select Term','id' =>
-                                        'service_eligibility_term_0']) !!}
+                                        {!! Form::select('service_eligibility_term[0][]',[],null,['class' => 'form-control selectpicker service_eligibility_term','id' => 'service_eligibility_term_0','multiple' => 'true','data-size' => '5','data-live-search' => 'true']) !!}
                                         <input type="hidden" name="service_eligibility_term_type[]"
                                             id="service_eligibility_term_type_0" value="old">
                                     </td>
@@ -168,7 +165,7 @@
             success: function (response) {
                 let data = response.data
                 $('#service_eligibility_term_'+index).empty()
-                $('#service_eligibility_term_'+index).append('<option value="">Select term</option>');
+                // $('#service_eligibility_term_'+index).append('<option value="">Select term</option>');
                 $.each(data,function(i,v){
                     $('#service_eligibility_term_'+index).append('<option value="'+i+'">'+v+'</option>');
                 })
@@ -188,10 +185,10 @@
         let idsArray = id ? id.split('_') : []
         let index = idsArray.length > 0 ? idsArray[3] : ''
 
-        if(value == 'create_new'){
+        if(value.includes('create_new')){
             $('#service_eligibility_term_index_p').val(index)
             $('#create_new_service_eligibility_term').modal('show')
-        }else if(text == value){
+        }else if(value.includes(text)){
             $('#service_eligibility__type_'+index).val('new')
         }else{
             $('#service_eligibility__type_'+index).val('old')
@@ -258,7 +255,7 @@
     })
     let se = {{ count($service_eligibility_type_data) > 0 ? count($service_eligibility_type_data) : 1  }}
     $('#addServiceEligibilityTr').click(function(){
-        $('#ServiceEligibilityTable tr:last').before('<tr><td><select name="service_eligibility_type[]" id="service_eligibility_type_'+se+'" class="form-control selectpicker service_eligibility_type"><option value="">Select Type</option> @foreach ($service_eligibility_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td class="create_btn"> <select name="service_eligibility_term[]" id="service_eligibility_term_'+se+'" class="form-control selectpicker service_eligibility_term"></select><input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_'+se+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+        $('#ServiceEligibilityTable tr:last').before('<tr><td><select name="service_eligibility_type[]" id="service_eligibility_type_'+se+'" class="form-control selectpicker service_eligibility_type"><option value="">Select Type</option> @foreach ($service_eligibility_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td class="create_btn"> <select name="service_eligibility_term['+se+'][]" id="service_eligibility_term_'+se+'" class="form-control selectpicker service_eligibility_term" data-size="5" data-live-search="true" multiple></select><input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_'+se+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         se++;
     })
