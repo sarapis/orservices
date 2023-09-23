@@ -1,33 +1,43 @@
-id,name,alternate_name,description,email,url,tax_status,tax_id,year_incorporated,legal_status
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
+id,name,alternate_name,description,email,url,tax_status,tax_id,year_incorporated,legal_status,organization_tag
+592376182631330,"Rebuilding Together",,"Rebuilding Together helps people and communities in need by bringing together our national network of local Rebuilding Together affiliates, corporate and individual donors, skilled trades individuals and associations and almost 100,000 volunteers each year.
+
+There are numerous affiliates across the United States. Visit their website to find a local affiliate.",,https://rebuildingtogether.org/,,,,,7
+820630706542898,"IONA SENIOR SERVICES",,"Iona supports people as they experience the challenges and opportunities of aging. We educate, advocate, and provide community-based services to help people age well and live well",,http://iona.org,,,,,7
+828308705468984,"AARP Legal Counsel for the Elderly",,"Delivers essential services to Washington, D.C. seniors, 60 and older, providing free legal and social work services to those in need, empowering, defending and protecting.",,http://www.aarp.org/lce,,,,,"1,4,7,8"
+901970914472025,"YMCA of Metropolitan Washington",,"The YMCA is one of the largest social service agencies serving Washington D.C., suburban Maryland, and northern Virginia. Every year, we provide opportunities in wellness, aquatics, youth sports, summer camp, childcare, and more for over 250,000 people through our 16 branches and program centers.",member.service@ymcadc.org,https://www.ymcadc.org,,,,,"1,7,3"
+879684021850075,"Vida Senior Centers",,"Vida Senior Centers is a second home for the Hispanic older people of DC. Every day Vida opens its doors at 9:00am to provide a big variety of services to our seniors: breakfast and lunch, health screening, social services, nutritional counseling, mental health workshops as well as education and recreational activities. We have served over these 5 decades more than 20,000 Hispanic seniors in DC, being most of them below the poverty line. At least 120 seniors come daily to our two centers. They are primarily Spanish speaking and are originally from 26 countries of Central and South American and Mexico.
+
+Vida Senior Centers has worked with this population for more than 40 years and has developed culturally appropriate, multilingual systems of support and socialization that make aging independently easier for Hispanic and other foreign-born elderly. What distinguishes Vida Senior Centers is the small group attention lavished on our clients. Services to over 700 individuals a year are delivered personally, bilingually and culturally appropriate, making it possible for the organization to cater to the many cultures represented by the Latino and other seniors who are Vida clients.",info@vidaseniorcenter.org,http://www.vidaseniorcenter.org/,,,,,7
+918523571271755,"So Others Might Eat (SOME)",,"SOME (So Others Might Eat) is an interfaith, community-based organization that exists to help the poor and homeless of our nation's capital. We meet the immediate daily needs of the people we serve with food, clothing, and healthcare. We help break the cycle of homelessness by offering services, such as affordable housing, job training, addiction treatment, and counseling, to the poor, the elderly, and individuals with mental illness. Each day, SOME is restoring hope and dignity one person at a time. We invite you to join us.",web@some.org,http://some.org,,,,,"1,4,7"
+1078800059400169,"DC Department of Aging and Community Living (DACL)",DACL,"The Department of Aging and Community Living (DACL) serves District residents 60 and older, adults living with disabilities, and those who care for them. In partnership with more than 20 community-based organizations across the city, we offer more than 40 free or low-cost programs to help all District residents live boldly at any age, stage, or ability.
+
+Through a variety of programs including community activities and events, nutrition and transportation services, healthcare and insurance counseling, caregiver support resources, and adult protective services, we are building a District where we can all thrive together in the communities we know and love.
+
+Connect with our team today at (202) 724-5626 so we can work together to help keep you happy, healthy, and connected to a community that sees and values you.",dacl@dc.gov,https://dacl.dc.gov,,,,,"1,7"
+1115745782915962,"Sibley Memorial Hospital",,"Sibley Memorial Hospital provides a wide range of healthcare services to the Washington, D.C., area communities. We offer medical, surgical, intensive care, obstetric, oncology, orthopaedic, and a variety of other inpatient and outpatient services, as well as a 24-hour Emergency Department.",,https://www.hopkinsmedicine.org/sibley-memorial-hospital/,,,,,"1,7"
+1275858156254689,"Seabury Resource for Aging",,"Seabury offers programs and services which wrap around our area’s most fragile older adults. We meet not only the fundamental needs of vulnerable older adults but also provide the reassurance and support that families need to make the most important decisions about their future",info@seaburyresources.org,http://www.seaburyresources.org,,,,,7
+1290880981505786,"We Are Family",,"Grounded in grassroots senior leadership, We Are Family mobilizes a committed corps of volunteers to reach out to isolated inner-city seniors with free services, advocacy, and companionship, building a network of caring eyes and ears that enables at-risk seniors to age in place. More than simply a social service provider, We Are Family is a bold experiment in building caring, just and inclusive community.",info@wearefamilydc.org,https://www.wearefamilydc.org/,,,,,7
+1265909136483839,"East River Family Strengthening Collaborative, Inc. (ERFSC)",ERFSC,"The mission of East River Family Strengthening Collaborative, Inc. (ERFSC) is to empower families, youth, seniors and communities to become more self-sufficient through integrated and collaborative community based services utilizing evidence based practices that are family focused and person-centered.",info@erfsc.org,http://erfsc.org/,,,,,"7,3"
+1287549685614240,"Mary's Center",,"Mary's Center is a comprehensive health and wellness network with several locations across the greater DC area. Services include
+- Medical
+- Behavioral Health
+- Dental
+- Social Services
+- Education",,http://www.maryscenter.org/,,,,,"1,7,3"
+1351080129222905,"Mary House",,"Mary House is a community-based transitional organization that provides housing and support services to low-income immigrant and refugee families. Our goals as an organization are twofold: to provide a stable and nurturing environment for vulnerable families and to build customized support programs aimed at building their independence and self-sufficiency.",casademary@aol.com,http://www.maryhouse.org/,,,,,"4,7"
+1351080129222930,"University of the District of Columbia",UDC,"The only public university in the nation’s capital and the only urban land-grant university in the United States, The University of the District of Columbia is committed to a broad mission of education, research and community service. Established by abolitionist Myrtilla Miner in 1851, the University of DC offers Associate’s, Bachelor’s, Master’s and Doctoral Degrees,  and a host of workplace development services designed to create opportunities for student success. The University is comprised of a Community College, School of Engineering and Applied Sciences, School of Business and Public Administration, College of Arts and Sciences, College of Agriculture, Urban Sustainability and Environmental Sciences, and the David A. Clarke School of Law.",,https://www.udc.edu/,,,,,"4,7"
+1351080129222952,"American University",,"AU provides Safe-at-Home program evaluation and Evidenced Based Fall Prevention Programs at Wellness Centers in Wards 4, 5 and 7. (Bingocize, Otago, Matter of Balance, Tai-Chi or Enhanced Fitness.)",,https://www.american.edu/cas/healthyschools/,,,,,7
+1351080129222954,"Capitol Hill Village",,"The Village engages neighborhood residents, including older adults, to support one another to improve our community and live fulfilling lives. We also provide case management, and social, educational, and wellness programming.",,https://capitolhillvillage.org,,,,,7
+1351080129222955,"Congress Heights Senior Wellness Center",,"Daily activities, group lunches, exercise equipment, computer labs, and a friendly atmosphere to keep you healthy, connected, and thriving.",,,,,,,7
+1351080129222957,"DC Center",,"The DC Center for the LGBT Community educates, empowers, celebrates, and connects the lesbian, gay, bisexual, and transgender communities focusing on four core areas: health and wellness, arts & culture, social & peer support, and advocacy and community building.",,https://thedccenter.org/,,,,,7
+1351080129222958,"First Baptist Senior Center",,"Daily activities, group lunches, exercise equipment, computer labs, and a friendly atmosphere to keep you healthy, connected, and thriving.",,,,,,,7
+1351080129222959,"Foggy Bottom West End Village",,"At Foggy Bottom West End Village you can attend fun social activities, enjoy an intellectually stimulating program, you can have someone give you a ride, help take care of you when you’re injured or just home from the hospital, or provide needed assistance with tech issues.",,https://fbwe.helpfulvillage.com/,,,,,7
+1351080129222960,"Home Care Partners",,"Home Care Partners provides comprehensive home care services,supporting family caregivers who take care of their loved ones
+and improving home environments to facilitate aging-in-place.",,https://www.homecarepartners.org/,,,,,7
+1351080129222961,"Howard University Hayes Senior Wellness Center",,"Daily activities, group lunches, exercise equipment, computer labs, and a friendly atmosphere to keep you healthy, connected, and thriving.",,https://www.hayesswc.com/,,,,,7
+1351080129222962,"Jewish Senior Services Agency",JSSA,"Seniors from the DC metro area are invited to enjoy a hot Kosher lunch. Lunches are planned by a nutritionist, and are low in sodium and fat. We also offer vegetarian options. ",,https://www.adasisrael.org,,,,,7
+1351080129222963,"Senior Villages",,"Established to bring friends, neighbors, and communities together for support and assistance of senior adults through various activities, home visits, the Senior Care Buddy System and individual support according to the need of each member.",,,,,,,7
+1351080129222964,"TERRIFIC, Inc",,"TERRIFIC, Inc. plan and deliver direct services to older adults and their families (Meals, Nutrition Education, Health Promotion and Counseling Services, Case Management, Recreation and Socialization Services, etc.).",,https://www.terrificinc.org/,,,,,7
+1351080129222965,Wildtech,,"Provides Ipads and online technology classes and programming for seniors.",,http://www.wildtech.org,,,,,7
+1351080129222966,"Yellow Cab Company of DC",,"Our professional and experienced drivers provide prompt, efficient and safe service.  We are the first taxicab company in the District to use advanced dispatching technology with GPS, credit card services and provide customers options to book online or through a mobile application.",,https://dcyellowcab.com/,,,,,7
+1351080129222967,"Zion Baptist Church Adult Day","Genevieve Johnson","The Genevieve N. Johnson Senior Day Care Center Program is an Adult Day Care Center . The Center has been in operation for approximately thirty-nine years and incorporates quality day care services for the frail elderly as well as the recreation/socialization for the reasonably healthy elderly persons.",,https://www.gnjseniordaycare.com/,,,,,7

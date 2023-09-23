@@ -16,6 +16,7 @@ use App\Model\Language;
 use App\Model\Location;
 use App\Model\Map;
 use App\Model\Organization;
+use App\Model\OrganizationStatus;
 use App\Model\Phone;
 use App\Model\PhoneType;
 use App\Model\Service;
@@ -38,6 +39,8 @@ use function GuzzleHttp\json_decode;
 
 class ContactController extends Controller
 {
+    public $commonController;
+
     public function __construct(CommonController $commonController)
     {
         $this->commonController = $commonController;
@@ -261,7 +264,12 @@ class ContactController extends Controller
             ->editColumn('contact_organizations', function ($row) {
                 $link = '';
                 if ($row->organization) {
-                    $link = '<a id="contact_organization_link" style="color: #3949ab; text-decoration: underline;" href="/organizations/' . $row->organization->organization_recordid . '">' . $row->organization->organization_name . '</a>';
+                    $organizationStatus = OrganizationStatus::orderBy('order')->pluck('status', 'id');
+                    $inactive = false;
+                    if ($row->organization->organization_status_x && isset($organizationStatus[$row->organization->organization_status_x]) && ($organizationStatus[$row->organization->organization_status_x] == 'Out of Business' || $organizationStatus[$row->organization->organization_status_x] == 'Inactive')) {
+                        $inactive = true;
+                    }
+                    $link = '<a id="contact_organization_link" style="' . ($inactive ? 'background-color:#e019246b;color: #ffffff' : "color: #3949ab;") . ' text-decoration: underline;" href="/organizations/' . $row->organization->organization_recordid . '">' . $row->organization->organization_name . '</a>';
                 }
 
                 return $link;
@@ -735,6 +743,14 @@ class ContactController extends Controller
             $contact->phone()->sync($phone_recordid_list);
 
             $contact->save();
+
+            $organization = Organization::where('organization_recordid', $request->contact_organization)->first();
+            if ($organization) {
+                $organization->updated_by = Auth::id();
+                $organization->updated_at = Carbon::now();
+                $organization->save();
+            }
+
             Session::flash('message', 'Contact created successfully!');
             Session::flash('status', 'success');
             return redirect('organizations/' . $request->contact_organization);
@@ -894,7 +910,7 @@ class ContactController extends Controller
                 }
             }
             $contact->phone()->sync($phone_recordid_list);
-
+            $contact->created_by = Auth::id();
             $contact->save();
 
             $audit = Audit::where('auditable_id', $contact->contact_recordid)->first();
@@ -926,7 +942,18 @@ class ContactController extends Controller
         // return response()->json($contact);
         try {
             $contact = Contact::where('contact_recordid', '=', $id)->first();
+            $organizationStatus = OrganizationStatus::orderBy('order')->pluck('status', 'id');
             if ($contact) {
+                $inactiveOrganizationIds = [];
+                $org = $contact->organization;
+                if ($org && $org->organization_status_x && isset($organizationStatus[$org->organization_status_x]) && ($organizationStatus[$org->organization_status_x] == 'Out of Business' || $organizationStatus[$org->organization_status_x] == 'Inactive')) {
+                    $inactiveOrganizationIds[] = $org->organization_recordid;
+                }
+                if (!Auth::check() && count($inactiveOrganizationIds) > 0) {
+                    Session::flash('message', 'This record has been deleted.');
+                    Session::flash('status', 'warning');
+                    return redirect('contacts');
+                }
                 $phone_recordid = $contact->contact_phones;
                 $phone_info = Phone::where('phone_recordid', '=', $phone_recordid)->select('phone_number')->first();
                 if ($phone_info) {
@@ -937,7 +964,7 @@ class ContactController extends Controller
                 $map = Map::find(1);
                 $contactAudits = $this->commonController->contactSection($contact);
 
-                return view('frontEnd.contacts.show', compact('contact', 'map', 'phone_number', 'contactAudits'));
+                return view('frontEnd.contacts.show', compact('contact', 'map', 'phone_number', 'contactAudits', 'inactiveOrganizationIds'));
             } else {
                 Session::flash('message', 'This record has been deleted.');
                 Session::flash('status', 'warning');
@@ -990,7 +1017,7 @@ class ContactController extends Controller
                     foreach ($contact->phone as $key => $value) {
                         $phone_language_data[$key] = $value->phone_language ? explode(',', $value->phone_language) : [];
                         $languageId = $value->phone_language ? explode(',', $value->phone_language) : [];
-                        $languages = Language::whereIn('language_recordid', $languageId)->pluck('language')->toArray();
+                        $languages = Language::whereIn('language_recordid', $languageId)->pluck('language')->unique()->toArray();
                         $phone_language_name[$key] = implode(', ', $languages);
                     }
                 }
@@ -1105,7 +1132,7 @@ class ContactController extends Controller
                 ContactPhone::whereIn('phone_recordid', $deletePhoneDataId)->where('contact_recordid', $contact->contact_recordid)->delete();
                 Phone::whereIn('phone_recordid', $deletePhoneDataId)->delete();
             }
-
+            $contact->updated_by = Auth::id();
             $contact->flag = 'modified';
             $contact->save();
 
@@ -1218,6 +1245,14 @@ class ContactController extends Controller
             $contact->contact_recordid = $new_recordid;
             $contact->service()->sync($request->contact_service);
 
+            $service = Service::where('service_recordid', $request->contact_service)->first();
+            if ($service) {
+                $service->updated_at = Carbon::now();
+                $service->updated_by = Auth::id();
+                $service->save();
+            }
+
+
             $contact->contact_phones = '';
             $phone_recordid_list = [];
             if ($request->contact_phones) {
@@ -1265,7 +1300,7 @@ class ContactController extends Controller
                 }
             }
             $contact->phone()->sync($phone_recordid_list);
-
+            $contact->created_by = Auth::id();
             $contact->save();
             Session::flash('message', 'contact added successfully!');
             Session::flash('status', 'success');

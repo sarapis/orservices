@@ -1,240 +1,1006 @@
 service_recordid,service_name,service_alternate_name,service_organization,service_description,service_locations,service_url,service_email,service_status,access_requirement,service_taxonomy,service_application_process,service_wait_time,service_fees,service_accreditations,service_licenses,service_phones,service_schedule,service_contacts,service_details,service_address,service_metadata,service_program,service_code,SDOH_code,code_category_ids,procedure_grouping,service_tag,service_airs_taxonomy_x,flag,bookmark
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+561831919465625,"Pharmacy - Mary's Center",,1287549685614240,"Full service pharmacy.",991046422392107,https://www.maryscenterpharmacy.org/app/#/,,1,none,1276982655382389,"Visit website, call, or walk in. You will need a prescription.",,,,,1257181434931228,969910937524360,,970978597998351,750182888138367,,,,,,,,,,
+570279198497703,"Health Home Behavioral Health",,1287549685614240,"The Mary’s Center DC Health Homes team is here to help you manage your physical and mental health chronic conditions and create a personalized plan of care to improve health outcomes.  
+
+Mary’s Center became a certified DC Health Homes provider in January 2016, when the Department of Health Care Finance (DHCF) launched the My DC Health Homes program to benefit Medicaid recipients.  
+
+All DC Health Homes services are optional and will not affect your eligibility for other Medicaid services. All services are covered under Medicaid with no additional fees. 
+
+To enroll, please contact Tara Pavao, our Health Homes Director at (202) 389-2486. Once you are enrolled, our HH team coordinates your medical and behavioral healthcare needs by pairing you with a Nurse Care Manager and a Community Support Worker. Your Nurse Care Manager and Community Support Worker will:  
+
+Schedule medical and mental health appointments, send reminders, and help secure transportation. 
+Monitor your chronic physical and mental health conditions to determine adherence to or variance from evidence-based treatment guidelines. 
+Make sure you have the right medications and you are taking them correctly. 
+Follow up after you are discharged from the hospital. 
+Connect you to other community resources such as housing, food, transportation insurance re-certification, and legal assistance as needed. 
+Provide support for you and your family on your pathway to better health. ","1202618027693441,953875575104132,1146850101014457",https://www.maryscenter.org/behavioral-health/adults-and-seniors/dc-health-home/,tpavao@maryscenter.org,1,none,"1276982655382389,874406320909098,819562758416858","To enroll, please contact Tara Pavao, our Health Homes Director at (202) 389-2486.
+To enroll, call the Behavioral Health front desk at (202) 851-3671 
+To reach Tara Pavao, DC Health Homes Director, call (202) 389-2486 or email tpavao@maryscenter.org 
+
+We accept most insurance plans including Medicaid and Medicare. If you don’t have health insurance, we’ll help you apply for public benefits or provide care at a discount. Comprehensive list of insurances are available on our website.",,,,,"1078907666894476,1109152836345796","1003280669828155,593029528256419,1106799266409790",,,"1108677909528551,904876794525199,948876011596931",,,,,,,,,,
+584221387739490,"Senior StayCool",,1078800059400169,"The Department of Aging and Community Living's Senior StayCool Program repairs or replaces window air conditioning unit(s) and inoperable heating, ventilating, and air conditioning (HVAC) centralized units for income-eligible seniors.
+
+How many Units allowed?
+
+In instances where a property owner does not have a cooling system in place, no more than two window air conditioning units may be installed depending on need.
+
+Who should apply?
+
+District residents, age 60 and over who are homeowners or renters of a property used as a primary residence, with an annual household income at or below 60% of Area Median Income (AMI)*.",818197734902999,https://dacl.dc.gov/service/senior-staycool,dacl@dc.gov,1,none,"832401246252623,819562758416858","Call to apply.",,,,,"767434507934353,791466840370210",,,,1193727390444096,,,,,,,,,,
+567687090092713,"Energy Assistance Program",,1287549685614240,"Life can sometimes throw unexpected challenges your way making it hard to keep up with the bills. Thanks to a grant from Pepco Holdings Inc. Community Foundation, our Energy Assistance Program allows us to help you pay a portion of your household’s heating and electric bill. To participate in the one-time emergency program, you must: 
+
+Be a resident of Prince George’s County, Maryland 
+Be unable to pay your utility bill because of documented financial hardship  
+Be at risk of disconnection from your gas or electric service 
+Have an annual household income (before taxes) below the federal poverty level. 
+Please remember this program is meant to help you pay a portion of your household’s heating/electric bill, not the entire annual cost of heating your home. ",1333682431246536,https://www.maryscenter.org/social-services/referrals-and-resources/energy-assistance-program/,,,none,,"To be considered for the Energy Assistance Program, you must call (202) 545-2024 to schedule an appointment.  Appointments are held on Wednesdays at 2355 Ontario Road, NW Washington, DC 20009 and Fridays at  8908 Riggs Road, Adelphi, Maryland 20783 and last approximately 30 minutes.  
+
+Applications are only accepted in person and by appointment. Mailed, faxed, or e-mailed paperwork WILL NOT be accepted. Applications will NOT be processed unless ALL information is provided. Incomplete applications will result in delay or denial. Please bring the documents listed below to your scheduled appointment. 
+
+Required Documents 
+Photo ID of applicant
+Proof of Identification for ALL members of your household (e.g. – social security card, birth certificate, driver’s license, or passport)
+Proof of Residency (e.g. – copy of mortgage, lease, or rental agreement) 
+Gas/Electric Bill; Disconnection Notice (if applicable)
+Proof of Income for the ENTIRE Household  (e.g. – employment paystubs, social security income, food stamps, unemployment, child support, disability, retirement, veterans’ benefits, survivors’ benefits, etc.) 
+Proof of Hardship or Inability to Pay (e.g. employment termination letter, unemployment claim, medical bills, proof of loss of other income, OR budget showing insufficient funds)
+Letter explaining your emergency situation",,,,,"920921778156664,","1338861885601375,1338861885601376,1338861885601377,1338861885601378,1338861885601379,1338861885601380,1338861885601381,1338861885601382",,"608334571472582,594068698094076,756892272238697,828931086235381,930201199186251,1177650052462670","1108677909528551,904876794525199",,,,,,,,,,
+600311424612877,"Nutrition Counseling - Mary's Center",,1287549685614240,"You probably know eating whole, nutritious food leads to improved health, but many of us need a little guidance. There is so much conflicting diet information, it can be hard to know what’s best for you—especially if you or a loved one have a complex health condition.  
+
+At Mary’s Center, you can trust our knowledgeable and friendly nutritionists to guide you and your family to better health through better food. Our nutritionists are co-located within the medical area and the Women, Infant, and Children (WIC) program to provide all the nutrition counseling necessary to ensure your family stays well fed. When you visit Mary’s Center for nutrition counseling, you will:   
+
+Find nutrition resources, education, and individual and group nutrition counseling  
+Get help navigating your WIC and SNAP benefits 
+Receive nutrition guidance while you are breastfeeding your baby  
+Learn about managing chronic conditions through your diet 
+Regardless of your needs, our nutrition counselors will be by your side to build a better diet, increase your vitality, and improve your overall health.","1202618027693441,953875575104132",https://www.maryscenter.org/medical/other-specialties-and-services/nutrition-counseling/,,1,none,"630013980013392,1276982655382389","Mary’s Center is ready to partner with you on your health journey. Don’t hesitate to reach out to us using the information below:  
+
+To learn more about WIC or make a WIC application appointment, call (202) 232-6679 
+
+We accept most insurance plans including Medicaid and Medicare. If you don’t have health insurance, we’ll help you apply for public benefits or provide care at a discount. Comprehensive list of insurances are available on our website.",,,,,"1109152836345796,975713005890497,1249506930671270975713005890497,975713005890497,1249506930671270,","1338861885610361,1338861885610362,1338861885610363,1338861885610364,1338861885610365,1338861885610366,1338861885610367",,,"1108677909528551,904876794525199",,,,963,5,,,,,
+611731051197054,"Clothing & Hygiene Kits",,918523571271755,"SOME’s clothing room offers clothing, shoes, accessories, and small home goods to those in need. Items are seasonally appropriate and provided free of charge. We also have a special room for children’s clothing and associated items.
+
+Hygiene kits, containing soap, shampoo, lotion, deodorant, toothbrush and toothpaste, razors, and feminine hygiene products, are available at the front desk at 7:30am Mondays, Tuesdays, Thursdays, and Fridays. 
+
+",1142163554566402,https://www.some.org/services/basic-needs,,1,none,1211420433536032,"Adult Hours: 8am to 11am, Tuesdays and Thursdays, availabe in pre-made bags by size
+Children Hours: 1:30pm to 3:30pm, Mondays and Wednesday
+Hygiene Kits: 7:30am, Mondays, Tuesdays, Thursdays, and Fridays",,,,,828720521624019,,,,843557435036966,,,,,,,,,,
+609764906879432,"Group Exercise",,901970914472025,"The YMCA of Metropolitan Washington offers a variety of Group Exercise classes that are for every BODY! Each branch has it’s own unique schedule to cater to the community it serves. Group Exercise classes are a great way to find motivation, challenge or heal yourself as well as meet new friends! All YMCA instructors have a passion for helping everyone along their wellness journey. Check out the group exercise schedule today and see you in class!","991654914903385,1198692764026642,940212538195830,716573413368445,882293888224112,577218861870418",https://www.ymcadc.org/programs/health-fitness/group-exercise/,,1,none,1276982655382389,"Visit the website or call your nearest YMCA to find the group class schedule and sign up.",,,,,1200804357675895,,,,"736104421703506,602013012418112,1171342361002389,1310277015717903,1111486004109298,623483554226574",,,,,,,,,,
+607057383679661,"Fit & Well Seniors",,901970914472025,"The Y’s Fit & Well Seniors caters to the needs of more than 100,000 seniors residing in DC, many of whom are widowed, living on a modest income and have limited access to activities. Launched in 2010 in partnership with CareFirst BlueCross BlueShield, this program helps seniors find energy, movement, and a support network.
+
+We offer 119 land and 26 aquatics classes in all 8 Wards of DC in addition to health and lifestyle assessments, inter-generational activities, social clubs and a mobile unit – all free of charge. Over 5,000 seniors participate in this program each year. If you’re a senior that would like to get involved, let us help you rediscover the vibrancy of life by calling us at 202-232-6700.","991654914903385,1272787330877007",https://www.ymcadc.org/programs/health-fitness/fit-well-seniors/,FitandWellSeniors@ymcadc.org,1,none,"1276982655382389,819562758416858","Call for more information or visit this website to find a class near you: https://www.ymcadc.org/wp-content/uploads/2020/02/Roster_-CityWide-Schedule-by-Ward-1.pdf ",,,,,1200804357675895,,"994749233555702,584564842045500",,"736104421703506,1268199460403994",,,,,,,,,,
+615102245607234,"Maternal Mental Health",,1287549685614240,"If you are pregnant or preparing for the addition of a new baby, adjusting to life with a new child, had a baby in the past year, or experienced a loss in pregnancy, Mary’s Center is here for you.  
+
+Significant life changes like these can cause tremendous amounts of stress and we want you to know you’re not alone. Reach out to Mary’s Center if you are experiencing:  
+
+Difficulty adjusting to a significant life change 
+Difficulty with your emotions following a difficult or traumatic birth 
+Difficulty bonding with your baby 
+Feelings of irritability, sadness, or depression 
+Perinatal grief/loss 
+Scary, intrusive thoughts 
+If you’re struggling with something you don’t see listed above, we strongly encourage you to reach out to us for additional support.
+
+Our Maternal Mental Health program is dedicated to support pregnant and postpartum women, adoptive parents, and their families through a variety of resources and services including:  
+
+Care coordination 
+Phone outreach including a brief assessment, educational information, and ways to connect to additional care 
+Support and education, including free online support groups held in  English  and  Spanish 
+Therapy and psychiatry  ","1202618027693441,953875575104132,1146850101014457",https://www.maryscenter.org/behavioral-health/other-specialties-and-services/maternal-mental-health/,,1,none,1276982655382389,"Mary’s Center is ready to partner with you on your health journey. Don’t hesitate to reach out to us using the information below:  
+
+To an appointment and indicate your interest in the Maternal Mental Health program, call (202) 846-8053 x 2797
+To reach the Maternal Mental Health Program Manager, call (202) 545-2061",,,,,"1109152836345796,735602797720246,1286678020555394","1003280669828155,593029528256419,1106799266409790",,,"1108677909528551,904876794525199,948876011596931",,,,,,,,,,
+635645258311778,"D.C. Schedule H Property Tax Credit",,828308705468984,"Legal Counsel for the Elderly assists low-income seniors who do not need to file a complete tax return with filing for the D.C. Schedule H property tax credit.
+
+Eligibility for the Property Tax Credit
+Low-income D.C. residents may qualify for up to $1000 for property taxes or rent paid by filing the D.C. Schedule H tax form. The D.C. Office of Tax Revenue determines eligibility for the credit:
+
+D.C. resident from January 1st to December 31st
+Rent or own and live in home or apartment
+Income below $40,000 per year
+Income below $60,000 if over 70 years old
+Some rental properties do not qualify
+
+Our Services
+We assist clients who do not need to file a complete tax return. We screen clients to see whether they are likely to qualify. If so, we meet with clients, in our office or at pro bono clinics, to review the Schedule H tax form and the documentation needed. We assist with submitting the form to the Office of Tax Revenue. If the credit is not received within three months, we assist with calling the Office of Tax Revenue to learn the reason for the denial.",1183173298558849,https://www.aarp.org/legal-counsel-for-elderly/what-we-do/info-2017/schedule-h-tax-credit.html?intcmp=AE-LCE-WWD-R1C2LL1,,1,none,"841905613386238,899387596744807,1238748896910244,819562758416858","Call for information",,,,,931173517724084,1153058029513279,,,814164678263538,,,,,,,,,,
+658172156866857,"Senior Housing",,918523571271755,"SOME offers permanent, affordable housing for seniors at Kuehner Place.
+
+Kuehner Place offers 15 efficiency apartments and 27 single room occupancy units. Residents share a bathroom, kitchen, and laundry facilities with two to three other residents.",651934751090741,https://www.some.org/services/housing/senior-housing,,1,none,1305774265925553,"Apply for Housing: Call (202) 292-4493
+
+Eligibility: Participants must be/have:
+
+A resident of DC
+Age 60 or over
+Make less than $1,900 a month
+Have a negative TB test within the past 12 months
+Six months of sobriety
+Capable of self-care
+No recent history of violence
+Not on the lifetime sexual offenders list",,,,,1065402652683987,,,,1216780850778368,,,,,,,,,,
+643973730285080,"Office of the D.C. Long-Term Care Ombudsman Program",,828308705468984,"The Office of the D.C. Long-Term Care Ombudsman Program (DCLTCOP) is an important part of Legal Counsel for the Elderly. DCLTCOP is an advocate and resource for persons who reside in long-term care facilities such as nursing homes, assisted living and community residence facilities. The program also provides advocacy services to individuals receiving services through the Elder and Persons with Physical Disabilities (EPD) Medicaid Waiver. Ombudsmen help residents and their families understand and exercise their rights and effectively address concerns which impact their health, safety and quality of life.  The program advocates for older adults and persons with disabilities at both the individual and systems levels by receiving, investigating and resolving complaints made by or on behalf of residents, promoting the development of resident and family councils, and informing governmental agencies, providers and the general public about issues and concerns impacting recipients of long-term care services and supports.
+
+ Ombudsman Services
+
+Advocate for the rights of older persons and other persons receiving long-term care services in the District of Columbia;
+Investigate and resolve complaints made by or on behalf of an older person or other persons receiving long-term care services;
+Educate and empower residents to understand and exercise their rights
+All confidential, resident-centered, and free of charge.
+Home and Community-Based Services
+
+As of Oct. 1, 2012, the ombudsman program expanded its scope of advocacy services to include District residents receiving home and community-based services in their private homes through the D.C. Medicaid Elderly and Persons with Physical Disabilities (EPD) Waiver. 
+",1183173298558849,https://www.aarp.org/legal-counsel-for-elderly/what-we-do/info-2017/dc-long-term-care-ombudsman.html?intcmp=AE-LCE-WWD-R1C2LL5,dcombuds@aarp.org,1,none,"841905613386238,819562758416858","Call for information",,,,,548927498605853,,,,814164678263538,,,,,,,,,,
+712957682845265,"Single Adult Housing (SAH)",,918523571271755,"SOME’s affordable housing for single adults provides safe, affordable, long-term housing with supportive services for single adults 18 years of age or older. All residents are required to sign a lease with SOME and to pay rent (30% of their gross monthly income). SOME owns over 700 Single Room Occupancy (SRO) units and efficiency apartments, which include the following amenities:
+
+Amenities
+Dining Room
+Kitchen
+Bathroom(s)
+Clean and sober housing - alcohol and drug-free environment
+Private, fully furnished individual units
+Laundry facilities on-site
+Manager who lives on the property
+Common area with computer access (some units include cable and internet)
+All utilities included in the rent
+Some units furnished with flat screen televisions
+Located close to public transportation
+Services
+Residents work with program staff to repair credit, save money, set and meet goals, enroll in job training, and find and maintain employment.
+
+Personal Assistance
+Employment Services
+Job Readiness Activities
+Transportation
+Dental Services
+Help with Stress and Emotional Health
+Medical Services
+Counseling on Home Ownership Options
+Budget Planning
+Computer Classes and Assistance
+Community Clubs
+Health and Wellness Activities
+",,https://www.some.org/services/housing/single-adult-housing,SAHintake@some.org,1,none,1305774265925553,"Our General Intake Housing Lottery is now closed. The housing lottery system will be used to randomly select individuals meeting our eligibility requirements to move forward and apply for Single Adult Housing.
+
+Individuals who have been randomly selected to move forward with the application process will be contacted via the phone number provided on their registration form.  
+
+We will contact all individuals via email who submitted a registration within 5 business days to let them know whether or not they have been randomly selected to move forward with the SOME Single Adult Housing Application process.
+
+The eligibility criteria for the Single Adult Housing (SAH) program is listed below:
+
+Must have 6 months of documented clean time from drugs and alcohol;
+Must have an income;
+Have no recent history (within the past year) of violent behavior;
+Must be eligible under the District of Columbia Housing Authority (DCHA):
+Cannot be a lifetime register on the Sex Offender Registry
+Cannot not owe DCHA money (unless applicant is willing to settle the debt)",,,,,,,,,,,,,,,,,,,
+736771575912112,"Congregational Resources",,1275858156254689,"Seabury provides leadership and coordination of aging services to congregations in the Episcopal Diocese of Washington and the United Church of Christ Potomac Association.
+
+Our Congregational Resources program provides:
+- Information on services and resources for older adults
+- Resources and support for older adult ministry design and development
+- Educational presentations on aging issues​​
+- Opportunities for service with our Age-In-Place project and in our senior living communities​​​
+- Opportunities to honor the service of older adults to congregations
+
+Common Threads: An Intergenerational Worship Series​
+
+Everybody has a story. What’s yours? Seabury Resources for Aging invites you to a creative worship series based on life stories. We’ll gather for conversation, reflection, and worship, focusing on themes of joy, sorrow, hope, and change. Participatory and station-based, these one-hour services are often a great fit for children, youth, and families. Common Threads is offered in partnership with area clergy and congregations. People of all ages and abilities are welcome.",1281917418518969,https://www.seaburyresources.org/congregationalresources,info@seaburyresources.org,1,none,"893915418546777,976566727118378,819562758416858","Call to apply for services.",,,,,688831321064033,593652380535594,,,1215798438097456,,,,,,,,,,
+768069481383101,"Childbirth & Parenthood Education",,1115745782915962,"We are here to help you have the best possible birth experience. Sibley's Childbirth Education Department recommends that expectant parents take a class during the seventh month of pregnancy or earlier. It is best to register during your first trimester as classes fill up quickly. In general, class listings are posted 4 to 6 weeks in advance of the class date.",1021458214239224,https://www.hopkinsmedicine.org/about/community_health/sibley-memorial-hospital/childbirth-education/index.html,childbirth@jhmi.edu,1,none,976566727118378,"For inquiries related to childbirth classes, email childbirth@jhmi.edu.
+
+Effective Thursday, March 12, until further notice, we have decided to cancel all community classes and events at Sibley out of an abundance of caution. We will continue to monitor the COVID-19 situation and look forward to resuming classes when we feel it is safe to do so. Please check Sibley.org and our Facebook page for ongoing updates.",,,,,,,,,606691178479516,,,,,,,,,,
+786774420218226,"English Classes",,1287549685614240,"Free English Classes for DC Parents
+DC parents can take advantage of free English classes through our trusted partner, Briya Public Charter School! Course details are below: 
+
+All levels are welcome – beginner to advanced  
+Adult students must live in DC and have a child/children ages 0-12. 
+Parents and young children learn together; while parents learn English and other skills, young children attend the Briya early childhood program 
+Program has open enrollment and weekly registrations throughout the year. 
+Classes are Monday-Friday; morning session 9:00-11:30 am; afternoon session 12:30-3:00 pm 
+To register, please  complete our online form  or call (202) 232-7777
+You may bring your young children (up to age 5) to school with you ",1202618027693441,https://www.maryscenter.org/education/english-classes/,,1,none,"976566727118378,1118011435663674","All levels are welcome – beginner to advanced  
+Adult students must live in DC and have a child/children ages 0-12. 
+Parents and young children learn together; while parents learn English and other skills, young children attend the Briya early childhood program 
+Program has open enrollment and weekly registrations throughout the year. 
+Classes are Monday-Friday; morning session 9:00-11:30 am; afternoon session 12:30-3:00 pm 
+To register, please  complete our online form  or call (202) 232-7777
+You may bring your young children (up to age 5) to school with you ",,,,,765691996005770,,,,1108677909528551,,,,,,,,,,
+743196443052437,"Recreation and Education",,879684021850075,"There are two fundamental ingredients when it comes to thinking about the best recipes to avoid diseases: one is to feel happy and accompanied and the second is to continue learning. All scientific studies refer to the need to continue using the mind to prevent diseases related to memory loss. And that's why at VIDA we offer all kinds of classes: embroidery, weaving, art, music, dance, zumba, English, Spanish, jewelry, computing, among other specific trainings. We believe that happiness is built with small daily illusions, and with personal satisfaction. And then we focus on reinforcing the self-esteem of participants. On the other hand, we believe that being with friends doing all these things helps a person to feel better. Being able to share with other older adults and have a place where they feel welcome is an essential element in the elderly. That is why VIDA offers, in addition to all its classes, a whole package of recreation and socialization activities, such as walks, birthday celebrations, parties, group dances, and other activities and festivities that vary weekly. In summary, among the Education activities that we carry out regularly are the following classes:
+
+• English for Beginners
+• Intermediate English
+• Literacy is Spanish
+• Computing
+• Embroidery
+• Tissue
+• Jewelry
+• Singing
+• Art / Painting
+• Dance / Zumba
+
+Among the recreational activities are the following:
+• Birthday celebrations every month
+• Bingo several times a week
+• Out of center walks
+• Daily monitoring of vital signs
+• Diabetes Monitoring
+• Weekly Chronic Disease classes in the Elderly
+• Drug Adhesion Monitoring
+• Training on how to be regular with medications
+• Reference to medical consultations if necessary
+• Support to make appointments with your doctors","932502301190120,869647738071923",http://box2142.temp.domains/~vidasen1/recreation-education/,,1,none,"893915418546777,976566727118378,896905506493054,885604845315230,1212005456553071,742573749443370,819562758416858,1139839930624727,1238748896910244","Call to join the center.",,,,,"751061458384755751061458384755,","1338861885610319,1338861885610320,1338861885610321,1338861885610322,1338861885610323,1338861885610324,1338861885610325",,,"965942365087326,948986432487608",,,,,,,2,,,
+755893450919058,"Savvy Caregiver Program: Empowering DC Caregivers",,1078800059400169,"The Department of Aging and Community Living Alzheimer’s Disease Supportive Services Program (ADSSP) is funded by the Administration for Community Living (ACL) and is operated by DACL throughout the city. The goal is to train the Senior Service Network (SSN) providers to identify DC residents living with Alzheimer’s Disease and Related Dementia (ADRD) and link them to culturally competent, person-centered home and community-based services and support (HCBS).
+We are committed to delivering comprehensive home and community-based services through behavior symptom management and expert consultation for DC residents living with ADRD and their family caregivers. 
+
+Multiple programs are offered, including Savvy Caregiver Program: Empowering DC Caregivers, CityWide Money Management, Dementia Navigators, and Club Memory.",818197734902999,https://dacl.dc.gov/service/alzheimer’s-disease-and-related-dementias,dacl@dc.gov,1,none,"913953119512423,819562758416858",,,,,,"767434507934353,791466840370210,826409137890041",,599277120211615,,1193727390444096,,,,,,,,,,
+765859355729308,"Bell Power Scholars Academy",,901970914472025,"Each year thousands of children are plagued by learning loss at the close of Public Schools for the summer. With few activities, most of them experience a summer that will create an education barrier when they return to the classroom for the fall. The Y BELL Power Scholars Academy at YMCA of Metropolitan Washington offers a program that seeks to solve the achievement gap problem of our youth by providing vigorous academics and STEM activities five days a week for 6-8 weeks each summer.",,https://www.ymcadc.org/programs/child-care/bell-power-scholars-academy/,,1,none,"1228385258535588,976566727118378,1091485627676359",,,,,,1200804357675895,,,,,,,,,,,,,,
+777147158438789,"Social Services - Vida",,879684021850075,"The participants of Vida Senior Centers are mostly first-generation Hispanics, who throughout their lives accumulated little pension and few social benefits, either because they were late to the United States or because their salaries were always low In any case, the majority of VIDA participants are below the poverty line. And being a poor older adult in Washington DC is a huge challenge, largely because of the price of rentals in the city. In addition, Hispanic older adults never knew about the social benefits offered by the federal or city government, and even when they know there is some benefit, it is difficult for them to apply for the benefit because they cannot read the documents that They explain the benefits, cannot fill out the forms, or do not know how to follow those procedures. To face this tangle of procedures, Vida has a Social Services Counselor. All participants of Vida Senior Centers receive help from our counselors to apply for affordable housing, transportation and social benefits for programs that benefit older adults. With regard to immigration procedures, VIDA not only helps participants to start and follow-up on their migration processes, but also offers a weekly “Citizenship Class” in which participants are prepared to take the Citizenship exam. We also connect them with the agencies that help them file their taxes and file legal procedures, if necessary. Likewise, VIDA is an official distributor of boxes of the Food Bank, and with this it helps to identify older adults at greater risk. So, in summary, when it comes to social services:
+
+• Home Application Procedures
+• Migratory processes
+• Preparation for the Citizenship Exam
+• Application for transportation benefits
+• Legal and employment services
+• Procedures for cell phone subsidy
+• Tax return
+• Contact them with adult service agencies","932502301190120,869647738071923",http://box2142.temp.domains/~vidasen1/social-services/,,1,none,"893915418546777,841905613386238","Call to join the center.",,,,,751061458384755,,,,"965942365087326,948986432487608",,,,,,,,,,
+741287798283565,"Arts & Humanities",,901970914472025,"At the YMCA, members can explore and express their creative talents in a healthy and supportive environment for building new skills. Classes help children develop confidence and increased self-awareness as they participate in problem-solving, critical thinking and attention to detail. Activities include art, dance and creative movement.","1198692764026642,910674112866949,716573413368445",https://www.ymcadc.org/programs/sports-recreation/arts-humanities/,,1,none,"1276982655382389,976566727118378","Visit the website and select your YMCA for more information and to sign up for classes.",,,,,1200804357675895,,,,"602013012418112,758769305327957,1310277015717903",,,,,,,,,,
+775374911143656,"Medical Assistant Job Training",,1287549685614240,"Train to be a Medical Assistant! Briya Public Charter School offers a Medical Assistant training program. The 12-15 month program prepares you for a career as a Registered Medical Assistant, working alongside doctors and nurses in clinics and hospitals.  
+
+Throughout the course, you will gain hands-on practice with clinical lab skills such as drawing blood, giving injections, and taking blood pressure. You will also gain proficiency in administrative skills, including updating patient records and coding insurance forms. Briya offers the Medical Assistant Program in collaboration with Mary’s Center, providing students embedded learning opportunities with Mary’s Center nursing and medical assistant staff. 
+
+Upon completion of the Medical Assistant training program, you will be prepared to take the national Registered Medical Assistant Exam and begin your new career! ",1202618027693441,https://www.maryscenter.org/education/job-training/medical-assistant/,,1,none,"976566727118378,1238748896910244","To qualify for the Medical Assistant training program, you must: 
+Live in Washington, D.C. 
+Have a high school diploma or GED 
+Pass entrance exams in reading and math  
+Program Details: 
+Classes are held Monday-Thursday, 6:00-9:00 p.m., at Mary’s Center’s Georgia Avenue site 
+The course lasts 12-15 months, including coursework (August through June) and externships and summer test prep sessions (July through August) 
+One month of full-time clinic training at medical centers across the DC area is required 
+Register for the course or call (202) 232-7777 for more information. 
+
+Mary’s Center and Briya Public Charter School work together to provide health care, social services, and education for residents of D.C. ",,,,,765691996005770,,,"1156900773202016,782360081464895",1108677909528551,,,,,,,,,,
+805290013325766,"Alternatives to Landlord/Tenant Court Project",,828308705468984," LCE’s Alternatives to Landlord/Tenant Court Project (Alternatives Project) combines social work, legal and volunteer coordination to help prevent eviction of D.C. elders.
+
+Legal Assistance We Provide to Tenants and/or Tenant Associations
+- Eviction defense: if you received a “Notice to Vacate” and or a court summons from your landlord for issues like breach of lease or non-payment of rent, we can help you defend against eviction;
+- Rent control disputes: we help you get the correct rent level under rent control, by helping you file forms and filing, defending against, rent control related petitions;
+- Government subsidies: we help you prevent loss of your housing subsidy, including filing required paperwork for Section 8 vouchers, public housing and site-based subsidized housing;
+- Repairs: we advocate for your right to live in a safe, well-maintained apartment, and to a rent credit for enduring those conditions;
+- Reasonable accommodations: if you have a disability and need an accommodation to live in your apartment more comfortably, we can advocate for your apartment to better meet your needs;
+- Tenant Opportunity to Purchase Act: we work with tenants and tenants’ associations to help them exercise their right of first refusal of the purchase of their home, and to negotiate benefits in exchange for their right to purchase;
+- Outreach and Education: we are glad to speak with community members about tenants’ rights and the rights of elderly tenants;
+Policy advocacy to improve community responsiveness to elderly tenants, enhance affordable housing creation and preservation resources, and ensure accommodations for elderly tenants.
+
+Social Work and Volunteer Assistance
+- Assessment: of your full needs to ensure you are getting all of the services you need;
+- Referrals: for services like meals, housekeeping and money management;
+- Health care advocacy: we link tenants with medical service providers, home health care, and community social work referrals, for long-term health and case management;
+- Volunteer coordination for tenants at risk of eviction for issues related to housekeeping or having too many possessions in the unit, we engage volunteers where appropriate;
+- Counseling of clients who experience grief, loss and other mental health challenges to remaining housed.
+
+We welcome referrals from community agencies, property managers and other community members, upon signs of eviction risks, like:
+- A lapse in payment of rent
+- Unpaid utilities
+- Housekeeping or hoarding concerns; and/or
+- Memory loss of the tenant that causes neglect of obligations that the tenant followed previously.",1183173298558849,https://www.aarp.org/legal-counsel-for-elderly/what-we-do/info-2017/alternatives-to-court.html?intcmp=AE-LCE-WWD-R1C1LL2,,1,none,"841905613386238,1305774265925553","Call for information",,,,,931173517724084,1153058029513279,,,814164678263538,,,,,7,,,,,
+771415038083007,"Health for Heroes (Active Duty & Veterans)",,1287549685614240,"Mary’s Center is grateful for your service and we want to help you protect your health. We have been providing healthcare, education, and social services for over 30 years and are honored to offer high-quality care to the many active duty military members, veterans, and reservists in our community. When you visit Mary’s Center, you and your family can expect access to comprehensive care including:  
+
+Medical services such as:
+Annual physicals, check-ups, and immunizations 
+Health screenings for chronic conditions (cancer screenings available based on your personal risk) 
+Treatment and management of acute and chronic conditions 
+Sick visits 
+HIV prevention and care 
+Infectious disease care
+Cleanings and screenings 
+Crowns and bridges 
+Extractions, fillings, and sealants
+Behavioral Health services such as:
+Therapy for trauma, depression, anxiety, and other illnesses 
+Psychiatric evaluations and care coordination 
+Substance abuse treatment 
+Early childhood behavioral health treatment 
+We also offer a wide variety of family support services including: 
+Home Visiting and Care Coordination 
+Insurance enrollment assistance ","1202618027693441,953875575104132,1146850101014457",https://www.maryscenter.org/medical/other-specialties-and-services/health-for-heroes/,,1,none,"1276982655382389,594357854377389,895304866977482","Call to make an appointment. We accept most insurance plans including Medicaid and Medicare. If you don’t have health insurance, we’ll help you apply for public benefits or provide care at a discount. Comprehensive list of insurances are available on our website.",,,,,"1109152836345796,975713005890497,1249506930671270","1239905610045057,655172898058082,823973485555901,1184491209256204,892899945913453",,,"1108677909528551,904876794525199,948876011596931",,,,,,,,,,
+793641507311678,"Self Defense",,901970914472025,"The YMCA’s various self-defense classes provide philosophy and physical conditioning with an emphasis on reflex development, timing, eye-hand coordination, balance and a sense of well-being. These classes provide a unique and challenging opportunity for individuals of all ages and capabilities to have fun while getting a great physical work-out.
+
+Benefits of self-defense include:
+
+Increased strength and flexibility
+Self-confidence
+Concentration,
+Self-awareness & more!
+Beginners are welcome.
+
+","1198692764026642,910674112866949,716573413368445,882293888224112,577218861870418",https://www.ymcadc.org/programs/health-fitness/self-defense/,,1,none,"1276982655382389,976566727118378","Visit the website and select your YMCA for more information and to sign up for classes.",,,,,1200804357675895,,,,"602013012418112,758769305327957,1310277015717903,1111486004109298,623483554226574",,,,,,,,,,
+821975197328764,"Family Housing",,918523571271755,"SOME’s affordable housing for families offers safe, dignified, and affordable apartments to families experiencing homelessness and/or poverty. SOME’s family housing includes playgrounds and community spaces for the enrichment of the children and adults in residence. SOME owns 219 family apartments, which includes the following amenities:
+
+Amenities
+Private units
+Laundry facilities on-site
+Manager who lives on the property
+Common area with computer access (some units include cable and internet)
+All utilities included in the rent
+Playgrounds and, at some locations, special rooms for teen residents
+Located close to public transportation
+Services
+All Family Housing programs provide on – site voluntary, flexible and person-centered programming that accommodates the changing needs of families over their lifetime.  Families live in a trauma-informed community with full access to services that meet their specific needs, while encouraging independence and growth.   We offer different levels of support, depending on the service needs of the individual/family.    SOME’s affordable housing for families provides the following on-site services:
+
+Case Management
+Recreational and Socialization Activities
+Support Groups
+Financial Literacy
+On-site educational opportunities (i.e. computer classes)
+Health and Wellness Groups
+Recovery Support
+After-School Programming
+Youth Programming and Activities
+Life Skills
+Employment Support and Services
+ Educational Support
+SOME Place for Kids (SPFK) After-School Program
+Resident Advocacy Groups",,https://www.some.org/services/housing/family-housing,FSintake@some.org,1,none,"1305774265925553,1218316969190320,594357854377389,982549491856586,629380122005095","Email for more information.
+
+Eligibility: Applicants must be/have:
+
+A head of household age 18 or over. The head of household’s dependent children must be under age 18
+Eligible for Section 8 housing assistance
+Preferably on DCHA public housing waitlists (Local Rent Supplement Program/LRSP, Housing Assistance Program/HAP/Section 8)
+Employed full or part-time, actively engaged in a job training program, or enrolled and attending school
+Earning no more than 30% of area median income
+$600 for security deposit
+Willing to participate in mandatory community meetings, case management for themselves and their children, and budgeting/saving activities
+For some properties, all residents must have six months clean and sober
+Preference is given to families that are currently experiencing homelessness—living outside, in an emergency shelter, in unsafe housing, or paying more than 50% of their income for rent.",,,,,,,,,,,,,,,,,,,
+811588311148333,"Youth Academy",,901970914472025,"The Future Leaders Academy at YMCA Anthony Bowen & YMCA Alexandria
+
+With so many demands on today’s families and the urgency of early brain development, kids need all the support they can get. We are proud to introduce the Future Leaders Academy at YMCA Anthony Bowen, a new preschool enrichment program that will inspire your child’s love for learning, social and emotional development, character and creativity.
+
+The Academy is a place where kids ages 2 to 5 years learn early on how they can make a sincere contribution to the world around them.
+
+It is designed to help your child grow through STEAM (Science, Technology, Engineering, Arts & Mathematics) and healthy living, a safe and nurturing environment, socially-conscious values, and positive social skills. Every activity and interaction instills the Y’s core belief that all children have great potential, and deserve the opportunity to discover it. Our inspiring team is committed to not only teach these values and beliefs but serve as role models.","991654914903385,716573413368445",https://www.ymcadc.org/programs/child-care/youth-academy/,,1,none,"1228385258535588,976566727118378,940079755845898","Space is limited, so call 1-800-473-9622 to schedule a tour, request more info or register.",,,,,987182190910986,,,,"736104421703506,1310277015717903",,,,,,,,,,
+786777987046972,"Showers and Toiletries",,918523571271755,"SOME’s shower facilities are available for use every day of the year. Toiletries and towels will be provided. We offer standard morning blocks for men and women. Transgender persons, those with medical referrals, people with disabilities, and other authorized emergencies can shower by appointment in the afternoons.",1142163554566402,https://www.some.org/services/basic-needs,,1,none,893915418546777,"Contact: Visit the front desk at 71 O Street, NW or call 202.797.8806 ",,,,,828720521624019,,,,843557435036966,,,,,,,,,,
+806942363715001,"Home-delivered Meals",,1275858156254689,"Through Seabury’s home delivered meal program, older adults in Washington, D.C. who are unable to travel to shop for food or prepare food themselves have meals delivered to their homes.",1281917418518969,https://www.seaburyresources.org/homdeliveredmeals,info@seaburyresources.org,1,none,"630013980013392,1212005456553071,819562758416858","Call to apply for services.",,,,,"10864665643390001086466564339000,","1338861885610431,1338861885610432,1338861885610433,1338861885610434,1338861885610435,1338861885610436,1338861885610437",,,1215798438097456,,,,1145,5,,,,,
+819105625973846,Dental,,1287549685614240,"We keep smiles picture perfect! The friendly dentists and support staff at our state-of-the-art dental offices provide care for the whole family. Equipped with brand new, top-of-the-line tools, our skilled team takes great care with each patient and helps make sure your oral health is in excellent shape. Our highly trained staff care for all ages through a variety of services including:  
+
+Adults and Seniors  
+Preventive care: X-rays, cleanings, fluoride varnish, and oral hygiene instructions  
+Restorative care:  Fillings, extractions, crowns, bridges, anterior root canals, and more  
+Removable care:  We make complete and partial dentures  
+Teeth whitening:  A bleaching tray will be made, and bleaching material provided 
+Children and Teens   
+Preventive care: X-rays (over 6 years old), cleanings, fluoride varnish, oral hygiene instructions, and sealants  
+Restorative care:  Fillings, extractions, and stainless-steel crowns  
+Referrals to orthodontist ","953875575104132,1202618027693441,1333682431246537",https://www.maryscenter.org/dental/,,,none,"1212005456553071,758960875077789","Call to make an appointment. We accept most insurance plans including Medicaid and Medicare. If you don’t have health insurance, we’ll help you apply for public benefits or provide care at a discount. Comprehensive list of insurances are available on our website.",,,,,"1129615071986566,975713005890497,","1338861885601387,1338861885601388,1338861885601389,1338861885601390,1338861885601391,1338861885601392,1338861885601393,1338861885601398",,,"1108677909528551,904876794525199,1105631318690559",,,,,,,,,,
+826324408184019,"Health Promotion and Wellness",,879684021850075,"VIDA daily monitors the health condition of our participants. Vida has a Cuban geriatrician who fulfills the role of Health Advisor and Coordinator of the Health Promotion and Wellness Program. In addition, we have an Argentine Internist doctor, who supports this same task in our VIDA-Brightwood Meal-Site. As part of the Health Promotion program, our counselors routinely check the participants who register daily: their pressure is measured; their blood sugar levels are monitored; and their vital signs are supervised. Due to the high preparation of our counselors, when it is detected that the participant requires a medical appointment, the participants are referred to an appointment with their primary doctor or the needed specialist, if the case requires so. VIDA works with 7 hospitals in the city to which our counselors refer the participants when necessary. If the participant needs it, our social service counselor helps the participant to make the medical appointment. Sometimes the language barriers require this type of support. We also have a medication monitoring program to teach participants to know the benefits and side effects of the medications they take, so that they can understand the impact of their medications and identify if there is a problem. As part of the “Medication Monitoring Program”, a personalized follow-up of each person who enrolls in the program is carried out and a medication organizer pill is provided free of charge, so that they learn to take their medications on time and also learn to realize when they forget to take their pills. Likewise, VIDA also offers two weekly classes on common chronic diseases in older adults. Finally, Vida Senior Centers complements health education with the promotion of physical activity. VIDA offers arthritis exercise classes, chair exercise classes, dance and zumba classes, and yoga classes for seniors at its two locations. In summary, the activities offered by VIDA as part of the Health Promotion Program are the following:
+
+• Daily monitoring of vital signs
+• Diabetes Monitoring
+• Weekly Chronic Disease classes in the Elderly
+• Drug Adhesion Monitoring
+• Training on how to be regular with medications
+• Reference to medical consultations if necessary
+• Support to make appointments with your doctors.","932502301190120,869647738071923",http://box2142.temp.domains/~vidasen1/health-promotion-and-wellness/,,1,none,"1276982655382389,885604845315230,819562758416858","Call to join the center.",,,,,751061458384755,1157784454037653,,,"965942365087326,948986432487608",,,,,,,2,,,
+834474801815094,"Adult Psychotherapy",,1287549685614240,"Life can throw unexpected challenges your way and it’s important to know you’ve got someone to rely on when things get tough. Our compassionate and affirming behavioral health care team offers help and hope when you need it most. You can rely on the qualified team at Mary’s Center for your needs including:  
+
+Individual Therapy: Sometimes life’s challenges are hard to face alone. When you come to individual therapy, a Mary’s Center therapist will work alongside you to address a lingering challenge, inspire change, and help you improve your overall quality of life.
+Family and Couples Therapy: Coming to therapy as a family can be a beneficial tool towards healing. We offer understanding, confidential talk therapy for couples and families who want to improve their communication and resolve conflict in a healthy way. 
+Group Therapy: Expressing your challenges to others who are in a similar circumstance can be very healing. Group therapy at Mary’s Center is led by one or more of our trained therapists in a safe, confidential and supportive setting.  
+Psychiatry: For many people, medication is an integral part of mental health recovery. If you and your individual therapist decide medication is needed, our psychiatrists are available for ongoing medication management services. 
+Whatever your challenge, our highly-trained therapists can meet your needs. Our team of providers specialize in a variety of behavioral health needs including:
+
+Anxiety 
+Depression 
+Emotional or physical trauma, including post-traumatic stress disorder (PTSD)  
+LGBTQIA needs 
+Maternal mental health 
+Substance Abuse","1202618027693441,953875575104132,1146850101014457",https://www.maryscenter.org/behavioral-health/adults-and-seniors/therapy/,,5,none,"879394671891223,1193736021448376,893915418546777,1276982655382389,1212005456553071,819562758416858,874406320909098","Mary’s Center is ready to partner with you on your health journey. Don’t hesitate to reach out to us using the information below:  
+
+To make an appointment, call (844) 796-2797 anytime 
+If you are a current behavioral health participant and need to contact Mary’s Center’s Behavioral Health department directly, please call: 
+DC Behavioral Health Direct Line (202) 851-3671  
+Maryland Behavioral Health Direct Line (240) 839-3401 
+
+Behavioral Health Services  are by appointment only Monday-Friday from 8:00am to 6:00pm (other hours by arrangement).
+
+We accept most insurance plans including Medicaid and Medicare. If you don’t have health insurance, we’ll help you apply for public benefits or provide care at a discount. Comprehensive list of insurances are available on our website.",,,,,"1109152836345796,587171591094373587171591094373,975713005890497,","1338861885603757,1338861885603758,1338861885603759,1338861885603760,1338861885603761,1338861885603762,1338861885603763",,,"1108677909528551,904876794525199,948876011596931",,,,,,,,,,
+855469857598617,"Senior Services - We Are Family",,1290880981505786,"Our services currently include the following:
+
+– monthly grocery deliveries
+– weekly farmers market produce deliveries in the summer and fall
+– shopping transportation
+– friendly visits
+– Thanksgiving food basket deliveries
+– holiday gift deliveries and visits
+– emergency food deliveries
+– emergency cleaning
+– advocacy w/ agencies and landlords",1249696647199145,https://www.wearefamilydc.org/what-we-do/services/,,1,none,893915418546777,"Call for more information.",,,,,909713164007592,,,,980902256958058,,,,,,,,,,
+828981302922460,"Got Transition",,1287549685614240,"An online resource page. The transition from adolescence to adulthood can be both exciting and overwhelming, so it’s important to know you’re not alone. Using the “Got Transition” program as a guide, we’ve put together helpful resources to help you navigate this transition and continue caring for your emotional health.  
+
+Are You Ready? Q",,https://www.maryscenter.org/behavioral-health/children-and-teens/got-transition/,,1,none,"1276982655382389,1091485627676359","Visit website and check out our resources.",,,,,,,,,,,,,,,,,,,
+849877675917053,"Caregiver Programs",,1078800059400169,"When we care for our caregivers, we are caring for our entire community. That’s why DACL provides a variety of programs and services to support unpaid caregivers to our seniors and adults with disabilities. From caregiver respite programs to support groups, educational programs to case management. You are not alone in your journey—DACL is with you.",818197734902999,https://dacl.dc.gov/service/caregiver-programs,dacl@dc.gov,1,none,819562758416858,"Call for more information.",,,,,"767434507934353,791466840370210",,,,1193727390444096,,,,,,,,,,
+868294682470679,"Addiction Treatment",,918523571271755,"SOME offers comprehensive treatment options that empower men and women to break the bonds of addiction, reunite with their families, and rejoin their communities. Services are person-centered: each person will be evaluated during their initial appointment, or intake, to determine the most effective treatment plan.
+
+SOME offers addictions treatment in individual and group settings.
+
+Services:
+Residential Treatment: Treatment plans may incorporate residential treatment, offered at SOME’s facility in West Virginia. We also offer a safe house for clients prior to going to residential treatment and transitional housing for clients returning from that facility.
+Outpatient Treatment:  Intensive outpatient services include three treatment groups a day, as well as individual study time, 12 step groups, and peer groups. Clients may meet one-on-one with a counselor. Our outpatient program includes one to two groups a week specifically focused on maintaining and working on recovery following residential treatment. 
+SOME also offers alumni programs to our clients following their graduation. These services including monthly meetings, access to individual counseling, and peer support services as needed.","867480542956619,1288243545225450",https://www.some.org/services/social-services/addiction-treatment,"addictionservices@some.org ",1,none,"893915418546777,600702532354257","Location: Main SOME, 60 O Street, NW
+Services: Intake, Counseling, and Group Sessions
+Hours: Walk-in hours are from 8:00am to 11:00am, Mondays through Fridays. Drop-in Group Meetings are from 8:45am to 9:45am, Mondays through Fridays
+
+Location: SOME’s Conway Center, 4430 Benning Road, NE
+Services: Inpatient Treatment, Intensive Outpatient Treatment, Outpatient Treatment
+Hours: By appointment only, call 202.797.8806 
+Eligibility: Clients must be at least 18 years of age and a DC resident. SOME will assist patients with obtaining an ID card if necessary.",,,,,828720521624019,,,,"1105631318690559,654987694705915",,,,,,,,,,
+877408991389663,"Pediatrics - Mary's Center",,1287549685614240,"Mary’s Center knows strong and healthy kids make for strong and happy families! Our goal is to help prevent sickness and injury while fostering your child’s optimal growth and development. Mary’s Center’s kind, family-focused pediatric providers are here to address your child’s medical, dental, and behavioral health needs (ages 0-21). Our pediatrics services include:   
+
+Infants and Children (Newborns to age 11): 
+Early childhood behavioral health services 
+First dental care visits 
+Immunizations 
+Newborn’s first-days check-ups 
+Adolescents and Teens (ages 12 through 21):  
+Comprehensive behavioral health services 
+Care for acute, chronic, and complex conditions like asthma and diabetes 
+Dental care and referrals to orthodontists if needed  
+Physicals (school, sport, camp, and pre-operative) 
+Obstetrics and gynecological (OB/GYN) care  
+Sexual health services including prevention, testing, and treatment 
+We also invite you to enjoy access to our:  
+24/7 medical on-call line  
+Evening and Saturday clinic hours  
+Pediatric provider meet-and-greets 
+Pharmacy with free delivery  
+Same-day sick visits ","1202618027693441,953875575104132,1146850101014457",https://www.maryscenter.org/medical/children-and-teens/pediatrics/,,1,none,1276982655382389,"Call to make an appointment. We accept most insurance plans including Medicaid and Medicare. If you don’t have health insurance, we’ll help you apply for public benefits or provide care at a discount. Comprehensive list of insurances are available on our website.",,,,,"1109152836345796,975713005890497,1249506930671270",,,,"1108677909528551,904876794525199,948876011596931",,,,,,,,,,
+912682382040353,"Sexual Health - Mary's Center",,1287549685614240,"The capable and compassionate doctors and nurses at Mary’s Center provide comprehensive sexual health services in a confidential, safe, and inclusive environment. Mary’s Center also offers a wide range of sexual health prevention, testing, and treatment resources and services including:  
+
+Prevention and Testing
+Care and Treatment","1202618027693441,953875575104132,1146850101014457",https://www.maryscenter.org/medical/other-specialties-and-services/sexual-health/,,1,none,1276982655382389,"To reach the Sexual Health Resource Hotline, call (202) 851-3971  
+To reach our HIV Care Navigation team, email BeSafeBeSure@maryscenter.org 
+To make an appointment, call (844) 796-2797 anytime 
+
+Please reach out if you need assistance with applying for Ryan White coverage or to learn more about AIDS Drug Assistance Program (ADAP) and various other discount programs for HIV medications.   
+
+We accept most insurance plans including Medicaid and Medicare. If you don’t have health insurance, we’ll help you apply for public benefits or provide care at a discount. Comprehensive list of insurances are available on our website.",,,,,"1129615071986566,1109152836345796",,,,"1108677909528551,904876794525199,948876011596931",,,,,,,,,,
+916595636524322,"Health at Home",,1287549685614240,"Get the care you need when you need it most. When coming to the clinic is a challenge, Mary’s Center “Health at Home” telemedicine program quickly connects you to a caring medical provider in a matter of moments, saving you precious time and energy at a time when you’re not feeling your best.  
+
+The Health at Home program currently serves patients with plans through the following Medicaid Managed Care Organizations: 
+
+AmeriHealth Caritas DC 
+Trusted Health Plan 
+Amerigroup DC   
+By harnessing the power of technology, a Mary’s Center home visitor will come to your home and connect you to your Mary’s Center provider through a live video on a laptop computer. The home visitor will bring everything they need to connect, including a computer, Wi-Fi internet access, and medications.  
+
+Regular management and follow-up of chronic conditions results in improved health. Our Health at Home team and our providers actively reach out to patients who may qualify for the program.  If you believe you may be a good fit for the “Health at Home” program but haven’t heard from our team or talked with your provider, please don’t hesitate to reach out to us.  
+",,https://www.maryscenter.org/medical/other-specialties-and-services/health-at-home/,healthathome@maryscenter.org,1,none,1276982655382389,"Call to make an appointment. We accept most insurance plans including Medicaid and Medicare. If you don’t have health insurance, we’ll help you apply for public benefits or provide care at a discount. Comprehensive list of insurances are available on our website.",,,,,"878727208421151,1109152836345796",,,,,,,,,,,,,,
+926086262623139,"Safe at Home",,1351080129222960,"The Department of Aging and Community Living's Safe at Home Program provides safety adaptations in and around the homes of qualifying Seniors and adults with disabilities.",818197734902999,https://dacl.dc.gov/service/safe-home,,1,none,"1305774265925553,892692765580900,958152786056493,1141891580359737,996413864069591,929932272422839,1212005456553071,742573749443370,1139839930624727,1238748896910244","Call to apply.",,,,,"767434507934353,791466840370210767434507934353,791466840370210,767434507934353,791466840370210,767434507934353,791466840370210,767434507934353,791466840370210,","1338861885610623,1338861885610624,1338861885610625,1338861885610626,1338861885610627",,,1193727390444096,,,,,,,2,,,
+927583086660595,"Women's Health",,1287549685614240,"Mary’s Center is here for all your women’s health needs. Our skilled and kind providers will walk you through each stage of your health journey and offer comprehensive women’s health services including: 
+
+Family Planning
+Midwifery Services
+Obstetrics and Gynecology (OB/GYN)
+Prenatal Care","1202618027693441,953875575104132,1146850101014457",https://www.maryscenter.org/medical/adults-and-seniors/womens-health/,,1,none,"1276982655382389,874406320909098,819562758416858","Call to make an appointment. We accept most insurance plans including Medicaid and Medicare. If you don’t have health insurance, we’ll help you apply for public benefits or provide care at a discount. Comprehensive list of insurances are available on our website.",,,,,"1109152836345796,975713005890497,1249506930671270","1239905610045057,655172898058082,823973485555901,1184491209256204,892899945913453",,,"1108677909528551,904876794525199,948876011596931",,,,,,,,,,
+928339115255252,"Seabury Connecter Card",,1275858156254689,"Seabury ConnectorCard provides subsidized transportation funds through a prepaid debit card to older adults in Washington, D.C.  so that they can get the transportation they need when they need it.",1281917418518969,https://www.seaburyresources.org/transportation,info@seaburyresources.org,1,none,"878852836579488,819562758416858","Call for more information.",,,,,1178796032559187,,,,1215798438097456,,,,,,,,,,
+935391639326831,"Primary Care - Mary's Center",,1287549685614240,"Mary’s Center is committed to your overall health and well-being. From routine checkups to more serious ailments, our goal is to provide you high-quality, compassionate care in a convenient and comfortable setting.  
+
+We offer adults and seniors routine primary and preventive care including: 
+Annual physicals and check ups  
+Healthy lifestyle assessments, such as nutrition assessments 
+Health screenings for conditions like diabetes, high blood pressure, and sexually transmitted disease. Cancer screenings available based on your personal risk. 
+Immunizations, like your annual flu shot and many of the vaccinations recommended prior to international travel  
+Referrals to specialists when needed 
+Sick visits for when you don’t feel well 
+Treatment and management of acute and chronic conditions, such as diabetes, high blood pressure, obesity, asthma, and HIV 
+Senior-focused care and disease prevention classes available to DC residents over 60 years old. Visit our  senior wellness centers for more information.  
+We also offer the following convenient, on-site services and resources: 
+Family medicine—we can see your whole family 
+Group health education sessions available for diabetes and high blood pressure  
+Laboratories for diagnostic testing 
+Nutrition and healthy lifestyle programs  
+Outpatient therapy and psychiatric services 
+Pharmacy with free delivery ","1202618027693441,953875575104132,1146850101014457",https://www.maryscenter.org/medical/adults-and-seniors/primary-care/,,1,none,"1276982655382389,874406320909098,819562758416858","Call to make an appointment. We accept most insurance plans including Medicaid and Medicare. If you don’t have health insurance, we’ll help you apply for public benefits or provide care at a discount. Comprehensive list of insurances are available on our website.",,,,,"1109152836345796,975713005890497,1249506930671270","1184491209256204,892899945913453,1239905610045057,655172898058082,823973485555901",,,"1108677909528551,904876794525199,948876011596931",,,,,,,,,,
+935921848165742,"Counseling Serivces",,918523571271755,"SOME supports women and men experiencing homelessness and/or poverty in stabilizing and maintaining their mental health through several programs.
+
+We provide walk-in counseling and psychiatric services to individuals at our Health Services Clinic; Isaiah House, a therapeutic day program that provides a supportive environment for men and women who have been impacted by both homelessness and severe and persistent mental illness; and Jordan and Mary Claire Houses, a community alternative to psychiatric hospitalization.
+
+Counseling Services
+SOME’s therapists are there to provide additional support when life’s challenges become overwhelming. Our staff will listen without judgement and provide tools to ease suffering and find healthier ways of coping. Therapists help people cope by learning new behaviors, increasing insight into patterns, and providing a safe place to share feelings. Many individuals find that therapy helps them improve self-esteem, gain more control over emotions, improve communication, gain control over behaviors, and improve their outlook on life.",867480542956619,https://www.some.org/services/social-services/mental-health-services,,1,none,"893915418546777,1276982655382389","Call 202.797.8806 or email therapy@some.org",,,,,828720521624019,,,,1105631318690559,,,,,,,,,,
+938270944825871,"Age in Place",,1275858156254689,"Having a healthy, safe, and comfortable place to call home is important for all of us. Seabury’s Age-In-Place® program supports older adults in Washington, D.C.’s Wards 4, 5, and 6 through transformative volunteer service projects that help people stay in their own homes.
+
+​
+
+Age-In-Place® engages volunteers as a critical piece of the safety net in D.C. by providing yard work and housing cleaning services.",637684733149897,https://www.seaburyresources.org/ageinplace,ageinplace@seaburyresources.org,1,none,"893915418546777,819562758416858","Call to receive services. Email to sign up to volunteer.",,,,,1142710446777555,593652380535594,,,1152665399777698,,,,,,,,,,
+937541358474144,"Child Development Associate Job Training",,1287549685614240,"Train for a career working with young children! Briya Public Charter School offers a Child Development Associate (CDA) training program. The 10-month program prepares you for a career as an early childhood teacher or assistant teacher. During training, students learn educational theory and best practices while also getting hands-on teaching experience with children in a childcare or school setting.  
+
+Upon completion of the Child Development Associate training program, you will be prepared to take the national CDA exam and submit a work portfolio for certification review. You will also be certified in CPR/First Aid and ready to begin your new career! 
+
+To qualify for the CDA training, you must:  
+Live in Washington, DC 
+Be at least 18 years old 
+Pass the entrance exam ",1202618027693441,https://www.maryscenter.org/education/job-training/child-development-associate/,,1,none,"976566727118378,1238748896910244,874406320909098","Program Details: 
+Classes are held Monday-Thursday; 6:00-9:00 pm (English or Spanish) or 12:30-3:00 pm  (Spanish only) at Mary’s Center’s Ontario Road site 
+480 hours of practicum experience is required and arranged through Briya  
+Register for the course or call (202) 232-7777 for more information.  
+
+Mary’s Center and Briya Public Charter School work together to provide health care, social services, and education for residents of D.C. ",,,,,765691996005770,,,,1108677909528551,,,,,,,,,,
+963084111494175,"Ward 5 & 6 Aging Services",,1275858156254689,"Finding the right resources when in need can be very challenging. Seabury Ward 5 and 6 Lead Agency services are designed to provide older adults with ward-based and citywide supportive services, resources and referrals that assist them in continuing to live independently in their homes and community.","623911698639626,1281917418518969",https://www.seaburyresources.org/agingservices,info@seaburyresources.org,1,none,"1276982655382389,893915418546777,819562758416858","Call for more information.",,,,,"636390444955781,675750465096310",593652380535594,,,"764741814024308,1215798438097456",,,,,,,,,,
+982207553498582,"Pro Bono Project",,828308705468984,"The Pro Bono Project enables Legal Counsel for the Elderly to provide comprehensive legal services to low-income, older people by recruiting attorneys who willingly contribute their valuable time to pro bono work. The Pro Bono Project handles approximately 600 cases annually. These cases come to the Pro Bono Project through LCE's Legal Hotline, LCE in-house staff attorneys and the Active Intake Project.
+
+Scores of underserved seniors would be denied access to free legal services without the help of our dedicated pro bono attorneys. We count on our volunteer attorneys in the community to help us reach those in need.
+
+The Pro Bono Project handles a multitude of civil legal issues affecting older D.C. residents with limited means, such as ensuring that seniors receive public benefits (Social Security, Medicaid, food stamps, etc.) or by preventing eviction or foreclosure of their homes through negotiation or court litigation.
+
+LCE attorneys and staff first screen all cases to help ensure that they have legal merit and are well developed. Then, the Pro Bono Project refers these cases to private sector and government attorneys who have agreed to handle them on a pro bono basis. Our volunteers and staff periodically monitor these cases until closure.",1183173298558849,https://www.aarp.org/legal-counsel-for-elderly/what-we-do/info-2017/pro-bono-project.html?intcmp=AE-LCE-WWD-R1C1LL6,,1,none,"893915418546777,899387596744807,841905613386238","Call for information",,,,,931173517724084,1153058029513279,,,814164678263538,,,,,,,,,,
+953571703501099,"Adult Protective Services",,1078800059400169,"If you believe that an adult you know is being mistreated, exploited, or abused, Adult Protective Services (APS) can help assess and provide support. Now housed within the Department of Aging and Community Living (DACL), APS team members work to protect vulnerable adults from physical, financial, or emotional abuse, as well as neglect and self-neglect. APS social workers help to ensure that DC residents in need of protection are connected to the services they need. 
+
+Report Abuse
+To report allegations of abuse, neglect, self-neglect, and/or exploitation, please call the APS Hotline at (202) 541-3950 available 24-hours 7-days a week; or
+
+Visit the APS office at 500 K Street NE, Washington, DC 20002 between the hours of 8:45 am to 4:45 pm. Walk-ins are accepted.
+
+APS is not a custodial agency. APS does not have the authority to take custody of any adult for any reason.",818197734902999,https://dacl.dc.gov/service/adult-protective-services-0,dacl@dc.gov,1,none,"893915418546777,1210001318958777,819562758416858","Call or walk in.",,,,,"1190783233284841,767434507934353,791466840370210",,,,1193727390444096,,,,,,,,,,
+954742655318156,"Homebound Elderly Project (Project HELP)",,828308705468984,"Project HELP provides critically important legal assistance and advocacy to some of the most vulnerable seniors living in our community. These older neighbors are unable to play an active role in society because of their homebound status, which results in them becoming ""invisible"" and, consequently, this all too often leads to situations in which they are taken advantage of because of their decreased mobility and limited support network.
+
+Project HELP utilizes a full-time staff attorney, para-professional support, volunteers, and a cadre of volunteer (pro bono) attorneys from private law firms and government organizations.
+
+- Interview clients at home regarding legal problems;
+- Draft or review legal documents that seniors may need, such as powers of attorney or wills;
+- Administer a public-benefits checkup;
+- Assist clients with securing and maintaining public benefits such as Social Security, Supplemental Security Income (SSI), Medicaid, Elderly and Persons with Physical Disabilities (EPD) Waiver, Medicare, Qualified Medicare Beneficiary (QMB) and Supplemental Nutrition Assistance Program (SNAP) benefits.
+- Assist clients whose benefits or services have been threatened with termination, terminated, decreased or overpaid, through representation at all stages of the appeal process including personal conferences, requests for reconsideration, and fair hearings before the Office of Administrative Hearings (OAH). 
+- Analyze their housing situation concerning any landlord problems or consumer problems or, in the case of homeowners, any problems with home repair, predatory lending or deed fraud;
+- Ensure proper follow-up on the identified legal problems either directly or via LCE’s other program initiatives.
+
+Volunteers
+We are always looking for volunteers! We have a special need for attorneys and notaries, but anyone can volunteer to serve as a witness when we finalize important documents in seniors' homes.
+
+If you are an attorney licensed in the District of Columbia, please consider taking a case from us pro bono. We have many homebound seniors who need legal assistance. Our staff often gives training presentations on basic estate planning at area law firms. Please let us know if you are interested in hosting a training session.
+If you are a notary licensed in the District of Columbia, please consider volunteering to help our clients execute important documents. Periodically, we send emails to our volunteer notaries asking if they can meet us at certain times and places to notarize documents for our homebound clients. Please send us your email address, and we will add you to our list.",1183173298558849,https://www.aarp.org/legal-counsel-for-elderly/what-we-do/info-2017/homebound-elderly-project.html?intcmp=AE-LCE-WWD-R1C1LL4,,1,none,"893915418546777,899387596744807,841905613386238,985893316061112","Call for information",,,,,931173517724084,1153058029513279,,,814164678263538,,,,,,,,,,
+958856187058355,"Cooking & Nutrition Classes",,901970914472025,"A top priority for the YMCA of Metropolitan Washington is to support the region’s health and well-being. We believe that this is achieved by taking a comprehensive approach to health for each individual and communities that we serve.
+
+On the individual level, the prescription for achieving and maintaining health includes a lot: engaging in regular physical activity, maintaining proper hydration; eating nutritious meals that are appropriate for you, reducing stress, getting adequate sleep, and more. It is not easy.
+
+There are factors we each face as unique individuals and others that we face as a community.
+
+Similarly, nutrition is confusing and the food system is complex.  Some of our families struggle with food insecurity while others do not. Some individuals want to focus on cooking skills while others want a place to purchase produce. For these reasons, the Y’s food programs adopt community-specific programming that addresses the needs and desires of our families. We believe that by doing so we can make a change in our regional food system.
+
+Our cooking classes are for those looking to increase their cooking skills and nutrition knowledge. We offer series-based cooking classes for kids, adults, seniors, and families. All classes are free and currently offered virtually.",,https://www.ymcadc.org/programs/health-fitness/cooking-classes/,Tessa.Mork@ymcadc.org,,none,"879394671891223,1090773917009436","Email for more information.
+
+Visit this website for information on COVID-19 food distribution locations: https://www.ymcadc.org/wp-content/uploads/2020/07/ProduceDistribution_Updated7.16.20.pdf",,,,,"1200804357675895,","1338861885601277,1338861885601278,1338861885601279,1338861885601280,1338861885601281,1338861885601282,1338861885601283,1338861885601302",1207907839869079,,,,,,,,,,,,
+978823191463999,"Food Pantry",,918523571271755,"SOME’s food pantry offers non-perishable food items and fresh produce (when available) to those who need extra help to ensure that they and their families have enough to eat. At SOME’s food pantry, we do our best to provide items that support healthy eating—whole grains, low-sodium and low-sugar products, and healthy snacks.",1142163554566402,https://www.some.org/services/basic-needs,,1,none,630013980013392,"Walk in or call for more information.",,,,,"828720521624019828720521624019,","1338861885610439,1338861885610440,1338861885610441,1338861885610442,1338861885610443,1338861885610444,1338861885610445",,,843557435036966,,,,1145,5,,,,,
+988610275937141,"Model Cities Senior Wellness Center",,1275858156254689,"Model Cities Senior Wellness Center offers a variety of comprehensive programs, classes and activities designed to educate and promote active and healthy aging for older adults in DC. Free for DC residents 60 years of age and older. Come join us to learn, socialize, and engage in some fun healthy activities!",1320932553563772,https://www.seaburyresources.org/model-cities-senior-wellness-center,info@seaburyresources.org,1,none,"893915418546777,976566727118378,1212005456553071,819562758416858","Call to apply for services.",,,,,"785558330051645785558330051645,","1338861885610596,1338861885610597,1338861885610598,1338861885610599,1338861885610600",,,669837267515092,,,,,,,2,,,
+993277267161005,Insurance,,1287549685614240,"At Mary’s Center, your health is our priority. Understanding your health insurance options can be tough and we are here to help. We accept most insurance plans, but are deeply committed to providing you with health care regardless of your ability to pay.  
+
+Are you covered?
+It’s important to look into your insurance coverage before making an appointment with Mary’s Center to avoid paying unnecessary fees.  Check the insurance plans we accept. If you have any questions, please call us at (202) 420-7028. 
+
+If you DO NOT have insurance, here’s what to do: 
+Meet with us before you make your first doctor’s appointment at Mary’s Center. During the meeting, we will help you find out if you are eligible to sign up for a health plan or public benefit. 
+Once we determine you are eligible for a health plan or public benefit, we will help you with the sign-up process so you can see one of our medical providers as soon as possible. 
+Applying for Health Insurance Under the Affordable Care Act (ACA)   
+Mary’s Center’s certified staff will help you determine if you are eligible for insurance coverage under the ACA. If so, we are happy to help you sign up for the most appropriate health plan during the open enrollment period from November to January.
+
+Apply for ACA plans: 
+
+Washington, DC 
+Prince Georges County, Maryland 
+Montgomery County, Maryland 
+Sliding Fee Scale
+Mary’s Center also offers a Sliding Fee Scale. Visit costs will be based on your income and the number of people in your household. If you cannot pay for your visit at the time of your appointment, we will work out a payment plan with you.","1202618027693441,953875575104132",https://www.maryscenter.org/patients/insurance-and-fees/,,1,none,893915418546777,"If you need further assistance, you can always visit us in person or give us a call at (202) 483-8196. ",,,,,"975713005890497,579535239831775",,,,"1108677909528551,904876794525199",,,,,,,,,,
+1054654881182092,"Food and Nutrition Support",,1287549685614240,"A balanced diet plays a big part in building a healthy body, but we know it can be hard to get the right kind of foods for you and your family. In addition to nutrition counseling, Mary’s Center is an official site for the federally-funded Women, Infants, and Children  (WIC) program and Supplemental Nutrition Assistance Program Education (SNAP-Ed), Mary’s Center connects you to the nutrition resources and services available in our community and puts healthy food at your family’s fingertips.  
+","1202618027693441,953875575104132",https://www.maryscenter.org/social-services/referrals-and-resources/food-and-nutrition-assistance/,,1,none,893915418546777,"Mary’s Center is ready to partner with you on your health journey. Don’t hesitate to reach out to us using the information below: 
+
+To learn more about WIC or make a WIC application appointment, call (202) 232-6679  
+
+*A fourth DC WIC site can be found at Adventure Dental located at 1060 Brentwood Road NE",,,,,874710112690169,"1003280669828155,593029528256419,1106799266409790",,,"1108677909528551,904876794525199",,,,,,,,,,
+1063814078946036,"Center for the Blind & Visually Impaired",,1275858156254689,"Losing your vision can be not only challenging but also isolating and depressing. The Center for the Blind supports older adults in Washington, D.C. with making the physical and emotional adjustments to living with blindness.
+
+Services at the Center are free to all D.C. residents and include independent living skills training, music therapy, nutritional meals, braille, and other communication skills. ",623911698639626,https://www.seaburyresources.org/centerforblind,info@seaburyresources.org,1,none,"893915418546777,819562758416858,652121067639768","Call to apply for services.",,,,,636390444955781,593652380535594,,,764741814024308,,,,,,,,,,
+1073305429578122,"LGBT+ Mental Health",,1287549685614240,"Access to supportive mental health care is important. Mary’s Center has behavioral health providers who can assist children, adolescents, and adults who identify as part of the LGBT+ community. Several members of our behavioral health team are trained to provide culturally competent care for the LGBT+ community and are committed to creating a supportive, healing space.  
+
+Specific behavioral health providers are also available to assist persons identifiying as transgender or gender non-conforming with gender affirming mental health care. If you identify as transgender or gender non-conforming and are seeking care, Mary’s Center can serve as your “home base” during the process. Our behavioral health team can: 
+
+Talk with you about your gender treatment goals to come up with plan that is right for you  
+Provide mental health related referral letters when needed 
+Connect you to our medical providers for help with hormone therapy and surgical letters 
+Our greatest hope is you feel welcome, safe, and truly cared at Mary’s Center. Please reach out to us if you’re in need of support. 
+","1202618027693441,953875575104132,1146850101014457",https://www.maryscenter.org/behavioral-health/other-specialties-and-services/lgbtqia-mental-health/,,1,none,"1276982655382389,874406320909098,819562758416858,1091485627676359","Mary’s Center is ready to partner with you on your health journey. Don’t hesitate to reach out to us using the information below:  
+
+If you are a new behavioral health participant, please call our regular appointment line at (844) 796-2797 and ask for help with a behavioral health appointment 
+If you are a current behavioral health participant and need to contact Mary’s Center’s Behavioral Health department directly, please call: DC  Behavioral Health Direct Line: (202) 851-3671 | Maryland Behavioral Health Direct Line: (240) 839-3401 
+
+We accept most insurance plans including Medicaid and Medicare. If you don’t have health insurance, we’ll help you apply for public benefits or provide care at a discount. Comprehensive list of insurances are available on our website.",,,,,"587171591094373,1109152836345796","1003280669828155,593029528256419,1106799266409790",,,"1108677909528551,904876794525199,948876011596931",,,,,,,,,,
+1107751503709452,"Community Strong",,592376182631330,"Our Community Strong program provides improvements to a variety of common spaces used by thousands of Alexandria residents. From community parks and gardens to senior centers, homeless shelters and low-income daycare facilities, we partner with other organizations to upgrade or renovate these areas. Activities include building greenhouses and vegetable gardens, installing benches and tables, creating walkways, planting greenery, installing play areas, and much more. 
+
+Because of the work we’ve completed, children now have safe areas to play, neighbors have gardens to grow their own food, seniors have social connection spaces, and safe facilities to attend, and whole neighborhoods have been revitalized.",645897759928377,http://www.rebuildingtogetheralex.org/index.php/about-us/programs2019,info@rebuildingtogetherdca.org,1,none,1305774265925553,"Call or apply online. Concerning eligibility, folks who are eligible are low income homeowners who cannot maintain their homes (typically elderly, persons with disabilities, veterans, and families with children), as are nonprofit facilities, schools, and public spaces that serve low-income residents. To be considered for home assistance, candidates must complete and submit an application form and provide documentation of total household income, such as tax forms or pay stubs. Some of our clients are referred through congregations, schools, community agencies and service groups, or by self-referral.",,,,,979091642460386,894173153490187,,"608334571472582,616318277327647",601829608206464,,,,,,,,,,
+1049979809257514,"Early Childhood Behavioral Health",,1287549685614240,"Mary’s Center is here to help you find solutions for the behavioral health challenges your child may be facing. We actively involve you in their treatment and teach you to tune into your child’s needs, interpret their language, and help strengthen their inner resilience. We offer a variety of proven therapeutic approaches to help your child on their journey towards mental wellbeing and will work alongside you to find the best solution. Our approaches include:  
+
+Parent-Child Interaction Therapy (PCIT)
+Child-Parent Psychotherapy (CPP)
+Theraplay
+When individual therapy is recommended for your child, we use the following approaches:  
+Expression Therapy
+Child-Centered Play Therapy (CCPT)
+Sand Tray Therapy
+Playful Cognitive Behavioral Therapy (Playful CBT)","953875575104132,1146850101014457",https://www.maryscenter.org/behavioral-health/children-and-teens/early-childhood-behavioral-health/,,1,none,"1276982655382389,874406320909098,819562758416858","Mary’s Center is ready to partner with you on your health journey. If you are interested in the above services, please complete a referral form. Once you submit your referral form, we will contact you about making an appointment.  
+
+For additional questions about where services are provided, please use the following numbers:  
+
+DC Behavioral Health Direct Line (202) 851-3671  
+Maryland Behavioral Health Direct Line (240) 839-3401",,,,,587171591094373,"1003280669828155,593029528256419",,,"904876794525199,948876011596931",,,,,,,,,,
+1076835020018645,"Safe at Home",,592376182631330,"The Safe at Home program helps older adults and people with disabilities living in DC reduce the risk of falls in partnership with the DC Department of Aging and Community Living (DACL). Currently the DC Department of Aging and Community Living offers grab bars, chair lifts and other safety modifications for DC resident below 80% Area Median Income (AMI). Rebuilding Together DC • Alexandria will provide the same services for qualifying households who make 80-100% AMI, working with occupational therapists.",645897759928377,http://www.rebuildingtogetheralex.org/index.php/about-us/programs2019,info@rebuildingtogetherdca.org,1,none,1305774265925553,"Call or apply online. Concerning eligibility, folks who are eligible are low income homeowners who cannot maintain their homes (typically elderly, persons with disabilities, veterans, and families with children), as are nonprofit facilities, schools, and public spaces that serve low-income residents. To be considered for home assistance, candidates must complete and submit an application form and provide documentation of total household income, such as tax forms or pay stubs. Some of our clients are referred through congregations, schools, community agencies and service groups, or by self-referral.",,,,,979091642460386,894173153490187,,"608334571472582,616318277327647",601829608206464,,,,,,,2,,,
+1098453015435360,"Health Insurance Counseling",,1078800059400169,"Medicare beneficiaries, their families, and caregivers living in the District of Columbia can access free health insurance information, counseling, education, and assistance through our DC State Health Insurance Assistance Program (SHIP). SHIP counselors are trained to get you the information you need and can work with you directly to understand the ins and outs of Medicare so you can make informed decisions about your healthcare and insurance coverage.
+
+We can also assist you with resolving unpaid medical bills, making appeals for denials of medical services, and obtaining prescription medications. Connect with a counselor today at (202) 727-8370 to get your questions answered and better understand your coverage and options.",818197734902999,https://dacl.dc.gov/service/health-insurance-counseling,dacl@dc.gov,1,none,819562758416858,"Call to connect with a counselor.",,,,,"1083066764267659,791466840370210",,,,1193727390444096,,,,,,,,,,
+1118257508626334,"Sibley Senior Association",,1115745782915962,"If you are 50 years or older, Sibley Memorial Hospital invites you to become a member of The Sibley Senior Association to help you maintain your good health and grant you access to many benefits within Sibley Hospital. Membership includes quarterly newsletters, retail discounts, classes, free blood pressure checks, health screenings, classes and support groups.",1021458214239224,https://www.hopkinsmedicine.org/about/community_health/sibley-memorial-hospital/senior-wellness/index.html,,,none,"1212005456553071,533832483389123","As a result of an overabundance of caution due to COVID-19, our office will be closed until further notice. We are working remotely. We will be mailing new membership cards on a regular basis. Please call our office number 202-364-7602. We will explain the logistics. If you need resources for coping with COVID-19, please let us know. We will be happy to provide additional information. Take Care. Be Safe.",,,,,"1126332865904606,","1338861885603311,1338861885603312,1338861885603313,1338861885603314,1338861885603315,1338861885603316,1338861885603317,1338861885603318",,,606691178479516,,,,,,,,,,
+1138527811978367,"Care Management",,1275858156254689,"Families face new challenges as family members age. Life doesn’t come with an event planner, so Seabury care managers are there for when you and your family need help.
+
+Seabury care managers guide older adults and their families through the process of planning for long-term needs. Seabury’s Care Management team is dedicated to improving the quality of life as well as maintaining independence for their clients.
+
+Care Management provides counsel to families on key issues that could include elder law attorneys, home care providers, senior living communities, physicians, rehabilitation centers, mental health providers, financial planners, and others to promote a positive aging experience.",1281917418518969,https://www.seaburyresources.org/caremanagement,info@seaburyresources.org,1,none,"893915418546777,819562758416858","Call to apply for services.",,,,,881877869946356,593652380535594,,,1215798438097456,,,,,,,,,,
+1120925823267751,"Safe and Healthy Home",,592376182631330,"Our Safe and Healthy Home program focuses on stabilizing 25 items that the National Center for Healthy Housing (NCHH) found to drastically improve living conditions for a home’s residents, with a particular focus on low-income persons living in older and/or substandard housing who are disproportionately affected by home hazards. Volunteers work throughout the year on home safety, accessibility modifications, and fire and carbon monoxide safety prevention improvements.
+
+Last year, our clients met only 68% of the recommended items, but after Rebuilding Together made repairs and upgrades, 86% of the items that contribute to a safe and health home were completed.",645897759928377,http://www.rebuildingtogetheralex.org/index.php/about-us/programs2019,info@rebuildingtogetherdca.org,1,none,1305774265925553,"Call or apply online. Concerning eligibility, folks who are eligible are low income homeowners who cannot maintain their homes (typically elderly, persons with disabilities, veterans, and families with children), as are nonprofit facilities, schools, and public spaces that serve low-income residents. To be considered for home assistance, candidates must complete and submit an application form and provide documentation of total household income, such as tax forms or pay stubs. Some of our clients are referred through congregations, schools, community agencies and service groups, or by self-referral.",,,,,"979091642460386979091642460386,","1338861885610423,1338861885610424,1338861885610425,1338861885610426,1338861885610427,1338861885610428,1338861885610429",,"608334571472582,616318277327647,608334571472582,616318277327647",601829608206464,,,,923,3,,,,,
+1146427923405605,"Consumer Fraud and Financial Abuse Unit",,828308705468984,"With the twin goals of protecting clients’ homes and their sources of income, the Consumer Fraud and Financial Abuse Unit provides direct representation to LCE clients on a range of issues, including:
+- Foreclosure Defense;
+- Real Property Fraud;
+- Debt Collection Defense;
+- General Consumer Issues.
+- The unit also houses the Real Property Tax Project, which represents clients who are facing real property tax foreclosures.
+
+In addition to providing direct services, the unit attorneys make an impact through systemic and policy advocacy. Our attorneys have been involved at the ground level in:
+- The creation of an early mediation program in mortgage foreclosure suits filed in court and a similar mediation program for non-judicial foreclosures;
+- The creation of a court-based legal services program to protect seniors from abusive debt collection suits;
+- Legislative and administrative advocacy on mortgage and condominium foreclosures, real property tax issues, and financial exploitation.
+
+LCE is a member of the DC TROV core multidisciplinary team, created to help D.C. first responders and advocates better respond to elder abuse victims. In 2015, DC TROV delivered an 8-hour training to more than 350 MPD Detectives as cross-training sessions with victim advocates, the aging network, Adult Protective Services staff, and others who may interact with at-risk seniors . The trainings included information about identifying forms of elder abuse and investigation techniques to promote the prosecution of elder abuse crimes and to enhance victim safety.",1183173298558849,https://www.aarp.org/legal-counsel-for-elderly/what-we-do/info-2017/consumer-fraud-financial-abuse.html?intcmp=AE-LCE-WWD-R1C1LL3,,1,none,"841905613386238,899387596744807","Call for information",,,,,931173517724084,1153058029513279,,,814164678263538,,,,,,,,,,
+1108394531508208,"Public Benefits & General Services Unit",,828308705468984,"The Public Benefits and General Services Unit (PBGS) ensures that seniors receive the income, benefits, and services to which they are entitled that enable them to live independently in the community.  The PBGS staff represents clients in cases involving public benefits and income maintenance issues.
+
+PBGS staff assist clients whose benefits or services have been threatened with termination, terminated, decreased or overpaid through representation at all stages of the appeal process including personal conferences, requests for reconsideration, and fair hearings before the Office of Administrative Hearings. 
+
+Our Services
+The PBGS staff represents clients in cases involving public benefits and income maintenance issues. Such cases include, but are not limited to:
+
+- Social Security Administration (SSA)
+Initial applications and appeals: Social Security Retirement, Supplemental Security Income (SSI), Social Security Disability, Overpayments
+- Department of Human Services (DHS), Economic Security Administration (ESA), Department of Health Care Finance (DHCF): Medicaid, Medicare, Qualified Medicare Beneficiary (QMB)
+Home Health Care Services such as Personal Care Aide (PCA) services, Elderly and Persons with Physical Disabilities  (EPD) Waiver, Supplemental Nutrition Assistance Program (SNAP) benefits (formerly food stamps), Other Retirement Benefits (Federal, Private, and other.
+- Department of Veteran Affairs (VA) Benefits (specific areas only): Non Service Connected VA Pension Claims, Aid & Attendance, Rating Claims for VA Pension Eligible Veterans, Service Connected, Disability Compensation Claims for Presumed Conditions, Enrollment in E-Benefits Portal, Overpayments
+
+Public Benefits Checkup
+PBGS staff also assists clients in determining what public benefits and services they are entitled to receive by conducting Public Benefits Checkups and assisting clients in applying for those identified benefits and services.
+
+Other Services
+Small consumer cases (such as public utilities, hearing aids, credit card debt, banking problems, student loans)
+Collection cases
+Other general cases that do not fall squarely within other specific LCE programs",1183173298558849,https://www.aarp.org/legal-counsel-for-elderly/what-we-do/info-2017/public-benefits-general-services-unit.html?intcmp=AE-LCE-WWD-R1C1LL7,,1,none,"841905613386238,893915418546777,819562758416858","Call for information",,,,,931173517724084,1153058029513279,,,814164678263538,,,,,,,,,,
+1102203467116873,"Legal Hotline",,828308705468984,"Legal Counsel for the Elderly’s Legal Hotline provides free legal advice, assistance, and referrals to:
+
+All D.C. residents 60 years of age or older
+D.C. residents 55 years of age or older with Social Security and Supplemental Security Income disability issues
+D.C. residents 18+ regarding D.C’s home adaptation program, Safe at Home
+
+Callers first speak to our intake specialists, who gather information including name, address, date of birth, marital status, household members, income and asset information, and a general description of the legal problem or question.
+
+Our intake team includes staff who are bilingual in Spanish and English. Intake specialists provide this information to the hotline attorneys who are authorized to practice law in the District of Columbia. Hotline attorneys return calls as promptly as workload permits.
+
+The Legal Hotline attorney gathers further information about the question or problem, and provides advice or assistance. If the problem requires further legal representation, the hotline attorney can refer the client to an LCE staff attorney or other programs depending upon the nature of the issue and program limitations on client income and assets.",1183173298558849,https://www.aarp.org/legal-counsel-for-elderly/getting-help/?intcmp=AE-LCE-WWD-R1C1LL5,,1,none,"893915418546777,899387596744807,841905613386238,1238748896910244,1005131331152756,838767211746160,742573749443370","Call for information",,,,,931173517724084,1153058029513279,,,814164678263538,,,,,,,,,,
+1102764489219960,"LGBT+ Health",,1287549685614240,"All clients are welcome here. Mary’s Center is fully committed to providing accessible, convenient, and culturally competent care.  Our role is to support you on your health journey regardless of race, color, religion, national origin, disability, age, sex, sexual orientation, or gender identity or expression. Our priority is to ensure you feel safe and comfortable talking about your health, your thoughts, and about any unique challenges you may face.   
+
+A number of our providers specialize in the physical, emotional, and sexual health of the LBGT+ population.  We know visiting the doctor can be uncomfortable, so it’s our goal to create an environment where you feel respected and heard.  We want you to feel you can talk about your health concerns, no matter what they are.    
+
+When you visit Mary’s Center, you can be confident you’ll receive comprehensive primary care from a team that is familiar and experienced with diverse needs.  This includes culturally competent services such as: 
+
+Annual physicals
+Dental Care
+Behavioral Health Care
+Preventive Care
+Sick Visits
+In addition, we can help you protect your sexual health through free HIV testing  and prevention methods available at our health centers. Testing for sexually transmitted infections (STI) is available through any medical visit, and by request for walk-in services with our sexual health team. 
+
+Transgender Health Needs
+If you identify as transgender or gender non-conforming and are seeking care, Mary’s Center can serve as your “home base” during the process. Our medical team can:
+
+Talk with you about your gender treatment goals, to come up with a treatment plan that is right for you. 
+Prescribe and manage hormone therapy;  
+Provide surgical referral letters when needed;
+Help with insurance coverage eligibility
+Connect you with mental health providers here at Mary’s Center;  
+Access to supportive mental health care is important. Mary’s Center has behavioral health providers who can assist children, adolescents, and adults who identify as transgender or gender non-conforming with any emotional, social, or trauma concerns they may have experienced.  ","1202618027693441,953875575104132,1146850101014457",https://www.maryscenter.org/medical/other-specialties-and-services/lgbtqia-healthcare/,,1,none,"1276982655382389,969114221652955,1236262310782567","To reach the Sexual Health Resource Hotline, call (202) 851-3971  
+To reach our HIV Care Navigation team, email BeSafeBeSure@maryscenter.org 
+To make an appointment, call (844) 796-2797 anytime 
+
+Please reach out if you need assistance with applying for Ryan White coverage or to learn more about AIDS Drug Assistance Program (ADAP) and various other discount programs for HIV medications.   
+
+We accept most insurance plans including Medicaid and Medicare. If you don’t have health insurance, we’ll help you apply for public benefits or provide care at a discount. Comprehensive list of insurances are available on our website.",,,,,"1129615071986566,1109152836345796",,,,"1108677909528551,904876794525199,948876011596931",,,,,,,,,,
+1122765390786822,"Senior Medicare Patrol (SMP)",SMP,828308705468984,"The SMP DC office empowers and assists Medicare beneficiaries, their families, and caregivers to prevent, detect, and report health care fraud, errors, and abuse through outreach, counseling, and education. DC SMP is a grant-funded project of the federal U.S. Department of Health and Human Services (HHS), U.S. Administration for Community Living (ACL). Our work is in three main areas:
+
+Conduct Outreach and Education:  SMP DC gives presentations to groups, exhibits at events, and works one-on-one with Medicare beneficiaries. In 2013 more than 1 million people were served by the national SMP program outreach and education efforts across the country;
+Engage Volunteers: Protecting older persons’ health, finances, and medical identity while saving precious Medicare dollars is a cause that attracts civic-minded Americans;
+Receive Beneficiary Complaints: When Medicare beneficiaries, caregivers, and family members bring their complaints to - our office, we make- a determination about whether or not fraud, errors, or abuse is suspected. When fraud or abuse is suspected, –we make referrals to the appropriate state and federal agencies for further investigation.",1183173298558849,https://www.aarp.org/legal-counsel-for-elderly/what-we-do/info-2017/senior-medicare-patrol.html?intcmp=AE-LCE-WWD-R1C2LL3,LCESMP@aarp.org,1,none,"893915418546777,899387596744807,841905613386238,819562758416858","Call for information",,,,,639723068072357,1153058029513279,,,814164678263538,,,,,,,,,,
+1135984147096642,"School-based Mental Health Program",,1287549685614240,"The Mary’s Center School Based Mental Health (SBMH) Program supports children, families, and communities by promoting behavioral wellness. Our goal is to increase student, family, and school communities’ attainment of positive mental health and well-being. To do this, we  partner with DC public charter schools in Wards 1, 4, and 5 to enhance each school’s wellness team. 
+
+The SBMH team is dedicated to helping children and young adults of all ages with the emotional health challenges they may be facing. Our kind and highly skilled bilingual therapists work full-time in each school, reducing barriers to behavioral health assessments and culturally appropriate, trauma-informed care.   
+
+Additionally, our SBMH program partners with high school seniors and their families through the “Got Transition” Young Adult Mental Health Initiative. The initiative aims to help prepare them for the unique stressors they may face as they enter adulthood and ensure they can continue caring for their emotional health.  
+",,https://www.maryscenter.org/behavioral-health/children-and-teens/school-based-mental-health-program/,mparrella@maryscenter.org,1,none,1276982655382389,"If your school is interested in partnering with Mary’s Center, contact Marisa  Parrella, LICSW, LCSW-C, Director of School Based Mental Health Program at  mparrella@maryscenter.org  or (202) 674-3754. ",,,,,"1100261595528489,1109152836345796",,,,,,,,,,,,,,
+1157089206097365,"Senior  MedExpress Transportation",SME,1078800059400169,"Provides eligible DC residents, 60 and older without Medicaid, free medical transportation services and/or transportation to public benefits appointments.  Individuals must complete an application and Health Care Provider form.  Call for more information and/or to register for the transportation program.",,https://dacl.dc.gov/service/transportation,dacl@dc.gov,,none,"897715506052490,697638961326982,1212005456553071,742573749443370","Visit website for more information.",,,,,"767434507934353,791466840370210,",,,"816557746628288,616318277327647,756892272238697,828931086235381",,,,,,,,,,,
+1167108992028451,"Case Management",,918523571271755,"SOME can assist clients in obtaining benefits, with legal issues, and in connecting to other government agencies.
+
+SOME offers walk-in hours every weekday.
+
+Services
+Obtaining DC identification
+Applying for Medicaid and other insurance
+Assistance with housing applications
+Assistance with working with government agencies
+Referrals
+Legal assistance",867480542956619,https://www.some.org/services/social-services/case-management,,1,none,"893915418546777,1276982655382389","Call for more information.",,,,,828720521624019,,,,1105631318690559,,,,,,,,,,
+1142869830287216,Aquatics,,901970914472025,"At the Y, we teach youth, teens, and adults to swim, so they can stay safe around water and learn the skills they need to make swimming a lifelong pursuit for staying healthy. Y swim instructors are nationally certified. Their training includes CPR, AED, First Aid, and Oxygen Administration. Swim lessons provide important life skills that could save a life and will benefit students for a lifetime.","991654914903385,1198692764026642,940212538195830,716573413368445,882293888224112,577218861870418",https://www.ymcadc.org/programs/sports-recreation/aquatics/,,1,none,"1276982655382389,976566727118378","Visit the website and select your YMCA for more information and to sign up for classes.",,,,,1200804357675895,,,,"736104421703506,602013012418112,1171342361002389,1310277015717903,1111486004109298,623483554226574",,,,,,,,,,
+1149133594765984,"Family Support - Home Visiting",,1287549685614240,"Since 1988, Family Support has been visiting with growing families like yours right where they are — in the comfort of their home — to provide the information, resources, skills, and hands-on support to build a solid family foundation. 
+
+The first few years of a child’s life can be one of the most challenging and important times for a family. Let’s meet those challenges together. Reach out to us for free, experienced support for you and your family. This is what it means to be part of a community. 
+
+We build relationships with families who are about to have a new child or have recently had one in order to support a healthy home environment that is loving, nurturing, safe, and self-sustaining. 
+
+Our Family Support team is dedicated to working alongside you in fun ways to encourage:  
+
+Parenting skills 
+Child growth 
+Financial stability 
+School readiness 
+Stress relief 
+Physical health needs 
+Nutrition 
+Parent-child bonding 
+Goal planning 
+Our long-term, hands-on approach gives you valuable skills, supplies, and knowledge, when you need them, and periodically follows up with inspiration for keeping your goals on track. ","1202618027693441,953875575104132",https://www.maryscenter.org/social-services/family-support-programs/home-visiting/,,1,none,"893915418546777,982549491856586","Our support is provided based on your individual interests and personal schedule — there is no “one size fits all” here. Call or text us at (202) 302-6669 to begin the conversation. Together, we can find the program that best fits your unique life situation.
+
+Mary’s Center is ready to partner with you on your health journey. Don’t hesitate to reach out to us using the information below:
+
+To reach our Healthy Families America Program Manager, Abayea Pelt, call (202) 847-4279 or (202) 302-6669 
+",,,,,"1168652950228732,1109152836345796","1003280669828155,593029528256419,1106799266409790",,,"1108677909528551,904876794525199",,,,,,,,,,
+1160836319132411,"Veterans Advocacy Project",,828308705468984,"To ensure we are best serving older veterans living in our Nation’s capital, LCE launched its Veterans Advocacy Project in 2014. LCE’s Veterans Advocacy Project ensures DC low-income older or disabled veterans with specific claims before the Department of Veteran Affairs (VA)
+
+LCE assists eligible honorably discharged war-time D.C. veterans aged 60 and older and certain eligible surviving spouses with: Claims for (Non-Service Connected) VA Pension benefits, Claims for increased ratings for Aid and Attendance for Pension eligible veterans with specific disabling conditions
+
+LCE assists eligible D.C. veterans aged 60 and older with: Claims for Service Connected Disability Compensation if they are diagnosed with conditions the VA has found to be Presumed, Conditions related to military service
+
+LCE also assists veterans and surviving spouses aged 60 and older with: Creating  electronic VA benefit portals to access information regarding their VA benefits, Disputing allegations of VA debts and overpayments by requesting: Waivers of alleged VA debt or, More favorable repayment options
+
+LCE does not have the resources to help older veterans and surviving spouses apply for every resource and benefit the VA offers. We encourage veterans seeking help with benefits other than those LCE’s Veterans Advocacy Project accepts to find a local Veteran Service Organization (VSO) for help with benefit questions and claims. VA approved and accredited VSOs can be found at the Department of Veterans Affairs website and they do not charge for help accessing VA benefits and resources. ",1183173298558849,https://www.aarp.org/legal-counsel-for-elderly/what-we-do/info-2017/veterans-advocacy.html?intcmp=AE-LCE-WWD-R1C2LL6,,1,none,"893915418546777,899387596744807,841905613386238,594357854377389,819562758416858","Call for information",,,,,931173517724084,,,,814164678263538,,,,,,,,,,
+1188616906512182,"Nutrition & Food",,879684021850075,"At Vida Senior Centers we take care of the nutrition and diet of our participants. To do this, VIDA has a licensed nutritionist / dietitian who supervises the food services of our participants. Our nutritionist also offers nutritional and diet counseling individually and in groups. The nutritionist works in coordination with the Health Promotion Counselor to put emphasis on people with high risk of diabetes and high blood pressure. Individual and group counseling are done with the objective of helping participants establish a healthy diet, by promoting informed decisions regarding their food. It is always emphasized that a healthy diet helps prevent and manage chronic diseases such as diabetes, hypertension and obesity. In addition to the classes, the nutritionist also offers demonstrates of healthy cooking. Depending on the season and seasonal vegetables or fruits, healthy meals are prepared. The nutritionist regularly uses food from the Food Bank box so that we teach participants how to use those ingredients in the healthiest way possible. Participants are also educated on important issues related to nutrition such as: learning to keep food in good condition; modify recipes to make them healthier; improve decisions when buying food; use healthy portions of meals; and pay attention to their weight. They are often reminded of the importance of having breakfast and not skipping meals to avoid spikes and drops in sugar levels. In addition to that, VIDA gives breakfast to 50 participants in our two centers. We do not have a subsidy to provide breakfast, but for the past year VIDA has obtained private donations of bread and cereals that allow us to deliver breakfast in the morning to 50 people. In addition, we offer free lunch to about 120 people daily. Thanks to the support of the Washington DC Department of Aging, we deliver around 120 hot lunches daily between our two centers, Monday through Friday. Additionally, Vida Senior Center is an official distributor of the city's Food Bank, with which we distribute to each participant one meal box per month. In summary, nutrition and food activities are as follows:
+
+• Free light breakfast: coffee / tea and bread or oatmeal
+• Free lunches
+• Individual nutrition assessments
+• Individual diet tracking
+• Group classes on nutrition
+• Healthy food demonstrations
+• Monthly distribution of a Food Bank box
+• Individual counseling to handle stress situations
+• Group counseling on frustration management techniques
+• Tai-Chi exercises to learn to breathe and relax the body
+• Classes on Positive Thinking
+• Classes on Mental and Emotional Health
+• Referral to doctors if the need is identified","932502301190120,869647738071923",http://box2142.temp.domains/~vidasen1/nutrition-food/,,1,none,"630013980013392,879394671891223,1276982655382389,896905506493054,885604845315230,1212005456553071,819562758416858","Call to join the center.",,,,,"751061458384755751061458384755,751061458384755,","1338861885610468,1338861885610469,1338861885610470,1338861885610471,1338861885610472,1338861885610473,1338861885610474",,,"965942365087326,948986432487608",,,,534,5,,,,,
+1171041183154896,"Addiction and Substance Abuse Treatment",,1287549685614240,"You can  get your life back. There is help and hope if you’re struggling with addiction and substance abuse. When you come to Mary’s Center, you can expect safe, confidential care from our trusted team of clinicians. We work hard to reduce the stigma and discrimination associated with addiction and substance abuse and are here to help you on your path to recovery by providing:  
+
+Access to Suboxone* and other medications through our Medication Assisted Treatment (MAT) program 
+Care coordination services 
+Risk reduction interventions 
+Resources and education 
+Referrals to mental health, medical, and social services at Mary’s Center and external partners 
+*Suboxone has been clinically proven to be a safe and effective treatment option for people who are struggling with  heroin-opioid  addiction. 
+
+Medication Assisted Treatment (MAT) at Mary’s Center
+Mary’s Center offers Medication Assisted Treatment (MAT) if you are struggling with heroin-opioid  abuse. We use buprenorphine (Suboxone)—a safe and clinically proven treatment—as a key part of our MAT program to help you reduce and then stop substance abuse. Patients who have used  buprenorphine have reported experiencing a decrease in cravings for continued  opioid use and diminished withdrawal symptoms. Here’s what you can expect if you decide to try the MAT program: 
+
+You will meet with a Mary’s Center medical staff member for an assessment.  
+Your medical provider will gather your medical history and review clinic protocols and requirements. 
+You will be scheduled for 2 to 3 visits per week as your dose is adjusted. After that, you will have weekly to biweekly visits, eventually reducing to monthly visits. 
+You will not be prescribed buprenorphine during your first visit or if you are taking  illicit benzodiazepines  or stimulants. 
+You will need to have a plan in place to pay for  medication. (We accept Medicaid, Medicare, cash, or private insurance is accepted). ","1202618027693441,953875575104132,1146850101014457",https://www.maryscenter.org/behavioral-health/other-specialties-and-services/addiction-and-substance-abuse-treatment/,,1,none,"1276982655382389,874406320909098,819562758416858,1091485627676359","Mary’s Center is ready to partner with you on your health journey. To speak with an Addiction Specialist/MAT Care Coordinator, call (202) 545-8047. 
+
+We accept most insurance plans including Medicaid and Medicare. If you don’t have health insurance, we’ll help you apply for public benefits or provide care at a discount. Comprehensive list of insurances are available on our website.",,,,,"757572527073038,1109152836345796","1003280669828155,593029528256419,1106799266409790",,,"1108677909528551,904876794525199,948876011596931",,,,,,,,,,
+1210054763234429,"Senior Living Communities",,1275858156254689,"Seabury provides housing options for older adults through our three housing communities: Home First Residences®, Seabury at Friendship Terrace, and Seabury at Springvale Terrace.","1185094328556228,967601719856630,637684733149897",https://www.seaburyresources.org/seniorliving,info@seaburyresources.org,1,none,"1276982655382389,893915418546777,1305774265925553,819562758416858","Call or email for more information. Tours are available both in person and virtually.",,,,,1142710446777555,593652380535594,,,"1094098920613069,1217002783652146,1152665399777698",,,,,,,,,,
+1205746962140909,"Self-Help Office (SHO)",,828308705468984,"LCE’s Self Help Office (SHO) empowers seniors through advocacy and community partnerships. A legal associate and volunteers provide direct assistance, helping more than 300 seniors each year. Services include, but are not limited to:
+
+- Providing information for requesting DC government services
+- Providing educational information on various legal topics;
+- Providing self-help guides;
+- Conducting public benefits checkups;
+- Helping  with the preparation of applications for public benefits;
+- Helping  write consumer complaint letters;
+- Providing referrals to social service agencies;
+- Providing information on filing small claims cases;
+- Providing information on small estate probate and recording deeds;
+- Providing information on requests for vital records;
+Requesting and disputing credit report information
+
+LCE believes there is no substitute for having staff ""on the ground"" in the community. We serve at six partnering locations:
+
+- Downtown Cluster/NW
+- Israel Baptist/NE
+- Capitol View Baptist/NE
+- IONA/NW
+- Bread for the City/SE
+- AARP DC State Office/SE",1183173298558849,https://www.aarp.org/legal-counsel-for-elderly/what-we-do/info-2017/self-help-office.html?intcmp=AE-LCE-WWD-R1C2LL2,,1,none,"893915418546777,899387596744807,841905613386238","You must first call and make an appointment. ",,,,,770218954747061,,,,814164678263538,,,,,,,,,,
+1219965481612856,"SOME Senior Center",,918523571271755,"SOME’s Senior Center, located in Ward 8, offers exciting health, wellness, and recreational activities and links participants to supportive services. Activities include, but are not limited to, fitness classes, health and wellness seminars, senior advocacy workgroups, and community trips (museums, shopping, etc.). Lunch is provided daily. Transportation is provided for residents of Wards 6, 7, and 8.",651934751090741,https://www.some.org/services/social-services/senior-services,,1,none,"893915418546777,1276982655382389,976566727118378,819562758416858","Call to enroll. 
+
+Eligibility: Participants must be a resident of DC, age 60 or over, capable of self-care, and without a diagnosis of dementia and/or memory loss.",,,,,1234712878569481,,,,1216780850778368,,,,,,,,,,
+1227451026876891,"Active Intake Project",,828308705468984,"The Active Intake Project (AIP) is an innovative legal services delivery program, which brings legal services directly to the neighborhoods where D.C. seniors live.
+
+The AIP is part of AARP Legal Counsel for the Elderly’s Pro Bono Project. While most of our cases require D.C. seniors to initiate contact with our office through our Legal Hotline, the Active Intake Project ensures that LCE reaches underserved, low-income seniors in the District who may be reluctant or unable to initiate contact with our office.
+
+By holding periodic legal intake clinics in various senior centers, subsidized senior housing buildings, churches, senior fairs and other places where seniors congregate, the Active Intake Project is able to connect with underserved seniors. At each clinic, the active intake attorney and her volunteers meet individually with seniors present to complete a ""Legal Health Assessment,"" which pinpoints areas in which each participant may require legal assistance. Then after conducting a conflicts check, we schedule in-office appointments for clients whom we met in the field and require ongoing legal help. Cases requiring extended legal representation are referred to LCE's Pro Bono Project for referral to a volunteer attorney in the District of Columbia.
+
+The Active Intake Project handles civil cases for eligible clients in the following areas: Medicare/Medicaid, debt collection relief, landlord/tenant matters, public benefits, consumer fraud, powers of attorney for health care and finance, and wills.",,https://www.aarp.org/legal-counsel-for-elderly/what-we-do/info-2017/active-intake-project.html?intcmp=AE-LCE-WWD-R1C1LL1,,2,none,"893915418546777,899387596744807,841905613386238","Call for information",,,,,"931173517724084,",1153058029513279,,,814164678263538,,,,,,,,,,
+1228697695545072,"A Home of Your Own",,592376182631330,"A Home of Your Own provides first-time buyers with an opportunity to become homeowners. We acquire foreclosed properties, renovate them using volunteer and skilled tradespeople, and sell the units to low- and moderate-income City of Alexandria residents and workers with greatly discounted and subsidized funding. Based on four recent acquisitions, buyers were able to decrease their housing costs by $350/month. In partnership with the City of Alexandria’s Office of Housing, we have provided affordable homes for more than 25 families.",645897759928377,http://www.rebuildingtogetheralex.org/index.php/about-us/programs2019,info@rebuildingtogetherdca.org,1,none,1305774265925553,"Call or apply online. Concerning eligibility, folks who are eligible are low income homeowners who cannot maintain their homes (typically elderly, persons with disabilities, veterans, and families with children), as are nonprofit facilities, schools, and public spaces that serve low-income residents. To be considered for home assistance, candidates must complete and submit an application form and provide documentation of total household income, such as tax forms or pay stubs. Some of our clients are referred through congregations, schools, community agencies and service groups, or by self-referral.",,,,,979091642460386,894173153490187,,"608334571472582,616318277327647",601829608206464,,,,,4,,,,,
+1236034161171034,"East River Family Strengthening Collaborative",,1265909136483839,"Offers case management services including assessments, family visits, school visits, senior meals, youth violence and drug prevention programs, parenting education, and support for grandparents who are caregivers of grandchildren.
+
+Case management
+Senior services
+Youth services
+Crisis intervention
+Housing assistance
+Fatherhood support
+Lifeskill training
+Community engagement
+Capacity building
+Technical assistance
+Parent Education and Support Services
+Truancy
+Financial Literacy and Tax preparation classes",996758537763515,http://www.erfsc.org/case-management/,info@erfsc.org,1,none,"893915418546777,1305774265925553,1169956847122981,899387596744807,841905613386238","Call for services",,,,,1130262805064509,"1288075226708754,838708297516494",,,1000047601685886,,,,,,,,,,
+1214490568958133,"LGBTQ Programs",,1275858156254689,"Through transportation, housing, volunteer services, and more, Seabury Resources for Aging supports older adults and people with disabilities of all sexual and gender identities and expressions. 
+
+Out and About connects DC LGBTQ older adults through wellness programs, cultural events and conversations designed to address the concerns within the community. It is our mission to better understand the growing needs of LGBTQ older adults through listening, creating, and delivering programming with sensitivity, knowledge, and pride.",1281917418518969,https://www.seaburyresources.org/lgbtq-programs,kfuller@seaburyresources.org,1,none,"893915418546777,819562758416858","Call or email for more information.",,,,,675750465096310,593652380535594,,,1215798438097456,,,,,,,,,,
+1222212212143407,"My Health GPS",,1287549685614240,"Mary’s Center proudly offers My Health GPS to qualified DC Medicaid participants (Amerihealth or Trusted Health Plans) living with three or more chronic conditions. Launched by the DC Department of Health Care Finance, My Health GPS is designed to improve care coordination so you can manage your complex health needs more effectively and increase your quality of life.  
+
+You can enroll in My Health GPS by:  
+Visiting any Mary’s Center Health Center   
+Using the DC Health Homes website  
+During your Mary’s Center Health at Home telemedicine visit  
+Once enrolled in My Health GPS, you’ll receive caring support from a multidisciplinary care coordination team with the aim of improving your health outcomes and decreasing the likelihood of preventable hospital admissions and ER visits.  
+
+You and a care team member will complete a thorough needs assessment and work together to create a care plan shaped by your unique needs and priorities. Your Mary’s Center care team will serve as your point of contact for coordinating all available My Health GPS benefits and will also give you referrals to other community and social support services as needed. 
+","1202618027693441,953875575104132,1146850101014457",https://www.maryscenter.org/medical/other-specialties-and-services/my-health-gps/,,1,none,1276982655382389,"You can enroll in My Health GPS by:  
+Visiting any Mary’s Center Health Center   
+Using the DC Health Homes website  
+
+Mary’s Center is ready to partner with you on your health journey. Don’t hesitate to reach out to us using the information below. 
+
+To make an appointment or see if you qualify for My Health GPS, call: 
+
+Mary’s Center appointment line at (844) 796-2797 anytime OR 
+The DC Access HELPLINE at  (888)7WE-HELP  or (888) 793-4397 ",,,,,"1109152836345796,1136859825297998","1239905610045057,655172898058082,823973485555901,1184491209256204,892899945913453",,,"1108677909528551,904876794525199,948876011596931",,,,,,,,,,
+1223343952721664,"Isaiah House (Day Program)",,918523571271755,"Isaiah House is a supportive environment for adults whose lives have been impacted by homelessness as well as by severe and persistent mental illness.
+
+Isaiah House has three primary components: drop-in services like showers, laundry, phone access, and more; psychosocial support through group work, social activities, and positive interactions with staff and peers; and membership, where established participants work closely with staff to plan activities, perform administrative duties, and provide support to new participants.
+
+Some of the services offered at Isaiah House include animal therapy, field trips, healthy cooking workshops, anger management, women/men’s groups, bingo, advocacy, and meditation.",555733908618539,https://www.some.org/services/social-services/mental-health-services,therapy@some.org,,none,"817592898756695,629380122005095","Call or walk in.
+
+Eligibility: Participants must be/have:
+
+Currently experiencing homelessness
+Desire to be in a mental health day program, meaning that they are seeking psychiatric treatment or emotional and behavioral support
+Age 18 or over
+A DC resident. SOME will assist patients with obtaining an ID card if necessary.",,,,,"828720521624019,","1338861885603226,1338861885603227,1338861885603228,1338861885603229,1338861885603230,1338861885603231,1338861885603232,1338861885603233",,,619195230479285,,,,,,,,,,
+1243005448190685,"SOME Center for Employment Training (CET)",,918523571271755,"The SOME Center for Employment Training (SOME CET) is a tuition-free adult workforce training program that prepares adult learners for national, industry-recognized certifications for careers in Healthcare and the Building Trades.
+
+SOME CET empowers people to move themselves out of homelessness and poverty and into living wage careers through hard and soft skills training, adult basic education, and career development.
+
+In 2019, 119 students earned certificates and industry credentials.
+
+In 2019, 113 CET students were employed in careers earning at or above minimum wage. 95% maintained employment for at least six months or longer.",1288243545225450,https://www.some.org/services/job-training,,1,none,976566727118378,"To apply, call or fill out the online form here: https://www.some.org/services/job-training/apply 
+
+For more information, visit https://www.some.org/services/job-training/prospective-students
+
+Past Experiences: Criminal history is not a barrier to entry.
+Educational Background: A high school diploma or GED is not required to participate in the program.
+Transportation: Transportation assistance is provided to all students monthly.
+Residency: DC, MD, and VA residents may apply. ",,,,,955601168610811,,,,654987694705915,,,,,,,,,,
+1232646715498091,"YMCA Virtual & Interactive Labs",,901970914472025,"YMCA Virtual and Interactive Learning Labs adopt a developmentally appropriate approach to nurturing young people. This in-person program takes a Lab approach in limited class sizes and will provide the necessary environment to ensure that each student receives the appropriate support as they engage in virtual learning with their school.  The YMCA Learning Labs incorporate character development as the framework for a successful, positive and healthy environment.
+
+
+The Y’s primary concern is the health and safety of your child while they are in our care.  Children will be expected to follow the requirements of local government policy in regards to wearing masks.  Children two years and older are required to wear masks with the following exceptions:
+
+While eating or drinking
+Anyone who has a breathing problem or health issue that would put their health at risk by wearing a cloth face covering.
+Anyone communicating with people who are hearing impaired for which the mouth needs to be visible.
+When temporary removal of the face covering is needed to get medical or governmental services.
+Masks and PPE will be worn by all staff and the Y will implement extensive cleaning procedures throughout the day. The Y will also be limiting contact between children in classrooms in addition to providing designated supply kits for each child.
+
+In support of the virtual learning curriculum of the local school systems, each day the program will allow students to have guided instruction in the lab. This will allow them to continue their academic studies as assigned by their schools while they are away from the classroom, providing valuable consistency necessary to achieve each student’s learning goals. Students will work on their school’s assignments each day with the support of Y staff who will be there to help answer questions and provide guidance where needed.
+
+Additionally, students will also be able to choose from a selection of the Y’s programs to help them develop socially, by participating in activities that are fun and stimulate their creativity. The Y is offering the following list of exciting Y Electives so children can choose activities that interest them throughout the day.","716573413368445,882293888224112,577218861870418,950611509071482,906614178779692,910674112866949,1089431432526337,940212538195830,991654914903385,920613426512187,1272787330877007",https://www.ymcadc.org/learninglabs/,,1,none,"1228385258535588,976566727118378,1091485627676359","Visit this website and select your center to register: https://www.ymcadc.org/learninglabs/#1597350518575-7190bf4e-0db4",,,,,1200804357675895,,,,"1310277015717903,1111486004109298,623483554226574,967215957608908,900274267215840,758769305327957,791236860915802,1171342361002389,736104421703506,920336761856377,1268199460403994",,,,,,,,,,
+1276490106012366,"Homebound Senior Program",,918523571271755,"The Homebound Program offers long-term, intensive case management to seniors in their home. Case management support services include regular needs assessments, weekly calls, links to community resources, accompaniment to doctor appointments, and other practical assistance to support senior residents living in Wards 5, 6, 7, and 8 successfully age-in-place.",,https://www.some.org/services/social-services/senior-services,,1,none,"893915418546777,1242234055511863,1277101341169416,764797459068982,1316589317502463,819562758416858","Get on the Waitlist: Call (202) 701-1238
+
+Eligibility: Participants must be a resident of DC in Ward 5, 6, 7, or 8, age 60 or over,  and in need of case management services. Participants must not be receiving services from an EPD Waiver Program.",,,,,1293778561897850,,,,,,,,,,,,,,
+1235579050212858,"Behavioral & Mental Health - Vida Senior Centers",,879684021850075,"When aging, it is sometimes inevitable that older adults have a life without much company. Sometimes this happens because of their children have other responsibilities as parents and have to take care of their own families. Also, in the case of older adults who are immigrants, when getting older they are disconnected from their networks and family members in their country of origin. In many cases, this isolation ends up generating chronic episodes of depression. Likewise, the life of the elderly is usually accompanied by many economic concerns, especially when it comes to immigrants with limited resources, who did not accumulate a sufficient pension to meet their basic needs. Not being able to pay the house bills or the costs of their health bills generates a lot of anxiety. In the case of most of our participants, who are first-generation immigrants, linguistic isolation is added to all of the above. Feeling that they cannot communicate well with the society that surrounds them or that they cannot function as they normally do is a very common stress generator in immigrants. To handle these situations, VIDA offers daily individual counseling and group counseling aimed at training older adults to manage stress and anxiety. We try to break the taboo barrier and understand that we all are exposed to situations of anxiety and that in the midst of problems, we must have tactics that help us relieve tensions. And to complement group and individual counseling, Vida also offers daily Tai-chi exercise classes, in which older adults learn to breathe and relax the tensions that manifest in their body. Vida Senior Centers puts special emphasis on mental health, because this can trigger other effects on the well-being of the person. When the situation requires the intervention of a doctor, Vida Senior Centers refers the participant to a specialized center. For this, VIDA has been coordinating with several local organizations specialized in mental health medical treatments. In summary, the activities offered as part of our Mental Health program are as follows:
+
+• Individual counseling to handle stress situations
+• Group counseling on frustration management techniques
+• Tai-Chi exercises to learn to breathe and relax the body
+• Classes on Positive Thinking
+• Classes on Mental and Emotional Health
+• Referral to doctors if the need is identified","932502301190120,869647738071923",http://box2142.temp.domains/~vidasen1/behavioral-mental-health/,,1,none,1276982655382389,"Call to join the center.",,,,,751061458384755,,,,"965942365087326,948986432487608",,,,,,,,,,
+1281873572081806,"Domestic Violence Support",,1287549685614240,"Mary’s Center recognizes the deep and lasting effects of domestic violence and we want you to know you are not alone. We are committed to empowering you and your family to live a life free from violence by providing compassionate care and comprehensive support.  
+
+Our caring staff is trained to subtly look for signs of domestic violence (DV) and will refer you to the Domestic Violence Advocate, Family Support Workers, or a Mary’s Center therapist for mental health services if we believe you are experiencing DV. We also accept direct referrals from individuals and other service providers. Our in-house resources and services include: 
+
+Case Management
+Safety Planning
+Shelter Placement﻿
+Help with Legal Needs﻿","1202618027693441,953875575104132",https://www.maryscenter.org/social-services/domestic-violence-support/,,1,none,"893915418546777,625144853335827","If you have experienced or are currently experiencing domestic violence, you don’t have to face it alone. Mary’s Center can help.  Call us at (202) 748-2611 today. ",,,,,"1265664741921509,1109152836345796","1003280669828155,593029528256419,1106799266409790",,,"1108677909528551,904876794525199",,,,,,,,,,
+1261952699824933,"Summer Day Camp",,901970914472025,"Summer camp registration is currently available. We are excited to be able to offer our popular Traditional Camps for the remaining weeks of summer. Please select your branch.","910674112866949,1272787330877007,920613426512187,906614178779692,950611509071482,1080745784913482,577218861870418",https://www.ymcadc.org/programs/camps/day-camp/,,1,none,"976566727118378,1091485627676359","Visit this website and select your center to register: https://www.ymcadc.org/programs/camps/day-camp/",,,,,1200804357675895,,,,"758769305327957,1268199460403994,920336761856377,900274267215840,967215957608908,1243421228505168,623483554226574",,,,,,,,,,
+1268436437227362,"Jordan and Mary Claire Houses",,918523571271755,"Jordan and Mary Claire Houses are a community alternative to psychiatric hospitalization. Jordan House offers a residential psychiatric crisis stabilization program for adults in Washington, DC; Mary Claire is a six-month extended program for those who, upon discharge from Jordan House, would be vulnerable to cycling through crisis again because of severe or persistant mental illness exacerbated by chronic homelessness. Caring staff are on-site 24 hours a day and cultivate a safe, stable, homelike environment. Counselors complete a comprehensive assessment of each incoming client and follow-up with intensive counseling to rapidly stabilize psychiatric symptoms. Residents are encouraged to live with increasing independence and accountability.",,https://www.some.org/services/social-services/mental-health-services,,1,none,"893915418546777,1169956847122981,1305774265925553,876072370037480","Call (202) 292-4491 to make a referral
+Hours: 24 hours a day
+Eligibility: Must be experiencing psychiatric crisis. Aged 18 or older and able to walk up stairs unassisted. Residents of Mary Claire House must be currently experiencing homelessness.",,,,,1297718429442419,,,,,,,,,,,,,,
+1278460102567092,"Seabury Connector",,1275858156254689,"Seabury Connector provides free transportation for Washington, D.C. residents age 60 years and older to wellness centers, adult day care, and for group shopping trips. ",1281917418518969,https://www.seaburyresources.org/transportation,info@seaburyresources.org,1,none,"878852836579488,819562758416858","To see about scheduling transportation, please call.",,,,,1086466564339000,,,,1215798438097456,,,,,,,,,,
+1282627737254185,"Emergency Housing for Abused and Neglected Seniors",,918523571271755,"SOME provides emergency housing for seniors who have been abused, neglected, financially exploited, or displaced at Kuehner Place. Kuehner House is a temporary (90 day) housing program.
+
+Services
+Residents have their own rooms
+Hot, nutritious meals daily
+Support in obtaining Social Security and public benefits
+Support in obtaining affordable, long-term housing
+ Access to supportive services, including healthcare",651934751090741,https://www.some.org/services/housing/senior-housing,,1,none,"1305774265925553,1169956847122981","Access Services
+Contact: (202) 292-4493
+
+Eligibility: Applicants must be/have:
+
+A resident of DC
+Age 60 or over
+Make less than $1,900 a month
+Have a negative TB test within the past 12 months
+Six months clean and sober
+Capable of self-care
+No recent history of violence
+Not on the lifetime sexual offenders list
+ An identified need for stabilization services",,,,,1065402652683987,,,,1216780850778368,,,,,,,2,,,
+1287381779305670,"SOME Senior Camp",,918523571271755,"SOME offers an annual Senior Summer Camp for senior citizens in need of rest and relaxation but are unable to afford a vacation. This week-long retreat is offered twice each summer and located at a beautiful country house in West Virginia.",,https://www.some.org/services/social-services/senior-services,,1,none,"899387596744807,893915418546777,1218316969190320,819562758416858","Call for more information. 
+
+Eligibility: Participants must be age 65 or older, physically independent, provide a medical form from a doctor, and provide proof of income.",,,,,828720521624019,,,,,,,,,,,,,,
+1330210073954058,"Infectious Disease",,1287549685614240,"Mary’s Center providers are highly-trained and equipped to treat patients with infectious diseases such as HIV, Hepatitis, Tuberculosis, sexually transmitted infections, and many others. Our Infectious Disease team will work with you to identify, manage, and treat your diagnosis with the utmost care. Mary’s Center provides quality care for a variety of infectious diseases including:  
+
+Bloodstream, bone, and joint infections 
+Complicated urinary tract infections 
+Fungal and skin infections 
+HIV/AIDS  
+Lyme disease 
+Malaria and other tropical diseases 
+Meningitis 
+Sexually transmitted infections 
+Staphylococcus aureus infections, including MRSA 
+While many infectious diseases can be prevented by vaccines, frequent and thorough hand-washing also is one of the most effective ways to protect your health, and always talk to your healthcare provider before any international travel. 
+","1202618027693441,953875575104132,1146850101014457",https://www.maryscenter.org/medical/other-specialties-and-services/infectious-disease/,,1,none,1276982655382389,"Call to make an appointment. We accept most insurance plans including Medicaid and Medicare. If you don’t have health insurance, we’ll help you apply for public benefits or provide care at a discount. Comprehensive list of insurances are available on our website.",,,,,"1109152836345796,975713005890497,1249506930671270","1239905610045057,655172898058082,823973485555901,1184491209256204,892899945913453",,,"1108677909528551,904876794525199,948876011596931",,,,,,,,,,
+1312648219687403,"Nutrition & Meal Services",,1078800059400169,"In order to thrive, you need food that tastes good and is good for you. Our nutrition programs are designed to serve seniors 60+ and adults with disabilities, whether it’s at one of our community dining sites or through home-delivered meals. Individualized nutrition counseling and education programs are also available.
+
+Community Dining Sites
+DACL has over 40 community dining sites across all eight wards of Washington, DC. Find a community dining site near you by visiting the website.
+ 
+Home-Delivered Meals
+DACL delivers prepared meals to adults 60 years of age or older at their homes throughout the city. The spouses of homebound adults or disabled persons that reside with these homebound adults may also be eligible to receive these meals.
+
+Nutrition Counseling
+A registered and licensed dietitian or other health professional can offer education and suggestions for improving your nutritional status based on your needs. This one-on-one advice and guidance is provided to individuals who are at nutritional risk because of their nutritional history, current dietary intake, medication use, or chronic illnesses. 
+ 
+Nutrition Education
+Nutrition education programs are provided to promote better health and well-being by providing accurate and culturally sensitive nutrition, physical fitness, or health information and instruction to participants and caregivers in a group or individual setting, supervised by a dietitian or other health professional.",818197734902999,https://dacl.dc.gov/service/nutrition,dacl@dc.gov,1,none,819562758416858,"Call for referral services.",,,,,"767434507934353,791466840370210",,,,1193727390444096,,,,,,,,,,
+1338909579517881,"Diabetes Prevention Program (DPP)",,901970914472025,"Diabetes Prevention Program is for those who are pre-diabetic. It is a year-long programs with 25 support classroom sessions. Participants learn about healthy eating and increasing physical activity to reduce risk of diabetes. We accept private insurance.
+
+How the program works? 
+
+The YMCA’s Diabetes Prevention Program is part of CDC led National Diabetes Prevention Program. It gets to the root of the diabetes epidemic by helping those at high risk of developing the disease make lifestyle changes. The program focuses on healthy eating, physical activity and weight management. The program goals are to reduce body weight by 7% and increase physical activity by 150 minutes per week.
+
+Participants in the YMCA’s Diabetes Prevention Program meet in a classroom setting as a group with a trained YMCA lifestyle coach for 16 weekly core sessions. During the sessions, they learn how to make healthier food choices, how to incorporate more physical activity into their daily routine and how to manage a healthy weight. After the initial 16 core sessions, participants meet monthly for added support to help them maintain their progress.",,https://www.ymcadc.org/programs/health-fitness/ymcas-diabetes-prevention-program/,Anita.Dandeker@ymcadc.org,,none,"879394671891223,1102011945010404,1276982655382389,1351267360227145","To register, email Anita.Dandeker@ymcadc.org or visit this website: https://www.ymcadc.org/programs/health-fitness/ymcas-diabetes-prevention-program/ 
+
+Participants must meet the following criteria: 
+• Must be 18 or older, 
+• Overweight/obese (BMI > 25)
+• High risk for developing type 2 diabetes, or have been diagnosed with prediabetes.
+* YMCA membership is not required!",,,,,"1200804357675895,","1338861885601303,1338861885601304,1338861885601305,1338861885601306,1338861885601307,1338861885601308,1338861885601309,1338861885601310",819548083424279,,,,,,,,,,,,
+1342355454259613,"Information & Referral/Assistance",I&R/A,1078800059400169,"Provides a single, coordinated system of information and access for individuals seeking long-term services and supports to older adults (60 years and older), individuals with disabilities (18 to 59 years old), and their caregivers. Assists with the following but is not limited to screening for the Elderly and Persons with Disability (EPD) Waiver, referrals to Home Delivered Meals (HDM), caregiver support information, legal resources, transportation services, etc.  Call to speak with an Information and Referral/Assistance (I&R/A) Specialist",818197734902999,,dacl@dc.gov,2,none,"893915418546777,1294707318379665,1212005456553071,754865326124113","Call to make an appointment.",,,,,"767434507934353,791466840370210,",,,,1193727390444096,,,,,,,,,,

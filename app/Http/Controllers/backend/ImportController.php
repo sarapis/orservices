@@ -8,12 +8,17 @@ use App\Imports\AccessibilityImport;
 use App\Imports\AddressImport;
 use App\Imports\ContactImport;
 use App\Imports\LanguageImport;
+use App\Imports\LocationAddressImport;
 use App\Imports\LocationImport;
+use App\Imports\LocationPhoneImport;
 use App\Imports\OrganizationImport;
+use App\Imports\OrganizationTagImport;
 use App\Imports\PhoneImport;
 use App\Imports\ScheduleImport;
 use App\Imports\ServiceLocationImport;
+use App\Imports\ServicePhoneImport;
 use App\Imports\Services;
+use App\Imports\ServiceTagImport;
 use App\Imports\ServiceTaxonomyImport;
 use App\Imports\TaxonomyImport;
 use App\Imports\TaxonomyTermImport;
@@ -34,10 +39,12 @@ use App\Model\Location;
 use App\Model\LocationAddress;
 use App\Model\LocationPhone;
 use App\Model\LocationSchedule;
+use App\Model\Map;
 use App\Model\Organization;
 use App\Model\OrganizationDetail;
 use App\Model\OrganizationPhone;
 use App\Model\OrganizationProgram;
+use App\Model\OrganizationTag;
 use App\Model\Phone;
 use App\Model\Program;
 use App\Model\Schedule;
@@ -50,6 +57,7 @@ use App\Model\ServiceOrganization;
 use App\Model\ServicePhone;
 use App\Model\ServiceProgram;
 use App\Model\ServiceSchedule;
+use App\Model\ServiceTag;
 use App\Model\ServiceTaxonomy;
 use App\Model\Taxonomy;
 use App\Model\TaxonomyTerm;
@@ -72,6 +80,8 @@ use ZipArchive;
 
 class ImportController extends Controller
 {
+    public $mapController;
+
     public function __construct(MapController $mapController)
     {
         $this->mapController = $mapController;
@@ -508,6 +518,8 @@ class ImportController extends Controller
                 TaxonomyTerm::truncate();
                 Audit::truncate();
                 CodeLedger::truncate();
+                OrganizationTag::truncate();
+                ServiceTag::truncate();
             }
             if ($importData && $importData->import_type == 'airtable') {
                 $organization_tag = $importData->organization_tags;
@@ -836,7 +848,7 @@ class ImportController extends Controller
             Excel::import(new TaxonomyTypeImport, $path);
 
             $date = Carbon::now();
-            $csv_source = CSV_Source::where('name', '=', 'Taxonomy_type')->first();
+            $csv_source = CSV_Source::where('name', '=', 'Taxonomy_types')->first();
             $csv_source->records = TaxonomyType::count();
             $csv_source->syncdate = $date;
             $csv_source->save();
@@ -942,6 +954,67 @@ class ImportController extends Controller
             $csv_source->syncdate = $date;
             $csv_source->save();
 
+            //service tag.csv
+            $path = public_path('/HSDS/data/service_tags.csv');
+
+            if (!file_exists($path)) {
+                $response = array(
+                    'status' => 'error',
+                    'result' => 'service_tags.csv does not exist.',
+                );
+                return $response;
+            }
+            Excel::import(new ServiceTagImport, $path);
+
+            //organization tag.csv
+            $path = public_path('/HSDS/data/organization_tags.csv');
+
+            if (!file_exists($path)) {
+                $response = array(
+                    'status' => 'error',
+                    'result' => 'organization_tags.csv does not exist.',
+                );
+                return $response;
+            }
+            Excel::import(new OrganizationTagImport, $path);
+
+            //LocationAddress
+            $path = public_path('/HSDS/data/location_addresses.csv');
+
+            if (!file_exists($path)) {
+                $response = array(
+                    'status' => 'error',
+                    'result' => 'location_addresses.csv does not exist.',
+                );
+                return $response;
+            }
+            Excel::import(new LocationAddressImport, $path);
+
+            //LocationPhone
+            $path = public_path('/HSDS/data/location_phones.csv');
+
+            if (!file_exists($path)) {
+                $response = array(
+                    'status' => 'error',
+                    'result' => 'location_phones.csv does not exist.',
+                );
+                return $response;
+            }
+            Excel::import(new LocationPhoneImport, $path);
+
+            //ServicePhone
+            $path = public_path('/HSDS/data/service_phones.csv');
+
+            if (!file_exists($path)) {
+                $response = array(
+                    'status' => 'error',
+                    'result' => 'service_phones.csv does not exist.',
+                );
+                return $response;
+            }
+            Excel::import(new ServicePhoneImport, $path);
+
+
             rename(public_path('/HSDS/data/services.csv'), public_path('/csv/services.csv'));
             rename(public_path('/HSDS/data/locations.csv'), public_path('/csv/locations.csv'));
             rename(public_path('/HSDS/data/organizations.csv'), public_path('/csv/organizations.csv'));
@@ -967,7 +1040,8 @@ class ImportController extends Controller
             $badgeocoded_location_info_list = Location::where('location_latitude', '=', '')->get();
             $client = new \GuzzleHttp\Client();
             $geocoder = new Geocoder($client);
-            $geocode_api_key = env('GEOCODE_GOOGLE_APIKEY');
+            $map = Map::find(1);
+            $geocode_api_key = $map && $map->api_key ? $map->api_key : null;
             $geocoder->setApiKey($geocode_api_key);
 
             if ($ungeocoded_location_info_list) {

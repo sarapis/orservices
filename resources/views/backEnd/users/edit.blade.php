@@ -111,6 +111,13 @@ Edit User
                             {!! $errors->first('service_tags', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
+                    <div class="form-group {{ $errors->has('service_tags') ? 'has-error' : '' }}" id="service_tags_div"
+                    >
+                        {!! Form::label('verifier', 'Verifier ', ['class' => 'col-sm-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::checkbox('verifier', '1', null,) !!}
+                        </div>
+                    </div>
 
                     <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-6">

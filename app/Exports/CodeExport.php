@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Concerns\FromView;
 
 class CodeExport implements FromView
 {
-
+    public $request;
     public function __construct($request)
     {
         $this->request = $request;

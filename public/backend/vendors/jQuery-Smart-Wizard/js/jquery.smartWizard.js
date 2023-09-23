@@ -379,6 +379,46 @@ function SmartWizard(target, options) {
                                 }
                             });
                         }
+                        if (facet == 'service_tag') {
+                            $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            })
+
+                            if (original_facet == facet)
+                                var url = 'meta_filter/' + id;
+                            else
+                                var url = '/service_tag_filter';
+
+                            $.ajax({
+                                type: 'POST',
+                                url: url.toLowerCase(),
+                                success: function (data) {
+                                    $('#step-2 #list_tb_2').html(data);
+                                }
+                            });
+                        }
+                        if (facet == 'organization_tag') {
+                            $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            })
+
+                            if (original_facet == facet)
+                                var url = 'meta_filter/' + id;
+                            else
+                                var url = '/organization_tag_filter';
+
+                            $.ajax({
+                                type: 'POST',
+                                url: url.toLowerCase(),
+                                success: function (data) {
+                                    $('#step-2 #list_tb_2').html(data);
+                                }
+                            });
+                        }
 
                         if (facet == 'Service_status') {
                             $.ajaxSetup({

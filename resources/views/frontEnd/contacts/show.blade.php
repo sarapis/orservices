@@ -4,8 +4,6 @@ Contact
 @stop
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
-
-
 @section('content')
 @if (session()->has('error'))
 <div class="alert alert-danger alert-dismissable custom-success-box" style="margin: 15px;">
@@ -49,6 +47,9 @@ Contact
                             <a href="{{ route('contacts.edit',$contact->contact_recordid) }}" class="float-right">
                                 <i class="icon md-edit mr-0"></i>
                             </a>
+                            @endif
+                            @if (count($inactiveOrganizationIds) > 0)
+                            <span class="badge badge-danger float-right m-2" style="color:#fff;">Inactive</span>
                             @endif
                         </h4>
                         @if ($contact->contact_title)

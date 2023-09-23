@@ -418,8 +418,8 @@ class AutoExport extends Command
                         // if ($row->weekday) {
                         $scheduleArray = [
                             'id' => $row->id,
-                            'service_id' => $row->schedule_services,
-                            'location_id' => $row->schedule_locations,
+                            'service_id' => $row->services,
+                            'location_id' => $row->locations,
                             'service_at_location_id' => $row->service_at_location,
                             'valid_from' => $row->valid_from,
                             'valid_to' => $row->valid_to,

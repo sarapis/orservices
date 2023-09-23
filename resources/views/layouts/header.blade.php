@@ -58,12 +58,14 @@
 								<a href="/contacts">Contacts</a>
 								<a href="{{ route('facilities.index') }}">Locations</a>
 								<a href="{{ route('users_lists.index') }}">Users</a>
+								<a href="{{ route('terminology.index') }}">Terminology</a>
 							</div>
 						</div>
 					</li>
 					@endif
 					@endif
-                    @if($layout->show_suggest_menu == 1)
+                    {{-- {{ dd(($layout->show_suggest_menu == 1 && Auth::check()) || $layout->show_suggest_menu == 0) }} --}}
+                    @if(($layout->show_suggest_menu == 1 && Auth::check()) || $layout->show_suggest_menu == 0)
 					<li class="nav-item">
                         <a class="nav-link" href="{{ route('suggest.create') }}">Suggest</a>
 					</li>
@@ -153,7 +155,7 @@
 	  background-color: {{$layout->secondary_color}} !important;
 	}
 	.top_header_blank {
-		height: 50px;
+		height: auto;
 		background: {{$layout->secondary_color}} ;
 	}
 	.card-block .card-title a,.card-block .card-title a.title_org,.detail_services .card-block .card-title a,.card-block .organization_services .card-title a,.table a, .card-block .panel-link, {
@@ -163,6 +165,12 @@
     .nav-item .dropdown .dropdown-content a:hover, .top_services_filter .dropdown-menu a:hover, .dropdown-item.active, .dropdown-item:active {
         background: {{$layout->submenu_highlight_color .' !important'}};
     }
+    .jstree-default .jstree-wholerow-hovered, .jstree-default .jstree-wholerow-clicked {
+        background: {{$layout->submenu_highlight_color .' !important'}};
+    }
+    /* #service_tags_tree .jstree-node:hover{
+        background: {{$layout->submenu_highlight_color .' !important'}};
+    } */
     .card-block .nav-tabs .nav-item .nav-link.active{
         background: {{$layout->button_color}};
     }

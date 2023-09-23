@@ -319,7 +319,7 @@ class SessionController extends Controller
             $organization = Organization::where('organization_recordid', $request->organization_recordid)->first();
             $organizationStatus = OrganizationStatus::where('id', $request->organization_status)->first();
 
-            if (($request->reverify == '1' && $organizationStatus->status == 'Verified') || $organizationStatus->status == 'Verified' && $organization->organization_status_x != $request->organization_status) {
+            if ($organizationStatus && (($request->reverify == '1' && $organizationStatus->status == 'Verified') || $organizationStatus->status == 'Verified' && $organization->organization_status_x != $request->organization_status)) {
                 $organization->last_verified_at = Carbon::now();
                 $organization->last_verified_by = Auth::id();
             }

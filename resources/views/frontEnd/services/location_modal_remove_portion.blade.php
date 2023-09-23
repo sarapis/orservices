@@ -5,7 +5,7 @@
             Regular Schedule
         </h4>
         <div class="table-responsive">
-            <table class="table">
+            <table class="display dataTable table-striped jambo_table table-bordered table-responsive" cellspacing="0" width="100%">
                 <thead>
                     <th>Weekday</th>
                     <th>Opens</th>
@@ -126,7 +126,7 @@
         </h4>
         {{-- <label>Holiday Schedule: <a id="addScheduleHolidayLocation"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a></label> --}}
         <div class="table-responsive">
-            <table class="table table_border_none" id="">
+            <table class="display dataTable table-striped jambo_table table-bordered table-responsive" cellspacing="0" width="100%" id="">
                 <thead>
                     <th>Start</th>
                     <th>End</th>
@@ -179,7 +179,7 @@
             Regular Schedule
         </h4>
         <div class="table-responsive">
-            <table class="table">
+            <table class="display dataTable table-striped jambo_table table-bordered table-responsive" cellspacing="0" width="100%">
                 {{-- <thead>
                             <th colspan="4" class="text-center">Regular Schedule</th>
                         </thead> --}}
@@ -324,7 +324,7 @@
             Holiday Schedule
         </h4>
         <div class="table-responsive">
-            <table class="table table_border_none" id="">
+            <table class="display dataTable table-striped jambo_table table-bordered table-responsive" cellspacing="0" width="100%" id="">
                 <thead>
                     <th>Start</th>
                     <th>End</th>
@@ -439,7 +439,7 @@
             Regular Schedule
         </h4>
         <div class="table-responsive">
-            <table class="table">
+            <table class="display dataTable table-striped jambo_table table-bordered table-responsive" cellspacing="0" width="100%">
                 {{-- <thead>
                     <th colspan="4" class="text-center">Regular Schedule</th>
                 </thead> --}}
@@ -563,7 +563,7 @@
         </h4>
         {{-- <label>Holiday Schedule: <a id="addScheduleHolidayLocation"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a></label> --}}
         <div class="table-responsive">
-            <table class="table table_border_none" id="">
+            <table class="display dataTable table-striped jambo_table table-bordered table-responsive" cellspacing="0" width="100%" id="">
                 <thead>
                     <th>Start</th>
                     <th>End</th>

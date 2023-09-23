@@ -18,6 +18,6 @@ class OrganizationTableFilter extends Model
         'start_verified',
         'end_verified',
         'start_updated',
-        'end_updated'
+        'end_updated', 'last_updated_by', 'last_verified_by'
     ];
 }

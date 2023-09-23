@@ -5,7 +5,12 @@ namespace App\Http\Controllers;
 use App\Model\Alt_taxonomy;
 use App\Model\Layout;
 use App\Model\Map;
+use App\Model\MetaFilter;
+use App\Model\Organization;
 use App\Model\Page;
+use App\Model\Service;
+use App\Model\ServiceOrganization;
+use App\Model\ServiceTaxonomy;
 use App\Model\Taxonomy;
 use App\Model\TaxonomyType;
 use Illuminate\Http\Request;
@@ -64,29 +69,28 @@ class HomeController extends Controller
                         $child_data['parent_taxonomy'] = $taxonomy_parent_name;
                         $child_taxonomies = Taxonomy::where('taxonomy_parent_name', '=', $taxonomy_parent_name)->get(['taxonomy_name', 'taxonomy_id']);
                         $child_data['child_taxonomies'] = $child_taxonomies;
-                        array_push($parent_taxonomy, $child_data);
+                        $parent_taxonomy[] = $child_data;
                     } else {
                         foreach ($grandparent->terms()->where('taxonomy_parent_name', '=', $taxonomy_parent_name)->get() as $child_key => $child_term) {
                             $child_data['parent_taxonomy'] = $child_term;
                             $child_data['child_taxonomies'] = "";
-                            array_push($parent_taxonomy, $child_data);
+                            $parent_taxonomy[] = $child_data;
                         }
                     }
                 }
                 $taxonomy_data['parent_taxonomies'] = $parent_taxonomy;
-                array_push($taxonomy_tree, $taxonomy_data);
+                $taxonomy_tree[] = $taxonomy_data;
             }
         } else {
             $serviceCategoryId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Category')->first();
-            $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId ? $serviceCategoryId->taxonomy_type_recordid : '')->whereNotNull('taxonomy_services')->get();
-            // $parent_taxonomy_data = [];
-            // foreach($parent_taxonomies as $parent_taxonomy) {
-            //     $child_data['parent_taxonomy'] = $parent_taxonomy->taxonomy_name;
-            //     $child_data['child_taxonomies'] = $parent_taxonomy->childs;
-            //     array_push($parent_taxonomy_data, $child_data);
-            // }
-            $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies;
+            $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId ? $serviceCategoryId->taxonomy_type_recordid : '');
+            $taxonomy_recordids = Taxonomy::getTaxonomyRecordids();
+            if(count($taxonomy_recordids) > 0){
+                $parent_taxonomies->whereIn('taxonomy_recordid',array_values($taxonomy_recordids));
+            }
+            $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies->get();
         }
+
         if ($layout && $layout->activate_login_home == 1 && !Auth::check()) {
             return redirect('/login');
         } else {

@@ -29,7 +29,7 @@ class User extends Authenticatable
         'created_by',
         'status',
         'last_login',
-        'organization_tags', 'service_tags'
+        'organization_tags', 'service_tags', 'verifier'
     ];
     public function roles()
     {
@@ -64,4 +64,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
 }

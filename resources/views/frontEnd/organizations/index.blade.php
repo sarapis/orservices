@@ -11,30 +11,22 @@ Organizations
     <div id="content" class="container">
         <div class="col-sm-12 p-0 card-columns">
             @foreach($organizations as $organization)
+            @if (Auth::check() || ( ($organization->organization_status_x && isset($organizationStatus[$organization->organization_status_x]) && ($organizationStatus[$organization->organization_status_x] != 'Out of Business' && $organizationStatus[$organization->organization_status_x] != 'Inactive')) || !$organization->organization_status_x))
             <div class="card">
                 <div class="card-block">
                     {{-- <img src="/frontend/assets/images/logo_dummy.png" alt="" title="" class="org_logo_img"> --}}
                     <h4 class="card-title">
-                        <a href="/organizations/{{$organization->organization_recordid}}"
-                            class="notranslate title_org">{{$organization->organization_name}}</a>
+                        <a href="/organizations/{{$organization->organization_recordid}}" class="notranslate title_org">{{$organization->organization_name}}</a>
+                        @if ($organization->organization_status_x && isset($organizationStatus[$organization->organization_status_x]) && ($organizationStatus[$organization->organization_status_x] == 'Out of Business' || $organizationStatus[$organization->organization_status_x] == 'Inactive'))
+                            <span class="badge badge-danger float-right m-2" style="color:#fff;">Inactive</span>
+                        @endif
                     </h4>
                     <p class="card-text" style="font-weight:400;">
                         {!! Str::limit($organization->organization_description, 200) !!}
                     </p>
                     <div class="tagp_class">
                         <span>Number of Services:
-                            @php
-                            if(count($organization->services) == 0){
-                            $organization_services = $organization->getServices->count();
-                            }
-                            @endphp
-                            @if(isset($organization->services) && count($organization->services) != 0)
-                            {{$organization->services->count()}}
-                            @elseif(count($organization->services) == 0)
-                            {{ $organization->getServices->count() }}
-                            @else
-                            0
-                            @endif
+                            {{ $organization->organization_service_count }}
                         </span>
                         <a href="/organizations/{{$organization->organization_recordid}}">
                             <img src="/frontend/assets/images/arrow_right.png" alt="" title="" class="float-right">
@@ -45,6 +37,7 @@ Organizations
                     @endauth
                 </div>
             </div>
+            @endif
             @endforeach
         </div>
         <div class="example col-md-12">

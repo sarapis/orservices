@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
@@ -18,7 +19,7 @@ class Location extends Model implements ContractsAuditable
     ];
 
     protected $fillable = [
-        'location_recordid', 'location_name', 'location_organization', 'location_alternate_name', 'location_transportation', 'location_latitude', 'location_longitude', 'location_description', 'location_services', 'location_phones', 'location_details', 'location_schedule', 'location_address', 'flag',
+        'location_recordid', 'location_name', 'location_organization', 'location_alternate_name', 'location_transportation', 'location_latitude', 'location_longitude', 'location_description', 'location_services', 'location_phones', 'location_details', 'location_schedule', 'location_address', 'flag', 'updated_by', 'created_by', 'accessibility_recordid', 'accessibility_details'
     ];
 
     public function organization()
@@ -50,6 +51,16 @@ class Location extends Model implements ContractsAuditable
     public function accessibilities()
     {
         return $this->hasMany('App\Model\Accessibility', 'accessibility_location', 'location_recordid');
+    }
+
+    /**
+     * Get the get_accessibility that owns the Location
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function get_accessibility(): BelongsTo
+    {
+        return $this->belongsTo(Accessibility::class, 'accessibility_recordid', 'id');
     }
 
     public function schedules()

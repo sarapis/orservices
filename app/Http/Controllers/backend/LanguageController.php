@@ -78,12 +78,11 @@ class LanguageController extends Controller
         try {
 
             $layout = Layout::first();
-            $languages = Language::orderBy('order')->get();
 
             if (!$request->ajax()) {
-                return view('backEnd.languages.index', compact('languages', 'layout'));
+                return view('backEnd.languages.index', compact('layout'));
             }
-            $languages = Language::orderBy('order');
+            $languages = Language::select('*');
             return DataTables::of($languages)
                 ->editColumn('language_location', function ($row) {
                     return $row->location ? $row->location->location_name : '';
@@ -141,6 +140,8 @@ class LanguageController extends Controller
                 'order' => $request->get('order'),
                 'language_service' => $request->get('language_service'),
                 'language_location' => $request->get('language_location'),
+                'code' => $request->get('code'),
+                'note' => $request->get('note'),
             ]);
             DB::commit();
 
@@ -195,6 +196,8 @@ class LanguageController extends Controller
                 'order' => $request->get('order'),
                 'language_service' => $request->get('language_service'),
                 'language_location' => $request->get('language_location'),
+                'code' => $request->get('code'),
+                'note' => $request->get('note'),
             ]);
             DB::commit();
 

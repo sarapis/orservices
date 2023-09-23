@@ -180,7 +180,6 @@ class AnalyticsController extends Controller
      */
     public function update($id, Request $request)
     {
-
         $page = Page::findOrFail($id);
         $page->update($request->all());
 

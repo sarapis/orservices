@@ -24,7 +24,7 @@ Contacts
       <div class="x_content" style="overflow: scroll;">
 
         <!-- <table class="table table-striped jambo_table bulk_action table-responsive"> -->
-        <table id="example" class="display nowrap table-striped jambo_table table-bordered table-responsive" cellspacing="0" width="100%">
+        <table id="example" class="display dataTable table-striped jambo_table table-bordered table-responsive" cellspacing="0" width="100%">
             <thead>
                 <tr>
                     <th class="text-center">No</th>

@@ -42,6 +42,9 @@
     .bootstrap-select.show-tick .dropdown-menu .selected span.check-mark {
         top: 12px;
     }
+    .org_logo img{
+        max-width: 100%; max-height: 200px;
+    }
 
 </style>
 @section('content')
@@ -56,7 +59,7 @@
                             <li class="breadcrumb-item"><a href="/organizations">Organizations</a></li>
                             <li class="breadcrumb-item active" aria-current="page">
                                 @if ($organization->organization_name != '')
-                                    {{ $organization->organization_name }}
+                                    {{ $organization->organization_name }} {{$organization->organization_alternate_name ? '( '.$organization->organization_alternate_name.' )' : ''}}
                                 @endif
                             </li>
                         </ol>
@@ -97,6 +100,10 @@
                                             target="_blank" style="font-size: 18px;"><i class="fab fa-instagram"></i></a>
                                     @endif
                                 </a>
+                                {{-- $organizationStatus, ($organization->organization_status_x  --}}
+                                @if ($organization->organization_status_x && isset($organizationStatus[$organization->organization_status_x]) && ($organizationStatus[$organization->organization_status_x] == 'Out of Business' || $organizationStatus[$organization->organization_status_x] == 'Inactive'))
+                                <span class="badge badge-danger float-right m-2" style="color:#fff;">Inactive</span>
+                                @endif
                                 @if (Auth::user() && Auth::user()->roles && ((Auth::user()->user_organization && str_contains(Auth::user()->user_organization, $organization->organization_recordid) && ((Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin'))) ||  (Auth::user()->roles->name == 'System Admin') || (Auth::user() && Auth::user()->roles->name == 'Network Admin' && count(array_intersect(explode(',', Auth::user()->organization_tags),explode(',', $organization->organization_tag))) > 0) || (Auth::user() && Auth::user()->roles && count(array_intersect(explode(',', Auth::user()->organization_tags),explode(',', $organization->organization_tag))) > 0)))
                                     <a href="/organizations/{{ $organization->organization_recordid }}/edit"
                                         class="float-right">
@@ -105,8 +112,11 @@
                                 @endif
                             </h4>
 
-                            {{-- <h4 class="panel-text"><span class="badge bg-red">Alternate Name:</span> {{$organization->organization_alternate_name}}
-                        </h4> --}}
+                            @if ($organization->parent_organization)
+                            <h4 class="tagp_class"><span class="">Parent Organization:</span>
+                                <a href="/organizations/{{ $organization->parent_organization }}" target="_blank">{{$organization->parent->organization_name}}</a>
+                            </h4>
+                            @endif
                             @if ($organization->organization_description)
                             <div class="tagp_class">{!! nl2br($organization->organization_description) !!}</div>
                             @endif
@@ -114,66 +124,14 @@
                             <div class="tagp_class">
                                 <span>
                                     <i class="icon md-globe font-size-18 vertical-align-top mr-10 pt-2" style="float:none"></i>
-                                    <a href="{{ $organization->organization_url }}"> {{ $organization->organization_url }}</a>
+                                    <a href="{{ $organization->organization_url }}" target="_blank"> {{ $organization->organization_url }}</a>
                                 </span>
                             </div>
                             @endif
-                            @php
-                                $phone_number_info = '';
-                                $mainPhoneNumber = [];
-                                $phone_number_info_array = [];
-
-                                if (isset($organization->phones) && count($organization->phones) > 0) {
-                                    foreach ($organization->phones as $valueV) {
-                                        // $valueV->main_priority == '1' &&
-                                        $valueV->phone_number =  preg_replace('/[^0-9]/', '', $valueV->phone_number);
-
-                                        $phone = $valueV->phone_number;
-
-                                        $ac = substr($phone, 0, 3);
-                                        $prefix = substr($phone, 3, 3);
-                                        $suffix = substr($phone, 6);
-
-                                        $valueV->phone_number = '('.$ac.') '. $prefix .' - ' . $suffix;
-                                        if (count($mainPhoneNumber) == 0) {
-                                            if ($valueV->phone_language) {
-                                                $languageId = $valueV->phone_language ? explode(',', $valueV->phone_language) : [];
-                                                $languages = \App\Model\Language::whereIn('language_recordid', $languageId)
-                                                    ->pluck('language')
-                                                    ->toArray();
-                                                $valueV->phone_language = implode(', ', $languages);
-                                            }
-                                            $mainPhoneNumber[] = $valueV;
-                                        }
-                                        // else {
-                                        //     $phone_number_info_array[] = $valueV->phone_number;
-                                        // }
-                                    }
-                                    // $servicePhoneData = $service->phone()->where('main_priority', '1')->first();
-                                }
-                                // $phone_number_info = $mainPhoneNumber . ', ' . implode(',', $phone_number_info_array);
-                                $mainPhoneNumber = array_merge($mainPhoneNumber, $phone_number_info_array);
-                            @endphp
-                            @if ($mainPhoneNumber && count($mainPhoneNumber) > 0)
+                            @if ($organization->organization_phones_data)
                                 <div class="tagp_class">
                                     <span><i class="icon md-phone font-size-18 vertical-align-top  mr-10 pt-2" style="float:none"></i>
-                                        {{-- @foreach ($organization->phones as $key => $phone)
-
-                                    @if ($phone->main_priority == '1')
-                                    <a href="tel:{{$phone->phone_number}}">{{$phone->phone_number}}</a>
-                                    @endif
-                                    @endforeach --}}
-                                        @foreach ($mainPhoneNumber as $key => $item)
-                                            {{-- <a href="tel:{{$item}}">{{ $key == 0 ? $item : ', '.$item}}</a> --}}
-                                            <a
-                                                    href="tel:{{ $item->phone_number }}">{{ $item->phone_number }}</a>&nbsp;&nbsp;{{ $item->phone_extension ? 'ext. ' . $item->phone_extension : '' }}&nbsp;{{ $item->type ? '(' . $item->type->type . ')' : '' }}
-                                                @if ($item->phone_language)
-                                                    <br>
-                                                    {{ $item->phone_language }}
-                                                @endif
-                                                {{ $item->phone_description ? '- ' . $item->phone_description : '' }}
-
-                                        @endforeach
+                                        {!! $organization->organization_phones_data !!}
                                     </span>
                                 </div>
                             @endif
@@ -185,6 +143,20 @@
                                     </span>
                                 </div>
                             @endif
+                            @if ($organization->organization_year_incorporated)
+                            <div class="tagp_class">
+                                <span class="subtitle"><b>Year Incorporated:</b></span>
+                                {{ $organization->organization_year_incorporated }}
+                            </div>
+                            @endif
+                            @if ($organization->organization_tax_id)
+                            <div class="tagp_class">
+                                <span class="subtitle"><b>URI:</b></span>
+                                {{ $organization->organization_tax_id }}
+                            </div>
+                            @endif
+                            {{-- related program --}}
+
                             @if (isset($organization->organization_forms_x_filename))
                                 <h4 class="py-10" style="line-height: inherit;"><span
                                         class="mb-10"><b>Referral
@@ -201,22 +173,7 @@
                         <li class="nav-item">
                             <a class="nav-link active" data-toggle="tab" href="#services">
                                 <h4 class="card_services_title">Services
-                                    (
-                                    {{-- @php
-                                    if(count($organization->services) == 0){
-                                        $organization_services_count = $organization->getServices->count();
-                                        $organization_services = $organization->getServices->count();
-                                    }else{
-                                        $organization_services = $organization->services;
-                                    }
-                                @endphp --}}
-                                    @if (isset($organization->services) && count($organization->services) != 0)
-                                        {{ $organization->services->count() }}
-                                    @elseif(count($organization->services) == 0)
-                                        {{ $organization->getServices->count() }}
-                                    @else
-                                        0
-                                    @endif)
+                                    ({{ $organization->organization_service_count }})
                                 </h4>
                             </a>
                         </li>
@@ -239,6 +196,13 @@
                             </a>
                         </li>
                         @endif
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#program_tabs">
+                                <h4 class="card_services_title">Program
+                                    ({{ $organization->program ? count($organization->program) : 0 }})
+                                </h4>
+                            </a>
+                        </li>
                         @if ((Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization, $organization->organization_recordid) && (Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin')) || (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin') || (Auth::user() && Auth::user()->roles->name == 'Network Admin' && count(array_intersect(explode(',', Auth::user()->organization_tags),explode(',', $organization->organization_tag))) > 0) || (Auth::user() && Auth::user()->roles && count(array_intersect(explode(',', Auth::user()->organization_tags),explode(',', $organization->organization_tag))) > 0))
                             <div style="margin-left: auto;">
                                 <div class="dropdown add_new_btn" style="width: 100%; float: right;">
@@ -288,12 +252,26 @@
                                                     @if ($service->phone && count($service->phone) > 0)
                                                         <div class="tagp_class">
                                                             <span><i class="icon md-phone font-size-18 vertical-align-top mr-10" ></i>
-                                                                @foreach ($service->phone as $phone)
-                                                                    <a href="tel:{{ $phone->phone_number }}">{{ $phone->phone_number }}</a>&nbsp;&nbsp;{{ $phone->phone_extension ? 'ext. ' . $phone->phone_extension : '' }}&nbsp;{{ $phone->type ? '(' . $phone->type->type . ')' : '' }}
+                                                                @foreach ($service->phone as $key => $phone)
+                                                                    {{-- <a href="tel:{{ $phone->phone_number }}">{{ $phone->phone_number }}</a> --}}
+
+                                                                    @php
+                                                                        $otherData = '<a href="tel:'.$phone->phone_number.'">'.$phone->phone_number.'</a>';
+                                                                        $otherData .= $phone->phone_extension ? '&nbsp;&nbsp;ext. '. $phone->phone_extension : '';
+                                                                        $otherData .=  $phone->type ? '&nbsp;('.$phone->type->type.')' : '';
+                                                                        $otherData .=  $phone->phone_language ? ' '.$phone->get_phone_language($phone->id) : '';
+                                                                        $otherData .=  $loop->last ? '' : ';';
+                                                                    @endphp
+                                                                    {!! $otherData !!}
+
+                                                                    {{-- &nbsp;&nbsp;{{ $phone->phone_extension ? 'ext. ' . $phone->phone_extension : '' }}&nbsp;{{ $phone->type ? '(' . $phone->type->type . ')' : '' }}
                                                                     @if ($phone->phone_language)
-                                                                        {{ $phone->phone_language }}
+                                                                        {{ $phone->get_phone_language($phone->id) }}
                                                                     @endif
                                                                     {{ $phone->phone_description ? '- ' . $phone->phone_description : '' }}
+                                                                    @if(count($service->phone) > ($key + 1))
+                                                                    ;
+                                                                    @endif --}}
                                                                 @endforeach
                                                             </span>
                                                         </div>
@@ -360,11 +338,7 @@
                                                                 if ($i == count($show_details)) {
                                                                     $show_details[$i] = ['detail_type' => $detail->detail_type, 'detail_value' => $detail->detail_value];
                                                                 } else {
-                                                                    $show_details[$i]['detail_value'] =
-                                                                        $show_details[$i]['detail_value'] .
-                                                                        ',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ' .
-                                                                        $detail->detail_value;
+                                                                    $show_details[$i]['detail_value'] = $show_details[$i]['detail_value'] . ',' .$detail->detail_value;
                                                                 }
                                                             @endphp
                                                         @endforeach
@@ -487,10 +461,10 @@
                                                         </span>
                                                     </div>
                                                     @endif
-                                                    @if (isset($location->accessibilities()->first()->accessibility))
+                                                    @if (isset($location->get_accessibility))
                                                     <div class="tagp_class">
                                                         <span><i class="fa fa-wheelchair-alt icon font-size-18 vertical-align-top mr-10" style="float:none"></i>
-                                                            {{ $location->accessibilities()->first()->accessibility }}
+                                                            {{ $location->get_accessibility->accessibility }}
                                                         </span>
                                                         <br />
                                                     </div>
@@ -598,6 +572,9 @@
                                         @endif
                                     @endif
                                 </div>
+                                <div class="tab-pane fade" id="program_tabs">
+                                    @include('frontEnd.organizations.show_programs')
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -618,13 +595,13 @@
                                     <h4 class="card_services_title">Comments</h4>
                                 </a>
                             </li>
-                            @if (Auth::user() && Auth::user()->roles && (Auth::user()->roles->name != 'Organization Admin' || Auth::user()->roles->name != 'Section Admin'))
+                            {{-- @if (Auth::user() && Auth::user()->roles && (Auth::user()->roles->name != 'Organization Admin' || Auth::user()->roles->name != 'Section Admin'))
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="tab" href="#customdata">
                                         <h4 class="card_services_title">Custom Data</h4>
                                     </a>
                                 </li>
-                            @endif
+                            @endif --}}
                         </ul>
                         <div class="card">
                             <div class="card-block" style="border-radius: 0 0 12px 12px">
@@ -730,67 +707,59 @@
                 </div>
 
                 <div class="col-md-4 property">
-                    @auth
-                    <div class="card detail_services">
-
-                        <div class="card-block">
-                            @if ($organization->organization_status_x)
-                                <h4>
-                                    <span class="subtitle"><b>Status:</b></span>
-                                    {{ $organization->status_data ? $organization->status_data->status : '' }}
-                                </h4>
-                            @endif
-                            @if ($organization->updated_at)
-                                <h4>
-                                    <span class="subtitle"><b>Last Updated:</b></span>
-                                    {{ $organization->updated_at }}
-                                </h4>
-                            @endif
-                            @if ($organization->last_verified_at)
-                                <h4>
-                                    <span class="subtitle"><b>Last Verified:</b></span>
-                                    {{ $organization->last_verified_at }}
-                                </h4>
-                            @endif
-                            @if (Auth::user() && Auth::user()->roles && (Auth::user()->roles->name != 'Organization Admin' || Auth::user()->roles->name != 'Section Admin'))
-                                <div class="btn-download">
-                                    {{-- <form method="GET" action="/organizations/{{$organization->organization_recordid}}/tagging"
-                            id="organization_tagging"> --}}
-                                    {!! Form::open(['route' => ['organization_tag', $organization->organization_recordid], 'class' => 'm-0']) !!}
-                                    <div class="row" id="tagging-div">
-                                        <div class="col-md-10">
-                                            {{-- <input type="text" class="form-control" id="tokenfield" name="tokenfield"
-                            value="{{$organization->organization_tag}}" autocomplete="off" /> --}}
-                                            {{-- <select class="form-control selectpicker" data-live-search="true" id="organization_tag" data-size="5" name="organization_tag" multiple>
-                                <option value="">Select Tags</option>
-                                @foreach ($existing_tags as $key => $tags)
-                                    <option value="{{$tags}}"
-                                    {{ Str::contains($organization->organization_tag, $tags) ? 'selected' : '' }}>{{$tags}}
-                                    </option>
-                                    @endforeach
-                                    </select> --}}
-                                            {{-- {{ dd($organization->organization_tag) }} --}}
-                                            {!! Form::select('organization_tag[]', $allTags, explode(',', $organization->organization_tag), ['class' => 'form-control selectpicker drop_down_create', 'id' => 'organization_tag', 'data-live-search' => 'true', 'data-size' => '5', 'multiple' => 'true']) !!}
-                                        </div>
-                                        {{-- <div class="col-md-2 pl-0">
-                                    <button type="submit" class="btn btn_darkblack" style="float: right;">
-                                        <i class="fas fa-save"></i>
-                                    </button>
-                                </div> --}}
-                                        <div class="col-md-2 pl-0 btn-download">
-                                            <button type="button" class="btn btn_darkblack" data-toggle="modal"
-                                                data-target="#interactionModal">
-                                                <i class="fas fa-book"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    {{-- </form> --}}
-                                    {!! Form::close() !!}
+                    @if (Auth::check() || $organization->logo)
+                        <div class="card detail_services">
+                            <div class="card-block">
+                                <div class="text-center org_logo">
+                                    <img src="{{ $organization->logo }}" alt="" title=" ">
                                 </div>
-                            @endif
+                                @auth
+                                @if ($organization->organization_status_x)
+                                    <h4>
+                                        <span class="subtitle"><b>Status:</b></span>
+                                        {{ $organization->status_data ? $organization->status_data->status : '' }}
+                                    </h4>
+                                @endif
+                                @if ($organization->get_latest_updated($organization, 'updated_at'))
+                                    <h4>
+                                        <span class="subtitle"><b>Last Updated:</b></span>
+                                        {{ $organization->get_latest_updated($organization, 'updated_at') }}
+                                    </h4>
+                                @endif
+                                @if ($organization->get_latest_updated($organization, 'updated_by'))
+                                    <h4>
+                                        <span class="subtitle"><b>Last Updated By:</b></span>
+                                        {{ $organization->get_latest_updated($organization, 'updated_by') }}
+                                    </h4>
+                                @endif
+                                @if ($organization->get_last_verified_by)
+                                    <h4>
+                                        <span class="subtitle"><b>Last Verified By:</b></span>
+                                        {{ $organization->get_last_verified_by->first_name . ' ' . $organization->get_last_verified_by->last_name }}
+                                    </h4>
+                                @endif
+                                @if (Auth::user() && Auth::user()->roles && (Auth::user()->roles->name != 'Organization Admin' || Auth::user()->roles->name != 'Section Admin'))
+                                    <div class="btn-download">
+                                        {!! Form::open(['route' => ['organization_tag', $organization->organization_recordid], 'class' => 'm-0']) !!}
+                                        <div class="row" id="tagging-div">
+                                            <div class="col-md-10">
+                                                {!! Form::select('organization_tag[]', $allTags, explode(',', $organization->organization_tag), ['class' => 'form-control selectpicker drop_down_create', 'id' => 'organization_tag', 'data-live-search' => 'true', 'data-size' => '5', 'multiple' => 'true']) !!}
+                                            </div>
+                                            <div class="col-md-2 pl-0 btn-download">
+                                                <button type="button" class="btn btn_darkblack" data-toggle="modal"
+                                                    data-target="#interactionModal">
+                                                    <i class="fas fa-book"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        {{-- </form> --}}
+                                        {!! Form::close() !!}
+                                    </div>
+                                @endif
+                                @endauth
+                            </div>
                         </div>
-                    </div>
-                    @endauth
+                    @endif
                     <!-- Locations area design -->
                     <div class="card">
                         <div class="card-block p-0">
@@ -996,7 +965,7 @@
                                 <div class="form-group">
                                     <label
                                         style="margin-bottom:5px;font-weight:600;color: #000;letter-spacing: 0.5px;">Tag</label>
-                                    <input type="text" class="form-control" name="tag" placeholder="tag" id="tag">
+                                    <input type="text" class="form-control" required name="tag" placeholder="tag" id="tag">
                                 </div>
                             </div>
                         </div>

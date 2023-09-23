@@ -31,12 +31,14 @@
                         {{-- <div class="form-group text-left form-material m-0" data-plugin="formMaterial">
                             <img src="/frontend/assets/images/search.png" alt="" title="" class="form_icon_img"> --}}
                             {{-- </div> --}}
+                            @if ( $user && $user->role_id != 1 && $organization_list->total() > 5)
                             <div class="row float-right">
                                 <div class="col-md-12">
-                                    <input type="text" autocomplete="off" class="form-control" name="find" placeholder="Search for Organization" id="search_organization">
+                                    <input type="text" autocomplete="off" class="form-control" name="find" placeholder="Filter Organizations" id="search_organization">
                                     <div id="organizationList"></div>
                                 </div>
                             </div>
+                            @endif
                     </h4>
                     <div class="col-sm-12 p-0">
                         @if ( $user && $user->role_id == 1)
@@ -56,7 +58,7 @@
                         My Services
                         <div class="row float-right">
                             <div class="col-md-12">
-                                <input type="text" autocomplete="off" class="form-control" name="find" placeholder="Search for Service" id="search_service">
+                                <input type="text" autocomplete="off" class="form-control" name="find" placeholder="Filter Services" id="search_service">
                             </div>
                         </div>
                     </h4>

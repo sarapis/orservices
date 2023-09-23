@@ -41,7 +41,14 @@ Map Settings
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Google Maps API Key
                 </label>
                 <div class="col-md-8 col-sm-8 col-xs-12">
-                  <input type="text" name="api_key" class="form-control col-md-7 col-xs-12" value="{{$map->api_key}}" @if($map->active==0) disabled="disabled" @endif>
+                  {{-- <input type="text" name="api_key" class="form-control col-md-7 col-xs-12" value="{{$map->api_key}}" @if($map->active==0) disabled="disabled" @endif> --}}
+                    <input class="form-control" type="text" value="{{ '********************' . substr($map->api_key, -7) }}" name="api_key1" id="api_key1" disabled>
+                    <input class="form-control" type="text" value="{{ $map->api_key }}" name="api_key"
+                        id="api_key2" style="display: none;" required>
+                    <button type="button" id="clickChangeKey">Change</button>
+                    @if ($errors->first('api_key'))
+                        <div class="alert alert-danger">{{ $errors->first('api_key') }}</div>
+                    @endif
                 </div>
               </div>
 
@@ -240,6 +247,16 @@ Map Settings
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gmaps.js/0.4.9/gmaps.min.js"></script>
 <script src='//cdn.jsdelivr.net/gmaps4rails/2.1.2/gmaps4rails.js'> </script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js'> </script>
+<script>
+    $(document).ready(function() {
+        $('#clickChangeKey').click(function() {
+            $('#api_key1').hide()
+            $('#api_key2').show()
+            $('#api_key2').val('')
+            $(this).hide()
+        })
+    })
+</script>
 <script>
 $('#scan-btn').on('click', function(e){
   e.preventDefault();

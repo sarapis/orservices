@@ -184,10 +184,60 @@
             <input type="hidden" name="csv" id="csv">
             <input type="hidden" name="filter_label" id="filter_label">
             <input type="hidden" name="organization_tags" id="organization_tags" value="{{ isset($selected_organization) ? $selected_organization : '' }}">
+            <input type="hidden" name="service_tags" id="service_tags" value="{{ isset($selected_service_tags) ? $selected_service_tags : '' }}">
+            <input type="hidden" name="sdoh_codes_category" id="sdoh_codes_category" value="{{ isset($sdoh_codes_category) ? $sdoh_codes_category : '' }}">
+            <input type="hidden" name="sdoh_codes_data" id="sdoh_codes_data" value="{{ isset($selected_sdoh_code) ? json_encode($selected_sdoh_code) : '' }}">
+            {{-- <input type="hidden" name="sdoh_codes_category" id="sdoh_codes_category" value="{{ isset($selected_sdoh_code_categoy) ? $selected_sdoh_code_categoy : '' }}"> --}}
             <input type="hidden" id="selected_taxonomies" name="selected_taxonomies">
         </ul>
     </nav>
 </form>
+{{-- let SDOH_code_list = [];
+    var SDOH_codes_ids = []
+    var selected_sdoh_code = '<?php isset($selected_sdoh_code) ? print_r($selected_sdoh_code) : print_r('') ; ?>'
+
+    if(selected_sdoh_code.length > 0) {
+        SDOH_codes_ids = JSON.parse(selected_sdoh_code);
+    }
+    let sdoh_codes_Array =  `<?php isset($sdoh_codes_Array) ? print($sdoh_codes_Array) : []; ?>`
+    sdoh_codes_Array = sdoh_codes_Array ? JSON.parse(sdoh_codes_Array) : []
+
+    if(sdoh_codes_Array.length > 0){
+        $.each(sdoh_codes_Array,function name(key,value) {
+            var alt_data = {};
+            alt_data.text = value.code;
+            alt_data.state = {};
+            alt_data.id = 'sdoh_code_'+value.id;
+            if (SDOH_codes_ids != null && SDOH_codes_ids.includes(value.id.toString())) {
+
+                alt_data.state.selected = true;
+            }
+            SDOH_code_list.push(alt_data)
+        })
+    }
+    $('#sdoh_codes_tree').jstree({
+        'plugins': ["checkbox", "wholerow", "sort","search"],
+        'core': {
+            select_node: 'sidebar_taxonomy_tree',
+            data: SDOH_code_list
+        },
+        "search": {
+            "case_insensitive": true,
+            "show_only_matches" : true
+        },
+    });
+    $('#sdoh_codes_tree').on("select_node.jstree deselect_node.jstree", function (e, data) {
+        var all_selected_ids = $('#sdoh_codes_tree').jstree("get_checked");
+
+        var SDOH_codes_ids = []
+        all_selected_ids.filter(function(id) {
+            if(id.indexOf('sdoh_code_') > -1){
+                SDOH_codes_ids.push(id.split('sdoh_code_')[1])
+            }
+        });
+        $("#sdoh_codes_data").val(JSON.stringify(SDOH_codes_ids));
+        $("#filter").submit();
+    }); --}}
 <script src="{{asset('js/treeview2.js')}}"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/jstree.min.js"></script>
 
@@ -349,7 +399,7 @@ $(document).ready(function(){
         selected_org_tags_ids = selected_organization;
     }
     let organization_tagsArray =  `<?php isset($organization_tagsArray) ? print_r($organization_tagsArray) : print_r(''); ?>`
-    organization_tagsArray = JSON.parse(organization_tagsArray)
+    organization_tagsArray = organization_tagsArray ? JSON.parse(organization_tagsArray) : []
     if(organization_tagsArray.length > 0){
         $.each(organization_tagsArray,function name(key,value) {
             var alt_data = {};
@@ -380,6 +430,111 @@ $(document).ready(function(){
         });
         // selected_org_tags_ids = selected_org_tags_ids.toString();
         $("#organization_tags").val(JSON.stringify(selected_org_tags_ids));
+        $("#filter").submit();
+    });
+
+    // service tags
+    let service_tree_tags_list = [];
+    var selected_service_tags_ids = []
+    var selected_service = '<?php isset($selected_service_tags) ? print_r($selected_service_tags) : print_r('') ; ?>'
+
+    if(selected_service.length > 0) {
+        selected_service_tags_ids = selected_service;
+    }
+    let service_tagsArray =  `<?php isset($service_tagsArray) ? print_r($service_tagsArray) : []; ?>`
+    service_tagsArray = service_tagsArray ? JSON.parse(service_tagsArray) : []
+    if(service_tagsArray.length > 0){
+        $.each(service_tagsArray,function name(key,value) {
+            var alt_data = {};
+            alt_data.text = value.tag;
+            alt_data.state = {};
+            alt_data.id = 'servicetag_'+value.id;
+            if (selected_service_tags_ids.indexOf(value.id) > -1) {
+                alt_data.state.selected = true;
+            }
+            service_tree_tags_list.push(alt_data)
+        })
+    }
+    $('#service_tags_tree').jstree({
+        'plugins': ["checkbox", "wholerow", "sort"],
+        'core': {
+            select_node: 'sidebar_taxonomy_tree',
+            data: service_tree_tags_list
+        }
+    });
+    $('#service_tags_tree').on("select_node.jstree deselect_node.jstree", function (e, data) {
+        var all_selected_ids = $('#service_tags_tree').jstree("get_checked");
+        var selected_service_tags_ids = []
+        all_selected_ids.filter(function(id) {
+            if(id.indexOf('servicetag_') > -1){
+                selected_service_tags_ids.push(id.split('servicetag_')[1])
+            }
+            // return id.indexOf('servicetag_') > -1;
+        });
+        // selected_service_tags_ids = selected_service_tags_ids.toString();
+        $("#service_tags").val(JSON.stringify(selected_service_tags_ids));
+        $("#filter").submit();
+    });
+
+    // sdoh codes category
+    let SDOH_code_category_list = [];
+    var SDOH_codes_category_ids = []
+    var selected_sdoh_code_category = `<?php isset($sdoh_codes_category) ? print_r($sdoh_codes_category) : print_r('') ; ?>`
+
+    if(selected_sdoh_code_category.length > 0) {
+        SDOH_codes_category_ids = JSON.parse(selected_sdoh_code_category);
+    }
+
+    let sdoh_codes_category_Array =  `<?php isset($sdoh_codes_category_Array) ? print_r($sdoh_codes_category_Array) : []; ?>`
+    sdoh_codes_category_Array = sdoh_codes_category_Array ? JSON.parse(sdoh_codes_category_Array) : []
+
+    if(sdoh_codes_category_Array.length > 0){
+        $.each(sdoh_codes_category_Array,function name(key,value) {
+
+            var alt_data = {};
+            alt_data.text = value.name;
+            alt_data.state = {};
+            // alt_data.id = 'sdohcodes_category_'+value.replace(' ','_');
+            alt_data.id = 'sdohcodes_category_'+value.id;
+
+            // if (SDOH_codes_category_ids.length > 0 && SDOH_codes_category_ids.indexOf(value.replace(' ','_')) > -1) {
+            if (SDOH_codes_category_ids.length > 0 && SDOH_codes_category_ids.indexOf((value.id.toString())) > -1 ) {
+                alt_data.state.selected = true;
+            }
+            SDOH_code_category_list.push(alt_data)
+        })
+    }
+    $('#sdoh_codes_category_tree').jstree({
+        'plugins': ["checkbox", "wholerow", "sort"],
+        'core': {
+            select_node: 'sidebar_taxonomy_tree',
+            data: SDOH_code_category_list
+        }
+    });
+    $('#sdoh_codes_category_tree').on("select_node.jstree deselect_node.jstree", function (e, data) {
+        var all_selected_ids = $('#sdoh_codes_category_tree').jstree("get_checked");
+        var SDOH_codes_category_ids = []
+        all_selected_ids.filter(function(id) {
+            if(id.indexOf('sdohcodes_category_') > -1){
+                SDOH_codes_category_ids.push(id.split('sdohcodes_category_')[1])
+            }
+            // return id.indexOf('servicetag_') > -1;
+        });
+        // SDOH_codes_category_ids = SDOH_codes_category_ids.toString();
+        $("#sdoh_codes_category").val(JSON.stringify(SDOH_codes_category_ids));
+        $("#filter").submit();
+    });
+
+    // sdoh codes
+
+
+
+// ------------- //  ----------//
+
+    $('#sdoh_codes_select').on('change', function(){
+        // let text = $(this).text();
+        let SDOH_codes_ids = $(this).val()
+        $("#sdoh_codes_data").val(JSON.stringify(SDOH_codes_ids));
         $("#filter").submit();
     });
     $('.drop-label').on('click', function(){

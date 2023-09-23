@@ -2,18 +2,21 @@
     <div class="accordion" id="accordion-condition">
         @php
             $i = 0;
-            $conditionKey = 0;
-            $goalKey = 0;
-            $activitiesKey = 0;
+            // $conditionKey = 0;
+            // $goalKey = 0;
+            // $activitiesKey = 0;
         @endphp
         @foreach ($codes as $condition_key => $condition_values)
+                @php
+                    $category_data = \App\Model\CodeCategory::whereId($condition_key)->first();
+                @endphp
                 <div class="card all_form_field">
                     <div class="card-header" id="condition_{{ $i }}">
                         <h4 class="mb-0 card_services_title">
-                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#condition_{{ str_replace(' ','_',str_replace('/','_',str_replace(',','_',$condition_key))) }}" aria-expanded="true" aria-controls="condition_{{ str_replace(' ','_',str_replace('/','_',str_replace(',','_',$condition_key))) }}"> {{ $condition_key }} </button>
+                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#condition_{{ str_replace(' ','_',str_replace('/','_',str_replace(',','_',$category_data->name))) }}" aria-expanded="true" aria-controls="condition_{{ str_replace(' ','_',str_replace('/','_',str_replace(',','_',$category_data->name))) }}"> {{ $category_data->name }} </button>
                         </h4>
                     </div>
-                    <div id="condition_{{ str_replace(' ','_',str_replace('/','_',str_replace(',','_',$condition_key))) }}" class="collapse hide" aria-labelledby="condition_{{ str_replace(' ','_',str_replace('/','_',str_replace(',','_',$condition_key))) }}" data-parent="#accordion-condition">
+                    <div id="condition_{{ str_replace(' ','_',str_replace('/','_',str_replace(',','_',$category_data->name))) }}" class="collapse hide" aria-labelledby="condition_{{ str_replace(' ','_',str_replace('/','_',str_replace(',','_',$category_data->name))) }}" data-parent="#accordion-condition">
                         <div class="card-body">
                             @foreach ($condition_values as $data_key => $code_resources)
                                 @if ($data_key == 'Condition')
@@ -105,11 +108,11 @@
 
                                     @if ($a_key)
                                         @php
-                                            $value = str_replace(' ','_',str_replace('/','_',str_replace(',','_',$condition_key))).'|'.str_replace(' ','_',str_replace('/','_',str_replace(',','_',$a_key)));
-                                            $data_id = 'procedure_'. str_replace(' ','_',str_replace('/','_',str_replace(',','_',$condition_key))) .'|'. str_replace(' ','_',str_replace('/','_',str_replace(',','_',$a_key)));
-                                            $checked = in_array(str_replace(' ','_',str_replace('/','_',str_replace(',','_',$condition_key))).'|'.str_replace(' ','_',str_replace('/','_',str_replace(',','_',$a_key))),$procedure_grouping) ? 'checked' : '';
-                                            $active = in_array(str_replace(' ','_',str_replace('/','_',str_replace(',','_',$condition_key))).'|'.str_replace(' ','_',str_replace('/','_',str_replace(',','_',$a_key))),$procedure_grouping) ? 'active' : '';
-                                            $display = in_array(str_replace(' ','_',str_replace('/','_',str_replace(',','_',$condition_key))).'|'.str_replace(' ','_',str_replace('/','_',str_replace(',','_',$a_key))),$procedure_grouping) ? 'show' : 'hide';
+                                            $value = str_replace(' ','_',str_replace('/','_',str_replace(',','_',$category_data->name))).'|'.str_replace(' ','_',str_replace('/','_',str_replace(',','_',$a_key)));
+                                            $data_id = 'procedure_'. str_replace(' ','_',str_replace('/','_',str_replace(',','_',$category_data->name))) .'|'. str_replace(' ','_',str_replace('/','_',str_replace(',','_',$a_key)));
+                                            $checked = in_array(str_replace(' ','_',str_replace('/','_',str_replace(',','_',$category_data->name))).'|'.str_replace(' ','_',str_replace('/','_',str_replace(',','_',$a_key))),$procedure_grouping) ? 'checked' : '';
+                                            $active = in_array(str_replace(' ','_',str_replace('/','_',str_replace(',','_',$category_data->name))).'|'.str_replace(' ','_',str_replace('/','_',str_replace(',','_',$a_key))),$procedure_grouping) ? 'active' : '';
+                                            $display = in_array(str_replace(' ','_',str_replace('/','_',str_replace(',','_',$category_data->name))).'|'.str_replace(' ','_',str_replace('/','_',str_replace(',','_',$a_key))),$procedure_grouping) ? 'show' : 'hide';
                                             $selected = '';
                                             foreach ($a_datas as $key => $tempid) {
                                                 if($selected != 'selected')
@@ -150,9 +153,9 @@
                 </div>
             @php
                 $i++;
-                $conditionKey = 0;
-                $goalKey = 0;
-                $activitiesKey = 0;
+                // $conditionKey = 0;
+                // $goalKey = 0;
+                // $activitiesKey = 0;
             @endphp
         @endforeach
     </div>

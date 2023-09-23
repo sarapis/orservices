@@ -138,7 +138,7 @@ Suggestion Form
 	                  <td class="text-center">{{$key+1}}</td>
 	                  <td class="text-center">{{$email->email_info}}</td>
 	                  <td class="text-center">
-	                    <button id="btn_delete" class="btn btn-block btn-danger btn-sm open_modal" data-toggle="modal" value="{{ $email->email_recordid }}" data-target=".bs-delete-modal-lg" ><i class="fa fa-fw fa-trash"></i>Delete</button>
+	                    <button id="btn_delete" class="btn btn-block btn-danger btn-sm btn_delete open_modal" value="{{ $email->email_recordid }}" ><i class="fa fa-fw fa-trash"></i>Delete</button>
 	                  </td>
 	                </tr>
 	            @endforeach
@@ -147,7 +147,8 @@ Suggestion Form
         </table>
       </div>
       <div class="col-md-12 pull-left" style="margin: 15px 0px;">
-        <label class="control-label col-md-8 col-sm-8 col-xs-8 text-left">Show/Hide Suggestion Form</label>
+        {{-- <label class="control-label col-md-8 col-sm-8 col-xs-8 text-left">Show/Hide Suggestion Form</label> --}}
+        <label class="control-label col-md-8 col-sm-8 col-xs-8 text-left">Only logged in users can submit suggestions</label>
         {{-- <div class="col-md-8 col-sm-8 col-xs-12">
             <label>Off&nbsp;&nbsp;
             <input type="checkbox" class="js-switch" value="1" name="show_suggest_menu" id="show_suggest_menu" {{ $layout && $layout->show_suggest_menu == '1' ? 'checked'  : '' }} />&nbsp;&nbsp;On
@@ -207,8 +208,7 @@ Suggestion Form
                     <div class="modal-body">
 	                    <label class="control-label sel-label-org pl-4">Email: </label>
 	                    <div class="col-md-12 col-sm-12 col-xs-12 contact-email-div">
-	                        <input class="form-control selectpicker" type="text" id="contact_email"
-	                            name="contact_email" value="" required>
+	                        <input class="form-control selectpicker" type="email" id="contact_email" name="contact_email" value="" required>
 	                    </div>
                     </div>
 
@@ -287,10 +287,11 @@ $(document).ready(function() {
         "autoWidth": false
     } );
 
-    $('#btn_delete').on('click', function(e) {
+    $('.btn_delete').on('click', function(e) {
         e.preventDefault();
         var value = $(this).val();
-        $('input#email_recordid').val(value);
+        $('#email_recordid').val(value);
+        $('.bs-delete-modal-lg').modal('show')
     });
 
     $('#email_delete_btn').on('click', function(e) {

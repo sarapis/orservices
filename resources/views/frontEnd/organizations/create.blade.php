@@ -29,7 +29,25 @@
         height: 100%;
         border: 1px solid #ddd;
     }
-
+    .choose_file{
+        background: #5051db;
+    color: #fff;
+    position: relative;
+    height: 55px;
+    border-radius: 12px;
+    text-align: center;
+    line-height: 55px;
+    font-size: 15px;
+    letter-spacing: 1px;
+    font-weight: 600;
+    }
+    .choose_file .form-control{
+        position: absolute;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+    }
 </style>
 
 @section('content')
@@ -37,16 +55,11 @@
     <div class="inner_services">
         <div id="contacts-content" class="container">
             <div class="row">
-                <!-- <div class="col-md-12">
-                    <input type="hidden" id="checked_terms" name="checked_terms">
-                </div> -->
                 <div class="col-md-12">
                     <h4 class="card-title title_edit mb-30">
                         Create New Organization
-                        {{-- <p class=" mb-30 ">A services that will improve your productivity</p> --}}
                     </h4>
-                    {{-- <form action="/add_new_organization" method="GET"> --}}
-                    {!! Form::open(['route' => 'organizations.store']) !!}
+                    {!! Form::open(['route' => 'organizations.store','enctype' => 'multipart/form-data']) !!}
                     <div class="card all_form_field">
                         <div class="card-block">
                             <div class="row">
@@ -66,14 +79,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label><b> Alternate Name  </b> </label>
-                                        <div class="help-tip">
-                                            <div>
-                                                <p>Alternative or commonly used name for the organization.</p>
-                                            </div>
-                                        </div>
-                                        {!! Form::text('organization_alternate_name', null, ['class' => 'form-control', 'id' => 'organization_alternate_name']) !!}
-
+                                        <label>Parent Organization </label>
+                                        {!! Form::select('parent_organization', $parent_organizations, null, [ 'class' => 'form-control selectpicker', 'data-live-search' => 'true', 'data-size' => '5', 'id' => 'parent_organization', 'placeholder' => 'Select parent organization', ]) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-12">
@@ -84,7 +91,7 @@
                                                 <p>A brief summary about the organization.</p>
                                             </div>
                                         </div>
-                                        {!! Form::textarea('organization_description', null, ['id' => 'organization_description', 'rows' => 4, 'cols' => 54, 'style' => 'resize:none']) !!}
+                                        {!! Form::textarea('organization_description', null, ['id' => 'organization_description','rows' => 4,'cols' => 54,'style' => 'resize:none',]) !!}
                                         @error('organization_description')
                                             <span class="error-message"><strong>{{ $message }}</strong></span>
                                         @enderror
@@ -133,14 +140,106 @@
                                         {!! Form::text('instagram_url', null, ['class' => 'form-control']) !!}
                                     </div>
                                 </div>
-                                <div class="text-right col-md-12 mb-20">
-                                    <button type="button" class="btn btn_additional bg-primary-color" data-toggle="collapse"
-                                        data-target="#demo">Additional Info
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>URI </label>
+                                        <div class="help-tip">
+                                            <div>
+                                                <p>A government issued identifier used for tax administration (i.e., EIN, TIN).</p>
+                                            </div>
+                                        </div>
+                                        {!! Form::text('organization_tax_id', null, ['class' => 'form-control','id' => 'organization_tax_id','placeholder' => 'Ex. 12-3456789',]) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Year Incorporated </label>
+                                        <div class="help-tip">
+                                            <div>
+                                                <p>The year in which the organization was legally formed</p>
+                                            </div>
+                                        </div>
+                                        {!! Form::text('organization_year_incorporated', null, ['class' => 'form-control','id' => 'organization_year_incorporated',]) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Legal Status </label>
+                                        <div class="help-tip">
+                                            <div>
+                                                <p>Type of organization</p>
+                                            </div>
+                                        </div>
+                                        {!! Form::select(
+                                            'organization_legal_status',['non-profit' => 'non-profit','private-corporation' => 'private corporation','government' => 'government','other' => 'other',],null,['class' => 'form-control selectpicker','id' => 'organization_legal_status','placeholder' => 'Select Legal Status',],
+                                        ) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label><b> Alternate Name </b> </label>
+                                        <div class="help-tip">
+                                            <div>
+                                                <p>Alternative or commonly used name for the organization.</p>
+                                            </div>
+                                        </div>
+                                        {!! Form::text('organization_alternate_name', null, ['class' => 'form-control', 'id' => 'organization_alternate_name', ]) !!}
+
+                                    </div>
+                                </div>
+                                {{-- @if (Auth::user() && Auth::user()->roles->name == 'System Admin')
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Website Rating </label>
+                                            {!! Form::select('organization_website_rating', $rating_info_list, null, [
+                                                'class' => 'form-control selectpicker',
+                                                'data-live-search' => 'true',
+                                                'data-size' => '5',
+                                                'id' => 'organization_website_rating',
+                                                'placeholder' => 'Select website rating',
+                                            ]) !!}
+                                        </div>
+                                    </div>
+                                @endif --}}
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label>Logo </label>
+                                        <div class="row"  id="logoFormDiv">
+                                            <div class="col-md-4 col-sm-12">
+                                                <div class="mb-5 mt-5">
+                                                    <input class="form-check-input logo_radio" type="radio" name="logo_type" id="inlineRadio1" value="file" checked>
+                                                    <label class="form-check-label" for="inlineRadio1">Choose File</label>
+                                                </div>
+                                                <div class="mb-5">
+                                                    <input class="form-check-input logo_radio" type="radio" name="logo_type" id="inlineRadio2" value="url">
+                                                    <label class="form-check-label" for="inlineRadio2">Enter URL</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8 col-sm-12">
+                                                <div class="row">
+                                                    <div class="col-md-7 col-sm-12">
+                                                        <div class="choose_file logo_file">
+                                                            {!! Form::file('logo', ['class' => 'form-control' ,'id' => 'chooseFile']) !!}
+                                                            <p>Choose Logo</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5 col-sm-12">
+                                                        <img src="" alt="" style="max-width: 100%; max-height: 60px;display:none;" id="previewUplodedLogo">
+                                                    </div>
+                                                </div>
+                                                <input class="form-control logo_url" type="text" placeholder="Enter URL" style="display:none;" name="logo" >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- <div class="text-right col-md-12 mb-20">
+                                    <button type="button" class="btn btn_additional bg-primary-color"
+                                        data-toggle="collapse" data-target="#demo">Additional Info
                                         <img src="/frontend/assets/images/white_arrow.png" alt="" title="" />
                                     </button>
-                                </div>
-                                <div id="demo" class="collapse row m-0" style="width:100%">
-                                    <div class="col-md-4">
+                                </div> --}}
+                                {{-- <div id="demo" class="collapse row m-0" style="width:100%"> --}}
+                                    {{-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Tax Status </label>
                                             <div class="help-tip">
@@ -148,51 +247,14 @@
                                                     <p>Government assigned tax designation for tax-exempt organizations.</p>
                                                 </div>
                                             </div>
-                                            {!! Form::text('organization_tax_status', null, ['class' => 'form-control', 'id' => 'organization_tax_status', 'placeholder' => 'Ex. 501(c)(3)']) !!}
+                                            {!! Form::text('organization_tax_status', null, [
+                                                'class' => 'form-control',
+                                                'id' => 'organization_tax_status',
+                                                'placeholder' => 'Ex. 501(c)(3)',
+                                            ]) !!}
                                         </div>
-                                    </div>
-                                    @if (Auth::user() && Auth::user()->roles->name == 'System Admin')
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label>Website Rating </label>
-                                                {!! Form::select('organization_website_rating', $rating_info_list, null, ['class' => 'form-control selectpicker', 'data-live-search' => 'true', 'data-size' => '5', 'id' => 'organization_website_rating', 'placeholder' => 'Select website rating']) !!}
-                                            </div>
-                                        </div>
-                                    @endif
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Tax ID </label>
-                                            <div class="help-tip">
-                                                <div>
-                                                    <p>A government issued identifier used for tax administration (i.e., EIN, TIN).</p>
-                                                </div>
-                                            </div>
-                                            {!! Form::text('organization_tax_id', null, ['class' => 'form-control', 'id' => 'organization_tax_id', 'placeholder' => 'Ex. 12-3456789']) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Year Incorporated </label>
-                                            <div class="help-tip">
-                                                <div>
-                                                    <p>The year in which the organization was legally formed</p>
-                                                </div>
-                                            </div>
-                                            {!! Form::text('organization_year_incorporated', null, ['class' => 'form-control', 'id' => 'organization_year_incorporated']) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Legal Status </label>
-                                            <div class="help-tip">
-                                                {{-- <div><p>The legal status defines the conditions that an organization is operating under; e.g. non-profit, private corporation or a government organization.</p></div> --}}
-                                                <div>
-                                                    <p>Type of organization</p>
-                                                </div>
-                                            </div>
-                                            {!! Form::select('organization_legal_status', ['non-profit' => 'non-profit', 'private-corporation' => 'private corporation', 'government' => 'government', 'other' => 'other'], null, ['class' => 'form-control selectpicker', 'id' => 'organization_legal_status', 'placeholder' => 'Select Legal Status']) !!}
-                                        </div>
-                                    </div>
+                                    </div> --}}
+
                                     {{-- @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin')
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -222,7 +284,7 @@
                                             </div>
                                         </div>
                                     </div> --}}
-                                </div>
+                                {{-- </div> --}}
                                 {{-- service table end here --}}
                                 {{-- location table --}}
                             </div>
@@ -247,18 +309,26 @@
                                 </h4>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#programs-tab">
+                                <h4 class="card_services_title">Programs
+                                </h4>
+                            </a>
+                        </li>
                     </ul>
                     <div class="card">
                         <div class="card-block" style="border-radius: 0 0 12px 12px">
                             <div class="tab-content">
                                 <div class="tab-pane active" id="locations-tab">
-                                    <div class="organization_services">
+                                    <div class="organization_services p-0">
                                         <div class="card all_form_field">
-                                            <div class="card-block">
+                                            <div class="card-block p-0 border-0">
                                                 <h4 class="title_edit text-left mb-25 mt-10">
                                                     Locations
-                                                    <a href="javascript:void(0)" class="locationModalOpenButton plus_delteicon bg-primary-color float-right">
-                                                        <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                                    <a href="javascript:void(0)"
+                                                        class="locationModalOpenButton plus_delteicon bg-primary-color float-right">
+                                                        <img src="/frontend/assets/images/plus.png" alt=""
+                                                            title="">
                                                     </a>
                                                 </h4>
                                                 <div class="row">
@@ -266,7 +336,10 @@
                                                         <div class="form-group">
                                                             {{-- <label>Locations: <a class="locationModalOpenButton"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
                                                             <div class="table-responsive">
-                                                                <table class="table table_border_none">
+                                                                <table
+                                                                    class="display dataTable table-striped jambo_table table-bordered table-responsive"
+                                                                    cellspacing="0" width="100%"
+                                                                    style="display: table;">
                                                                     <thead>
                                                                         <th>Name</th>
                                                                         <th>Address</th>
@@ -288,15 +361,16 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="phones-tab">
-                                    <div class="organization_services">
+                                    <div class="organization_services p-0">
                                         <div class="card all_form_field">
-                                            <div class="card-block">
+                                            <div class="card-block p-0 border-0">
                                                 <h4 class="title_edit text-left mb-25 mt-10">
                                                     Phones
                                                     <div class="d-inline float-right">
                                                         <a href="javascript:void(0)"
                                                             class="phoneModalOpenButton plus_delteicon bg-primary-color">
-                                                            <img src="/frontend/assets/images/plus.png" alt="" title="">
+                                                            <img src="/frontend/assets/images/plus.png" alt=""
+                                                                title="">
                                                         </a>
                                                     </div>
                                                 </h4>
@@ -305,26 +379,34 @@
                                                         <div class="form-group">
                                                             {{-- <label>Phones: </label> --}}
                                                             <div class="table-responsive">
-                                                                <table class="table table_border_none" id="PhoneTable">
+                                                                <table
+                                                                    class="display dataTable table-striped jambo_table table-bordered table-responsive"
+                                                                    cellspacing="0" width="100%"
+                                                                    style="display: table;" id="PhoneTable">
                                                                     <thead>
                                                                         <th>Number</th>
                                                                         <th>Extension</th>
                                                                         <th style="width:200px;position:relative;">Type
                                                                             <div class="help-tip" style="top:8px;">
                                                                                 <div>
-                                                                                    <p>Select “Main” if this is the organization's primary phone
+                                                                                    <p>Select “Main” if this is the
+                                                                                        organization's primary phone
                                                                                         number (or leave blank)
                                                                                     </p>
                                                                                 </div>
                                                                             </div>
                                                                         </th>
                                                                         <th style="width:200px;">Language(s)</th>
-                                                                        <th style="width:200px;position:relative;">Description
+                                                                        <th style="width:200px;position:relative;">
+                                                                            Description
                                                                             <div class="help-tip" style="top:8px;">
                                                                                 <div>
-                                                                                    <p>A description providing extra information about the phone
-                                                                                        service (e.g. any special arrangements for accessing, or
-                                                                                        details of availability at particular times).
+                                                                                    <p>A description providing extra
+                                                                                        information about the phone
+                                                                                        service (e.g. any special
+                                                                                        arrangements for accessing, or
+                                                                                        details of availability at
+                                                                                        particular times).
                                                                                     </p>
                                                                                 </div>
                                                                             </div>
@@ -373,38 +455,47 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="contacts-tab">
-                                    <div class="organization_services">
+                                    <div class="organization_services p-0">
                                         <div class="card all_form_field">
-                                            <div class="card-block">
+                                            <div class="card-block p-0 border-0">
                                                 {{-- contact table --}}
-                                            <h4 class="title_edit text-left mb-25 mt-10">
-                                                Contacts <a class="contactModalOpenButton float-right plus_delteicon bg-primary-color"><img src="/frontend/assets/images/plus.png" alt="" title=""></a>
-                                            </h4>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        {{-- <label>Contacts: <a class="contactModalOpenButton"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
-                                                        <div class="table-responsive">
-                                                            <table class="table table_border_none">
-                                                                <thead>
-                                                                    <th>Name</th>
-                                                                    <th>Title</th>
-                                                                    <th>Email</th>
-                                                                    <th>Visibility</th>
-                                                                    <th>Phone</th>
-                                                                    <th style="width:60px">&nbsp;</th>
-                                                                </thead>
-                                                                <tbody id="contactsTable">
-                                                                </tbody>
-                                                            </table>
+                                                <h4 class="title_edit text-left mb-25 mt-10">
+                                                    Contacts <a
+                                                        class="contactModalOpenButton float-right plus_delteicon bg-primary-color"><img
+                                                            src="/frontend/assets/images/plus.png" alt=""
+                                                            title=""></a>
+                                                </h4>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            {{-- <label>Contacts: <a class="contactModalOpenButton"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
+                                                            <div class="table-responsive">
+                                                                <table
+                                                                    class="display dataTable table-striped jambo_table table-bordered table-responsive"
+                                                                    cellspacing="0" width="100%"
+                                                                    style="display: table;">
+                                                                    <thead>
+                                                                        <th>Name</th>
+                                                                        <th>Title</th>
+                                                                        <th>Email</th>
+                                                                        <th>Visibility</th>
+                                                                        <th>Phone</th>
+                                                                        <th style="width:60px">&nbsp;</th>
+                                                                    </thead>
+                                                                    <tbody id="contactsTable">
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            {{-- end here --}}
+                                                {{-- end here --}}
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="tab-pane" id="programs-tab">
+                                    @include('frontEnd.organizations.organization_program')
                                 </div>
                             </div>
                         </div>
@@ -433,8 +524,7 @@
                     <input type="hidden" name="location_description[]" id="location_description">
                     <input type="hidden" name="location_details[]" id="location_details">
                     <input type="hidden" name="location_accessibility[]" id="location_accessibility">
-                    <input type="hidden" name="location_accessibility_details[]"
-                        id="location_accessibility_details">
+                    <input type="hidden" name="location_accessibility_details[]" id="location_accessibility_details">
                     <input type="hidden" name="location_regions[]" id="location_regions">
 
 
@@ -456,38 +546,30 @@
                     <input type="hidden" name="location_phone_descriptions[]" id="location_phone_descriptions">
 
                     {{-- schedule section --}}
-                    <input type="hidden" name="opens_at_location_monday_datas" id="opens_at_location_monday_datas">
-                    <input type="hidden" name="closes_at_location_monday_datas"
-                        id="closes_at_location_monday_datas">
+                    <input type="hidden" name="opens_location_monday_datas" id="opens_location_monday_datas">
+                    <input type="hidden" name="closes_location_monday_datas" id="closes_location_monday_datas">
                     <input type="hidden" name="schedule_closed_monday_datas" id="schedule_closed_monday_datas">
-                    <input type="hidden" name="opens_at_location_tuesday_datas"
-                        id="opens_at_location_tuesday_datas">
-                    <input type="hidden" name="closes_at_location_tuesday_datas"
-                        id="closes_at_location_tuesday_datas">
+                    <input type="hidden" name="opens_location_tuesday_datas" id="opens_location_tuesday_datas">
+                    <input type="hidden" name="closes_location_tuesday_datas" id="closes_location_tuesday_datas">
                     <input type="hidden" name="schedule_closed_tuesday_datas" id="schedule_closed_tuesday_datas">
-                    <input type="hidden" name="opens_at_location_wednesday_datas"
-                        id="opens_at_location_wednesday_datas">
-                    <input type="hidden" name="closes_at_location_wednesday_datas"
-                        id="closes_at_location_wednesday_datas">
-                    <input type="hidden" name="schedule_closed_wednesday_datas"
-                        id="schedule_closed_wednesday_datas">
-                    <input type="hidden" name="opens_at_location_thursday_datas"
-                        id="opens_at_location_thursday_datas">
-                    <input type="hidden" name="closes_at_location_thursday_datas"
-                        id="closes_at_location_thursday_datas">
+                    <input type="hidden" name="opens_location_wednesday_datas"
+                        id="opens_location_wednesday_datas">
+                    <input type="hidden" name="closes_location_wednesday_datas"
+                        id="closes_location_wednesday_datas">
+                    <input type="hidden" name="schedule_closed_wednesday_datas" id="schedule_closed_wednesday_datas">
+                    <input type="hidden" name="opens_location_thursday_datas" id="opens_location_thursday_datas">
+                    <input type="hidden" name="closes_location_thursday_datas"
+                        id="closes_location_thursday_datas">
                     <input type="hidden" name="schedule_closed_thursday_datas" id="schedule_closed_thursday_datas">
-                    <input type="hidden" name="opens_at_location_friday_datas" id="opens_at_location_friday_datas">
-                    <input type="hidden" name="closes_at_location_friday_datas"
-                        id="closes_at_location_friday_datas">
+                    <input type="hidden" name="opens_location_friday_datas" id="opens_location_friday_datas">
+                    <input type="hidden" name="closes_location_friday_datas" id="closes_location_friday_datas">
                     <input type="hidden" name="schedule_closed_friday_datas" id="schedule_closed_friday_datas">
-                    <input type="hidden" name="opens_at_location_saturday_datas"
-                        id="opens_at_location_saturday_datas">
-                    <input type="hidden" name="closes_at_location_saturday_datas"
-                        id="closes_at_location_saturday_datas">
+                    <input type="hidden" name="opens_location_saturday_datas" id="opens_location_saturday_datas">
+                    <input type="hidden" name="closes_location_saturday_datas"
+                        id="closes_location_saturday_datas">
                     <input type="hidden" name="schedule_closed_saturday_datas" id="schedule_closed_saturday_datas">
-                    <input type="hidden" name="opens_at_location_sunday_datas" id="opens_at_location_sunday_datas">
-                    <input type="hidden" name="closes_at_location_sunday_datas"
-                        id="closes_at_location_sunday_datas">
+                    <input type="hidden" name="opens_location_sunday_datas" id="opens_location_sunday_datas">
+                    <input type="hidden" name="closes_location_sunday_datas" id="closes_location_sunday_datas">
                     <input type="hidden" name="schedule_closed_sunday_datas" id="schedule_closed_sunday_datas">
 
                     <input type="hidden" name="location_holiday_start_dates" id="location_holiday_start_dates">
@@ -496,8 +578,12 @@
                     <input type="hidden" name="location_holiday_close_ats" id="location_holiday_close_ats">
                     <input type="hidden" name="location_holiday_closeds" id="location_holiday_closeds">
                     <div class="col-md-12 text-center">
-                        <button type="button" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn" id="view-organization-btn"> Close </button>
-                        <button type="submit" class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic green_btn" id="save-organization-btn"> Save </button>
+                        <button type="button"
+                            class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn"
+                            id="view-organization-btn"> Close </button>
+                        <button type="submit"
+                            class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic green_btn"
+                            id="save-organization-btn"> Save </button>
                     </div>
                     {{-- </form> --}}
                     {!! Form::close() !!}
@@ -506,24 +592,30 @@
                 @include('frontEnd.organizations.organizationPhone')
                 {{-- phone modala close --}}
                 {{-- services Modal --}}
-                <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="servicemodal">
+                <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true"
+                    id="servicemodal">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <form>
                                 <div class="modal-header">
-                                    <button type="button" class="close serviceCloseButton"><span aria-hidden="true">×</span>
+                                    <button type="button" class="close serviceCloseButton"><span
+                                            aria-hidden="true">×</span>
                                     </button>
                                     <h4 class="modal-title" id="myModalLabel">Add services</h4>
                                 </div>
                                 <div class="modal-body all_form_field ">
                                     <div class="form-group">
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input serviceRadio" type="radio" name="serviceRadio" id="serviceRadio2" value="new_data" checked>
-                                            <label class="form-check-label" for="serviceRadio2"><b style="color: #000">Create New Service</b></label>
+                                            <input class="form-check-input serviceRadio" type="radio"
+                                                name="serviceRadio" id="serviceRadio2" value="new_data" checked>
+                                            <label class="form-check-label" for="serviceRadio2"><b
+                                                    style="color: #000">Create New Service</b></label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input serviceRadio" type="radio" name="serviceRadio" id="serviceRadio1" value="existing">
-                                            <label class="form-check-label" for="serviceRadio1"><b style="color: #000">Use Existing Service</b></label>
+                                            <input class="form-check-input serviceRadio" type="radio"
+                                                name="serviceRadio" id="serviceRadio1" value="existing">
+                                            <label class="form-check-label" for="serviceRadio1"><b
+                                                    style="color: #000">Use Existing Service</b></label>
                                         </div>
                                     </div>
                                     <div class="" id="existingServiceData" style="display: none;">
@@ -553,14 +645,18 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Service Name </label>
-                                                    <input class="form-control " type="text" id="service_name_p" name="service_name" value="">
-                                                    <span id="service_name_error" style="display: none;color:red">Service Name is required!</span>
+                                                    <input class="form-control " type="text" id="service_name_p"
+                                                        name="service_name" value="">
+                                                    <span id="service_name_error" style="display: none;color:red">Service
+                                                        Name is required!</span>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Service Alternate Name </label>
-                                                    <input class="form-control" type="text" id="service_alternate_name_p" name="service_alternate_name" value="">
+                                                    <input class="form-control" type="text"
+                                                        id="service_alternate_name_p" name="service_alternate_name"
+                                                        value="">
                                                 </div>
                                             </div>
                                             {{-- <div class="col-md-4">
@@ -656,8 +752,9 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Service Accrediations </label>
-                                                    <input class="form-control" type="text" id="service_accreditations_p"
-                                                        name="service_accreditations" value="">
+                                                    <input class="form-control" type="text"
+                                                        id="service_accreditations_p" name="service_accreditations"
+                                                        value="">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -675,8 +772,8 @@
                                                         name="service_schedules[]" data-size="5">
                                                         @foreach ($schedule_info_list as $key => $schedule_info)
                                                             <option value="{{ $schedule_info->schedule_recordid }}">
-                                                                {{ $schedule_info->opens_at }} ~
-                                                                {{ $schedule_info->closes_at }}</option>
+                                                                {{ $schedule_info->opens }} ~
+                                                                {{ $schedule_info->closes }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -738,8 +835,10 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger btn-lg btn_delete red_btn serviceCloseButton">Close</button>
-                                    <button type="button" id="serviceSubmit" class="btn btn-primary btn-lg btn_padding green_btn">Save</button>
+                                    <button type="button"
+                                        class="btn btn-danger btn-lg btn_delete red_btn serviceCloseButton">Close</button>
+                                    <button type="button" id="serviceSubmit"
+                                        class="btn btn-primary btn-lg btn_padding green_btn">Save</button>
                                 </div>
                             </form>
                         </div>
@@ -752,19 +851,24 @@
                         <div class="modal-content">
                             <form>
                                 <div class="modal-header">
-                                    <button type="button" class="close locationCloseButton"><span aria-hidden="true">×</span>
+                                    <button type="button" class="close locationCloseButton"><span
+                                            aria-hidden="true">×</span>
                                     </button>
                                     <h4 class="modal-title" id="myModalLabel">Add Locations</h4>
                                 </div>
                                 <div class="modal-body all_form_field">
                                     <div class="form-group">
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input locationRadio" type="radio" name="locationRadio" id="locationRadio2" value="new_data" checked>
-                                            <label class="form-check-label" for="locationRadio2"><b style="color: #000">Create New Location</b></label>
+                                            <input class="form-check-input locationRadio" type="radio"
+                                                name="locationRadio" id="locationRadio2" value="new_data" checked>
+                                            <label class="form-check-label" for="locationRadio2"><b
+                                                    style="color: #000">Create New Location</b></label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input locationRadio" type="radio" name="locationRadio" id="locationRadio1" value="existing">
-                                            <label class="form-check-label" for="locationRadio1"><b style="color: #000">USe Existing Location</b></label>
+                                            <input class="form-check-input locationRadio" type="radio"
+                                                name="locationRadio" id="locationRadio1" value="existing">
+                                            <label class="form-check-label" for="locationRadio1"><b
+                                                    style="color: #000">USe Existing Location</b></label>
                                         </div>
                                     </div>
                                     <div class="" id="existingLocationData" style="display: none;">
@@ -782,20 +886,26 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Location Name</label>
-                                                    <input class="form-control selectpicker" type="text" id="location_name_p" name="location_name" value="">
-                                                    <span id="location_name_error" style="display: none;color:red">Location Name is required!</span>
+                                                    <input class="form-control selectpicker" type="text"
+                                                        id="location_name_p" name="location_name" value="">
+                                                    <span id="location_name_error"
+                                                        style="display: none;color:red">Location Name is required!</span>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Location Alternate Name </label>
-                                                    <input class="form-control selectpicker" type="text" id="location_alternate_name_p" name="location_alternate_name" value="">
+                                                    <input class="form-control selectpicker" type="text"
+                                                        id="location_alternate_name_p" name="location_alternate_name"
+                                                        value="">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Location Transportation </label>
-                                                    <input class="form-control selectpicker" type="text" id="location_transporation_p" name="location_transporation" value="">
+                                                    <input class="form-control selectpicker" type="text"
+                                                        id="location_transporation_p" name="location_transporation"
+                                                        value="">
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
@@ -807,7 +917,9 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Location Service </label>
-                                                    <select class="form-control selectpicker" multiple data-live-search="true" id="location_service_p" name="location_service[]" data-size="8">
+                                                    <select class="form-control selectpicker" multiple
+                                                        data-live-search="true" id="location_service_p"
+                                                        name="location_service[]" data-size="8">
                                                         @foreach ($service_info_list as $key => $service_info)
                                                             <option value="{{ $service_info->service_recordid }}">
                                                                 {{ $service_info->service_name }}</option>
@@ -819,13 +931,15 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Address</label>
-                                                    <input type="text" class="form-control" placeholder="Address" id="location_address_p">
+                                                    <input type="text" class="form-control" placeholder="Address"
+                                                        id="location_address_p">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>City </label>
-                                                    <select class="form-control selectpicker" data-live-search="true" id="location_city_p" name="location_city" , data-size="5">
+                                                    <select class="form-control selectpicker" data-live-search="true"
+                                                        id="location_city_p" name="location_city" , data-size="5">
                                                         <option value="">Select city</option>
                                                         @foreach ($address_city_list as $key => $address_city)
                                                             <option value="{{ $address_city }}">{{ $address_city }}
@@ -837,7 +951,8 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>State </label>
-                                                    <select class="form-control selectpicker" data-live-search="true" id="location_state_p" name="location_state" , data-size="5">
+                                                    <select class="form-control selectpicker" data-live-search="true"
+                                                        id="location_state_p" name="location_state" , data-size="5">
                                                         <option value="">Select state</option>
                                                         @foreach ($address_states_list as $key => $address_state)
                                                             <option value="{{ $address_state }}">{{ $address_state }}
@@ -849,31 +964,54 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Zip Code </label>
-                                                    <input type="text" class="form-control" placeholder="Zipcode" id="location_zipcode_p">
+                                                    <input type="text" class="form-control" placeholder="Zipcode"
+                                                        id="location_zipcode_p">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Location Details </label>
-                                                    <input class="form-control selectpicker" type="text" id="location_details_p" name="location_details" value="">
+                                                    <input class="form-control selectpicker" type="text"
+                                                        id="location_details_p" name="location_details" value="">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Regions </label>
-                                                    {!! Form::select('location_region_p', $regions, null, ['class' => 'form-control selectpicker', 'data-live-search' => 'true', 'data-size' => '5', 'id' => 'location_region_p', 'multiple' => true]) !!}
+                                                    {!! Form::select('location_region_p', $regions, null, [
+                                                        'class' => 'form-control selectpicker',
+                                                        'data-live-search' => 'true',
+                                                        'data-size' => '5',
+                                                        'id' => 'location_region_p',
+                                                        'multiple' => true,
+                                                    ]) !!}
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>ADA Compliant </label>
-                                                    {!! Form::select('location_accessibility_p', ['Blank' => 'Blank', 'ADA Complaint' => 'ADA Complaint', 'Not ADA Compliant' => 'Not ADA Compliant'], null, ['class' => 'form-control selectpicker', 'data-live-search' => 'true', 'data-size' => '5', 'id' => 'location_accessibility_p', 'placeholder' => 'select accessibility']) !!}
+                                                    {!! Form::select(
+                                                        'location_accessibility_p',
+                                                        $accessibilities,
+                                                        null,
+                                                        [
+                                                            'class' => 'form-control selectpicker',
+                                                            'data-live-search' => 'true',
+                                                            'data-size' => '5',
+                                                            'id' => 'location_accessibility_p',
+                                                            'placeholder' => 'select accessibility',
+                                                        ],
+                                                    ) !!}
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label>Accessibility Details </label>
-                                                    {!! Form::textarea('location_accessibility_details_p', 'Visitors with concerns about the level of access for specific physical conditions, are always recommended to contact the organization directly to obtain the best possible information about physical access', ['class' => 'form-control', 'id' => 'location_accessibility_details_p', 'placeholder' => 'Accessibility Details']) !!}
+                                                    {!! Form::textarea(
+                                                        'location_accessibility_details_p',
+                                                        'Visitors with concerns about the level of access for specific physical conditions, are always recommended to contact the organization directly to obtain the best possible information about physical access',
+                                                        ['class' => 'form-control', 'id' => 'location_accessibility_details_p', 'placeholder' => 'Accessibility Details'],
+                                                    ) !!}
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -882,7 +1020,10 @@
                                                     Phones
                                                 </h4>
                                                 <div class="col-md-12">
-                                                    <table class="table table_border_none" id="PhoneTableLocation">
+                                                    <table
+                                                        class="display dataTable table-striped jambo_table table-bordered table-responsive"
+                                                        cellspacing="0" width="100%" style="display: table"
+                                                        id="PhoneTableLocation">
                                                         <thead>
                                                             <th>Number</th>
                                                             <th>Extension</th>
@@ -912,16 +1053,42 @@
                                                         <tbody id="addPhoneTrLocation">
                                                             <tr id="location_0">
                                                                 <td>
-                                                                    <input type="text" class="form-control" name="service_phones[]" id="service_phones_location_0">
+                                                                    <input type="text" class="form-control"
+                                                                        name="service_phones[]"
+                                                                        id="service_phones_location_0">
                                                                 </td>
                                                                 <td>
-                                                                    <input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_0">
+                                                                    <input type="text" class="form-control"
+                                                                        name="phone_extension[]"
+                                                                        id="phone_extension_location_0">
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::select('phone_type[]', $phone_type, [], ['class' => 'form-control selectpicker', 'data-live-search' => 'true', 'id' => 'phone_type_location_0', 'data-size' => 5, 'placeholder' => 'select phone type']) !!}
+                                                                    {!! Form::select(
+                                                                        'phone_type[]',
+                                                                        $phone_type,
+                                                                        [],
+                                                                        [
+                                                                            'class' => 'form-control selectpicker',
+                                                                            'data-live-search' => 'true',
+                                                                            'id' => 'phone_type_location_0',
+                                                                            'data-size' => 5,
+                                                                            'placeholder' => 'select phone type',
+                                                                        ],
+                                                                    ) !!}
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::select('phone_language[]', $phone_languages, [], ['class' => 'form-control selectpicker phone_language', 'data-size' => 5, ' data-live-search' => 'true', 'multiple' => true, 'id' => 'phone_language_location_0']) !!}
+                                                                    {!! Form::select(
+                                                                        'phone_language[]',
+                                                                        $phone_languages,
+                                                                        [],
+                                                                        [
+                                                                            'class' => 'form-control selectpicker phone_language',
+                                                                            'data-size' => 5,
+                                                                            ' data-live-search' => 'true',
+                                                                            'multiple' => true,
+                                                                            'id' => 'phone_language_location_0',
+                                                                        ],
+                                                                    ) !!}
                                                                 </td>
                                                                 <td>
                                                                     <input type="text" class="form-control"
@@ -931,8 +1098,8 @@
                                                                 <td>
                                                                     <a href="javascript:void(0)" id="addDataLocation"
                                                                         class="plus_delteicon bg-primary-color">
-                                                                        <img src="/frontend/assets/images/plus.png" alt=""
-                                                                            title="">
+                                                                        <img src="/frontend/assets/images/plus.png"
+                                                                            alt="" title="">
                                                                     </a>
                                                                 </td>
                                                             </tr>
@@ -947,7 +1114,9 @@
                                                         Regular Schedule
                                                     </h4>
                                                     <div class="table-responsive">
-                                                        <table class="table">
+                                                        <table
+                                                            class="display dataTable table-striped jambo_table table-bordered table-responsive"
+                                                            cellspacing="0" width="100%" style="display: table">
                                                             {{-- <thead>
                                                             <th colspan="4" class="text-center">Regular Schedule</th>
                                                         </thead> --}}
@@ -961,46 +1130,54 @@
                                                                 <tr>
                                                                     <td>
                                                                         Monday
-                                                                        <input type="hidden" name="byday" value="monday">
+                                                                        <input type="hidden" name="weekday"
+                                                                            value="monday">
                                                                     </td>
                                                                     <td>
-                                                                        {!! Form::text('opens_at', null, ['class' => 'form-control timePicker', 'id' => 'opens_at_location_monday']) !!}
+                                                                        {!! Form::text('opens', null, ['class' => 'form-control timePicker', 'id' => 'opens_location_monday']) !!}
                                                                     </td>
                                                                     <td>
-                                                                        {!! Form::text('closes_at', null, ['class' => 'form-control timePicker', 'id' => 'closes_at_location_monday']) !!}
+                                                                        {!! Form::text('closes', null, ['class' => 'form-control timePicker', 'id' => 'closes_location_monday']) !!}
                                                                     </td>
                                                                     <td style="vertical-align: middle">
                                                                         <input type="checkbox"
-                                                                            name="schedule_closed_location_monday" value="1"
+                                                                            name="schedule_closed_location_monday"
+                                                                            value="1"
                                                                             id="schedule_closed_location_monday">
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>
                                                                         Tuesday
-                                                                        <input type="hidden" name="byday" value="tuesday">
+                                                                        <input type="hidden" name="weekday"
+                                                                            value="tuesday">
                                                                     </td>
                                                                     <td>
-                                                                        {!! Form::text('opens_at', null, ['class' => 'form-control timePicker', 'id' => 'opens_at_location_tuesday']) !!}
+                                                                        {!! Form::text('opens', null, ['class' => 'form-control timePicker', 'id' => 'opens_location_tuesday']) !!}
                                                                     </td>
                                                                     <td>
-                                                                        {!! Form::text('closes_at', null, ['class' => 'form-control timePicker', 'id' => 'closes_at_location_tuesday']) !!}
+                                                                        {!! Form::text('closes', null, ['class' => 'form-control timePicker', 'id' => 'closes_location_tuesday']) !!}
                                                                     </td>
                                                                     <td style="vertical-align: middle">
                                                                         <input type="checkbox"
                                                                             name="schedule_closed_location_tuesday"
-                                                                            value="2" id="schedule_closed_location_tuesday">
+                                                                            value="2"
+                                                                            id="schedule_closed_location_tuesday">
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>Wednesday
-                                                                        <input type="hidden" name="byday" value="wednesday">
+                                                                        <input type="hidden" name="weekday"
+                                                                            value="wednesday">
                                                                     </td>
                                                                     <td>
-                                                                        {!! Form::text('opens_at', null, ['class' => 'form-control timePicker', 'id' => 'opens_at_location_wednesday']) !!}
+                                                                        {!! Form::text('opens', null, ['class' => 'form-control timePicker', 'id' => 'opens_location_wednesday']) !!}
                                                                     </td>
                                                                     <td>
-                                                                        {!! Form::text('closes_at', null, ['class' => 'form-control timePicker', 'id' => 'closes_at_location_wednesday']) !!}
+                                                                        {!! Form::text('closes', null, [
+                                                                            'class' => 'form-control timePicker',
+                                                                            'id' => 'closes_location_wednesday',
+                                                                        ]) !!}
                                                                     </td>
                                                                     <td style="vertical-align: middle">
                                                                         <input type="checkbox"
@@ -1011,13 +1188,14 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <td>Thursday
-                                                                        <input type="hidden" name="byday" value="thursday">
+                                                                        <input type="hidden" name="weekday"
+                                                                            value="thursday">
                                                                     </td>
                                                                     <td>
-                                                                        {!! Form::text('opens_at', null, ['class' => 'form-control timePicker', 'id' => 'opens_at_location_thursday']) !!}
+                                                                        {!! Form::text('opens', null, ['class' => 'form-control timePicker', 'id' => 'opens_location_thursday']) !!}
                                                                     </td>
                                                                     <td>
-                                                                        {!! Form::text('closes_at', null, ['class' => 'form-control timePicker', 'id' => 'closes_at_location_thursday']) !!}
+                                                                        {!! Form::text('closes', null, ['class' => 'form-control timePicker', 'id' => 'closes_location_thursday']) !!}
                                                                     </td>
                                                                     <td style="vertical-align: middle">
                                                                         <input type="checkbox"
@@ -1028,29 +1206,32 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <td>Friday
-                                                                        <input type="hidden" name="byday" value="friday">
+                                                                        <input type="hidden" name="weekday"
+                                                                            value="friday">
                                                                     </td>
                                                                     <td>
-                                                                        {!! Form::text('opens_at', null, ['class' => 'form-control timePicker', 'id' => 'opens_at_location_friday']) !!}
+                                                                        {!! Form::text('opens', null, ['class' => 'form-control timePicker', 'id' => 'opens_location_friday']) !!}
                                                                     </td>
                                                                     <td>
-                                                                        {!! Form::text('closes_at', null, ['class' => 'form-control timePicker', 'id' => 'closes_at_location_friday']) !!}
+                                                                        {!! Form::text('closes', null, ['class' => 'form-control timePicker', 'id' => 'closes_location_friday']) !!}
                                                                     </td>
                                                                     <td style="vertical-align: middle">
                                                                         <input type="checkbox"
                                                                             name="schedule_closed_location_friday"
-                                                                            id="schedule_closed_location_friday" value="5">
+                                                                            id="schedule_closed_location_friday"
+                                                                            value="5">
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>Saturday
-                                                                        <input type="hidden" name="byday" value="saturday">
+                                                                        <input type="hidden" name="weekday"
+                                                                            value="saturday">
                                                                     </td>
                                                                     <td>
-                                                                        {!! Form::text('opens_at', null, ['class' => 'form-control timePicker', 'id' => 'opens_at_location_saturday']) !!}
+                                                                        {!! Form::text('opens', null, ['class' => 'form-control timePicker', 'id' => 'opens_location_saturday']) !!}
                                                                     </td>
                                                                     <td>
-                                                                        {!! Form::text('closes_at', null, ['class' => 'form-control timePicker', 'id' => 'closes_at_location_saturday']) !!}
+                                                                        {!! Form::text('closes', null, ['class' => 'form-control timePicker', 'id' => 'closes_location_saturday']) !!}
                                                                     </td>
                                                                     <td style="vertical-align: middle">
                                                                         <input type="checkbox"
@@ -1061,19 +1242,21 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <td>Sunday
-                                                                        <input type="hidden" name="byday" value="sunday">
+                                                                        <input type="hidden" name="weekday"
+                                                                            value="sunday">
                                                                     </td>
                                                                     <td>
-                                                                        {!! Form::text('opens_at', null, ['class' => 'form-control timePicker', 'id' => 'opens_at_location_sunday']) !!}
+                                                                        {!! Form::text('opens', null, ['class' => 'form-control timePicker', 'id' => 'opens_location_sunday']) !!}
                                                                     </td>
                                                                     <td>
-                                                                        {!! Form::text('closes_at', null, ['class' => 'form-control timePicker', 'id' => 'closes_at_location_sunday']) !!}
+                                                                        {!! Form::text('closes', null, ['class' => 'form-control timePicker', 'id' => 'closes_location_sunday']) !!}
                                                                     </td>
 
                                                                     <td style="vertical-align: middle">
                                                                         <input type="checkbox"
                                                                             name="schedule_closed_location_sunday"
-                                                                            id="schedule_closed_location_sunday" value="7">
+                                                                            id="schedule_closed_location_sunday"
+                                                                            value="7">
                                                                     </td>
                                                                 </tr>
                                                             </tbody>
@@ -1088,7 +1271,9 @@
                                                     </h4>
                                                     {{-- <label>Holiday Schedule: <a id="addScheduleHolidayLocation"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a></label> --}}
                                                     <div class="table-responsive">
-                                                        <table class="table table_border_none" id="">
+                                                        <table
+                                                            class="display dataTable table-striped jambo_table table-bordered table-responsive"
+                                                            cellspacing="0" width="100%" id="">
                                                             <thead>
                                                                 <th>Start</th>
                                                                 <th>End</th>
@@ -1171,14 +1356,14 @@
                                 <div class="modal-body all_form_field">
                                     <div class="form-group">
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input contactRadio" type="radio" name="contactRadio"
-                                                id="contactRadio2" value="new_data" checked>
+                                            <input class="form-check-input contactRadio" type="radio"
+                                                name="contactRadio" id="contactRadio2" value="new_data" checked>
                                             <label class="form-check-label" for="contactRadio2"><b
                                                     style="color: #000">Create New Contact</b></label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input contactRadio" type="radio" name="contactRadio"
-                                                id="contactRadio1" value="existing">
+                                            <input class="form-check-input contactRadio" type="radio"
+                                                name="contactRadio" id="contactRadio1" value="existing">
                                             <label class="form-check-label" for="contactRadio1"><b
                                                     style="color: #000">Use Existing Contact</b></label>
                                         </div>
@@ -1216,7 +1401,8 @@
                                                                 {{ $service_info->service_name }}</option>
                                                         @endforeach
                                                     </select>
-                                                    <span id="contact_service_error" style="display: none;color:red">Contact
+                                                    <span id="contact_service_error"
+                                                        style="display: none;color:red">Contact
                                                         Service is required!</span>
                                                 </div>
                                             </div>
@@ -1231,7 +1417,8 @@
                                                 <div class="form-group">
                                                     <label>Contact Department </label>
                                                     <input class="form-control selectpicker" type="text"
-                                                        id="contact_department_p" name="contact_department" value="">
+                                                        id="contact_department_p" name="contact_department"
+                                                        value="">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -1256,11 +1443,15 @@
                                                 <h4 class="title_edit text-left mb-25 mt-10 px-20">Phones
                                                     <a id="addDataContact"
                                                         class="plus_delteicon bg-primary-color float-right"><img
-                                                            src="/frontend/assets/images/plus.png" alt="" title=""></a>
+                                                            src="/frontend/assets/images/plus.png" alt=""
+                                                            title=""></a>
                                                 </h4>
                                                 {{-- <label>Phones: <a id="addDataContact"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label> --}}
                                                 <div class="col-md-12">
-                                                    <table class="table table_border_none" id="PhoneTableContact">
+                                                    <table
+                                                        class="display dataTable table-striped jambo_table table-bordered table-responsive"
+                                                        cellspacing="0" width="100%" style="display: table"
+                                                        id="PhoneTableContact">
                                                         <thead>
                                                             <th>Number</th>
                                                             <th>Extension</th>
@@ -1300,10 +1491,32 @@
                                                                         id="phone_extension_contact_0">
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::select('phone_type[]', $phone_type, [], ['class' => 'form-control selectpicker', 'data-live-search' => 'true', 'id' => 'phone_type_contact_0', 'data-size' => 5, 'placeholder' => 'select phone type']) !!}
+                                                                    {!! Form::select(
+                                                                        'phone_type[]',
+                                                                        $phone_type,
+                                                                        [],
+                                                                        [
+                                                                            'class' => 'form-control selectpicker',
+                                                                            'data-live-search' => 'true',
+                                                                            'id' => 'phone_type_contact_0',
+                                                                            'data-size' => 5,
+                                                                            'placeholder' => 'select phone type',
+                                                                        ],
+                                                                    ) !!}
                                                                 </td>
                                                                 <td>
-                                                                    {!! Form::select('phone_language[]', $phone_languages, [], ['class' => 'form-control selectpicker', 'data-size' => 5, ' data-live-search' => 'true', 'id' => 'phone_language_contact_0', 'multiple' => true]) !!}
+                                                                    {!! Form::select(
+                                                                        'phone_language[]',
+                                                                        $phone_languages,
+                                                                        [],
+                                                                        [
+                                                                            'class' => 'form-control selectpicker',
+                                                                            'data-size' => 5,
+                                                                            ' data-live-search' => 'true',
+                                                                            'id' => 'phone_language_contact_0',
+                                                                            'multiple' => true,
+                                                                        ],
+                                                                    ) !!}
                                                                 </td>
                                                                 <td>
                                                                     <input type="text" class="form-control"
@@ -1355,14 +1568,33 @@
             $("#organization_services").selectpicker("");
             $("#organization_contacts").selectpicker("");
             $("#organization_locations").selectpicker("");
+
+            $('.logo_radio').change(function(){
+                let value = $(this).val()
+                if(value === 'file'){
+                    $('.logo_file').show()
+                    $('.logo_url').hide()
+                }else{
+                    $('.logo_file').hide()
+                    $('.logo_url').show()
+                }
+                preview = document.getElementById('previewUplodedLogo');
+                preview.style.display = 'none';
+                preview.src = '';
+            })
+            $('#chooseFile').change(function(e){
+                preview = document.getElementById('previewUplodedLogo');
+                preview.style.display = 'block';
+                const [file] = e.target.files
+                if (file) {
+                    preview.src = URL.createObjectURL(file)
+                }
+            });
         });
 
         $("#add-phone-input").click(function() {
 
-            $("ol#phones-ul").append(
-                "<li class='organization-phones-li mb-2 col-md-4'>" +
-                "<input class='form-control selectpicker organization_phones'  type='text' name='organization_phones[]'>" +
-                "</li>");
+            $("ol#phones-ul").append("<li class='organization-phones-li mb-2 col-md-4'>" +"<input class='form-control selectpicker organization_phones'  type='text' name='organization_phones[]'>" +"</li>");
         });
         // let phone_language_data = []
         // $(document).on('change','div > .phone_language',function () {
@@ -1384,21 +1616,19 @@
 
         let cp = 1;
         $('#addDataContact').click(function() {
-            $('#addPhoneTrContact').append('<tr id="contact_' + cp +
-                '"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_' + cp +'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_' +cp + '"></td><td><select name="phone_type[]" id="phone_type_contact_' + cp +'" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option>@endforeach </select></td><td><select name="phone_language[]" id="phone_language_contact_' +cp +'" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option>@endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_' + cp +'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>'
-                );
+            $('#addPhoneTrContact').append('<tr id="contact_' + cp +'"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_' +cp +'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_' +cp + '"></td><td><select name="phone_type[]" id="phone_type_contact_' + cp + '" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option>@endforeach </select></td><td><select name="phone_language[]" id="phone_language_contact_' + cp + '" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true">@foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option>@endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_' + cp + '"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>' );
             $('.selectpicker').selectpicker();
             cp++
         })
         let lp = 1;
         $('#addDataLocation').click(function() {
-            $('#addPhoneTrLocation').append('<tr id="location_'+lp+'"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_'+lp+'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_'+lp+'"></td><td><select name="phone_type[]" id="phone_type_location_'+lp+'" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_'+lp+'" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_'+lp+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+            $('#addPhoneTrLocation').append('<tr id="location_' + lp + '"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_' + lp + '"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_' + lp + '"></td><td><select name="phone_type[]" id="phone_type_location_' + lp + '" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_' + lp + '" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_' + lp + '"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
             $('.selectpicker').selectpicker();
             lp++
         })
         let ls = 1;
         $('#addScheduleHolidayLocation').click(function() {
-            $('#scheduleHolidayLocation').append('<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_'+ls+'"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_'+ls+'"></td><td> <input class="form-control timePicker" type="text" name="holiday_open_at" id="holiday_open_at_location_'+ls+'"></td><td> <input class="form-control timePicker" type="text" name="holiday_close_at" id="holiday_close_at_location_'+ls+'"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_'+ls+'" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+            $('#scheduleHolidayLocation').append('<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_' + ls + '"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_' + ls + '"></td><td> <input class="form-control timePicker" type="text" name="holiday_open_at" id="holiday_open_at_location_' + ls + '"></td><td> <input class="form-control timePicker" type="text" name="holiday_close_at" id="holiday_close_at_location_' + ls + '"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_' + ls + '" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
             ls++;
             $('.timePicker').timepicker({
                 'scrollDefault': 'now'
@@ -1414,22 +1644,17 @@
                 let deletedId = parseInt(id)
                 if (name == 'contact') {
                     if ($('#contact_phone_numbers').val()) {
-
                         let contact_phone_numbers = JSON.parse($('#contact_phone_numbers').val());
                         let contact_phone_extensions = JSON.parse($('#contact_phone_extensions').val());
                         let contact_phone_types = JSON.parse($('#contact_phone_types').val());
                         let contact_phone_languages = JSON.parse($('#contact_phone_languages').val());
                         let contact_phone_descriptions = JSON.parse($('#contact_phone_descriptions').val());
                         if (contact_phone_numbers && contact_phone_numbers.length > 0) {
-
                             contact_phone_numbers[selectedContactTrId].splice(deletedId, 1)
                             contact_phone_extensions[selectedContactTrId].splice(deletedId, 1)
                             contact_phone_types[selectedContactTrId].splice(deletedId, 1)
                             contact_phone_languages[selectedContactTrId].splice(deletedId, 1)
                             contact_phone_descriptions[selectedContactTrId].splice(deletedId, 1)
-
-                            console.log(contact_phone_numbers, selectedContactTrId)
-
                             $('#contact_phone_numbers').val(JSON.stringify(contact_phone_numbers))
                             $('#contact_phone_extensions').val(JSON.stringify(contact_phone_extensions))
                             $('#contact_phone_types').val(JSON.stringify(contact_phone_types))
@@ -1444,23 +1669,17 @@
                         table.find('tr').each(function(i) {
                             $(this).find('td').each(function(j) {
                                 if (j == 0) {
-                                    $(this).find('input').attr('id',
-                                        'service_phones_contact_' + i)
+                                    $(this).find('input').attr('id','service_phones_contact_' + i)
                                 } else if (j == 1) {
-                                    $(this).find('input').attr('id',
-                                        'phone_extension_contact_' + i)
+                                    $(this).find('input').attr('id','phone_extension_contact_' + i)
                                 } else if (j == 2) {
-                                    $(this).find('select').attr('id',
-                                        'phone_type_contact_' + i)
+                                    $(this).find('select').attr('id','phone_type_contact_' + i)
                                     $('#phone_type_contact_' + i).selectpicker('refresh')
                                 } else if (j == 3) {
-                                    $(this).find('select').attr('id',
-                                        'phone_language_contact_' + i)
-                                    $('#phone_language_contact_' + i).selectpicker(
-                                        'refresh')
+                                    $(this).find('select').attr('id','phone_language_contact_' + i)
+                                    $('#phone_language_contact_' + i).selectpicker('refresh')
                                 } else if (j == 4) {
-                                    $(this).find('input').attr('id',
-                                        'phone_description_contact_' + i)
+                                    $(this).find('input').attr('id','phone_description_contact_' + i)
                                 }
                             })
                             $(this).attr("id", "contact_" + i)
@@ -1478,8 +1697,7 @@
                         let location_phone_types = JSON.parse($('#location_phone_types').val());
                         let location_phone_languages = JSON.parse($('#location_phone_languages').val());
                         let location_phone_descriptions = JSON.parse($('#location_phone_descriptions').val());
-                        if (location_phone_numbers && location_phone_numbers.length > 0 && location_phone_numbers[
-                                selectedLocationTrId]) {
+                        if (location_phone_numbers && location_phone_numbers.length > 0 && location_phone_numbers[selectedLocationTrId]) {
                             location_phone_numbers[selectedLocationTrId].splice(deletedId, 1)
                             location_phone_extensions[selectedLocationTrId].splice(deletedId, 1)
                             location_phone_types[selectedLocationTrId].splice(deletedId, 1)
@@ -1501,23 +1719,17 @@
                         table.find('tr').each(function(i) {
                             $(this).find('td').each(function(j) {
                                 if (j == 0) {
-                                    $(this).find('input').attr('id',
-                                        'service_phones_location_' + i)
+                                    $(this).find('input').attr('id','service_phones_location_' + i)
                                 } else if (j == 1) {
-                                    $(this).find('input').attr('id',
-                                        'phone_extension_location_' + i)
+                                    $(this).find('input').attr('id','phone_extension_location_' + i)
                                 } else if (j == 2) {
-                                    $(this).find('select').attr('id',
-                                        'phone_type_location_' + i)
+                                    $(this).find('select').attr('id','phone_type_location_' + i)
                                     $('#phone_type_location_' + i).selectpicker('refresh')
                                 } else if (j == 3) {
-                                    $(this).find('select').attr('id',
-                                        'phone_language_location_' + i)
-                                    $('#phone_language_location_' + i).selectpicker(
-                                        'refresh')
+                                    $(this).find('select').attr('id','phone_language_location_' + i)
+                                    $('#phone_language_location_' + i).selectpicker('refresh')
                                 } else if (j == 4) {
-                                    $(this).find('input').attr('id',
-                                        'phone_description_location_' + i)
+                                    $(this).find('input').attr('id','phone_description_location_' + i)
                                 }
                             })
                             $(this).attr("id", "location_" + i)
@@ -1525,8 +1737,7 @@
                         });
                         //Code here
                     });
-                    lp = location_phone_numbers[selectedLocationTrId] ? location_phone_numbers[selectedLocationTrId]
-                        .length : j
+                    lp = location_phone_numbers[selectedLocationTrId] ? location_phone_numbers[selectedLocationTrId].length : j
                 }
 
             } else {
@@ -1645,22 +1856,7 @@
                 contact_phone_languages[i] = phone_language_contact
                 contact_phone_descriptions[i] = phone_description_contact
 
-                $('#contactsTable').append('<tr id="contactTr_' + i + '"><td>' + contact_name_p +
-                    '<input type="hidden" name="contact_name[]" value="' + contact_name_p +
-                    '" id="contact_name_' + i + '"></td><td>' + contact_title_p +
-                    '<input type="hidden" name="contact_title[]" value="' + contact_title_p +
-                    '" id="contact_title_' + i + '"></td><td class="text-center">' + contact_email_p +
-                    '<input type="hidden" name="contact_email[]" value="' + contact_email_p +
-                    '" id="contact_email_' + i + '"></td><td class="text-center">' + contact_visibility_p +
-                    '<input type="hidden" name="contact_visibility[]" value="' + contact_visibility_p +
-                    '" id="contact_visibility_' + i + '"></td><td class="text-center">' + contact_phone_list +
-                    '<input type="hidden" name="contact_phone[]" value="' + contact_phone_p +
-                    '" id="contact_phone_' + i +
-                    '"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="' +
-                    contactRadioValue + '" id="selectedContactRadio_' + i +
-                    '"><input type="hidden" name="contact_recordid[]" value="' + contact_recordid_p +
-                    '" id="existingContactIds_' + i + '"></td></tr>');
-
+                $('#contactsTable').append('<tr id="contactTr_' + i + '"><td>' + contact_name_p +'<input type="hidden" name="contact_name[]" value="' + contact_name_p +'" id="contact_name_' + i + '"></td><td>' + contact_title_p +'<input type="hidden" name="contact_title[]" value="' + contact_title_p +'" id="contact_title_' + i + '"></td><td class="text-center">' + contact_email_p +'<input type="hidden" name="contact_email[]" value="' + contact_email_p +'" id="contact_email_' + i + '"></td><td class="text-center">' + contact_visibility_p +'<input type="hidden" name="contact_visibility[]" value="' + contact_visibility_p +'" id="contact_visibility_' + i + '"></td><td class="text-center">' + contact_phone_list +'<input type="hidden" name="contact_phone[]" value="' + contact_phone_p +'" id="contact_phone_' + i +'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="' + contactRadioValue + '" id="selectedContactRadio_' + i + '"><input type="hidden" name="contact_recordid[]" value="' + contact_recordid_p + '" id="existingContactIds_' + i + '"></td></tr>');
                 i++;
             } else {
                 if (selectedContactTrId) {
@@ -1677,22 +1873,7 @@
                     contact_phone_descriptions[selectedContactTrId] = phone_description_contact
 
                     $('#contactTr_' + selectedContactTrId).empty()
-                    $('#contactTr_' + selectedContactTrId).append('<td>' + contact_name_p +
-                        '<input type="hidden" name="contact_name[]" value="' + contact_name_p +
-                        '" id="contact_name_' + selectedContactTrId + '"></td><td>' + contact_title_p +
-                        '<input type="hidden" name="contact_title[]" value="' + contact_title_p +
-                        '" id="contact_title_' + selectedContactTrId + '"></td><td class="text-center">' +
-                        contact_email_p + '<input type="hidden" name="contact_email[]" value="' +
-                        contact_email_p + '" id="contact_email_' + selectedContactTrId +
-                        '"></td><td class="text-center">' + contact_visibility_p +
-                        '<input type="hidden" name="contact_visibility[]" value="' + contact_visibility_p +
-                        '" id="contact_visibility_' + selectedContactTrId + '"></td><td class="text-center">' +
-                        contact_phone_list + '<input type="hidden" name="contact_phone[]" value="' +
-                        contact_phone_p + '" id="contact_phone_' + selectedContactTrId +
-                        '"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="' +
-                        contactRadioValue + '" id="selectedContactRadio_' + selectedContactTrId +
-                        '"><input type="hidden" name="contact_recordid[]" value="' + contact_recordid_p +
-                        '" id="existingContactIds_' + selectedContactTrId + '"></td>')
+                    $('#contactTr_' + selectedContactTrId).append('<td>' + contact_name_p + '<input type="hidden" name="contact_name[]" value="' + contact_name_p + '" id="contact_name_' + selectedContactTrId + '"></td><td>' + contact_title_p + '<input type="hidden" name="contact_title[]" value="' + contact_title_p + '" id="contact_title_' + selectedContactTrId + '"></td><td class="text-center">' + contact_email_p + '<input type="hidden" name="contact_email[]" value="' + contact_email_p + '" id="contact_email_' + selectedContactTrId + '"></td><td class="text-center">' + contact_visibility_p + '<input type="hidden" name="contact_visibility[]" value="' + contact_visibility_p + '" id="contact_visibility_' + selectedContactTrId + '"></td><td class="text-center">' + contact_phone_list + '<input type="hidden" name="contact_phone[]" value="' + contact_phone_p + '" id="contact_phone_' + selectedContactTrId + '"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="' + contactRadioValue + '" id="selectedContactRadio_' + selectedContactTrId + '"><input type="hidden" name="contact_recordid[]" value="' + contact_recordid_p + '" id="existingContactIds_' + selectedContactTrId + '"></td>')
                 }
             }
             $('#contact_service').val(JSON.stringify(contact_service))
@@ -1718,7 +1899,6 @@
             $('.selectpicker').selectpicker('refresh');
             $('#contact_service_p').selectpicker('refresh')
             $('#contactmodal').modal('hide');
-
             cp = 1
             editContactData = false
             selectedContactTrId = ''
@@ -1839,23 +2019,21 @@
             $('#phone_language_contact_0').val(phone_language_contact[0])
             $('#phone_description_contact_0').val(phone_description_contact[0])
             for (let index = 1; index < phone_number_contact.length; index++) {
-                $('#addPhoneTrContact').append('<tr id="contact_'+index+'"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_'+index+'" value="'+phone_number_contact[index]+'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_'+index+'" value="'+(phone_extension_contact[index] != null ? phone_extension_contact[index] : "")+'"></td><td><select name="phone_type" id="phone_type_contact_'+index+'" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language" id="phone_language_contact_'+index+'" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}" >{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_'+index+'" value="'+(phone_description_contact[index] != null ? phone_description_contact[index] : "")+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+                $('#addPhoneTrContact').append('<tr id="contact_' + index + '"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_contact_' + index + '" value="' + phone_number_contact[index] + '"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_contact_' + index + '" value="' + (phone_extension_contact[index] != null ? phone_extension_contact[index] : "") + '"></td><td><select name="phone_type" id="phone_type_contact_' + index + '" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language" id="phone_language_contact_' + index + '" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}" >{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_contact_' + index + '" value="' + (phone_description_contact[index] != null ? phone_description_contact[index] : "") +'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
 
                 if (phone_type_contact[index] != '') {
-                    $("select[id='phone_type_contact_" + index + "'] option[value=" + phone_type_contact[index] +
-                        "]").prop('selected', true)
+                    $("select[id='phone_type_contact_" + index + "'] option[value=" + phone_type_contact[index] +"]").prop('selected', true)
                 }
                 if (phone_language_contact[index] != '') {
                     for (let m = 0; m < phone_language_contact[index].length; m++) {
-                        $("select[id='phone_language_contact_" + index + "'] option[value=" +
-                            phone_language_contact[index][m] + "]").prop('selected', true)
+                        $("select[id='phone_language_contact_" + index + "'] option[value=" + phone_language_contact[index][m] + "]").prop('selected', true)
                     }
                 }
                 $('.selectpicker').selectpicker();
             }
-            // {!! Form::select('phone_type[]', $phone_type, '+phone_type_contact[index]+', ['class' => 'form-control selectpicker', 'data-live-search' => 'true', 'id' => "phone_type_contact_'+index+'", 'data-size' => 5, 'placeholder' => 'select phone type']) !!}
+            // {!! Form::select('phone_type[]', $phone_type, '+phone_type_contact[index]+', ['class' => 'form-control selectpicker', 'data-live-search' => 'true', 'id' => "phone_type_contact_'+index+'", 'data-size' => 5, 'placeholder' => 'select phone type', ]) !!}
 
-            // {!! Form::select('phone_language[]', $phone_languages, '+phone_language_contact[index]+', ['class' => 'form-control selectpicker', 'data-size' => 5, 'data-live-search' => 'true', 'id' => "phone_language_contact_'+index+'"]) !!}
+            // {!! Form::select('phone_language[]', $phone_languages, '+phone_language_contact[index]+', [ 'class' => 'form-control selectpicker', 'data-size' => 5, 'data-live-search' => 'true', 'id' => "phone_language_contact_'+index+'", ]) !!}
 
 
 
@@ -1932,26 +2110,26 @@
         let location_phone_descriptions = []
 
         // schedule variables
-        let opens_at_location_monday_datas = []
-        let closes_at_location_monday_datas = []
+        let opens_location_monday_datas = []
+        let closes_location_monday_datas = []
         let schedule_closed_monday_datas = []
-        let opens_at_location_tuesday_datas = []
-        let closes_at_location_tuesday_datas = []
+        let opens_location_tuesday_datas = []
+        let closes_location_tuesday_datas = []
         let schedule_closed_tuesday_datas = []
-        let opens_at_location_wednesday_datas = []
-        let closes_at_location_wednesday_datas = []
+        let opens_location_wednesday_datas = []
+        let closes_location_wednesday_datas = []
         let schedule_closed_wednesday_datas = []
-        let opens_at_location_thursday_datas = []
-        let closes_at_location_thursday_datas = []
+        let opens_location_thursday_datas = []
+        let closes_location_thursday_datas = []
         let schedule_closed_thursday_datas = []
-        let opens_at_location_friday_datas = []
-        let closes_at_location_friday_datas = []
+        let opens_location_friday_datas = []
+        let closes_location_friday_datas = []
         let schedule_closed_friday_datas = []
-        let opens_at_location_saturday_datas = []
-        let closes_at_location_saturday_datas = []
+        let opens_location_saturday_datas = []
+        let closes_location_saturday_datas = []
         let schedule_closed_saturday_datas = []
-        let opens_at_location_sunday_datas = []
-        let closes_at_location_sunday_datas = []
+        let opens_location_sunday_datas = []
+        let closes_location_sunday_datas = []
         let schedule_closed_sunday_datas = []
 
         let location_holiday_start_dates = []
@@ -1979,32 +2157,32 @@
             let location_recordid_p = ''
 
             // schedule section
-            let opens_at_location_monday = ''
-            let closes_at_location_monday = ''
+            let opens_location_monday = ''
+            let closes_location_monday = ''
             let schedule_closed_monday = ''
 
-            let opens_at_location_tuesday = ''
-            let closes_at_location_tuesday = ''
+            let opens_location_tuesday = ''
+            let closes_location_tuesday = ''
             let schedule_closed_tuesday = ''
 
-            let opens_at_location_wednesday = ''
-            let closes_at_location_wednesday = ''
+            let opens_location_wednesday = ''
+            let closes_location_wednesday = ''
             let schedule_closed_wednesday = ''
 
-            let opens_at_location_thursday = ''
-            let closes_at_location_thursday = ''
+            let opens_location_thursday = ''
+            let closes_location_thursday = ''
             let schedule_closed_thursday = ''
 
-            let opens_at_location_friday = ''
-            let closes_at_location_friday = ''
+            let opens_location_friday = ''
+            let closes_location_friday = ''
             let schedule_closed_friday = ''
 
-            let opens_at_location_saturday = ''
-            let closes_at_location_saturday = ''
+            let opens_location_saturday = ''
+            let closes_location_saturday = ''
             let schedule_closed_saturday = ''
 
-            let opens_at_location_sunday = ''
-            let closes_at_location_sunday = ''
+            let opens_location_sunday = ''
+            let closes_location_sunday = ''
             let schedule_closed_sunday = ''
 
             if (locationRadioValue == 'new_data' && $('#location_name_p').val() == '') {
@@ -2058,32 +2236,32 @@
                     holiday_close_at_location.push($('#holiday_close_at_location_' + index).val())
                     holiday_closed_location.push($('#holiday_closed_location_' + index).is(":checked") ? 1 : '')
                 }
-                opens_at_location_monday = $('#opens_at_location_monday').val()
-                closes_at_location_monday = $('#closes_at_location_monday').val()
+                opens_location_monday = $('#opens_location_monday').val()
+                closes_location_monday = $('#closes_location_monday').val()
                 schedule_closed_monday = $('#schedule_closed_location_monday').is(":checked") ? 1 : ''
 
-                opens_at_location_tuesday = $('#opens_at_location_tuesday').val()
-                closes_at_location_tuesday = $('#closes_at_location_tuesday').val()
+                opens_location_tuesday = $('#opens_location_tuesday').val()
+                closes_location_tuesday = $('#closes_location_tuesday').val()
                 schedule_closed_tuesday = $('#schedule_closed_location_tuesday').is(":checked") ? 2 : ''
 
-                opens_at_location_wednesday = $('#opens_at_location_wednesday').val()
-                closes_at_location_wednesday = $('#closes_at_location_wednesday').val()
+                opens_location_wednesday = $('#opens_location_wednesday').val()
+                closes_location_wednesday = $('#closes_location_wednesday').val()
                 schedule_closed_wednesday = $('#schedule_closed_location_wednesday').is(":checked") ? 3 : ''
 
-                opens_at_location_thursday = $('#opens_at_location_thursday').val()
-                closes_at_location_thursday = $('#closes_at_location_thursday').val()
+                opens_location_thursday = $('#opens_location_thursday').val()
+                closes_location_thursday = $('#closes_location_thursday').val()
                 schedule_closed_thursday = $('#schedule_closed_location_thursday').is(":checked") ? 4 : ''
 
-                opens_at_location_friday = $('#opens_at_location_friday').val()
-                closes_at_location_friday = $('#closes_at_location_friday').val()
+                opens_location_friday = $('#opens_location_friday').val()
+                closes_location_friday = $('#closes_location_friday').val()
                 schedule_closed_friday = $('#schedule_closed_location_friday').is(":checked") ? 5 : ''
 
-                opens_at_location_saturday = $('#opens_at_location_saturday').val()
-                closes_at_location_saturday = $('#closes_at_location_saturday').val()
+                opens_location_saturday = $('#opens_location_saturday').val()
+                closes_location_saturday = $('#closes_location_saturday').val()
                 schedule_closed_saturday = $('#schedule_closed_location_saturday').is(":checked") ? 6 : ''
 
-                opens_at_location_sunday = $('#opens_at_location_sunday').val()
-                closes_at_location_sunday = $('#closes_at_location_sunday').val()
+                opens_location_sunday = $('#opens_location_sunday').val()
+                closes_location_sunday = $('#closes_location_sunday').val()
                 schedule_closed_sunday = $('#schedule_closed_location_sunday').is(":checked") ? 7 : ''
 
                 // locationsTable
@@ -2154,37 +2332,37 @@
                     if (schedule[index].schedule_holiday == 1) {
                         holiday_start_date_location.push(schedule[index].dtstart)
                         holiday_end_date_location.push(schedule[index].until)
-                        holiday_open_at_location.push(schedule[index].opens_at)
-                        holiday_close_at_location.push(schedule[index].closes_at)
+                        holiday_open_at_location.push(schedule[index].opens)
+                        holiday_close_at_location.push(schedule[index].closes)
                         holiday_closed_location.push(schedule[index].schedule_closed)
                     } else {
-                        if (schedule[index].byday == 'monday') {
-                            opens_at_location_monday = schedule[index].opens_at
-                            closes_at_location_monday = schedule[index].closes_at
+                        if (schedule[index].weekday == 'monday') {
+                            opens_location_monday = schedule[index].opens
+                            closes_location_monday = schedule[index].closes
                             schedule_closed_monday = schedule[index].schedule_closed
-                        } else if (schedule[index].byday == 'tuesday') {
-                            opens_at_location_tuesday = schedule[index].opens_at
-                            closes_at_location_tuesday = schedule[index].closes_at
+                        } else if (schedule[index].weekday == 'tuesday') {
+                            opens_location_tuesday = schedule[index].opens
+                            closes_location_tuesday = schedule[index].closes
                             schedule_closed_tuesday = schedule[index].schedule_closed
-                        } else if (schedule[index].byday == 'wednesday') {
-                            opens_at_location_wednesday = schedule[index].opens_at
-                            closes_at_location_wednesday = schedule[index].closes_at
+                        } else if (schedule[index].weekday == 'wednesday') {
+                            opens_location_wednesday = schedule[index].opens
+                            closes_location_wednesday = schedule[index].closes
                             schedule_closed_wednesday = schedule[index].schedule_closed
-                        } else if (schedule[index].byday == 'thursday') {
-                            opens_at_location_thursday = schedule[index].opens_at
-                            closes_at_location_thursday = schedule[index].closes_at
+                        } else if (schedule[index].weekday == 'thursday') {
+                            opens_location_thursday = schedule[index].opens
+                            closes_location_thursday = schedule[index].closes
                             schedule_closed_thursday = schedule[index].schedule_closed
-                        } else if (schedule[index].byday == 'friday') {
-                            opens_at_location_friday = schedule[index].opens_at
-                            closes_at_location_friday = schedule[index].closes_at
+                        } else if (schedule[index].weekday == 'friday') {
+                            opens_location_friday = schedule[index].opens
+                            closes_location_friday = schedule[index].closes
                             schedule_closed_friday = schedule[index].schedule_closed
-                        } else if (schedule[index].byday == 'saturday') {
-                            opens_at_location_saturday = schedule[index].opens_at
-                            closes_at_location_saturday = schedule[index].closes_at
+                        } else if (schedule[index].weekday == 'saturday') {
+                            opens_location_saturday = schedule[index].opens
+                            closes_location_saturday = schedule[index].closes
                             schedule_closed_saturday = schedule[index].schedule_closed
-                        } else if (schedule[index].byday == 'sunday') {
-                            opens_at_location_sunday = schedule[index].opens_at
-                            closes_at_location_sunday = schedule[index].closes_at
+                        } else if (schedule[index].weekday == 'sunday') {
+                            opens_location_sunday = schedule[index].opens
+                            closes_location_sunday = schedule[index].closes
                             schedule_closed_sunday = schedule[index].schedule_closed
                         }
                     }
@@ -2213,26 +2391,26 @@
                 location_phone_languages[l] = phone_language_location
                 location_phone_descriptions[l] = phone_description_location
 
-                opens_at_location_monday_datas[l] = opens_at_location_monday
-                closes_at_location_monday_datas[l] = closes_at_location_monday
+                opens_location_monday_datas[l] = opens_location_monday
+                closes_location_monday_datas[l] = closes_location_monday
                 schedule_closed_monday_datas[l] = schedule_closed_monday
-                opens_at_location_tuesday_datas[l] = opens_at_location_tuesday
-                closes_at_location_tuesday_datas[l] = closes_at_location_tuesday
+                opens_location_tuesday_datas[l] = opens_location_tuesday
+                closes_location_tuesday_datas[l] = closes_location_tuesday
                 schedule_closed_tuesday_datas[l] = schedule_closed_tuesday
-                opens_at_location_wednesday_datas[l] = opens_at_location_wednesday
-                closes_at_location_wednesday_datas[l] = closes_at_location_wednesday
+                opens_location_wednesday_datas[l] = opens_location_wednesday
+                closes_location_wednesday_datas[l] = closes_location_wednesday
                 schedule_closed_wednesday_datas[l] = schedule_closed_wednesday
-                opens_at_location_thursday_datas[l] = opens_at_location_thursday
-                closes_at_location_thursday_datas[l] = closes_at_location_thursday
+                opens_location_thursday_datas[l] = opens_location_thursday
+                closes_location_thursday_datas[l] = closes_location_thursday
                 schedule_closed_thursday_datas[l] = schedule_closed_thursday
-                opens_at_location_friday_datas[l] = opens_at_location_friday
-                closes_at_location_friday_datas[l] = closes_at_location_friday
+                opens_location_friday_datas[l] = opens_location_friday
+                closes_location_friday_datas[l] = closes_location_friday
                 schedule_closed_friday_datas[l] = schedule_closed_friday
-                opens_at_location_saturday_datas[l] = opens_at_location_saturday
-                closes_at_location_saturday_datas[l] = closes_at_location_saturday
+                opens_location_saturday_datas[l] = opens_location_saturday
+                closes_location_saturday_datas[l] = closes_location_saturday
                 schedule_closed_saturday_datas[l] = schedule_closed_saturday
-                opens_at_location_sunday_datas[l] = opens_at_location_sunday
-                closes_at_location_sunday_datas[l] = closes_at_location_sunday
+                opens_location_sunday_datas[l] = opens_location_sunday
+                closes_location_sunday_datas[l] = closes_location_sunday
                 schedule_closed_sunday_datas[l] = schedule_closed_sunday
 
                 location_holiday_start_dates[l] = holiday_start_date_location
@@ -2241,23 +2419,7 @@
                 location_holiday_close_ats[l] = holiday_close_at_location
                 location_holiday_closeds[l] = holiday_closed_location
 
-                $('#locationsTable').append('<tr id="locationTr_' + l + '"><td>' + location_name_p +
-                    '<input type="hidden" name="location_name[]" value="' + location_name_p +
-                    '" id="location_name_' + l + '"></td><td>' + location_address_p +
-                    '<input type="hidden" name="location_address[]" value="' + location_address_p +
-                    '" id="location_address_' + l + '"></td><td class="text-center">' + location_city_p +
-                    '<input type="hidden" name="location_city[]" value="' + location_city_p +
-                    '" id="location_city_' + l + '"></td><td class="text-center">' + location_state_p +
-                    '<input type="hidden" name="location_state[]" value="' + location_state_p +
-                    '" id="location_state_' + l + '"></td><td class="text-center">' + location_zipcode_p +
-                    '<input type="hidden" name="location_zipcode[]" value="' + location_zipcode_p +
-                    '" id="location_zipcode_' + l + '"></td><td class="text-center">' + location_phone_list +
-                    '<input type="hidden" name="location_phone[]" value="' + location_phone_p +
-                    '" id="location_phone_' + l +
-                    '"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="locationEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeLocationData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="locationRadio[]" value="' +
-                    locationRadioValue + '" id="selectedLocationRadio_' + l +
-                    '"><input type="hidden" name="location_recordid[]" value="' + location_recordid_p +
-                    '" id="existingLocationIds_' + l + '"></td></tr>');
+                $('#locationsTable').append('<tr id="locationTr_' + l + '"><td>' + location_name_p + '<input type="hidden" name="location_name[]" value="' + location_name_p + '" id="location_name_' + l + '"></td><td>' + location_address_p + '<input type="hidden" name="location_address[]" value="' + location_address_p + '" id="location_address_' + l + '"></td><td class="text-center">' + location_city_p + '<input type="hidden" name="location_city[]" value="' + location_city_p + '" id="location_city_' + l + '"></td><td class="text-center">' + location_state_p + '<input type="hidden" name="location_state[]" value="' + location_state_p + '" id="location_state_' + l + '"></td><td class="text-center">' + location_zipcode_p + '<input type="hidden" name="location_zipcode[]" value="' + location_zipcode_p + '" id="location_zipcode_' + l + '"></td><td class="text-center">' + location_phone_list + '<input type="hidden" name="location_phone[]" value="' + location_phone_p + '" id="location_phone_' + l + '"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="locationEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeLocationData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="locationRadio[]" value="' + locationRadioValue + '" id="selectedLocationRadio_' + l + '"><input type="hidden" name="location_recordid[]" value="' + location_recordid_p + '" id="existingLocationIds_' + l + '"></td></tr>');
                 l++;
             } else {
                 if (selectedLocationTrId) {
@@ -2280,26 +2442,26 @@
                     location_phone_languages[selectedLocationTrId] = phone_language_location
                     location_phone_descriptions[selectedLocationTrId] = phone_description_location
 
-                    opens_at_location_monday_datas[selectedLocationTrId] = opens_at_location_monday
-                    closes_at_location_monday_datas[selectedLocationTrId] = closes_at_location_monday
+                    opens_location_monday_datas[selectedLocationTrId] = opens_location_monday
+                    closes_location_monday_datas[selectedLocationTrId] = closes_location_monday
                     schedule_closed_monday_datas[selectedLocationTrId] = schedule_closed_monday
-                    opens_at_location_tuesday_datas[selectedLocationTrId] = opens_at_location_tuesday
-                    closes_at_location_tuesday_datas[selectedLocationTrId] = closes_at_location_tuesday
+                    opens_location_tuesday_datas[selectedLocationTrId] = opens_location_tuesday
+                    closes_location_tuesday_datas[selectedLocationTrId] = closes_location_tuesday
                     schedule_closed_tuesday_datas[selectedLocationTrId] = schedule_closed_tuesday
-                    opens_at_location_wednesday_datas[selectedLocationTrId] = opens_at_location_wednesday
-                    closes_at_location_wednesday_datas[selectedLocationTrId] = closes_at_location_wednesday
+                    opens_location_wednesday_datas[selectedLocationTrId] = opens_location_wednesday
+                    closes_location_wednesday_datas[selectedLocationTrId] = closes_location_wednesday
                     schedule_closed_wednesday_datas[selectedLocationTrId] = schedule_closed_wednesday
-                    opens_at_location_thursday_datas[selectedLocationTrId] = opens_at_location_thursday
-                    closes_at_location_thursday_datas[selectedLocationTrId] = closes_at_location_thursday
+                    opens_location_thursday_datas[selectedLocationTrId] = opens_location_thursday
+                    closes_location_thursday_datas[selectedLocationTrId] = closes_location_thursday
                     schedule_closed_thursday_datas[selectedLocationTrId] = schedule_closed_thursday
-                    opens_at_location_friday_datas[selectedLocationTrId] = opens_at_location_friday
-                    closes_at_location_friday_datas[selectedLocationTrId] = closes_at_location_friday
+                    opens_location_friday_datas[selectedLocationTrId] = opens_location_friday
+                    closes_location_friday_datas[selectedLocationTrId] = closes_location_friday
                     schedule_closed_friday_datas[selectedLocationTrId] = schedule_closed_friday
-                    opens_at_location_saturday_datas[selectedLocationTrId] = opens_at_location_saturday
-                    closes_at_location_saturday_datas[selectedLocationTrId] = closes_at_location_saturday
+                    opens_location_saturday_datas[selectedLocationTrId] = opens_location_saturday
+                    closes_location_saturday_datas[selectedLocationTrId] = closes_location_saturday
                     schedule_closed_saturday_datas[selectedLocationTrId] = schedule_closed_saturday
-                    opens_at_location_sunday_datas[selectedLocationTrId] = opens_at_location_sunday
-                    closes_at_location_sunday_datas[selectedLocationTrId] = closes_at_location_sunday
+                    opens_location_sunday_datas[selectedLocationTrId] = opens_location_sunday
+                    closes_location_sunday_datas[selectedLocationTrId] = closes_location_sunday
                     schedule_closed_sunday_datas[selectedLocationTrId] = schedule_closed_sunday
 
                     location_holiday_start_dates[selectedLocationTrId] = holiday_start_date_location
@@ -2309,25 +2471,7 @@
                     location_holiday_closeds[selectedLocationTrId] = holiday_closed_location
 
                     $('#locationTr_' + selectedLocationTrId).empty()
-                    $('#locationTr_' + selectedLocationTrId).append('<td>' + location_name_p +
-                        '<input type="hidden" name="location_name[]" value="' + location_name_p +
-                        '" id="location_name_' + selectedLocationTrId + '"></td><td>' + location_address_p +
-                        '<input type="hidden" name="location_address[]" value="' + location_address_p +
-                        '" id="location_address_' + selectedLocationTrId + '"></td><td class="text-center">' +
-                        location_city_p + '<input type="hidden" name="location_city[]" value="' +
-                        location_city_p + '" id="location_city_' + selectedLocationTrId +
-                        '"></td><td class="text-center">' + location_state_p +
-                        '<input type="hidden" name="location_state[]" value="' + location_state_p +
-                        '" id="location_state_' + selectedLocationTrId + '"></td><td class="text-center">' +
-                        location_zipcode_p + '<input type="hidden" name="location_zipcode[]" value="' +
-                        location_zipcode_p + '" id="location_zipcode_' + selectedLocationTrId +
-                        '"></td><td class="text-center">' + location_phone_list +
-                        '<input type="hidden" name="location_phone[]" value="' + location_phone_p +
-                        '" id="location_phone_' + selectedLocationTrId +
-                        '"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="locationEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeLocationData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="locationRadio[]" value="' +
-                        locationRadioValue + '" id="selectedLocationRadio_' + selectedLocationTrId +
-                        '"><input type="hidden" name="location_recordid[]" value="' + location_recordid_p +
-                        '" id="existingLocationIds_' + selectedLocationTrId + '"></td>')
+                    $('#locationTr_' + selectedLocationTrId).append('<td>' + location_name_p + '<input type="hidden" name="location_name[]" value="' + location_name_p + '" id="location_name_' + selectedLocationTrId + '"></td><td>' + location_address_p + '<input type="hidden" name="location_address[]" value="' + location_address_p + '" id="location_address_' + selectedLocationTrId + '"></td><td class="text-center">' + location_city_p + '<input type="hidden" name="location_city[]" value="' + location_city_p + '" id="location_city_' + selectedLocationTrId + '"></td><td class="text-center">' + location_state_p + '<input type="hidden" name="location_state[]" value="' + location_state_p + '" id="location_state_' + selectedLocationTrId + '"></td><td class="text-center">' + location_zipcode_p + '<input type="hidden" name="location_zipcode[]" value="' + location_zipcode_p + '" id="location_zipcode_' + selectedLocationTrId + '"></td><td class="text-center">' + location_phone_list + '<input type="hidden" name="location_phone[]" value="' + location_phone_p + '" id="location_phone_' + selectedLocationTrId + '"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="locationEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeLocationData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="locationRadio[]" value="' + locationRadioValue + '" id="selectedLocationRadio_' + selectedLocationTrId + '"><input type="hidden" name="location_recordid[]" value="' + location_recordid_p + '" id="existingLocationIds_' + selectedLocationTrId + '"></td>')
                 }
             }
             $('#location_alternate_name').val(JSON.stringify(location_alternate_name))
@@ -2350,26 +2494,26 @@
             $('#addPhoneTrLocation').append('<tr id="location_0"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_0"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_0"></td><td><select name="phone_type[]" id="phone_type_location_0" class="form-control selectpicker" data-live-search="true" data-size="5"> <option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_0" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_0"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>')
             $('.selectpicker').selectpicker('refresh');
 
-            $('#opens_at_location_monday_datas').val(JSON.stringify(opens_at_location_monday_datas))
-            $('#closes_at_location_monday_datas').val(JSON.stringify(closes_at_location_monday_datas))
+            $('#opens_location_monday_datas').val(JSON.stringify(opens_location_monday_datas))
+            $('#closes_location_monday_datas').val(JSON.stringify(closes_location_monday_datas))
             $('#schedule_closed_monday_datas').val(JSON.stringify(schedule_closed_monday_datas))
-            $('#opens_at_location_tuesday_datas').val(JSON.stringify(opens_at_location_tuesday_datas))
-            $('#closes_at_location_tuesday_datas').val(JSON.stringify(closes_at_location_tuesday_datas))
+            $('#opens_location_tuesday_datas').val(JSON.stringify(opens_location_tuesday_datas))
+            $('#closes_location_tuesday_datas').val(JSON.stringify(closes_location_tuesday_datas))
             $('#schedule_closed_tuesday_datas').val(JSON.stringify(schedule_closed_tuesday_datas))
-            $('#opens_at_location_wednesday_datas').val(JSON.stringify(opens_at_location_wednesday_datas))
-            $('#closes_at_location_wednesday_datas').val(JSON.stringify(closes_at_location_wednesday_datas))
+            $('#opens_location_wednesday_datas').val(JSON.stringify(opens_location_wednesday_datas))
+            $('#closes_location_wednesday_datas').val(JSON.stringify(closes_location_wednesday_datas))
             $('#schedule_closed_wednesday_datas').val(JSON.stringify(schedule_closed_wednesday_datas))
-            $('#opens_at_location_thursday_datas').val(JSON.stringify(opens_at_location_thursday_datas))
-            $('#closes_at_location_thursday_datas').val(JSON.stringify(closes_at_location_thursday_datas))
+            $('#opens_location_thursday_datas').val(JSON.stringify(opens_location_thursday_datas))
+            $('#closes_location_thursday_datas').val(JSON.stringify(closes_location_thursday_datas))
             $('#schedule_closed_thursday_datas').val(JSON.stringify(schedule_closed_thursday_datas))
-            $('#opens_at_location_friday_datas').val(JSON.stringify(opens_at_location_friday_datas))
-            $('#closes_at_location_friday_datas').val(JSON.stringify(closes_at_location_friday_datas))
+            $('#opens_location_friday_datas').val(JSON.stringify(opens_location_friday_datas))
+            $('#closes_location_friday_datas').val(JSON.stringify(closes_location_friday_datas))
             $('#schedule_closed_friday_datas').val(JSON.stringify(schedule_closed_friday_datas))
-            $('#opens_at_location_saturday_datas').val(JSON.stringify(opens_at_location_saturday_datas))
-            $('#closes_at_location_saturday_datas').val(JSON.stringify(closes_at_location_saturday_datas))
+            $('#opens_location_saturday_datas').val(JSON.stringify(opens_location_saturday_datas))
+            $('#closes_location_saturday_datas').val(JSON.stringify(closes_location_saturday_datas))
             $('#schedule_closed_saturday_datas').val(JSON.stringify(schedule_closed_saturday_datas))
-            $('#opens_at_location_sunday_datas').val(JSON.stringify(opens_at_location_sunday_datas))
-            $('#closes_at_location_sunday_datas').val(JSON.stringify(closes_at_location_sunday_datas))
+            $('#opens_location_sunday_datas').val(JSON.stringify(opens_location_sunday_datas))
+            $('#closes_location_sunday_datas').val(JSON.stringify(closes_location_sunday_datas))
             $('#schedule_closed_sunday_datas').val(JSON.stringify(schedule_closed_sunday_datas))
 
             $('#location_holiday_start_dates').val(JSON.stringify(location_holiday_start_dates))
@@ -2379,32 +2523,28 @@
             $('#location_holiday_closeds').val(JSON.stringify(location_holiday_closeds))
 
             $('#scheduleHolidayLocation').empty()
-            $('#scheduleHolidayLocation').append(
-                '<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_0"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_0"></td><td> <input class="form-control timePicker" type="text" name="holiday_open_at" id="holiday_open_at_location_0"></td><td> <input class="form-control timePicker" type="text" name="holiday_close_at" id="holiday_close_at_location_0"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_0" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>'
-                );
-            $('.timePicker').timepicker({
-                'scrollDefault': 'now'
-            });
-            $('#opens_at_location_monday').val('')
-            $('#closes_at_location_monday').val('')
+            $('#scheduleHolidayLocation').append('<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_0"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_0"></td><td> <input class="form-control timePicker" type="text" name="holiday_open_at" id="holiday_open_at_location_0"></td><td> <input class="form-control timePicker" type="text" name="holiday_close_at" id="holiday_close_at_location_0"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_0" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+            $('.timePicker').timepicker({'scrollDefault': 'now'});
+            $('#opens_location_monday').val('')
+            $('#closes_location_monday').val('')
             $('#schedule_closed_location_monday').val(1)
-            $('#opens_at_location_tuesday').val('')
-            $('#closes_at_location_tuesday').val('')
+            $('#opens_location_tuesday').val('')
+            $('#closes_location_tuesday').val('')
             $('#schedule_closed_location_tuesday').val(2)
-            $('#opens_at_location_wednesday').val('')
-            $('#closes_at_location_wednesday').val('')
+            $('#opens_location_wednesday').val('')
+            $('#closes_location_wednesday').val('')
             $('#schedule_closed_location_wednesday').val(3)
-            $('#opens_at_location_thursday').val('')
-            $('#closes_at_location_thursday').val('')
+            $('#opens_location_thursday').val('')
+            $('#closes_location_thursday').val('')
             $('#schedule_closed_location_thursday').val(4)
-            $('#opens_at_location_friday').val('')
-            $('#closes_at_location_friday').val('')
+            $('#opens_location_friday').val('')
+            $('#closes_location_friday').val('')
             $('#schedule_closed_location_friday').val(5)
-            $('#opens_at_location_saturday').val('')
-            $('#closes_at_location_saturday').val('')
+            $('#opens_location_saturday').val('')
+            $('#closes_location_saturday').val('')
             $('#schedule_closed_location_saturday').val(6)
-            $('#opens_at_location_sunday').val('')
-            $('#closes_at_location_sunday').val('')
+            $('#opens_location_sunday').val('')
+            $('#closes_location_sunday').val('')
             $('#schedule_closed_location_sunday').val(7)
 
             $('#schedule_closed_location_monday').attr('checked', false)
@@ -2466,26 +2606,26 @@
                 let location_phone_languages = JSON.parse($('#location_phone_languages').val())
                 let location_phone_descriptions = JSON.parse($('#location_phone_descriptions').val())
 
-                let opens_at_location_monday_datas = JSON.parse($('#opens_at_location_monday_datas').val())
-                let closes_at_location_monday_datas = JSON.parse($('#closes_at_location_monday_datas').val())
+                let opens_location_monday_datas = JSON.parse($('#opens_location_monday_datas').val())
+                let closes_location_monday_datas = JSON.parse($('#closes_location_monday_datas').val())
                 let schedule_closed_monday_datas = JSON.parse($('#schedule_closed_monday_datas').val())
-                let opens_at_location_tuesday_datas = JSON.parse($('#opens_at_location_tuesday_datas').val())
-                let closes_at_location_tuesday_datas = JSON.parse($('#closes_at_location_tuesday_datas').val())
+                let opens_location_tuesday_datas = JSON.parse($('#opens_location_tuesday_datas').val())
+                let closes_location_tuesday_datas = JSON.parse($('#closes_location_tuesday_datas').val())
                 let schedule_closed_tuesday_datas = JSON.parse($('#schedule_closed_tuesday_datas').val())
-                let opens_at_location_wednesday_datas = JSON.parse($('#opens_at_location_wednesday_datas').val())
-                let closes_at_location_wednesday_datas = JSON.parse($('#closes_at_location_wednesday_datas').val())
+                let opens_location_wednesday_datas = JSON.parse($('#opens_location_wednesday_datas').val())
+                let closes_location_wednesday_datas = JSON.parse($('#closes_location_wednesday_datas').val())
                 let schedule_closed_wednesday_datas = JSON.parse($('#schedule_closed_wednesday_datas').val())
-                let opens_at_location_thursday_datas = JSON.parse($('#opens_at_location_thursday_datas').val())
-                let closes_at_location_thursday_datas = JSON.parse($('#closes_at_location_thursday_datas').val())
+                let opens_location_thursday_datas = JSON.parse($('#opens_location_thursday_datas').val())
+                let closes_location_thursday_datas = JSON.parse($('#closes_location_thursday_datas').val())
                 let schedule_closed_thursday_datas = JSON.parse($('#schedule_closed_thursday_datas').val())
-                let opens_at_location_friday_datas = JSON.parse($('#opens_at_location_friday_datas').val())
-                let closes_at_location_friday_datas = JSON.parse($('#closes_at_location_friday_datas').val())
+                let opens_location_friday_datas = JSON.parse($('#opens_location_friday_datas').val())
+                let closes_location_friday_datas = JSON.parse($('#closes_location_friday_datas').val())
                 let schedule_closed_friday_datas = JSON.parse($('#schedule_closed_friday_datas').val())
-                let opens_at_location_saturday_datas = JSON.parse($('#opens_at_location_saturday_datas').val())
-                let closes_at_location_saturday_datas = JSON.parse($('#closes_at_location_saturday_datas').val())
+                let opens_location_saturday_datas = JSON.parse($('#opens_location_saturday_datas').val())
+                let closes_location_saturday_datas = JSON.parse($('#closes_location_saturday_datas').val())
                 let schedule_closed_saturday_datas = JSON.parse($('#schedule_closed_saturday_datas').val())
-                let opens_at_location_sunday_datas = JSON.parse($('#opens_at_location_sunday_datas').val())
-                let closes_at_location_sunday_datas = JSON.parse($('#closes_at_location_sunday_datas').val())
+                let opens_location_sunday_datas = JSON.parse($('#opens_location_sunday_datas').val())
+                let closes_location_sunday_datas = JSON.parse($('#closes_location_sunday_datas').val())
                 let schedule_closed_sunday_datas = JSON.parse($('#schedule_closed_sunday_datas').val())
 
                 let location_holiday_start_dates_val = JSON.parse($('#location_holiday_start_dates').val())
@@ -2508,26 +2648,26 @@
                 location_phone_types.splice(deletedId, 1)
                 location_phone_languages.splice(deletedId, 1)
                 location_phone_descriptions.splice(deletedId, 1)
-                opens_at_location_monday_datas.splice(deletedId, 1)
-                closes_at_location_monday_datas.splice(deletedId, 1)
+                opens_location_monday_datas.splice(deletedId, 1)
+                closes_location_monday_datas.splice(deletedId, 1)
                 schedule_closed_monday_datas.splice(deletedId, 1)
-                opens_at_location_tuesday_datas.splice(deletedId, 1)
-                closes_at_location_tuesday_datas.splice(deletedId, 1)
+                opens_location_tuesday_datas.splice(deletedId, 1)
+                closes_location_tuesday_datas.splice(deletedId, 1)
                 schedule_closed_tuesday_datas.splice(deletedId, 1)
-                opens_at_location_wednesday_datas.splice(deletedId, 1)
-                closes_at_location_wednesday_datas.splice(deletedId, 1)
+                opens_location_wednesday_datas.splice(deletedId, 1)
+                closes_location_wednesday_datas.splice(deletedId, 1)
                 schedule_closed_wednesday_datas.splice(deletedId, 1)
-                opens_at_location_thursday_datas.splice(deletedId, 1)
-                closes_at_location_thursday_datas.splice(deletedId, 1)
+                opens_location_thursday_datas.splice(deletedId, 1)
+                closes_location_thursday_datas.splice(deletedId, 1)
                 schedule_closed_thursday_datas.splice(deletedId, 1)
-                opens_at_location_friday_datas.splice(deletedId, 1)
-                closes_at_location_friday_datas.splice(deletedId, 1)
+                opens_location_friday_datas.splice(deletedId, 1)
+                closes_location_friday_datas.splice(deletedId, 1)
                 schedule_closed_friday_datas.splice(deletedId, 1)
-                opens_at_location_saturday_datas.splice(deletedId, 1)
-                closes_at_location_saturday_datas.splice(deletedId, 1)
+                opens_location_saturday_datas.splice(deletedId, 1)
+                closes_location_saturday_datas.splice(deletedId, 1)
                 schedule_closed_saturday_datas.splice(deletedId, 1)
-                opens_at_location_sunday_datas.splice(deletedId, 1)
-                closes_at_location_sunday_datas.splice(deletedId, 1)
+                opens_location_sunday_datas.splice(deletedId, 1)
+                closes_location_sunday_datas.splice(deletedId, 1)
                 schedule_closed_sunday_datas.splice(deletedId, 1)
                 location_holiday_start_dates_val.splice(deletedId, 1)
                 location_holiday_end_dates_val.splice(deletedId, 1)
@@ -2550,26 +2690,26 @@
                 $('#location_phone_types').val(JSON.stringify(location_phone_types))
                 $('#location_phone_languages').val(JSON.stringify(location_phone_languages))
                 $('#location_phone_descriptions').val(JSON.stringify(location_phone_descriptions))
-                $('#opens_at_location_monday_datas').val(JSON.stringify(opens_at_location_monday_datas))
-                $('#closes_at_location_monday_datas').val(JSON.stringify(closes_at_location_monday_datas))
+                $('#opens_location_monday_datas').val(JSON.stringify(opens_location_monday_datas))
+                $('#closes_location_monday_datas').val(JSON.stringify(closes_location_monday_datas))
                 $('#schedule_closed_monday_datas').val(JSON.stringify(schedule_closed_monday_datas))
-                $('#opens_at_location_tuesday_datas').val(JSON.stringify(opens_at_location_tuesday_datas))
-                $('#closes_at_location_tuesday_datas').val(JSON.stringify(closes_at_location_tuesday_datas))
+                $('#opens_location_tuesday_datas').val(JSON.stringify(opens_location_tuesday_datas))
+                $('#closes_location_tuesday_datas').val(JSON.stringify(closes_location_tuesday_datas))
                 $('#schedule_closed_tuesday_datas').val(JSON.stringify(schedule_closed_tuesday_datas))
-                $('#opens_at_location_wednesday_datas').val(JSON.stringify(opens_at_location_wednesday_datas))
-                $('#closes_at_location_wednesday_datas').val(JSON.stringify(closes_at_location_wednesday_datas))
+                $('#opens_location_wednesday_datas').val(JSON.stringify(opens_location_wednesday_datas))
+                $('#closes_location_wednesday_datas').val(JSON.stringify(closes_location_wednesday_datas))
                 $('#schedule_closed_wednesday_datas').val(JSON.stringify(schedule_closed_wednesday_datas))
-                $('#opens_at_location_thursday_datas').val(JSON.stringify(opens_at_location_thursday_datas))
-                $('#closes_at_location_thursday_datas').val(JSON.stringify(closes_at_location_thursday_datas))
+                $('#opens_location_thursday_datas').val(JSON.stringify(opens_location_thursday_datas))
+                $('#closes_location_thursday_datas').val(JSON.stringify(closes_location_thursday_datas))
                 $('#schedule_closed_thursday_datas').val(JSON.stringify(schedule_closed_thursday_datas))
-                $('#opens_at_location_friday_datas').val(JSON.stringify(opens_at_location_friday_datas))
-                $('#closes_at_location_friday_datas').val(JSON.stringify(closes_at_location_friday_datas))
+                $('#opens_location_friday_datas').val(JSON.stringify(opens_location_friday_datas))
+                $('#closes_location_friday_datas').val(JSON.stringify(closes_location_friday_datas))
                 $('#schedule_closed_friday_datas').val(JSON.stringify(schedule_closed_friday_datas))
-                $('#opens_at_location_saturday_datas').val(JSON.stringify(opens_at_location_saturday_datas))
-                $('#closes_at_location_saturday_datas').val(JSON.stringify(closes_at_location_saturday_datas))
+                $('#opens_location_saturday_datas').val(JSON.stringify(opens_location_saturday_datas))
+                $('#closes_location_saturday_datas').val(JSON.stringify(closes_location_saturday_datas))
                 $('#schedule_closed_saturday_datas').val(JSON.stringify(schedule_closed_saturday_datas))
-                $('#opens_at_location_sunday_datas').val(JSON.stringify(opens_at_location_sunday_datas))
-                $('#closes_at_location_sunday_datas').val(JSON.stringify(closes_at_location_sunday_datas))
+                $('#opens_location_sunday_datas').val(JSON.stringify(opens_location_sunday_datas))
+                $('#closes_location_sunday_datas').val(JSON.stringify(closes_location_sunday_datas))
                 $('#schedule_closed_sunday_datas').val(JSON.stringify(schedule_closed_sunday_datas))
                 $('#location_holiday_start_dates').val(JSON.stringify(location_holiday_start_dates_val))
                 $('#location_holiday_end_dates').val(JSON.stringify(location_holiday_end_dates_val))
@@ -2651,9 +2791,7 @@
             $('.selectpicker').selectpicker('refresh');
 
             $('#scheduleHolidayLocation').empty()
-            $('#scheduleHolidayLocation').append(
-                '<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_0"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_0"></td><td> <input class="form-control timePicker" type="text" name="holiday_open_at" id="holiday_open_at_location_0"></td><td> <input class="form-control timePicker" type="text" name="holiday_close_at" id="holiday_close_at_location_0"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_0" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>'
-                );
+            $('#scheduleHolidayLocation').append('<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_0"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_0"></td><td> <input class="form-control timePicker" type="text" name="holiday_open_at" id="holiday_open_at_location_0"></td><td> <input class="form-control timePicker" type="text" name="holiday_close_at" id="holiday_close_at_location_0"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_0" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
             $('.timePicker').timepicker({
                 'scrollDefault': 'now'
             });
@@ -2695,16 +2833,14 @@
             $('#phone_language_location_0').val(phone_language_location[0])
             $('#phone_description_location_0').val(phone_description_location[0])
             for (let index = 1; index < phone_number_location.length; index++) {
-                $('#addPhoneTrLocation').append('<tr id="location_'+index+'"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_'+index+'" value="'+phone_number_location[index]+'"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_'+index+'" value="'+(phone_extension_location[index] != null ? phone_extension_location[index] : "") +'"></td><td><select name="phone_type[]" id="phone_type_location_'+index+'" class="form-control selectpicker" data-live-search="true" data-size="5"><option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_'+index+'" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_'+index+'" value="'+(phone_description_location[index] != null ? phone_description_location[index] : "") +'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
+                $('#addPhoneTrLocation').append('<tr id="location_' + index +'"><td><input type="text" class="form-control" name="service_phones[]" id="service_phones_location_' + index + '" value="' + phone_number_location[index] + '"></td><td><input type="text" class="form-control" name="phone_extension[]" id="phone_extension_location_' + index + '" value="' + (phone_extension_location[index] != null ? phone_extension_location[index] : "") + '"></td><td><select name="phone_type[]" id="phone_type_location_' + index + '" class="form-control selectpicker" data-live-search="true" data-size="5"><option value="">Select phone type</option>@foreach ($phone_type as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><select name="phone_language[]" id="phone_language_location_' + index + '" class="form-control selectpicker" data-size="5" data-live-search="true" multiple="true"> @foreach ($phone_languages as $key => $value)<option value="{{ $key }}">{{ $value }}</option> @endforeach </select></td><td><input type="text" class="form-control" name="phone_description[]" id="phone_description_location_' + index + '" value="' + (phone_description_location[index] != null ? phone_description_location[index] : "") + '"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
 
                 if (phone_type_location[index] != '') {
-                    $("select[id='phone_type_location_" + index + "'] option[value=" + phone_type_location[index] +
-                        "]").prop('selected', true)
+                    $("select[id='phone_type_location_" + index + "'] option[value=" + phone_type_location[index] +"]").prop('selected', true)
                 }
                 if (phone_language_location[index] != '') {
                     for (let m = 0; m < phone_language_location[index].length; m++) {
-                        $("select[id='phone_language_location_" + index + "'] option[value=" +
-                            phone_language_location[index][m] + "]").prop('selected', true)
+                        $("select[id='phone_language_location_" + index + "'] option[value=" + phone_language_location[index][m] + "]").prop('selected', true)
                     }
                 }
                 $('.selectpicker').selectpicker();
@@ -2714,26 +2850,26 @@
 
             // location schedule section
 
-            let opens_at_location_monday_datas = JSON.parse($('#opens_at_location_monday_datas').val())
-            let closes_at_location_monday_datas = JSON.parse($('#closes_at_location_monday_datas').val())
+            let opens_location_monday_datas = JSON.parse($('#opens_location_monday_datas').val())
+            let closes_location_monday_datas = JSON.parse($('#closes_location_monday_datas').val())
             let schedule_closed_monday_datas = JSON.parse($('#schedule_closed_monday_datas').val())
-            let opens_at_location_tuesday_datas = JSON.parse($('#opens_at_location_tuesday_datas').val())
-            let closes_at_location_tuesday_datas = JSON.parse($('#closes_at_location_tuesday_datas').val())
+            let opens_location_tuesday_datas = JSON.parse($('#opens_location_tuesday_datas').val())
+            let closes_location_tuesday_datas = JSON.parse($('#closes_location_tuesday_datas').val())
             let schedule_closed_tuesday_datas = JSON.parse($('#schedule_closed_tuesday_datas').val())
-            let opens_at_location_wednesday_datas = JSON.parse($('#opens_at_location_wednesday_datas').val())
-            let closes_at_location_wednesday_datas = JSON.parse($('#closes_at_location_wednesday_datas').val())
+            let opens_location_wednesday_datas = JSON.parse($('#opens_location_wednesday_datas').val())
+            let closes_location_wednesday_datas = JSON.parse($('#closes_location_wednesday_datas').val())
             let schedule_closed_wednesday_datas = JSON.parse($('#schedule_closed_wednesday_datas').val())
-            let opens_at_location_thursday_datas = JSON.parse($('#opens_at_location_thursday_datas').val())
-            let closes_at_location_thursday_datas = JSON.parse($('#closes_at_location_thursday_datas').val())
+            let opens_location_thursday_datas = JSON.parse($('#opens_location_thursday_datas').val())
+            let closes_location_thursday_datas = JSON.parse($('#closes_location_thursday_datas').val())
             let schedule_closed_thursday_datas = JSON.parse($('#schedule_closed_thursday_datas').val())
-            let opens_at_location_friday_datas = JSON.parse($('#opens_at_location_friday_datas').val())
-            let closes_at_location_friday_datas = JSON.parse($('#closes_at_location_friday_datas').val())
+            let opens_location_friday_datas = JSON.parse($('#opens_location_friday_datas').val())
+            let closes_location_friday_datas = JSON.parse($('#closes_location_friday_datas').val())
             let schedule_closed_friday_datas = JSON.parse($('#schedule_closed_friday_datas').val())
-            let opens_at_location_saturday_datas = JSON.parse($('#opens_at_location_saturday_datas').val())
-            let closes_at_location_saturday_datas = JSON.parse($('#closes_at_location_saturday_datas').val())
+            let opens_location_saturday_datas = JSON.parse($('#opens_location_saturday_datas').val())
+            let closes_location_saturday_datas = JSON.parse($('#closes_location_saturday_datas').val())
             let schedule_closed_saturday_datas = JSON.parse($('#schedule_closed_saturday_datas').val())
-            let opens_at_location_sunday_datas = JSON.parse($('#opens_at_location_sunday_datas').val())
-            let closes_at_location_sunday_datas = JSON.parse($('#closes_at_location_sunday_datas').val())
+            let opens_location_sunday_datas = JSON.parse($('#opens_location_sunday_datas').val())
+            let closes_location_sunday_datas = JSON.parse($('#closes_location_sunday_datas').val())
             let schedule_closed_sunday_datas = JSON.parse($('#schedule_closed_sunday_datas').val())
 
             let location_holiday_start_dates_val = JSON.parse($('#location_holiday_start_dates').val())
@@ -2742,26 +2878,26 @@
             let location_holiday_close_ats_val = JSON.parse($('#location_holiday_close_ats').val())
             let location_holiday_closeds_val = JSON.parse($('#location_holiday_closeds').val())
 
-            let opens_at_location_monday = opens_at_location_monday_datas[id]
-            let closes_at_location_monday = closes_at_location_monday_datas[id]
+            let opens_location_monday = opens_location_monday_datas[id]
+            let closes_location_monday = closes_location_monday_datas[id]
             let schedule_closed_monday = schedule_closed_monday_datas[id]
-            let opens_at_location_tuesday = opens_at_location_tuesday_datas[id]
-            let closes_at_location_tuesday = closes_at_location_tuesday_datas[id]
+            let opens_location_tuesday = opens_location_tuesday_datas[id]
+            let closes_location_tuesday = closes_location_tuesday_datas[id]
             let schedule_closed_tuesday = schedule_closed_tuesday_datas[id]
-            let opens_at_location_wednesday = opens_at_location_wednesday_datas[id]
-            let closes_at_location_wednesday = closes_at_location_wednesday_datas[id]
+            let opens_location_wednesday = opens_location_wednesday_datas[id]
+            let closes_location_wednesday = closes_location_wednesday_datas[id]
             let schedule_closed_wednesday = schedule_closed_wednesday_datas[id]
-            let opens_at_location_thursday = opens_at_location_thursday_datas[id]
-            let closes_at_location_thursday = closes_at_location_thursday_datas[id]
+            let opens_location_thursday = opens_location_thursday_datas[id]
+            let closes_location_thursday = closes_location_thursday_datas[id]
             let schedule_closed_thursday = schedule_closed_thursday_datas[id]
-            let opens_at_location_friday = opens_at_location_friday_datas[id]
-            let closes_at_location_friday = closes_at_location_friday_datas[id]
+            let opens_location_friday = opens_location_friday_datas[id]
+            let closes_location_friday = closes_location_friday_datas[id]
             let schedule_closed_friday = schedule_closed_friday_datas[id]
-            let opens_at_location_saturday = opens_at_location_saturday_datas[id]
-            let closes_at_location_saturday = closes_at_location_saturday_datas[id]
+            let opens_location_saturday = opens_location_saturday_datas[id]
+            let closes_location_saturday = closes_location_saturday_datas[id]
             let schedule_closed_saturday = schedule_closed_saturday_datas[id]
-            let opens_at_location_sunday = opens_at_location_sunday_datas[id]
-            let closes_at_location_sunday = closes_at_location_sunday_datas[id]
+            let opens_location_sunday = opens_location_sunday_datas[id]
+            let closes_location_sunday = closes_location_sunday_datas[id]
             let schedule_closed_sunday = schedule_closed_sunday_datas[id]
 
             let location_holiday_start_dates = location_holiday_start_dates_val[id]
@@ -2770,8 +2906,8 @@
             let location_holiday_close_ats = location_holiday_close_ats_val[id]
             let location_holiday_closeds = location_holiday_closeds_val[id]
 
-            $('#opens_at_location_monday').val(opens_at_location_monday)
-            $('#closes_at_location_monday').val(closes_at_location_monday)
+            $('#opens_location_monday').val(opens_location_monday)
+            $('#closes_location_monday').val(closes_location_monday)
             $('#schedule_closed_location_monday').val(1)
             if (schedule_closed_monday == 1) {
                 $('#schedule_closed_location_monday').attr('checked', true)
@@ -2779,8 +2915,8 @@
                 $('#schedule_closed_location_monday').attr('checked', false)
             }
 
-            $('#opens_at_location_tuesday').val(opens_at_location_tuesday)
-            $('#closes_at_location_tuesday').val(closes_at_location_tuesday)
+            $('#opens_location_tuesday').val(opens_location_tuesday)
+            $('#closes_location_tuesday').val(closes_location_tuesday)
             $('#schedule_closed_location_tuesday').val(2)
             if (schedule_closed_tuesday == 2) {
                 $('#schedule_closed_location_tuesday').attr('checked', true)
@@ -2788,8 +2924,8 @@
                 $('#schedule_closed_location_tuesday').attr('checked', false)
             }
 
-            $('#opens_at_location_wednesday').val(opens_at_location_wednesday)
-            $('#closes_at_location_wednesday').val(closes_at_location_wednesday)
+            $('#opens_location_wednesday').val(opens_location_wednesday)
+            $('#closes_location_wednesday').val(closes_location_wednesday)
             $('#schedule_closed_location_wednesday').val(3)
             if (schedule_closed_wednesday == 3) {
                 $('#schedule_closed_location_wednesday').attr('checked', true)
@@ -2797,8 +2933,8 @@
                 $('#schedule_closed_location_wednesday').attr('checked', false)
             }
 
-            $('#opens_at_location_thursday').val(opens_at_location_thursday)
-            $('#closes_at_location_thursday').val(closes_at_location_thursday)
+            $('#opens_location_thursday').val(opens_location_thursday)
+            $('#closes_location_thursday').val(closes_location_thursday)
             $('#schedule_closed_location_thursday').val(4)
             if (schedule_closed_thursday == 4) {
                 $('#schedule_closed_location_thursday').attr('checked', true)
@@ -2806,8 +2942,8 @@
                 $('#schedule_closed_location_thursday').attr('checked', false)
             }
 
-            $('#opens_at_location_friday').val(opens_at_location_friday)
-            $('#closes_at_location_friday').val(closes_at_location_friday)
+            $('#opens_location_friday').val(opens_location_friday)
+            $('#closes_location_friday').val(closes_location_friday)
             $('#schedule_closed_location_friday').val(5)
             if (schedule_closed_friday == 5) {
                 $('#schedule_closed_location_friday').attr('checked', true)
@@ -2815,8 +2951,8 @@
                 $('#schedule_closed_location_friday').attr('checked', false)
             }
 
-            $('#opens_at_location_saturday').val(opens_at_location_saturday)
-            $('#closes_at_location_saturday').val(closes_at_location_saturday)
+            $('#opens_location_saturday').val(opens_location_saturday)
+            $('#closes_location_saturday').val(closes_location_saturday)
             $('#schedule_closed_location_saturday').val(6)
             if (schedule_closed_saturday == 6) {
                 $('#schedule_closed_location_saturday').attr('checked', true)
@@ -2824,8 +2960,8 @@
                 $('#schedule_closed_location_saturday').attr('checked', false)
             }
 
-            $('#opens_at_location_sunday').val(opens_at_location_sunday)
-            $('#closes_at_location_sunday').val(closes_at_location_sunday)
+            $('#opens_location_sunday').val(opens_location_sunday)
+            $('#closes_location_sunday').val(closes_location_sunday)
             $('#schedule_closed_location_sunday').val(7)
             if (schedule_closed_sunday == 7) {
                 $('#schedule_closed_location_sunday').attr('checked', true)
@@ -2845,19 +2981,7 @@
             }
 
             for (let index = 1; index < location_holiday_start_dates.length; index++) {
-                $('#scheduleHolidayLocation').append(
-                    '<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_' +
-                    index + '" value="' + location_holiday_start_dates[index] +
-                    '"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_' +
-                    index + '" value="' + location_holiday_end_dates[index] +
-                    '"></td><td> <input class="form-control timePicker" type="text" name="holiday_open_at" id="holiday_open_at_location_' +
-                    index + '" value="' + location_holiday_open_ats[index] +
-                    '"></td><td> <input class="form-control timePicker" type="text" name="holiday_close_at" id="holiday_close_at_location_' +
-                    index + '" value="' + location_holiday_close_ats[index] +
-                    '"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_' +
-                    index +
-                    '" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>'
-                    );
+                $('#scheduleHolidayLocation').append('<tr><td> <input class="form-control" type="date" name="holiday_start_date" id="holiday_start_date_location_' + index + '" value="' + location_holiday_start_dates[index] + '"></td><td> <input class="form-control" type="date" name="holiday_end_date" id="holiday_end_date_location_' + index + '" value="' + location_holiday_end_dates[index] + '"></td><td> <input class="form-control timePicker" type="text" name="holiday_open_at" id="holiday_open_at_location_' + index + '" value="' + location_holiday_open_ats[index] + '"></td><td> <input class="form-control timePicker" type="text" name="holiday_close_at" id="holiday_close_at_location_' + index + '" value="' + location_holiday_close_ats[index] + '"></td><td> <input type="checkbox" name="holiday_closed" id="holiday_closed_location_' + index + '" value="1"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
                 if (location_holiday_closeds[index] == 1) {
                     $('#holiday_closed_location_' + index).attr('checked', true)
                 } else {
@@ -3014,8 +3138,7 @@
                 service_email_p = data.service_email ? data.service_email : ''
                 service_status_p = data.service_status ? data.service_status : ''
                 service_taxonomies_p = data.service_taxonomy ? data.service_taxonomy.split(',') : []
-                service_application_process_p = data.service_application_process ? data
-                    .service_application_process : ''
+                service_application_process_p = data.service_application_process ? data.service_application_process : ''
                 service_wait_time_p = data.service_wait_time ? data.service_wait_time : ''
                 service_fees_p = data.service_fees ? data.service_fees : ''
                 service_accreditations_p = data.service_accreditations ? data.service_accreditations : ''
@@ -3025,8 +3148,7 @@
                 service_address_p = data.service_address ? data.service_address.split(',') : []
                 service_metadata_p = data.service_metadata ? data.service_metadata : ''
                 service_airs_taxonomy_x_p = data.service_airs_taxonomy_x ? data.service_airs_taxonomy_x : ''
-                service_phone_p = data.phone && data.phone.length > 0 && data.phone[0].phone_number ? data.phone[0]
-                    .phone_number : ''
+                service_phone_p = data.phone && data.phone.length > 0 && data.phone[0].phone_number ? data.phone[0].phone_number : ''
 
             }
             if (editServiceData == false) {
@@ -3045,21 +3167,7 @@
                 service_licenses.push(service_licenses_p)
                 service_metadata.push(service_metadata_p)
                 service_airs_taxonomy_x.push(service_airs_taxonomy_x_p)
-                $('#servicesTable').append('<tr id="serviceTr_' + s + '"><td>' + service_name_p +
-                    '<input type="hidden" name="service_name[]" value="' + service_name_p +
-                    '" id="service_name_' + s + '"></td><td>' + service_description_p +
-                    '<input type="hidden" name="service_description[]" value="' + service_description_p +
-                    '" id="service_description_' + s + '"></td><td class="text-center">' + service_url_p +
-                    '<input type="hidden" name="service_url[]" value="' + service_url_p + '" id="service_url_' +
-                    s + '"></td><td class="text-center">' + service_email_p +
-                    '<input type="hidden" name="service_email[]" value="' + service_email_p +
-                    '" id="service_email_' + s + '"></td><td class="text-center">' + service_phone_p +
-                    '<input type="hidden" name="service_phone[]" value="' + service_phone_p +
-                    '" id="service_phone_' + s +
-                    '"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="serviceEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeServiceData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="serviceRadio[]" value="' +
-                    serviceRadioValue + '" id="selectedServiceRadio_' + s +
-                    '"><input type="hidden" name="service_recordid[]" value="' + service_recordid_p +
-                    '" id="existingServiceIds_' + s + '"></td></tr>');
+                $('#servicesTable').append('<tr id="serviceTr_' + s + '"><td>' + service_name_p + '<input type="hidden" name="service_name[]" value="' + service_name_p + '" id="service_name_' + s + '"></td><td>' + service_description_p + '<input type="hidden" name="service_description[]" value="' + service_description_p + '" id="service_description_' + s + '"></td><td class="text-center">' + service_url_p + '<input type="hidden" name="service_url[]" value="' + service_url_p + '" id="service_url_' + s + '"></td><td class="text-center">' + service_email_p + '<input type="hidden" name="service_email[]" value="' + service_email_p + '" id="service_email_' + s + '"></td><td class="text-center">' + service_phone_p + '<input type="hidden" name="service_phone[]" value="' + service_phone_p + '" id="service_phone_' + s + '"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="serviceEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeServiceData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="serviceRadio[]" value="' + serviceRadioValue + '" id="selectedServiceRadio_' + s + '"><input type="hidden" name="service_recordid[]" value="' + service_recordid_p + '" id="existingServiceIds_' + s + '"></td></tr>');
                 s++;
             } else {
                 if (selectedServiceTrId) {
@@ -3080,22 +3188,7 @@
                     service_metadata[selectedServiceTrId] = service_metadata_p
                     service_airs_taxonomy_x[selectedServiceTrId] = service_airs_taxonomy_x_p
                     $('#serviceTr_' + selectedServiceTrId).empty()
-                    $('#serviceTr_' + selectedServiceTrId).append('<td>' + service_name_p +
-                        '<input type="hidden" name="service_name[]" value="' + service_name_p +
-                        '" id="service_name_' + selectedServiceTrId + '"></td><td>' + service_description_p +
-                        '<input type="hidden" name="service_description[]" value="' + service_description_p +
-                        '" id="service_description_' + selectedServiceTrId + '"></td><td class="text-center">' +
-                        service_url_p + '<input type="hidden" name="service_url[]" value="' + service_url_p +
-                        '" id="service_url_' + selectedServiceTrId + '"></td><td class="text-center">' +
-                        service_email_p + '<input type="hidden" name="service_email[]" value="' +
-                        service_email_p + '" id="service_email_' + selectedServiceTrId +
-                        '"></td><td class="text-center">' + service_phone_p +
-                        '<input type="hidden" name="service_phone[]" value="' + service_phone_p +
-                        '" id="service_phone_' + selectedServiceTrId +
-                        '"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="serviceEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeServiceData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="serviceRadio[]" value="' +
-                        serviceRadioValue + '" id="selectedServiceRadio_' + selectedServiceTrId +
-                        '"><input type="hidden" name="service_recordid[]" value="' + service_recordid_p +
-                        '" id="existingServiceIds_' + selectedServiceTrId + '"></td>')
+                    $('#serviceTr_' + selectedServiceTrId).append('<td>' + service_name_p + '<input type="hidden" name="service_name[]" value="' + service_name_p + '" id="service_name_' + selectedServiceTrId + '"></td><td>' + service_description_p + '<input type="hidden" name="service_description[]" value="' + service_description_p + '" id="service_description_' + selectedServiceTrId + '"></td><td class="text-center">' + service_url_p + '<input type="hidden" name="service_url[]" value="' + service_url_p + '" id="service_url_' + selectedServiceTrId + '"></td><td class="text-center">' + service_email_p + '<input type="hidden" name="service_email[]" value="' + service_email_p + '" id="service_email_' + selectedServiceTrId + '"></td><td class="text-center">' + service_phone_p + '<input type="hidden" name="service_phone[]" value="' + service_phone_p + '" id="service_phone_' + selectedServiceTrId + '"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="serviceEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeServiceData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="serviceRadio[]" value="' + serviceRadioValue + '" id="selectedServiceRadio_' + selectedServiceTrId + '"><input type="hidden" name="service_recordid[]" value="' + service_recordid_p + '" id="existingServiceIds_' + selectedServiceTrId + '"></td>')
                 }
             }
             $('#service_alternate_name').val(JSON.stringify(service_alternate_name))

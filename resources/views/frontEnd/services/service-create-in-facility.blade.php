@@ -43,7 +43,6 @@ Service Create
 
                                 <input type="hidden" id="service_locations" name="service_locations" value="{{$facility->location_recordid}}">
                                 <input type="hidden" id="service_organization" name="service_organization" value="{{$facility->location_organization}}">
-
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Service Description </label>
@@ -51,7 +50,6 @@ Service Create
                                             <div><p>A description of the service.</p></div>
                                         </div>
                                         <textarea id="service_description" name="service_description" class="selectpicker" rows="5"></textarea>
-                                        {{-- <input class="form-control selectpicker" type="text" id="service_description" name="service_description" value="" > --}}
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -78,6 +76,60 @@ Service Create
                                     </div>
                                 </div>
                                 <div class="col-md-4">
+                                    <div class="form-group {{ $errors->has('service_language') ? 'has-error' : '' }}">
+                                        <label>Languages </label>
+                                        {!! Form::select('service_language[]', $languages, null, [ 'class' => 'form-control selectpicker','multiple' => true]) !!}
+                                        @error('service_language')
+                                            <span class="error-message"><strong>{{ $message }}</strong></span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group {{ $errors->has('service_interpretation') ? 'has-error' : '' }}">
+                                        <label>Interpretation Services </label>
+                                        <input class="form-control selectpicker" type="text" id="service_interpretation" name="service_interpretation" value="">
+                                        @error('service_interpretation')
+                                            <span class="error-message"><strong>{{ $message }}</strong></span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group {{ $errors->has('service_alert') ? 'has-error' : '' }}">
+                                        <label>Service Alert </label>
+                                        <input class="form-control selectpicker" type="text" id="service_alert" name="service_alert">
+                                        @error('service_alert')
+                                            <span class="error-message"><strong>{{ $message }}</strong></span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Application Process </label>
+                                        <div class="help-tip">
+                                            <div>
+                                                <p>The steps needed to access the service.</p>
+                                            </div>
+                                        </div>
+                                        <input class="form-control selectpicker" type="text" id="service_application_process" name="service_application_process" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Fees Description</label>
+                                        <div class="help-tip">
+                                            <div><p>Details of any charges for service users to access this service.</p></div>
+                                        </div>
+                                        <input class="form-control selectpicker" type="text" id="service_fees" name="service_fees" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Eligibility Description </label>
+                                        <input class="form-control selectpicker" type="text" id="eligibility_description" name="eligibility_description" value="">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Eligibility Requirement</label>
                                         <div class="help-tip">
@@ -89,40 +141,34 @@ Service Create
                                         'form-control selectpicker']) !!}
                                     </div>
                                 </div>
-
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Application Process </label>
-                                        <div class="help-tip">
-                                            <div>
-                                                <p>The steps needed to access the service.</p>
-                                            </div>
-                                        </div>
-                                        <input class="form-control selectpicker" type="text" id="service_application_process" name="service_application_process" value="">
+                                        <label>Minimum Age </label>
+                                        <input class="form-control selectpicker" type="number" min="0" id="minimum_age" name="minimum_age" value="">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Maximim Age </label>
+                                        <input class="form-control selectpicker" type="number" min="0" id="maximum_age" name="maximum_age" value="">
+                                    </div>
+                                </div>
+
+
+                                {{-- <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Fee Options</label>
                                         {!! Form::select('fee_option[]',$fee_options,null,['class' =>
                                         'form-control selectpicker','multiple' => true]) !!}
                                     </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Fees Details</label>
-                                        <div class="help-tip">
-                                            <div><p>Details of any charges for service users to access this service.</p></div>
-                                        </div>
-                                        <input class="form-control selectpicker" type="text" id="service_fees" name="service_fees" value="">
-                                    </div>
-                                </div>
-                                <div class="text-right col-md-12 mb-20">
+                                </div> --}}
+
+                                {{-- <div class="text-right col-md-12 mb-20">
                                     <button type="button" class="btn btn_additional bg-primary-color" data-toggle="collapse" data-target="#demo">Additional Info
                                         <img src="/frontend/assets/images/white_arrow.png" alt="" title="" />
                                     </button>
                                 </div>
-                                <div id="demo" class="collapse row m-0">
+                                <div id="demo" class="collapse row m-0"> --}}
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Service Area</label>
@@ -144,7 +190,7 @@ Service Create
                                             <input class="form-control selectpicker" type="text" id="service_alternate_name" name="service_alternate_name" value="">
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    {{-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Licenses </label>
                                             <div class="help-tip">
@@ -161,10 +207,10 @@ Service Create
                                             </div>
                                             <input class="form-control selectpicker" type="text" id="service_wait_time" name="service_wait_time" value="">
                                         </div>
-                                    </div>
+                                    </div> --}}
 
 
-                                    <div class="col-md-4">
+                                    {{-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Accrediations </label>
                                             <div class="help-tip">
@@ -185,12 +231,9 @@ Service Create
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Service Grouping Description </label>
-                                            {{-- <div class="help-tip">
-                                                <div><p></p></div>
-                                            </div> --}}
                                             <textarea name="program_alternate_name" id="program_alternate_name" cols="30" rows="10" class="form-control"></textarea>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     {{-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Status(Verified) </label>
@@ -198,11 +241,12 @@ Service Create
                                         </div>
                                     </div> --}}
 
-                                </div>
+                                {{-- </div> --}}
                                 {{-- taxonomy section --}}
                             </div>
                         </div>
                     </div>
+                    @include('frontEnd.services.service_program')
                     {{-- tab-pannel top group --}}
                     <ul class="nav nav-tabs tabpanel_above">
                         <li class="nav-item">
@@ -213,7 +257,7 @@ Service Create
                         @if ($layout->show_classification == 'yes')
                         <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#sdoh-category-tab">
-                                <h4 class="card_services_title">SDOH Codes</h4>
+                                <h4 class="card_services_title">Social Needs</h4>
                             </a>
                         </li>
                         @endif
@@ -282,57 +326,7 @@ Service Create
                                             </div>
                                         </div>
                                         {{-- service eligibility --}}
-                                        <div class="card all_form_field">
-                                            <div class="card-block">
-                                                <h4 class="title_edit text-left mb-25 mt-10">
-                                                    Eligibility
-                                                    <div class="d-inline float-right" id="addServiceEligibilityTr">
-                                                        <a href="javascript:void(0)" id="addServiceEligibilityData" class="plus_delteicon bg-primary-color">
-                                                            <img src="/frontend/assets/images/plus.png" alt="" title="">
-                                                        </a>
-                                                    </div>
-                                                </h4>
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <div class="">
-                                                                <table class="table table_border_none" id="ServiceEligibilityTable">
-                                                                    <thead>
-                                                                        <th>Type</th>
-                                                                        <th>Term</th>
-                                                                        <th style="width:60px">&nbsp;</th>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <td>
-                                                                                {!! Form::select('service_eligibility_type[]',$service_eligibility_types,null,['class' => 'form-control selectpicker service_eligibility_type','placeholder' => 'select service eligibility type','id' => 'service_eligibility_type_0']) !!}
-
-                                                                            </td>
-                                                                            <td class="create_btn">
-                                                                                {!! Form::select('service_eligibility_term[0][]',[],null,['class' => 'form-control selectpicker service_eligibility_term','id' => 'service_eligibility_term_0','multiple' => 'true','data-size' => '5','data-live-search' => 'true']) !!}
-                                                                                <input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_0" value="old">
-                                                                            </td>
-                                                                            <td style="vertical-align: middle">
-                                                                                <a href="#" class="plus_delteicon btn-button">
-                                                                                    <img src="/frontend/assets/images/delete.png" alt="" title="">
-                                                                                </a>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr></tr>
-                                                                        {{-- <tr id="addServiceEligibilityTr">
-                                                                            <td colspan="6" class="text-center">
-                                                                                <a href="javascript:void(0)" id="addServiceEligibilityData" style="color:blue;"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>
-                                                                            </td>
-                                                                        </tr> --}}
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    {{-- end here --}}
-                                                </div>
-                                            </div>
-                                        </div>
+                                        @include('frontEnd.services.service_eligibility')
                                         {{-- details --}}
                                         <div class="card all_form_field">
                                             <div class="card-block">
@@ -544,6 +538,7 @@ Service Create
                                                                         <th>Name</th>
                                                                         <th>Title</th>
                                                                         <th>Email</th>
+                                                                        <th>Visibility</th>
                                                                         <th>Phone</th>
                                                                         <th style="width:60px">&nbsp;</th>
                                                                     </thead>
@@ -600,107 +595,129 @@ Service Create
                                                                         <th>Opens</th>
                                                                         <th>Closes</th>
                                                                         <th style="width:150px;">Closed All Day</th>
+                                                                        <th style="width:150px;">Open 24 Hours</th>
                                                                     </thead>
                                                                     <tbody>
                                                                         <tr>
                                                                             <td>
                                                                                 Monday
-                                                                                <input type="hidden" name="byday[]" value="monday">
+                                                                                <input type="hidden" name="weekday[]" value="monday">
                                                                             </td>
                                                                             <td>
-                                                                                {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                                {!! Form::text('opens[]',null, ['class' => 'form-control timePicker']) !!}
                                                                             </td>
                                                                             <td>
-                                                                                {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                                {!! Form::text('closes[]',null, ['class' => 'form-control timePicker']) !!}
                                                                             </td>
                                                                             <td style="vertical-align: middle">
                                                                                 <input type="checkbox" name="schedule_closed[]" id="" value="1" >
+                                                                            </td>
+                                                                            <td style="vertical-align: middle">
+                                                                                <input type="checkbox" name="open_24_hours[]" id="" value="1">
                                                                             </td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td>
                                                                                 Tuesday
-                                                                                <input type="hidden" name="byday[]" value="tuesday">
+                                                                                <input type="hidden" name="weekday[]" value="tuesday">
                                                                             </td>
                                                                             <td>
-                                                                                {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                                {!! Form::text('opens[]',null, ['class' => 'form-control timePicker']) !!}
                                                                             </td>
                                                                             <td>
-                                                                                {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                                {!! Form::text('closes[]',null, ['class' => 'form-control timePicker']) !!}
                                                                             </td>
                                                                             <td style="vertical-align: middle">
                                                                                 <input type="checkbox" name="schedule_closed[]" id="" value="2" >
                                                                             </td>
+                                                                            <td style="vertical-align: middle">
+                                                                                <input type="checkbox" name="open_24_hours[]" id="" value="2">
+                                                                            </td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td>Wednesday
-                                                                                <input type="hidden" name="byday[]" value="wednesday">
+                                                                                <input type="hidden" name="weekday[]" value="wednesday">
                                                                             </td>
                                                                             <td>
-                                                                                {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                                {!! Form::text('opens[]',null, ['class' => 'form-control timePicker']) !!}
                                                                             </td>
                                                                             <td>
-                                                                                {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                                {!! Form::text('closes[]',null, ['class' => 'form-control timePicker']) !!}
                                                                             </td>
                                                                             <td style="vertical-align: middle">
                                                                                 <input type="checkbox" name="schedule_closed[]" id="" value="3" >
                                                                             </td>
+                                                                            <td style="vertical-align: middle">
+                                                                                <input type="checkbox" name="open_24_hours[]" id="" value="3">
+                                                                            </td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td>Thursday
-                                                                                <input type="hidden" name="byday[]" value="thursday">
+                                                                                <input type="hidden" name="weekday[]" value="thursday">
                                                                             </td>
                                                                             <td>
-                                                                                {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                                {!! Form::text('opens[]',null, ['class' => 'form-control timePicker']) !!}
                                                                             </td>
                                                                             <td>
-                                                                                {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                                {!! Form::text('closes[]',null, ['class' => 'form-control timePicker']) !!}
                                                                             </td>
                                                                             <td style="vertical-align: middle">
                                                                                 <input type="checkbox" name="schedule_closed[]" id="" value="4" >
                                                                             </td>
+                                                                            <td style="vertical-align: middle">
+                                                                                <input type="checkbox" name="open_24_hours[]" id="" value="4">
+                                                                            </td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td>Friday
-                                                                                <input type="hidden" name="byday[]" value="friday">
+                                                                                <input type="hidden" name="weekday[]" value="friday">
                                                                             </td>
                                                                             <td>
-                                                                                {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                                {!! Form::text('opens[]',null, ['class' => 'form-control timePicker']) !!}
                                                                             </td>
                                                                             <td>
-                                                                                {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                                {!! Form::text('closes[]',null, ['class' => 'form-control timePicker']) !!}
                                                                             </td>
                                                                             <td style="vertical-align: middle">
                                                                                 <input type="checkbox" name="schedule_closed[]" id="" value="5" >
                                                                             </td>
+                                                                            <td style="vertical-align: middle">
+                                                                                <input type="checkbox" name="open_24_hours[]" id="" value="5">
+                                                                            </td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td>Saturday
-                                                                                <input type="hidden" name="byday[]" value="saturday">
+                                                                                <input type="hidden" name="weekday[]" value="saturday">
                                                                             </td>
                                                                             <td>
-                                                                                {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                                {!! Form::text('opens[]',null, ['class' => 'form-control timePicker']) !!}
                                                                             </td>
                                                                             <td>
-                                                                                {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                                {!! Form::text('closes[]',null, ['class' => 'form-control timePicker']) !!}
                                                                             </td>
                                                                             <td style="vertical-align: middle">
                                                                                 <input type="checkbox" name="schedule_closed[]" id="" value="6" >
                                                                             </td>
+                                                                            <td style="vertical-align: middle">
+                                                                                <input type="checkbox" name="open_24_hours[]" id="" value="6">
+                                                                            </td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td>Sunday
-                                                                                <input type="hidden" name="byday[]" value="sunday">
+                                                                                <input type="hidden" name="weekday[]" value="sunday">
                                                                             </td>
                                                                             <td>
-                                                                                {!! Form::text('opens_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                                {!! Form::text('opens[]',null, ['class' => 'form-control timePicker']) !!}
                                                                             </td>
                                                                             <td>
-                                                                                {!! Form::text('closes_at[]',null, ['class' => 'form-control timePicker']) !!}
+                                                                                {!! Form::text('closes[]',null, ['class' => 'form-control timePicker']) !!}
                                                                             </td>
 
                                                                             <td style="vertical-align: middle">
                                                                                 <input type="checkbox" name="schedule_closed[]" id="" value="7" >
+                                                                            </td>
+                                                                            <td style="vertical-align: middle">
+                                                                                <input type="checkbox" name="open_24_hours[]" id="" value="7">
                                                                             </td>
                                                                         </tr>
                                                                     </tbody>
@@ -980,37 +997,7 @@ Service Create
                 </div>
             </div>
             {{-- End here --}}
-            {{-- service eligibility term modal --}}
-            <div class="modal fade " tabindex="-1" role="dialog" aria-hidden="true" id="create_new_service_eligibility_term" >
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <form>
-                            <div class="modal-header">
-                                <button type="button" class="close serviceEligibilityTermCloseButton" ><span aria-hidden="true">×</span>
-                                </button>
-                                <h4 class="modal-title" id="myModalLabel">Add Service Eligibility Term</h4>
-                            </div>
-                            <div class="modal-body all_form_field">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Service Eligibility Term</label>
-                                            <input type="text" class="form-control" placeholder="Service Eligibility Term" id="service_eligibility_term_p">
-                                            <input type="hidden" name="service_eligibility_term_index_p" value="" id="service_eligibility_term_index_p">
-                                            <span id="service_eligibility_term_error" style="display: none;color:red" >Service Eligibility Term is required!</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger btn-lg btn_delete red_btn serviceEligibilityTermCloseButton">Close</button>
-                                <button type="button" id="serviceEligibilityTermSubmit" class="btn btn-primary btn-lg btn_padding green_btn">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            {{-- End here --}}
+
         </div>
     </div>
 </div>
@@ -1226,98 +1213,13 @@ Service Create
         $('#service_category_term_p').val('')
         $('#service_category_term_index_p').val('')
     })
-
-
-    $(document).on("change",'div > .service_eligibility_type', function(){
-        let value = $(this).val()
-        let id = $(this).attr('id')
-        let idsArray = id ? id.split('_') : []
-        let index = idsArray.length > 0 ? idsArray[3] : ''
-        if(value == ''){
-            $('#service_eligibility_term_'+index).empty()
-            $('#service_eligibility_term_'+index).val('')
-            $('#service_eligibility_term_'+index).selectpicker('refresh')
-            return false
-        }
-        $.ajax({
-            url : '{{ route("getTaxonomyTerm") }}',
-            method : 'get',
-            data : {value},
-            success: function (response) {
-                let data = response.data
-                $('#service_eligibility_term_'+index).empty()
-                // $('#service_eligibility_term_'+index).append('<option value="">Select term</option>');
-                $.each(data,function(i,v){
-                    $('#service_eligibility_term_'+index).append('<option value="'+i+'">'+v+'</option>');
-                })
-                $('#service_eligibility_term_'+index).append('<option value="create_new">+ Create New</option>');
-                $('#service_eligibility_term_'+index).val('')
-                $('#service_eligibility_term_'+index).selectpicker('refresh')
-            },
-            error : function (error) {
-                console.log(error)
-            }
-        })
-    })
-    $(document).on("change",'div >.service_eligibility_term', function(){
-        let value = $(this).val()
-        let id = $(this).attr('id')
-        let text = $( "#"+id+" option:selected" ).text();
-        let idsArray = id ? id.split('_') : []
-        let index = idsArray.length > 0 ? idsArray[3] : ''
-
-        if(value.includes('create_new')){
-            $('#service_eligibility_term_index_p').val(index)
-            $('#create_new_service_eligibility_term').modal('show')
-        }else if(value.includes(text)){
-            $('#service_eligibility__type_'+index).val('new')
-        }else{
-            $('#service_eligibility__type_'+index).val('old')
-        }
-    })
-    $('#serviceEligibilityTermSubmit').click(function () {
-
-        let service_eligibility_term = $('#service_eligibility_term_p').val()
-        let index = $('#service_eligibility_term_index_p').val()
-        if($('#service_eligibility_term_p').val() == ''){
-                $('#service_eligibility_term_error').show()
-            setTimeout(() => {
-                $('#service_eligibility_term_error').hide()
-            }, 5000);
-            return false
-        }
-        $('#service_eligibility_term_type_'+index).val('new')
-        $('#service_eligibility_term_'+index).append('<option value="'+service_eligibility_term+'">'+service_eligibility_term+'</option>');
-        $('#service_eligibility_term_'+index).val(service_eligibility_term)
-        $('#service_eligibility_term_'+index).selectpicker('refresh')
-        $('#create_new_service_eligibility_term').modal('hide')
-        $('#service_eligibility_term_p').val('')
-        $('#service_eligibility_term_index_p').val('')
-    })
-    $('.serviceEligibilityTermCloseButton').click(function () {
-
-        let detail_term = $('#service_eligibility_term_p').val()
-        let index = $('#service_eligibility_term_index_p').val()
-        $('#service_eligibility_term_type_'+index).val('old')
-        $('#service_eligibility_term_'+index).val('');
-        $('#service_eligibility_term_'+index).selectpicker('refresh')
-        $('#create_new_service_eligibility_term').modal('hide')
-        $('#service_eligibility_term_p').val('')
-        $('#service_eligibility_term_index_p').val('')
-    })
-
     let sc = 1
     $('#addServiceCategoryTr').click(function(){
         $('#ServiceCategoryTable tr:last').before('<tr><td><select name="service_category_type[]" id="service_category_type_'+sc+'" class="form-control selectpicker service_category_type"><option value="">Select Type</option> @foreach ($service_category_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td  class="create_btn"> <select name="service_category_term['+sc+'][]" id="service_category_term_'+sc+'" class="form-control selectpicker service_category_term" data-size="5" data-live-search="true" multiple></select><input type="hidden" name="service_category_term_type[]" id="service_category_term_type_'+sc+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();
         sc++;
     })
-    let se = 1
-    $('#addServiceEligibilityTr').click(function(){
-        $('#ServiceEligibilityTable tr:last').before('<tr><td><select name="service_eligibility_type[]" id="service_eligibility_type_'+se+'" class="form-control selectpicker service_eligibility_type"><option value="">Select Type</option> @foreach ($service_eligibility_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td  class="create_btn"> <select name="service_eligibility_term['+se+'][]" id="service_eligibility_term_'+se+'" class="form-control selectpicker service_eligibility_term" data-size="5" data-live-search="true" multiple></select><input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_'+se+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
-        $('.selectpicker').selectpicker();
-        se++;
-    })
+
 
     $("#add-phone-input").click(function(){
         $("ol#phones-ul").append(
@@ -1562,7 +1464,7 @@ Service Create
             contact_phone_types[i] = phone_type_contact
             contact_phone_languages[i] = phone_language_contact
             contact_phone_descriptions[i] = phone_description_contact
-            $('#contactsTable').append('<tr id="contactTr_'+i+'"><td>'+contact_name_p+'<input type="hidden" name="contact_name[]" value="'+contact_name_p+'" id="contact_name_'+i+'"></td><td>'+contact_title_p+'<input type="hidden" name="contact_title[]" value="'+contact_title_p+'" id="contact_title_'+i+'"></td><td class="text-center">'+contact_email_p+'<input type="hidden" name="contact_email[]" value="'+contact_email_p+'" id="contact_email_'+i+'"></td><td class="text-center">'+contact_visibility_p+'<input type="hidden" name="contact_visibility[]" value="'+contact_visibility_p+'" id="contact_visibility_'+i+'"></td><td class="text-center">'+contact_phone_list+'<input type="hidden" name="contact_phone[]" value="'+contact_phone_p+'" id="contact_phone_'+i+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeLocationData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="'+contactRadioValue+'" id="selectedContactRadio_'+i+'"><input type="hidden" name="contact_recordid[]" value="'+contact_recordid_p+'" id="existingContactIds_'+i+'"></td></tr>');
+            $('#contactsTable').append('<tr id="contactTr_'+i+'"><td>'+contact_name_p+'<input type="hidden" name="contact_name[]" value="'+contact_name_p+'" id="contact_name_'+i+'"></td><td>'+contact_title_p+'<input type="hidden" name="contact_title[]" value="'+contact_title_p+'" id="contact_title_'+i+'"></td><td class="">'+contact_email_p+'<input type="hidden" name="contact_email[]" value="'+contact_email_p+'" id="contact_email_'+i+'"></td><td class="">'+contact_visibility_p+'<input type="hidden" name="contact_visibility[]" value="'+contact_visibility_p+'" id="contact_visibility_'+i+'"></td><td class="">'+contact_phone_list+'<input type="hidden" name="contact_phone[]" value="'+contact_phone_p+'" id="contact_phone_'+i+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="'+contactRadioValue+'" id="selectedContactRadio_'+i+'"><input type="hidden" name="contact_recordid[]" value="'+contact_recordid_p+'" id="existingContactIds_'+i+'"></td></tr>');
             i++;
         }else{
             if(selectedContactTrId){
@@ -1578,7 +1480,7 @@ Service Create
                 contact_phone_descriptions[selectedContactTrId] = phone_description_contact
 
                 $('#contactTr_'+selectedContactTrId).empty()
-                $('#contactTr_'+selectedContactTrId).append('<td>'+contact_name_p+'<input type="hidden" name="contact_name[]" value="'+contact_name_p+'" id="contact_name_'+selectedContactTrId+'"></td><td>'+contact_title_p+'<input type="hidden" name="contact_title[]" value="'+contact_title_p+'" id="contact_title_'+selectedContactTrId+'"></td><td class="text-center">'+contact_email_p+'<input type="hidden" name="contact_email[]" value="'+contact_email_p+'" id="contact_email_'+selectedContactTrId+'"></td><td class="text-center">'+contact_visibility_p+'<input type="hidden" name="contact_visibility[]" value="'+contact_visibility_p+'" id="contact_visibility_'+selectedContactTrId+'"></td><td class="text-center">'+contact_phone_list+'<input type="hidden" name="contact_phone[]" value="'+contact_phone_p+'" id="contact_phone_'+selectedContactTrId+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeLocationData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="'+contactRadioValue+'" id="selectedContactRadio_'+selectedContactTrId+'"><input type="hidden" name="contact_recordid[]" value="'+contact_recordid_p+'" id="existingContactIds_'+selectedContactTrId+'"></td>')
+                $('#contactTr_'+selectedContactTrId).append('<td>'+contact_name_p+'<input type="hidden" name="contact_name[]" value="'+contact_name_p+'" id="contact_name_'+selectedContactTrId+'"></td><td>'+contact_title_p+'<input type="hidden" name="contact_title[]" value="'+contact_title_p+'" id="contact_title_'+selectedContactTrId+'"></td><td class="">'+contact_email_p+'<input type="hidden" name="contact_email[]" value="'+contact_email_p+'" id="contact_email_'+selectedContactTrId+'"></td><td class="">'+contact_visibility_p+'<input type="hidden" name="contact_visibility[]" value="'+contact_visibility_p+'" id="contact_visibility_'+selectedContactTrId+'"></td><td class="">'+contact_phone_list+'<input type="hidden" name="contact_phone[]" value="'+contact_phone_p+'" id="contact_phone_'+selectedContactTrId+'"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="contactEditButton plus_delteicon bg-primary-color"><img src="/frontend/assets/images/edit_pencil.png" alt="" title=""></a><a href="javascript:void(0)" class="removeContactData plus_delteicon btn-button"><img src="/frontend/assets/images/delete.png" alt="" title=""></a><input type="hidden" name="contactRadio[]" value="'+contactRadioValue+'" id="selectedContactRadio_'+selectedContactTrId+'"><input type="hidden" name="contact_recordid[]" value="'+contact_recordid_p+'" id="existingContactIds_'+selectedContactTrId+'"></td>')
             }
         }
         $('#contact_service').val(JSON.stringify(contact_service))

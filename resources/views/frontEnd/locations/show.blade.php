@@ -22,6 +22,9 @@ Location
                                 <i class="icon md-edit mr-0"></i>
                             </a>
                             @endif
+                            @if (count($inactiveOrganizationIds) > 0)
+                            <span class="badge badge-danger float-right m-2" style="color:#fff;">Inactive</span>
+                            @endif
                         </h4>
                         @if (isset($facility_organizations) && count($facility_organizations) > 0)
                         <div class="tagp_class">
@@ -66,23 +69,14 @@ Location
                             @endforeach
                         </div>
                         @endif
-                        @if(isset($facility->accessibilities) && count($facility->accessibilities) > 0)
                         <div class="tagp_class">
                             <span class="subtitle"><b>Accessibility: </b></span>
-                            @foreach($facility->accessibilities as $key => $accessibility)
-                            {{$accessibility->accessibility}}
-                            @if($key != 0)
-                                ,
-                            @endif
-                            @endforeach
+                            {{ $facility->get_accessibility->accessibility ?? '' }}
                         </div>
                         <div class="tagp_class">
                             <span class="subtitle"><b>Accessibility Details: </b></span>
-                            @foreach($facility->accessibilities as $key => $accessibility)
-                            {{$accessibility->accessibility_details}}
-                            @endforeach
+                            {{$facility->accessibility_details}}
                         </div>
-                        @endif
 
                         @if($facility->location_alternate_name)
                         <div class="tagp_class">
@@ -151,15 +145,28 @@ Location
                             <div class="tagp_class">
                                 <span>
                                     <i class="icon md-phone font-size-18 vertical-align-top pr-10  m-0"></i>
-                                    @foreach($service->phone as $phone)
-                                    <p><a
-                                        href="tel:{{$phone->phone_number}}">{{ $phone->phone_number}}</a>&nbsp;&nbsp;{{ $phone->phone_extension ? 'ext. '. $phone->phone_extension : '' }}&nbsp;{{ $phone->type ? '('.$phone->type->type.')' : '' }}
-                                    @if ($phone->phone_language)
-                                    {{ $phone->phone_language }}
-                                    @endif
-                                    {{ $phone->phone_description ? '- '.$phone->phone_description : '' }}</p>
-                                    @endforeach
-                                </span>
+                                    @foreach($service->phone as $key => $phone)
+                                    <p>
+                                        {{-- <a href="tel:{{$phone->phone_number}}">{{ $phone->phone_number}}</a> --}}
+                                        @php
+                                            $otherData = '<a href="tel:'.$phone->phone_number.'">'.$phone->phone_number.'</a>';
+                                            $otherData .= $phone->phone_extension ? '&nbsp;&nbsp;ext. '. $phone->phone_extension : '';
+                                            $otherData .=  $phone->type ? '&nbsp;('.$phone->type->type.')' : '';
+                                            $otherData .=  $phone->phone_language ? ' '.$phone->phone_language : '';
+                                            $otherData .=  $loop->last ? '' : ';';
+                                        @endphp
+                                        {!! $otherData !!}
+                                        {{-- &nbsp;&nbsp;{{ $phone->phone_extension ? 'ext. '. $phone->phone_extension : '' }}&nbsp;{{ $phone->type ? '('.$phone->type->type.')' : '' }}
+                                        @if ($phone->phone_language)
+                                        {{ $phone->phone_language }}
+                                        @endif
+                                        {{ $phone->phone_description ? '- '.$phone->phone_description : '' }}
+                                        @if(count($service->phone) > ($key + 1))
+                                        ;
+                                        @endif --}}
+                                    </p>
+                                        @endforeach
+                                    </span>
                             </div>
                             @endif
                             <div class="tagp_class">

@@ -117,7 +117,7 @@ Locations
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table jambo_table bulk_action" id="tbl-location">
+                            <table class="display dataTable table-striped jambo_table table-bordered table-responsive bulk_action" cellspacing="0" width="100%" id="tbl-location">
                                 <thead>
                                     <tr>
                                         {{-- <th class="default-active"></th> --}}

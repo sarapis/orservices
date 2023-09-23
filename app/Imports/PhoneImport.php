@@ -31,25 +31,25 @@ class PhoneImport implements ToModel, WithHeadingRow
             'mail_priority' => $row['priority'],
         ];
 
-        if ($row['id'] && $row['service_id']) {
-            $service_recordids = explode(',', $row['service_id']);
-            foreach ($service_recordids as $key => $value1) {
-                # code...
-            }
-            $service_phone = new ServicePhone();
-            $service_phone->service_recordid = $value1;
-            $service_phone->phone_recordid = $row['id'] != null ? $row['id'] : null;
-            $service_phone->save();
-        }
-        if ($row['id'] && $row['location_id']) {
-            $location_recordids = explode(',', $row['location_id']);
-            foreach ($location_recordids as $key => $value) {
-                $location_phone = new LocationPhone();
-                $location_phone->location_recordid = $value;
-                $location_phone->phone_recordid = $row['id'] != null ? $row['id'] : null;
-                $location_phone->save();
-            }
-        }
+        // if ($row['id'] && $row['service_id']) {
+        //     $service_recordids = explode(',', $row['service_id']);
+        //     foreach ($service_recordids as $key => $value1) {
+        //         # code...
+        //     }
+        //     $service_phone = new ServicePhone();
+        //     $service_phone->service_recordid = $value1;
+        //     $service_phone->phone_recordid = $row['id'] != null ? $row['id'] : null;
+        //     $service_phone->save();
+        // }
+        // if ($row['id'] && $row['location_id']) {
+        //     $location_recordids = explode(',', $row['location_id']);
+        //     foreach ($location_recordids as $key => $value) {
+        //         $location_phone = new LocationPhone();
+        //         $location_phone->location_recordid = $value;
+        //         $location_phone->phone_recordid = $row['id'] != null ? $row['id'] : null;
+        //         $location_phone->save();
+        //     }
+        // }
 
         return new Phone($array);
     }

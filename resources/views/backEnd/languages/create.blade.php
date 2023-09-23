@@ -9,13 +9,13 @@ create language
 	<div class="col-md-12 col-sm-12 col-xs-12">
 		<div class="x_panel">
 			<div class="x_title">
-				<h2>Create new language</h2>
+				<h2>Create New language</h2>
 				<div class="clearfix"></div>
 			</div>
 			<div class="x_content">
                 {!! Form::open(['route' => 'languages.store', 'class' => 'form-horizontal']) !!}
                     <div class="form-group {{ $errors->has('language') ? 'has-error' : ''}}">
-                        {!! Form::label('language', 'language name', ['class' => 'col-sm-3 control-label']) !!}
+                        {!! Form::label('language', 'Name', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-6">
                             {!! Form::text('language', null, ['class' => 'form-control']) !!}
                             {!! $errors->first('language', '<p class="help-block">:message</p>') !!}
@@ -26,6 +26,20 @@ create language
                         <div class="col-sm-6">
                             {!! Form::text('order', null, ['class' => 'form-control']) !!}
                             {!! $errors->first('order', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+                    <div class="form-group {{ $errors->has('code') ? 'has-error' : ''}}">
+                        {!! Form::label('code', 'Code', ['class' => 'col-sm-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::text('code', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('code', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+                    <div class="form-group {{ $errors->has('note') ? 'has-error' : ''}}">
+                        {!! Form::label('note', 'Note', ['class' => 'col-sm-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::textarea('note', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('note', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
                     {{-- <div class="form-group {{ $errors->has('language_service') ? 'has-error' : ''}}">

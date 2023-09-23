@@ -3,7 +3,7 @@
         <th class="text-center">Action</th>
         <th class="text-center">Ledger ID</th>
         <th class="text-center">SDOH Code</th>
-        <th class="text-center">SDOH Code Category</th>
+        <th class="text-center">SDOH Code Domain</th>
         <th class="text-center">SDOH Code Resource</th>
         <th class="text-center">SDOH Code Description</th>
         <th class="text-center">SDOH Code Type</th>

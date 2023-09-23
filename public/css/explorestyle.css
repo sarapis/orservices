@@ -45,9 +45,9 @@ body {
     color: red !important;
 }
 
-a {
+/* a {
     text-decoration: underline;
-}
+} */
 
 *:focus {
     outline: 1px solid #9195a2 !important;
@@ -1694,7 +1694,9 @@ footer {
     font-size: 16px;
     margin-top: 25px;
 }
-.hover_display, .hover_none{
+
+.hover_display,
+.hover_none {
     width: 100px;
 }
 
@@ -1804,12 +1806,12 @@ footer {
     background: #ffffff;
     border: 1px solid #dce0e5;
     border-radius: 8px;
-    padding: 13px 24px;
+    padding: 13px 15px;
     color: #1b1b1b;
     font-weight: 500;
-    font-size: 16px;
+    font-size: 15px;
     line-height: 18px;
-    margin-right: 15px;
+    margin-right: 8px;
     box-shadow: none;
 }
 
@@ -1820,10 +1822,11 @@ footer {
     padding: 0 6px;
     color: #1b1b1b;
     font-weight: 500;
-    font-size: 16px;
+    font-size: 15px;
     line-height: 18px;
     margin-right: 0px;
     cursor: pointer;
+    margin-top: 14px;
     /* margin-left: 15px; */
 }
 
@@ -2103,9 +2106,15 @@ footer {
 .all_form_field label {
     color: #000000;
     font-family: "Neue Haas Grotesk Display Roman";
-    display: block;
-    padding-left: 15px;
-    font-size: 16px;
+    /* display: block; */
+    padding-left: 0px;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    margin-bottom: 0px;
+}
+
+.all_form_field .form-group {
+    margin-bottom: 10px;
 }
 
 .tokenfield.focus {
@@ -2159,14 +2168,14 @@ footer {
   background: #5051db;
   height: 50px;
 } */
-.dataTables_wrapper .row {
+.dataTables_wrapper>.row:first-child {
     width: 100%;
 }
 
 .dataTables_wrapper .dataTables_length,
 .dataTables_wrapper .dataTables_filter {
     font-family: "Neue Haas Grotesk Display Medium";
-    margin-bottom: 30px;
+    margin-bottom: 16px;
 }
 
 .dataTables_wrapper select.form-control,
@@ -2176,31 +2185,57 @@ footer {
     border-radius: 8px;
     padding: 5px 15px;
     color: #1b1b1b;
-    height: 45px;
+    height: 40px;
     font-weight: 300;
     margin: 0 8px;
     min-width: 90px;
 }
 
+table.dataTable {
+    overflow: visible;
+}
+
 .table.dataTable thead {
     font-family: "Neue Haas Grotesk Display Roman";
     color: #000;
+    width: 100%;
+    display: table;
 }
 
 table.dataTable thead th,
 table.dataTable thead td {
-    padding: 12px 10px;
-    /* border-bottom: 1px solid #5051db;
-  background: #5051db; */
+    padding: 10px 20px 10px 10px;
     color: #fff;
     font-weight: 100;
     letter-spacing: 0.5;
+    font-size: 13px;
 }
 
 table.dataTable tbody th,
 table.dataTable tbody td {
-    padding: 12px 10px;
+    padding: 7px 10px;
     color: #1b1b1b;
+    font-size: 13px;
+}
+
+table.dataTable tbody td button {
+    border: none;
+    padding: 0px;
+    margin-left: 15px;
+}
+
+table.dataTable tbody td button.btn-success {
+    padding: 3px 3px;
+    margin-left: 0px;
+}
+
+table.dataTable tbody td i {
+    font-size: 16px;
+}
+
+table.dataTable tbody td a {
+    color: #006dff;
+    text-decoration: none !important;
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button {
@@ -2529,7 +2564,7 @@ table.dataTable.no-footer {
 
 .help-tip {
     position: absolute;
-    top: 50px;
+    top: 40px;
     right: 32px;
     text-align: center;
     background-color: #fff;
@@ -3016,3 +3051,13 @@ input[type="checkbox"]:checked:before {
     font-family: "Neue Haas Grotesk Display Roman";
     color: #1b1b1b;
 }
+.dataTables_wrapper>.row {
+    width: 100%;
+    margin: 0px;
+}
+
+.dataTables_wrapper>.row table,
+table.dataTable {
+    display: table;
+}
+

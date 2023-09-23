@@ -26,6 +26,7 @@ class OrganizationImport implements ToModel, WithHeadingRow
             'organization_tax_id' => $row['tax_id'],
             'organization_year_incorporated' => $row['year_incorporated'],
             'organization_legal_status' => $row['legal_status'],
+            'organization_tag' => $row['organization_tag'],
         ];
 
         return new Organization($array);

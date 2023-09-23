@@ -39,28 +39,33 @@ use App\Model\OrganizationTableFilter;
 use App\Model\PhoneType;
 use App\Model\Schedule;
 use App\Model\OrganizationTag;
+use App\Model\Program;
 use App\Model\Region;
 use App\Model\ServiceTag;
 use App\Model\SessionInteraction;
 use App\Model\State;
 use App\Services\Stringtoint;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
-use Sentinel;
 use OwenIt\Auditing\Models\Audit;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
 
 class OrganizationController extends Controller
 {
+    public $commonController;
+
     public function __construct(CommonController $commonController)
     {
         $this->commonController = $commonController;
     }
+
     public function airtable($api_key, $base_url)
     {
 
@@ -80,8 +85,8 @@ class OrganizationController extends Controller
         //     'base'      => env('AIRTABLE_BASE_URL'),
         // ));
         $airtable = new Airtable(array(
-            'api_key'   => $api_key,
-            'base'      => $base_url,
+            'api_key' => $api_key,
+            'base' => $base_url,
         ));
 
         $request = $airtable->getContent('organizations');
@@ -104,7 +109,7 @@ class OrganizationController extends Controller
                         try {
                             $organization->organization_logo_x .= $image["url"];
                         } catch (\Exception $e) {
-                            echo 'Caught exception: ',  $e->getMessage(), "\n";
+                            echo 'Caught exception: ', $e->getMessage(), "\n";
                         }
                     }
                 }
@@ -114,7 +119,7 @@ class OrganizationController extends Controller
                             $organization->organization_forms_x_filename .= $form["filename"];
                             $organization->organization_forms_x_url .= $form["url"];
                         } catch (\Exception $e) {
-                            echo 'Caught exception: ',  $e->getMessage(), "\n";
+                            echo 'Caught exception: ', $e->getMessage(), "\n";
                         }
                     }
                 }
@@ -122,7 +127,7 @@ class OrganizationController extends Controller
                 $organization->organization_x_uid = isset($record['fields']['x-uid']) ? $record['fields']['x-uid'] : null;
                 $organization->organization_description = isset($record['fields']['description']) ? $record['fields']['description'] : null;
 
-                $organization->organization_description =  mb_convert_encoding($organization->organization_description, "HTML-ENTITIES", "UTF-8");
+                $organization->organization_description = mb_convert_encoding($organization->organization_description, "HTML-ENTITIES", "UTF-8");
 
                 $organization->organization_email = isset($record['fields']['email']) ? $record['fields']['email'] : null;
                 $organization->organization_url = isset($record['fields']['url']) ? $record['fields']['url'] : null;
@@ -152,7 +157,7 @@ class OrganizationController extends Controller
 
                 if (isset($record['fields']['services'])) {
                     $i = 0;
-                    foreach ($record['fields']['services']  as  $value) {
+                    foreach ($record['fields']['services'] as $value) {
 
                         $organizationservice = $strtointclass->string_to_int($value);
 
@@ -166,7 +171,7 @@ class OrganizationController extends Controller
 
                 if (isset($record['fields']['phones'])) {
                     $i = 0;
-                    foreach ($record['fields']['phones']  as  $value) {
+                    foreach ($record['fields']['phones'] as $value) {
 
                         $organizationphone = $strtointclass->string_to_int($value);
 
@@ -181,7 +186,7 @@ class OrganizationController extends Controller
 
                 if (isset($record['fields']['locations'])) {
                     $i = 0;
-                    foreach ($record['fields']['locations']  as  $value) {
+                    foreach ($record['fields']['locations'] as $value) {
 
                         $organizationlocation = $strtointclass->string_to_int($value);
 
@@ -197,7 +202,7 @@ class OrganizationController extends Controller
 
                 if (isset($record['fields']['details'])) {
                     $i = 0;
-                    foreach ($record['fields']['details']  as  $value) {
+                    foreach ($record['fields']['details'] as $value) {
                         $organization_detail = new OrganizationDetail();
                         $organization_detail->organization_recordid = $organization->organization_recordid;
                         $organization_detail->detail_recordid = $strtointclass->string_to_int($value);
@@ -214,12 +219,12 @@ class OrganizationController extends Controller
 
                 if (isset($record['fields']['AIRS Taxonomy-x'])) {
                     $i = 0;
-                    foreach ($record['fields']['AIRS Taxonomy-x']  as  $value) {
+                    foreach ($record['fields']['AIRS Taxonomy-x'] as $value) {
 
                         if ($i != 0)
                             $organization->organization_airs_taxonomy_x = $organization->organization_airs_taxonomy_x . ',' . $value;
                         else
-                            $organization->organization_airs_taxonomy_x  = $value;
+                            $organization->organization_airs_taxonomy_x = $value;
                         $i++;
                     }
                 }
@@ -234,6 +239,7 @@ class OrganizationController extends Controller
         $airtable->syncdate = $date;
         $airtable->save();
     }
+
     public function airtable_v2($api_key, $base_url, $organization_tag)
     {
         try {
@@ -253,8 +259,8 @@ class OrganizationController extends Controller
             //     'base'      => env('AIRTABLE_BASE_URL'),
             // ));
             $airtable = new Airtable(array(
-                'api_key'   => $api_key,
-                'base'      => $base_url,
+                'api_key' => $api_key,
+                'base' => $base_url,
             ));
 
             $request = $airtable->getContent('organizations');
@@ -280,7 +286,7 @@ class OrganizationController extends Controller
                                 try {
                                     $organization->organization_logo_x .= $image["url"];
                                 } catch (\Exception $e) {
-                                    echo 'Caught exception: ',  $e->getMessage(), "\n";
+                                    echo 'Caught exception: ', $e->getMessage(), "\n";
                                 }
                             }
                         }
@@ -290,7 +296,7 @@ class OrganizationController extends Controller
                                     $organization->organization_forms_x_filename .= $form["filename"];
                                     $organization->organization_forms_x_url .= $form["url"];
                                 } catch (\Exception $e) {
-                                    echo 'Caught exception: ',  $e->getMessage(), "\n";
+                                    echo 'Caught exception: ', $e->getMessage(), "\n";
                                 }
                             }
                         }
@@ -299,7 +305,7 @@ class OrganizationController extends Controller
                         $organization->organization_website_rating = isset($record['fields']['y-website_quality']) ? $record['fields']['y-website_quality'] : null;
                         $organization->organization_description = isset($record['fields']['description']) ? $record['fields']['description'] : null;
 
-                        $organization->organization_description =  mb_convert_encoding($organization->organization_description, "HTML-ENTITIES", "UTF-8");
+                        $organization->organization_description = mb_convert_encoding($organization->organization_description, "HTML-ENTITIES", "UTF-8");
 
                         $organization->organization_email = isset($record['fields']['email']) ? $record['fields']['email'] : null;
                         $organization->organization_url = isset($record['fields']['url']) ? $record['fields']['url'] : null;
@@ -351,7 +357,7 @@ class OrganizationController extends Controller
 
                         if (isset($record['fields']['services'])) {
                             $i = 0;
-                            foreach ($record['fields']['services']  as  $value) {
+                            foreach ($record['fields']['services'] as $value) {
 
                                 $organizationservice = $strtointclass->string_to_int($value);
 
@@ -365,7 +371,7 @@ class OrganizationController extends Controller
 
                         if (isset($record['fields']['phones'])) {
                             $i = 0;
-                            foreach ($record['fields']['phones']  as  $value) {
+                            foreach ($record['fields']['phones'] as $value) {
 
                                 $organizationphone = $strtointclass->string_to_int($value);
 
@@ -380,7 +386,7 @@ class OrganizationController extends Controller
 
                         if (isset($record['fields']['locations'])) {
                             $i = 0;
-                            foreach ($record['fields']['locations']  as  $value) {
+                            foreach ($record['fields']['locations'] as $value) {
 
                                 $organizationlocation = $strtointclass->string_to_int($value);
 
@@ -396,7 +402,7 @@ class OrganizationController extends Controller
 
                         if (isset($record['fields']['x-details'])) {
                             $i = 0;
-                            foreach ($record['fields']['x-details']  as  $value) {
+                            foreach ($record['fields']['x-details'] as $value) {
                                 $organization_detail = new OrganizationDetail();
                                 $organization_detail->organization_recordid = $organization->organization_recordid;
                                 $organization_detail->detail_recordid = $strtointclass->string_to_int($value);
@@ -413,12 +419,12 @@ class OrganizationController extends Controller
 
                         if (isset($record['fields']['AIRS Taxonomy-x'])) {
                             $i = 0;
-                            foreach ($record['fields']['AIRS Taxonomy-x']  as  $value) {
+                            foreach ($record['fields']['AIRS Taxonomy-x'] as $value) {
 
                                 if ($i != 0)
                                     $organization->organization_airs_taxonomy_x = $organization->organization_airs_taxonomy_x . ',' . $value;
                                 else
-                                    $organization->organization_airs_taxonomy_x  = $value;
+                                    $organization->organization_airs_taxonomy_x = $value;
                                 $i++;
                             }
                         }
@@ -492,6 +498,7 @@ class OrganizationController extends Controller
             return $response;
         }
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -499,55 +506,43 @@ class OrganizationController extends Controller
      */
     public function index()
     {
-        // $organizations = Organization::orderBy('organization_recordid')->paginate(20);
-        // $source_data = Source_data::find(1);
-
-        // return view('backEnd.tables.tb_organization', compact('organizations', 'source_data'));
-
         $layout = Layout::find(1);
         $organizations = Organization::orderBy('organization_name')->select('*');
-        if ($layout && $layout->hide_organizations_with_no_filtered_services == 1) {
-            $organizationIds = ServiceOrganization::pluck('organization_recordid')->toArray();
-            $organizations = $organizations->whereIn('organization_recordid', array_unique($organizationIds));
-        }
+
         $metas = MetaFilter::all();
         $count_metas = MetaFilter::count();
+        $filter_label = Session::has('filter_label') ? Session::get('filter_label') : $layout->default_label;
 
-        if ($layout->meta_filter_activate == 1 && $count_metas > 0 && $layout->default_label == 'on_label') {
-            // $address_serviceids = Service::pluck('service_recordid')->toArray();
-            // $taxonomy_serviceids = Service::pluck('service_recordid')->toArray();
-            $address_serviceids = [];
-            $taxonomy_serviceids = [];
-
+        if ($layout->meta_filter_activate == 1 && $count_metas > 0 && $filter_label == 'on_label') {
+            $filterServiceRecordId = [];
             foreach ($metas as $key => $meta) {
                 $values = explode(",", $meta->values);
                 if (count($values) > 0) {
                     if ($meta->facet == 'organization_status') {
-
-                        $organization_service_recordid = [];
-                        $organizations_status_ids = [];
-                        if ($values && count($values) > 0) {
-                            $operations = $meta->operations;
-                            if ($values) {
-                                $organizations_status_ids = Organization::where(function ($query) use ($values, $operations) {
-                                    foreach ($values as $keyword) {
-                                        // $organization_status = OrganizationStatus::whereId($keyword)->first();
-                                        if ($operations == 'Include') {
-                                            $query = $query->orWhere('organization_status_x', 'LIKE', "%$keyword%");
-                                        }
-                                        if ($operations == 'Exclude') {
-                                            $query = $query->orWhere('organization_status_x', 'NOT LIKE', "%$keyword%");
-                                        }
-                                    }
-                                    return $query;
-                                })->pluck('organization_recordid')->toArray();
-                            }
-                            // $organization_service_recordid = ServiceOrganization::whereIn('organization_recordid', $organizations_status_ids)->pluck('service_recordid')->toArray();
-                        }
+                        $organizations_status_ids = Organization::getOrganizationStatusMeta($values, $meta->operations);
                         $organizations = $organizations->whereIn('organization_recordid', array_unique($organizations_status_ids));
-                        // $taxonomy_serviceids = array_merge($organization_service_recordid, $taxonomy_serviceids);
+                    }
+                    if ($meta->facet == 'organization_tag') {
+                        $organizations_tags_ids = Organization::getOrganizationTagMeta($values, $meta->operations);
+                        $organizations = $organizations->whereIn('organization_recordid', array_unique($organizations_tags_ids));
+                    }
+                    if ($meta->facet == 'Service_status') {
+                        $serviceStatusIds = Service::getServiceStatusMeta($values, $meta->operations);
+                        $filterServiceRecordId = array_merge($filterServiceRecordId, $serviceStatusIds);
+                    }
+                    if ($meta->facet == 'service_tag') {
+                        $serviceTagIds = Service::getServiceTagMeta($values, $meta->operations);
+                        $filterServiceRecordId = array_merge($filterServiceRecordId, $serviceTagIds);
                     }
                 }
+            }
+            if ($layout && $layout->hide_organizations_with_no_filtered_services == 1 && count($filterServiceRecordId) > 0) {
+                $organizationIds = ServiceOrganization::whereIn('service_recordid', $filterServiceRecordId)->pluck('organization_recordid')->toArray();
+                $service_organizations = Service::whereIn('service_recordid', $filterServiceRecordId)->pluck('service_organization')->toArray();
+
+                $organizationIds = array_values(array_unique(array_merge($organizationIds, $service_organizations)));
+
+                $organizations = $organizations->orWhereIn('organization_recordid', array_unique($organizationIds));
             }
         }
         $organizations = $organizations->paginate(20);
@@ -613,9 +608,11 @@ class OrganizationController extends Controller
             // }
             $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies;
         }
+        $organizationStatus = OrganizationStatus::orderBy('order')->pluck('status', 'id');
 
-        return view('frontEnd.organizations.index', compact('organizations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'organization_tag_list'));
+        return view('frontEnd.organizations.index', compact('organizations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'organization_tag_list', 'organizationStatus'));
     }
+
     public function tb_organizations(Request $request)
     {
         // $organizations = Organization::orderBy('organization_recordid')->paginate(20);
@@ -632,7 +629,6 @@ class OrganizationController extends Controller
             if (!$request->ajax()) {
                 return view('backEnd.tables.tb_organization', compact('organizations', 'organization_tags', 'organizationStatus', 'service_tags', 'saved_filters'));
             }
-            $xdetails = Detail::select('*');
             return DataTables::of($organizations)
                 ->editColumn('services', function ($row) {
                     $service_name = '';
@@ -699,10 +695,19 @@ class OrganizationController extends Controller
                     return $row->status_data ? $row->status_data->status : '';
                 })
                 ->editColumn('last_verified_by', function ($row) {
+                    // return $row->get_latest_updated($row, 'updated_by');
                     return $row->get_last_verified_by ? $row->get_last_verified_by->first_name . ' ' . $row->get_last_verified_by->last_name : '';
                 })
-                ->editColumn('updated_at', function ($row) {
-                    return date('Y-m-d H:i:s', strtotime($row->updated_at));
+                ->editColumn('updated_by', function ($row) {
+                    return $row->get_latest_updated($row, 'updated_by');
+                    // return $row->get_updated_by ? $row->get_updated_by->first_name . ' ' . $row->get_updated_by->last_name : '';
+                })
+                ->editColumn('latest_updated_date', function ($row) {
+                    $row->get_latest_updated($row, 'updated_at');
+
+                    return date('Y-m-d H:i:s', strtotime($row->latest_updated_date));
+
+                    // return $row->get_updated_date($row);
                 })
                 ->addColumn('last_note_date', function ($row) {
                     $note = SessionData::where('session_organization', $row->organization_recordid)->orderBy('id', 'desc')->first();
@@ -739,7 +744,7 @@ class OrganizationController extends Controller
                         foreach ($organization_tags as $key => $value) {
                             $tag = OrganizationTag::whereId($value)->first();
                             if ($tag) {
-                                $organization_tag[] = '<a href="javascript:void(0)" data-id="' . $row->organization_recordid . '" class="organizationTags" data-tags="' .  $row->organization_tag . '"> ' . $tag->tag . '</a>';
+                                $organization_tag[] = '<a href="javascript:void(0)" data-id="' . $row->organization_recordid . '" class="organizationTags" data-tags="' . $row->organization_tag . '"> ' . $tag->tag . '</a>';
                             }
                         }
                         return implode(',', $organization_tag);
@@ -755,7 +760,7 @@ class OrganizationController extends Controller
                         foreach ($organization_statuses as $key => $value) {
                             $status = OrganizationStatus::whereId($value)->first();
                             if ($status) {
-                                $organization_status[] = '<a href="javascript:void(0)" data-id="' . $row->organization_recordid . '" class="organizationStatuses" data-status="' .  $status->id . '"> ' . $status->status . '</a>';
+                                $organization_status[] = '<a href="javascript:void(0)" data-id="' . $row->organization_recordid . '" class="organizationStatuses" data-status="' . $status->id . '"> ' . $status->status . '</a>';
                             }
                         }
                         return implode(',', $organization_status);
@@ -769,7 +774,7 @@ class OrganizationController extends Controller
                     if ($extraData) {
 
                         if (isset($extraData['organization_tag']) && $extraData['organization_tag'] != null) {
-                            $organization_tags = count($extraData['organization_tag']) > 0 ?  array_filter($extraData['organization_tag']) : [];
+                            $organization_tags = count($extraData['organization_tag']) > 0 ? array_filter($extraData['organization_tag']) : [];
                             $query = $query->where(function ($q) use ($organization_tags) {
                                 foreach ($organization_tags as $key => $value) {
                                     $q->orWhere('organization_tag', 'LIKE', '%' . $value . '%');
@@ -780,7 +785,7 @@ class OrganizationController extends Controller
                             $query = $query->where('bookmark', 1);
                         }
                         if (isset($extraData['service_tag']) && $extraData['service_tag'] != null) {
-                            $service_tags = count($extraData['service_tag']) > 0 ?  array_filter($extraData['service_tag']) : [];
+                            $service_tags = count($extraData['service_tag']) > 0 ? array_filter($extraData['service_tag']) : [];
 
                             $organization_recordids = Service::where(function ($q) use ($service_tags) {
                                 foreach ($service_tags as $key => $value) {
@@ -810,6 +815,7 @@ class OrganizationController extends Controller
                 ->rawColumns(['services', 'phones', 'location', 'organization_details', 'contact_name', 'last_note_date', 'last_edit_date', 'organization_name', 'organization_tag', 'organization_url', 'bookmark', 'organization_status_x'])
                 ->make(true);
         } catch (\Throwable $th) {
+            dd($th);
             Log::error('Error in organization table index : ' . $th);
             return redirect()->back();
         }
@@ -883,11 +889,14 @@ class OrganizationController extends Controller
 
         return view('frontEnd.organizations.index', compact('organizations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'organization_tag_list'));
     }
+
     public function organization_tag(Request $request, $id)
     {
         try {
             $organization = Organization::where('organization_recordid', $id)->first();
             $organization->organization_tag = $request->organization_tag ? implode(',', $request->organization_tag) : '';
+            $organization->latest_updated_date = Carbon::now();
+            $organization->updated_by = Auth::id();
             $organization->updated_at = date("Y-m-d H:i:s");
             $organization->save();
             Session::flash('message', 'Tag added successfully!');
@@ -899,6 +908,7 @@ class OrganizationController extends Controller
             return redirect()->back();
         }
     }
+
     public function saveOrganizationFilter(Request $request)
     {
         try {
@@ -914,6 +924,8 @@ class OrganizationController extends Controller
             $end_verified = isset($extraData['end_verified']) ? $extraData['end_verified'] : null;
             $start_updated = isset($extraData['start_updated']) ? $extraData['start_updated'] : null;
             $end_updated = isset($extraData['end_updated']) ? $extraData['end_updated'] : null;
+            $last_updated_by = isset($extraData['last_updated_by']) ? $extraData['last_updated_by'] : null;
+            $last_verified_by = isset($extraData['last_verified_by']) ? $extraData['last_verified_by'] : null;
 
             OrganizationTableFilter::create([
                 'user_id' => Auth::id(),
@@ -928,6 +940,8 @@ class OrganizationController extends Controller
                 'end_verified' => $end_verified,
                 'start_updated' => $start_updated,
                 'end_updated' => $end_updated,
+                'last_updated_by' => $last_updated_by,
+                'last_verified_by' => $last_verified_by,
             ]);
             Session::flash('message', 'Filter Saved Successfully!');
             Session::flash('status', 'success');
@@ -939,6 +953,7 @@ class OrganizationController extends Controller
             return redirect()->back();
         }
     }
+
     public function saveOrganizationStatus(Request $request)
     {
         try {
@@ -946,8 +961,10 @@ class OrganizationController extends Controller
             $organization = Organization::where('organization_recordid', $id)->first();
             $organization->organization_status_x = $request->organisation_status ? $request->organisation_status : '';
             $organization->updated_at = date("Y-m-d H:i:s");
+            $organization->latest_updated_date = Carbon::now();
+            $organization->updated_by = Auth::id();
             $organizationStatus = OrganizationStatus::whereId($request->organisation_status)->first();
-            if ($organizationStatus->status == 'Verified') {
+            if ($organizationStatus && $organizationStatus->status == 'Verified') {
                 $organization->last_verified_at = Carbon::now();
                 $organization->last_verified_by = Auth::id();
             }
@@ -997,7 +1014,7 @@ class OrganizationController extends Controller
         }
         $taxonomy_info_list = Taxonomy::whereNull('taxonomy_parent_name')->Where(function ($query) use ($exclude_vocabulary) {
             for ($i = 0; $i < count($exclude_vocabulary); $i++) {
-                $query->where('taxonomy_name', 'not like',  '%' . $exclude_vocabulary[$i] . '%');
+                $query->where('taxonomy_name', 'not like', '%' . $exclude_vocabulary[$i] . '%');
             }
         })->get();
         $taxonomyArray = [];
@@ -1012,7 +1029,7 @@ class OrganizationController extends Controller
             }
             return true;
         });
-        $schedule_info_list = Schedule::select('schedule_recordid', 'opens_at', 'closes_at')->whereNotNull('opens_at')->where('opens_at', '!=', '')->orderBy('opens_at')->distinct()->get();
+        $schedule_info_list = Schedule::select('schedule_recordid', 'opens', 'closes')->whereNotNull('opens')->where('opens', '!=', '')->orderBy('opens')->distinct()->get();
         $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
         $address_info_list = Address::select('address_recordid', 'address_1', 'address_city', 'address_state_province', 'address_postal_code')->orderBy('address_1')->distinct()->get();
         // end here
@@ -1047,13 +1064,19 @@ class OrganizationController extends Controller
         $phone_language_data = json_encode([]);
         $regions = Region::pluck('region', 'id');
 
-        return view('frontEnd.organizations.create', compact('map', 'services_info_list', 'organization_contacts_list', 'rating_info_list', 'all_contacts', 'all_locations', 'phone_languages', 'all_services', 'taxonomy_info_list', 'schedule_info_list', 'detail_info_list', 'address_info_list', 'service_info_list', 'address_states_list', 'address_city_list', 'phone_type', 'organizationStatus', 'all_phones', 'phone_language_data', 'regions'));
+        $parent_organizations = Organization::pluck('organization_name', 'organization_recordid');
+
+        $all_programs = Program::with('organization')->distinct()->get();
+
+        $accessibilities = Accessibility::pluck('accessibility', 'id');
+
+        return view('frontEnd.organizations.create', compact('map', 'services_info_list', 'organization_contacts_list', 'rating_info_list', 'all_contacts', 'all_locations', 'phone_languages', 'all_services', 'taxonomy_info_list', 'schedule_info_list', 'detail_info_list', 'address_info_list', 'service_info_list', 'address_states_list', 'address_city_list', 'phone_type', 'organizationStatus', 'all_phones', 'phone_language_data', 'regions', 'parent_organizations', 'all_programs', 'accessibilities'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -1092,201 +1115,28 @@ class OrganizationController extends Controller
             $organization->facebook_url = $request->facebook_url;
             $organization->twitter_url = $request->twitter_url;
             $organization->instagram_url = $request->instagram_url;
+            $organization->parent_organization = $request->parent_organization;
 
             $organization->organization_year_incorporated = $request->organization_year_incorporated;
-            // if ($request->organization_services) {
-            //     $organization->organization_services = join(',', $request->organization_services);
 
-            //     foreach ($request->organization_services as $key => $serviceId) {
-            //         ServiceOrganization::create([
-            //             'service_recordid' => $serviceId,
-            //             'organization_recordid' => $new_recordid
-            //         ]);
-            //     }
-            // } else {
-            //     $organization->organization_services = '';
-            // }
-
-            // if ($request->organization_contacts) {
-            //     $contact_recordid_list = $request->organization_contacts;
-            //     foreach ($contact_recordid_list as $key => $value) {
-            //         $updating_contact = Contact::where('contact_recordid', '=', $value)->first();
-            //         $updating_contact->contact_organizations = $new_recordid;
-            //         $updating_contact->save();
-            //     }
-            // }
-            // service section
-            $service_recordids = [];
-            if ($request->service_name && $request->service_name[0] != null) {
-                $service_alternate_name = $request->service_alternate_name && count($request->service_alternate_name) > 0 ? json_decode($request->service_alternate_name[0]) : [];
-                $service_program = $request->service_program && count($request->service_program) > 0 ? json_decode($request->service_program[0]) : [];
-                $service_status = $request->service_status && count($request->service_status) > 0 ? json_decode($request->service_status[0]) : [];
-                $service_taxonomies = $request->service_taxonomies && count($request->service_taxonomies) > 0 ? json_decode($request->service_taxonomies[0]) : [];
-                $service_application_process = $request->service_application_process && count($request->service_application_process) > 0 ? json_decode($request->service_application_process[0]) : [];
-                $service_wait_time = $request->service_wait_time && count($request->service_wait_time) > 0 ? json_decode($request->service_wait_time[0]) : [];
-                $service_fees = $request->service_fees && count($request->service_fees) > 0 ? json_decode($request->service_fees[0]) : [];
-                $service_accreditations = $request->service_accreditations && count($request->service_accreditations) > 0 ? json_decode($request->service_accreditations[0]) : [];
-                $service_licenses = $request->service_licenses && count($request->service_licenses) > 0 ? json_decode($request->service_licenses[0]) : [];
-                $service_schedules = $request->service_schedules && count($request->service_schedules) > 0 ? json_decode($request->service_schedules[0]) : [];
-                $service_details = $request->service_details && count($request->service_details) > 0 ? json_decode($request->service_details[0]) : [];
-                $service_address = $request->service_address && count($request->service_address) > 0 ? json_decode($request->service_address[0]) : [];
-                $service_metadata = $request->service_metadata && count($request->service_metadata) > 0 ? json_decode($request->service_metadata[0]) : [];
-                $service_airs_taxonomy_x = $request->service_airs_taxonomy_x && count($request->service_airs_taxonomy_x) > 0 ? json_decode($request->service_airs_taxonomy_x[0]) : [];
-
-                for ($i = 0; $i < count($request->service_name); $i++) {
-                    $service_phone_recordid_list = [];
-                    if ($request->serviceRadio[$i] == 'new_data') {
-                        $service = new Service();
-                        $service->service_recordid = Service::max('service_recordid') + 1;
-                        $service->service_name = $request->service_name[$i];
-                        $service->service_description = $request->service_description[$i];
-                        $service->service_url = $request->service_url[$i];
-                        $service->service_email = $request->service_email[$i];
-                        $service->service_organization = $new_recordid;
-
-                        $service->service_alternate_name = $service_alternate_name[$i];
-                        $service->service_program = $service_program[$i];
-
-                        if ($service_status[$i] == '1') {
-                            $service->service_status = 'Verified';
-                        } else {
-                            $service->service_status = '';
-                        }
-                        $service->service_taxonomy = join(',', $service_taxonomies[$i]);
-                        $service->service_application_process = $service_application_process[$i];
-                        $service->service_wait_time = $service_wait_time[$i];
-                        $service->service_fees = $service_fees[$i];
-                        $service->service_accreditations = $service_accreditations[$i];
-                        $service->service_licenses = $service_licenses[$i];
-                        if ($service_schedules[$i]) {
-                            $service->service_schedule = join(',', $service_schedules[$i]);
-                        } else {
-                            $service->service_schedule = '';
-                        }
-                        // $service->service_details = $service_details[$i];
-                        if ($service_details[$i]) {
-                            $service->service_details = join(',', $service_details[$i]);
-                        } else {
-                            $service->service_details = '';
-                        }
-                        // $service->service_address = $service_address[$i];
-                        if ($service_address[$i]) {
-                            $service->service_address = join(',', $service_address[$i]);
-                        } else {
-                            $service->service_address = '';
-                        }
-                        $service->service_metadata = $service_metadata[$i];
-                        $service->service_airs_taxonomy_x = $service_airs_taxonomy_x[$i];
-                        // $service->service_phones = $request->service_phone[$i];
-
-                        $phone_info = Phone::where('phone_number', '=', $request->service_phone[$i])->first();
-                        if ($phone_info) {
-                            $service->service_phones = $service->service_phones . $phone_info->phone_recordid . ',';
-                            $phone_info->phone_number = $request->service_phone[$i];
-                            $phone_info->save();
-                            array_push($service_phone_recordid_list, $phone_info->phone_recordid);
-                        } else {
-                            $new_phone = new Phone;
-                            $new_phone_recordid = Phone::max('phone_recordid') + 1;
-                            $new_phone->phone_recordid = $new_phone_recordid;
-                            $new_phone->phone_number = $request->service_phone[$i];
-                            $new_phone->save();
-                            $service->service_phones = $service->service_phones . $new_phone_recordid . ',';
-                            array_push($service_phone_recordid_list, $new_phone_recordid);
-                        }
-                        array_push($service_recordids, Service::max('service_recordid') + 1);
-
-                        $service_address[$i] = is_array($service_address[$i]) ? array_values(array_filter($service_address[$i])) : [];
-                        $service_details[$i] = is_array($service_details[$i]) ? array_values(array_filter($service_details[$i])) : [];
-                        $service_schedules[$i] = is_array($service_schedules[$i]) ? array_values(array_filter($service_schedules[$i])) : [];
-                        $service_taxonomies[$i] = is_array($service_taxonomies[$i]) ? array_values(array_filter($service_taxonomies[$i])) : [];
-                        $service_phone_recordid_list = is_array($service_phone_recordid_list) ? array_values(array_filter($service_phone_recordid_list)) : [];
-
-                        $service->address()->sync($service_address[$i]);
-                        $service->details()->sync($service_details[$i]);
-                        $service->schedules()->sync($service_schedules[$i]);
-                        $service->taxonomy()->sync($service_taxonomies[$i]);
-                        $service->phone()->sync($service_phone_recordid_list);
-                        $service->save();
-                    } else {
-                        $updating_service = Service::where('service_recordid', '=', $request->service_recordid[$i])->first();
-                        if ($updating_service) {
-                            $updating_service->service_name = $request->service_name[$i];
-                            $updating_service->service_description = $request->service_description[$i];
-                            $updating_service->service_url = $request->service_url[$i];
-                            $updating_service->service_email = $request->service_email[$i];
-                            $updating_service->service_organization = $new_recordid;
-                            // $service->service_phones = $request->service_phone[$i];
-
-                            $updating_service->service_alternate_name = $service_alternate_name[$i];
-                            $updating_service->service_program = $service_program[$i];
-
-                            if ($service_status[$i] == '1') {
-                                $updating_service->service_status = 'Verified';
-                            } else {
-                                $updating_service->service_status = '';
-                            }
-                            $updating_service->service_taxonomy = join(',', $service_taxonomies[$i]);
-                            $updating_service->service_application_process = $service_application_process[$i];
-                            $updating_service->service_wait_time = $service_wait_time[$i];
-                            $updating_service->service_fees = $service_fees[$i];
-                            $updating_service->service_accreditations = $service_accreditations[$i];
-                            $updating_service->service_licenses = $service_licenses[$i];
-                            if ($service_schedules[$i]) {
-                                $updating_service->service_schedule = join(',', $service_schedules[$i]);
-                            } else {
-                                $updating_service->service_schedule = '';
-                            }
-                            // $updating_service->service_details = $service_details[$i];
-                            if ($service_details[$i]) {
-                                $updating_service->service_details = join(',', $service_details[$i]);
-                            } else {
-                                $updating_service->service_details = '';
-                            }
-                            // $updating_service->service_address = $service_address[$i];
-                            if ($service_address[$i]) {
-                                $updating_service->service_address = join(',', $service_address[$i]);
-                            } else {
-                                $updating_service->service_address = '';
-                            }
-                            $updating_service->service_metadata = $service_metadata[$i];
-                            $updating_service->service_airs_taxonomy_x = $service_airs_taxonomy_x[$i];
-                            // $updating_service->service_phones = $request->service_phone[$i];
-
-                            $phone_info = Phone::where('phone_number', '=', $request->service_phone[$i])->first();
-                            if ($phone_info) {
-                                $updating_service->service_phones = $updating_service->service_phones . $phone_info->phone_recordid . ',';
-                                $phone_info->phone_number = $request->service_phone[$i];
-                                $phone_info->save();
-                                array_push($service_phone_recordid_list, $phone_info->phone_recordid);
-                            } else {
-                                $new_phone = new Phone;
-                                $new_phone_recordid = Phone::max('phone_recordid') + 1;
-                                $new_phone->phone_recordid = $new_phone_recordid;
-                                $new_phone->phone_number = $request->service_phone[$i];
-                                $new_phone->save();
-                                $updating_service->service_phones = $updating_service->service_phones . $new_phone_recordid . ',';
-                                array_push($service_phone_recordid_list, $new_phone_recordid);
-                            }
-                            array_push($service_recordids, Service::max('service_recordid') + 1);
-
-                            $service_address[$i] = is_array($service_address[$i]) ? array_values(array_filter($service_address[$i])) : [];
-                            $service_details[$i] = is_array($service_details[$i]) ? array_values(array_filter($service_details[$i])) : [];
-                            $service_schedules[$i] = is_array($service_schedules[$i]) ? array_values(array_filter($service_schedules[$i])) : [];
-                            $service_taxonomies[$i] = is_array($service_taxonomies[$i]) ? array_values(array_filter($service_taxonomies[$i])) : [];
-                            $service_phone_recordid_list = is_array($service_phone_recordid_list) ? array_values(array_filter($service_phone_recordid_list)) : [];
-
-                            $updating_service->address()->sync($service_address[$i]);
-                            $updating_service->details()->sync($service_details[$i]);
-                            $updating_service->schedules()->sync($service_schedules[$i]);
-                            $updating_service->taxonomy()->sync($service_taxonomies[$i]);
-                            $updating_service->phone()->sync($service_phone_recordid_list);
-                            $updating_service->save();
-                            array_push($service_recordids, $updating_service->service_recordid);
-                        }
-                    }
+            if ($request->has('logo_type')) {
+                $link = '';
+                if ($request->logo_type == 'file' && $request->hasFile('logo')) {
+                    $link = $request->file('logo')->store('uploads', 'public');
+                    $link = Storage::url($link);
+                } else if ($request->logo_type == 'url' && $request->logo) {
+                    $link = $request->logo;
+                } else {
+                    $link = $organization->logo;
                 }
+                $organization->logo = $link;
             }
+
+            $this->saveOrganizationProgram($request, $organization);
+
+            // service section
+            $service_recordids = $this->saveOrganizationService($request, $new_recordid);
+
             $service_recordids = is_array($service_recordids) ? array_values(array_filter($service_recordids)) : [];
             $organization->getServices()->sync($service_recordids);
             // contact section
@@ -1417,41 +1267,12 @@ class OrganizationController extends Controller
                 $location_accessibility_details = $request->location_accessibility_details && count($request->location_accessibility_details) > 0 ? json_decode($request->location_accessibility_details[0], true) : [];
                 $location_regions = $request->location_regions && count($request->location_regions) > 0 ? json_decode($request->location_regions[0], true) : [];
 
-
-                // location schedule section
-                $opens_at_location_monday_datas = $request->opens_at_location_monday_datas  ? json_decode($request->opens_at_location_monday_datas, true) : [];
-                $closes_at_location_monday_datas = $request->closes_at_location_monday_datas  ? json_decode($request->closes_at_location_monday_datas, true) : [];
-                $schedule_closed_monday_datas = $request->schedule_closed_monday_datas  ? json_decode($request->schedule_closed_monday_datas, true) : [];
-
-                $opens_at_location_tuesday_datas = $request->opens_at_location_tuesday_datas  ? json_decode($request->opens_at_location_tuesday_datas, true) : [];
-                $closes_at_location_tuesday_datas = $request->closes_at_location_tuesday_datas  ? json_decode($request->closes_at_location_tuesday_datas, true) : [];
-                $schedule_closed_tuesday_datas = $request->schedule_closed_tuesday_datas  ? json_decode($request->schedule_closed_tuesday_datas, true) : [];
-
-                $opens_at_location_wednesday_datas = $request->opens_at_location_wednesday_datas  ? json_decode($request->opens_at_location_wednesday_datas, true) : [];
-                $closes_at_location_wednesday_datas = $request->closes_at_location_wednesday_datas  ? json_decode($request->closes_at_location_wednesday_datas, true) : [];
-                $schedule_closed_wednesday_datas = $request->schedule_closed_wednesday_datas  ? json_decode($request->schedule_closed_wednesday_datas, true) : [];
-
-                $opens_at_location_thursday_datas = $request->opens_at_location_thursday_datas  ? json_decode($request->opens_at_location_thursday_datas, true) : [];
-                $closes_at_location_thursday_datas = $request->closes_at_location_thursday_datas  ? json_decode($request->closes_at_location_thursday_datas, true) : [];
-                $schedule_closed_thursday_datas = $request->schedule_closed_thursday_datas  ? json_decode($request->schedule_closed_thursday_datas, true) : [];
-
-                $opens_at_location_friday_datas = $request->opens_at_location_friday_datas  ? json_decode($request->opens_at_location_friday_datas, true) : [];
-                $closes_at_location_friday_datas = $request->closes_at_location_friday_datas  ? json_decode($request->closes_at_location_friday_datas, true) : [];
-                $schedule_closed_friday_datas = $request->schedule_closed_friday_datas  ? json_decode($request->schedule_closed_friday_datas, true) : [];
-
-                $opens_at_location_saturday_datas = $request->opens_at_location_saturday_datas  ? json_decode($request->opens_at_location_saturday_datas, true) : [];
-                $closes_at_location_saturday_datas = $request->closes_at_location_saturday_datas  ? json_decode($request->closes_at_location_saturday_datas, true) : [];
-                $schedule_closed_saturday_datas = $request->schedule_closed_saturday_datas  ? json_decode($request->schedule_closed_saturday_datas, true) : [];
-
-                $opens_at_location_sunday_datas = $request->opens_at_location_sunday_datas  ? json_decode($request->opens_at_location_sunday_datas, true) : [];
-                $closes_at_location_sunday_datas = $request->closes_at_location_sunday_datas  ? json_decode($request->closes_at_location_sunday_datas, true) : [];
-                $schedule_closed_sunday_datas = $request->schedule_closed_sunday_datas  ? json_decode($request->schedule_closed_sunday_datas, true) : [];
                 // holiday section
-                $location_holiday_start_dates = $request->location_holiday_start_dates  ? json_decode($request->location_holiday_start_dates, true) : [];
-                $location_holiday_end_dates = $request->location_holiday_end_dates  ? json_decode($request->location_holiday_end_dates, true) : [];
-                $location_holiday_open_ats = $request->location_holiday_open_ats  ? json_decode($request->location_holiday_open_ats, true) : [];
-                $location_holiday_close_ats = $request->location_holiday_close_ats  ? json_decode($request->location_holiday_close_ats, true) : [];
-                $location_holiday_closeds = $request->location_holiday_closeds  ? json_decode($request->location_holiday_closeds, true) : [];
+                $location_holiday_start_dates = $request->location_holiday_start_dates ? json_decode($request->location_holiday_start_dates, true) : [];
+                $location_holiday_end_dates = $request->location_holiday_end_dates ? json_decode($request->location_holiday_end_dates, true) : [];
+                $location_holiday_open_ats = $request->location_holiday_open_ats ? json_decode($request->location_holiday_open_ats, true) : [];
+                $location_holiday_close_ats = $request->location_holiday_close_ats ? json_decode($request->location_holiday_close_ats, true) : [];
+                $location_holiday_closeds = $request->location_holiday_closeds ? json_decode($request->location_holiday_closeds, true) : [];
 
                 for ($i = 0; $i < count($request->location_name); $i++) {
                     $location_address_recordid_list = [];
@@ -1472,20 +1293,22 @@ class OrganizationController extends Controller
                         $location->location_organization = $new_recordid;
                         $organization->organization_locations = $organization->organization_locations . ',' . $newLocationId;
 
-                        $location->location_alternate_name = $location_alternate_name[$i];
-                        $location->location_transportation = $location_transporation[$i];
-                        $location->location_description = $location_description[$i];
-                        $location->location_details = $location_details[$i];
+                        $location->location_alternate_name = isset($location_alternate_name[$i]) ? $location_alternate_name[$i] : null;
+                        $location->location_transportation = isset($location_transporation[$i]) ? $location_transporation[$i] : null;
+                        $location->location_description = isset($location_description[$i]) ? $location_description[$i] : null;
+                        $location->location_details = isset($location_details[$i]) ? $location_details[$i] : null;
 
                         // accessesibility
 
                         if (isset($location_accessibility[$i]) && isset($location_accessibility_details[$i])) {
-                            Accessibility::create([
-                                'accessibility_recordid' => Accessibility::max('accessibility_recordid') + 1,
-                                'accessibility' => $location_accessibility[$i],
-                                'accessibility_details' => $location_accessibility_details[$i],
-                                'accessibility_location' => $newLocationId
-                            ]);
+                            // Accessibility::create([
+                            //     'accessibility_recordid' => Accessibility::max('accessibility_recordid') + 1,
+                            //     'accessibility' => $location_accessibility[$i],
+                            //     'accessibility_details' => $location_accessibility_details[$i],
+                            //     'accessibility_location' => $newLocationId
+                            // ]);
+                            $location->accessibility_recordid = $location_accessibility[$i];
+                            $location->accessibility_details = $location_accessibility_details[$i];
                         }
                         if (isset($location_regions[$i])) {
                             $location->regions()->sync($location_regions[$i]);
@@ -1510,7 +1333,7 @@ class OrganizationController extends Controller
                         // location address
                         $address_info = Address::where('address_1', '=', $request->location_address[$i])->first();
                         if ($address_info) {
-                            $location->location_address =  $address_info->address_recordid;
+                            $location->location_address = $address_info->address_recordid;
                             $address_info->address_1 = $request->location_address[$i];
                             $address_info->address_city = $request->location_city[$i];
                             $address_info->address_state_province = $request->location_state[$i];
@@ -1540,7 +1363,7 @@ class OrganizationController extends Controller
                                     $phone_info->phone_number = $location_phone_numbers[$i][$p];
                                     $phone_info->phone_extension = $location_phone_extensions[$i][$p];
                                     $phone_info->phone_type = $location_phone_types[$i][$p];
-                                    $phone_info->phone_language = isset($location_phone_languages[$i][$p])  && is_array($location_phone_languages[$i][$p]) && count($location_phone_languages[$i][$p]) > 0 ? implode(',', $location_phone_languages[$i][$p]) : '';
+                                    $phone_info->phone_language = isset($location_phone_languages[$i][$p]) && is_array($location_phone_languages[$i][$p]) && count($location_phone_languages[$i][$p]) > 0 ? implode(',', $location_phone_languages[$i][$p]) : '';
                                     $phone_info->phone_description = $location_phone_descriptions[$i][$p];
                                     $phone_info->save();
                                     array_push($location_phone_recordid_list, $phone_info->phone_recordid);
@@ -1551,7 +1374,7 @@ class OrganizationController extends Controller
                                     $new_phone->phone_number = $location_phone_numbers[$i][$p];
                                     $new_phone->phone_extension = $location_phone_extensions[$i][$p];
                                     $new_phone->phone_type = $location_phone_types[$i][$p];
-                                    $new_phone->phone_language = isset($location_phone_languages[$i][$p])  && is_array($location_phone_languages[$i][$p]) && count($location_phone_languages[$i][$p]) > 0 ? implode(',', $location_phone_languages[$i][$p]) : '';
+                                    $new_phone->phone_language = isset($location_phone_languages[$i][$p]) && is_array($location_phone_languages[$i][$p]) && count($location_phone_languages[$i][$p]) > 0 ? implode(',', $location_phone_languages[$i][$p]) : '';
                                     $new_phone->phone_description = $location_phone_descriptions[$i][$p];
                                     $new_phone->save();
                                     // $location->location_phones = $location->location_phones . $new_phone_recordid . ',';
@@ -1561,51 +1384,17 @@ class OrganizationController extends Controller
                         }
 
                         // schedule section
-                        $schedule_locations = [];
-
-                        if ($opens_at_location_monday_datas && isset($opens_at_location_monday_datas[$i]) &&  $opens_at_location_monday_datas[$i] != null) {
-                            $weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-                            for ($s = 0; $s < 7; $s++) {
-                                $schedules = Schedule::where('schedule_locations', $location_recordid)->where('byday', $weekdays[$s])->first();
-                                if ($schedules) {
-                                    $schedules->byday = $weekdays[$s];
-                                    $schedules->opens_at = isset(${'opens_at_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'opens_at_location_' . $weekdays[$s] . '_datas'}[$i] : '';
-                                    $schedules->closes_at = isset(${'closes_at_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'closes_at_location_' . $weekdays[$s] . '_datas'}[$i] : '';
-                                    if (isset(${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i]) &&  ${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i] == ($s + 1)) {
-                                        $schedules->schedule_closed = $s + 1;
-                                    } else {
-                                        $schedules->schedule_closed = null;
-                                    }
-                                    $schedules->save();
-                                    $schedule_locations[] = $schedules->schedule_recordid;
-                                } else {
-                                    $schedule_recordid = Schedule::max('schedule_recordid') + 1;
-                                    $schedules = new Schedule();
-                                    $schedules->schedule_recordid = $schedule_recordid;
-                                    $schedules->schedule_locations = $location_recordid;
-                                    $schedules->byday = $weekdays[$s];
-                                    $schedules->opens_at = isset(${'opens_at_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'opens_at_location_' . $weekdays[$s] . '_datas'}[$i] : '';
-                                    $schedules->closes_at = isset(${'closes_at_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'closes_at_location_' . $weekdays[$s] . '_datas'}[$i] : '';
-                                    if (isset(${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i]) &&  ${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i] == ($s + 1)) {
-                                        $schedules->schedule_closed = $s + 1;
-                                    } else {
-                                        $schedules->schedule_closed = null;
-                                    }
-                                    $schedules->save();
-                                    $schedule_locations[] = $schedule_recordid;
-                                }
-                            }
-                        }
+                        $schedule_locations = $this->saveLocationSchedule($request, $i, $location_recordid);
 
                         if ($location_holiday_start_dates && isset($location_holiday_start_dates[$i]) && $location_holiday_start_dates[$i] != null) {
-                            Schedule::where('schedule_locations', $location_recordid)->where('schedule_holiday', '1')->delete();
+                            Schedule::where('locations', $location_recordid)->where('schedule_holiday', '1')->delete();
                             for ($hs = 0; $hs < count($location_holiday_start_dates[$i]); $hs++) {
                                 // $schedules =
                                 // if($schedules){
                                 //     $schedules->dtstart = $request->holiday_start_date[$hs];
                                 //     $schedules->until = $request->holiday_end_date[$hs];
-                                //     $schedules->opens_at = $request->holiday_open_at[$hs];
-                                //     $schedules->closes_at = $request->closes_at[$hs];
+                                //     $schedules->opens = $request->holiday_open_at[$hs];
+                                //     $schedules->closes = $request->closes[$hs];
                                 //     if(in_array(($hs+1),$request->schedule_closed)){
                                 //         $schedules->schedule_closed = $hs+1;
                                 //     }
@@ -1615,11 +1404,11 @@ class OrganizationController extends Controller
                                 $schedule_recordid = Schedule::max('schedule_recordid') + 1;
                                 $schedules = new Schedule();
                                 $schedules->schedule_recordid = $schedule_recordid;
-                                $schedules->schedule_locations = $location_recordid;
+                                $schedules->locations = $location_recordid;
                                 $schedules->dtstart = $location_holiday_start_dates[$i][$hs];
                                 $schedules->until = $location_holiday_end_dates[$i][$hs];
-                                $schedules->opens_at = $location_holiday_open_ats[$i][$hs];
-                                $schedules->closes_at = $location_holiday_close_ats[$i][$hs];
+                                $schedules->opens = $location_holiday_open_ats[$i][$hs];
+                                $schedules->closes = $location_holiday_close_ats[$i][$hs];
                                 if ($location_holiday_closeds[$i][$hs] == 1) {
                                     $schedules->schedule_closed = '1';
                                 }
@@ -1658,14 +1447,16 @@ class OrganizationController extends Controller
 
 
                             // accessesibility
-                            if (isset($location_accessibility[$i]) && isset($location_accessibility_details[$i])) {
-                                Accessibility::updateOrCreate([
-                                    'accessibility_location' => $request->location_recordid[$i]
-                                ], [
-                                    'accessibility_recordid' => Accessibility::max('accessibility_recordid') + 1,
-                                    'accessibility' => $location_accessibility[$i],
-                                    'accessibility_details' => $location_accessibility_details[$i],
-                                ]);
+                            if (!empty($location_accessibility[$i]) && !empty($location_accessibility_details[$i])) {
+                                // Accessibility::updateOrCreate([
+                                //     'accessibility_location' => $request->location_recordid[$i]
+                                // ], [
+                                //     'accessibility_recordid' => Accessibility::max('accessibility_recordid') + 1,
+                                //     'accessibility' => $location_accessibility[$i],
+                                //     'accessibility_details' => $location_accessibility_details[$i],
+                                // ]);
+                                $location->accessibility_recordid = $location_accessibility[$i];
+                                $location->accessibility_details = $location_accessibility_details[$i];
                             }
                             if (isset($location_regions[$i])) {
                                 $location->regions()->sync($location_regions[$i]);
@@ -1729,7 +1520,7 @@ class OrganizationController extends Controller
                                         $new_phone->phone_number = $location_phone_numbers[$i][$p];
                                         $new_phone->phone_extension = $location_phone_extensions[$i][$p];
                                         $new_phone->phone_type = $location_phone_types[$i][$p];
-                                        $new_phone->phone_language = isset($location_phone_languages[$i][$p])  && is_array($location_phone_languages[$i][$p]) && count($location_phone_languages[$i][$p]) > 0 ? implode(',', $location_phone_languages[$i][$p]) : '';
+                                        $new_phone->phone_language = isset($location_phone_languages[$i][$p]) && is_array($location_phone_languages[$i][$p]) && count($location_phone_languages[$i][$p]) > 0 ? implode(',', $location_phone_languages[$i][$p]) : '';
                                         $new_phone->phone_description = $location_phone_descriptions[$i][$p];
                                         $new_phone->save();
                                         // $location->location_phones = $location->location_phones . $new_phone_recordid . ',';
@@ -1737,53 +1528,54 @@ class OrganizationController extends Controller
                                     }
                                 }
                             }
-
+                            Schedule::where('locations', $location->location_recordid)->delete();
                             // schedule section
-                            $schedule_locations = [];
+                            $schedule_locations = $this->saveLocationSchedule($request, $i, $location->location_recordid);
+                            // $location->schedules()->sync($schedule_locations);
 
-                            if ($opens_at_location_monday_datas && isset($opens_at_location_monday_datas[$i]) &&  $opens_at_location_monday_datas[$i] != null) {
-                                $weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-                                for ($s = 0; $s < 7; $s++) {
-                                    $schedules = Schedule::where('schedule_locations', $location->location_recordid)->where('byday', $weekdays[$s])->first();
-                                    if ($schedules) {
-                                        $schedules->byday = $weekdays[$s];
-                                        $schedules->opens_at = isset(${'opens_at_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'opens_at_location_' . $weekdays[$s] . '_datas'}[$i] : '';
-                                        $schedules->closes_at = isset(${'closes_at_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'closes_at_location_' . $weekdays[$s] . '_datas'}[$i] : '';
-                                        if (isset(${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i]) &&  ${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i] == ($s + 1)) {
-                                            $schedules->schedule_closed = $s + 1;
-                                        } else {
-                                            $schedules->schedule_closed = null;
-                                        }
-                                        $schedules->save();
-                                        $schedule_locations[] = $schedules->schedule_recordid;
-                                    } else {
-                                        $schedule_recordid = Schedule::max('schedule_recordid') + 1;
-                                        $schedules = new Schedule();
-                                        $schedules->schedule_recordid = $schedule_recordid;
-                                        $schedules->schedule_locations = $location->location_recordid;
-                                        $schedules->byday = $weekdays[$s];
-                                        $schedules->opens_at = isset(${'opens_at_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'opens_at_location_' . $weekdays[$s] . '_datas'}[$i] : '';
-                                        $schedules->closes_at = isset(${'closes_at_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'closes_at_location_' . $weekdays[$s] . '_datas'}[$i] : '';
-                                        if (isset(${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i]) &&  ${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i] == ($s + 1)) {
-                                            $schedules->schedule_closed = $s + 1;
-                                        } else {
-                                            $schedules->schedule_closed = null;
-                                        }
-                                        $schedules->save();
-                                        $schedule_locations[] = $schedule_recordid;
-                                    }
-                                }
-                            }
+                            // if ($opens_location_monday_datas && isset($opens_location_monday_datas[$i]) && $opens_location_monday_datas[$i] != null) {
+                            //     $weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                            //     for ($s = 0; $s < 7; $s++) {
+                            //         $schedules = Schedule::where('schedule_locations', $location->location_recordid)->where('weekday', $weekdays[$s])->first();
+                            //         if ($schedules) {
+                            //             $schedules->weekday = $weekdays[$s];
+                            //             $schedules->opens = isset(${'opens_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'opens_location_' . $weekdays[$s] . '_datas'}[$i] : '';
+                            //             $schedules->closes = isset(${'closes_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'closes_location_' . $weekdays[$s] . '_datas'}[$i] : '';
+                            //             if (isset(${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i]) && ${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i] == ($s + 1)) {
+                            //                 $schedules->schedule_closed = $s + 1;
+                            //             } else {
+                            //                 $schedules->schedule_closed = null;
+                            //             }
+                            //             $schedules->save();
+                            //             $schedule_locations[] = $schedules->schedule_recordid;
+                            //         } else {
+                            //             $schedule_recordid = Schedule::max('schedule_recordid') + 1;
+                            //             $schedules = new Schedule();
+                            //             $schedules->schedule_recordid = $schedule_recordid;
+                            //             $schedules->schedule_locations = $location->location_recordid;
+                            //             $schedules->weekday = $weekdays[$s];
+                            //             $schedules->opens = isset(${'opens_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'opens_location_' . $weekdays[$s] . '_datas'}[$i] : '';
+                            //             $schedules->closes = isset(${'closes_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'closes_location_' . $weekdays[$s] . '_datas'}[$i] : '';
+                            //             if (isset(${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i]) && ${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i] == ($s + 1)) {
+                            //                 $schedules->schedule_closed = $s + 1;
+                            //             } else {
+                            //                 $schedules->schedule_closed = null;
+                            //             }
+                            //             $schedules->save();
+                            //             $schedule_locations[] = $schedule_recordid;
+                            //         }
+                            //     }
+                            // }
 
                             if ($location_holiday_start_dates && isset($location_holiday_start_dates[$i]) && $location_holiday_start_dates[$i] != null) {
-                                Schedule::where('schedule_locations', $location->location_recordid)->where('schedule_holiday', '1')->delete();
+                                Schedule::where('locations', $location->location_recordid)->where('schedule_holiday', '1')->delete();
                                 for ($hs = 0; $hs < count($location_holiday_start_dates[$i]); $hs++) {
                                     // $schedules =
                                     // if($schedules){
                                     //     $schedules->dtstart = $request->holiday_start_date[$hs];
                                     //     $schedules->until = $request->holiday_end_date[$hs];
-                                    //     $schedules->opens_at = $request->holiday_open_at[$hs];
-                                    //     $schedules->closes_at = $request->closes_at[$hs];
+                                    //     $schedules->opens = $request->holiday_open_at[$hs];
+                                    //     $schedules->closes = $request->closes[$hs];
                                     //     if(in_array(($hs+1),$request->schedule_closed)){
                                     //         $schedules->schedule_closed = $hs+1;
                                     //     }
@@ -1793,11 +1585,11 @@ class OrganizationController extends Controller
                                     $schedule_recordid = Schedule::max('schedule_recordid') + 1;
                                     $schedules = new Schedule();
                                     $schedules->schedule_recordid = $schedule_recordid;
-                                    $schedules->schedule_locations = $location->location_recordid;
+                                    $schedules->locations = $location->location_recordid;
                                     $schedules->dtstart = $location_holiday_start_dates[$i][$hs];
                                     $schedules->until = $location_holiday_end_dates[$i][$hs];
-                                    $schedules->opens_at = $location_holiday_open_ats[$i][$hs];
-                                    $schedules->closes_at = $location_holiday_close_ats[$i][$hs];
+                                    $schedules->opens = $location_holiday_open_ats[$i][$hs];
+                                    $schedules->closes = $location_holiday_close_ats[$i][$hs];
                                     if ($location_holiday_closeds[$i][$hs] == 1) {
                                         $schedules->schedule_closed = '1';
                                     }
@@ -1901,7 +1693,16 @@ class OrganizationController extends Controller
 
             $organization->save();
 
-            $audit = Audit::where('auditable_id', $organization->organization_recordid)->first();
+            $user = User::whereId(Auth::id())->first();
+            if ($user && $user->role_id != 1) {
+                $userOrganizationIds = explode(',', $user->user_organization);
+                $userOrganizationIds = array_merge($userOrganizationIds, [$organization_recordid]);
+                $user->organizations()->sync($userOrganizationIds);
+                $user->user_organization = implode(',', $userOrganizationIds);
+                $user->save();
+            }
+
+            $audit = Audit::where('auditable_id', $organization_recordid)->first();
 
             if ($audit) {
                 $audit->auditable_id = $organization_recordid;
@@ -1922,7 +1723,7 @@ class OrganizationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -1930,9 +1731,10 @@ class OrganizationController extends Controller
         // $organization= Organization::find($id);
         // return response()->json($organization);
         $organization = Organization::where('organization_recordid', '=', $id)->first();
-        if ($organization) {
+        $organizationStatus = OrganizationStatus::orderBy('order')->pluck('status', 'id');
+        if ($organization && (Auth::check() || (!Auth::check() && $organization->organization_status_x && isset($organizationStatus[$organization->organization_status_x]) && ($organizationStatus[$organization->organization_status_x] != 'Out of Business' && $organizationStatus[$organization->organization_status_x] != 'Inactive')) || !$organization->organization_status_x)) {
             $layout = Layout::find(1);
-            $orgService = $organization->services()->with('locations')->get();
+            $orgService = $organization->organization_service_data->with('locations')->get();
             $serviceLocationIds = [];
             foreach ($orgService as $key => $value) {
                 if ($value->locations)
@@ -1941,23 +1743,10 @@ class OrganizationController extends Controller
                         // $locations->push($location->with('services', 'address', 'phones')->first());
                     }
             }
-            // $locations = Location::with('services', 'address', 'phones')->where('location_organization', '=', $id)->get();
-            // if ($locations) {
-            //     $locations->filter(function ($value, $key) {
-            //         // $value->service_name = $value->services && count($value->services) > 0 ? $value->services->service_name : '';
-            //         // $value->service_recordid = $value->services && count($value->services) > 0 ? $value->services->service_recordid : '';
-            //         $value->organization_name = $value->organization ? $value->organization->organization_name : '';
-            //         $value->organization_recordid = $value->organization ? $value->organization->organization_recordid : '';
-            //         $value->address_name = $value->address && count($value->address) > 0 ? $value->address[0]->address_1 : '';
-            //         return true;
-            //     });
-            // }
-            $service_interations = $organization->services()->pluck('service_name', 'service_recordid');
-            $organization_services = $organization->services() ? $organization->services()->orderBy('service_name')->paginate(10) : [];
-            if (count($organization->services) == 0) {
-                $organization_services = $organization->getServices()->orderBy('service_name')->paginate(10);
-                $service_interations = $organization->getServices->pluck('service_name', 'service_recordid');
-            }
+
+            $organization_services = $organization->organization_service_data->paginate(10);
+            $service_interations = $organization->organization_service_count > 0 ? $organization->organization_service_data->pluck('service_name', 'service_recordid') : [];
+
             $map = Map::find(1);
             $parent_taxonomy = [];
             $child_taxonomy = [];
@@ -1976,10 +1765,10 @@ class OrganizationController extends Controller
             $organization_locations_recordid_list = explode(',', $organization->organization_locations);
             // $location_info_list = Location::whereIn('location_recordid', $organization_locations_recordid_list)->orderBy('location_recordid')->paginate(10);
             $location_info_list = array_map('intval', explode(',', $organization->organization_locations));
-            $locationIds = $organization->location()->pluck('location_recordid')->toArray();
-            if (count($locationIds) > 0) {
-                $location_info_list = array_merge($location_info_list, $locationIds);
-            }
+            //            $locationIds = $organization->location()->pluck('location_recordid')->toArray();
+            //            if (count($locationIds) > 0) {
+            //                $location_info_list = array_merge($location_info_list, $locationIds);
+            //            }
             if (count($serviceLocationIds) > 0) {
                 $location_info_list = array_merge($location_info_list, $serviceLocationIds);
             }
@@ -2066,7 +1855,8 @@ class OrganizationController extends Controller
             $disposition_list = Disposition::pluck('name', 'id');
             $method_list = InteractionMethod::pluck('name', 'id');
             $organizationStatus = OrganizationStatus::orderBy('order')->pluck('status', 'id');
-            return view('frontEnd.organizations.show', compact('organization', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'contact_info_list', 'organization_services', 'location_info_list', 'existing_tags', 'comment_list', 'session_list', 'disposition_list', 'method_list', 'tagList', 'organizationAudits', 'allTags', 'service_interations', 'organizationStatus', 'layout'));
+
+            return view('frontEnd.organizations.show', compact('organization', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'contact_info_list', 'organization_services', 'location_info_list', 'existing_tags', 'comment_list', 'session_list', 'disposition_list', 'method_list', 'tagList', 'organizationAudits', 'allTags', 'service_interations', 'organizationStatus', 'layout', 'id'));
         } else {
             Session::flash('message', 'This record has been deleted.');
             Session::flash('status', 'warning');
@@ -2077,7 +1867,7 @@ class OrganizationController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -2097,48 +1887,33 @@ class OrganizationController extends Controller
                 $organization_services_Ids2 = [];
                 if (count($organization->services) == 0) {
 
-                    $organization_services_Ids2 = count($organization->getServices) > 0 ? $organization->getServices()->pluck('service_recordid')->toArray() : [];
+                    $organization_services_Ids2 = count($organization->getServices) > 0 ? $organization->getServices->pluck('service_recordid')->toArray() : [];
                 }
 
                 $organization_services_record_ids = array_merge($organization_services_Ids1, $organization_services_Ids2);
 
-                // $organization_service_list = Service::whereIn('service_recordid', $organization_services_record_ids)->get();
                 $organization_service_list = [];
-                // $organization_service_list = [];
-                // if (isset($organization->getServices) && count($organization->getServices) > 0) {
-                //     foreach ($organization->getServices()->with('phone')->get() as $key => $value) {
-                //         $organization_service_list[] = $value;
-                //     }
-                // }
-                // $organization_contacts_list = Contact::select('contact_recordid', 'contact_name')->get();
-                // $organization_contact_info_list = Contact::where('contact_organizations', '=', $id)->select('contact_recordid')->get();
 
-                // $contact_info_list = [];
-                // foreach ($organization_contact_info_list as $key => $value) {
-                //     array_push($contact_info_list, $value->contact_recordid);
-                // }
                 $organization_locations_data = Location::where('location_organization', $organization->organization_recordid)->get();
 
 
                 $organizationContacts = Contact::where('contact_organizations', '=', $id)->with('service')->get();
 
-                // $organization_phones_list = Phone::select('phone_recordid', 'phone_number')->get();
                 $phone_info_list = explode(',', $organization->organization_phones);
-                // $organization_locations_list = Location::select('location_recordid', 'location_name')->get();
 
                 $location_info_list = explode(',', $organization->organization_locations);
                 $locationIds = $organization->location()->pluck('location_recordid')->toArray();
                 if (count($locationIds) > 0) {
                     $location_info_list = array_merge($location_info_list, $locationIds);
                 }
-                // $organization_services_recordid_list = explode(',', $organization->organization_services);
-                // $organization_services = Service::whereIn('service_recordid', $organization_services_recordid_list)->orderBy('service_name')->paginate(10);
+                $location_info_list = array_values(array_unique(array_filter($location_info_list)));
 
                 $rating_info_list = ['1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'];
                 $organization_locations_data = Location::whereIn('location_recordid', $location_info_list)->with('phones', 'address', 'services', 'schedules')->get();
+
                 $organization_locations_data = $organization_locations_data->filter(function ($value) {
-                    $address = $value->address && count($value->address) > 0  ? $value->address[count($value->address) - 1] : '';
-                    $phones = $value->phones && count($value->phones) > 0  ? $value->phones[count($value->phones) - 1] : '';
+                    $address = $value->address && count($value->address) > 0 ? $value->address[count($value->address) - 1] : '';
+                    $phones = $value->phones && count($value->phones) > 0 ? $value->phones[count($value->phones) - 1] : '';
                     $value->location_address = $address ? $address->address_1 : '';
                     $value->location_city = $address ? $address->address_city : '';
                     $value->location_state = $address ? $address->address_state_province : '';
@@ -2159,7 +1934,7 @@ class OrganizationController extends Controller
                 }
                 $taxonomy_info_list = Taxonomy::whereNull('taxonomy_parent_name')->Where(function ($query) use ($exclude_vocabulary) {
                     for ($i = 0; $i < count($exclude_vocabulary); $i++) {
-                        $query->where('taxonomy_name', 'not like',  '%' . $exclude_vocabulary[$i] . '%');
+                        $query->where('taxonomy_name', 'not like', '%' . $exclude_vocabulary[$i] . '%');
                     }
                 })->get();
                 $taxonomyArray = [];
@@ -2174,7 +1949,7 @@ class OrganizationController extends Controller
                     }
                     return true;
                 });
-                $schedule_info_list = Schedule::select('schedule_recordid', 'opens_at', 'closes_at')->whereNotNull('opens_at')->where('opens_at', '!=', '')->orderBy('opens_at')->distinct()->get();
+                $schedule_info_list = Schedule::select('schedule_recordid', 'opens', 'closes')->whereNotNull('opens')->where('opens', '!=', '')->orderBy('opens')->distinct()->get();
                 $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
                 $address_info_list = Address::select('address_recordid', 'address_1', 'address_city', 'address_state_province', 'address_postal_code')->orderBy('address_1')->distinct()->get();
                 // end here
@@ -2183,23 +1958,6 @@ class OrganizationController extends Controller
                 // $service_info_list = Service::select('service_recordid', 'service_name')->orderBy('service_recordid')->distinct()->get();
                 $address_info_list = Address::select('address_recordid', 'address_1', 'address_city', 'address_state_province', 'address_postal_code')->orderBy('address_1')->distinct()->get();
                 $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
-
-                // $address_cities = Address::select("address_city")->distinct()->get();
-                // $address_states = Address::select("address_state_province")->distinct()->get();
-
-                // $address_states_list = [];
-                // foreach ($address_states as $key => $value) {
-                //     $state = explode(", ", trim($value->address_state_province));
-                //     $address_states_list = array_merge($address_states_list, $state);
-                // }
-                // $address_states_list = array_unique($address_states_list);
-
-                // $address_city_list = [];
-                // foreach ($address_cities as $key => $value) {
-                //     $cities = explode(", ", trim($value->address_city));
-                //     $address_city_list = array_merge($address_city_list, $cities);
-                // }
-                // $address_city_list = array_unique($address_city_list);
 
                 $address_city_list = City::orderBy('city')->pluck('city', 'city');
                 $address_states_list = State::orderBy('state')->pluck('state', 'state');
@@ -2269,9 +2027,9 @@ class OrganizationController extends Controller
                     $location_schedules[] = $locationData->schedules ? $locationData->schedules->pluck('schedule_recordid')->toArray() : [];
                     $location_description[] = $locationData->location_description;
                     $location_details[] = $locationData->location_details;
-                    if ($locationData->accessibilities && $locationData->accessibilities()->first()) {
-                        $location_accessibility[] = $locationData->accessibilities()->first()->accessibility;
-                        $location_accessibility_details[] = $locationData->accessibilities()->first()->accessibility_details;
+                    if ($locationData->accessibility_recordid) {
+                        $location_accessibility[] = $locationData->accessibility_recordid;
+                        $location_accessibility_details[] = $locationData->accessibility_details;
                     }
                     $location_regions[] = $locationData->regions ? $locationData->regions->pluck('id')->toArray() : [];
                 }
@@ -2357,26 +2115,26 @@ class OrganizationController extends Controller
                 $location_phone_descriptions = json_encode($location_phone_descriptions);
 
                 // location schedule section
-                $opens_at_location_monday_datas = [];
-                $closes_at_location_monday_datas = [];
+                $opens_location_monday_datas = [];
+                $closes_location_monday_datas = [];
                 $schedule_closed_monday_datas = [];
-                $opens_at_location_tuesday_datas = [];
-                $closes_at_location_tuesday_datas = [];
+                $opens_location_tuesday_datas = [];
+                $closes_location_tuesday_datas = [];
                 $schedule_closed_tuesday_datas = [];
-                $opens_at_location_wednesday_datas = [];
-                $closes_at_location_wednesday_datas = [];
+                $opens_location_wednesday_datas = [];
+                $closes_location_wednesday_datas = [];
                 $schedule_closed_wednesday_datas = [];
-                $opens_at_location_thursday_datas = [];
-                $closes_at_location_thursday_datas = [];
+                $opens_location_thursday_datas = [];
+                $closes_location_thursday_datas = [];
                 $schedule_closed_thursday_datas = [];
-                $opens_at_location_friday_datas = [];
-                $closes_at_location_friday_datas = [];
+                $opens_location_friday_datas = [];
+                $closes_location_friday_datas = [];
                 $schedule_closed_friday_datas = [];
-                $opens_at_location_saturday_datas = [];
-                $closes_at_location_saturday_datas = [];
+                $opens_location_saturday_datas = [];
+                $closes_location_saturday_datas = [];
                 $schedule_closed_saturday_datas = [];
-                $opens_at_location_sunday_datas = [];
-                $closes_at_location_sunday_datas = [];
+                $opens_location_sunday_datas = [];
+                $closes_location_sunday_datas = [];
                 $schedule_closed_sunday_datas = [];
                 $location_holiday_start_dates = [];
                 $location_holiday_end_dates = [];
@@ -2384,22 +2142,28 @@ class OrganizationController extends Controller
                 $location_holiday_close_ats = [];
                 $location_holiday_closeds = [];
                 $j = 0;
+
                 foreach ($organization_locations_data as $key => $value) {
                     if ($value->schedules && !empty($value->schedules) && count($value->schedules) > 0) {
                         foreach ($value->schedules as $key1 => $schedule) {
                             if ($schedule->schedule_holiday == 1) {
                                 $location_holiday_start_dates[$j][] = $schedule->dtstart;
                                 $location_holiday_end_dates[$j][] = $schedule->until;
-                                $location_holiday_open_ats[$j][] = $schedule->opens_at;
-                                $location_holiday_close_ats[$j][] = $schedule->closes_at;
+                                $location_holiday_open_ats[$j][] = $schedule->opens;
+                                $location_holiday_close_ats[$j][] = $schedule->closes;
                                 $location_holiday_closeds[$j][] = $schedule->schedule_closed;
                             } else {
+                                $schedule_closed_array = explode(',', $schedule->schedule_closed);
                                 $weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
                                 for ($i = 0; $i < 7; $i++) {
-                                    if ($schedule->byday == $weekdays[$i]) {
-                                        ${'opens_at_location_' . $weekdays[$i] . '_datas'}[$j] = $schedule->opens_at;
-                                        ${'closes_at_location_' . $weekdays[$i] . '_datas'}[$j] = $schedule->closes_at;
-                                        ${'schedule_closed_' . $weekdays[$i] . '_datas'}[$j] = $schedule->schedule_closed;
+                                    if (str_contains($schedule->weekday, $weekdays[$i])) {
+                                        if (in_array(($i + 1), $schedule_closed_array)) {
+
+                                            ${'schedule_closed_' . $weekdays[$i] . '_datas'}[$j] = in_array(($i + 1), $schedule_closed_array) ? ($i + 1) : '';
+                                        } else {
+                                            ${'opens_location_' . $weekdays[$i] . '_datas'}[$j] = $schedule->opens;
+                                            ${'closes_location_' . $weekdays[$i] . '_datas'}[$j] = $schedule->closes;
+                                        }
                                     }
                                 }
                             }
@@ -2412,36 +2176,36 @@ class OrganizationController extends Controller
                         $location_holiday_closeds[$j][] = '';
                         $weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
                         for ($i = 0; $i < 7; $i++) {
-                            // if ($schedule->byday == $weekdays[$i]) {
-                            ${'opens_at_location_' . $weekdays[$i] . '_datas'}[$j] = '';
-                            ${'closes_at_location_' . $weekdays[$i] . '_datas'}[$j] = '';
+                            // if ($schedule->weekday == $weekdays[$i]) {
+                            ${'opens_location_' . $weekdays[$i] . '_datas'}[$j] = '';
+                            ${'closes_location_' . $weekdays[$i] . '_datas'}[$j] = '';
                             ${'schedule_closed_' . $weekdays[$i] . '_datas'}[$j] = '';
                             // }
                         }
                     }
                     $j = $j + 1;
                 }
-                $opens_at_location_monday_datas = json_encode($opens_at_location_monday_datas);
 
-                $closes_at_location_monday_datas = json_encode($closes_at_location_monday_datas);
+                $opens_location_monday_datas = json_encode($opens_location_monday_datas);
+                $closes_location_monday_datas = json_encode($closes_location_monday_datas);
                 $schedule_closed_monday_datas = json_encode($schedule_closed_monday_datas);
-                $opens_at_location_tuesday_datas = json_encode($opens_at_location_tuesday_datas);
-                $closes_at_location_tuesday_datas = json_encode($closes_at_location_tuesday_datas);
+                $opens_location_tuesday_datas = json_encode($opens_location_tuesday_datas);
+                $closes_location_tuesday_datas = json_encode($closes_location_tuesday_datas);
                 $schedule_closed_tuesday_datas = json_encode($schedule_closed_tuesday_datas);
-                $opens_at_location_wednesday_datas = json_encode($opens_at_location_wednesday_datas);
-                $closes_at_location_wednesday_datas = json_encode($closes_at_location_wednesday_datas);
+                $opens_location_wednesday_datas = json_encode($opens_location_wednesday_datas);
+                $closes_location_wednesday_datas = json_encode($closes_location_wednesday_datas);
                 $schedule_closed_wednesday_datas = json_encode($schedule_closed_wednesday_datas);
-                $opens_at_location_thursday_datas = json_encode($opens_at_location_thursday_datas);
-                $closes_at_location_thursday_datas = json_encode($closes_at_location_thursday_datas);
+                $opens_location_thursday_datas = json_encode($opens_location_thursday_datas);
+                $closes_location_thursday_datas = json_encode($closes_location_thursday_datas);
                 $schedule_closed_thursday_datas = json_encode($schedule_closed_thursday_datas);
-                $opens_at_location_friday_datas = json_encode($opens_at_location_friday_datas);
-                $closes_at_location_friday_datas = json_encode($closes_at_location_friday_datas);
+                $opens_location_friday_datas = json_encode($opens_location_friday_datas);
+                $closes_location_friday_datas = json_encode($closes_location_friday_datas);
                 $schedule_closed_friday_datas = json_encode($schedule_closed_friday_datas);
-                $opens_at_location_saturday_datas = json_encode($opens_at_location_saturday_datas);
-                $closes_at_location_saturday_datas = json_encode($closes_at_location_saturday_datas);
+                $opens_location_saturday_datas = json_encode($opens_location_saturday_datas);
+                $closes_location_saturday_datas = json_encode($closes_location_saturday_datas);
                 $schedule_closed_saturday_datas = json_encode($schedule_closed_saturday_datas);
-                $opens_at_location_sunday_datas = json_encode($opens_at_location_sunday_datas);
-                $closes_at_location_sunday_datas = json_encode($closes_at_location_sunday_datas);
+                $opens_location_sunday_datas = json_encode($opens_location_sunday_datas);
+                $closes_location_sunday_datas = json_encode($closes_location_sunday_datas);
                 $schedule_closed_sunday_datas = json_encode($schedule_closed_sunday_datas);
                 $location_holiday_start_dates = json_encode($location_holiday_start_dates);
                 $location_holiday_end_dates = json_encode($location_holiday_end_dates);
@@ -2455,7 +2219,7 @@ class OrganizationController extends Controller
                     foreach ($organization->phones as $key => $value) {
                         $phone_language_data[$key] = $value->phone_language ? explode(',', $value->phone_language) : [];
                         $languageId = $value->phone_language ? explode(',', $value->phone_language) : [];
-                        $languages = Language::whereIn('language_recordid', $languageId)->pluck('language')->toArray();
+                        $languages = Language::whereIn('language_recordid', $languageId)->pluck('language')->unique()->toArray();
                         $phone_language_name[$key] = implode(', ', $languages);
                     }
                 }
@@ -2469,7 +2233,13 @@ class OrganizationController extends Controller
                 $disposition_list = Disposition::pluck('name', 'id');
                 $method_list = InteractionMethod::pluck('name', 'id');
 
-                return view('frontEnd.organizations.edit', compact('organization', 'map', 'organization_service_list', 'phone_info_list', 'location_info_list',  'rating_info_list', 'all_contacts', 'organizationContacts', 'organization_locations_data', 'all_locations', 'phone_languages', 'all_services', 'taxonomy_info_list', 'schedule_info_list', 'detail_info_list', 'address_info_list', 'service_info_list', 'address_states_list', 'address_city_list', 'phone_type', 'service_alternate_name', 'service_program', 'service_status', 'service_taxonomies', 'service_application_process', 'service_wait_time', 'service_fees', 'service_accreditations', 'service_licenses', 'service_schedules', 'service_details', 'service_address', 'service_metadata', 'service_airs_taxonomy_x', 'location_alternate_name', 'location_transporation', 'location_service', 'location_schedules', 'location_description', 'location_details', 'contact_service', 'contact_department', 'contact_phone_numbers', 'contact_phone_extensions', 'contact_phone_types', 'contact_phone_languages', 'contact_phone_descriptions', 'location_phone_numbers', 'location_phone_extensions', 'location_phone_types', 'location_phone_languages', 'location_phone_descriptions', 'opens_at_location_monday_datas', 'closes_at_location_monday_datas', 'schedule_closed_monday_datas', 'opens_at_location_tuesday_datas', 'closes_at_location_tuesday_datas', 'schedule_closed_tuesday_datas', 'opens_at_location_wednesday_datas', 'closes_at_location_wednesday_datas', 'schedule_closed_wednesday_datas', 'opens_at_location_thursday_datas', 'closes_at_location_thursday_datas', 'schedule_closed_thursday_datas', 'opens_at_location_friday_datas', 'closes_at_location_friday_datas', 'schedule_closed_friday_datas', 'opens_at_location_saturday_datas', 'closes_at_location_saturday_datas', 'schedule_closed_saturday_datas', 'opens_at_location_sunday_datas', 'closes_at_location_sunday_datas', 'schedule_closed_sunday_datas', 'location_holiday_start_dates', 'location_holiday_end_dates', 'location_holiday_open_ats', 'location_holiday_close_ats', 'location_holiday_closeds', 'phone_language_data', 'organizationAudits', 'organizationStatus', 'contactServices', 'contactOrganization', 'phone_language_name', 'all_phones', 'location_accessibility', 'location_accessibility_details', 'location_regions', 'regions', 'method_list', 'disposition_list'));
+                $parent_organizations = Organization::where('id', '!=', $organization->id)->pluck('organization_name', 'organization_recordid');
+
+                $all_programs = Program::with('organization')->distinct()->get();
+
+                $accessibilities = Accessibility::pluck('accessibility', 'id');
+
+                return view('frontEnd.organizations.edit', compact('organization', 'map', 'organization_service_list', 'phone_info_list', 'location_info_list', 'rating_info_list', 'all_contacts', 'organizationContacts', 'organization_locations_data', 'all_locations', 'phone_languages', 'all_services', 'taxonomy_info_list', 'schedule_info_list', 'detail_info_list', 'address_info_list', 'service_info_list', 'address_states_list', 'address_city_list', 'phone_type', 'service_alternate_name', 'service_program', 'service_status', 'service_taxonomies', 'service_application_process', 'service_wait_time', 'service_fees', 'service_accreditations', 'service_licenses', 'service_schedules', 'service_details', 'service_address', 'service_metadata', 'service_airs_taxonomy_x', 'location_alternate_name', 'location_transporation', 'location_service', 'location_schedules', 'location_description', 'location_details', 'contact_service', 'contact_department', 'contact_phone_numbers', 'contact_phone_extensions', 'contact_phone_types', 'contact_phone_languages', 'contact_phone_descriptions', 'location_phone_numbers', 'location_phone_extensions', 'location_phone_types', 'location_phone_languages', 'location_phone_descriptions', 'opens_location_monday_datas', 'closes_location_monday_datas', 'schedule_closed_monday_datas', 'opens_location_tuesday_datas', 'closes_location_tuesday_datas', 'schedule_closed_tuesday_datas', 'opens_location_wednesday_datas', 'closes_location_wednesday_datas', 'schedule_closed_wednesday_datas', 'opens_location_thursday_datas', 'closes_location_thursday_datas', 'schedule_closed_thursday_datas', 'opens_location_friday_datas', 'closes_location_friday_datas', 'schedule_closed_friday_datas', 'opens_location_saturday_datas', 'closes_location_saturday_datas', 'schedule_closed_saturday_datas', 'opens_location_sunday_datas', 'closes_location_sunday_datas', 'schedule_closed_sunday_datas', 'location_holiday_start_dates', 'location_holiday_end_dates', 'location_holiday_open_ats', 'location_holiday_close_ats', 'location_holiday_closeds', 'phone_language_data', 'organizationAudits', 'organizationStatus', 'contactServices', 'contactOrganization', 'phone_language_name', 'all_phones', 'location_accessibility', 'location_accessibility_details', 'location_regions', 'regions', 'method_list', 'disposition_list', 'parent_organizations', 'all_programs', 'accessibilities'));
             } else {
                 Session::flash('message', 'Warning! Not enough permissions. Please contact Us for more');
                 Session::flash('status', 'warning');
@@ -2485,12 +2255,13 @@ class OrganizationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
+        // dd($request);
         $this->validate($request, [
             'organization_name' => 'required',
             // 'organization_description' => 'required',
@@ -2501,8 +2272,6 @@ class OrganizationController extends Controller
             ]);
         }
         try {
-            $organization_old = Organization::where('organization_recordid', $id)->first();
-
             $organization = Organization::find($id);
             $organization->organization_name = $request->organization_name;
             $organization->organization_alternate_name = $request->organization_alternate_name;
@@ -2518,237 +2287,35 @@ class OrganizationController extends Controller
             $organization->facebook_url = $request->facebook_url;
             $organization->twitter_url = $request->twitter_url;
             $organization->instagram_url = $request->instagram_url;
+            $organization->parent_organization = $request->parent_organization;
 
-            // if ($request->organization_year_incorporated) {
-            //     $organization->organization_year_incorporated = join(',', $request->organization_year_incorporated);
-            // } else {
-            //     $organization->organization_year_incorporated = '';
-            // }
-            $organization->organization_year_incorporated =  $request->organization_year_incorporated;
+            $organization->organization_year_incorporated = $request->organization_year_incorporated;
 
-            // if ($request->organization_services) {
-            //     $organization->organization_services = join(',', $request->organization_services);
-            //     ServiceOrganization::where('organization_recordid', $organization->organization_recordid)->delete();
-            //     foreach ($request->organization_services as $key => $serviceId) {
-            //         ServiceOrganization::create([
-            //             'service_recordid' => $serviceId,
-            //             'organization_recordid' => $organization->organization_recordid
-            //         ]);
-            //     }
-            // } else {
-            //     $organization->organization_services = '';
-            // }
+
+            if ($request->has('logo_type')) {
+                $link = '';
+                if ($request->logo_type == 'file' && $request->hasFile('logo')) {
+                    $link = $request->file('logo')->store('uploads', 'public');
+                    $link = Storage::url($link);
+                } else if ($request->logo_type == 'url' && $request->logo) {
+                    $link = $request->logo;
+                } else {
+                    $link = $organization->logo;
+                }
+                $organization->logo = $link;
+            }
+
             $oldOrganizationContact = Contact::where('contact_organizations', '=', $id)->get();
-
             foreach ($oldOrganizationContact as $contact) {
                 $contact->contact_organizations = '';
                 $contact->save();
             }
-            // service section
-            // $service_recordids = [];
-            // Service::where('service_organization', $id)->update(['service_organization' => '']);
-            // if ($request->service_name && $request->service_name[0] != null) {
-            //     $service_alternate_name = $request->service_alternate_name && count($request->service_alternate_name) > 0 ? json_decode($request->service_alternate_name[0]) : [];
-            //     $service_program = $request->service_program && count($request->service_program) > 0 ? json_decode($request->service_program[0]) : [];
-            //     $service_status = $request->service_status && count($request->service_status) > 0 ? json_decode($request->service_status[0]) : [];
-            //     $service_taxonomies = $request->service_taxonomies && count($request->service_taxonomies) > 0 ? json_decode($request->service_taxonomies[0]) : [];
-            //     $service_application_process = $request->service_application_process && count($request->service_application_process) > 0 ? json_decode($request->service_application_process[0]) : [];
-            //     $service_wait_time = $request->service_wait_time && count($request->service_wait_time) > 0 ? json_decode($request->service_wait_time[0]) : [];
-            //     $service_fees = $request->service_fees && count($request->service_fees) > 0 ? json_decode($request->service_fees[0]) : [];
-            //     $service_accreditations = $request->service_accreditations && count($request->service_accreditations) > 0 ? json_decode($request->service_accreditations[0]) : [];
-            //     $service_licenses = $request->service_licenses && count($request->service_licenses) > 0 ? json_decode($request->service_licenses[0]) : [];
-            //     $service_schedules = $request->service_schedules && count($request->service_schedules) > 0 ? json_decode($request->service_schedules[0]) : [];
-            //     $service_details = $request->service_details && count($request->service_details) > 0 ? json_decode($request->service_details[0]) : [];
-            //     $service_address = $request->service_address && count($request->service_address) > 0 ? json_decode($request->service_address[0]) : [];
-            //     $service_metadata = $request->service_metadata && count($request->service_metadata) > 0 ? json_decode($request->service_metadata[0]) : [];
-            //     $service_airs_taxonomy_x = $request->service_airs_taxonomy_x && count($request->service_airs_taxonomy_x) > 0 ? json_decode($request->service_airs_taxonomy_x[0]) : [];
-            //     for ($i = 0; $i < count($request->service_name); $i++) {
-            //         $service_phone_recordid_list = [];
-            //         if ($request->serviceRadio[$i] == 'new_data') {
-            //             $service = new Service();
-            //             $service->service_recordid = Service::max('service_recordid') + 1;
-            //             $service->service_name = $request->service_name[$i];
-            //             $service->service_description = $request->service_description[$i];
-            //             $service->service_url = $request->service_url[$i];
-            //             $service->service_email = $request->service_email[$i];
-            //             $service->service_organization = $id;
 
-            //             $service->service_alternate_name = $service_alternate_name[$i];
-            //             $service->service_program = $service_program[$i];
 
-            //             if ($service_status[$i] == '1') {
-            //                 $service->service_status = 'Verified';
-            //             } else {
-            //                 $service->service_status = '';
-            //             }
-            //             $service->service_taxonomy = join(',', $service_taxonomies[$i]);
-            //             $service->service_application_process = $service_application_process[$i];
-            //             $service->service_wait_time = $service_wait_time[$i];
-            //             $service->service_fees = $service_fees[$i];
-            //             $service->service_accreditations = $service_accreditations[$i];
-            //             $service->service_licenses = $service_licenses[$i];
-            //             if ($service_schedules[$i]) {
-            //                 $service->service_schedule = join(',', $service_schedules[$i]);
-            //             } else {
-            //                 $service->service_schedule = '';
-            //             }
-            //             // $service->service_details = $service_details[$i];
-            //             if ($service_details[$i]) {
-            //                 $service->service_details = join(',', $service_details[$i]);
-            //             } else {
-            //                 $service->service_details = '';
-            //             }
-            //             // $service->service_address = $service_address[$i];
-            //             if ($service_address[$i]) {
-            //                 $service->service_address = join(',', $service_address[$i]);
-            //             } else {
-            //                 $service->service_address = '';
-            //             }
-            //             $service->service_metadata = $service_metadata[$i];
-            //             $service->service_airs_taxonomy_x = $service_airs_taxonomy_x[$i];
-            //             // $service->service_phones = $request->service_phone[$i];
+            $this->saveOrganizationProgram($request, $organization);
 
-            //             $phone_info = Phone::where('phone_number', '=', $request->service_phone[$i])->first();
-            //             if ($phone_info) {
-            //                 $service->service_phones = $service->service_phones . $phone_info->phone_recordid . ',';
-            //                 $phone_info->phone_number = $request->service_phone[$i];
-            //                 $phone_info->save();
-            //                 array_push($service_phone_recordid_list, $phone_info->phone_recordid);
-            //             } else {
-            //                 $new_phone = new Phone;
-            //                 $new_phone_recordid = Phone::max('phone_recordid') + 1;
-            //                 $new_phone->phone_recordid = $new_phone_recordid;
-            //                 $new_phone->phone_number = $request->service_phone[$i];
-            //                 $new_phone->save();
-            //                 $service->service_phones = $service->service_phones . $new_phone_recordid . ',';
-            //                 array_push($service_phone_recordid_list, $new_phone_recordid);
-            //             }
-            //             array_push($service_recordids, Service::max('service_recordid') + 1);
-            //             $service->address()->sync($service_address[$i]);
-            //             $service->details()->sync($service_details[$i]);
-            //             $service->schedules()->sync($service_schedules[$i]);
-            //             $service->taxonomy()->sync($service_taxonomies[$i]);
-            //             $service->phone()->sync($service_phone_recordid_list);
-            //             $service->save();
-            //         } else {
-            //             $updating_service = Service::where('service_recordid', '=', $request->service_recordid[$i])->first();
-
-            //             if ($updating_service) {
-            //                 $updating_service->service_name = $request->service_name[$i];
-            //                 $updating_service->service_description = $request->service_description[$i];
-            //                 $updating_service->service_url = $request->service_url[$i];
-            //                 $updating_service->service_email = $request->service_email[$i];
-            //                 $updating_service->service_organization = $id;
-            //                 // $service->service_phones = $request->service_phone[$i];
-
-            //                 $updating_service->service_alternate_name = $service_alternate_name[$i];
-            //                 $updating_service->service_program = $service_program[$i];
-
-            //                 if ($service_status[$i] == '1') {
-            //                     $updating_service->service_status = 'Verified';
-            //                 } else {
-            //                     $updating_service->service_status = '';
-            //                 }
-            //                 $updating_service->service_taxonomy = join(',', $service_taxonomies[$i]);
-            //                 $updating_service->service_application_process = $service_application_process[$i];
-            //                 $updating_service->service_wait_time = $service_wait_time[$i];
-            //                 $updating_service->service_fees = $service_fees[$i];
-            //                 $updating_service->service_accreditations = $service_accreditations[$i];
-            //                 $updating_service->service_licenses = $service_licenses[$i];
-            //                 if ($service_schedules[$i]) {
-            //                     $updating_service->service_schedule = join(',', $service_schedules[$i]);
-            //                 } else {
-            //                     $updating_service->service_schedule = '';
-            //                 }
-            //                 // $updating_service->service_details = $service_details[$i];
-            //                 if ($service_details[$i]) {
-            //                     $updating_service->service_details = join(',', $service_details[$i]);
-            //                 } else {
-            //                     $updating_service->service_details = '';
-            //                 }
-            //                 // $updating_service->service_address = $service_address[$i];
-            //                 if ($service_address[$i]) {
-            //                     $updating_service->service_address = join(',', $service_address[$i]);
-            //                 } else {
-            //                     $updating_service->service_address = '';
-            //                 }
-            //                 $updating_service->service_metadata = $service_metadata[$i];
-            //                 $updating_service->service_airs_taxonomy_x = $service_airs_taxonomy_x[$i];
-            //                 // $updating_service->service_phones = $request->service_phone[$i];
-
-            //                 $phone_info = Phone::where('phone_number', '=', $request->service_phone[$i])->first();
-            //                 if ($phone_info) {
-            //                     $updating_service->service_phones = $updating_service->service_phones . $phone_info->phone_recordid . ',';
-            //                     $phone_info->phone_number = $request->service_phone[$i];
-            //                     $phone_info->save();
-            //                     array_push($service_phone_recordid_list, $phone_info->phone_recordid);
-            //                 } else {
-            //                     $new_phone = new Phone;
-            //                     $new_phone_recordid = Phone::max('phone_recordid') + 1;
-            //                     $new_phone->phone_recordid = $new_phone_recordid;
-            //                     $new_phone->phone_number = $request->service_phone[$i];
-            //                     $new_phone->save();
-            //                     $updating_service->service_phones = $updating_service->service_phones . $new_phone_recordid . ',';
-            //                     array_push($service_phone_recordid_list, $new_phone_recordid);
-            //                 }
-            //                 array_push($service_recordids, Service::max('service_recordid') + 1);
-            //                 $updating_service->address()->sync($service_address[$i]);
-            //                 $updating_service->details()->sync($service_details[$i]);
-            //                 $updating_service->schedules()->sync($service_schedules[$i]);
-            //                 $updating_service->taxonomy()->sync($service_taxonomies[$i]);
-            //                 $updating_service->phone()->sync($service_phone_recordid_list);
-            //                 $updating_service->save();
-            //                 array_push($service_recordids, $updating_service->service_recordid);
-            //             }
-            //         }
-            //     }
-            // }
-            // $organization->getServices()->sync($service_recordids);
-            // if ($request->organization_contacts) {
-            //     $contact_recordid_list = $request->organization_contacts;
-            //     foreach ($contact_recordid_list as $key => $value) {
-            //         $updating_contact = Contact::where('contact_recordid', '=', $value)->first();
-            //         $updating_contact->contact_organizations = $id;
-            //         $updating_contact->save();
-            //     }
-            // }
-
-            // if ($request->organization_phones) {
-            //     $phone_recordids = [];
-            //     foreach ($request->organization_phones as $key => $number) {
-            //         $phone = Phone::where('phone_number', $number);
-            //         if ($phone->count() > 0) {
-            //             $phone_record_id = $phone->first()->phone_recordid;
-            //             array_push($phone_recordids, $phone_record_id);
-            //         } else {
-            //             $new_phone = new Phone;
-            //             $new_phone_recordid = Phone::max('phone_recordid') + 1;
-            //             $new_phone->phone_recordid = $new_phone_recordid;
-            //             $new_phone->phone_number = $number;
-            //             $new_phone->save();
-            //             array_push($phone_recordids, $new_phone_recordid);
-            //         }
-            //     }
-            //     $organization->phones()->sync($phone_recordids);
-            // }
 
             $phone_recordids = [];
-            // if ($request->organization_phones) {
-            //     $number = $request->organization_phones;
-            //     $phone = Phone::where('phone_number', $number);
-            //     if ($phone->count() > 0) {
-            //         $phone_record_id = $phone->first()->phone_recordid;
-            //         array_push($phone_recordids, $phone_record_id);
-            //     } else {
-            //         $new_phone = new Phone;
-            //         $new_phone_recordid = Phone::max('phone_recordid') + 1;
-            //         $new_phone->phone_recordid = $new_phone_recordid;
-            //         $new_phone->phone_number = $number;
-            //         $new_phone->save();
-            //         array_push($phone_recordids, $new_phone_recordid);
-            //     }
-
-            // }
 
             if ($request->organization_phones) {
                 $organization_phone_number_list = $request->organization_phones;
@@ -2889,7 +2456,7 @@ class OrganizationController extends Controller
                                         $phone_info->phone_number = $contact_phone_numbers[$i][$p];
                                         $phone_info->phone_extension = $contact_phone_extensions[$i][$p];
                                         $phone_info->phone_type = $contact_phone_types[$i][$p];
-                                        $phone_info->phone_language = isset($contact_phone_languages[$i][$p]) && is_array($contact_phone_languages[$i][$p]) && count($contact_phone_languages[$i][$p]) > 0  ? implode(',', $contact_phone_languages[$i][$p]) : '';
+                                        $phone_info->phone_language = isset($contact_phone_languages[$i][$p]) && is_array($contact_phone_languages[$i][$p]) && count($contact_phone_languages[$i][$p]) > 0 ? implode(',', $contact_phone_languages[$i][$p]) : '';
                                         $phone_info->phone_description = $contact_phone_descriptions[$i][$p];
                                         $phone_info->save();
                                         array_push($contact_phone_recordid_list, $phone_info->phone_recordid);
@@ -2900,7 +2467,7 @@ class OrganizationController extends Controller
                                         $new_phone->phone_number = $contact_phone_numbers[$i][$p];
                                         $new_phone->phone_extension = $contact_phone_extensions[$i][$p];
                                         $new_phone->phone_type = $contact_phone_types[$i][$p];
-                                        $new_phone->phone_language = isset($contact_phone_languages[$i][$p]) && is_array($contact_phone_languages[$i][$p]) && count($contact_phone_languages[$i][$p]) > 0  ? implode(',', $contact_phone_languages[$i][$p]) : '';
+                                        $new_phone->phone_language = isset($contact_phone_languages[$i][$p]) && is_array($contact_phone_languages[$i][$p]) && count($contact_phone_languages[$i][$p]) > 0 ? implode(',', $contact_phone_languages[$i][$p]) : '';
                                         $new_phone->phone_description = $contact_phone_descriptions[$i][$p];
                                         $new_phone->save();
                                         $contact->contact_phones = $contact->contact_phones . $new_phone_recordid . ',';
@@ -2928,6 +2495,7 @@ class OrganizationController extends Controller
                 // accessibility
                 $location_accessibility = $request->location_accessibility && count($request->location_accessibility) > 0 ? json_decode($request->location_accessibility[0], true) : [];
                 $location_accessibility_details = $request->location_accessibility_details && count($request->location_accessibility_details) > 0 ? json_decode($request->location_accessibility_details[0], true) : [];
+
                 $location_regions = $request->location_regions && count($request->location_regions) > 0 ? json_decode($request->location_regions[0], true) : [];
 
                 for ($i = 0; $i < count($request->location_name); $i++) {
@@ -2941,40 +2509,12 @@ class OrganizationController extends Controller
                     $location_phone_languages = $request->location_phone_languages && count($request->location_phone_languages) ? json_decode($request->location_phone_languages[0], true) : [];
                     $location_phone_descriptions = $request->location_phone_descriptions && count($request->location_phone_descriptions) ? json_decode($request->location_phone_descriptions[0], true) : [];
 
-                    // location schedule section
-                    $opens_at_location_monday_datas = $request->opens_at_location_monday_datas  ? json_decode($request->opens_at_location_monday_datas, true) : [];
-                    $closes_at_location_monday_datas = $request->closes_at_location_monday_datas  ? json_decode($request->closes_at_location_monday_datas, true) : [];
-                    $schedule_closed_monday_datas = $request->schedule_closed_monday_datas  ? json_decode($request->schedule_closed_monday_datas, true) : [];
-
-                    $opens_at_location_tuesday_datas = $request->opens_at_location_tuesday_datas  ? json_decode($request->opens_at_location_tuesday_datas, true) : [];
-                    $closes_at_location_tuesday_datas = $request->closes_at_location_tuesday_datas  ? json_decode($request->closes_at_location_tuesday_datas, true) : [];
-                    $schedule_closed_tuesday_datas = $request->schedule_closed_tuesday_datas  ? json_decode($request->schedule_closed_tuesday_datas, true) : [];
-
-                    $opens_at_location_wednesday_datas = $request->opens_at_location_wednesday_datas  ? json_decode($request->opens_at_location_wednesday_datas, true) : [];
-                    $closes_at_location_wednesday_datas = $request->closes_at_location_wednesday_datas  ? json_decode($request->closes_at_location_wednesday_datas, true) : [];
-                    $schedule_closed_wednesday_datas = $request->schedule_closed_wednesday_datas  ? json_decode($request->schedule_closed_wednesday_datas, true) : [];
-
-                    $opens_at_location_thursday_datas = $request->opens_at_location_thursday_datas  ? json_decode($request->opens_at_location_thursday_datas, true) : [];
-                    $closes_at_location_thursday_datas = $request->closes_at_location_thursday_datas  ? json_decode($request->closes_at_location_thursday_datas, true) : [];
-                    $schedule_closed_thursday_datas = $request->schedule_closed_thursday_datas  ? json_decode($request->schedule_closed_thursday_datas, true) : [];
-
-                    $opens_at_location_friday_datas = $request->opens_at_location_friday_datas  ? json_decode($request->opens_at_location_friday_datas, true) : [];
-                    $closes_at_location_friday_datas = $request->closes_at_location_friday_datas  ? json_decode($request->closes_at_location_friday_datas, true) : [];
-                    $schedule_closed_friday_datas = $request->schedule_closed_friday_datas  ? json_decode($request->schedule_closed_friday_datas, true) : [];
-
-                    $opens_at_location_saturday_datas = $request->opens_at_location_saturday_datas  ? json_decode($request->opens_at_location_saturday_datas, true) : [];
-                    $closes_at_location_saturday_datas = $request->closes_at_location_saturday_datas  ? json_decode($request->closes_at_location_saturday_datas, true) : [];
-                    $schedule_closed_saturday_datas = $request->schedule_closed_saturday_datas  ? json_decode($request->schedule_closed_saturday_datas, true) : [];
-
-                    $opens_at_location_sunday_datas = $request->opens_at_location_sunday_datas  ? json_decode($request->opens_at_location_sunday_datas, true) : [];
-                    $closes_at_location_sunday_datas = $request->closes_at_location_sunday_datas  ? json_decode($request->closes_at_location_sunday_datas, true) : [];
-                    $schedule_closed_sunday_datas = $request->schedule_closed_sunday_datas  ? json_decode($request->schedule_closed_sunday_datas, true) : [];
                     // holiday section
-                    $location_holiday_start_dates = $request->location_holiday_start_dates  ? json_decode($request->location_holiday_start_dates, true) : [];
-                    $location_holiday_end_dates = $request->location_holiday_end_dates  ? json_decode($request->location_holiday_end_dates, true) : [];
-                    $location_holiday_open_ats = $request->location_holiday_open_ats  ? json_decode($request->location_holiday_open_ats, true) : [];
-                    $location_holiday_close_ats = $request->location_holiday_close_ats  ? json_decode($request->location_holiday_close_ats, true) : [];
-                    $location_holiday_closeds = $request->location_holiday_closeds  ? json_decode($request->location_holiday_closeds, true) : [];
+                    $location_holiday_start_dates = $request->location_holiday_start_dates ? json_decode($request->location_holiday_start_dates, true) : [];
+                    $location_holiday_end_dates = $request->location_holiday_end_dates ? json_decode($request->location_holiday_end_dates, true) : [];
+                    $location_holiday_open_ats = $request->location_holiday_open_ats ? json_decode($request->location_holiday_open_ats, true) : [];
+                    $location_holiday_close_ats = $request->location_holiday_close_ats ? json_decode($request->location_holiday_close_ats, true) : [];
+                    $location_holiday_closeds = $request->location_holiday_closeds ? json_decode($request->location_holiday_closeds, true) : [];
 
                     if ($request->locationRadio[$i] == 'new_data') {
                         $location = new Location();
@@ -2991,14 +2531,15 @@ class OrganizationController extends Controller
                         $location->location_details = $location_details[$i];
 
                         // accessesibility
-
-                        if (isset($location_accessibility[$i]) && isset($location_accessibility_details[$i])) {
-                            Accessibility::create([
-                                'accessibility_recordid' => Accessibility::max('accessibility_recordid') + 1,
-                                'accessibility' => $location_accessibility[$i],
-                                'accessibility_details' => $location_accessibility_details[$i],
-                                'accessibility_location' => $newLocationId
-                            ]);
+                        if (!empty($location_accessibility[$i]) && !empty($location_accessibility_details[$i])) {
+                            // Accessibility::create([
+                            //     'accessibility_recordid' => Accessibility::max('accessibility_recordid') + 1,
+                            //     'accessibility' => $location_accessibility[$i],
+                            //     'accessibility_details' => $location_accessibility_details[$i],
+                            //     'accessibility_location' => $newLocationId
+                            // ]);
+                            $location->accessibility_recordid = $location_accessibility[$i];
+                            $location->accessibility_details = $location_accessibility_details[$i];
                         }
                         if (isset($location_regions[$i])) {
                             $location->regions()->sync($location_regions[$i]);
@@ -3012,13 +2553,13 @@ class OrganizationController extends Controller
                         $location_service[$i] = is_array($location_service[$i]) ? array_values(array_filter($location_service[$i])) : [];
                         $location->services()->sync($location_service[$i]);
 
-                        if ($location_schedules[$i]) {
-                            $location->location_schedule = join(',', $location_schedules[$i]);
-                        } else {
-                            $location->location_schedule = '';
-                        }
-                        $location_schedules[$i] = is_array($location_schedules[$i]) ? array_values(array_filter($location_schedules[$i])) : [];
-                        $location->schedules()->sync($location_schedules[$i]);
+                        // if ($location_schedules[$i]) {
+                        //     $location->location_schedule = join(',', $location_schedules[$i]);
+                        // } else {
+                        //     $location->location_schedule = '';
+                        // }
+                        // $location_schedules[$i] = is_array($location_schedules[$i]) ? array_values(array_filter($location_schedules[$i])) : [];
+                        // $location->schedules()->sync($location_schedules[$i]);
 
                         // location address
                         $address_info = Address::where('address_1', '=', $request->location_address[$i])->first();
@@ -3039,7 +2580,7 @@ class OrganizationController extends Controller
                             $new_address->address_state_province = $request->location_state[$i];
                             $new_address->address_postal_code = $request->location_zipcode[$i];
                             $new_address->save();
-                            $location->location_address =  $new_address_recordid;
+                            $location->location_address = $new_address_recordid;
                             // $location->location_address = $location->location_addresss . $new_address_recordid . ',';
                             array_push($location_address_recordid_list, $new_address_recordid);
                         }
@@ -3055,7 +2596,7 @@ class OrganizationController extends Controller
                                     $phone_info->phone_number = $location_phone_numbers[$i][$p];
                                     $phone_info->phone_extension = $location_phone_extensions[$i][$p];
                                     $phone_info->phone_type = $location_phone_types[$i][$p];
-                                    $phone_info->phone_language = isset($location_phone_languages[$i][$p])  && is_array($location_phone_languages[$i][$p]) && count($location_phone_languages[$i][$p]) > 0 ? implode(',', $location_phone_languages[$i][$p]) : '';
+                                    $phone_info->phone_language = isset($location_phone_languages[$i][$p]) && is_array($location_phone_languages[$i][$p]) && count($location_phone_languages[$i][$p]) > 0 ? implode(',', $location_phone_languages[$i][$p]) : '';
                                     $phone_info->phone_description = $location_phone_descriptions[$i][$p];
                                     $phone_info->save();
                                     array_push($location_phone_recordid_list, $phone_info->phone_recordid);
@@ -3066,7 +2607,7 @@ class OrganizationController extends Controller
                                     $new_phone->phone_number = $location_phone_numbers[$i][$p];
                                     $new_phone->phone_extension = $location_phone_extensions[$i][$p];
                                     $new_phone->phone_type = $location_phone_types[$i][$p];
-                                    $new_phone->phone_language = isset($location_phone_languages[$i][$p])  && is_array($location_phone_languages[$i][$p]) && count($location_phone_languages[$i][$p]) > 0 ? implode(',', $location_phone_languages[$i][$p]) : '';
+                                    $new_phone->phone_language = isset($location_phone_languages[$i][$p]) && is_array($location_phone_languages[$i][$p]) && count($location_phone_languages[$i][$p]) > 0 ? implode(',', $location_phone_languages[$i][$p]) : '';
                                     $new_phone->phone_description = $location_phone_descriptions[$i][$p];
                                     $new_phone->save();
                                     // $location->location_phones = $location->location_phones . $new_phone_recordid . ',';
@@ -3076,54 +2617,20 @@ class OrganizationController extends Controller
                         }
 
                         // schedule section
-                        $schedule_locations = [];
+                        $schedule_locations = $this->saveLocationSchedule($request, $i, $location_recordid);
 
-                        if ($opens_at_location_monday_datas && isset($opens_at_location_monday_datas[$i]) &&  $opens_at_location_monday_datas[$i] != null) {
-                            $weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-                            for ($s = 0; $s < 7; $s++) {
-
-                                $schedules = Schedule::where('schedule_locations', $location_recordid)->where('byday', $weekdays[$s])->first();
-                                if ($schedules) {
-                                    $schedules->byday = $weekdays[$s];
-                                    $schedules->opens_at = isset(${'opens_at_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'opens_at_location_' . $weekdays[$s] . '_datas'}[$i] : '';
-                                    $schedules->closes_at = isset(${'closes_at_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'closes_at_location_' . $weekdays[$s] . '_datas'}[$i] : '';
-                                    if (isset(${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i]) &&  ${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i] == ($s + 1)) {
-                                        $schedules->schedule_closed = $s + 1;
-                                    } else {
-                                        $schedules->schedule_closed = null;
-                                    }
-                                    $schedules->save();
-                                    $schedule_locations[] = $schedules->schedule_recordid;
-                                } else {
-                                    $schedule_recordid = Schedule::max('schedule_recordid') + 1;
-                                    $schedules = new Schedule();
-                                    $schedules->schedule_recordid = $schedule_recordid;
-                                    $schedules->schedule_locations = $location_recordid;
-                                    $schedules->byday = $weekdays[$s];
-                                    $schedules->opens_at = isset(${'opens_at_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'opens_at_location_' . $weekdays[$s] . '_datas'}[$i] : '';
-                                    $schedules->closes_at = isset(${'closes_at_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'closes_at_location_' . $weekdays[$s] . '_datas'}[$i] : '';
-                                    if (isset(${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i]) &&  ${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i] == ($s + 1)) {
-                                        $schedules->schedule_closed = $s + 1;
-                                    } else {
-                                        $schedules->schedule_closed = null;
-                                    }
-                                    $schedules->save();
-                                    $schedule_locations[] = $schedule_recordid;
-                                }
-                            }
-                        }
                         if ($location_holiday_start_dates && isset($location_holiday_start_dates[$i]) && $location_holiday_start_dates[$i] != null) {
-                            Schedule::where('schedule_locations', $location_recordid)->where('schedule_holiday', '1')->delete();
+                            Schedule::where('locations', $location_recordid)->where('schedule_holiday', '1')->delete();
                             for ($hs = 0; $hs < count($location_holiday_start_dates[$i]); $hs++) {
 
                                 $schedule_recordid = Schedule::max('schedule_recordid') + 1;
                                 $schedules = new Schedule();
                                 $schedules->schedule_recordid = $schedule_recordid;
-                                $schedules->schedule_locations = $location_recordid;
+                                $schedules->locations = $location_recordid;
                                 $schedules->dtstart = $location_holiday_start_dates[$i][$hs];
                                 $schedules->until = $location_holiday_end_dates[$i][$hs];
-                                $schedules->opens_at = $location_holiday_open_ats[$i][$hs];
-                                $schedules->closes_at = $location_holiday_close_ats[$i][$hs];
+                                $schedules->opens = $location_holiday_open_ats[$i][$hs];
+                                $schedules->closes = $location_holiday_close_ats[$i][$hs];
                                 if ($location_holiday_closeds[$i][$hs] == 1) {
                                     $schedules->schedule_closed = '1';
                                 }
@@ -3134,6 +2641,7 @@ class OrganizationController extends Controller
                         }
                         $location_phone_recordid_list = is_array($location_phone_recordid_list) ? array_values(array_filter($location_phone_recordid_list)) : [];
                         $location->location_schedule = join(',', $schedule_locations);
+                        $location->schedules()->sync($schedule_locations);
                         $location->phones()->sync($location_phone_recordid_list);
 
                         $location_address_recordid_list = is_array($location_address_recordid_list) ? array_values(array_filter($location_address_recordid_list)) : [];
@@ -3154,14 +2662,16 @@ class OrganizationController extends Controller
 
 
                             // accessesibility
-                            if (isset($location_accessibility[$i]) && isset($location_accessibility_details[$i])) {
-                                Accessibility::updateOrCreate([
-                                    'accessibility_location' => $request->location_recordid[$i]
-                                ], [
-                                    'accessibility_recordid' => Accessibility::max('accessibility_recordid') + 1,
-                                    'accessibility' => $location_accessibility[$i],
-                                    'accessibility_details' => $location_accessibility_details[$i],
-                                ]);
+                            if (!empty($location_accessibility[$i]) && !empty($location_accessibility_details[$i])) {
+                                // Accessibility::updateOrCreate([
+                                //     'accessibility_location' => $request->location_recordid[$i]
+                                // ], [
+                                //     'accessibility_recordid' => Accessibility::max('accessibility_recordid') + 1,
+                                //     'accessibility' => $location_accessibility[$i],
+                                //     'accessibility_details' => $location_accessibility_details[$i],
+                                // ]);
+                                $location->accessibility_recordid = $location_accessibility[$i];
+                                $location->accessibility_details = $location_accessibility_details[$i];
                             }
                             if (isset($location_regions[$i])) {
                                 $location->regions()->sync($location_regions[$i]);
@@ -3175,13 +2685,13 @@ class OrganizationController extends Controller
                             $location_service[$i] = is_array($location_service[$i]) ? array_values(array_filter($location_service[$i])) : [];
                             $location->services()->sync($location_service[$i]);
 
-                            if ($location_schedules[$i]) {
-                                $location->location_schedule = join(',', $location_schedules[$i]);
-                            } else {
-                                $location->location_schedule = '';
-                            }
-                            $location_schedules[$i] = is_array($location_schedules[$i]) ? array_values(array_filter($location_schedules[$i])) : [];
-                            $location->schedules()->sync($location_schedules[$i]);
+                            // if ($location_schedules[$i]) {
+                            //     $location->location_schedule = join(',', $location_schedules[$i]);
+                            // } else {
+                            //     $location->location_schedule = '';
+                            // }
+                            // $location_schedules[$i] = is_array($location_schedules[$i]) ? array_values(array_filter($location_schedules[$i])) : [];
+                            // $location->schedules()->sync($location_schedules[$i]);
 
                             $address_info = Address::where('address_1', '=', $request->location_address[$i])->first();
                             if ($address_info) {
@@ -3201,7 +2711,7 @@ class OrganizationController extends Controller
                                 $new_address->address_state_province = $request->location_state[$i];
                                 $new_address->address_postal_code = $request->location_zipcode[$i];
                                 $new_address->save();
-                                $location->location_address =  $new_address_recordid;
+                                $location->location_address = $new_address_recordid;
                                 array_push($location_address_recordid_list, $new_address_recordid);
                             }
                             // location phone
@@ -3215,7 +2725,7 @@ class OrganizationController extends Controller
                                         $phone_info->phone_number = $location_phone_numbers[$i][$p];
                                         $phone_info->phone_extension = $location_phone_extensions[$i][$p];
                                         $phone_info->phone_type = $location_phone_types[$i][$p];
-                                        $phone_info->phone_language = isset($location_phone_languages[$i][$p])  && is_array($location_phone_languages[$i][$p]) && count($location_phone_languages[$i][$p]) > 0 ? implode(',', $location_phone_languages[$i][$p]) : '';
+                                        $phone_info->phone_language = isset($location_phone_languages[$i][$p]) && is_array($location_phone_languages[$i][$p]) && count($location_phone_languages[$i][$p]) > 0 ? implode(',', $location_phone_languages[$i][$p]) : '';
                                         $phone_info->phone_description = $location_phone_descriptions[$i][$p];
                                         $phone_info->save();
                                         array_push($location_phone_recordid_list, $phone_info->phone_recordid);
@@ -3226,7 +2736,7 @@ class OrganizationController extends Controller
                                         $new_phone->phone_number = $location_phone_numbers[$i][$p];
                                         $new_phone->phone_extension = $location_phone_extensions[$i][$p];
                                         $new_phone->phone_type = $location_phone_types[$i][$p];
-                                        $new_phone->phone_language = isset($location_phone_languages[$i][$p])  && is_array($location_phone_languages[$i][$p]) && count($location_phone_languages[$i][$p]) > 0 ? implode(',', $location_phone_languages[$i][$p]) : '';
+                                        $new_phone->phone_language = isset($location_phone_languages[$i][$p]) && is_array($location_phone_languages[$i][$p]) && count($location_phone_languages[$i][$p]) > 0 ? implode(',', $location_phone_languages[$i][$p]) : '';
                                         $new_phone->phone_description = $location_phone_descriptions[$i][$p];
                                         $new_phone->save();
                                         $location->location_phones = $location->location_phones . $new_phone_recordid . ',';
@@ -3235,52 +2745,22 @@ class OrganizationController extends Controller
                                 }
                             }
                             // schedule section
-                            $schedule_locations = [];
-                            if ($opens_at_location_monday_datas && isset($opens_at_location_monday_datas[$i]) &&  $opens_at_location_monday_datas[$i] != null) {
-                                $weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-                                for ($s = 0; $s < 7; $s++) {
-                                    $schedules = Schedule::where('schedule_locations', $location->location_recordid)->where('byday', $weekdays[$s])->first();
-                                    if ($schedules) {
-                                        $schedules->byday = $weekdays[$s];
-                                        $schedules->opens_at = isset(${'opens_at_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'opens_at_location_' . $weekdays[$s] . '_datas'}[$i] : '';
-                                        $schedules->closes_at = isset(${'closes_at_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'closes_at_location_' . $weekdays[$s] . '_datas'}[$i] : '';
-                                        if (isset(${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i]) &&  ${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i] == ($s + 1)) {
-                                            $schedules->schedule_closed = $s + 1;
-                                        } else {
-                                            $schedules->schedule_closed = null;
-                                        }
-                                        $schedules->save();
-                                        $schedule_locations[] = $schedules->schedule_recordid;
-                                    } else {
-                                        $schedule_recordid = Schedule::max('schedule_recordid') + 1;
-                                        $schedules = new Schedule();
-                                        $schedules->schedule_recordid = $schedule_recordid;
-                                        $schedules->schedule_locations = $location->location_recordid;
-                                        $schedules->byday = $weekdays[$s];
-                                        $schedules->opens_at = isset(${'opens_at_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'opens_at_location_' . $weekdays[$s] . '_datas'}[$i] : '';
-                                        $schedules->closes_at = isset(${'closes_at_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'closes_at_location_' . $weekdays[$s] . '_datas'}[$i] : '';
-                                        if (isset(${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i]) &&  ${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i] == ($s + 1)) {
-                                            $schedules->schedule_closed = $s + 1;
-                                        } else {
-                                            $schedules->schedule_closed = null;
-                                        }
-                                        $schedules->save();
-                                        $schedule_locations[] = $schedule_recordid;
-                                    }
-                                }
-                            }
+                            Schedule::where('locations', $location->location_recordid)->delete();
+
+                            $schedule_locations = $this->saveLocationSchedule($request, $i, $location->location_recordid);
+
                             if ($location_holiday_start_dates && isset($location_holiday_start_dates[$i]) && $location_holiday_start_dates[$i] != null) {
-                                Schedule::where('schedule_locations', $location->location_recordid)->where('schedule_holiday', '1')->delete();
+                                Schedule::where('locations', $location->location_recordid)->where('schedule_holiday', '1')->delete();
                                 if ($location_holiday_start_dates[$i] != null && !empty($location_holiday_start_dates[$i])) {
                                     for ($hs = 0; $hs < count($location_holiday_start_dates[$i]); $hs++) {
                                         $schedule_recordid = Schedule::max('schedule_recordid') + 1;
                                         $schedules = new Schedule();
                                         $schedules->schedule_recordid = $schedule_recordid;
-                                        $schedules->schedule_locations = $location->location_recordid;
+                                        $schedules->locations = $location->location_recordid;
                                         $schedules->dtstart = $location_holiday_start_dates[$i][$hs];
                                         $schedules->until = $location_holiday_end_dates[$i][$hs];
-                                        $schedules->opens_at = $location_holiday_open_ats[$i][$hs];
-                                        $schedules->closes_at = $location_holiday_close_ats[$i][$hs];
+                                        $schedules->opens = $location_holiday_open_ats[$i][$hs];
+                                        $schedules->closes = $location_holiday_close_ats[$i][$hs];
                                         if ($location_holiday_closeds[$i][$hs] == 1) {
                                             $schedules->schedule_closed = '1';
                                         }
@@ -3363,7 +2843,7 @@ class OrganizationController extends Controller
                 $interaction->save();
 
                 $organizationStatus = OrganizationStatus::where('id', $request->organization_status)->first();
-                if (($request->reverify == '1' && $organizationStatus->status == 'Verified') || ($organizationStatus->status == 'Verified' && $organization->organization_status_x != $request->organization_status)) {
+                if ($organizationStatus && (($request->reverify == '1' && $organizationStatus->status == 'Verified') || ($organizationStatus->status == 'Verified' && $organization->organization_status_x != $request->organization_status))) {
                     $organization->last_verified_at = Carbon::now();
                     $organization->last_verified_by = Auth::id();
                 }
@@ -3371,11 +2851,11 @@ class OrganizationController extends Controller
             }
 
 
-
+            $organization->latest_updated_date = Carbon::now();
             if ($organization->wasChanged()) {
                 $organization->updated_at = date("Y-m-d H:i:s");
             }
-            // $organization->updated_by = Auth::id();
+            $organization->updated_by = Auth::id();
             $organization->save();
             Session::flash('message', 'Organization updated successfully!');
             Session::flash('status', 'success');
@@ -3436,7 +2916,7 @@ class OrganizationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -3477,6 +2957,7 @@ class OrganizationController extends Controller
             return redirect()->back();
         }
     }
+
     public function organization_history($organization_old, $request)
     {
         try {
@@ -3484,12 +2965,17 @@ class OrganizationController extends Controller
         } catch (\Throwable $th) {
         }
     }
+
     public function createNewTag(Request $request, $id)
     {
         try {
-            $tag = $request->tag;
-            $organizationTag  = OrganizationTag::create([
-                'tag' => $tag,
+            if (!$request->tag) {
+                Session::flash('message', 'Organization tag can`t be blank!');
+                Session::flash('status', 'error');
+                return redirect()->back();
+            }
+            $organizationTag = OrganizationTag::create([
+                'tag' => $request->tag,
                 'created_by' => Auth::id()
             ]);
             $organization = Organization::whereId($id)->first();
@@ -3508,12 +2994,17 @@ class OrganizationController extends Controller
             return redirect()->back();
         }
     }
+
     public function createNewOrganizationTag(Request $request)
     {
         try {
-            $tag = $request->tag;
-            $organizationTag  = OrganizationTag::create([
-                'tag' => $tag,
+            if (!$request->tag) {
+                Session::flash('message', 'Organization tag can`t be blank!');
+                Session::flash('status', 'error');
+                return redirect()->back();
+            }
+            $organizationTag = OrganizationTag::create([
+                'tag' => $request->tag,
                 'created_by' => Auth::id()
             ]);
             $organization_recordid = $request->organization_recordid;
@@ -3533,12 +3024,16 @@ class OrganizationController extends Controller
             return redirect()->back();
         }
     }
+
     public function addOrganizationTag(Request $request)
     {
         try {
             $id = $request->id;
             $organization = Organization::whereId($id)->first();
             $organization->organization_tag = $request->val && is_array($request->val) ? implode(',', $request->val) : '';
+            $organization->latest_updated_date = Carbon::now();
+            $organization->updated_by = Auth::id();
+            $organization->updated_at = Carbon::now();
             $organization->save();
             return response()->json([
                 'message' => 'tags added successfully!',
@@ -3551,12 +3046,15 @@ class OrganizationController extends Controller
             ], 500);
         }
     }
+
     public function saveOrganizationBookmark(Request $request)
     {
         try {
             $id = $request->id;
             $organization = Organization::whereId($id)->first();
             $organization->bookmark = $request->value;
+            $organization->latest_updated_date = Carbon::now();
+            $organization->updated_by = Auth::id();
             $organization->updated_at = Carbon::now();
             $organization->save();
             // Session::flash('message', 'Organization Bookmarked successfully!');
@@ -3572,12 +3070,14 @@ class OrganizationController extends Controller
             ], 500);
         }
     }
+
     public function manage_filters()
     {
         $filtersData = OrganizationTableFilter::where('user_id', Auth::id())->get();
 
         return view('backEnd.tables.tb_manage_org_filter', compact('filtersData'));
     }
+
     public function delete_manage_filters($id)
     {
         $filtersData = OrganizationTableFilter::where('id', $id)->delete();
@@ -3586,6 +3086,7 @@ class OrganizationController extends Controller
         Session::flash('status', 'success');
         return redirect()->back();
     }
+
     public function saveOrganizationTags(Request $request)
     {
         try {
@@ -3601,5 +3102,307 @@ class OrganizationController extends Controller
             Session::flash('status', 'success');
             return redirect()->back();
         }
+    }
+
+    public function saveOrganizationProgram($request, $organization)
+    {
+        $organizationPrograms = [];
+        if ($request->program_name) {
+            $program_name = $request->program_name;
+            $program_alternate_name = $request->program_alternate_name;
+            $program_description = $request->program_description;
+            // $program_service_relationship = $request->program_service_relationship;
+            $programRadio = $request->programRadio;
+            $program_recordid = $request->program_recordid;
+
+            for ($i = 0; $i < count($program_name); $i++) {
+                if ($programRadio[$i] == 'new_data') {
+                    $program = new Program();
+                    $program->program_recordid = Program::max('program_recordid') + 1;
+                    $organizationPrograms[] = Program::max('program_recordid') + 1;
+                } else {
+                    $program = Program::where('program_recordid', $program_recordid[$i])->first();
+                    $organizationPrograms[] = $program->program_recordid;
+                }
+                $program->name = $program_name[$i];
+                $program->alternate_name = $program_alternate_name[$i];
+                $program->description = $program_description[$i];
+                // $program->program_service_relationship = $program_service_relationship[$i];
+                $program->organizations = $organization->service_recordid;
+                $recordids = [];
+                $recordids[] = $organization->service_recordid;
+                $program->save();
+            }
+        }
+        $organization->program()->sync($organizationPrograms);
+    }
+
+    /**
+     * @param $request
+     * @param $new_recordid
+     * @return array
+     */
+    public function saveOrganizationService($request, $new_recordid): array
+    {
+        $service_recordids = [];
+        if ($request->service_name && $request->service_name[0] != null) {
+            $service_alternate_name = $request->service_alternate_name && count($request->service_alternate_name) > 0 ? json_decode($request->service_alternate_name[0]) : [];
+            $service_program = $request->service_program && count($request->service_program) > 0 ? json_decode($request->service_program[0]) : [];
+            $service_status = $request->service_status && count($request->service_status) > 0 ? json_decode($request->service_status[0]) : [];
+            $service_taxonomies = $request->service_taxonomies && count($request->service_taxonomies) > 0 ? json_decode($request->service_taxonomies[0]) : [];
+            $service_application_process = $request->service_application_process && count($request->service_application_process) > 0 ? json_decode($request->service_application_process[0]) : [];
+            $service_wait_time = $request->service_wait_time && count($request->service_wait_time) > 0 ? json_decode($request->service_wait_time[0]) : [];
+            $service_fees = $request->service_fees && count($request->service_fees) > 0 ? json_decode($request->service_fees[0]) : [];
+            $service_accreditations = $request->service_accreditations && count($request->service_accreditations) > 0 ? json_decode($request->service_accreditations[0]) : [];
+            $service_licenses = $request->service_licenses && count($request->service_licenses) > 0 ? json_decode($request->service_licenses[0]) : [];
+            $service_schedules = $request->service_schedules && count($request->service_schedules) > 0 ? json_decode($request->service_schedules[0]) : [];
+            $service_details = $request->service_details && count($request->service_details) > 0 ? json_decode($request->service_details[0]) : [];
+            $service_address = $request->service_address && count($request->service_address) > 0 ? json_decode($request->service_address[0]) : [];
+            $service_metadata = $request->service_metadata && count($request->service_metadata) > 0 ? json_decode($request->service_metadata[0]) : [];
+            $service_airs_taxonomy_x = $request->service_airs_taxonomy_x && count($request->service_airs_taxonomy_x) > 0 ? json_decode($request->service_airs_taxonomy_x[0]) : [];
+
+            for ($i = 0; $i < count($request->service_name); $i++) {
+                $service_phone_recordid_list = [];
+                if ($request->serviceRadio[$i] == 'new_data') {
+                    $service = new Service();
+                    $service->service_recordid = Service::max('service_recordid') + 1;
+                    $service->service_name = $request->service_name[$i];
+                    $service->service_description = $request->service_description[$i];
+                    $service->service_url = $request->service_url[$i];
+                    $service->service_email = $request->service_email[$i];
+                    $service->service_organization = $new_recordid;
+
+                    $service->service_alternate_name = $service_alternate_name[$i];
+                    $service->service_program = $service_program[$i];
+
+                    if ($service_status[$i] == '1') {
+                        $service->service_status = 'Verified';
+                    } else {
+                        $service->service_status = '';
+                    }
+                    $service->service_taxonomy = join(',', $service_taxonomies[$i]);
+                    $service->service_application_process = $service_application_process[$i];
+                    $service->service_wait_time = $service_wait_time[$i];
+                    $service->service_fees = $service_fees[$i];
+                    $service->service_accreditations = $service_accreditations[$i];
+                    $service->service_licenses = $service_licenses[$i];
+                    if ($service_schedules[$i]) {
+                        $service->service_schedule = join(',', $service_schedules[$i]);
+                    } else {
+                        $service->service_schedule = '';
+                    }
+                    // $service->service_details = $service_details[$i];
+                    if ($service_details[$i]) {
+                        $service->service_details = join(',', $service_details[$i]);
+                    } else {
+                        $service->service_details = '';
+                    }
+                    // $service->service_address = $service_address[$i];
+                    if ($service_address[$i]) {
+                        $service->service_address = join(',', $service_address[$i]);
+                    } else {
+                        $service->service_address = '';
+                    }
+                    $service->service_metadata = $service_metadata[$i];
+                    $service->service_airs_taxonomy_x = $service_airs_taxonomy_x[$i];
+                    // $service->service_phones = $request->service_phone[$i];
+
+                    $phone_info = Phone::where('phone_number', '=', $request->service_phone[$i])->first();
+                    if ($phone_info) {
+                        $service->service_phones = $service->service_phones . $phone_info->phone_recordid . ',';
+                        $phone_info->phone_number = $request->service_phone[$i];
+                        $phone_info->save();
+                        array_push($service_phone_recordid_list, $phone_info->phone_recordid);
+                    } else {
+                        $new_phone = new Phone;
+                        $new_phone_recordid = Phone::max('phone_recordid') + 1;
+                        $new_phone->phone_recordid = $new_phone_recordid;
+                        $new_phone->phone_number = $request->service_phone[$i];
+                        $new_phone->save();
+                        $service->service_phones = $service->service_phones . $new_phone_recordid . ',';
+                        array_push($service_phone_recordid_list, $new_phone_recordid);
+                    }
+                    array_push($service_recordids, Service::max('service_recordid') + 1);
+
+                    $service_address[$i] = is_array($service_address[$i]) ? array_values(array_filter($service_address[$i])) : [];
+                    $service_details[$i] = is_array($service_details[$i]) ? array_values(array_filter($service_details[$i])) : [];
+                    $service_schedules[$i] = is_array($service_schedules[$i]) ? array_values(array_filter($service_schedules[$i])) : [];
+                    $service_taxonomies[$i] = is_array($service_taxonomies[$i]) ? array_values(array_filter($service_taxonomies[$i])) : [];
+                    $service_phone_recordid_list = is_array($service_phone_recordid_list) ? array_values(array_filter($service_phone_recordid_list)) : [];
+
+                    $service->address()->sync($service_address[$i]);
+                    $service->details()->sync($service_details[$i]);
+                    $service->schedules()->sync($service_schedules[$i]);
+                    $service->taxonomy()->sync($service_taxonomies[$i]);
+                    $service->phone()->sync($service_phone_recordid_list);
+                    $service->save();
+                } else {
+                    $updating_service = Service::where('service_recordid', '=', $request->service_recordid[$i])->first();
+                    if ($updating_service) {
+                        $updating_service->service_name = $request->service_name[$i];
+                        $updating_service->service_description = $request->service_description[$i];
+                        $updating_service->service_url = $request->service_url[$i];
+                        $updating_service->service_email = $request->service_email[$i];
+                        $updating_service->service_organization = $new_recordid;
+                        // $service->service_phones = $request->service_phone[$i];
+
+                        $updating_service->service_alternate_name = $service_alternate_name[$i];
+                        $updating_service->service_program = $service_program[$i];
+
+                        if ($service_status[$i] == '1') {
+                            $updating_service->service_status = 'Verified';
+                        } else {
+                            $updating_service->service_status = '';
+                        }
+                        $updating_service->service_taxonomy = join(',', $service_taxonomies[$i]);
+                        $updating_service->service_application_process = $service_application_process[$i];
+                        $updating_service->service_wait_time = $service_wait_time[$i];
+                        $updating_service->service_fees = $service_fees[$i];
+                        $updating_service->service_accreditations = $service_accreditations[$i];
+                        $updating_service->service_licenses = $service_licenses[$i];
+                        if ($service_schedules[$i]) {
+                            $updating_service->service_schedule = join(',', $service_schedules[$i]);
+                        } else {
+                            $updating_service->service_schedule = '';
+                        }
+                        // $updating_service->service_details = $service_details[$i];
+                        if ($service_details[$i]) {
+                            $updating_service->service_details = join(',', $service_details[$i]);
+                        } else {
+                            $updating_service->service_details = '';
+                        }
+                        // $updating_service->service_address = $service_address[$i];
+                        if ($service_address[$i]) {
+                            $updating_service->service_address = join(',', $service_address[$i]);
+                        } else {
+                            $updating_service->service_address = '';
+                        }
+                        $updating_service->service_metadata = $service_metadata[$i];
+                        $updating_service->service_airs_taxonomy_x = $service_airs_taxonomy_x[$i];
+                        // $updating_service->service_phones = $request->service_phone[$i];
+
+                        $phone_info = Phone::where('phone_number', '=', $request->service_phone[$i])->first();
+                        if ($phone_info) {
+                            $updating_service->service_phones = $updating_service->service_phones . $phone_info->phone_recordid . ',';
+                            $phone_info->phone_number = $request->service_phone[$i];
+                            $phone_info->save();
+                            array_push($service_phone_recordid_list, $phone_info->phone_recordid);
+                        } else {
+                            $new_phone = new Phone;
+                            $new_phone_recordid = Phone::max('phone_recordid') + 1;
+                            $new_phone->phone_recordid = $new_phone_recordid;
+                            $new_phone->phone_number = $request->service_phone[$i];
+                            $new_phone->save();
+                            $updating_service->service_phones = $updating_service->service_phones . $new_phone_recordid . ',';
+                            array_push($service_phone_recordid_list, $new_phone_recordid);
+                        }
+                        $service_recordids[] = Service::max('service_recordid') + 1;
+
+                        $service_address[$i] = is_array($service_address[$i]) ? array_values(array_filter($service_address[$i])) : [];
+                        $service_details[$i] = is_array($service_details[$i]) ? array_values(array_filter($service_details[$i])) : [];
+                        $service_schedules[$i] = is_array($service_schedules[$i]) ? array_values(array_filter($service_schedules[$i])) : [];
+                        $service_taxonomies[$i] = is_array($service_taxonomies[$i]) ? array_values(array_filter($service_taxonomies[$i])) : [];
+                        $service_phone_recordid_list = is_array($service_phone_recordid_list) ? array_values(array_filter($service_phone_recordid_list)) : [];
+
+                        $updating_service->address()->sync($service_address[$i]);
+                        $updating_service->details()->sync($service_details[$i]);
+                        $updating_service->schedules()->sync($service_schedules[$i]);
+                        $updating_service->taxonomy()->sync($service_taxonomies[$i]);
+                        $updating_service->phone()->sync($service_phone_recordid_list);
+                        $updating_service->save();
+                        $service_recordids[] = $updating_service->service_recordid;
+                    }
+                }
+            }
+        }
+        return $service_recordids;
+    }
+
+    /**
+     * @param $request
+     * @param $i
+     * @param $location_recordid
+     * @return array
+     */
+    public function saveLocationSchedule($request, $i, $location_recordid): array
+    {
+        // location schedule section
+        $schedule_locations = [];
+        $opens_location_monday_datas = $request->opens_location_monday_datas ? json_decode($request->opens_location_monday_datas, true) : [];
+        $closes_location_monday_datas = $request->closes_location_monday_datas ? json_decode($request->closes_location_monday_datas, true) : [];
+        $schedule_closed_monday_datas = $request->schedule_closed_monday_datas ? json_decode($request->schedule_closed_monday_datas, true) : [];
+
+        $opens_location_tuesday_datas = $request->opens_location_tuesday_datas ? json_decode($request->opens_location_tuesday_datas, true) : [];
+        $closes_location_tuesday_datas = $request->closes_location_tuesday_datas ? json_decode($request->closes_location_tuesday_datas, true) : [];
+        $schedule_closed_tuesday_datas = $request->schedule_closed_tuesday_datas ? json_decode($request->schedule_closed_tuesday_datas, true) : [];
+
+        $opens_location_wednesday_datas = $request->opens_location_wednesday_datas ? json_decode($request->opens_location_wednesday_datas, true) : [];
+        $closes_location_wednesday_datas = $request->closes_location_wednesday_datas ? json_decode($request->closes_location_wednesday_datas, true) : [];
+        $schedule_closed_wednesday_datas = $request->schedule_closed_wednesday_datas ? json_decode($request->schedule_closed_wednesday_datas, true) : [];
+
+        $opens_location_thursday_datas = $request->opens_location_thursday_datas ? json_decode($request->opens_location_thursday_datas, true) : [];
+        $closes_location_thursday_datas = $request->closes_location_thursday_datas ? json_decode($request->closes_location_thursday_datas, true) : [];
+        $schedule_closed_thursday_datas = $request->schedule_closed_thursday_datas ? json_decode($request->schedule_closed_thursday_datas, true) : [];
+
+        $opens_location_friday_datas = $request->opens_location_friday_datas ? json_decode($request->opens_location_friday_datas, true) : [];
+        $closes_location_friday_datas = $request->closes_location_friday_datas ? json_decode($request->closes_location_friday_datas, true) : [];
+        $schedule_closed_friday_datas = $request->schedule_closed_friday_datas ? json_decode($request->schedule_closed_friday_datas, true) : [];
+
+        $opens_location_saturday_datas = $request->opens_location_saturday_datas ? json_decode($request->opens_location_saturday_datas, true) : [];
+        $closes_location_saturday_datas = $request->closes_location_saturday_datas ? json_decode($request->closes_location_saturday_datas, true) : [];
+        $schedule_closed_saturday_datas = $request->schedule_closed_saturday_datas ? json_decode($request->schedule_closed_saturday_datas, true) : [];
+
+        $opens_location_sunday_datas = $request->opens_location_sunday_datas ? json_decode($request->opens_location_sunday_datas, true) : [];
+        $closes_location_sunday_datas = $request->closes_location_sunday_datas ? json_decode($request->closes_location_sunday_datas, true) : [];
+
+        $schedule_closed_sunday_datas = $request->schedule_closed_sunday_datas ? json_decode($request->schedule_closed_sunday_datas, true) : [];
+
+        // if ($opens_location_monday_datas && isset($opens_location_monday_datas[$i]) && $opens_location_monday_datas[$i] != null) {
+        $weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        for ($s = 0; $s < 7; $s++) {
+            // dd($request);
+            if ((isset(${'opens_location_' . $weekdays[$s] . '_datas'}[$i]) && isset(${'closes_location_' . $weekdays[$s] . '_datas'}[$i])) || ((isset(${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i]) && ${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i] == ($s + 1)))) {
+                if ((isset(${'opens_location_' . $weekdays[$s] . '_datas'}[$i]) && isset(${'closes_location_' . $weekdays[$s] . '_datas'}[$i])) && ${'opens_location_' . $weekdays[$s] . '_datas'}[$i] && ${'closes_location_' . $weekdays[$s] . '_datas'}[$i]) {
+                    $schedules = Schedule::where('locations', $location_recordid)->where('opens', ${'opens_location_' . $weekdays[$s] . '_datas'}[$i])->where('closes', ${'closes_location_' . $weekdays[$s] . '_datas'}[$i])->first();
+                } else {
+                    $schedules = Schedule::where('locations', $location_recordid)->whereNotNull('schedule_closed')->first();
+                }
+                if ($schedules) {
+                    $schedules->locations = $location_recordid;
+                    $schedules->weekday = $schedules->weekday ? (str_contains($schedules->weekday, $weekdays[$s]) ? $schedules->weekday : ($schedules->weekday . ',' . $weekdays[$s])) : $weekdays[$s];
+                    $schedules->opens = isset(${'opens_location_' . $weekdays[$s] . '_datas'}[$i]) && ${'opens_location_' . $weekdays[$s] . '_datas'}[$i] ? ${'opens_location_' . $weekdays[$s] . '_datas'}[$i] : $schedules->opens;
+                    $schedules->closes = isset(${'closes_location_' . $weekdays[$s] . '_datas'}[$i]) && ${'closes_location_' . $weekdays[$s] . '_datas'}[$i] ? ${'closes_location_' . $weekdays[$s] . '_datas'}[$i] : $schedules->closes;
+                    if (isset(${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i]) && ${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i] == ($s + 1)) {
+
+                        $schedules->schedule_closed = $schedules->schedule_closed ? (str_contains($schedules->schedule_closed, ($s + 1)) ? $schedules->schedule_closed : $schedules->schedule_closed . ',' . ($s + 1)) : ($s + 1);
+                    } else {
+                        if (str_contains($schedules->schedule_closed, ($s + 1))) {
+                            $schedule_closed = explode(',', $schedules->schedule_closed);
+                            if (is_array($schedule_closed) && in_array(($s + 1), $schedule_closed)) {
+                                array_splice($schedule_closed, array_search(($s + 1), $schedule_closed), 1);
+                                $schedules->schedule_closed = implode(',', $schedule_closed);
+                            }
+                        }
+                    }
+                    $schedules->save();
+                    $schedule_locations[] = $schedules->schedule_recordid;
+                } else {
+                    $schedule_recordid = Schedule::max('schedule_recordid') + 1;
+                    $schedules = new Schedule();
+                    $schedules->schedule_recordid = $schedule_recordid;
+                    $schedules->locations = $location_recordid;
+                    $schedules->weekday = $weekdays[$s];
+                    $schedules->opens = isset(${'opens_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'opens_location_' . $weekdays[$s] . '_datas'}[$i] : null;
+                    $schedules->closes = isset(${'closes_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'closes_location_' . $weekdays[$s] . '_datas'}[$i] : null;
+                    if (isset(${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i]) && ${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i] == ($s + 1)) {
+                        $schedules->schedule_closed = $s + 1;
+                    }
+                    $schedules->save();
+                    $schedule_locations[] = $schedule_recordid;
+                }
+            }
+        }
+        // }
+        return $schedule_locations;
     }
 }

@@ -44,10 +44,20 @@ Route::get('/logout', 'Auth\LoginController@logout');
 
 Auth::routes();
 
+Route::post('/fetchService', 'frontEnd\ExploreController@fetchService')->name('services.fetch');
+Route::post('/fetchOrganization', 'frontEnd\ExploreController@fetchOrganization')->name('organizations.fetch');
+Route::match(['get', 'post'], '/search', [
+    'uses' => 'frontEnd\ExploreController@filter',
+]);
+Route::match(['get', 'post'], '/search_organization', [
+    'uses' => 'frontEnd\ExploreController@filter_organization',
+]);
+Route::get('/services_near_me', 'frontEnd\ExploreController@geolocation');
 Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
+
     Route::post('/fetch_organization', 'AccountController@fetch_organization')->name('account.fetch_organization');
-    Route::post('/fetch_account_service', 'AccountController@fetch_account_service')->name('account.fetch_account_service');
     Route::resource('account', 'AccountController');
+    Route::post('/fetch_account_service', 'AccountController@fetch_account_service')->name('account.fetch_account_service');
 
     Route::get('/account/{id}/change_password', 'AccountController@change_password');
     Route::post('/update_password/{id}', 'AccountController@update_password')->name('update_password');
@@ -78,7 +88,7 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::get('/sync_v2_x_taxonomy/{api_key}/{base_url}', ['uses' => 'backend\TaxonomyTypeController@airtable_v2']);
 
 
-    Route::get('/about', 'frontEnd\AboutController@about');
+    Route::get('/about', 'frontEnd\AboutController@about')->name('about');
 
 
 
@@ -92,7 +102,7 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::post('/add_code_category_ids_create', 'frontEnd\GeneralController@add_code_category_ids_create')->name('services.add_code_category_ids_create');
     Route::post('/code_conditions_save', 'frontEnd\GeneralController@code_conditions_save')->name('services.code_conditions_save');
     // Route::get('/services', 'frontEnd\ServiceController@services');
-    Route::post('/fetchService', 'frontEnd\ExploreController@fetchService')->name('services.fetch');
+
     Route::get('/download_service/{id}', 'frontEnd\ServiceController@download');
     Route::get('/download_service_csv/{id}', 'frontEnd\ServiceController@download_csv');
     Route::post('/services/{id}/add_comment', 'frontEnd\ServiceController@add_comment')->name('service_comment');
@@ -115,19 +125,14 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::get('/getDatas/{id}/{recordid}', 'frontEnd\EditChangeController@getDatas')->name('getDatas');
     Route::post('/restoreDatas/{id}/{recordid}', 'frontEnd\EditChangeController@restoreDatas')->name('restoreDatas');
 
-    Route::match(['get', 'post'], '/search', [
-        'uses' => 'frontEnd\ExploreController@filter',
-    ]);
-    Route::match(['get', 'post'], '/search_organization', [
-        'uses' => 'frontEnd\ExploreController@filter_organization',
-    ]);
+
 
     // organization route
     Route::get('/addOrganizationTag', 'frontEnd\OrganizationController@addOrganizationTag')->name('addOrganizationTag');
     Route::post('/createNewTag/{id}', 'frontEnd\OrganizationController@createNewTag')->name('createNewTag');
     Route::post('/organization_tag/{id}', 'frontEnd\OrganizationController@organization_tag')->name('organization_tag');
     Route::resource('/organizations', 'frontEnd\OrganizationController');
-    Route::post('/fetchOrganization', 'frontEnd\ExploreController@fetchOrganization')->name('organizations.fetch');
+
     Route::post('/organizations/{id}/add_comment', 'frontEnd\OrganizationController@add_comment')->name('organization_comment');
     Route::any('getContacts', 'frontEnd\ContactController@index')->name('getContacts');
     Route::resource('/contacts', 'frontEnd\ContactController');
@@ -163,10 +168,10 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
 
     Route::post('location_tag/{id}', 'frontEnd\LocationController@location_tag')->name('location_tag');
     Route::post('location_comment/{id}', 'frontEnd\LocationController@location_comment')->name('location_comment');
-    Route::get('/services_near_me', 'frontEnd\ExploreController@geolocation');
+
 
     // session
-    Route::resource('sessions', 'backEnd\SessionController');
+    Route::resource('sessions', 'backend\SessionController');
     Route::get('/session/{id}', 'frontEnd\SessionController@session');
     Route::get('/session_download/{id}', 'frontEnd\SessionController@session_download')->name('session_download');
     Route::get('/session_create/{id}', 'frontEnd\SessionController@create_in_organization');
@@ -188,9 +193,9 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::resource('users_lists', 'frontEnd\UsersController');
     // tracking
     Route::resource('tracking', 'frontEnd\TrackingController');
+    Route::resource('terminology', 'frontEnd\TerminologyController');
     Route::post('/export_tracking', ['uses' => 'frontEnd\TrackingController@export_tracking'])->name('tracking.export');
     // message
-    // Route::get('messagesSetting', 'frontEnd\MessageController@messagesSetting')->name('messagesSetting');
     Route::post('saveMessageCredential', 'frontEnd\MessageController@saveMessageCredential')->name('saveMessageCredential');
 
     Route::post('/checkSendgrid', 'HomeController@checkSendgrid')->name('checkSendgrid');
@@ -262,6 +267,7 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     // Route::get('tb_services', 'frontEnd\ServiceController@tb_services')->name('tables.tb_services');
     Route::get('tb_locations', 'frontEnd\LocationController@tb_location')->name('tables.tb_locations');
     Route::get('tb_organizations', 'frontEnd\OrganizationController@tb_organizations')->name('tables.tb_organizations');
+    // Route::post('tb_get_organization_data', 'frontEnd\OrganizationController@tb_organizations')->name('tables.tb_get_organization_data');
     Route::get('tb_contact', 'frontEnd\ContactController@tb_contact')->name('tables.tb_contact');
     Route::get('tb_contacts', 'frontEnd\ContactController@tb_contact')->name('tables.tb_contact');
     Route::get('tb_phones', 'frontEnd\PhoneController@index')->name('tables.tb_phones');
@@ -307,7 +313,9 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::resource('notes', 'backend\NotesController');
     Route::resource('cities', 'backend\CityController');
     Route::resource('states', 'backend\StateController');
+    Route::resource('code_categories', 'backend\CodeCategoryController');
     Route::resource('codes', 'backend\CodesController');
+    Route::resource('code_systems', 'backend\CodeSystemController');
     Route::resource('service_areas', 'backend\ServiceAreaController');
     Route::resource('fees_options', 'backend\FeesOptionController');
     Route::resource('regions', 'backend\RegionController');
@@ -340,7 +348,7 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::resource('programs', 'backend\ProgramController');
     Route::resource('tb_x_details', 'frontEnd\DetailController');
     Route::resource('tb_languages', 'LanguageController');
-    Route::resource('tb_accessibility', 'AccessibilityController');
+    Route::resource('tb_accessibility', 'frontEnd\AccessibilityController');
     Route::resource('system_emails', 'backend\EmailController');
 
     Route::resource('tb_service', 'backend\ServiceCodeController');
@@ -452,6 +460,8 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::post('/postal_code_filter', 'backend\PagesController@postal_filter')->name('meta_filter.postal_filter');
     Route::post('/organization_status_filter', 'backend\PagesController@organization_status_filter')->name('meta_filter.organization_status_filter');
     Route::post('/service_status_filter', 'backend\PagesController@service_status_filter')->name('meta_filter.service_status_filter');
+    Route::post('/service_tag_filter', 'backend\PagesController@service_tag_filter')->name('meta_filter.service_tag_filter');
+    Route::post('/organization_tag_filter', 'backend\PagesController@organization_tag_filter')->name('meta_filter.organization_tag_filter');
 
     Route::post('/meta_filter', 'backend\PagesController@operation')->name('meta_filter.operation');
     Route::post('/meta_delete_filter', 'backend\PagesController@delete_operation')->name('meta_filter.delete_operation');
@@ -472,6 +482,7 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::get('/cron_datasync', ['uses' => 'CronController@cron_datasync', 'as' => 'cron_datasync.cron_datasync']);
 
     Route::resource('service_tags', 'backend\ServiceTagController');
+    // Route::resource('service_interpretations', 'backend\InterpretationServiceController');
     Route::resource('service_status', 'backend\ServiceStatusController');
     Route::resource('dispositions', 'backend\DispositionController');
     Route::resource('interaction_methods', 'backend\InteractionMethodController');
@@ -503,4 +514,20 @@ Route::post('/update_hsds_api_key', ['uses' => 'backend\PagesController@update_h
 Route::post('/updateStatus/{id}', 'frontEnd\TaxonomyController@updateStatus')->name('updateStatus.updateStatus');
 
 Route::get('/export_csv/{id}', ['uses' => 'backend\ExportController@export_csv'])->name('export.export_csv');
-Route::get('/data_for_api/{id}', ['uses' => 'backend\ExportController@data_for_api'])->name('export.data_for_api');
+Route::get('/data_for_api/{id}/', ['uses' => 'backend\ExportController@data_for_api'])->name('export.data_for_api');
+Route::get('/data_for_api_v2/{id}', ['uses' => 'backend\ExportController@data_for_api_v2'])->name('export.data_for_api_v2');
+Route::get('/data_for_api_v3/{id}', ['uses' => 'backend\ExportController@data_for_api_v3'])->name('export.data_for_api_v3');
+
+Route::get('/createCategoryTable', 'backend\CodesController@createCategoryTable')->name('createCategoryTable');
+Route::get('/changeCodeCategory', 'backend\CodesController@changeCodeCategory')->name('changeCodeCategory');
+Route::get('/changeCodeCategoryInService', 'backend\CodesController@changeCodeCategoryInService')->name('changeCodeCategoryInService');
+
+Route::get('/newExport/{id}', 'backend\ExportController@export');
+Route::get('testSchedule', 'frontEnd\ScheduleController@test');
+Route::get('setAccessibility', 'frontEnd\AccessibilityController@setAccessibility');
+
+
+Route::get('changeOldScheduleFieldData', 'frontEnd\ScheduleController@changeOldScheduleFieldData');
+Route::get('pullCodeSystem', 'backend\CodeSystemController@pullCodeSystem');
+Route::get('pullCodeSystemLedger', 'backend\CodeSystemController@pullCodeSystemLedger');
+Route::get('importSchedule', 'frontEnd\ScheduleController@importSchedule');

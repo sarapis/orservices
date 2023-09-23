@@ -75,6 +75,12 @@ class TrackingExport implements FromView
                 // });
                 $organizations->whereIn('organization_status_x', $extraData['status']);
             }
+            if (isset($extraData['last_updated_by']) && $extraData['last_updated_by'] != null) {
+                $organizations->where('updated_by', $extraData['last_updated_by']);
+            }
+            if (isset($extraData['last_verified_by']) && $extraData['last_verified_by'] != null) {
+                $organizations->where('last_verified_by', $extraData['last_verified_by']);
+            }
         }
         return view('exports.trackings', [
             'organizations' => $organizations->cursor(),

@@ -172,7 +172,7 @@ Services
                     <th class="text-center">Service Eligibility</th>
                     <th class="text-center">Organization Tags</th>
                     <th class="text-center">SDOH ID</th>
-                    <th class="text-center">Last Edit Date</th>
+                    <th class="text-center" data-type='date'>Last Edit Date</th>
                     {{-- <th class="text-center">Service Grouping</th> --}}
                     {{-- <th class="text-center">Action</th> --}}
                 </tr>

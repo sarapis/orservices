@@ -38,42 +38,70 @@ Trackings
                 <div class="card all_form_field">
                     <div class="card-block">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="col-md-3 control-label">Organization Tags</label>
+                                    <label class="col-md-12 control-label">Organization Tags</label>
                                     <div>
                                         {!! Form::select('organization_tag', $organization_tags, null, ['class' => 'form-control selectpicker', 'id' => 'organization_tag', 'multiple' => true, 'data-live-search' => 'true', 'data-size' => 5]) !!}
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="col-md-3 control-label">Service Tags</label>
+                                    <label class="col-md-12 control-label">Service Tags</label>
                                     <div>
                                         {!! Form::select('service_tag', $service_tags, null, ['class' => 'form-control selectpicker', 'id' => 'service_tag', 'multiple' => true, 'data-live-search' => 'true', 'data-size' => 5]) !!}
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="col-md-3 control-label">Status</label>
+                                    <label class="col-md-12 control-label">Status</label>
                                     <div>
                                         {!! Form::select('status', $organizationStatus, null, ['class' => 'form-control selectpicker', 'id' => 'status', 'multiple' => true, 'data-live-search' => 'true', 'data-size' => 5]) !!}
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="inputPassword3" class="col-md-3 control-label">Bookmarks Only</label>
-                                    <div class="col-sm-7">
-                                        <input type="checkbox" name="organization_bookmark_only" id="organization_bookmark_only" value="1">
+                                    <label class="col-md-12 control-label">Last Updated By</label>
+                                    <div>
+                                        <select name="last_updated_by" id="last_updated_by" class="form-control selectpicker"  data-live-search='true' data-size='5'>
+                                            <option value="">Select</option>
+                                            @foreach ($users as $value)
+                                            <option value="{{ $value->id }}">{{ $value->first_name .' '. $value->last_name  }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-md-12 control-label">Last Verified By</label>
+                                    <div>
+                                        <select name="last_verified_by" id="last_verified_by" class="form-control selectpicker" data-live-search='true' data-size='5'>
+                                            <option value="">Select</option>
+                                            @foreach ($users as $value)
+                                            <option value="{{ $value->id }}">{{ $value->first_name .' '. $value->last_name  }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="inputPassword3" class="col-sm-3 control-label">Saved Filter</label>
+                                    <div>
+                                        <select name="saved_filter" id="saved_filters" class="form-control selectpicker">
+                                            <option value="">Select</option>
+                                            @foreach ($saved_filters as $value )
+                                            <option value="{{ $value }}">{{ $value->filter_name }}</option>
+                                            @endforeach
+                                        </select>
+                                        {{-- {!! Form::select('status', $saved_filters, null, ['class' => 'form-control selectpicker', 'id' => 'status', 'multiple' => true, 'data-live-search' => 'true', 'data-size' => 5]) !!} --}}
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="inputPassword3" class="col-sm-4 control-label">Last Updated Date</label>
@@ -89,22 +117,6 @@ Trackings
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="inputPassword3" class="col-sm-3 control-label">Saved Filter</label>
-                                    <div>
-                                        <select name="saved_filter" id="saved_filters" class="form-control selectpicker">
-                                            <option value="">Select</option>
-                                            @foreach ($saved_filters as $value )
-                                            <option value="{{ $value }}">{{ $value->filter_name }}</option>
-                                            @endforeach
-                                        </select>
-                                        {{-- {!! Form::select('status', $saved_filters, null, ['class' => 'form-control selectpicker', 'id' => 'status', 'multiple' => true, 'data-live-search' => 'true', 'data-size' => 5]) !!} --}}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
                                     <label for="inputPassword3" class="col-sm-3 control-label">Last Verified Date</label>
                                     {{-- <div>
                                         <input type="date" name="end_date" id="end_date" class="form-control">
@@ -118,8 +130,14 @@ Trackings
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
+                                    <label for="inputPassword3" class="col-md-12 control-label d-flex">Bookmarks Only
+                                    <input type="checkbox" name="organization_bookmark_only" id="organization_bookmark_only" value="1" class="d-inline-block ml-2">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
                                     {{-- <label for="inputPassword3" class="col-sm-3 control-label"></label> --}}
-                                    <div class="col-sm-12">
+                                    <div class="col-sm-12 text-right">
                                         <button type="button" class="btn btn-success" id="saveFilterButton">Save New Filter</button>
                                         <a href="javascript:void(0)" id="export_csv" class="btn btn-info">Download CSV</a>
                                         {{-- <a href="/manage_filters" class="btn btn-info">Manage Filters</a> --}}
@@ -128,7 +146,7 @@ Trackings
                             </div>
                         </div>
                         <!-- <table class="table table-striped jambo_table bulk_action table-responsive"> -->
-                        <table id="tb_organizations_table" class="display table-striped jambo_table table-bordered table-responsive" cellspacing="0" width="100%">
+                        <table id="tb_organizations_table" class="display dataTable table-striped jambo_table table-bordered table-responsive" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
                                     <th class="text-center" >Bookmark</th>
@@ -137,10 +155,11 @@ Trackings
                                     <th class="text-center">Organization Tags</th>
                                     <th class="text-center">Organization Status</th>
                                     <th class="text-center">Service Tags</th>
-                                    <th class="text-center">Date Last Verified</th>
-                                    <th class="text-center">User Verified</th>
-                                    <th class="text-center">Last Note Date</th>
-                                    <th class="text-center">Last Updated Date</th>
+                                    <th class="text-center" data-type='date'>Date Last Verified</th>
+                                    <th class="text-center">Last Verified By</th>
+                                    <th class="text-center" data-type='date'>Last Note Date</th>
+                                    <th class="text-center" data-type='date'>Last Updated Date</th>
+                                    <th class="text-center">Last Updated By</th>
                                     {{-- <th class="text-center">Description</th> --}}
                                     {{-- <th class="text-center">Legal status</th> --}}
                                     {{-- <th class="text-center">Tax status</th> --}}
@@ -303,6 +322,7 @@ Trackings
         tb_organizations_table = $('#tb_organizations_table').DataTable({
             processing: true,
             serverSide: true,
+            order: [[ 8, "desc" ]],
             ajax: {
                 url: ajaxUrl,
                 method: "get",
@@ -354,8 +374,12 @@ Trackings
                     name: 'last_note_date'
                 },
                 {
-                    data: 'updated_at',
-                    name: 'updated_at'
+                    data: 'latest_updated_date',
+                    name: 'latest_updated_date'
+                },
+                {
+                    data: 'updated_by',
+                    name: 'updated_by'
                 },
                 // {
                 //     data: 'organization_description',
@@ -443,11 +467,11 @@ Trackings
                     "orderable": true,
                     "class": "text-left"
                 },
-                // {
-                //     "targets": 9,
-                //     "orderable": true,
-                //     "class": "text-left"
-                // },
+                {
+                    "targets": 9,
+                    "orderable": true,
+                    "class": "text-left"
+                },
                 // {
                 //     "targets": 10,
                 //     "orderable": true,
@@ -505,6 +529,16 @@ Trackings
             extraData.start_verified = val
             tb_organizations_table.ajax.reload()
         })
+        $('#last_updated_by').change(function() {
+            let val = $(this).val()
+            extraData.last_updated_by = val
+            tb_organizations_table.ajax.reload()
+        })
+        $('#last_verified_by').change(function() {
+            let val = $(this).val()
+            extraData.last_verified_by = val
+            tb_organizations_table.ajax.reload()
+        })
         $('#end_verified').change(function() {
             let val = $(this).val()
             extraData.end_verified = val
@@ -521,39 +555,48 @@ Trackings
             tb_organizations_table.ajax.reload()
         })
         $('#saved_filters').change(function() {
-            let val = JSON.parse($(this).val())
+            extraData = {}
+            if($(this).val()){
+                let val = JSON.parse($(this).val())
 
-            if(val.organization_tags){
-                extraData.organization_tag = val.organization_tags.split(',')
+                if(val.organization_tags){
+                    extraData.organization_tag = val.organization_tags.split(',')
+                }
+                if(val.service_tags){
+                    extraData.service_tag = val.service_tags.split(',')
+                }
+                if(val.status){
+                    extraData.status = val.status.split(',')
+                }
+                if(val.bookmark_only){
+                    extraData.organization_bookmark_only = val.bookmark_only
+                }
+                if(val.start_date){
+                    extraData.start_date = val.start_date
+                }
+                if(val.end_date){
+                    extraData.end_date = val.end_date
+                }
+                if(val.start_verified){
+                    extraData.start_verified = val.start_verified
+                }
+                if(val.end_verified){
+                    extraData.end_verified = val.end_verified
+                }
+                if(val.start_updated){
+                    extraData.start_updated = val.start_updated
+                }
+                if(val.end_updated){
+                    extraData.end_updated = val.end_updated
+                }
+                if(val.last_verified_by){
+                    extraData.last_verified_by = val.last_verified_by
+                }
+                if(val.last_updated_by){
+                    extraData.last_updated_by = val.last_updated_by
+                }
+                // extraData.end_date = val
             }
-            if(val.service_tags){
-                extraData.service_tag = val.service_tags.split(',')
-            }
-            if(val.status){
-                extraData.status = val.status.split(',')
-            }
-            if(val.bookmark_only){
-                extraData.organization_bookmark_only = val.bookmark_only
-            }
-            if(val.start_date){
-                extraData.start_date = val.start_date
-            }
-            if(val.end_date){
-                extraData.end_date = val.end_date
-            }
-            if(val.start_verified){
-                extraData.start_verified = val.start_verified
-            }
-            if(val.end_verified){
-                extraData.end_verified = val.end_verified
-            }
-            if(val.start_updated){
-                extraData.start_updated = val.start_updated
-            }
-            if(val.end_updated){
-                extraData.end_updated = val.end_updated
-            }
-            // extraData.end_date = val
             tb_organizations_table.ajax.reload()
         })
         $(document).on('click','.organizationTags',function(){

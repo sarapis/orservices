@@ -43,8 +43,22 @@ Import Codes
                             </div>
                         </div>
                     </div>
+                    <div class="form-group {{ $errors->has('import_type') ? 'has-error' : ''}}">
+                        <label class="col-sm-3 control-label text-right">Import Type</label>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <select name="import_type" id="import_type" class="form-control">
+                                    <option value="">Select</option>
+                                    <option value="add">Add Codes</option>
+                                    <option value="replace">Replace Codes</option>
+                                </select>
+                                {!! $errors->first('import_type', '<p class="help-block">:message</p>') !!}
+                            </div>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-6">
+                            <a href="/uploads/codes-template.csv" class="btn btn-info" download>Download Import Template</a>
                             <input type="submit" value="Import" class="btn btn-success">
                             <a href="{{ route('codes.index') }}" class="btn btn-warning">Code List</a>
                         </div>
@@ -54,4 +68,19 @@ Import Codes
         </div>
     </div>
 </div>
+@endsection
+@section('scripts')
+    <script>
+        $(document).ready(function(){
+            $('#import_type').change(function(){
+                if($(this).val() == 'replace' && confirm('Replacing Codes will delete all existing codes. Are you sure you want to proceed?')){
+                    return true
+                }else if($(this).val() == 'add'){
+                    return true
+                }else{
+                    $('#import_type').val('')
+                }
+            })
+        })
+    </script>
 @endsection

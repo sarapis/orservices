@@ -5,16 +5,22 @@ namespace App\Http\Controllers\backend;
 use App\Http\Controllers\Controller;
 use App\Model\Address;
 use App\Model\Code;
+use App\Model\CodeCategory;
 use App\Model\Contact;
 use App\Model\Detail;
+use App\Model\Language;
 use App\Model\Location;
 use App\Model\Organization;
+use App\Model\OrganizationStatus;
 use App\Model\OrganizationTag;
 use App\Model\Phone;
 use App\Model\Program;
 use App\Model\Schedule;
 use App\Model\Service;
+use App\Model\ServiceStatus;
+use App\Model\ServiceTag;
 use App\Model\Taxonomy;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -104,8 +110,10 @@ class AuditsController extends Controller
                             $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
                             $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
                         } else if ($key == 'organization_status_x') {
-                            $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
-                            $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
+                            $newStatus = isset($value->new_values[$key]) ? OrganizationStatus::whereId($value->new_values[$key])->first() : null;
+                            $oldStatus = isset($value->old_values[$key]) ? OrganizationStatus::whereId($value->old_values[$key])->first() : null;
+                            $new_values[$key] = isset($value->new_values[$key]) && $newStatus ? $newStatus->status : '';
+                            $old_values[$key] = isset($value->old_values[$key]) && $oldStatus ? $oldStatus->status : '';
                         } else if ($key == 'organization_year_incorporated') {
                             $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
                             $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
@@ -136,6 +144,19 @@ class AuditsController extends Controller
                         } else if ($key == 'organization_airs_taxonomy_x') {
                             $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
                             $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
+                        } else if ($key == 'updated_by') {
+                            if (isset($value->new_values[$key])) {
+                                $user = User::whereId($value->new_values[$key])->first();
+                                if ($user) {
+                                    $new_values[$key] =  $user->first_name . ' ' . $user->last_name;
+                                }
+                            }
+                            if (isset($value->old_values[$key])) {
+                                $user = User::whereId($value->old_values[$key])->first();
+                                if ($user) {
+                                    $old_values[$key] =  $user->first_name . ' ' . $user->last_name;
+                                }
+                            }
                         }
                         if ($key == 'organization_code' && isset($value->new_values[$key]) &&  ($value->new_values[$key] || $value->old_values[$key])) {
                             $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
@@ -622,22 +643,22 @@ class AuditsController extends Controller
                             $oldScheduleName = '';
                             foreach ($serviceScheduleIds as $keyP => $valueP) {
                                 $scheduleData = Schedule::where('schedule_recordid', $valueP)->first();
-                                if ($scheduleData && $scheduleData->opens_at) {
+                                if ($scheduleData && $scheduleData->opens) {
                                     if ($keyP == 0)
-                                        $scheduleName = $scheduleData->opens_at . ' - ' . $scheduleData->closes_at;
+                                        $scheduleName = $scheduleData->opens . ' - ' . $scheduleData->closes;
                                     else
-                                        $scheduleName = $scheduleName . '| ' . $scheduleData->opens_at . ' - ' . $scheduleData->closes_at;
+                                        $scheduleName = $scheduleName . '| ' . $scheduleData->opens . ' - ' . $scheduleData->closes;
                                 }
                             }
                             $new_values[$key] = $scheduleName;
 
                             foreach ($serviceScheduleOldIds as $keyO => $valueO) {
                                 $oldScheduleData = Schedule::where('schedule_recordid', $valueO)->first();
-                                if ($oldScheduleData && $oldScheduleData->opens_at) {
+                                if ($oldScheduleData && $oldScheduleData->opens) {
                                     if ($keyO == 0)
-                                        $oldScheduleName =  $oldScheduleData->opens_at . ' - ' . $oldScheduleData->closes_at;
+                                        $oldScheduleName =  $oldScheduleData->opens . ' - ' . $oldScheduleData->closes;
                                     else
-                                        $oldScheduleName = $oldScheduleName . '| ' . $oldScheduleData->opens_at . ' - ' . $oldScheduleData->closes_at;
+                                        $oldScheduleName = $oldScheduleName . '| ' . $oldScheduleData->opens . ' - ' . $oldScheduleData->closes;
                                 }
                             }
                             $old_values[$key] = $oldScheduleName;
@@ -697,6 +718,58 @@ class AuditsController extends Controller
                                 }
                             }
                             $old_values[$key] = $oldCodeName;
+                        } else if ($key == 'code_category_ids') {
+                            $serviceCodeCategoryIds = isset($value->new_values[$key]) ? explode(',', $value->new_values[$key]) : [];
+                            $serviceCodeCategoryOldIds = isset($value->old_values[$key]) ? explode(',', $value->old_values[$key]) : [];
+                            $serviceCodeCategoryIds = array_values(array_filter($serviceCodeCategoryIds));
+                            $serviceCodeCategoryOldIds = array_values(array_filter($serviceCodeCategoryOldIds));
+                            $codeName = '';
+                            $oldCodeName = '';
+                            foreach ($serviceCodeCategoryIds as $keyP => $valueP) {
+                                $codeData = CodeCategory::whereId($valueP)->first();
+                                if ($keyP == 0)
+                                    $codeName = $codeData->name;
+                                else
+                                    $codeName = $codeName . '| ' . $codeData->name;
+                            }
+                            $new_values[$key] = $codeName;
+
+                            foreach ($serviceCodeCategoryOldIds as $keyO => $valueO) {
+                                $oldCodeData = CodeCategory::whereId($valueO)->first();
+                                if ($keyO == 0)
+                                    $oldCodeName = $oldCodeData->name;
+                                else
+                                    $oldCodeName = $oldCodeName . '| ' . $oldCodeData->name;
+                            }
+                            $old_values[$key] = $oldCodeName;
+                        } else if ($key == 'service_language') {
+                            $serviceLanguageIds = isset($value->new_values[$key]) ? explode(',', $value->new_values[$key]) : [];
+                            $serviceLanguageOldIds = isset($value->old_values[$key]) ? explode(',', $value->old_values[$key]) : [];
+                            $serviceLanguageIds = array_values(array_filter($serviceLanguageIds));
+                            $serviceLanguageOldIds = array_values(array_filter($serviceLanguageOldIds));
+                            $language = '';
+                            $oldlanguage = '';
+                            foreach ($serviceLanguageIds as $keyP => $valueP) {
+                                $languageData = Language::whereId($valueP)->first();
+                                if ($languageData) {
+                                    if ($keyP == 0)
+                                        $language = $languageData->language;
+                                    else
+                                        $language = $language . '| ' . $languageData->language;
+                                }
+                            }
+                            $new_values[$key] = $language;
+
+                            foreach ($serviceLanguageOldIds as $keyO => $valueO) {
+                                $oldLanguageData = Language::whereId($valueO)->first();
+                                if ($oldLanguageData) {
+                                    if ($keyO == 0)
+                                        $oldlanguage = $oldLanguageData->language;
+                                    else
+                                        $oldlanguage = $oldlanguage . '| ' . $oldLanguageData->language;
+                                }
+                            }
+                            $old_values[$key] = $oldlanguage;
                         } else if ($key == 'service_name') {
                             $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
                             $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
@@ -710,9 +783,6 @@ class AuditsController extends Controller
                             $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
                             $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
                         } else if ($key == 'service_email') {
-                            $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
-                            $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
-                        } else if ($key == 'service_status') {
                             $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
                             $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
                         } else if ($key == 'access_requirement') {
@@ -733,6 +803,21 @@ class AuditsController extends Controller
                         } else if ($key == 'service_licenses') {
                             $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
                             $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
+                        } else if ($key == 'updated_by') {
+                            $newuser = isset($value->new_values[$key]) ?  User::whereId($value->new_values[$key])->first() : null;
+                            $olduser = isset($value->old_values[$key]) ?  User::whereId($value->old_values[$key])->first() : null;
+                            $new_values[$key] = isset($value->new_values[$key]) && $newuser ? $newuser->name : '';
+                            $old_values[$key] = isset($value->old_values[$key]) && $olduser ? $olduser->name : '';
+                        } else if ($key == 'service_tag') {
+                            $newTag = isset($value->new_values[$key]) ?  ServiceTag::whereId($value->new_values[$key])->first() : null;
+                            $oldTag = isset($value->old_values[$key]) ?  ServiceTag::whereId($value->old_values[$key])->first() : null;
+                            $new_values[$key] = isset($value->new_values[$key]) && $newTag ? $newTag->tag : '';
+                            $old_values[$key] = isset($value->old_values[$key]) && $oldTag ? $oldTag->tag : '';
+                        } else if ($key == 'service_status') {
+                            $newStatus = isset($value->new_values[$key]) ?  ServiceStatus::whereId($value->new_values[$key])->first() : null;
+                            $oldStatus = isset($value->old_values[$key]) ?  ServiceStatus::whereId($value->old_values[$key])->first() : null;
+                            $new_values[$key] = isset($value->new_values[$key]) && $newStatus ? $newStatus->status : '';
+                            $old_values[$key] = isset($value->old_values[$key]) && $oldStatus ? $oldStatus->status : '';
                         }
                     }
                     $value->new_values = $new_values;
@@ -802,10 +887,10 @@ class AuditsController extends Controller
                         } else if ($key == 'until') {
                             $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
                             $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
-                        } else if ($key == 'opens_at') {
+                        } else if ($key == 'opens') {
                             $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
                             $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
-                        } else if ($key == 'closes_at') {
+                        } else if ($key == 'closes') {
                             $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
                             $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
                         } else if ($key == 'schedule_holiday') {

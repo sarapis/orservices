@@ -13,6 +13,7 @@ use App\Model\OrganizationTag;
 use App\Model\Service;
 use App\Model\ServiceTag;
 use App\Model\SessionData;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -37,9 +38,10 @@ class TrackingController extends Controller
             $service_tags = ServiceTag::pluck('tag', 'id');
             $organizationStatus = OrganizationStatus::orderBy('order')->pluck('status', 'id');
             $saved_filters = OrganizationTableFilter::where('user_id', Auth::id())->get();
+            $users = User::get();
 
             if (!$request->ajax()) {
-                return view('frontEnd.tracking.index', compact('organizations', 'organization_tags', 'organizationStatus', 'service_tags', 'saved_filters', 'map'));
+                return view('frontEnd.tracking.index', compact('organizations', 'organization_tags', 'organizationStatus', 'service_tags', 'saved_filters', 'map', 'users'));
             }
             return DataTables::of($organizations)
                 ->editColumn('services', function ($row) {
@@ -109,8 +111,14 @@ class TrackingController extends Controller
                 ->editColumn('last_verified_by', function ($row) {
                     return $row->get_last_verified_by ? $row->get_last_verified_by->first_name . ' ' . $row->get_last_verified_by->last_name : '';
                 })
-                ->editColumn('updated_at', function ($row) {
-                    return date('Y-m-d H:i:s', strtotime($row->updated_at));
+                ->editColumn('updated_by', function ($row) {
+                    return $row->get_latest_updated($row, 'updated_by');
+                    // return $row->get_updated_by ? $row->get_updated_by->first_name . ' ' . $row->get_updated_by->last_name : '';
+                })
+                ->editColumn('latest_updated_date', function ($row) {
+                    $row->get_latest_updated($row, 'updated_at');
+
+                    return date('Y-m-d H:i:s', strtotime($row->latest_updated_date));
                 })
                 ->addColumn('last_note_date', function ($row) {
                     $note = SessionData::where('session_organization', $row->organization_recordid)->orderBy('id', 'desc')->first();
@@ -129,9 +137,10 @@ class TrackingController extends Controller
                         foreach ($services as $key => $value) {
                             if ($value->service_tag) {
                                 $tagsArray = explode(',', $value->service_tag);
+                                $tagsArray = is_array($tagsArray) ? array_unique($tagsArray) : [];
                                 foreach ($tagsArray as $key => $value1) {
                                     $service_tag = ServiceTag::whereId($value1)->first();
-                                    if ($service_tag) {
+                                    if ($service_tag && !in_array($service_tag->tag, $tags)) {
                                         $tags[] = $service_tag->tag;
                                     }
                                 }
@@ -199,10 +208,10 @@ class TrackingController extends Controller
                         }
                         // last updated
                         if (isset($extraData['start_updated']) && $extraData['start_updated'] != null && $extraData['end_updated'] == null) {
-                            $query = $query->whereDate('updated_at', '>=', $extraData['start_updated']);
+                            $query = $query->whereDate('latest_updated_date', '>=', $extraData['start_updated']);
                         }
                         if (isset($extraData['start_updated']) && $extraData['start_updated'] != null && isset($extraData['end_updated']) && $extraData['end_updated'] != null) {
-                            $query = $query->whereDate('updated_at', '<=', $extraData['end_updated'])->whereDate('updated_at', '>=', $extraData['start_updated']);
+                            $query = $query->whereDate('latest_updated_date', '<=', $extraData['end_updated'])->whereDate('latest_updated_date', '>=', $extraData['start_updated']);
                         }
                         // end
 
@@ -226,12 +235,19 @@ class TrackingController extends Controller
                             // });
                             $query->whereIn('organization_status_x', $extraData['status']);
                         }
+                        if (isset($extraData['last_updated_by']) && $extraData['last_updated_by'] != null) {
+                            $query->where('updated_by', $extraData['last_updated_by']);
+                        }
+                        if (isset($extraData['last_verified_by']) && $extraData['last_verified_by'] != null) {
+                            $query->where('last_verified_by', $extraData['last_verified_by']);
+                        }
                     }
                     return $query;
                 }, true)
                 ->rawColumns(['services', 'phones', 'location', 'organization_details', 'contact_name', 'last_note_date', 'last_edit_date', 'organization_name', 'organization_tag', 'organization_url', 'bookmark', 'organization_status_x'])
                 ->make(true);
         } catch (\Throwable $th) {
+            dd($th);
             Log::error('Error in organization table index : ' . $th);
             return redirect()->back();
         }

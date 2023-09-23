@@ -76,9 +76,6 @@ class MessageController extends Controller
 
     public function messagesSetting()
     {
-        // $twillioSid = env('TWILIO_SID');
-        // $twillioKey = env('TWILIO_TOKEN');
-        // $twllioNumber = env('TWILIO_FROM');
         $sendgridKey = env('SENDGRID_API_KEY');
         $sendgridMailFromName = env('MAIL_FROM_NAME');
         $sendgridMailFromAddress = env('MAIL_FROM_ADDRESS');

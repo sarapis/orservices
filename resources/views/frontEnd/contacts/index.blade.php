@@ -112,7 +112,7 @@
                 <div class="card">
                     <div class="card-block">
                         <div class="table-responsive">
-                            <table class="table" id="table">
+                            <table class="display dataTable table-striped jambo_table table-bordered table-responsive" cellspacing="0" width="100%" id="table">
                                 <thead>
                                     <tr>
                                         {{-- <th>
