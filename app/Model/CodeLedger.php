@@ -39,4 +39,13 @@ class CodeLedger extends Model
     {
         return $this->belongsTo(Code::class, 'SDOH_code', 'id');
     }
+    /**
+     * Get the get_code_system that owns the Code
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function get_code_system(): BelongsTo
+    {
+        return $this->belongsTo(CodeSystem::class, 'code_type', 'id');
+    }
 }

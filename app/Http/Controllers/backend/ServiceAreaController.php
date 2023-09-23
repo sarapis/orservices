@@ -75,6 +75,9 @@ class ServiceAreaController extends Controller
             ServiceArea::create([
                 'name' => $request->name,
                 'services' => $request->services,
+                'extent' => $request->extent,
+                'extent_type' => $request->extent_type,
+                'uri' => $request->uri,
                 'description' => $request->description,
                 'created_by' => Auth::id()
             ]);
@@ -133,6 +136,9 @@ class ServiceAreaController extends Controller
             ServiceArea::whereId($id)->update([
                 'name' => $request->name,
                 'services' => $request->services,
+                'extent' => $request->extent,
+                'extent_type' => $request->extent_type,
+                'uri' => $request->uri,
                 'description' => $request->description,
                 'updated_by' => Auth::id()
             ]);

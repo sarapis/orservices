@@ -73,8 +73,7 @@
                         <label class="control-label sel-label-org pl-4 col-md-3"></label>
                         <div class="col-md-5 col-sm-6 col-xs-12 ">
                             <button type="button" class="btn btn-primary" onclick="checkSendgrid()">Check</button>
-                            <button type="submit" class="btn btn-success btn-rounded" style="width:45%;"><i
-                                    class="fa fa-save"></i> Save</button>
+                            <button type="submit" class="btn btn-success btn-rounded" style="width:45%;"><i class="fa fa-save"></i> Save</button>
                         </div>
                     </div>
                 </div>
@@ -112,9 +111,7 @@
                     <div class="row">
                         <label class="control-label sel-label-org pl-4 col-md-3"><b></b> </label>
                         <div class="col-md-5 col-sm-6 col-xs-12">
-                            <button type="submit" class="btn btn-success btn-rounded" style="width:45%;"><i
-                                    class="fa fa-save"></i>
-                                Save</button>
+                            <button type="submit" class="btn btn-success btn-rounded" style="width:45%;"><i class="fa fa-save"></i> Save</button>
                         </div>
                     </div>
                 </div>
@@ -128,7 +125,14 @@
                 <div class="form-group {{ $errors->has('body') ? 'has-error' : '' }}">
                     {!! Form::label('body', 'Google Analytics: ', ['class' => 'col-sm-3 control-label']) !!}
                     <div class="col-sm-6">
-                        {!! Form::text('body', null, ['class' => 'form-control']) !!}
+                        {{-- {!! Form::text('body', null, ['class' => 'form-control']) !!} --}}
+                        <input class="form-control" type="text" value="{{ '*******' . substr($page->body, -3) }}" name="body1" id="body1" disabled>
+                        <input class="form-control" type="text" value="{{ $page->body }}" name="body"
+                            id="body2" style="display: none;" required>
+                        <button type="button" id="changeAnalyticKey">Change</button>
+                        @if ($errors->first('body'))
+                            <div class="alert alert-danger">{{ $errors->first('body') }}</div>
+                        @endif
                         {!! $errors->first('body', '<p class="help-block">:message</p>') !!}
                     </div>
                 </div>
@@ -169,6 +173,13 @@
                 $('#sendgridApiKey1').hide()
                 $('#sendgridApiKey2').show()
                 $('#sendgridApiKey2').val('')
+                $(this).hide()
+            })
+            $('#changeAnalyticKey').click(function() {
+                $('#body1').hide()
+                $('#body2').show()
+                $('#body1').val('')
+                $('#body2').val('')
                 $(this).hide()
             })
         })

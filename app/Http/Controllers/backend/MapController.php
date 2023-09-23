@@ -233,11 +233,13 @@ class MapController extends Controller
     public function apply_geocode(Request $request)
     {
         try {
+
             $ungeocoded_location_info_list = Location::whereNull('location_latitude')->get();
             $badgeocoded_location_info_list = Location::where('location_latitude', '=', '')->get();
             $client = new \GuzzleHttp\Client();
             $geocoder = new Geocoder($client);
-            $geocode_api_key = env('GEOCODE_GOOGLE_APIKEY');
+            $map = Map::find(1);
+            $geocode_api_key = $map && $map->api_key ? $map->api_key : null;
             $geocoder->setApiKey($geocode_api_key);
 
 
@@ -250,15 +252,7 @@ class MapController extends Controller
                             $add = $location_info->address[0];
                             $address_info = $add->address_1 . ($add->address_city ? ', ' . $add->address_city : '') . ($add->address_state_province ? ', ' . $add->address_state_province : '') . ($add->address_postal_code ? ', ' . $add->address_postal_code : '');
                         }
-                        // $response = $geocoder->getCoordinatesForAddress('30-61 87th Street, Queens, NY, 11369');
                         $response = $geocoder->getCoordinatesForAddress($address_info . ', ' . (env('LOCALIZATION') ? env('LOCALIZATION') : 'US'));
-                        // if (($response['lat'] > 40.5) && ($response['lat'] < 42.0)) {
-                        //     $latitude = $response['lat'];
-                        //     $longitude = $response['lng'];
-                        // } else {
-                        //     $latitude = '';
-                        //     $longitude = '';
-                        // }
 
                         $latitude = $response['lat'];
                         $longitude = $response['lng'];
@@ -301,7 +295,8 @@ class MapController extends Controller
             $ungeocoded_location_info_list = Location::get();
             $client = new \GuzzleHttp\Client();
             $geocoder = new Geocoder($client);
-            $geocode_api_key = env('GEOCODE_GOOGLE_APIKEY');
+            $map = Map::find(1);
+            $geocode_api_key = $map && $map->api_key ? $map->api_key : null;
             $geocoder->setApiKey($geocode_api_key);
 
 

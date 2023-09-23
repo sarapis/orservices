@@ -60,30 +60,25 @@ ul#ui-id-1 {
                             @endif
                         </h4>
                         <p class="panel-text"><span class="badge bg-red">Organization:</span>
-                            @if(isset($service->organizations))
-                                @foreach($service->organizations as $organization)
+                            @if($service->service_organization)
+                            <a class="panel-link" href="{{ config('app.url')}}/organizations/{{ $service->organizations()->first()->organization_recordid }}"> {{$service->organizations()->first()->organization_name}}</a>
+                                {{-- @foreach($service->organizations as $organization)
                                     @if(isset($organization->organization_name))
                                         @if($loop->last)
-                                        <a class="panel-link" href="{{ config('app.url')}}/organization_{{$organization->organization_recordid}}"> {{$organization->organization_name}}</a>
                                         @else
                                         <a class="panel-link" href="{{ config('app.url')}}/organization_{{$organization->organization_recordid}}"> {{$organization->organization_name}}</a>
                                         @endif
                                     @endif
-                                @endforeach
+                                @endforeach --}}
                             @endif
                         </p>
 
                         <p class="panel-text"><span class="badge bg-blue">Description:</span> {!! $service->service_description !!}</p>
-
+                        @if ($service->service_phones_data)
                         <p class="panel-text"><span class="badge bg-red">Phone:</span>
-                            @foreach($service->phone as $phone)
-                                @if($loop->last)
-                                {{$phone->phone_number}}
-                                @else
-                                {{$phone->phone_number}},
-                                @endif
-                            @endforeach
-                        </p>
+                            {!! $service->service_phones_data !!}
+                            </p>
+                        @endif
 
                         <p class="panel-text"><span class="badge bg-red">Extension:</span>
                             @foreach($service->phone as $phone) {!! $phone->phone_extension !!} @endforeach

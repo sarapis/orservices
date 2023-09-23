@@ -30,7 +30,7 @@
                                     </td>
                                     <td></td>
                                 </tr> --}}
-                                @if (count($service_eligibility_term_data) > 0 )
+                                @if (isset($service_eligibility_term_data) && count($service_eligibility_term_data) > 0 )
                                 @foreach ($service_eligibility_type_data as $key => $value)
                                 <tr>
                                     <td>
@@ -219,8 +219,8 @@
         let index = $('#service_eligibility_term_index_p').val()
         let eligibility_type_recordid = $('#service_eligibility_type_'+index).val()
         let _token = "{{ csrf_token() }}"
-        let service_recordid = "{{ $service->service_recordid }}"
-        let organization_recordid = "{{ $service->service_organization }}"
+        let service_recordid = "{{ isset($service) ? $service->service_recordid : '' }}"
+        let organization_recordid = "{{ isset($service) ? $service->service_organization : '' }}"
         $.ajax({
             url : '{{ route("saveEligibilityTaxonomyTerm") }}',
             method : 'post',
@@ -228,10 +228,24 @@
             success: function (response) {
                 $('#loading').hide()
                 alert('Thank you for submitting a new term. It is being evaluated by the system administrators. We will let you know if it becomes available.');
+
                 $('#service_eligibility_type_'+index).val('')
                 $('#service_eligibility_term_'+index).empty()
                 $('#service_eligibility_term_'+index).selectpicker('refresh')
                 $('#service_eligibility_type_'+index).selectpicker('refresh')
+
+                // $('#service_eligibility_type_'+index).val(eligibility_type_recordid)
+                // // $('#service_eligibility_term_'+index).empty()
+
+                // $('#service_eligibility_term_type_'+index).val('new')
+                // // $('#service_eligibility_term_'+index+" option:last").prev().append('<option value="'+response.taxonomy_recordid+'">'+service_eligibility_term+'</option>');
+                // $('<option value="'+response.taxonomy_recordid+'">'+service_eligibility_term+'</option>').insertAfter($('#service_eligibility_term_'+index+" option:last").prev());
+                // $('#service_eligibility_term_'+index).val(response.taxonomy_recordid)
+                // $('#service_eligibility_term_'+index).selectpicker('refresh')
+                // $('#service_eligibility_type_'+index).closest('tr').remove()
+                // $('#service_eligibility_term_'+index).closest('tr').remove()
+                // $('#service_eligibility_term_'+index).selectpicker('refresh')
+                // $('#service_eligibility_type_'+index).selectpicker('refresh')
                 $('#create_new_service_eligibility_term').modal('hide')
                 $('#service_eligibility_term_p').val('')
             },
@@ -253,7 +267,7 @@
         $('#service_eligibility_term_p').val('')
         $('#service_eligibility_term_index_p').val('')
     })
-    let se = {{ count($service_eligibility_type_data) > 0 ? count($service_eligibility_type_data) : 1  }}
+    let se = {{ isset($service_eligibility_type_data) && count($service_eligibility_type_data) > 0 ? count($service_eligibility_type_data) : 1  }}
     $('#addServiceEligibilityTr').click(function(){
         $('#ServiceEligibilityTable tr:last').before('<tr><td><select name="service_eligibility_type[]" id="service_eligibility_type_'+se+'" class="form-control selectpicker service_eligibility_type"><option value="">Select Type</option> @foreach ($service_eligibility_types as $key => $type)<option value="{{ $key }}">{{ $type }}</option> @endforeach </select></td><td class="create_btn"> <select name="service_eligibility_term['+se+'][]" id="service_eligibility_term_'+se+'" class="form-control selectpicker service_eligibility_term" data-size="5" data-live-search="true" multiple></select><input type="hidden" name="service_eligibility_term_type[]" id="service_eligibility_term_type_'+se+'" value="old"></td><td style="vertical-align:middle;"><a href="javascript:void(0)" class="plus_delteicon btn-button removePhoneData"><img src="/frontend/assets/images/delete.png" alt="" title=""></a></td></tr>');
         $('.selectpicker').selectpicker();

@@ -9,13 +9,13 @@
         margin-top: 6px;
     }
 
-    .text_tooltips .help-tip {
+    /* .text_tooltips .help-tip {
         top: 0;
         left: 0;
         width: 100%;
         border: none;
         background: none;
-    }
+    } */
     button[data-id="interaction_method"],
     button[data-id="service_tag"],
     button[data-id="service_status"],
@@ -24,14 +24,19 @@
         border: 1px solid #ddd;
     }
 
-    .text_tooltips .help-tip::before {
+    /* .text_tooltips .help-tip::before {
         display: none
-    }
+    } */
 
-    .text_tooltips:hover .help-tip div {
+    /* .text_tooltips:hover .help-tip div {
         display: block;
         left: 0;
+    } */
+    .accordion-toggle:before{
+        top: 18px
     }
+    .text_tooltips .help-tip {top: 0px}
+
 
 </style>
 @section('content')
@@ -92,7 +97,6 @@
                             <div class="card-block">
                                 <h4 class="card-title">
                                     <a href="#">{{ $service->service_name }}</a>
-
                                     @if ((Auth::user() && Auth::user()->roles && $organization && Auth::user()->user_organization && str_contains(Auth::user()->user_organization, $service->organizations()->first()->organization_recordid) && (Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin')) || (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')  || (Auth::user() && Auth::user()->roles && Auth::user()->service_tags && $service->service_tag && count(array_intersect(explode(',', Auth::user()->service_tags),explode(',', $service->service_tag))) > 0) || (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'Section Admin' && Auth::user()->organization_tags && $service->organizations()->first()->organization_tag && count(array_intersect(explode(',', Auth::user()->organization_tags),explode(',', $service->organizations()->first()->organization_tag))) > 0))
                                         <a href="/services/{{ $service->service_recordid }}/edit" class="float-right">
                                             @if ($service->access_requirement == 'yes')
@@ -101,6 +105,9 @@
                                             @endif
                                             <i class="icon md-edit mr-0"></i>
                                         </a>
+                                    @endif
+                                    @if ($service->organizations && $service->organizations->organization_status_x && isset($organizationStatus[$service->organizations->organization_status_x]) && ($organizationStatus[$service->organizations->organization_status_x] == 'Out of Business' || $organizationStatus[$service->organizations->organization_status_x] == 'Inactive'))
+                                        <span class="badge badge-danger float-right m-2" style="color:#fff;">Inactive</span>
                                     @endif
                                 </h4>
                                 @if (isset($service->service_alternate_name))
@@ -112,36 +119,15 @@
                                 @if ($service->service_organization)
                                     <p class="org_title"><span class="subtitle"><b>Organization:</b></span>
                                         @if ($service->service_organization != 0)
-                                            @if (isset($service->organizations))
-                                                <a class="panel-link" class="notranslate"
-                                                    href="/organizations/{{ $service->organizations()->first()->organization_recordid }}">
+                                            @if (isset($service->organizations)) <a class="panel-link" class="notranslate" href="/organizations/{{ $service->organizations()->first()->organization_recordid }}">
                                                     {{ $service->organizations()->first()->organization_name }}</a>
                                             @endif
                                         @endif
                                     </p>
                                 @endif
-                                @if ($service->service_description)
-                                <div class="service-description" style="line-height: inherit;">
-                                    {!! nl2br($service->service_description) !!}
-                                </div>
-                                @endif
-                                @if (isset($mainPhoneNumber) && count($mainPhoneNumber) > 0)
-                                    <div class="tagp_class">
-                                        <span><i class="icon md-phone font-size-18 vertical-align-top mr-0 pr-10"></i>
-                                            @foreach ($mainPhoneNumber as $key => $item)
-                                                {{-- <p> --}}
-                                                    @if ($key != 0)
-                                                        ,&nbsp;
-                                                    @endif
-                                                    <a href="tel:{{ $item->phone_number }}">{{ $item->phone_number }}</a>{!! $item->phone_extension ? '&nbsp;&nbsp; ext. ' . $item->phone_extension : '' !!}{!! $item->type ? '&nbsp;(' . $item->type->type . ')' : '' !!}
-                                                    @if ($item->phone_language)
-                                                        <br>
-                                                        {{ $item->phone_language }}
-                                                    @endif
-                                                    {{ $item->phone_description ? '- ' . $item->phone_description : '' }}
-                                                {{-- </p> --}}
-                                            @endforeach
-                                        </span>
+                                @if ($service->service_alert)
+                                    <div class="tagp_class" style="background-color: {{ $layout && $layout->primary_color ? $layout->primary_color : '#000'  }}; color:#fff;margin: 0px 0px 7px 0px;padding: 2px 2px 1px 5px;border-radius: 6px;">
+                                        {!! $service->service_alert !!}
                                     </div>
                                 @endif
                                 @if ($service->service_url)
@@ -149,13 +135,11 @@
                                         <span>
                                             <i class="icon md-globe font-size-18 vertical-align-top mr-0 pr-10"></i>
                                             @if ($service->service_url != null)
-                                                <a href="{!! $service->service_url !!}">{!! $service->service_url !!}</a>
+                                                <a href="{!! $service->service_url !!}" target="_blank">{!! $service->service_url !!}</a>
                                             @endif
                                         </span>
                                     </div>
                                 @endif
-
-
                                 @if ($service->service_email != null)
                                     <div class="tagp_class">
                                         <span>
@@ -164,27 +148,25 @@
                                         </span>
                                     </div>
                                 @endif
-
-                                @if (isset($service->languages) && count($service->languages) > 0)
+                                @if ($service->service_language_data)
                                     <div class="tagp_class">
                                         <span>
                                             <i class="icon fa-language  font-size-18 vertical-align-top mr-0 pr-10"></i>
-                                            @foreach ($service->languages as $language)
-                                                @if ($loop->last)
-                                                    {{ $language->language }}
-                                                @else
-                                                    {{ $language->language }},
-                                                @endif
-                                            @endforeach
+                                            {{ $service->service_language_data }}
                                         </span>
                                     </div>
                                 @endif
-
-                                @if ($service->service_application_process)
+                                @if ($service->service_description)
+                                    <div class="service-description" style="line-height: inherit;">
+                                        {!! nl2br($service->service_description) !!}
+                                    </div>
+                                    @endif
+                                @if ($service->service_interpretation)
                                     <div class="tagp_class">
-                                        <span class="subtitle"><b>Application:</b></span> {!! $service->service_application_process !!}
+                                        <span class="subtitle"><b>Interpretation Service:</b></span> {!! $service->service_interpretation !!}
                                     </div>
                                 @endif
+
                                 @if ($service->areas && count($service->areas) > 0)
                                     <div class="tagp_class">
                                         <span class="subtitle"><b>Service Area: </b></span>
@@ -196,93 +178,14 @@
                                         @endforeach
                                     </div>
                                 @endif
-
-                                @if ($service->service_wait_time)
-                                    <div class="tagp_class"><span class="subtitle"><b>Wait Time:</b></span>
-                                        {{ $service->service_wait_time }}</div>
-                                @endif
-                                @if ($service->fees && count($service->fees) > 0)
-                                    <div class="tagp_class">
-                                        <span class="subtitle"><b>Fee Options: </b></span>
-                                        @foreach ($service->fees as $k => $item)
-                                            @if ($k > 0)
-                                                ,
-                                            @endif
-                                            {{ $item->fees }}
-                                        @endforeach
-                                    </div>
-                                @endif
-
-                                @if ($service->service_fees)
-                                    <div class="tagp_class"><span class="subtitle"><b>Fees:</b></span> {{ $service->service_fees }}</div>
-                                @endif
-
                                 @if ($service->service_accreditations)
                                     <div class="tagp_class"><span class="subtitle"><b>Accreditations</b></span>
                                         {{ $service->service_accreditations }}
                                     </div>
                                 @endif
-
-                                @if ($service->service_licenses)
-                                    <div class="tagp_class"><span class="subtitle"><b>Licenses</b></span>
-                                        {{ $service->service_licenses }}</div>
-                                @endif
-
-
-                                @if (isset($service->schedules()->first()->byday))
-                                    <div class="tagp_class">
-                                        <span class="subtitle"><b>Schedules</b></span><br />
-                                        {{-- @foreach ($service->schedules as $schedule)
-                                        @if ($loop->last)
-                                        {{$schedule->byday}} {{$schedule->opens_at}}
-                                        {{$schedule->closes_at}}
-                                        @else
-                                        {{$schedule->byday}} {{$schedule->opens_at}}
-                                        {{$schedule->closes_at}},
-                                        @endif
-                                        @endforeach --}}
-
-                                    </div>
-                                    @foreach ($service->schedules as $key => $schedule)
-                                        @if ($schedule->schedule_holiday)
-                                            @php
-                                                $holidayScheduleData[] = 1;
-                                            @endphp
-                                        @endif
-                                        @if (($schedule->byday && ($schedule->schedule_closed == null && $schedule->opens_at)) || ($schedule->schedule_closed && $schedule->schedule_holiday == null))
-                                            <div >
-                                                {{-- style="color:{{ strtolower(\Carbon\Carbon::now()->format('l')) == $schedule->byday ? 'blue' : '' }}" --}}
-                                                <b style="font-weight: 600;color: #000; letter-spacing: 0.5px;">{{ ucfirst($schedule->byday) }}
-                                                    :</b>
-                                                @if ($schedule->schedule_closed == null)
-                                                    {{ $schedule->opens_at }} - {{ $schedule->closes_at }}
-                                                @else
-                                                    Closed
-                                                @endif
-                                            </div>
-                                        @endif
-                                    @endforeach
-                                    @if (isset($holidayScheduleData))
-                                        <span style="margin-bottom: 20px;display: inline-block;font-weight: 600;text-decoration: underline; color: #5051db;cursor: pointer;" id="showHolidays"><a>Show holidays</a></span>
-                                    @endif
-                                    <div style="display: none;" id="holidays">
-                                        <span class="subtitle"><b>Holidays</b></span><br />
-                                        @foreach ($service->schedules as $schedule)
-                                            @if ($schedule->schedule_holiday)
-                                                <h4 style="color: #000;">
-                                                    {{ $schedule->dtstart }} to {{ $schedule->dtstart }} :
-                                                    @if ($schedule->schedule_closed == null)
-                                                        {{ $schedule->opens_at }} - {{ $schedule->closes_at }}
-                                                    @else
-                                                        Closed
-                                                    @endif
-                                                </h4>
-                                            @endif
-                                        @endforeach
-                                        <span style="margin-bottom: 20px;display: inline-block;font-weight: 600;text-decoration: underline; color: #5051db;cursor: pointer;" id="hideHolidays"><a>Hide holidays</a></span> <br>
-                                    </div>
-                                @endif
-
+                                {{-- related program --}}
+                                @include('frontEnd.services.service_program_table_display')
+                                {{-- service category --}}
                                 @isset($service->taxonomy)
                                     @if (count($service->taxonomy) > 0)
                                         @php
@@ -344,74 +247,234 @@
                                         @endif
                                     @endif
                                 @endisset
-                                @if ($service->program && count($service->program) > 0)
+                                @if ($service->eligibility_description)
+                                    <div class="tagp_class"><span class="subtitle"><b>Eligibility Description:</b></span> {{ $service->eligibility_description }}</div>
+                                @endif
+                                @if ($service->minimum_age)
+                                    <div class="tagp_class"><span class="subtitle"><b>Minimum Age:</b></span> {{ $service->minimum_age }}</div>
+                                @endif
+                                @if ($service->maximum_age)
+                                    <div class="tagp_class"><span class="subtitle"><b>Maximum Age:</b></span> {{ $service->maximum_age }}</div>
+                                @endif
+                                @if ($service->service_application_process)
                                     <div class="tagp_class">
-                                        <span class="pl-0 category_badge subtitle"><b>Related Program:</b></span>
-                                        <ul>
-                                            @if (count($service->program) == 1 && isset($service->program[0]))
-                                            <li class="text_tooltips">
-                                                <u>{{ $service->program[0]->name }}</u>
-                                                @if ($service->program[0]->alternate_name)
-                                                    <div class="help-tip">
-                                                        <div style="width: 300px;">
-                                                            <p>{{ $service->program[0]->alternate_name }}</p>
-                                                        </div>
-                                                    </div>
-                                                @endif
-                                                @if ($service->program[0]->program_service_relationship)
-                                                    participation is
-                                                    {{ $service->program[0]->program_service_relationship == 'not_required'? 'Not Required': Str::ucfirst($service->program[0]->program_service_relationship) }}.
-                                                @endif
-                                            </li>
-                                        </ul>
-                                        @else
-                                        <ul>
-                                        @foreach ($service->program as $key => $program)
-                                            <li class="text_tooltips">
-                                                {{ $program->name }}
-                                                @if ($program->program_service_relationship)
-                                                    @if ($program->alternate_name)
-                                                        <div class="help-tip">
-                                                            <div style="width: 300px;">
-                                                                <p>{{ $program->alternate_name }}</p>
-                                                            </div>
-                                                        </div>
-                                                    @endif
-                                                    participation is
-                                                    {{ $program->program_service_relationship == 'not_required'? 'Not Required': Str::ucfirst($program->program_service_relationship) }}.
-                                                @endif
-                                            </li>
-                                        @endforeach
-                                        </ul>
-                                        @endif
+                                        <span class="subtitle"><b>Application:</b></span> {!! $service->service_application_process !!}
                                     </div>
+                                @endif
+                                @if ($service->service_phones_data)
+                                    <div class="tagp_class">
+                                        <span><i class="icon md-phone font-size-18 vertical-align-top mr-0 pr-10"></i>
+                                            {!! $service->service_phones_data !!}
+                                        </span>
+                                    </div>
+                                @endif
+                                @if ($service->service_fees)
+                                    <div class="tagp_class"><span class="subtitle"><b>Fees Description:</b></span> {{ $service->service_fees }}</div>
+                                @endif
+                                @if ($service->service_details != null)
+                                @php
+                                    $show_details = [];
+                                @endphp
+                                {{-- /**TODO - add some logic for remove require_document from details */ --}}
+                                {{-- @foreach ($service->details->sortBy('detail_type') as $detail)
+                                    @php
+                                        for ($i = 0; $i < count($show_details); $i++) {
+                                            if ($show_details[$i]['detail_type'] == $detail->detail_type) {
+                                                break;
+                                            }
+                                        }
+                                        if ($i == count($show_details)) {
+                                            $show_details[$i] = ['detail_type' => $detail->detail_type, 'detail_value' => $detail->require_document_name];
+                                        } else {
+                                            $show_details[$i]['detail_value'] = $show_details[$i]['detail_value'] . ', ' .$detail->require_document_name;
+                                        }
+                                    @endphp
+                                @endforeach --}}
+                                @foreach ($show_details as $detail)
+                                <div class="tagp_class">
+                                    <span class="subtitle"><b>{{ $detail['detail_type'] }}:</b></span>
+                                    {!! $detail['detail_value'] !!}
+                                </div>
+                                @endforeach
+                                @endif
+                                @if ($service->require_documents()->count() > 0 && $service->service_require_document_data)
+                                <div class="tagp_class">
+                                    <span class="pl-0 category_badge subtitle"><b>Required Document:</b></span>
+                                    {!! $service->service_require_document_data !!}
+                                </div>
                                 @endif
 
-                                @if ($service->service_details != null)
-                                    @php
-                                        $show_details = [];
-                                    @endphp
-                                    @foreach ($service->details->sortBy('detail_type') as $detail)
-                                        @php
-                                            for ($i = 0; $i < count($show_details); $i++) {
-                                                if ($show_details[$i]['detail_type'] == $detail->detail_type) {
-                                                    break;
-                                                }
-                                            }
-                                            if ($i == count($show_details)) {
-                                                $show_details[$i] = ['detail_type' => $detail->detail_type, 'detail_value' => $detail->detail_value];
-                                            } else {
-                                                $show_details[$i]['detail_value'] = $show_details[$i]['detail_value'] . ',' .$detail->detail_value;
-                                            }
-                                        @endphp
-                                    @endforeach
-                                    @foreach ($show_details as $detail)
-                                    <div class="tagp_class">
-                                        <span class="subtitle"><b>{{ $detail['detail_type'] }}:</b></span>
-                                            {!! $detail['detail_value'] !!}
-                                    </div>
-                                    @endforeach
+                                @if ($service->service_wait_time)
+                                    <div class="tagp_class"><span class="subtitle"><b>Wait Time:</b></span>
+                                        {{ $service->service_wait_time }}</div>
                                 @endif
+                                @if ($service->fees && count($service->fees) > 0)
+                                    <div class="tagp_class">
+                                        <span class="subtitle"><b>Fee Options: </b></span>
+                                        @foreach ($service->fees as $k => $item)
+                                            @if ($k > 0)
+                                                ,
+                                            @endif
+                                            {{ $item->fees }}
+                                        @endforeach
+                                    </div>
+                                @endif
+                                @if ($service->service_licenses)
+                                    <div class="tagp_class"><span class="subtitle"><b>Licenses</b></span>
+                                        {{ $service->service_licenses }}</div>
+                                @endif
+                                @if ($service->schedules()->count() > 0)
+                                <div class="tagp_class">
+                                    <span class="subtitle"><b>Schedules</b></span><br />
+                                </div>
+                                @endif
+                                @foreach ($service->schedules()->orderBy('schedule_recordid')->get() as $key => $schedule)
+                                    @if ($schedule->schedule_holiday)
+                                        @php
+                                            $holidayScheduleData[] = 1;
+                                        @endphp
+                                    @endif
+                                    @if (($schedule->weekday && (($schedule->schedule_closed == null || $schedule->open_24_hours == null) && $schedule->opens)) || (($schedule->schedule_closed || $schedule->open_24_hours) && $schedule->schedule_holiday == null))
+                                        <div >
+                                            {{-- style="color:{{ strtolower(\Carbon\Carbon::now()->format('l')) == $schedule->weekday ? 'blue' : '' }}" --}}
+                                            @php
+                                                $weekdayDatas = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                                                $weekdays = $schedule->weekday ? explode(',',$schedule->weekday) : [];
+                                            @endphp
+                                            @foreach ($weekdays as $key => $item)
+                                            <b style="font-weight: 600;color: #000; letter-spacing: 0.5px;">{{ ucfirst($item) }}
+                                                :</b>
+                                            @if ($schedule->schedule_closed == null && $schedule->open_24_hours == null)
+                                                {{ $schedule->opens }} - {{ $schedule->closes }}
+                                            @elseif(str_contains($schedule->open_24_hours,(array_search($item,$weekdayDatas) + 1)) )
+                                                Open 24 Hours
+                                            @else
+                                                Closed
+                                            @endif
+                                            <br>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                @endforeach
+                                @if (isset($holidayScheduleData))
+                                    <span style="margin-bottom: 20px;display: inline-block;font-weight: 600;text-decoration: underline; color: #5051db;cursor: pointer;" id="showHolidays"><a>Show holidays</a></span>
+                                @endif
+                                <div style="display: none;" id="holidays">
+                                    <span class="subtitle"><b>Holidays</b></span><br />
+                                    @foreach ($service->schedules as $schedule)
+                                        @if ($schedule->schedule_holiday)
+                                            <h4 style="color: #000;">
+                                                {{ $schedule->dtstart }} to {{ $schedule->until }} :
+                                                @if ($schedule->schedule_closed == null && $schedule->open_24_hours == null)
+                                                    {{ $schedule->opens }} - {{ $schedule->closes }}
+                                                @elseif($schedule->open_24_hours)
+                                                    Open 24 hours
+                                                @else
+                                                    Closed
+                                                @endif
+                                            </h4>
+                                        @endif
+                                    @endforeach
+                                    <span style="margin-bottom: 20px;display: inline-block;font-weight: 600;text-decoration: underline; color: #5051db;cursor: pointer;" id="hideHolidays"><a>Hide holidays</a></span> <br>
+                                </div>
+                                @auth
+                                    @if ($service->SDOH_code)
+                                        <div class="tagp_class">
+                                            <div class="panel-group" id="accordion">
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false">
+                                                            <h4 class="mb-0 p-4">
+                                                                <span class="pl-0 category_badge subtitle">
+                                                                    <b>SDOH Classifications ({{ $service->codes()->count() }}):</b>
+                                                                </span>
+                                                            </h4>
+                                                        </a>
+                                                    </div>
+                                                    <div id="collapseOne" class="panel-collapse collapse in" style="border:1px solid #e0e0e0">
+                                                        <div class="panel-body">
+                                                            <table class="display dataTable table-striped jambo_table table-bordered table-responsive no-footer" id="PhoneTable">
+                                                                <thead>
+                                                                    <th>Domain</th>
+                                                                    <th>Code</th>
+                                                                    <th>Code System</th>
+                                                                    <th>Resource</th>
+                                                                    <th>Description</th>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach ($service->codes as $key => $code)
+                                                                    <tr>
+                                                                        <td>
+                                                                            {!! $code->code_data ? '<a href="/terminology?domain='.$code->code_data->category.'">'. $code->code_data->get_category->name . "</a>" : '' !!}
+                                                                        </td>
+                                                                        <td>
+                                                                            @php
+                                                                                $SDOH_codes_ids = json_encode([$code->code_data->id]);
+                                                                                $link = '/search?find=&search_address=&lat=&long=&meta_status=On&paginate=10&sort=&target_all=&pdf=&csv=&filter_label=&organization_tags=&service_tags=&sdoh_codes_category=&sdoh_codes_data='.$SDOH_codes_ids.'&selected_taxonomies=';
+                                                                            @endphp
+                                                                            @if ($code->code_data->code != 'None')
+                                                                            {!!  '<a href="'.$link.'">'. $code->code_data->code . "</a>"!!}
+                                                                            @else
+                                                                            None
+                                                                            @endif
+                                                                        </td>
+                                                                        <td>{{ $code->code_data ? $code->code_data->code_system : '' }}</td>
+                                                                        <td>{{ $code->code_data ? $code->code_data->resource : '' }}</td>
+                                                                        <td>{{ $code->code_data ? $code->code_data->description : '' }}</td>
+                                                                    </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @elseif(count($categoryData))
+                                        <div class="tagp_class">
+                                            <div class="panel-group" id="accordion">
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false">
+                                                            <h4 class="mb-0 p-4">
+                                                                <span class="pl-0 category_badge subtitle">
+                                                                    <b>SDOH Classifications ({{ count($categoryData) }}):</b>
+                                                                </span>
+                                                            </h4>
+                                                        </a>
+                                                    </div>
+                                                    <div id="collapseOne" class="panel-collapse collapse in" style="border:1px solid #e0e0e0">
+                                                        <div class="panel-body">
+                                                            <table class="display dataTable table-striped jambo_table table-bordered table-responsive no-footer" style="display:table">
+                                                                <thead>
+                                                                    <th>Domain</th>
+                                                                    <th>Code</th>
+                                                                    <th>Code System</th>
+                                                                    <th>Resource</th>
+                                                                    <th>Description</th>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach ($categoryData as $key => $code)
+                                                                    <tr>
+                                                                        <td>
+                                                                            {!!'<a href="/terminology?domain='.$code->category.'">'. $code->get_category->name . "</a>" !!}
+                                                                        </td>
+                                                                        <td>
+                                                                        </td>
+                                                                        <td></td>
+                                                                        <td></td>
+                                                                        <td></td>
+                                                                    </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endauth
                             </div>
                         </div>
                         <ul class="nav nav-tabs tabpanel_above">
@@ -457,19 +520,6 @@
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="locations">
                                         <div>
-                                            <!-- @if (isset($service->locations))
-                                                @if ($service->locations != null && count($service->locations) > 0)
-                                                    <h4 class="card_services_title">
-                                                        <b>Locations</b>
-                                                        @if (Auth::user() && Auth::user()->roles && $organization && Auth::user()->user_organization && str_contains(Auth::user()->user_organization, $organization->organization_recordid) && (Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin')   || (Auth::user() && Auth::user()->roles && count(array_intersect(explode(',', Auth::user()->service_tags),explode(',', $service->service_tag))) > 0))
-                                                            <a href="/facilities/{{ $service->service_locations }}/edit"
-                                                                class="float-right">
-                                                                <i class="icon md-edit mr-0"></i>
-                                                            </a>
-                                                        @endif
-                                                    </h4>
-                                                @endif
-                                            @endif -->
                                             <div>
                                                 @if (isset($service->locations))
                                                     @if ($service->locations != null)
@@ -477,8 +527,7 @@
                                                         <div class="location_border">
                                                             <p class="m-0">
                                                                 @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
-                                                                    <a href="/facilities/{{ $location->location_recordid }}/edit"
-                                                                        class="float-right">
+                                                                    <a href="/facilities/{{ $location->location_recordid }}/edit" class="float-right">
                                                                         <i class="icon md-edit mr-0"></i>
                                                                     </a>
                                                                 @endif
@@ -532,20 +581,9 @@
                                                                             @php
                                                                                 if ($phone->phone_number) {
                                                                                     if ($k == 0) {
-                                                                                        $phoneNo =
-                                                                                            '<a href="tel:' .
-                                                                                            $phone->phone_number .
-                                                                                            '">' .
-                                                                                            $phone->phone_number .
-                                                                                            '</a>';
+                                                                                        $phoneNo = '<a href="tel:' .  $phone->phone_number . '">' . $phone->phone_number . '</a>';
                                                                                     } else {
-                                                                                        $phoneNo =
-                                                                                            ', ' .
-                                                                                            '<a href="tel:' .
-                                                                                            $phone->phone_number .
-                                                                                            '">' .
-                                                                                            $phone->phone_number .
-                                                                                            '</a>';
+                                                                                        $phoneNo = ', ' .'<a href="tel:' .$phone->phone_number .'">' .$phone->phone_number .'</a>';
                                                                                     }
                                                                                     $phones .= $phoneNo;
                                                                                 }
@@ -569,31 +607,40 @@
                                                                     </span>
                                                                 </div>
                                                             @endif
-                                                            @if (isset($location->accessibilities()->first()->accessibility))
+                                                            @if ($location->get_accessibility)
                                                                 <div class="tagp_class">
                                                                     <span><i class="fa fa-wheelchair-alt icon font-size-18 vertical-align-top mr-10" style="float:none"></i>
-                                                                        {{ $location->accessibilities()->first()->accessibility }}
+                                                                        {{ $location->get_accessibility->accessibility }}
                                                                     </span>
                                                                     <br />
                                                                 </div>
                                                             @endif
-                                                            @if (isset($location->schedules()->first()->byday))
-                                                                <p class="panel-text">
-                                                                    <span class="badge bg-red"><b>Schedules:</b></span>
+                                                            @if ($location->schedules()->whereNotNull('opens')->where('opens','!=','')->first())
+                                                            <div class="tagp_class">
+                                                                <span class="subtitle"><b>Schedules</b></span><br />
+                                                            </div>
+                                                                <div>
                                                                     @if ($location->schedules != null)
-                                                                        @foreach ($location->schedules as $schedule)
-                                                                            @if ($loop->last)
-                                                                                {{ $schedule->byday }}
-                                                                                {{ $schedule->opens_at }}
-                                                                                {{ $schedule->closes_at }}
-                                                                            @else
-                                                                                {{ $schedule->byday }}
-                                                                                {{ $schedule->opens_at }}
-                                                                                {{ $schedule->closes_at }},
-                                                                            @endif
+                                                                    @foreach ($location->schedules as $schedule)
+                                                                    @php
+                                                                        $weekdayDatas = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                                                                        $weekdays = $schedule->weekday ? explode(',',$schedule->weekday) : [];
+                                                                    @endphp
+                                                                        @foreach ($weekdays as $key => $item)
+                                                                        <b style="font-weight: 600;color: #000; letter-spacing: 0.5px;">{{ ucfirst($item) }}
+                                                                            :</b>
+                                                                        @if ($schedule->schedule_closed == null && $schedule->open_24_hours == null)
+                                                                            {{ $schedule->opens }} - {{ $schedule->closes }}
+                                                                        @elseif(str_contains($schedule->open_24_hours,(array_search($item,$weekdayDatas) + 1)) )
+                                                                            Open 24 Hours
+                                                                        @else
+                                                                            Closed
+                                                                        @endif
+                                                                        <br>
                                                                         @endforeach
+                                                                    @endforeach
                                                                     @endif
-                                                                </p>
+                                                                </div>
                                                             @endif
                                                         </div>
                                                         @endforeach
@@ -922,18 +969,16 @@
                     <form action="/createNewServiceTag/{{ $service->id }}" method="post">
                         @csrf
                         <div class="modal-header">
-                            <button type="button" class="close serviceTagCloseButton" aria-label="Close"><span
-                                    aria-hidden="true">×</span>
+                            <button type="button" class="close serviceTagCloseButton" aria-label="Close"><span aria-hidden="true">×</span>
                             </button>
-                            <h4 class="modal-title" id="myModalLabel">Add New Service Tag</h4>
+                                <h4 class="modal-title" id="myModalLabel">Add New Service Tag</h4>
                         </div>
                         <div class="modal-body all_form_field">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label
-                                            style="margin-bottom:5px;font-weight:600;color: #000;letter-spacing: 0.5px;">Tag</label>
-                                        <input type="text" class="form-control" name="tag" placeholder="tag" id="tag">
+                                        <label style="margin-bottom:5px;font-weight:600;color: #000;letter-spacing: 0.5px;">Tag</label>
+                                        <input type="text" class="form-control" required name="tag" placeholder="tag" id="tag">
                                     </div>
                                 </div>
                             </div>
@@ -1188,3 +1233,4 @@
             })
         </script>
     @endsection
+

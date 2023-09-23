@@ -155,6 +155,8 @@ Meta Filter
                                         <option value="Service_area">Service area</option>
                                         <option value="organization_status">Organization status</option>
                                         <option value="Service_status">Service status</option>
+                                        <option value="service_tag">Service tag</option>
+                                        <option value="organization_tag">Organization Tag</option>
                                       </select>
                                     </div>
                                   </div>
@@ -328,6 +330,10 @@ Meta Filter
                     <label class="control-label col-md-4 col-sm-4 col-xs-12" style="padding-top: 2px; margin-right: 10px;">Hide Organizations with No Filtered Services</label>
                     <input type="checkbox" class="js-switch" value="checked" id="hide_organizations_with_no_filtered_services" name="hide_organizations_with_no_filtered_services" @if($meta->hide_organizations_with_no_filtered_services==1) checked @endif />
                 </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-4 col-sm-4 col-xs-12" style="padding-top: 2px; margin-right: 10px;">Hide Service Categories with no Filtered Services</label>
+                    <input type="checkbox" class="js-switch" value="checked" id="hide_service_category_with_no_filter_service" name="hide_service_category_with_no_filter_service" @if($meta->hide_service_category_with_no_filter_service==1) checked @endif />
+                </div>
                 <div class="form-group">
                   <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-2">
                     <button type="submit" class="btn btn-success">Save</button>
@@ -348,7 +354,7 @@ Meta Filter
 <script>
   $('select[name="facet"]').on('change', function(e) {
     var value = e.target.value;
-    if (value == "Service_status" || value == "organization_status") {
+    if (value == "Service_status" || value == "organization_status" || value == "service_tag" || value == "organization_tag") {
       $('select[name="method"]').val('Checklist');
       $('div[id="method"]').hide();
       $('label[id="select_mothod_label"]').hide();

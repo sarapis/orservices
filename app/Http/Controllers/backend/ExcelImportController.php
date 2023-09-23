@@ -56,7 +56,6 @@ class ExcelImportController extends Controller
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
             return redirect()->back();
-
         }
     }
     public function importOrganization()
@@ -401,7 +400,6 @@ class ExcelImportController extends Controller
         } catch (\Throwable $th) {
             //throw $th;
             return redirect()->back()->with('error', $th->getMessage());
-
         }
     }
     public function ImportFacilityExcel(Request $request)
@@ -419,7 +417,7 @@ class ExcelImportController extends Controller
                     Location::truncate();
                     Locationaddress::truncate();
                     // Locationphone::truncate();
-                    // Locationschedule::truncate();
+                    // LocationSchedule::truncate();
 
                     set_time_limit(36000);
                     foreach ($data as $key => $locationData) {
@@ -515,18 +513,14 @@ class ExcelImportController extends Controller
                             $locationaddress->location_recordid = $location->location_recordid;
                             $locationaddress->address_recordid = $address->address_recordid;
                             $locationaddress->save();
-
                         }
                     }
                 }
                 return redirect()->back()->with('success', 'Facility Added successfully!');
-
             }
-
         } catch (\Throwable $th) {
             //throw $th;
             return redirect()->back()->with('error', $th->getMessage());
-
         }
     }
 }

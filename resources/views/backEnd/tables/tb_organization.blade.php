@@ -53,7 +53,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <label for="inputPassword3" class="col-sm-3 control-label">Start Date</label>
+                            <label for="inputPassword3" class="col-sm-3 control-label">Verification Start Date</label>
                             <div class="col-sm-7" style="margin-bottom: 20px">
                                 <input type="date" name="start_date" id="start_date" class="form-control">
                             </div>
@@ -73,7 +73,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <label for="inputPassword3" class="col-sm-3 control-label">End Date</label>
+                            <label for="inputPassword3" class="col-sm-3 control-label">Verification End Date</label>
                             <div class="col-sm-7" style="margin-bottom: 20px">
                                 <input type="date" name="end_date" id="end_date" class="form-control">
                             </div>
@@ -90,7 +90,7 @@
                     </div>
                     <!-- <table class="table table-striped jambo_table bulk_action table-responsive"> -->
                     <table id="tb_organizations_table"
-                        class="display table-striped jambo_table table-bordered table-responsive" cellspacing="0"
+                        class="display dataTable table-striped jambo_table table-bordered table-responsive" cellspacing="0"
                         width="100%">
                         <thead>
                             <tr>
@@ -100,10 +100,11 @@
                                 <th class="text-center">Organization Tags</th>
                                 <th class="text-center">Organization Status</th>
                                 <th class="text-center">Service Tags</th>
-                                <th class="text-center">Date Last Verified</th>
+                                <th class="text-center" data-type='date'>Date Last Verified</th>
                                 <th class="text-center">User Verified</th>
-                                <th class="text-center">Last Note Date</th>
-                                <th class="text-center">Last Updated Date</th>
+                                <th class="text-center" data-type='date'>Last Note Date</th>
+                                <th class="text-center" data-type='date'>Last Updated Date</th>
+                                <th class="text-center" data-type='date'>Last Updated By</th>
                                 {{-- <th class="text-center">Description</th> --}}
                                 {{-- <th class="text-center">Legal status</th> --}}
                                 {{-- <th class="text-center">Tax status</th> --}}
@@ -396,6 +397,7 @@
             tb_organizations_table = $('#tb_organizations_table').DataTable({
                 processing: true,
                 serverSide: true,
+                order: [ [8, 'desc'] ],
                 ajax: {
                     url: ajaxUrl,
                     method: "get",
@@ -447,8 +449,12 @@
                         name: 'last_note_date'
                     },
                     {
-                        data: 'updated_at',
-                        name: 'updated_at'
+                        data: 'latest_updated_date',
+                        name: 'latest_updated_date'
+                    },
+                    {
+                        data: 'updated_by',
+                        name: 'updated_by'
                     },
                     // {
                     //     data: 'organization_description',
@@ -533,6 +539,11 @@
                     },
                     {
                         "targets": 8,
+                        "orderable": true,
+                        "class": "text-left"
+                    },
+                    {
+                        "targets": 9,
                         "orderable": true,
                         "class": "text-left"
                     },

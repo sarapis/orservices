@@ -11,7 +11,7 @@ Languages
       <div class="x_title">
         <h2>Languages</h2>
         <div class="nav navbar-right panel_toolbox">
-          <a href="{{route('languages.create')}}" class="btn btn-success">New language</a>
+          <a href="{{route('languages.create')}}" class="btn btn-success">Add New Language</a>
 
         </div>
         <div class="clearfix"></div>
@@ -35,11 +35,10 @@ Languages
               {{-- <th>Select All <input name="select_all" value="1" id="example-select-all" type="checkbox" /> --}}
               </th>
               <th>ID</th>
-              <th>language name</th>
+              <th>Name</th>
+              <th>Code</th>
+              <th>Note</th>
               <th>Order</th>
-              <th>Service Id</th>
-              <th>Location Id</th>
-              {{-- <th>Created At</th> --}}
               <th>Actions</th>
             </tr>
           </thead>
@@ -91,9 +90,9 @@ Languages
             columns: [
                 { data: 'id', name: 'id' },
                 { data: 'language', name: 'language' },
+                { data: 'code', name: 'code' },
+                { data: 'note', name: 'note' },
                 { data: 'order', name: 'order' },
-                { data: 'language_service', name: 'language_service' },
-                { data: 'language_location', name: 'language_location' },
                 { data: 'action', name: 'action' },
             ],
             columnDefs : [

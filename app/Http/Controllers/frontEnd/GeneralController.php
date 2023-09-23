@@ -4,6 +4,7 @@ namespace App\Http\Controllers\frontEnd;
 
 use App\Http\Controllers\Controller;
 use App\Model\Code;
+use App\Model\CodeCategory;
 use App\Model\CodeLedger;
 use App\Model\Helptext;
 use App\Model\Service;
@@ -20,8 +21,9 @@ class GeneralController extends Controller
             $service_codes = $request->selected_codes ? $request->selected_codes : [];
 
             $service_recordid = $request->service_recordid;
-            $category_names = Code::whereIn('id', $codeIds)->pluck('category');
-            $codes = Code::whereIn('category', $category_names)->whereIn('resource', ['Condition', 'Goal', 'Procedure'])->orderBy('category')->orderBy('resource')->orderBy('grouping')->get()->groupBy(['category', 'resource', 'grouping']);
+            $category_names = CodeCategory::whereIn('id', $codeIds)->pluck('name');
+            $codes = Code::whereIn('category', $codeIds)->whereIn('resource', ['Condition', 'Goal', 'Procedure'])->orderBy('category')->orderBy('resource')->orderBy('grouping')->get()->groupBy(['category', 'resource', 'grouping']);
+
             $service_codes_old = [];
             $procedure_grouping = [];
             if ($service_recordid && count($codeIds) > 0) {

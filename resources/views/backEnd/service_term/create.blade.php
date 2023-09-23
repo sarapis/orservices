@@ -118,7 +118,7 @@ Create service term
                     </div>
 
                     <div class="form-group">
-                        <label for="inputPassword3" class="col-sm-3 control-label">Term Icon (Dark)</label>
+                        <label for="inputPassword3" class="col-sm-3 control-label">Term Icon</label>
                         <div class="col-sm-7">
                           <input type="file" class="form-control" id="category_logo" name="category_logo">
                           <p>Recommended image size is 60px x 60px</p>
@@ -131,7 +131,7 @@ Create service term
                         </div>
                       </div> --}}
                       <div class="form-group">
-                        <label for="inputPassword3" class="col-sm-3 control-label">Term Icon (Light)</label>
+                        <label for="inputPassword3" class="col-sm-3 control-label">Hover Term Icon</label>
                         <div class="col-sm-7">
                           <input type="file" class="form-control" id="category_logo_white" name="category_logo_white">
                           <p>Recommended image size is 60px x 60px</p>

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta property="og:title" content="Join the best company in the world!" />
     <meta property="og:url" content="http://www.sharethis.com" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta property="og:image" content="http://sharethis.com/images/logo.jpg" />
     <meta property="og:description" content="ShareThis is its people. It's imperative that we hire smart,innovative people who can work intelligently as we continue to disrupt the very category we created. Come join us!" />
     <meta property="og:site_name" content="ShareThis" />

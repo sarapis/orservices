@@ -17,11 +17,12 @@ $(document).ready(function () {
         operation = $(this).parent().parent().children().eq(1).html();
         original_facet = $(this).parent().parent().children().eq(2).html();
         method = $(this).parent().parent().children().eq(3).html();
-
+        console.log(original_facet, 'original_facet')
         $("input#edit-operation").val(operation);
         $("input#edit-facet").val(original_facet);
         $("input#edit-method").val(method);
-        if (original_facet == 'Taxonomy') {
+
+        if (original_facet == 'Taxonomy' || original_facet == 'Postal_code' || original_facet == 'Service_area' || original_facet == 'organization_status' || original_facet == 'Service_status' || original_facet === 'service_tag' || original_facet === 'organization_tag') {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -40,74 +41,89 @@ $(document).ready(function () {
             });
         }
 
-        if (original_facet == 'Postal_code') {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            })
+        // if () {
+        //     $.ajaxSetup({
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         }
+        //     })
 
-            var url = 'meta_filter/' + id;
+        //     var url = 'meta_filter/' + id;
 
-            $.ajax({
-                type: 'POST',
-                url: url.toLowerCase(),
-                success: function (data) {
-                    $('#list_tb_edit').html(data);
-                }
-            });
-        }
+        //     $.ajax({
+        //         type: 'POST',
+        //         url: url.toLowerCase(),
+        //         success: function (data) {
+        //             $('#list_tb_edit').html(data);
+        //         }
+        //     });
+        // }
 
-        if (original_facet == 'Service_area') {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            })
+        // if () {
+        //     $.ajaxSetup({
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         }
+        //     })
 
-            var url = 'meta_filter/' + id;
+        //     var url = 'meta_filter/' + id;
 
-            $.ajax({
-                type: 'POST',
-                url: url.toLowerCase(),
-                success: function (data) {
-                    $('#list_tb_edit').html(data);
-                }
-            });
-        }
-        if (original_facet == 'organization_status') {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            })
+        //     $.ajax({
+        //         type: 'POST',
+        //         url: url.toLowerCase(),
+        //         success: function (data) {
+        //             $('#list_tb_edit').html(data);
+        //         }
+        //     });
+        // }
+        // if () {
+        //     $.ajaxSetup({
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         }
+        //     })
 
-            var url = 'meta_filter/' + id;
+        //     var url = 'meta_filter/' + id;
 
-            $.ajax({
-                type: 'POST',
-                url: url.toLowerCase(),
-                success: function (data) {
-                    $('#list_tb_edit').html(data);
-                }
-            });
-        }
+        //     $.ajax({
+        //         type: 'POST',
+        //         url: url.toLowerCase(),
+        //         success: function (data) {
+        //             $('#list_tb_edit').html(data);
+        //         }
+        //     });
+        // }
 
-        if (original_facet == 'Service_status') {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            })
-            var url = 'meta_filter/' + id;
-            $.ajax({
-                type: 'POST',
-                url: url.toLowerCase(),
-                success: function (data) {
-                    $('#list_tb_edit').html(data);
-                }
-            });
-        }
+        // if () {
+        //     $.ajaxSetup({
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         }
+        //     })
+        //     var url = 'meta_filter/' + id;
+        //     $.ajax({
+        //         type: 'POST',
+        //         url: url.toLowerCase(),
+        //         success: function (data) {
+        //             $('#list_tb_edit').html(data);
+        //         }
+        //     });
+        // }
+        // if () {
+        //     $.ajaxSetup({
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         }
+        //     })
+        //     var url = 'meta_filter/' + id;
+        //     $.ajax({
+        //         type: 'POST',
+        //         url: url.toLowerCase(),
+        //         success: function (data) {
+        //             $('#list_tb_edit').html(data);
+        //         }
+        //     });
+        // }
 
     });
 

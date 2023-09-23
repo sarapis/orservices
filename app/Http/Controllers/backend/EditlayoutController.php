@@ -140,6 +140,11 @@ class EditlayoutController extends Controller
             } else {
                 $layout->show_classification = 'no';
             }
+            if ($request->taxonomy_icon_hover) {
+                $layout->taxonomy_icon_hover = 'yes';
+            } else {
+                $layout->taxonomy_icon_hover = 'no';
+            }
             $layout->site_name = $request->site_name;
             $layout->tagline = $request->tagline;
             $layout->contact_text = $request->contact_text;

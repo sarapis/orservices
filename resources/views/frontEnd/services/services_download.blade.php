@@ -31,7 +31,7 @@
                             <p><span class="badge bg-red">Organization:</span>
                                 @if ($service->service_organization != 0)
                                     @if (isset($service->organizations))
-                                        @foreach ($service->organizations as $organization)
+                                        {{-- @foreach ($service->organizations as $organization)
                                             @if (isset($organization->organization_name))
                                                 @if ($loop->last)
                                                     <a class="panel-link"
@@ -43,7 +43,8 @@
                                                         {{ $organization->organization_name }}</a>
                                                 @endif
                                             @endif
-                                        @endforeach
+                                        @endforeach --}}
+                                        <a class="panel-link" href="{{ config('app.url') }}/organizations/{{ $service->organizations->organization_recordid }}">{{ $service->organizations->organization_name }}</a>
                                     @endif
                                 @endif
                             </p>

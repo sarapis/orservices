@@ -21,7 +21,7 @@ class Services implements ToModel, WithHeadingRow
             'service_recordid' => isset($row['service_recordid']) ? $row['service_recordid'] : null,
             'service_name' => isset($row['service_name']) ? $row['service_name'] : null,
             'service_alternate_name' => isset($row['service_alternate_name']) ? $row['service_alternate_name'] : null,
-            'service_organization' => isset($row['service_organization']) ? $row['service_organization'] : null,
+            'service_organization' => isset($row['service_organization']) ? trim($row['service_organization'], "'") : null,
             'service_description' => isset($row['service_description']) ? $row['service_description'] : null,
             'service_locations' => isset($row['service_locations']) ? $row['service_locations'] : null,
             'service_url' => isset($row['service_url']) ? $row['service_url'] : null,
@@ -55,7 +55,7 @@ class Services implements ToModel, WithHeadingRow
             foreach ($organization_recordids as $key => $value) {
                 $service_organization = new ServiceOrganization();
                 $service_organization->service_recordid = $row['service_recordid'];
-                $service_organization->organization_recordid = $value;
+                $service_organization->organization_recordid = (int)trim($value, "'");
                 $service_organization->save();
             }
         }

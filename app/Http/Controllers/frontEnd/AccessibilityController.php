@@ -151,4 +151,18 @@ class AccessibilityController extends Controller
     {
         //
     }
+    public function setAccessibility()
+    {
+        Accessibility::truncate();
+        Accessibility::create(
+            ['accessibility' => 'ADA Complaint'],
+        );
+        Accessibility::create(
+            ['accessibility' => 'Not ADA Complaint'],
+        );
+        Accessibility::create(
+            ['accessibility' => 'Blank'],
+        );
+        return 'Done';
+    }
 }

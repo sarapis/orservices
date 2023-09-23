@@ -5,6 +5,7 @@ namespace App\Http\Controllers\backend;
 use App\Exports\CodeLeadgerExport;
 use App\Http\Controllers\Controller;
 use App\Model\Code;
+use App\Model\CodeCategory;
 use App\Model\CodeLedger;
 use App\Model\Organization;
 use App\Model\Service;
@@ -27,7 +28,7 @@ class CodeLedgerController extends Controller
         $services = Service::pluck('service_name', 'service_recordid')->unique();
         $organizations = Organization::pluck('organization_name', 'organization_recordid')->unique();
         $resources = Code::pluck('resource', 'resource')->unique();
-        $category = Code::pluck('category', 'category')->unique();
+        $category = CodeCategory::pluck('name', 'id')->unique();
 
         if (!$request->ajax()) {
             return view('backEnd.tables.code_ledger', compact('services', 'organizations', 'resources', 'category'));
@@ -89,7 +90,10 @@ class CodeLedgerController extends Controller
                 return $row->organization ?  $row->organization->organization_name : '';
             })
             ->addColumn('category', function ($row) {
-                return $row->code_data ?  $row->code_data->category : '';
+                return $row->code_data && $row->code_data->get_category ?  $row->code_data->get_category->name : '';
+            })
+            ->addColumn('code_type', function ($row) {
+                return $row->get_code_system ?  $row->get_code_system->name : '';
             })
             // ->addColumn('services', function ($row) {
             //     $name = '';

@@ -57,8 +57,9 @@ class UserController extends Controller
 
                 $users = User::where('role_id', $role->id)->get();
             }
+            $roles = Role::pluck('name', 'name');
 
-            return View('backEnd.users.index', compact('users', 'layout', 'authUser', 'organizations'));
+            return View('backEnd.users.index', compact('users', 'layout', 'authUser', 'organizations', 'roles'));
         } catch (\Throwable $th) {
             dd($th);
             Log::error('Error in user controller index : ' . $th);
@@ -281,6 +282,9 @@ class UserController extends Controller
             }
             if ($request->email) {
                 $user->email = $request->email;
+            }
+            if ($request->verifier) {
+                $user->verifier = $request->verifier;
             }
             if ($request->user_organizations) {
                 $user->user_organization = join(',', $request->user_organizations);

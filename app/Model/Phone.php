@@ -50,4 +50,19 @@ class Phone extends Model implements ContractsAuditable
     {
         return $this->belongsTo(PhoneType::class, 'phone_type', 'id');
     }
+    public function get_phone_language($id)
+    {
+        $phone = Phone::whereId($id)->first();
+        $languages = [];
+        if ($phone && $phone->phone_language) {
+            $phone_language = explode(',', $phone->phone_language);
+            foreach ($phone_language as $key => $value) {
+                $language = Language::where('language_recordid', $value)->first();
+                if ($language) {
+                    $languages[] = $language->language;
+                }
+            }
+        }
+        return count($languages) > 0 ? implode(', ', $languages) : '';
+    }
 }

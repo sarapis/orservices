@@ -46,9 +46,12 @@ Service Area
             <thead>
                 <tr>
                     <th class="text-center">ID</th>
-                    <th class="text-center">Service Area</th>
-                    <th class="text-center">Services</th>
-                    <th class="text-center">Descrition</th>
+                    <th class="text-center">Name</th>
+                    {{-- <th class="text-center">Services</th> --}}
+                    <th class="text-center">Extent</th>
+                    <th class="text-center">Extent Type</th>
+                    <th class="text-center">URI</th>
+                    <th class="text-center">Description</th>
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
@@ -90,7 +93,10 @@ Service Area
             columns: [
                 { data: 'id', name: 'id' },
                 { data: 'name', name: 'name' },
-                { data: 'services', name: 'services' },
+                // { data: 'services', name: 'services' },
+                { data: 'extent', name: 'extent' },
+                { data: 'extent_type', name: 'extent_type' },
+                { data: 'uri', name: 'uri' },
                 { data: 'description', name: 'description' },
                 { data: 'action', name: 'action' },
             ],
@@ -125,11 +131,11 @@ Service Area
                 //     "orderable": true,
                 //     "class": "text-left"
                 // },
-                // {
-                //     "targets": 6,
-                //     "orderable": true,
-                //     "class": "text-left"
-                // },
+                {
+                    "targets": 6,
+                    "orderable": true,
+                    "class": "text-left"
+                },
                 // {
                 //     "targets": 7,
                 //     "orderable": true,

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 class OrganizationExport implements FromView
 {
+    public $organizations;
 
     public function __construct($organizations)
     {

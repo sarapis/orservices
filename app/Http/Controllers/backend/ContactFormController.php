@@ -7,6 +7,7 @@ use App\Model\Email;
 use App\Model\Layout;
 use App\Model\Suggest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class ContactFormController extends Controller
 {
@@ -99,11 +100,22 @@ class ContactFormController extends Controller
 
     public function delete_email(Request $request)
     {
-
-        $email_recordid = $request->input('email_recordid');
-        $email = Email::where('email_recordid', '=', $email_recordid)->first();
-        if ($email) {
-            $email->delete();
+        try {
+            $email_recordid = $request->input('email_recordid');
+            $email = Email::where('email_recordid', $email_recordid)->first();
+            if ($email) {
+                $email->delete();
+                Session::flash('message', 'Email deleted successfully!');
+                Session::flash('status', 'success');
+                return redirect('contact_form');
+            } else {
+                Session::flash('message', 'Somethig Went Wrong!');
+                Session::flash('status', 'error');
+                return redirect('contact_form');
+            }
+        } catch (\Throwable $th) {
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
             return redirect('contact_form');
         }
     }

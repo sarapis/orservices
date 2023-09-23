@@ -8,7 +8,7 @@
             <h3>{{$layout->header_pdf}}</h3>
             <div class="col-md-8 pt-15 pr-0">
 
-                @foreach($organizations as $organization)
+                @foreach($organizations->get() as $organization)
 
                 <div class="panel content-panel">
                     <div class="panel-body p-20">
@@ -16,7 +16,7 @@
                         <h3><span class="badge bg-red">Organization:</span> <a class="panel-link" href=" {{ url('/organizations/'.$organization->organization_recordid) }}"> {{$organization->organization_name}} {{ $organization->organization_alternate_name ? '('.$organization->organization_alternate_name.')' : '' }}</a></h3>
 
                         <p><span class="badge bg-red">Status:</span>
-                            {{$organization->organization_status_x}}
+                            {{$organization->status_data->status ?? ''}}
                         </p>
                         <p><span class="badge bg-red">Discription:</span>
                             {!! nl2br($organization->organization_description) !!}

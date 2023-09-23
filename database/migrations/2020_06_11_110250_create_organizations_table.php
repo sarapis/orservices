@@ -24,7 +24,7 @@ class CreateOrganizationsTable extends Migration
             $table->text('organization_email')->nullable();
             $table->string('organization_forms_x_filename')->nullable();
             $table->string('organization_forms_x_url')->nullable();
-            $table->string('organization_url')->nullable();
+            $table->longText('organization_url')->nullable();
             $table->string('organization_status_x')->nullable();
             $table->string('organization_status_sort')->nullable();
             $table->string('organization_legal_status')->nullable();

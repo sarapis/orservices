@@ -1,6 +1,6 @@
 @extends('backLayout.app')
 @section('title')
-Codes
+SDOH Codes
 @stop
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
@@ -35,7 +35,7 @@ Codes
   <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
       <div class="x_title">
-        <h2>Codes</h2>
+        <h2>SDOH Codes</h2>
             <div class="nav navbar-right panel_toolbox">
                 <a href="{{route('codes.import')}}" class="btn btn-info">Import Codes</a>
                 <a href="javascript:void(0)" id="export_csv" class="btn btn-success">Export Codes</a>
@@ -46,7 +46,7 @@ Codes
       <div class="row">
           <div class="col-md-6">
             <div class="form-group">
-                <label for="inputPassword3" class="col-sm-3 control-label">Select SDOH Categoty</label>
+                <label for="inputPassword3" class="col-sm-3 control-label">SDOH Domain</label>
                 <div class="col-sm-7">
                     {!! Form::select('category',$category,null,['class' => 'form-control','id' => 'category','placeholder' => 'Select ', 'data-live-search' => 'true','data-size' => '5']) !!}
                 </div>
@@ -54,7 +54,7 @@ Codes
           </div>
           <div class="col-md-6">
             <div class="form-group">
-                <label for="inputPassword3" class="col-sm-3 control-label">Select Resource</label>
+                <label for="inputPassword3" class="col-sm-3 control-label">Resource</label>
                 <div class="col-sm-7">
                      {!! Form::select('resource',$resource,null,['class' => 'form-control','id' => 'resource','placeholder' => 'Select ', 'data-live-search' => 'true','data-size' => '5']) !!}
                 </div>
@@ -64,7 +64,7 @@ Codes
       <div class="row">
           <div class="col-md-6">
             <div class="form-group">
-                <label for="inputPassword3" class="col-sm-3 control-label">Select Resource Element</label>
+                <label for="inputPassword3" class="col-sm-3 control-label">Resource Element</label>
                 <div class="col-sm-7">
                      {!! Form::select('resource_element',$resource_element,null,['class' => 'form-control','id' => 'resource_element','placeholder' => 'Select ', 'data-live-search' => 'true','data-size' => '5']) !!}
                 </div>
@@ -72,7 +72,7 @@ Codes
           </div>
           <div class="col-md-6">
             <div class="form-group">
-                <label for="inputPassword3" class="col-sm-3 control-label">Select Code System</label>
+                <label for="inputPassword3" class="col-sm-3 control-label">Code System</label>
                 <div class="col-sm-7">
                      {!! Form::select('code_system',$code_system,null,['class' => 'form-control','id' => 'code_system','placeholder' => 'Select ', 'data-live-search' => 'true','data-size' => '5']) !!}
                 </div>
@@ -93,9 +93,15 @@ Codes
           </div>
           <div class="col-md-6">
             <div class="form-group">
-                <label for="inputPassword3" class="col-sm-3 control-label">Select Grouping</label>
+                <label for="inputPassword3" class="col-sm-3 control-label">Procedure Grouping</label>
                 <div class="col-sm-7">
-                     {!! Form::select('grouping',$groupings,null,['class' => 'form-control','id' => 'grouping','placeholder' => 'Select ', 'data-live-search' => 'true','data-size' => '5']) !!}
+                     {{-- {!! Form::select('grouping',$groupings,null,['class' => 'form-control','id' => 'grouping','placeholder' => 'Select ', 'data-live-search' => 'true','data-size' => '5']) !!} --}}
+                     <select name="grouping" class="form-control" id="grouping" data-live-search="true" data-size="5">
+                        <option value="">Select</option>
+                        @foreach ($groupings as $item)
+                            <option value="{{ $item->code_id }}">{{ $item->code_id .' - '. $item->get_category->name .' - '.$item->description }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
           </div>
@@ -109,7 +115,7 @@ Codes
                     <th class="text-center">UID</th>
                     <th class="text-center">ID</th>
                     <th class="text-center">Code</th>
-                    <th class="text-center">SDOH Category</th>
+                    <th class="text-center">SDOH Domain</th>
                     <th class="text-center">Resource</th>
                     <th class="text-center">Resource Element</th>
                     <th class="text-center">Code System</th>

@@ -24,6 +24,14 @@ class LocationImport implements ToModel, WithHeadingRow
             'location_latitude' => isset($row['latitude']) ? $row['latitude'] : null,
             'location_longitude' => isset($row['longitude']) ? $row['longitude'] : null,
             'location_transportation' => isset($row['transportation']) ? $row['transportation'] : null,
+            'location_services' => isset($row['location_services']) ? $row['location_services'] : null,
+            'location_phones' => isset($row['location_phones']) ? $row['location_phones'] : null,
+            'location_details' => isset($row['location_details']) ? $row['location_details'] : null,
+            'location_schedule' => isset($row['location_schedule']) ? $row['location_schedule'] : null,
+            'location_address' => isset($row['location_address']) ? $row['location_address'] : null,
+            'location_tag' => isset($row['location_tag']) ? $row['location_tag'] : null,
+            'enrich_flag' => isset($row['enrich_flag']) ? $row['enrich_flag'] : null,
+            'flag' => isset($row['flag']) ? $row['flag'] : null,
         ];
         return new Location($array);
     }

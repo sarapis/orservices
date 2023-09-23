@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use App\Model\AdditionalTaxonomy;
 use App\Model\Address;
+use App\Model\CodeLedger;
 use App\Model\Contact;
 use App\Model\ContactPhone;
 use App\Model\Detail;
@@ -18,10 +19,12 @@ use App\Model\Location;
 use App\Model\LocationAddress;
 use App\Model\LocationPhone;
 use App\Model\LocationSchedule;
+use App\Model\Map;
 use App\Model\Organization;
 use App\Model\OrganizationDetail;
 use App\Model\OrganizationPhone;
 use App\Model\OrganizationProgram;
+use App\Model\OrganizationTag;
 use App\Model\Phone;
 use App\Model\Program;
 use App\Model\Schedule;
@@ -34,6 +37,7 @@ use App\Model\ServiceOrganization;
 use App\Model\ServicePhone;
 use App\Model\ServiceProgram;
 use App\Model\ServiceSchedule;
+use App\Model\ServiceTag;
 use App\Model\ServiceTaxonomy;
 use App\Model\Taxonomy;
 use App\Model\TaxonomyTerm;
@@ -41,6 +45,7 @@ use App\Model\TaxonomyType;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
+use OwenIt\Auditing\Models\Audit;
 use Spatie\Geocoder\Geocoder;
 
 class AutoSync extends Command
@@ -122,6 +127,12 @@ class AutoSync extends Command
                         ServiceTaxonomy::truncate();
                         ServiceSchedule::truncate();
                         Taxonomy::truncate();
+                        TaxonomyType::truncate();
+                        TaxonomyTerm::truncate();
+                        Audit::truncate();
+                        CodeLedger::truncate();
+                        OrganizationTag::truncate();
+                        ServiceTag::truncate();
                     }
                     if ($importData && $importData->import_type == 'airtable') {
                         $airtableKeyInfo = Airtablekeyinfo::whereId($importData->airtable_api_key)->first();
@@ -209,7 +220,8 @@ class AutoSync extends Command
             $badgeocoded_location_info_list = Location::where('location_latitude', '=', '')->get();
             $client = new \GuzzleHttp\Client();
             $geocoder = new Geocoder($client);
-            $geocode_api_key = env('GEOCODE_GOOGLE_APIKEY');
+            $map = Map::find(1);
+            $geocode_api_key = $map && $map->api_key ? $map->api_key : null;
             $geocoder->setApiKey($geocode_api_key);
 
             if ($ungeocoded_location_info_list) {

@@ -47,7 +47,7 @@
                     <div class="form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                         {!! Form::label('type', 'Type', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-6">
-                            {!! Form::select('type', ['api_feed' => 'API Feed', 'download' => 'Download','data_for_api' => 'Data for API'], null, ['class' => 'form-control select', 'placeholder' => 'Select type', 'id' => 'type']) !!}
+                            {!! Form::select('type', ['api_feed' => 'API Feed', 'download' => 'Download','data_for_api' => 'Data for API','data_for_api_v2' => 'Data for API v2','data_for_api_v3' => 'Data for API V3 (This type only for export do not use for import data in orservice)'], null, ['class' => 'form-control select', 'placeholder' => 'Select type', 'id' => 'type']) !!}
                             {!! $errors->first('type', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>

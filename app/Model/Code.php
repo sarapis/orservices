@@ -13,7 +13,7 @@ class Code extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'code', 'code_system', 'resource', 'resource_element', 'category', 'description', 'grouping', 'definition', 'is_panel_code', 'is_multiselect', 'created_by', 'updated_by', 'code_id', 'uid', 'notes'
+        'code', 'code_system', 'resource', 'resource_element', 'category', 'description', 'grouping', 'definition', 'is_panel_code', 'is_multiselect', 'created_by', 'updated_by', 'code_id', 'uid', 'notes', 'source'
     ];
     // /**
     //  * Get all of the comments for the Code
@@ -41,5 +41,23 @@ class Code extends Model
     public static function parent($id)
     {
         return SELF::where('code_id', $id)->first();
+    }
+    /**
+     * Get the get_category that owns the Code
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function get_category(): BelongsTo
+    {
+        return $this->belongsTo(CodeCategory::class, 'category', 'id');
+    }
+    /**
+     * Get the get_code_system that owns the Code
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function get_code_system(): BelongsTo
+    {
+        return $this->belongsTo(CodeSystem::class, 'code_system', 'id');
     }
 }

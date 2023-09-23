@@ -19,6 +19,7 @@ use App\Model\Location;
 use App\Model\MetaFilter;
 use App\Model\Organization;
 use App\Model\OrganizationStatus;
+use App\Model\OrganizationTag;
 use App\Model\Page;
 use App\Model\Phone;
 use App\Model\Program;
@@ -28,6 +29,7 @@ use App\Model\ServiceAddress;
 use App\Model\ServiceLocation;
 use App\Model\ServiceOrganization;
 use App\Model\ServiceStatus;
+use App\Model\ServiceTag;
 use App\Model\ServiceTaxonomy;
 use App\Model\Source_data;
 use App\Model\Taxonomy;
@@ -570,8 +572,8 @@ class PagesController extends Controller
             // if ($row->weekday) {
             $scheduleArray = [
                 'id' => $row->id,
-                'service_id' => $row->schedule_services,
-                'location_id' => $row->schedule_locations,
+                'service_id' => $row->services,
+                'location_id' => $row->locations,
                 'service_at_location_id' => $row->service_at_location,
                 'valid_from' => $row->valid_from,
                 'valid_to' => $row->valid_to,
@@ -1043,11 +1045,13 @@ class PagesController extends Controller
         $meta = Layout::find(1);
         $source_data = Source_data::find(1);
         $metafilters = MetaFilter::all();
-        $service_count = 0;
+        $service_count = Service::count();
         $filter_count = 0;
         $address_serviceids = [];
         $taxonomy_serviceids = [];
-        $organizations_count = Organization::count();
+        $organizations = Organization::select('*');
+        $organizations_ids = [];
+        $filterServiceRecordId = [];
         foreach ($metafilters as $key => $meta_filter) {
             $values = explode(',', $meta_filter->values);
 
@@ -1091,9 +1095,22 @@ class PagesController extends Controller
                 }
                 $taxonomy_serviceids = array_merge($serviceids, $taxonomy_serviceids);
             }
-            $organizationIds = [];
-
+            if ($meta_filter->facet == 'service_tag') {
+                $serviceids = Service::where(function ($query) use ($values, $meta_filter) {
+                    foreach ($values as $keyword) {
+                        if ($keyword && $meta_filter->operations == 'Include') {
+                            $query = $query->orWhereRaw('find_in_set(' . $keyword . ', service_tag)');
+                        }
+                        if ($keyword && $meta_filter->operations == 'Exclude') {
+                            $query = $query->orWhereRaw('NOT find_in_set(' . $keyword . ', service_tag)');
+                        }
+                    }
+                    return $query;
+                })->pluck('service_recordid')->toArray();
+                $taxonomy_serviceids = array_merge($serviceids, $taxonomy_serviceids);
+            }
             if ($meta_filter->facet == 'organization_status') {
+
                 $organization_service_recordid = [];
                 if ($values && count($values) > 0) {
                     $organizations_status_ids = [];
@@ -1101,7 +1118,6 @@ class PagesController extends Controller
                     if ($values) {
                         $organizations_status_ids = Organization::where(function ($query) use ($values, $operations) {
                             foreach ($values as $keyword) {
-
                                 // $organization_status = OrganizationStatus::whereId($keyword)->first();
                                 if ($operations == 'Include') {
                                     $query = $query->orWhere('organization_status_x', 'LIKE', "%$keyword%");
@@ -1112,20 +1128,65 @@ class PagesController extends Controller
                             }
                             return $query;
                         })->pluck('organization_recordid')->toArray();
-                        $organizations_count = count(array_unique($organizations_status_ids));
                     }
                     $organization_service_recordid = ServiceOrganization::whereIn('organization_recordid', $organizations_status_ids)->pluck('service_recordid')->toArray();
                 }
                 $taxonomy_serviceids = array_merge($organization_service_recordid, $taxonomy_serviceids);
             }
+            if ($meta_filter->facet == 'organization_tag') {
+
+                $organization_service_recordid = [];
+                if ($values && count($values) > 0) {
+                    $organizations_tags_ids = [];
+                    $operations = $meta_filter->operations;
+                    if ($values) {
+                        $organizations_tags_ids = Organization::where(function ($query) use ($values, $operations) {
+                            foreach ($values as $keyword) {
+                                // $organization_status = OrganizationStatus::whereId($keyword)->first();
+                                if ($keyword && $operations == 'Include') {
+                                    $query = $query->orWhereRaw('find_in_set(' . $keyword . ', organization_tag)');
+                                }
+                                if ($keyword && $operations == 'Exclude') {
+                                    $query = $query->orWhereRaw('NOT find_in_set(' . $keyword . ', organization_tag)');
+                                }
+                            }
+                            return $query;
+                        })->pluck('organization_recordid')->toArray();
+                    }
+                    $organization_service_recordid = ServiceOrganization::whereIn('organization_recordid', $organizations_tags_ids)->pluck('service_recordid')->toArray();
+                }
+                $taxonomy_serviceids = array_merge($organization_service_recordid, $taxonomy_serviceids);
+            }
+            // org count
+            if (count($values) > 0) {
+                if ($meta_filter->facet == 'organization_status') {
+                    $organizations_status_ids = Organization::getOrganizationStatusMeta($values, $meta_filter->operations);
+                    $organizations = $organizations->whereIn('organization_recordid', array_unique($organizations_status_ids));
+                }
+                if ($meta_filter->facet == 'organization_tag') {
+                    $organizations_tags_ids = Organization::getOrganizationTagMeta($values, $meta_filter->operations);
+                    $organizations = $organizations->whereIn('organization_recordid', array_unique($organizations_tags_ids));
+                }
+                if ($meta_filter->facet == 'Service_status') {
+                    $serviceStatusIds = Service::getServiceStatusMeta($values, $meta_filter->operations);
+                    $filterServiceRecordId = array_merge($filterServiceRecordId, $serviceStatusIds);
+                }
+                if ($meta_filter->facet == 'service_tag') {
+                    $serviceTagIds = Service::getServiceTagMeta($values, $meta_filter->operations);
+                    $filterServiceRecordId = array_merge($filterServiceRecordId, $serviceTagIds);
+                }
+            }
         }
-        // $organizations_count = Organization::count();
-        // $organizationIds = [];
-        // if ($meta && $meta->hide_organizations_with_no_filtered_services == 1) {
-        //     $organizationIds = ServiceOrganization::pluck('organization_recordid')->toArray();
-        //     $organizations_count = count(array_unique($organizationIds));
-        // }
-        $service_count = count(array_unique(array_merge($address_serviceids, $taxonomy_serviceids)));
+        if ($meta && $meta->hide_organizations_with_no_filtered_services == 1 && count($filterServiceRecordId) > 0) {
+            $organizationIds = ServiceOrganization::whereIn('service_recordid', $filterServiceRecordId)->pluck('organization_recordid')->toArray();
+            $service_organizations = Service::whereIn('service_recordid', $filterServiceRecordId)->pluck('service_organization')->toArray();
+
+            $organizationIds = array_values(array_unique(array_merge($organizationIds, $service_organizations)));
+
+            $organizations = $organizations->orWhereIn('organization_recordid', array_unique($organizationIds));
+        }
+        $service_count = (count($address_serviceids) > 0 || count($taxonomy_serviceids) > 0) ?  count(array_unique(array_merge($address_serviceids, $taxonomy_serviceids))) : $service_count;
+        $organizations_count = $organizations->count();
 
         return view('backEnd.pages.metafilter', compact('meta', 'source_data', 'metafilters', 'service_count', 'filter_count', 'organizations_count'));
     }
@@ -1174,6 +1235,11 @@ class PagesController extends Controller
             } else {
                 $meta->hide_organizations_with_no_filtered_services = 0;
             }
+            if ($request->input('hide_service_category_with_no_filter_service') == 'checked') {
+                $meta->hide_service_category_with_no_filter_service = 1;
+            } else {
+                $meta->hide_service_category_with_no_filter_service = 0;
+            }
             $meta->save();
             Session::flash('message', 'Saved successfully!');
             Session::flash('status', 'success');
@@ -1209,6 +1275,22 @@ class PagesController extends Controller
 
         return view('backEnd.pages.service_status_filter', compact('service_statuses', 'source_data', 'checked_status'))->render();
     }
+    public function service_tag_filter()
+    {
+        $service_tags = ServiceTag::all();
+        $source_data = Source_data::find(1);
+        $checked_tags = [];
+
+        return view('backEnd.pages.service_tag_meta_filter', compact('service_tags', 'source_data', 'checked_tags'))->render();
+    }
+    public function organization_tag_filter()
+    {
+        $organization_tags = OrganizationTag::all();
+        $source_data = Source_data::find(1);
+        $checked_tags = [];
+
+        return view('backEnd.pages.organization_tag_meta_filter', compact('organization_tags', 'source_data', 'checked_tags'))->render();
+    }
 
     public function metafilter_edit($id, Request $request)
     {
@@ -1234,6 +1316,20 @@ class PagesController extends Controller
             $checked_status = explode(",", $metafilter->values);
 
             return view('backEnd.pages.service_status_filter', compact('service_statuses', 'source_data', 'checked_status'))->render();
+        } else if ($metafilter->facet === 'service_tag') {
+
+            $service_tags = ServiceTag::all();
+            $source_data = Source_data::find(1);
+            $checked_tags = explode(",", $metafilter->values);
+
+            return view('backEnd.pages.service_tag_meta_filter', compact('service_tags', 'source_data', 'checked_tags'))->render();
+        } else if ($metafilter->facet === 'organization_tag') {
+
+            $organization_tags = OrganizationTag::all();
+            $source_data = Source_data::find(1);
+            $checked_tags = explode(",", $metafilter->values);
+
+            return view('backEnd.pages.organization_tag_meta_filter', compact('organization_tags', 'source_data', 'checked_tags'))->render();
         } else {
 
             $addresses = Address::orderBy('id')->get();

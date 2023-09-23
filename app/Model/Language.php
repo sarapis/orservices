@@ -10,7 +10,7 @@ class Language extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'language_recordid', 'language_location', 'language_service', 'language', 'flag', 'order'
+        'language_recordid', 'language_location', 'language_service', 'language', 'flag', 'order', 'code', 'note'
     ];
     public function service()
     {

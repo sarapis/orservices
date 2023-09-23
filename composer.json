@@ -11,6 +11,7 @@
         "php": "^7.2.5",
         "arcanedev/log-viewer": "^7.0",
         "barryvdh/laravel-dompdf": "^0.8.6",
+        "doctrine/dbal": "2.13.9",
         "dompdf/dompdf": "^0.8.5",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
@@ -32,7 +33,8 @@
         "venturecraft/revisionable": "^1.37",
         "yajra/laravel-datatables-buttons": "^4.9",
         "yajra/laravel-datatables-oracle": "^9.10",
-        "zanysoft/laravel-zip": "^1.0"
+        "zanysoft/laravel-zip": "^1.0",
+      "ext-json": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

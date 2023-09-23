@@ -29,14 +29,19 @@ class AddressImport implements ToModel, WithHeadingRow
             // 'address_organization' => $row['organization_id'],
             'address_attention' => $row['attention'],
             'address_region' => $row['region'],
+            'address_services' => $row['address_services'],
+            'address_organization' => $row['address_organization'],
         ];
 
-        if ($row['location_id']) {
-            $location_address = new LocationAddress();
-            $location_address->location_recordid = $row['location_id'] != 'NULL' ? $row['location_id'] : null;
-            $location_address->address_recordid = $row['id'];
-            $location_address->save();
-        }
+        // if ($row['location_id']) {
+        //     $locationIds = explode(',', $row['location_id']);
+        //     foreach ($locationIds as $key => $value) {
+        //         $location_address = new LocationAddress();
+        //         $location_address->location_recordid = $value;
+        //         $location_address->address_recordid = $row['id'];
+        //         $location_address->save();
+        //     }
+        // }
 
         // if ($row['location_id']) {
         //     $service_address = new ServiceAddress();
@@ -45,6 +50,6 @@ class AddressImport implements ToModel, WithHeadingRow
         //     $service_address->save();
         // }
 
-        return new Address();
+        return new Address($array);
     }
 }

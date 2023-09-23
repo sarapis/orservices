@@ -9,13 +9,14 @@ use App\Model\Airtable_v2;
 use App\Model\Airtablekeyinfo;
 use App\Model\Airtables;
 use App\Model\CSV_Source;
-use App\Model\Locationschedule;
+use App\Model\LocationSchedule;
 use App\Model\Schedule;
-use App\Model\Serviceschedule;
+use App\Model\ServiceSchedule;
 use App\Model\Source_data;
 use App\Services\Stringtoint;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -60,7 +61,7 @@ class ScheduleController extends Controller
 
                 $schedule->schedule_id = isset($record['fields']['id']) ? $record['fields']['id'] : null;
 
-                $schedule->schedule_services = isset($record['fields']['services']) ? implode(",", $record['fields']['services']) : null;
+                $schedule->services = isset($record['fields']['services']) ? implode(",", $record['fields']['services']) : null;
 
                 if (isset($record['fields']['services'])) {
                     $i = 0;
@@ -69,9 +70,9 @@ class ScheduleController extends Controller
                         $scheduleservice = $strtointclass->string_to_int($value);
 
                         if ($i != 0) {
-                            $schedule->schedule_services = $schedule->schedule_services . ',' . $scheduleservice;
+                            $schedule->services = $schedule->services . ',' . $scheduleservice;
                         } else {
-                            $schedule->schedule_services = $scheduleservice;
+                            $schedule->services = $scheduleservice;
                         }
 
                         $i++;
@@ -85,9 +86,9 @@ class ScheduleController extends Controller
                         $schedulelocation = $strtointclass->string_to_int($value);
 
                         if ($i != 0) {
-                            $schedule->schedule_locations = $schedule->schedule_locations . ',' . $schedulelocation;
+                            $schedule->locations = $schedule->locations . ',' . $schedulelocation;
                         } else {
-                            $schedule->schedule_locations = $schedulelocation;
+                            $schedule->locations = $schedulelocation;
                         }
 
                         $i++;
@@ -372,5 +373,152 @@ class ScheduleController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function test()
+    {
+        $schedule = Schedule::get()->groupBy(['opens_at', 'closes_at', 'schedule_services']);
+        dd($schedule);
+    }
+    public function changeOldScheduleFieldData()
+    {
+        $schedules = Schedule::cursor();
+        foreach ($schedules as $key => $value) {
+            if ($value->locations == null && $value->services == null) {
+                $value->locations = $value->schedule_locations;
+                $value->services = $value->schedule_services;
+                $value->weekday = $value->byday;
+                $value->opens = $value->opens_at;
+                $value->closes = $value->closes_at;
+
+                $value->byday = null;
+                $value->opens_at = null;
+                $value->closes_at = null;
+                $value->save();
+            }
+        }
+        return 'Done';
+    }
+    public function importSchedule()
+    {
+        try {
+            // $s = Schedule::whereNull('name')->whereNull('dtstart')->whereNull('weekday')->delete();
+            // $s = Schedule::whereNull('name')->whereNull('dtstart')->whereNull('opens')->where('opens', '!=', '')->delete();
+            // $s = Schedule::whereNull('name')->whereNull('dtstart')->whereNull('opens')->whereNull('schedule_holiday')->whereNull('schedule_closed')->whereNull('open_24_hours')->delete();
+            // $s = Schedule::whereNull('name')->where('dtstart', '=', '')->where('opens', '=', '')->whereNotNull('schedule_holiday')->delete();
+            // dd($s);
+            Schedule::truncate();
+            ServiceSchedule::truncate();
+            LocationSchedule::truncate();
+            $new_schedules = DB::table('schedules_1')->get();
+            foreach ($new_schedules as $key => $value) {
+                if (empty($value->name)) {
+                    if ($value->services) {
+
+                        $schedules = Schedule::where('services', $value->services)->where('opens', $value->opens)->where('closes', $value->closes)->first();
+                    } else if ($value->locations) {
+                        $schedules = Schedule::where('locations', $value->locations)->where('opens', $value->opens)->where('closes', $value->closes)->first();
+                    } else {
+                        $schedules = null;
+                    }
+                    if ($value->weekday && ($value->schedule_closed || $value->open_24_hours || $value->opens)) {
+                        if ($schedules) {
+                            $schedules->weekday = $schedules->weekday ? (str_contains($schedules->weekday, $value->weekday) ? $schedules->weekday : ($schedules->weekday . ',' . $value->weekday)) : $value->weekday;
+                            $schedules->opens = $value->opens;
+                            $schedules->closes = $value->closes;
+                            if ($value->schedule_closed) {
+                                $schedules->schedule_closed = $schedules->schedule_closed ? (str_contains($schedules->schedule_closed, $value->schedule_closed) ? $schedules->schedule_closed : $schedules->schedule_closed . ',' . $value->schedule_closed) : $value->schedule_closed;
+                                // $schedules->open_24_hours = null;
+                            }
+
+                            if ($value->open_24_hours) {
+                                // $schedules->open_24_hours = $i + 1;
+                                $schedules->open_24_hours = $schedules->open_24_hours ? (str_contains($schedules->open_24_hours, $value->open_24_hours) ? $schedules->open_24_hours : $schedules->open_24_hours . ',' . $value->open_24_hours) : $value->open_24_hours;
+                                // $schedules->schedule_closed = null;
+                            }
+                            $schedules->save();
+                            $schedule_services[] = $schedules->schedule_recordid;
+                        } else {
+                            Schedule::create([
+                                'schedule_recordid' => $value->schedule_recordid,
+                                'name' => $value->name,
+                                'services' => $value->services,
+                                'locations' => $value->locations,
+                                'service_at_location' => $value->service_at_location,
+                                'weekday' => $value->weekday,
+                                'valid_from' => $value->valid_from,
+                                'valid_to' => $value->valid_to,
+                                'dtstart' => $value->dtstart,
+                                'opens' => $value->opens != 'Closed' && $value->opens != 'Holiday' ? $value->opens : null,
+                                'until' => $value->until,
+                                'closes' => $value->closes,
+                                'wkst' => $value->wkst,
+                                'freq' => $value->freq,
+                                'interval' => $value->interval,
+                                'byday' => $value->byday,
+                                'byweekno' => $value->byweekno,
+                                'bymonthday' => $value->bymonthday,
+                                'byyearday' => $value->byyearday,
+                                'description' => $value->description,
+                                'schedule_holiday' => !empty($value->schedule_holiday) ? $value->schedule_holiday : null,
+                                'schedule_closed' => !empty($value->schedule_closed) ? $value->schedule_closed : null,
+                                'open_24_hours' => !empty($value->open_24_hours) ? $value->open_24_hours : null,
+                                'opens_at' => !empty($value->opens_at) ? $value->opens_at : null,
+                                'closes_at' => !empty($value->closes_at) ? $value->closes_at : null,
+                            ]);
+                        }
+                    }
+                } else {
+                    Schedule::create([
+                        'schedule_recordid' => $value->schedule_recordid,
+                        'name' => $value->name,
+                        'services' => $value->services,
+                        'locations' => $value->locations,
+                        'service_at_location' => $value->service_at_location,
+                        'weekday' => $value->weekday,
+                        'valid_from' => $value->valid_from,
+                        'valid_to' => $value->valid_to,
+                        'dtstart' => $value->dtstart,
+                        'opens' => $value->opens != 'Closed' && $value->opens != 'Holiday' ? $value->opens : null,
+                        'until' => $value->until,
+                        'closes' => $value->closes,
+                        'wkst' => $value->wkst,
+                        'freq' => $value->freq,
+                        'interval' => $value->interval,
+                        'byday' => $value->byday,
+                        'byweekno' => $value->byweekno,
+                        'bymonthday' => $value->bymonthday,
+                        'byyearday' => $value->byyearday,
+                        'description' => $value->description,
+                        'schedule_holiday' => !empty($value->schedule_holiday) ? $value->schedule_holiday : null,
+                        'schedule_closed' => !empty($value->schedule_closed) ? $value->schedule_closed : null,
+                        'open_24_hours' => !empty($value->open_24_hours) ? $value->open_24_hours : null,
+                        'opens_at' => !empty($value->opens_at) ? $value->opens_at : null,
+                        'closes_at' => !empty($value->closes_at) ? $value->closes_at : null,
+                    ]);
+                }
+                if ($value->services) {
+                    $servicess = explode(',', $value->services);
+                    foreach ($servicess as $key => $value1) {
+                        $service_schedule = new ServiceSchedule();
+                        $service_schedule->service_recordid = $value1;
+                        $service_schedule->schedule_recordid = $value->schedule_recordid;
+                        $service_schedule->save();
+                    }
+                }
+                if ($value->locations) {
+                    $locationss = explode(',', $value->locations);
+                    foreach ($locationss as $key => $value1) {
+                        $location_schedule = new LocationSchedule();
+                        $location_schedule->location_recordid = $value1;
+                        $location_schedule->schedule_recordid = $value->schedule_recordid;
+                        $location_schedule->save();
+                    }
+                }
+            }
+            // Excel::import(new ScheduleImport, public_path('/newExport/schedules.csv'));
+            return 'done';
+        } catch (\Throwable $th) {
+            dd($th);
+        }
     }
 }

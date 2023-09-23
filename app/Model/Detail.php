@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Detail extends Model
 {
@@ -24,5 +25,24 @@ class Detail extends Model
     public function location()
     {
         return $this->hasMany('App\Model\Location', 'location_recordid', 'detail_locations');
+    }
+    /**
+     * Get the requireDocument that owns the Detail
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function requireDocument(): BelongsTo
+    {
+        return $this->belongsTo(RequiredDocument::class, 'id', 'detail_id');
+    }
+    public function getRequireDocumentNameAttribute()
+    {
+        if ($this->requireDocument && $this->requireDocument->document_link) {
+            return '<a href="' . $this->requireDocument->document_link . '">' . ($this->requireDocument && $this->requireDocument->document_title ? $this->requireDocument->document_title : $this->detail_type) . '</a>';
+        } else if ($this->requireDocument && $this->requireDocument->document_title) {
+            return $this->requireDocument->document_title;
+        } else {
+            return $this->detail_type;
+        }
     }
 }

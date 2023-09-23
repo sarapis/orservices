@@ -139,8 +139,7 @@ Contact Edit
                                         <th style="width:200px;position:relative;">Type
                                             <div class="help-tip" style="top:8px;">
                                                 <div>
-                                                    <p>Select “Main” if this is the organization's primary phone number
-                                                        (or leave blank)
+                                                    <p>Select “Main” if this is the organization's primary phone number (or leave blank)
                                                     </p>
                                                 </div>
                                             </div>
@@ -149,9 +148,7 @@ Contact Edit
                                         <th style="width:200px;position:relative;">Description
                                             <div class="help-tip" style="top:8px;">
                                                 <div>
-                                                    <p>A description providing extra information about the phone service
-                                                        (e.g. any special arrangements for accessing, or details of
-                                                        availability at particular times).
+                                                    <p>A description providing extra information about the phone service (e.g. any special arrangements for accessing, or details of availability at particular times).
                                                     </p>
                                                 </div>
                                             </div>
@@ -172,19 +169,10 @@ Contact Edit
                                                  {{ $value->phone_extension }}
                                             </td>
                                             <td>
-                                                {{-- {!! Form::select('phone_type[]',$phone_type,$value->phone_type ?
-                                                explode(',',$value->phone_type) : [],['class' => 'form-control
-                                                selectpicker','data-live-search' => 'true','id' =>
-                                                'phone_type','data-size' => 5,'placeholder' => 'select phone type'])!!} --}}
                                                 <input type="hidden" class="form-control" name="phone_type[]" id="phone_type_{{ $key }}" value="{{ $value->phone_type }}" >
                                                 {{ $value->type ? $value->type->type : '' }}
                                             </td>
                                             <td>
-                                                {{-- {!!
-                                                Form::select('phone_language[]',$phone_languages,$value->phone_language
-                                                ? explode(',',$value->phone_language) : [],['class' => 'form-control
-                                                selectpicker phone_language','data-size' => 5,'data-live-search' =>
-                                                'true', 'id' => 'phone_language_'.$key,'multiple' => true]) !!} --}}
                                                 <input type="hidden" class="form-control" name="phone_language[]" id="phone_language_{{ $key }}" value="{{ $value->phone_language }}" >
                                                 {{ isset($phone_language_name[$key]) ? $phone_language_name[$key] : ''  }}
                                             </td>

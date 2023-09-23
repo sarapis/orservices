@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Imports\Services;
 use App\Model\Address;
 use App\Model\Code;
+use App\Model\CodeCategory;
 use App\Model\Contact;
 use App\Model\Detail;
 use App\Model\InteractionMethod;
+use App\Model\Language;
 use App\Model\Location;
+use App\Model\Map;
 use App\Model\Organization;
 use App\Model\OrganizationStatus;
 use App\Model\OrganizationTag;
@@ -18,12 +21,15 @@ use App\Model\Program;
 use App\Model\Schedule;
 use App\Model\Service;
 use App\Model\ServiceStatus;
+use App\Model\ServiceTag;
 use App\Model\SessionData;
 use App\Model\SessionInteraction;
 use App\Model\Taxonomy;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Spatie\Geocoder\Geocoder;
 
 class CommonController extends Controller
 {
@@ -214,22 +220,22 @@ class CommonController extends Controller
                     $oldScheduleName = '';
                     foreach ($serviceScheduleIds as $keyP => $valueP) {
                         $scheduleData = Schedule::where('schedule_recordid', $valueP)->first();
-                        if ($scheduleData && $scheduleData->opens_at) {
+                        if ($scheduleData && $scheduleData->opens) {
                             if ($keyP == 0)
-                                $scheduleName = $scheduleData->opens_at . ' - ' . $scheduleData->closes_at;
+                                $scheduleName = $scheduleData->opens . ' - ' . $scheduleData->closes;
                             else
-                                $scheduleName = $scheduleName . '| ' . $scheduleData->opens_at . ' - ' . $scheduleData->closes_at;
+                                $scheduleName = $scheduleName . '| ' . $scheduleData->opens . ' - ' . $scheduleData->closes;
                         }
                     }
                     $new_values[$key] = $scheduleName;
 
                     foreach ($serviceScheduleOldIds as $keyO => $valueO) {
                         $oldScheduleData = Schedule::where('schedule_recordid', $valueO)->first();
-                        if ($oldScheduleData && $oldScheduleData->opens_at) {
+                        if ($oldScheduleData && $oldScheduleData->opens) {
                             if ($keyO == 0)
-                                $oldScheduleName =  $oldScheduleData->opens_at . ' - ' . $oldScheduleData->closes_at;
+                                $oldScheduleName =  $oldScheduleData->opens . ' - ' . $oldScheduleData->closes;
                             else
-                                $oldScheduleName = $oldScheduleName . '| ' . $oldScheduleData->opens_at . ' - ' . $oldScheduleData->closes_at;
+                                $oldScheduleName = $oldScheduleName . '| ' . $oldScheduleData->opens . ' - ' . $oldScheduleData->closes;
                         }
                     }
                     $old_values[$key] = $oldScheduleName;
@@ -289,6 +295,62 @@ class CommonController extends Controller
                         }
                     }
                     $old_values[$key] = $oldCodeName;
+                } else if ($key == 'code_category_ids') {
+                    $serviceCodeCategoryIds = isset($value->new_values[$key]) ? explode(',', $value->new_values[$key]) : [];
+                    $serviceCodeCategoryOldIds = isset($value->old_values[$key]) ? explode(',', $value->old_values[$key]) : [];
+                    $serviceCodeCategoryIds = array_values(array_filter($serviceCodeCategoryIds));
+                    $serviceCodeCategoryOldIds = array_values(array_filter($serviceCodeCategoryOldIds));
+                    $codeName = '';
+                    $oldCodeName = '';
+                    foreach ($serviceCodeCategoryIds as $keyP => $valueP) {
+                        $codeData = CodeCategory::whereId($valueP)->first();
+                        if ($codeData) {
+                            if ($keyP == 0)
+                                $codeName = $codeData->name;
+                            else
+                                $codeName = $codeName . '| ' . $codeData->name;
+                        }
+                    }
+                    $new_values[$key] = $codeName;
+
+                    foreach ($serviceCodeCategoryOldIds as $keyO => $valueO) {
+                        $oldCodeData = CodeCategory::whereId($valueO)->first();
+                        if ($oldCodeData) {
+                            if ($keyO == 0)
+                                $oldCodeName = $oldCodeData->name;
+                            else
+                                $oldCodeName = $oldCodeName . '| ' . $oldCodeData->name;
+                        }
+                    }
+                    $old_values[$key] = $oldCodeName;
+                } else if ($key == 'service_language') {
+                    $serviceLanguageIds = isset($value->new_values[$key]) ? explode(',', $value->new_values[$key]) : [];
+                    $serviceLanguageOldIds = isset($value->old_values[$key]) ? explode(',', $value->old_values[$key]) : [];
+                    $serviceLanguageIds = array_values(array_filter($serviceLanguageIds));
+                    $serviceLanguageOldIds = array_values(array_filter($serviceLanguageOldIds));
+                    $language = '';
+                    $oldlanguage = '';
+                    foreach ($serviceLanguageIds as $keyP => $valueP) {
+                        $languageData = Language::whereId($valueP)->first();
+                        if ($languageData) {
+                            if ($keyP == 0)
+                                $language = $languageData->language;
+                            else
+                                $language = $language . '| ' . $languageData->language;
+                        }
+                    }
+                    $new_values[$key] = $language;
+
+                    foreach ($serviceLanguageOldIds as $keyO => $valueO) {
+                        $oldLanguageData = Language::whereId($valueO)->first();
+                        if ($oldLanguageData) {
+                            if ($keyO == 0)
+                                $oldlanguage = $oldLanguageData->language;
+                            else
+                                $oldlanguage = $oldlanguage . '| ' . $oldLanguageData->language;
+                        }
+                    }
+                    $old_values[$key] = $oldlanguage;
                 } else if ($key == 'service_name') {
                     $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
                     $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
@@ -302,9 +364,6 @@ class CommonController extends Controller
                     $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
                     $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
                 } else if ($key == 'service_email') {
-                    $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
-                    $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
-                } else if ($key == 'service_status') {
                     $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
                     $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
                 } else if ($key == 'access_requirement') {
@@ -328,6 +387,21 @@ class CommonController extends Controller
                 } else if ($key == 'service_program') {
                     $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
                     $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
+                } else if ($key == 'updated_by') {
+                    $newuser = !empty($value->new_values[$key]) ? User::whereId($value->new_values[$key])->first() : null;
+                    $olduser = !empty($value->old_values[$key]) ? User::whereId($value->old_values[$key])->first() : null;
+                    $new_values[$key] = !empty($value->new_values[$key]) && $newuser ? $newuser->name : '';
+                    $old_values[$key] = !empty($value->old_values[$key]) && $olduser ? $olduser->name : '';
+                } else if ($key == 'service_tag') {
+                    $newTag = !empty($value->new_values[$key]) ? ServiceTag::whereId($value->new_values[$key])->first() : null;
+                    $oldTag = !empty($value->old_values[$key]) ? ServiceTag::whereId($value->old_values[$key])->first() : null;
+                    $new_values[$key] = !empty($value->new_values[$key]) && $newTag ? $newTag->tag : '';
+                    $old_values[$key] = !empty($value->old_values[$key]) && $oldTag ? $oldTag->tag : '';
+                } else if ($key == 'service_status') {
+                    $newStatus = !empty($value->new_values[$key]) ? ServiceStatus::whereId($value->new_values[$key])->first() : null;
+                    $oldStatus = !empty($value->old_values[$key]) ? ServiceStatus::whereId($value->old_values[$key])->first() : null;
+                    $new_values[$key] = !empty($value->new_values[$key]) && $newStatus ? $newStatus->status : '';
+                    $old_values[$key] = !empty($value->old_values[$key]) && $oldStatus ? $oldStatus->status : '';
                 }
             }
             $value->new_values = $new_values;
@@ -419,8 +493,10 @@ class CommonController extends Controller
                     $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
                     $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
                 } else if ($key == 'organization_status_x') {
-                    $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
-                    $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
+                    $newStatus = isset($value->new_values[$key]) ? OrganizationStatus::whereId($value->new_values[$key])->first() : null;
+                    $oldStatus = isset($value->old_values[$key]) ? OrganizationStatus::whereId($value->old_values[$key])->first() : null;
+                    $new_values[$key] = isset($value->new_values[$key]) && $newStatus ? $newStatus->status : '';
+                    $old_values[$key] = isset($value->old_values[$key]) && $oldStatus ? $oldStatus->status : '';
                 } else if ($key == 'organization_year_incorporated') {
                     $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
                     $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
@@ -454,6 +530,39 @@ class CommonController extends Controller
                 } else if ($key == 'organization_airs_taxonomy_x') {
                     $new_values[$key] = isset($value->new_values[$key]) ? $value->new_values[$key] : '';
                     $old_values[$key] = isset($value->old_values[$key]) ? $value->old_values[$key] : '';
+                } else if ($key == 'updated_by') {
+                    if (isset($value->new_values[$key])) {
+                        $user = User::whereId($value->new_values[$key])->first();
+                        if ($user) {
+                            $new_values[$key] =  $user->first_name . ' ' . $user->last_name;
+                        }
+                    }
+                    if (isset($value->old_values[$key])) {
+                        $user = User::whereId($value->old_values[$key])->first();
+                        if ($user) {
+                            $old_values[$key] =  $user->first_name . ' ' . $user->last_name;
+                        }
+                    }
+                } else if ($key == 'latest_updated_date') {
+                    if (isset($value->new_values[$key]) && date('Y-m-d', strtotime($value->new_values[$key]))) {
+                        $new_values[$key] = date('Y-m-d', strtotime($value->new_values[$key]));
+                    }
+                    if (isset($value->old_values[$key]) && date('Y-m-d', strtotime($value->old_values[$key]))) {
+                        $old_values[$key] = date('Y-m-d', strtotime($value->old_values[$key]));
+                    }
+                } else if ($key == 'last_verified_by') {
+                    if (isset($value->new_values[$key])) {
+                        $user = User::whereId($value->new_values[$key])->first();
+                        if ($user) {
+                            $new_values[$key] =  $user->first_name . ' ' . $user->last_name;
+                        }
+                    }
+                    if (isset($value->old_values[$key])) {
+                        $user = User::whereId($value->old_values[$key])->first();
+                        if ($user) {
+                            $old_values[$key] =  $user->first_name . ' ' . $user->last_name;
+                        }
+                    }
                 }
             }
             $value->new_values = $new_values;
@@ -1071,6 +1180,35 @@ class CommonController extends Controller
             dd('done');
         } catch (\Throwable $th) {
             dd($th);
+        }
+    }
+    public function apply_geocode($location)
+    {
+        try {
+            $client = new \GuzzleHttp\Client();
+            $geocoder = new Geocoder($client);
+            $map = Map::find(1);
+            $geocode_api_key = $map && $map->api_key ? $map->api_key : null;
+            $geocoder->setApiKey($geocode_api_key);
+
+            if ($location->location_name) {
+                $address_info = $location->location_name;
+                if ($location->address && count($location->address) > 0 && isset($location->address[0])) {
+                    $add = $location->address[0];
+                    $address_info = $add->address_1 . ($add->address_city ? ', ' . $add->address_city : '') . ($add->address_state_province ? ', ' . $add->address_state_province : '') . ($add->address_postal_code ? ', ' . $add->address_postal_code : '');
+                }
+                $response = $geocoder->getCoordinatesForAddress($address_info . ', ' . (env('LOCALIZATION') ? env('LOCALIZATION') : 'US'));
+
+                $latitude = $response['lat'];
+                $longitude = $response['lng'];
+
+                $location->location_latitude = $latitude;
+                $location->location_longitude = $longitude;
+                $location->save();
+            }
+            return true;
+        } catch (\Throwable $th) {
+            Log::error('Error in apply geocode single in common: ' . $th->getMessage());
         }
     }
 }

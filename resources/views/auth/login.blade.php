@@ -14,7 +14,7 @@ Login
         {{-- {{$layout->site_name}}! --}}
 			{{-- <h3 class="form-signin-heading">Welcome to <br>Please Sign In</h3> --}}
             <p>{!! $layout->login_content !!}</p>
-			{!! csrf_field() !!}
+			{{ csrf_field() }}
 			<div class="form-group {{ $errors->has('email') ? 'has-error' : ''}}">
 				<div class="col-sm-12">
 					{!! Form::text('email', null, ['class' => 'form-control','placeholder '=>'E-mail']) !!}

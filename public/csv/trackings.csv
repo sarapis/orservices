@@ -1,241 +1,252 @@
-id,name,Organization Tags,Organization Status,Service Tags,Date Last Verified,User Verified,Last Note Date,Last Updated Date
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
+"id","name","Organization Tags","Organization Status","Service Tags","Date Last Verified","User Verified","Last Note Date","Last Updated Date"
+"540732570709574","Academy of Hope","CJCC","Verified","","","","2023-01-30 16:19:29","2022-08-01 12:19:45"
+"608190497391626","Nativity Shelter","CJCC","Verified","","","","2023-01-30 16:19:27","2022-08-01 17:54:40"
+"618821526959273","Hughes Memorial UMC","CJCC","Verified","","","","2023-01-30 16:19:27","2022-08-01 17:47:48"
+"618748399513081","A Wider Circle","CJCC","Verified","","2022-08-16 19:12:38","","2023-03-27 09:47:06","2022-11-19 04:09:16"
+"619974574898067","MBI Health Services","CJCC","Verified","","2022-10-31 10:09:59","Ava Glover","2023-01-30 16:19:27","2022-10-31 10:09:59"
+"589460886355658","Family Matters of Greater Washington","CJCC","Verified","","","","2023-01-30 16:19:27","2022-08-01 12:58:05"
+"615135989448834","DC Department of Employment Services (DOES)","CJCC","Verified","","","","2023-01-30 16:19:27","2022-08-01 12:53:34"
+"623807648086762","Courtney's House","CJCC","Verified","","","","2023-01-30 16:19:27","2022-08-01 12:49:32"
+"621917000765528","Goodwill of Greater Washington","CJCC","Verified","","","","2023-01-30 16:19:27","2022-08-01 17:37:58"
+"650527153533264","United Medical Center","CJCC","Verified","","","","2023-01-30 16:19:27","2022-08-01 12:30:48"
+"595267359680824","Ambassador Baptist Church","CJCC","Unverifiable","","","","2023-01-30 16:19:27","2022-08-01 12:25:25"
+"662641922894081","Transgender Health Empowerment","CJCC","Out of Business/Inactive","","","","2023-01-30 16:19:27","2022-08-01 18:13:49"
+"638023829270297","Brighter Day Ministries","CJCC","Verified","","2022-10-11 11:42:13","Ava Glover","2023-03-27 09:46:22","2022-10-24 11:28:18"
+"644590666868771","NEWCOMER COMMUNITY SERVICE CENTER: ENGLISH SECOND LANGUAGE","CJCC","No previous attempts","","","","2023-01-30 16:19:27","2022-08-01 17:55:27"
+"650479626662564","National Center for Children and Families","DC-Pact,DC NEXT!,CJCC","Verified","","","","2023-01-30 16:19:27","2022-08-01 17:53:53"
+"687390186581235","Everyone Home DC","DC-Pact,CJCC","In Queue","","","","2023-01-30 16:19:27","2022-08-03 19:11:02"
+"680226054600238","Samaritan Inns","CJCC","Verification in Progress","","","","2023-03-27 09:45:46","2023-02-28 15:09:22"
+"698337947812895","DC Department of Energy and the Environment (DOEE)","DC-Pact,CJCC","Verified","","","","2023-01-30 16:19:27","2022-08-01 12:50:43"
+"747066554934957","HOUSE OF RUTH: KIDSPACE CHILD AND FAMILY DEVELOPMENT CENTER","DC NEXT!,CJCC","No previous attempts","","","","2023-01-30 16:19:27","2022-08-01 17:46:43"
+"734905843461372","HIPS","CJCC","Verified","","","","2023-01-30 16:19:27","2022-08-01 17:44:06"
+"794184973835515","Miriam's Kitchen","CJCC","Verified","","","","2023-01-30 16:19:27","2022-08-01 17:53:30"
+"752311766026273","MetroHealth","DC-Pact,CJCC","Verified","","","","2023-01-30 16:19:27","2022-08-01 17:52:50"
+"757749510901012","Damien Ministries","CJCC","Verified","","2022-10-06 16:16:24","Ava Glover","2023-02-27 17:33:46","2022-10-06 16:16:24"
+"766867144136285","Northeastern Presbyterian Church","CJCC","Verified","","","","2023-01-30 16:19:27","2022-08-01 17:55:39"
+"785453766981777","Psychiatric Institute of Washington","CJCC","Verified","","2022-08-01 17:58:06","","2023-01-30 16:19:27","2022-08-01 17:58:06"
+"765268136875870","Coalition for the Homeless","CJCC","Verified","","","","2023-01-30 16:19:27","2022-08-01 12:43:22"
+"790090664353865","Legal Aid Society of the District of Columbia","DC-Pact,CJCC","Verified","","2022-10-31 09:40:15","Ava Glover","2023-01-30 16:19:27","2022-10-31 09:40:15"
+"828308705468984","AARP Legal Counsel for the Elderly","DC-Pact,CJCC,DACL,AP","In Queue","","","","2023-03-27 09:46:20","2023-03-13 09:56:55"
+"786496092449135","Center for Child Protection and Family Support","CJCC","Verified","","2022-10-06 15:32:55","Ava Glover","2023-01-30 16:19:28","2022-10-06 15:32:55"
+"808240584407061","United Community","CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 18:17:25"
+"818433220295218","CASA de Maryland","CJCC","Verified","","2022-10-06 11:29:37","Ava Glover","2023-01-30 16:19:28","2022-10-06 11:29:37"
+"832081175822927","N Street Village","DC-Pact,DC NEXT!,CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 12:28:35"
+"846586624529740","Women's Collective","CJCC","Verified","","2022-09-26 15:52:56","Angela Martenez","2023-02-13 16:08:27","2022-09-26 15:52:56"
+"824101881058300","Healthy Babies Project","DC NEXT!,CJCC","Verified","","2022-10-18 14:11:57","Ava Glover","2023-03-27 09:46:20","2022-10-18 14:11:57"
+"824966357062743","DC Rape Crisis Center","DC-Pact,CJCC","Verified","","2022-10-18 09:13:09","Ava Glover","2023-01-30 16:19:28","2022-10-18 09:13:09"
+"865637769620382","Sixth Presbyterian Church","CJCC","Verified","","2022-08-01 12:17:50","","2023-01-30 16:19:28","2022-08-16 18:53:03"
+"834433815510350","Quality Trust","CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 17:56:39"
+"884317159187782","McClendon Center","DC-Pact,CJCC","Verified","","2022-10-31 11:29:58","Ava Glover","2023-01-30 16:19:28","2022-10-31 11:29:58"
+"859831189737185","Friendship Place","CJCC","Verified","","2022-10-11 13:57:26","Ava Glover","2023-02-27 17:33:46","2022-10-11 13:57:26"
+"885700392354422","University Legal Services","CJCC","Verified","","2022-11-07 09:38:54","Ava Glover","2023-02-27 17:33:46","2022-11-07 09:38:54"
+"896693842803738","Phyllis Wheatley YWCA","CJCC","No previous attempts","","","","2023-01-30 16:19:28","2022-08-01 17:57:15"
+"862024217673800","Calvary Women's Services","DC NEXT!,CJCC","Verified","","2022-10-06 12:49:43","Ava Glover","2023-01-30 16:19:28","2022-10-06 12:49:43"
+"880448544501253","La Clínica del Pueblo","DC-Pact,CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 17:49:48"
+"893442799835060","Jubilee Jobs","CJCC","Verified","","2022-10-27 09:37:38","Ava Glover","2023-02-13 16:08:24","2022-10-27 09:37:38"
+"909886281557711","Capital Area Food Bank","DC-Pact,CJCC","Verified","DC Health_Food Access","2022-10-06 12:55:59","Ava Glover","2023-01-30 16:19:28","2022-11-18 11:14:38"
+"930037496704241","Central American Resource Center","CJCC","Verified","","2022-08-19 18:01:49","","2023-02-13 16:08:27","2022-08-19 18:03:34"
+"876886021673283","Martha's Table","DC-Pact,DC NEXT!,CJCC","Verified","DC Health_Food Access","2022-10-18 13:05:33","Ava Glover","2023-03-27 09:46:20","2022-11-17 21:24:30"
+"917755116346392","Neighborhood Legal Services Program (NLSP)","CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 17:54:51"
+"949931067639251","Assumption Catholic Church","CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-22 09:38:52"
+"902975658133732","Regional Addiction Prevention (RAP) Inc.","CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 18:00:37"
+"940993634917751","Food and Friends","DC-Pact,CJCC","Verified","DC Health_Food Access","","","2023-01-30 16:19:28","2022-11-17 19:13:29"
+"961854161533682","MedStar Washington Hospital Center","DC-Pact,DC NEXT!,CJCC","In Queue","","","","2023-01-30 16:19:28","2022-08-01 18:06:25"
+"919694976245435","Georgetown Ministry Center","CJCC","Verified","","2022-10-18 15:49:56","Ava Glover","2023-01-30 16:19:28","2022-10-18 15:49:56"
+"918523571271755","So Others Might Eat (SOME)","DC-Pact,CJCC,DACL","Verified","","","","2023-01-30 16:19:28","2023-01-04 11:31:20"
+"923928818796358","DC Department on Disability Services (DDS)","DC-Pact,CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 12:53:25"
+"937801028419059","CHINATOWN SERVICE CENTER: SUMMER ENRICHMENT PROGRAM","CJCC","No previous attempts","","","","2023-01-30 16:19:28","2022-08-01 12:42:56"
+"960893870849573","The Nineteenth Street Baptist Church","CJCC","Verified","","2022-08-01 12:19:12","","2023-01-30 16:19:28","2022-08-16 18:59:39"
+"965244460063048","Byte Back","CJCC","Verified","","2022-10-06 11:18:36","Ava Glover","2023-01-30 16:19:28","2022-10-06 11:18:36"
+"921466109394130","Providence Health System","DC-Pact,CJCC","In Queue","","","","2023-01-30 16:19:28","2022-08-01 17:57:24"
+"992550837539148","Neighbors’ Consejo","CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 17:55:03"
+"940973163563518","Samaritan Ministry of Greater Washington","CJCC","Verified","","","","2023-02-13 16:08:27","2022-08-01 18:05:03"
+"973627436997143","Mayor’s Office of LGBTQ Affairs","CJCC","Verified","","2022-11-03 15:46:03","Ava Glover","2023-01-30 16:19:28","2022-11-03 15:46:03"
+"997370365137611","DC SUPERIOR COURT: DOMESTIC VIOLENCE INTAKE CENTER","CJCC","No previous attempts","","","","2023-01-30 16:19:28","2022-08-01 12:53:04"
+"949759665008692","Wendt Center for Loss","CJCC,Ava","Verified","","2022-10-11 16:20:53","Ava Glover","2023-01-30 16:19:28","2022-10-11 16:20:56"
+"968246809109996","Northwest Center","CJCC","Verified","","2022-11-03 15:33:11","Ava Glover","2023-01-30 16:19:28","2022-11-03 15:33:11"
+"967737410206417","Loaves & Fishes","CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 17:51:02"
+"968658581917911","DC Office on Aging","CJCC","No previous attempts","","","","2023-01-30 16:19:28","2022-08-01 17:43:14"
+"996098214626085","COMMUNITY FAMILY LIFE SERVICES","CJCC","No previous attempts","","","","2023-01-30 16:19:28","2022-08-01 12:46:54"
+"997628202730998","My Sister's Place","DC NEXT!,CJCC","Verified","","2022-11-21 14:52:48","Ava Glover","2023-03-27 09:46:20","2022-11-21 14:52:48"
+"1005694830501113","Wanda Alston House","CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 18:19:42"
+"1001381268835594","Ayuda","CJCC","Verified","","2022-10-06 10:41:19","Ava Glover","2023-03-27 09:46:21","2022-10-06 10:41:19"
+"1012774856380370","Far Southeast Family Strengthening Collaborative","DC-Pact,DC NEXT!,CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 12:58:15"
+"1046365080869798","New Endeavors by Women","DC NEXT!,CJCC","Verified","","2022-11-03 15:31:27","Ava Glover","2023-03-27 09:46:20","2022-11-03 15:31:27"
+"1093139785713640","Thrive DC","DC NEXT!,CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 18:13:36"
+"1061004820715700","Mc Kendree United Methodist Church","CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 17:52:42"
+"1102961709884725","Virginia Williams Family Resource Center (VWFRC)","DC-Pact,DC NEXT!,CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 18:13:09"
+"1048888394985463","Washington Parks and People","CJCC","Verified","","2022-11-03 16:02:24","Ava Glover","2023-01-30 16:19:28","2022-11-03 16:02:24"
+"1077851308935499","Asian Pacific American Legal Resource Center","CJCC","Verified","","2022-10-06 10:22:06","Ava Glover","2023-01-30 16:19:28","2022-10-06 10:22:06"
+"1102284383103447","DC Department of Human Services (DHS)","DC-Pact,CJCC","Verified","","","","2023-03-06 10:52:33","2022-08-01 12:23:49"
+"1115449373062853","Salvation Army NW - National Capital Area Command","CJCC","Verification in Progress","","","","2023-03-27 09:46:21","2022-10-05 19:46:52"
+"1058892834992313","DC Center for Independent Living","CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 12:50:19"
+"1077524447531259","Family and Medical Counseling Service, Inc.","DC-Pact,CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 12:57:56"
+"1126515358200105","Washington Legal Clinic for the Homeless","DC-Pact,CJCC","Verified","","","","2023-02-13 16:08:26","2022-08-01 18:19:51"
+"1098153529407228","Howard University Hospital (HUH)","DC-Pact,DC NEXT!,CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 17:47:22"
+"1148831835061989","Hillcrest Children & Family Center","DC-Pact,CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 17:43:53"
+"1114290760690506","St. Philip the Evangelist Episcopal Church","CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 12:25:40"
+"1143076176825121","Whitman-Walker Health","DC-Pact,CJCC","Verified","","","","2023-03-27 09:44:49","2023-03-21 10:01:44"
+"1153150741927521","PIDARC","CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 17:57:02"
+"1150393600767860","Clean and Sober Streets","CJCC","Verified","","2022-10-07 03:38:53","Angela Martenez","2023-03-27 09:46:22","2022-10-07 17:21:39"
+"1160781889033598","The Arc District of Columbia","CJCC","Verified","","2022-08-01 11:54:27","","2023-01-30 16:19:28","2022-08-01 18:08:45"
+"1108475181801971","Advocates for Justice and Education","DC-Pact,CJCC","Verified","","2022-08-16 19:39:43","","2023-02-08 14:38:49","2023-02-08 14:38:49"
+"1121342754860910","Children's National Hospital","DC-Pact,DC NEXT!,CJCC","Verified","DC Health_Food Access,WIC","","","2023-01-30 16:19:28","2022-11-17 19:06:27"
+"1151822564676160","Lutheran Church of the Reformation`","CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 17:51:17"
+"1184125055440866","Habitat for Humanity (DC)","CJCC","Verified","","2022-11-03 14:31:49","Ava Glover","2023-01-30 16:19:28","2022-11-03 14:31:49"
+"1142792103155243","Marshall Heights Community Development Organization","CJCC","Verified","","2022-10-31 09:44:08","Ava Glover","2023-03-27 09:46:22","2023-03-21 08:48:42"
+"1160038998115387","Woodley House","DC-Pact,CJCC","Verified","","2022-10-18 16:24:16","Ava Glover","2023-01-30 16:19:28","2022-10-18 16:24:16"
+"1158824400866164","TERRIFIC, INC. (WARD 1): CASE/CARE MANAGEMENT","CJCC","No previous attempts","","","","2023-01-30 16:19:28","2022-08-01 18:08:33"
+"1169767322641878","Housing Counseling Services (HCS)","DC-Pact,CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 17:46:58"
+"1189940866829310","Catholic Charities of the Archdiocese of Washington","DC NEXT!,CJCC","Verification in Progress","","","","2023-03-27 09:46:20","2022-10-07 12:05:28"
+"1189929745395085","ETHIOPIAN COMMUNITY CENTER: COMPUTER TRAINING","CJCC","No previous attempts","","","","2023-01-30 16:19:28","2022-08-01 12:57:36"
+"1203024767725850","Community of Hope","DC-Pact,DC NEXT!,CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 12:47:05"
+"1151742654940869","GREATER WASHINGTON URBAN LEAGUE: D.C. EMERGENCY ASSISTANCE FUND","CJCC","No previous attempts","","","","2023-01-30 16:19:28","2022-08-01 17:39:22"
+"1209774179868983","Children's Law Center","DC-Pact,DC NEXT!,CJCC","In Queue","","","","2023-02-15 14:18:22","2023-02-15 14:18:22"
+"1198399473786797","KUEHNER PLACE, SHELTER FOR ABUSE ELDERLY AND NEGLECTED","CJCC","No previous attempts","","","","2023-01-30 16:19:28","2022-09-24 07:20:37"
+"1222701888984669","Sasha Bruce","DC NEXT!,CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 18:06:38"
+"1213518469346648","Barbara Chambers Children's Center","CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 12:27:03"
+"1251281769259929","FAMILY PLACE: EMERGENCY ASSISTANCE PROGRAM","CJCC","No previous attempts","","","","2023-01-30 16:19:28","2022-08-01 18:09:00"
+"1187309405282204","Mazique Parent Child Resource Center","CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 12:56:00"
+"1206510419155059","Bread for the City","DC-Pact,CJCC","Verified","","2022-10-06 11:14:33","Ava Glover","2023-03-27 09:46:20","2022-10-06 11:14:33"
+"1235669446637932","United Planning Organization","DC-Pact,DC NEXT!,CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 12:23:36"
+"1253396496217869","Covenant Baptist Church","CJCC","Verified","","","","2023-02-27 14:06:18","2022-08-01 12:49:50"
+"1255404222445259","Metro Teen Aids","CJCC","Unverifiable","","","","2023-01-30 16:19:28","2022-08-01 17:53:01"
+"1277014247696961","FLOC","CJCC","Verified","","2022-10-18 09:37:02","Ava Glover","2023-01-30 16:19:28","2022-10-18 09:37:02"
+"1281888937730435","Andromeda Transcultural Health","DC-Pact,CJCC","Verified","","","","2023-03-27 09:46:20","2022-08-01 12:26:11"
+"1315578558618439","DC Department of Behavioral Health (DBH)","DC-Pact,CJCC","Verified","","","","2023-02-13 16:08:28","2022-08-01 12:48:32"
+"1265547770857863","Father McKenna Center","CJCC","Verified","","2022-10-11 13:42:14","Ava Glover","2023-01-30 16:19:28","2022-10-11 13:42:14"
+"1288114944946075","DC Public Library (DCPL) System","DC-Pact,CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 17:51:52"
+"1303478330484169","DC Central Kitchen","DC-Pact,CJCC","Verified","","","","2023-02-13 16:08:28","2022-08-01 12:50:27"
+"1275681929536705","Helping Hands Food Distribution Ministry (First Rising Zion Baptist)","CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 17:43:37"
+"1297467042568288","The United Church","CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 12:58:58"
+"1329764475795847","DC Department of Health (DC Health)","DC-Pact,DC NEXT!,CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 12:53:52"
+"1280943812182660","Central Union Mission","CJCC","Verification in Progress","","","","2023-01-30 16:19:28","2022-11-15 08:55:02"
+"1284952943863665","Unity Health Care","DC-Pact,DC NEXT!,CJCC","Verified","DC Health_Food Access,WIC","","","2023-03-27 09:46:20","2022-12-12 13:18:34"
+"1311337308136967","Latin American Youth Center","DC NEXT!,CJCC","Verified","","","","2023-01-30 16:19:28","2022-08-01 12:57:45"
+"1351080129222828","Criminal Justice Coordinating Council (CJCC)","CJCC","In Queue","","","","2023-03-27 07:52:06","2023-03-08 12:24:26"
+"1351080129222829","Child and Family Services Agency","DC-Pact,DC NEXT!,CJCC","In Queue","","","","2023-01-30 16:19:29","2022-08-01 12:42:14"
+"1351080129222832","GW Hospital","DC-Pact,DC NEXT!,CJCC","In Queue","","","","2023-01-30 16:19:29","2022-08-01 17:40:58"
+"1351080129222838","George Washington University School of Medicine & Health Science","CJCC","Unverified","","","","2023-01-30 16:19:29","2022-10-07 00:59:39"
+"1351080129222842","Southeast Ministry","CJCC,Ava","Verified","","2022-10-06 09:29:52","Ava Glover","2023-03-27 09:46:21","2022-10-06 09:29:52"
+"1351080129222843","AboutFace","CJCC","Verified","","","","2023-03-27 09:46:22","2022-09-27 15:41:10"
+"1351080129222844","Academy of Home","CJCC","No Status","","","","2023-02-13 16:08:24","2022-10-11 16:12:55"
+"1351080129222845","Adventist HealthCare","CJCC","Verified","","","","2023-03-27 09:46:21","2022-09-29 14:03:33"
+"1351080129222846","Affordable Behavioral Consultants","CJCC","Verified","","","","2023-03-27 09:46:22","2022-10-03 11:28:35"
+"1351080129222848","Alexandria Community Shelter","CJCC","Verified","","","","2023-03-27 09:46:21","2022-09-29 10:40:08"
+"1351080129222849","Alexandria Seaport Foundation","CJCC","Verified","","","","2023-03-27 09:46:21","2022-09-29 11:18:21"
+"1351080129222850","All That's Therapeutic","CJCC","Verified","","","","2023-03-27 09:46:20","2022-09-29 11:55:18"
+"1351080129222851","American Rescue Workers","CJCC","Out of Business/Inactive","","","","2023-01-30 16:19:29","2022-09-29 14:08:53"
+"1351080129222852","American University Washington College of Law","CJCC","Verified","","","","2023-03-27 09:46:22","2022-09-29 14:29:27"
+"1351080129222855","Anger Management Techniques","CJCC","Verified","","","","2023-03-27 09:46:22","2022-09-30 13:17:59"
+"1351080129222856","Another Way","CJCC","Verified","","","","2023-03-27 09:46:20","2022-09-30 13:36:11"
+"1351080129222857","Art Enables","CJCC","Verified","","","","2023-02-13 16:08:26","2022-09-30 14:00:41"
+"1351080129222859","Bilingual Counseling Center","CJCC","Verified","","","","2023-03-27 09:46:20","2022-09-30 16:02:54"
+"1351080129222860","Asian American Leadership Empowerment and Development","CJCC","Verified","","","","2023-03-27 09:46:20","2022-10-03 09:43:55"
+"1351080129222861","Boat People S.O.S","CJCC","Verified","","","","2023-03-27 09:46:20","2022-10-03 10:50:57"
+"1351080129222862","Capital Area Asset Builders","CJCC","Verified","","","","2023-03-27 09:46:20","2022-10-03 12:00:44"
+"1351080129222863","Capital Area Immigrants' Rights Coalition","CJCC","Verified","","","","2023-03-27 09:46:20","2022-10-03 12:51:25"
+"1351080129222864","Capitol Hill Pregnancy Center","CJCC","Verified","","","","2023-03-27 09:46:22","2022-10-03 13:15:57"
+"1351080129222865","Carpenter's Shelter","CJCC","Verified","","","","2023-03-27 09:46:20","2022-10-03 13:50:28"
+"1351080129222866","Centro Tepeyac","CJCC","Verified","","","","2023-03-27 09:46:20","2022-10-03 15:08:45"
+"1351080129222867","Columbia Lighthouse for the Blind","CJCC","Verified","","","","2023-03-27 09:46:20","2022-10-03 16:18:43"
+"1351080129222868","Commodity Supplemental Food Program","CJCC","Verified","","2022-10-04 08:56:19","Ava Glover","2023-03-27 09:46:20","2022-10-04 08:56:19"
+"1351080129222869","Community Legal Services of Prince George's County","CJCC","Verified","","2022-10-04 09:31:11","Ava Glover","2023-03-27 09:46:20","2022-10-04 09:31:11"
+"1351080129222870","Compassion Power","CJCC","Verified","","2022-10-04 10:29:37","Ava Glover","2023-03-27 09:46:20","2022-10-04 10:29:40"
+"1351080129222871","Consumer Advocate Network","CJCC","Verified","","2022-10-04 10:49:19","Ava Glover","2023-03-27 09:46:21","2022-10-04 10:49:19"
+"1351080129222872","Crime Victims Compensation Fund","CJCC","Verified","","2022-10-04 11:52:32","Ava Glover","2023-03-27 09:46:21","2022-10-04 11:52:32"
+"1351080129222873","D.C. Bar Pro Bono Center","CJCC","Verified","","2022-10-24 14:53:33","Ava Glover","2023-03-27 09:46:22","2022-10-24 14:53:33"
+"1351080129222874","DC Coalition Against Domestic Violence","CJCC","Verified","","2022-10-04 13:50:52","Ava Glover","2023-03-27 09:46:21","2022-10-04 13:50:52"
+"1351080129222875","Ballou STAY High School","CJCC","Verified","","2022-10-04 14:45:25","Ava Glover","2023-03-27 09:46:21","2022-10-04 14:45:25"
+"1351080129222876","Carlos Rosario International Public Charter School","CJCC,Ava","Verified","","2022-10-04 16:28:03","Ava Glover","2023-03-27 09:46:21","2022-10-04 17:13:33"
+"1351080129222877","Antioch Baptist Church","CJCC","Verified","","2022-10-06 10:11:50","Ava Glover","2023-03-27 09:46:21","2022-10-06 10:11:50"
+"1351080129222878","DC Office of Disability Rights","CJCC,Ava","Verified","","2022-10-11 11:25:27","Ava Glover","2023-03-27 09:46:21","2022-10-11 11:25:27"
+"1351080129222879","Columbus Community Legal Services","CJCC","Verified","","2022-10-11 08:52:53","Ava Glover","2023-03-27 09:46:21","2022-10-11 08:52:53"
+"1351080129222880","Community for Creative Nonviolence","CJCC,Ava","Verified","","2022-10-11 10:20:39","Ava Glover","2023-03-27 09:46:22","2022-10-11 10:20:39"
+"1351080129222881","Food for All DC","CJCC,Ava","Verified","","2022-10-11 12:54:31","Ava Glover","2023-03-27 09:46:22","2022-10-11 12:54:31"
+"1351080129222882","Federal City Recovery Services","CJCC","Verified","","2022-10-11 13:39:16","Ava Glover","2023-03-27 09:46:22","2022-10-11 13:39:16"
+"1351080129222883","FAIR Girls","CJCC,Ava","Verified","","2022-10-11 14:36:56","Ava Glover","2023-03-27 09:46:22","2022-10-11 14:36:56"
+"1351080129222884","Dupont Circle Club","CJCC,Ava","Verified","","2022-10-11 15:18:44","Ava Glover","2023-03-27 09:46:22","2022-10-11 15:18:44"
+"1351080129222885","Doorways","CJCC,Ava","Verified","","2022-10-11 16:09:05","Ava Glover","2023-03-27 09:46:22","2022-10-11 16:09:05"
+"1351080129222886","Chevy Chase Presbyterian Church","CJCC,Ava","Verified","","2022-10-13 09:04:42","Ava Glover","2023-03-27 09:46:22","2022-10-13 09:04:44"
+"1351080129222887","Christ House","CJCC","Verified","","2022-10-13 10:00:15","Ava Glover","2023-03-27 09:46:22","2022-10-13 10:00:15"
+"1351080129222888","Dignity Washington","CJCC,Ava","Verified","","2022-10-13 15:12:06","Ava Glover","2023-03-27 09:46:22","2022-10-13 15:12:06"
+"1351080129222889","Deaf-Reach","CJCC,Ava","Verified","","2022-10-13 15:29:32","Ava Glover","2023-03-27 09:46:22","2022-10-13 15:29:32"
+"1351080129222890","The Church of the Epiphany","CJCC,Ava","Verified","","2022-10-13 15:49:52","Ava Glover","2023-02-13 16:08:24","2022-10-13 15:55:44"
+"1351080129222891","Church of the Pilgrims","CJCC,Ava","Verified","","2022-10-13 16:06:26","Ava Glover","2023-03-27 09:46:21","2022-10-13 16:06:26"
+"1351080129222892","Family Preservation Services of Washington, DC","CJCC,Ava","Verified","","2022-10-17 09:25:31","Ava Glover","2023-03-27 09:46:21","2022-10-17 09:25:31"
+"1351080129222893","Galilee Community Development Corporation (Galilee Baptist Church)","CJCC","Verified","","2022-10-18 10:29:50","Ava Glover","2023-03-27 09:46:21","2022-10-18 10:29:50"
+"1351080129222894","DC Superior Court","CJCC","Verified","","2022-10-18 11:50:47","Ava Glover","2023-02-13 16:08:24","2022-10-18 11:50:47"
+"1351080129222895","Homes for Hope","CJCC","Verified","","2022-10-18 15:05:02","Ava Glover","2023-03-27 09:46:21","2022-10-18 15:05:02"
+"1351080129222896","Hope and a Home","CJCC","Verified","","2022-10-18 15:37:25","Ava Glover","2023-03-27 09:46:22","2022-10-18 15:37:25"
+"1351080129222897","Homestretch","CJCC","Verified","","2022-10-24 09:36:56","Ava Glover","2023-03-27 09:46:22","2022-10-24 09:36:56"
+"1351080129222898","Hope House","CJCC","Verified","","2022-10-24 10:09:34","Ava Glover","2023-02-13 16:08:24","2022-10-24 10:09:34"
+"1351080129222899","Human Rights First","CJCC","Verified","","2022-10-24 13:15:30","Ava Glover","2023-03-27 09:46:21","2022-10-24 13:15:30"
+"1351080129222900","Joseph's House","CJCC","Verified","","2022-10-24 16:05:31","Ava Glover","2023-03-27 09:46:21","2022-10-24 16:05:31"
+"1351080129222901","Lifeline Partnership","CJCC","Verified","","2022-10-27 09:28:27","Ava Glover","2023-03-27 09:46:21","2022-10-27 09:28:27"
+"1351080129222902","Living Free Health Services","CJCC","Verified","","2022-10-27 11:54:16","Ava Glover","2023-03-27 09:46:21","2022-10-27 11:54:16"
+"1351080129222903","Korean Community Service Center of Greater Washington","CJCC","Verified","","2022-10-27 14:46:32","Ava Glover","2023-03-27 09:46:21","2022-10-27 14:46:32"
+"1351080129222904","Kolmac Outpatient Recovery Centers","CJCC","Verified","","2022-10-31 09:24:48","Ava Glover","2023-03-27 09:46:21","2022-10-31 09:24:48"
+"1351080129222905","Mary House","CJCC","Verified","","2022-10-31 09:59:56","Ava Glover","2023-03-27 09:46:21","2022-10-31 09:59:56"
+"1351080129222906","Melwood","CJCC","Verified","","2022-10-31 11:27:21","Ava Glover","2023-03-27 09:46:21","2022-10-31 11:27:21"
+"1351080129222907","Avery Road","CJCC","Verified","","2022-11-01 11:16:47","Ava Glover","2023-03-27 09:46:21","2022-11-01 11:16:47"
+"1351080129222908","Assessment and Referral Center","CJCC","Verified","","2022-11-01 13:25:17","Ava Glover","2023-03-27 09:46:21","2022-11-01 13:25:17"
+"1351080129222909","Alexandria Community Services Board","CJCC,Ava","Verified","","2022-11-01 13:49:54","Ava Glover","2023-03-27 09:46:22","2022-11-01 13:49:54"
+"1351080129222910","Borromeo Housing","CJCC","Verified","","2022-11-03 09:35:46","Ava Glover","2023-03-27 09:46:22","2022-11-03 09:35:46"
+"1351080129222911","Community of Christ","CJCC,Ava","Verified","","2022-11-03 09:53:58","Ava Glover","2023-03-27 09:46:22","2022-11-03 09:54:00"
+"1351080129222912","East of the River Clergy Police Partnership","CJCC","Verified","","2022-11-03 11:10:18","Ava Glover","2023-03-27 09:46:22","2022-11-03 11:10:18"
+"1351080129222913","Golden Triangle","CJCC","Verified","","2022-11-03 13:08:44","Ava Glover","2023-03-27 09:46:22","2022-11-03 13:08:44"
+"1351080129222914","Harriet Tubman Women's Shelter","CJCC,Ava","Verified","","2022-11-03 13:31:03","Ava Glover","2023-03-27 09:46:21","2022-11-03 13:31:03"
+"1351080129222915","Casey Trees","CJCC","No Status","","","","2023-03-27 09:46:20","2023-02-27 11:54:05"
+"1351080129222916","The Bowen Center for the Study of the Family","CJCC","Verified","","2022-11-08 10:35:39","Ava Glover","2023-03-27 09:46:21","2022-11-08 10:35:39"
+"1351080129222917","Friends of Guest House","CJCC","Verified","","2022-11-08 10:59:58","Ava Glover","2023-03-27 09:46:21","2022-11-08 10:59:58"
+"1351080129222918","St. Albans Church","CJCC","Verified","","2022-11-28 13:52:26","Ava Glover","2023-03-27 09:46:22","2022-11-28 13:52:26"
+"1351080129222919","St. Ann's Center for Children, Youth & Families","CJCC","Verified","","2022-11-08 14:27:59","Ava Glover","2023-03-27 09:46:20","2022-11-08 14:27:59"
+"1351080129222920","Voices for a Second Chance","CJCC","Verified","","2022-11-08 15:49:22","Ava Glover","2023-03-27 09:46:20","2022-11-08 15:49:22"
+"1351080129222921","Community Action Group","CJCC","Verified","","2022-11-14 08:50:54","Ava Glover","2023-02-27 17:33:47","2022-11-14 08:50:54"
+"1351080129222922","Mil Mujeres","CJCC","Verified","","2022-11-10 09:59:39","Ava Glover","2023-02-27 17:33:47","2022-11-10 09:59:39"
+"1351080129222923","St. Columba's Episcopal Church","CJCC","No Status","","","","2023-02-13 16:05:54","2022-11-10 14:03:30"
+"1351080129222924","Shrine of the Sacred Heart Church","CJCC,Ava","Verified","","2022-11-14 11:59:13","Ava Glover","2023-02-27 17:33:47","2022-11-14 11:59:13"
+"1351080129222925","The Foundry United Methodist Church","CJCC,Ava","Verified","","2022-11-15 15:15:36","Mary Kuhn","2023-02-27 17:33:47","2022-11-15 15:15:36"
+"1351080129222926","Jobs Have Priority","CJCC,Ava","In Queue","","","","2023-02-27 17:33:47","2022-11-15 10:59:08"
+"1351080129222927","Montgomery Avenue Women's Center","CJCC","Verified","","2022-11-15 13:37:10","Ava Glover","2023-02-27 17:33:47","2022-11-15 13:37:10"
+"1351080129222928","Oxford House","CJCC,Ava","Verified","","2022-11-17 14:20:54","Ava Glover","2023-02-27 17:33:47","2022-11-17 15:02:14"
+"1351080129222929","Pilgrim Rest Baptist Church","CJCC,Ava","Verified","","2022-11-17 15:57:09","Ava Glover","2023-02-27 17:33:47","2022-11-17 15:57:09"
+"1351080129222930","University of the District of Columbia","CJCC","Verified","DC Health_Food Access","2023-01-04 11:32:36","Aaron Parker","2023-03-27 09:45:00","2023-03-15 12:50:28"
+"1351080129222932","Mount Carmel Baptist Church","CJCC","Verified","","2022-11-21 08:46:21","Ava Glover","2023-03-27 09:46:21","2022-11-21 08:46:21"
+"1351080129222933","Mount Carmel House","CJCC","Verified","","2022-11-21 08:55:33","Ava Glover","2023-03-27 09:46:21","2022-11-21 08:55:33"
+"1351080129222934","U.S. Department of Veterans Affairs Homeless Programs","CJCC","Verified","","2022-11-21 10:38:29","Ava Glover","2023-02-27 17:32:11","2022-11-21 10:38:29"
+"1351080129222935","Willow Oak Therapy Center","CJCC,Ava","Verified","","2022-11-21 12:48:36","Ava Glover","2023-02-27 17:32:11","2022-11-21 12:48:36"
+"1351080129222936","Suited for Change","CJCC","Verified","","2022-11-21 13:26:14","Ava Glover","2023-02-27 17:32:11","2022-11-21 13:26:14"
+"1351080129222937","National City Christian Church","CJCC","Verified","","2022-11-22 10:05:08","Ava Glover","2023-02-13 16:05:53","2022-11-22 10:05:51"
+"1351080129222938","Community Crisis Services, Inc","CJCC,Ava","Verified","","2022-11-22 11:12:02","Ava Glover","2023-02-27 17:32:11","2022-11-22 11:14:47"
+"1351080129222939","QCI Behavioral Health","CJCC","Verified","","2022-11-22 16:04:04","Ava Glover","2023-02-27 17:32:11","2022-11-22 16:04:04"
+"1351080129222940","Prison Fellowship","CJCC,Ava","Verified","","2022-11-28 09:16:34","Ava Glover","2023-02-27 17:32:11","2022-11-28 09:16:34"
+"1351080129222941","New Life For Girls","CJCC,Ava","Verified","","2022-11-28 09:32:39","Ava Glover","2023-02-27 17:32:11","2022-11-28 09:32:39"
+"1351080129222942","New Life For Adults and Youth","CJCC,Ava","In Queue","","","","2023-01-30 16:19:29","2022-11-28 09:52:22"
+"1351080129222943","Mulumba House","CJCC,Ava","Verified","","2022-11-28 12:39:37","Ava Glover","2023-02-27 17:32:11","2022-11-28 12:39:37"
+"1351080129222944","Supporting and Mentoring Youth Advocates and Leaders","CJCC,Ava","Verified","","2022-12-05 09:07:34","Ava Glover","2023-02-27 17:32:11","2022-12-05 09:07:34"
+"1351080129222945","St. Margaret's Episcopal Church","CJCC,Ava","Verified","","2022-12-05 09:22:28","Ava Glover","2023-02-27 17:32:11","2022-12-05 09:22:28"
+"1351080129222946","Downtown Cluster of Congregations","CJCC,Ava","Verified","","2022-12-05 10:48:48","Ava Glover","2023-02-27 17:32:11","2022-12-05 10:48:48"
+"1351080129222947","Ward 7 Food Center","CJCC,Ava","No Status","","","","2023-02-27 17:32:11","2022-12-05 11:39:26"
+"1351080129222948","Saint Johns Community Services","CJCC,Ava","Verified","","2022-12-05 14:00:46","Ava Glover","2023-02-27 17:33:47","2022-12-05 14:00:46"
+"1351080129222949","Living Wages","CJCC,Ava","Verified","","2022-12-05 16:20:51","Ava Glover","2023-02-27 17:33:47","2022-12-05 16:20:51"
+"1351080129222950","Prevention of Blindness Society","CJCC,Ava","Verified","","2022-12-06 11:45:37","Ava Glover","2023-02-27 17:33:47","2022-12-06 11:45:37"
+"1351080129222951","Words Beats & Life","CJCC,Ava","Verified","","2022-12-06 15:28:12","Ava Glover","2023-02-27 17:33:47","2022-12-06 15:28:12"
+"1351080129222968","Behavioral Health System Baltimore","CJCC","No Status","","","","2023-02-27 17:32:11","2023-02-14 08:52:59"
+"1351080129222969","Building Futures","CJCC","No Status","","","","2023-02-27 17:32:10","2023-02-15 11:25:06"
+"1351080129222970","Clinical & Forensic Associates","CJCC","No Status","","","","2023-03-21 09:01:10","2023-02-14 12:01:52"
+"1351080129222971","Congress Heights Community Training & Developments Corporation","CJCC","No Status","","","","2023-02-27 17:32:10","2023-02-22 09:16:27"
+"1351080129222972","Counsel for Child Abuse & Neglect","CJCC","Verified","","2023-02-28 09:03:28","Madison Walton","2023-03-27 09:46:20","2023-03-01 11:28:38"
+"1351080129222975","City of Alexandria Domestic Violence Program","CJCC","No Status","","","","2023-02-27 17:31:56","2023-02-21 11:58:00"
+"1351080129222976","Congressional Cemetery","CJCC","No Status","","","","2023-02-27 17:32:10","2023-02-22 08:58:25"
+"1351080129222977","Correctional Treatment Facility","CJCC","No Status","","","","2023-02-27 10:11:09","2023-02-27 10:11:09"
+"1351080129222978","Community Health Administration","CJCC","No Status","","","","2023-03-27 09:46:20","2023-02-28 08:39:05"
+"1351080129222979","Davis Memorial Goodwill Industries","CJCC","No Status","","","","2023-02-27 17:32:10","2023-02-27 14:17:46"
+"1351080129222980","District of Columbia College Access Program","CJCC","No Status","","","","2023-03-27 09:45:46","2023-02-28 10:33:30"
+"1351080129222981","Dominion Hospital","CJCC","No Status","","","","2023-03-27 09:45:46","2023-02-28 13:30:54"
+"1351080129222982","Dorothy Day Catholic Worker Community House","CJCC","No Status","","","","2023-03-27 09:45:46","2023-02-28 13:53:49"
+"1351080129222983","Downtown SAMS","CJCC","No Status","","","","2023-03-27 09:45:46","2023-02-28 15:23:19"
+"1351080129222984","Emergency Winter","CJCC","No Status","","","","2023-03-27 09:46:22","2023-03-15 10:49:50"
+"1351080129222985","Division of Rehabilitation Services","CJCC","Verified","","2023-03-06 13:46:34","Madison Walton","2023-03-27 09:46:22","2023-03-07 13:47:08"
+"1351080129222986","DC Housing Authority (DCHA)","CJCC","Verified","","2023-03-15 08:49:23","Madison Walton","2023-03-27 09:46:22","2023-03-21 07:42:35"
+"1351080129222988","Family Emergency Shelter","CJCC","No Status","","","","2023-03-27 09:46:22","2023-03-21 11:48:54"

@@ -62,6 +62,10 @@ return [
             'driver' => 'local',
             'root' => public_path('xlsx'),
         ],
+        'newExport' => [
+            'driver' => 'local',
+            'root' => public_path('newExport'),
+        ],
 
         's3' => [
             'driver' => 's3',

@@ -77,10 +77,10 @@ Registrations
         <h2>Registrations</h2>
         <div class="clearfix"></div>
       </div>
-      <div class="x_content" style="overflow: scroll;">
+      <div class="x_content">
 
         <!-- <table class="table table-striped jambo_table bulk_action table-responsive"> -->
-        <table id="message_table" class="display nowrap table-striped jambo_table table-bordered table-responsive" cellspacing="0" width="100%">
+        <table id="message_table" class="display dataTable table-striped jambo_table table-bordered table-responsive" cellspacing="0" width="100%">
             <thead>
                 <tr>
                 	<th class="text-center">No</th>
@@ -132,7 +132,7 @@ Registrations
         <div class="clearfix"></div>
       </div>
 
-      <div class="x_content" style="overflow: scroll;">
+      <div class="x_content">
         <table id="email_table" class="display nowrap table-striped jambo_table table-bordered table-responsive" cellspacing="0" width="100%">
             <thead>
                 <tr>

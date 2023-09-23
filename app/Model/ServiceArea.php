@@ -11,7 +11,7 @@ class ServiceArea extends Model
 {
     use SoftDeletes;
     protected $fillable = [
-        'name', 'services', 'description', 'created_at', 'updated_at'
+        'name', 'services', 'description', 'created_at', 'updated_at', 'extent', 'extent_type', 'uri'
     ];
 
     // /**
