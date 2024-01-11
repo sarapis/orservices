@@ -25,7 +25,7 @@ Features include:
 
 The Laravel framework has a few system requirements. You will need to make sure your server meets the following requirements:
 
-* PHP >= 7.2.5
+* PHP 7.4
 * BCMath PHP Extension
 * Ctype PHP Extension
 * JSON PHP Extension
