@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Accessibility extends Model
 {
     protected $fillable = [
-        'accessibility_recordid', 'accessibility_location', 'accessibility', 'accessibility_details'
+        'accessibility_recordid', 'accessibility_location', 'accessibility', 'accessibility_details', 'accessibility_url'
     ];
 
     public function location()

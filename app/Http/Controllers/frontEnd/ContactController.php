@@ -22,6 +22,7 @@ use App\Model\PhoneType;
 use App\Model\Service;
 use App\Model\ServiceContact;
 use App\Model\Source_data;
+use App\Services\ContactService;
 use App\Services\Stringtoint;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -39,30 +40,28 @@ use function GuzzleHttp\json_decode;
 
 class ContactController extends Controller
 {
-    public $commonController;
+    public $commonController, $contactService;
 
-    public function __construct(CommonController $commonController)
+    public function __construct(CommonController $commonController, ContactService $contactService)
     {
         $this->commonController = $commonController;
+        $this->contactService = $contactService;
     }
-    public function airtable($api_key, $base_url)
+    public function airtable($access_token, $base_url)
     {
 
         $airtable_key_info = Airtablekeyinfo::find(1);
         if (!$airtable_key_info) {
             $airtable_key_info = new Airtablekeyinfo;
         }
-        $airtable_key_info->api_key = $api_key;
+        $airtable_key_info->access_token = $access_token;
         $airtable_key_info->base_url = $base_url;
         $airtable_key_info->save();
 
         Contact::truncate();
-        // $airtable = new Airtable(array(
-        //     'api_key'   => env('AIRTABLE_API_KEY'),
-        //     'base'      => env('AIRTABLE_BASE_URL'),
-        // ));
+
         $airtable = new Airtable(array(
-            'api_key' => $api_key,
+            'access_token' => $access_token,
             'base' => $base_url,
         ));
 
@@ -107,24 +106,20 @@ class ContactController extends Controller
         $airtable->syncdate = $date;
         $airtable->save();
     }
-    public function airtable_v2($api_key, $base_url)
+    public function airtable_v2($access_token, $base_url)
     {
         try {
             // $airtable_key_info = Airtablekeyinfo::find(1);
             // if (!$airtable_key_info) {
             //     $airtable_key_info = new Airtablekeyinfo;
             // }
-            // $airtable_key_info->api_key = $api_key;
+            // $airtable_key_info->access_token = $access_token;
             // $airtable_key_info->base_url = $base_url;
             // $airtable_key_info->save();
 
             // Contact::truncate();
-            // $airtable = new Airtable(array(
-            //     'api_key'   => env('AIRTABLE_API_KEY'),
-            //     'base'      => env('AIRTABLE_BASE_URL'),
-            // ));
             $airtable = new Airtable(array(
-                'api_key' => $api_key,
+                'access_token' => $access_token,
                 'base' => $base_url,
             ));
 
@@ -179,6 +174,11 @@ class ContactController extends Controller
                 'success' => false
             ], 500);
         }
+    }
+
+    public function airtable_v3($access_token, $base_url)
+    {
+        $this->contactService->import_airtable_v3($access_token, $base_url);
     }
     /**
      * Display a listing of the resource.

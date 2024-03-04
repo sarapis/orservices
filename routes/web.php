@@ -312,6 +312,7 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::resource('XDetails', 'backend\XDetailsController');
     Route::resource('notes', 'backend\NotesController');
     Route::resource('cities', 'backend\CityController');
+    Route::resource('address_types', 'backend\AddressTypeController');
     Route::resource('states', 'backend\StateController');
     Route::resource('code_categories', 'backend\CodeCategoryController');
     Route::resource('codes', 'backend\CodesController');
@@ -413,11 +414,13 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::get('/layout_edit/dowload_settings', 'backend\EditlayoutController@dowload_settings')->name('layout_edit.dowload_settings');;
     Route::post('/layout_edit/save_dowload_settings/{id}', 'backend\EditlayoutController@save_dowload_settings')->name('layout_edit.save_dowload_settings');;
 
+    Route::get('/taxonomy_types/export', 'backend\TaxonomyTypeController@export')->name('taxonomy_types.export');;
     Route::resource('taxonomy_types', 'backend\TaxonomyTypeController');
     Route::resource('layout_edit', 'backend\EditlayoutController');
     Route::resource('home_edit', 'backend\EdithomeController');
     Route::resource('about_edit', 'backend\EditaboutController');
     Route::resource('login_register_edit', 'backend\EditLoginRegisterController');
+
 
     Route::resource('import', 'backend\ImportController');
     Route::post('/getDataSource', ['uses' => 'backend\ImportController@getDataSource'])->name('import.getDataSource');

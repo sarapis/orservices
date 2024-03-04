@@ -38,6 +38,7 @@ Taxonomies
         <h2>Taxonomies</h2>
         <div class="nav navbar-right panel_toolbox">
             {{-- @if (Sentinel::getUser()->hasAccess(['user.create'])) --}}
+            <a href="{{route('taxonomy_types.export')}}" class="btn btn-info">CSV Download</a>
             <a href="{{route('taxonomy_types.create')}}" class="btn btn-success">Add Taxonomy</a>
             {{-- @endif --}}
             </div>
@@ -48,12 +49,13 @@ Taxonomies
         <table id="taxonomy_type_table" class="display table-striped  table-bordered" cellspacing="0">
             <thead>
                 <tr>
-                    <th class="text-center">No</th>
+                    <th class="text-center">ID</th>
                     <th>Name</th>
                     <th>Order</th>
                     <th>Type</th>
-                    <th>Reference URL</th>
-                    <th>Notes</th>
+                    <th>URI</th>
+                    <th>Version</th>
+                    <th>Description</th>
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
@@ -100,6 +102,7 @@ Taxonomies
                 { data: 'order', name: 'order' },
                 { data: 'type', name: 'type' },
                 { data: 'reference_url', name: 'reference_url' },
+                { data: 'version', name: 'version' },
                 { data: 'notes', name: 'notes' },
                 { data: 'action', name: 'action' },
             ],
@@ -136,6 +139,11 @@ Taxonomies
                 },
                 {
                     "targets": 6,
+                    "orderable": true,
+                    "class": "text-left"
+                },
+                {
+                    "targets": 7,
                     "orderable": true,
                     "class": "text-left"
                 },

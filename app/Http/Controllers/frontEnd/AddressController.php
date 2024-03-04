@@ -15,6 +15,7 @@ use App\Model\Locationaddress;
 use App\Model\Serviceaddress;
 use App\Model\Source_data;
 use App\Model\State;
+use App\Services\AddressService;
 use App\Services\Stringtoint;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -23,15 +24,21 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class AddressController extends Controller
 {
+    protected $addressservice;
 
-    public function airtable($api_key, $base_url)
+    public function __construct(AddressService $addressservice)
+    {
+        $this->addressservice = $addressservice;
+    }
+
+    public function airtable($access_token, $base_url)
     {
 
         $airtable_key_info = Airtablekeyinfo::find(1);
         if (!$airtable_key_info) {
             $airtable_key_info = new Airtablekeyinfo;
         }
-        $airtable_key_info->api_key = $api_key;
+        $airtable_key_info->access_token = $access_token;
         $airtable_key_info->base_url = $base_url;
         $airtable_key_info->save();
 
@@ -41,7 +48,7 @@ class AddressController extends Controller
         //     'base'      => env('AIRTABLE_BASE_URL'),
         // ));
         $airtable = new Airtable(array(
-            'api_key' => $api_key,
+            'access_token' => $access_token,
             'base' => $base_url,
         ));
 
@@ -111,14 +118,14 @@ class AddressController extends Controller
         $airtable->syncdate = $date;
         $airtable->save();
     }
-    public function airtable_v2($api_key, $base_url)
+    public function airtable_v2($access_token, $base_url)
     {
         try {
             $airtable_key_info = Airtablekeyinfo::find(1);
             if (!$airtable_key_info) {
                 $airtable_key_info = new Airtablekeyinfo;
             }
-            $airtable_key_info->api_key = $api_key;
+            $airtable_key_info->access_token = $access_token;
             $airtable_key_info->base_url = $base_url;
             $airtable_key_info->save();
 
@@ -128,7 +135,7 @@ class AddressController extends Controller
             //     'base'      => env('AIRTABLE_BASE_URL'),
             // ));
             $airtable = new Airtable(array(
-                'api_key' => $api_key,
+                'access_token' => $access_token,
                 'base' => $base_url,
             ));
 
@@ -214,6 +221,11 @@ class AddressController extends Controller
                 'success' => false
             ], 500);
         }
+    }
+
+    public function airtable_v3($access_token, $base_url)
+    {
+        $this->addressservice->import_airtable_v3($access_token, $base_url);
     }
 
     public function csv(Request $request)

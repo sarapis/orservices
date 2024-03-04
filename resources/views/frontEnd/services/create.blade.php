@@ -272,6 +272,18 @@
                                             <input class="form-control selectpicker" type="text" id="service_accrediations" name="service_accrediations" value="">
                                         </div>
                                     </div>
+                                    {{-- <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Alert </label>
+                                            <input class="form-control" type="text" id="alert" name="alert" value="">
+                                        </div>
+                                    </div> --}}
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Funding </label>
+                                            <input class="form-control" type="text" id="funding" name="funding" value="">
+                                        </div>
+                                    </div>
                                     {{-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Service Grouping </label>

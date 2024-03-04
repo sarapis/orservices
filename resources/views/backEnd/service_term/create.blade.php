@@ -1,6 +1,6 @@
 @extends('backLayout.app')
 @section('title')
-Create service term
+Create Taxonomy Term
 @stop
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
@@ -26,7 +26,7 @@ Create service term
 	<div class="col-md-12 col-sm-12 col-xs-12">
 		<div class="x_panel">
 			<div class="x_title">
-                <h2>Create service term</h2>
+                <h2>Create Taxonomy Term</h2>
                 {{-- @if (count($errors) > 0)
                 <div class="form-group">
                     <div class="col-sm-10 col-sm-offset-1">
@@ -45,33 +45,118 @@ Create service term
 			</div>
 			<div class="x_content">
                 {{ Form::open(array('url' => route('tb_taxonomy.store'), 'class' => 'form-horizontal','files' => true)) }}
+                    <div class="form-group {{ $errors->has('code') ? 'has-error' : ''}}">
+                        {!! Form::label('code', 'Code', ['class' => 'col-md-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::text('code', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('code', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
                     <div class="form-group {{ $errors->has('taxonomy_name') ? 'has-error' : ''}}">
-                        {!! Form::label('taxonomy_name', 'Term', ['class' => 'col-md-3 control-label']) !!}
+                        {!! Form::label('taxonomy_name', 'Name', ['class' => 'col-md-3 control-label']) !!}
                         <div class="col-sm-6">
                             {!! Form::text('taxonomy_name', null, ['class' => 'form-control']) !!}
                             {!! $errors->first('taxonomy_name', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+                    <div class="form-group {{ $errors->has('taxonomy_x_description') ? 'has-error' : ''}}">
+                        {!! Form::label('taxonomy_x_description', 'Description' , ['class' => 'col-md-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::textarea('taxonomy_x_description', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('taxonomy_x_description', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+                    <div class="form-group {{ $errors->has('taxonomy_parent_name') ? 'has-error' : ''}}">
+                        {!! Form::label('taxonomy_parent_name', 'Parent Term', ['class' => 'col-md-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::select('taxonomy_parent_name',[],null,['class' => 'form-control','id' => 'taxonomy_parent_name','placeholder' => 'select parent','data-live-search' => 'true']) !!}
+                            {!! $errors->first('taxonomy_parent_name', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
                     <div class="form-group {{ $errors->has('taxonomy') ? 'has-error' : ''}}">
                         {!! Form::label('taxonomy', 'Taxonomy', ['class' => 'col-md-3 control-label']) !!}
                         <div class="col-sm-6">
                             {!! Form::select('taxonomy',$taxonomieTypes,null,['class' => 'form-control','id' =>'taxonomy','placeholder' => 'Select Type']) !!}
-                            {{-- {!! Form::select('taxonomy',['Service Eligibility' => 'Service Eligibility','Service Category' => 'Service Category'],null,['class' => 'form-control','id' =>'taxonomy','placeholder' => 'Select Type']) !!} --}}
                             {!! $errors->first('taxonomy', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
-                    <div class="form-group {{ $errors->has('taxonomy_parent_name') ? 'has-error' : ''}}">
-                        {!! Form::label('taxonomy_parent_name', 'Parent', ['class' => 'col-md-3 control-label']) !!}
+                    <div class="form-group {{ $errors->has('language') ? 'has-error' : ''}}">
+                        {!! Form::label('language', 'Language', ['class' => 'col-md-3 control-label']) !!}
                         <div class="col-sm-6">
-                            {!! Form::select('taxonomy_parent_name',[],null,['class' => 'form-control','id' => 'taxonomy_parent_name','placeholder' => 'select parent','data-live-search' => 'true']) !!}
-                            {!! $errors->first('taxonomy_parent_name', '<p class="help-block">:message</p>') !!}
+                            {!! Form::select('language',$languages,null,['class' => 'form-control','id' =>'language','placeholder' => 'Select language']) !!}
+                            {!! $errors->first('language', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
-                    <div class="form-group {{ $errors->has('x_taxonomies') ? 'has-error' : ''}}">
+                    <div class="form-group {{ $errors->has('term_uri') ? 'has-error' : ''}}">
+                        {!! Form::label('term_uri', 'Term URI', ['class' => 'col-md-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::text('term_uri', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('term_uri', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+                    <hr>
+                    <h2>Publishing</h2>
+                    <div class="form-group {{ $errors->has('status') ? 'has-error' : ''}}">
+                        {!! Form::label('status', 'Status', ['class' => 'col-md-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::select('status',['Published' => 'Published' ,'Unpublished' => 'Unpublished'],null,['class' => 'form-control','id' =>'status','placeholder' => 'Select Status']) !!}
+                            {!! $errors->first('status', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+                    <div class="form-group {{ $errors->has('order') ? 'has-error' : ''}}">
+                        {!! Form::label('order', 'Order', ['class' => 'col-md-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::number('order', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('order', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-3 control-label">Icon</label>
+                        <div class="col-sm-7">
+                          <input type="file" class="form-control" id="category_logo" name="category_logo">
+                          <p>Recommended image size is 60px x 60px</p>
+                        </div>
+                      </div>
+                      {{-- <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-3 control-label">&nbsp;</label>
+                        <div class="col-sm-7">
+                          <img src="" id="category_logo_image" width="100px">
+                        </div>
+                      </div> --}}
+                      <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-3 control-label">Icon (Hover)</label>
+                        <div class="col-sm-7">
+                          <input type="file" class="form-control" id="category_logo_white" name="category_logo_white">
+                          <p>Recommended image size is 60px x 60px</p>
+                        </div>
+                      </div>
+                      {{-- <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-3 control-label">&nbsp;</label>
+                        <div class="col-sm-7">
+                          <img src="" width="100px" id="white_logo_image" style="background: #c1c1c1;padding: 10px;border-radius: 12px;">
+                        </div>
+                      </div> --}}
+                      <div class="form-group" style="margin-top:30px;">
+                          <label for="inputPassword3" class="col-sm-3 control-label">Icon Badge Color</label>
+                          <div class="col-sm-3">
+                              <input type="color" name="badge_color" id="badge_color" class="color-pick form-control" style="padding:0px;">
+                          </div>
+                      </div>
+                      <div class="form-group {{ $errors->has('taxonomy_tag') ? 'has-error' : ''}}">
+                        {!! Form::label('taxonomy_tag', 'Tags', ['class' => 'col-md-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::text('taxonomy_tag', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('taxonomy_tag', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
+
+
+
+
+                    {{-- <div class="form-group {{ $errors->has('x_taxonomies') ? 'has-error' : ''}}">
                         {!! Form::label('x_taxonomies', 'x-Taxonomies', ['class' => 'col-md-3 control-label']) !!}
                         <div class="col-sm-6">
                             {!! Form::select('x_taxonomies',$taxonomieTypesExternal,null,['class' => 'form-control','id' =>'x_taxonomies','placeholder' => 'Select taxonomies']) !!}
-                            {{-- {!! Form::select('x_taxonomies',['Service Eligibility' => 'Service Eligibility','Service Category' => 'Service Category'],null,['class' => 'form-control','id' =>'x_taxonomies','placeholder' => 'Select Type']) !!} --}}
                             {!! $errors->first('x_taxonomies', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
@@ -87,68 +172,18 @@ Create service term
                             {!! $errors->first('taxonomy_grandparent_name', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
-                    <div class="form-group {{ $errors->has('language') ? 'has-error' : ''}}">
-                        {!! Form::label('language', 'Language', ['class' => 'col-md-3 control-label']) !!}
-                        <div class="col-sm-6">
-                            {!! Form::select('language',$languages,null,['class' => 'form-control','id' =>'language','placeholder' => 'Select language']) !!}
-                            {!! $errors->first('language', '<p class="help-block">:message</p>') !!}
-                        </div>
-                    </div>
 
-                    <div class="form-group {{ $errors->has('taxonomy_x_description') ? 'has-error' : ''}}">
-                        {!! Form::label('taxonomy_x_description', 'Description' , ['class' => 'col-md-3 control-label']) !!}
-                        <div class="col-sm-6">
-                            {!! Form::textarea('taxonomy_x_description', null, ['class' => 'form-control']) !!}
-                            {!! $errors->first('taxonomy_x_description', '<p class="help-block">:message</p>') !!}
-                        </div>
-                    </div>
+
                     <div class="form-group {{ $errors->has('taxonomy_x_notes') ? 'has-error' : ''}}">
                         {!! Form::label('taxonomy_x_notes', 'X-notes', ['class' => 'col-md-3 control-label']) !!}
                         <div class="col-sm-6">
                             {!! Form::text('taxonomy_x_notes', null, ['class' => 'form-control']) !!}
                             {!! $errors->first('taxonomy_x_notes', '<p class="help-block">:message</p>') !!}
                         </div>
-                    </div>
-                    <div class="form-group {{ $errors->has('order') ? 'has-error' : ''}}">
-                        {!! Form::label('order', 'Order', ['class' => 'col-md-3 control-label']) !!}
-                        <div class="col-sm-6">
-                            {!! Form::number('order', null, ['class' => 'form-control']) !!}
-                            {!! $errors->first('order', '<p class="help-block">:message</p>') !!}
-                        </div>
-                    </div>
+                    </div> --}}
 
-                    <div class="form-group">
-                        <label for="inputPassword3" class="col-sm-3 control-label">Term Icon</label>
-                        <div class="col-sm-7">
-                          <input type="file" class="form-control" id="category_logo" name="category_logo">
-                          <p>Recommended image size is 60px x 60px</p>
-                        </div>
-                      </div>
-                      {{-- <div class="form-group">
-                        <label for="inputPassword3" class="col-sm-3 control-label">&nbsp;</label>
-                        <div class="col-sm-7">
-                          <img src="" id="category_logo_image" width="100px">
-                        </div>
-                      </div> --}}
-                      <div class="form-group">
-                        <label for="inputPassword3" class="col-sm-3 control-label">Hover Term Icon</label>
-                        <div class="col-sm-7">
-                          <input type="file" class="form-control" id="category_logo_white" name="category_logo_white">
-                          <p>Recommended image size is 60px x 60px</p>
-                        </div>
-                      </div>
-                      {{-- <div class="form-group">
-                        <label for="inputPassword3" class="col-sm-3 control-label">&nbsp;</label>
-                        <div class="col-sm-7">
-                          <img src="" width="100px" id="white_logo_image" style="background: #c1c1c1;padding: 10px;border-radius: 12px;">
-                        </div>
-                      </div> --}}
-                      <div class="form-group" style="margin-top:30px;">
-                          <label for="inputPassword3" class="col-sm-3 control-label">Badge Color</label>
-                          <div class="col-sm-3">
-                              <input type="color" name="badge_color" id="badge_color" class="color-pick form-control" style="padding:0px;">
-                          </div>
-                      </div>
+
+
                     {{-- <div class="form-group {{ $errors->has('detail_organizations') ? 'has-error' : ''}}">
                         {!! Form::label('detail_organizations', 'Organizations' , ['class' => 'col-md-3 control-label']) !!}
                         <div class="col-sm-6">

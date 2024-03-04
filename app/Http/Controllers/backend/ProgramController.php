@@ -12,6 +12,7 @@ use App\Model\Program;
 use App\Model\Service;
 use App\Model\ServiceProgram;
 use App\Model\Source_data;
+use App\Services\ProgramService;
 use App\Services\Stringtoint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -21,14 +22,22 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ProgramController extends Controller
 {
-    public function airtable_v2($api_key, $base_url)
+
+    public $programService;
+
+    public function __construct(ProgramService $programService)
+    {
+        $this->programService = $programService;
+    }
+
+    public function airtable_v2($access_token, $base_url)
     {
         try {
             $airtable_key_info = Airtablekeyinfo::find(1);
             if (!$airtable_key_info) {
                 $airtable_key_info = new Airtablekeyinfo;
             }
-            $airtable_key_info->api_key = $api_key;
+            $airtable_key_info->access_token = $access_token;
             $airtable_key_info->base_url = $base_url;
             $airtable_key_info->save();
 
@@ -41,7 +50,7 @@ class ProgramController extends Controller
             //     'base'      => env('AIRTABLE_BASE_URL'),
             // ));
             $airtable = new Airtable(array(
-                'api_key' => $api_key,
+                'access_token' => $access_token,
                 'base' => $base_url,
             ));
 
@@ -117,6 +126,11 @@ class ProgramController extends Controller
                 'success' => false
             ], 500);
         }
+    }
+
+    public function airtable_v3($access_token, $base_url)
+    {
+        $this->programService->import_airtable_v3($access_token, $base_url);
     }
     /**
      * Display a listing of the resource.

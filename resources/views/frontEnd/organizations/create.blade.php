@@ -187,6 +187,12 @@
 
                                     </div>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Funding </label>
+                                        {!! Form::textarea('funding', null, [ 'id' => 'funding', 'rows' => 4, 'cols' => 54, 'style' => 'resize:none', ]) !!}
+                                    </div>
+                                </div>
                                 {{-- @if (Auth::user() && Auth::user()->roles->name == 'System Admin')
                                     <div class="col-md-4">
                                         <div class="form-group">

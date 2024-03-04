@@ -296,12 +296,13 @@
                                                         </span>
                                                     </div>
                                                     @endif --}}
+
                                                     @if (isset($service->locations) && count($service->locations) > 0)
                                                     <div class="tagp_class">
                                                         <span>
-                                                            <i class="icon md-pin font-size-18 vertical-align-top mr-10" ></i>
+                                                            <i class="icon md-pin font-size-18 vertical-align-top mr-10" style="margin-top:5px;"></i>
                                                             <ul class="p-0" style="margin-left: 25px;">
-                                                            @if (isset($service->locations))
+                                                            {{-- @if (isset($service->locations))
                                                                 @foreach ($service->locations as $key => $locationData)
                                                                     @if (isset($locationData->address))
                                                                         @if ($locationData->address != null)
@@ -317,7 +318,10 @@
                                                                         @endif
                                                                     @endif
                                                                 @endforeach
-                                                            @endif
+                                                            @endif --}}
+                                                            @foreach ($service->getAddresses() as $address)
+                                                            <li> {{ $address }} </
+                                                            @endforeach
                                                             </ul>
                                                         </span>
                                                     </div>
@@ -423,8 +427,8 @@
                                                     </div>
                                                     @if (isset($location->address) && count($location->address) > 0)
                                                     <div class="tagp_class">
-                                                        <span><i class="icon md-pin font-size-18 vertical-align-top mr-10" style="float:none"></i>
-                                                            @if (isset($location->address))
+                                                        <span><i class="icon md-pin font-size-18 vertical-align-top mr-10" style="margin-top:5px;"></i>
+                                                            {{-- @if (isset($location->address))
                                                                 @foreach ($location->address as $address)
                                                                     {{ $address->address_1 }}
                                                                     {{ $address->address_2 }}
@@ -432,7 +436,12 @@
                                                                     {{ $address->address_state_province }}
                                                                     {{ $address->address_postal_code }}
                                                                 @endforeach
-                                                            @endif
+                                                            @endif --}}
+                                                            <ul class="p-0" style="margin-left: 25px;">
+                                                                @foreach ($location->getAddresses() as $address)
+                                                                   <li> {{ $address }} </li>
+                                                                @endforeach
+                                                            </ul>
                                                         </span>
                                                     </div>
                                                     @endif

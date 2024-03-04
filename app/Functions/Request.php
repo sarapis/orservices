@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: glali
@@ -52,14 +53,13 @@ class Request implements \ArrayAccess
         $this->data = $data;
         $this->is_post = $is_post;
         $this->relations = $relations;
-
     }
 
     private function init()
     {
         $headers = array(
             'Content-Type: application/json',
-            sprintf('Authorization: Bearer %s', $this->airtable->getKey()),
+            sprintf('Authorization: Bearer %s', $this->airtable->getAccessToken()),
         );
 
         $request = $this->content_type;
@@ -87,7 +87,6 @@ class Request implements \ArrayAccess
         }
 
         $this->curl = $curl;
-
     }
 
     /**
@@ -101,7 +100,6 @@ class Request implements \ArrayAccess
         $response_string = curl_exec($this->curl);
 
         return new Response($this->airtable, $this, $response_string, $this->relations);
-
     }
 
     public function __set($key, $value)
@@ -121,8 +119,8 @@ class Request implements \ArrayAccess
     public function offsetGet($offset)
     {
         return is_array($this->data) && isset($this->data[$offset])
-        ? $this->data[$offset]
-        : null;
+            ? $this->data[$offset]
+            : null;
     }
 
     public function offsetSet($offset, $value)
@@ -140,5 +138,4 @@ class Request implements \ArrayAccess
             unset($this->data[$offset]);
         }
     }
-
 }

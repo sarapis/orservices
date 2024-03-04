@@ -31,17 +31,29 @@ Edit Source
                     <div class="form-group {{ $errors->has('import_type') ? 'has-error' : ''}}">
                         {!! Form::label('import_type', 'Format', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-6">
-                            {!! Form::select('import_type',['airtable' => 'HSDS v.2.0 Airtable' , 'zipfile' => 'HSDS v.2.0 Zip File','zipfile_api' => 'HSDS v.2.0 Zip API' ], null, ['class' => 'form-control select','id' => 'import_type']) !!}
+                            {!! Form::select('import_type',['airtable_v3' => 'HSDS v.3.0 Airtable' ,'airtable' => 'HSDS v.2.0 Airtable' , 'zipfile' => 'HSDS v.2.0 Zip File','zipfile_api' => 'HSDS v.2.0 Zip API' ], null, ['class' => 'form-control select','id' => 'import_type']) !!}
                             {!! $errors->first('import_type', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
-                    <div class="form-group {{ $errors->has('airtable_api_key') ? 'has-error' : ''}}" id="airtable_key_div">
+                    {{-- <div class="form-group {{ $errors->has('airtable_api_key') ? 'has-error' : ''}}" id="airtable_key_div">
                         {!! Form::label('airtable_api_key', 'Airtable API Key', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-6">
                             {!! Form::text('airtable_api_key1', $dataSource->airtableKeyInfo ? ('***********'.substr($dataSource->airtableKeyInfo->api_key, -4)) : '' , ['class' => 'form-control','id' => 'airtable_api_key1']) !!}
                             {!! Form::text('airtable_api_key', $dataSource->airtableKeyInfo ? $dataSource->airtableKeyInfo->api_key : '' , ['class' => 'form-control','id' => 'airtable_api_key','style' => 'display:none;']) !!}
 
                             {!! $errors->first('airtable_api_key', '<p class="help-block">:message</p>') !!}
+                        </div>
+                        <div class="col-md-2 col-sm-2 col-xs-12">
+                            <button type="button" class="btn btn-success" id="airtable_key_v1">edit</button>
+                        </div>
+                    </div> --}}
+                    <div class="form-group {{ $errors->has('airtable_access_token') ? 'has-error' : ''}}" id="airtable_key_div">
+                        {!! Form::label('airtable_access_token', 'Airtable Access Token', ['class' => 'col-sm-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::text('airtable_access_token1', $dataSource->airtableKeyInfo ? ('***********'.substr($dataSource->airtableKeyInfo->access_token, -4)) : '' , ['class' => 'form-control','id' => 'airtable_access_token1']) !!}
+                            {!! Form::text('airtable_access_token', $dataSource->airtableKeyInfo ? $dataSource->airtableKeyInfo->access_token : '' , ['class' => 'form-control','id' => 'airtable_access_token','style' => 'display:none;']) !!}
+
+                            {!! $errors->first('airtable_access_token', '<p class="help-block">:message</p>') !!}
                         </div>
                         <div class="col-md-2 col-sm-2 col-xs-12">
                             <button type="button" class="btn btn-success" id="airtable_key_v1">edit</button>
@@ -126,7 +138,7 @@ Edit Source
                 </button>
             </div>
             <div class="modal-body">
-                <div id="message">Your current API Key will disappear and you will need to enter a new one.</div>
+                <div id="message">Your current API access token will disappear and you will need to enter a new one.</div>
                 <input type="hidden" name="version" id="version_id">
             </div>
             <div class="modal-footer text-center top_btn_data">
@@ -216,9 +228,9 @@ Edit Source
             $('#alertModal').modal('show')
         })
         $('#continue_pop_up').click(function () {
-                $('#airtable_api_key1').hide()
-                $('#airtable_api_key').show()
-                $('#airtable_api_key').val('')
+                $('#airtable_access_token1').hide()
+                $('#airtable_access_token').show()
+                $('#airtable_access_token').val('')
                 // $('#airtable_base_id').val('')
             $('#alertModal').modal('hide')
         })

@@ -36,7 +36,7 @@ Location
                             @endforeach
                         </div>
                         @endif
-                        @if(isset($facility->address) && count($facility->address) > 0)
+                        {{-- @if(isset($facility->address) && count($facility->address) > 0)
                         <div class="tagp_class">
                             <span class="subtitle"><b>Address: </b></span>
                             @if(isset($facility->address))
@@ -50,7 +50,35 @@ Location
                             @endforeach
                             @endif
                         </div>
-                        @endif
+                        @endif --}}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="">
+                                        <table class="display dataTable table-striped jambo_table table-bordered table-responsive">
+                                            <thead>
+                                                <th>Full Address</th>
+                                                <th>Address Type</th>
+                                                <th>Primary </th>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($locationAddresses as $key => $value)
+                                                <tr>
+                                                    <td>
+                                                        {{ $value->full_address }}
+                                                    </td>
+                                                    <td>{{ $value->address_type_data }}</td>
+                                                    <td>
+                                                        {{ $value->is_main == 1 ? 'Primary' : '' }}
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         @if(isset($facility->regions) && count($facility->regions) > 0)
                         <div class="tagp_class">
                             <span class="subtitle"><b>Region: </b></span>
@@ -101,29 +129,29 @@ Location
                         @php
                         $show_details = [];
                         @endphp
-                        @foreach($locationDetails as $detail)
-                        @php
-                        for($i = 0; $i < count($show_details); $i ++){ if($show_details[$i]['detail_type']==$detail->
-                            detail_type)
-                            break;
-                            }
-                            if($i == count($show_details)){
-                            $show_details[$i] = array('detail_type'=> $detail->detail_type, 'detail_value'=>
-                            $detail->detail_value);
-                            }
-                            else{
-                            $show_details[$i]['detail_value'] = $show_details[$i]['detail_value'].',
-                            '.$detail->detail_value;
-                            }
-                            @endphp
+                            @foreach($locationDetails as $detail)
+                                @php
+                                    for($i = 0; $i < count($show_details); $i ++){
+                                        if($show_details[$i]['detail_type']==$detail->detail_type)
+                                        break;
+                                    }
+                                    if($i == count($show_details)){
+                                        $show_details[$i] = array('detail_type'=> $detail->detail_type, 'detail_value'=>
+                                        $detail->detail_value);
+                                    }else{
+                                        $show_details[$i]['detail_value'] = $show_details[$i]['detail_value'].',
+                                        '.$detail->detail_value;
+                                    }
+                                @endphp
                             @endforeach
                             @foreach($show_details as $detail)
-                            <div class="tagp_class">
-                                <span class="subtitle"><b>{{ $detail['detail_type'] }}:</b></span> {!!
-                                $detail['detail_value'] !!}
-                            </div>
+                                <div class="tagp_class">
+                                    <span class="subtitle"><b>{{ $detail['detail_type'] }}:</b></span> {!!
+                                    $detail['detail_value'] !!}
+                                </div>
                             @endforeach
-                            @endif
+                        @endif
+
                     </div>
                 </div>
 

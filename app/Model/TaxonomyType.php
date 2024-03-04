@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class TaxonomyType extends Model
 {
     protected $fillable = [
-        'name', 'type', 'reference_url', 'notes', 'taxonomy_type_recordid', 'order'
+        'name', 'type', 'reference_url', 'notes', 'taxonomy_type_recordid', 'order', 'version'
     ];
     protected $primaryKey = 'taxonomy_type_recordid';
 

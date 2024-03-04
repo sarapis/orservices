@@ -30,8 +30,10 @@ use App\Model\Airtablekeyinfo;
 use App\Model\CodeLedger;
 use App\Model\Contact;
 use App\Model\ContactPhone;
+use App\Model\CostOption;
 use App\Model\CSV_Source;
 use App\Model\Detail;
+use App\Model\Funding;
 use App\Model\ImportDataSource;
 use App\Model\ImportHistory;
 use App\Model\Language;
@@ -51,7 +53,9 @@ use App\Model\Schedule;
 use App\Model\Service;
 use App\Model\ServiceAddress;
 use App\Model\ServiceContact;
+use App\Model\ServiceCost;
 use App\Model\ServiceDetail;
+use App\Model\ServiceFunding;
 use App\Model\ServiceLocation;
 use App\Model\ServiceOrganization;
 use App\Model\ServicePhone;
@@ -131,23 +135,22 @@ class ImportController extends Controller
                 'endpoint' => 'required',
                 'key' => 'required',
             ]);
-        } elseif ($request->import_type == 'airtable') {
+        } elseif ($request->import_type == 'airtable' || $request->import_type == 'airtable_v3') {
             $this->validate($request, [
-                'airtable_api_key' => 'required',
+                'airtable_access_token' => 'required',
                 'airtable_base_id' => 'required',
             ]);
         }
         try {
-            $airtable_api_key = '';
+            $airtable_access_token = '';
             $airtable_base_id = '';
             $zipfile_path = '';
-            if ($request->has('airtable_api_key') && $request->has('airtable_base_id') && $request->import_type == 'airtable') {
-                $airtable = new Airtable(array(
-                    'api_key' => $request->airtable_api_key,
-                    'base' => $request->airtable_base_id,
-                ));
+            if ($request->has('airtable_access_token') && $request->has('airtable_base_id') && ($request->import_type == 'airtable'  || $request->import_type == 'airtable_v3')) {
 
-                $response = Http::get('https://api.airtable.com/v0/' . $request->airtable_base_id . '/organizations?api_key=' . $request->airtable_api_key);
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $request->airtable_access_token
+                ])->get('https://api.airtable.com/v0/' . $request->airtable_base_id . '/organizations');
+
                 if ($response->status() != 200) {
                     Session::flash('message', 'Airtable key or base id is invalid. Please enter valid information.');
                     Session::flash('status', 'error');
@@ -156,10 +159,10 @@ class ImportController extends Controller
 
 
                 $Airtablekeyinfo = Airtablekeyinfo::create([
-                    'api_key' => $request->airtable_api_key,
+                    'access_token' => $request->airtable_access_token,
                     'base_url' => $request->airtable_base_id
                 ]);
-                $airtable_api_key = $Airtablekeyinfo->id;
+                $airtable_access_token = $Airtablekeyinfo->id;
                 $airtable_base_id = $Airtablekeyinfo->id;
             }
             if ($request->import_type == 'zipfile' && $request->hasFile('zipfile')) {
@@ -208,7 +211,7 @@ class ImportController extends Controller
             ImportDataSource::create([
                 'name' => $request->name,
                 'format' => $request->format,
-                'airtable_api_key' => $airtable_api_key,
+                'airtable_api_key' => $airtable_access_token,
                 'airtable_base_id' => $airtable_base_id,
                 'auto_sync' => $request->auto_sync,
                 'endpoint' => $request->endpoint,
@@ -278,38 +281,40 @@ class ImportController extends Controller
                 'endpoint' => 'required',
                 'key' => 'required',
             ]);
-        } elseif ($request->import_type == 'airtable') {
+        } elseif ($request->import_type == 'airtable' || $request->import_type == 'airtable_v3') {
             $this->validate($request, [
-                'airtable_api_key' => 'required',
+                'airtable_access_token' => 'required',
                 'airtable_base_id' => 'required',
             ]);
         }
         try {
             $dataSource = ImportDataSource::whereId($id)->first();
-            $airtable_api_key = $dataSource->airtable_api_key;
+            $airtable_access_token = $dataSource->airtable_api_key;
             $airtable_base_id = $dataSource->airtable_base_id;
             $zipfile_path = $dataSource->source_file;
-            if ($request->has('airtable_api_key') && $request->has('airtable_base_id') && $request->import_type == 'airtable') {
-                $Airtablekeyinfo = Airtablekeyinfo::where('api_key', $request->airtable_api_key)->first();
+            if ($request->has('airtable_access_token') && $request->has('airtable_base_id') && ($request->import_type == 'airtable' || $request->import_type == 'airtable_v3')) {
+                $Airtablekeyinfo = Airtablekeyinfo::where('access_token', $request->airtable_access_token)->first();
                 if ($Airtablekeyinfo) {
-                    Airtablekeyinfo::where('api_key', $request->airtable_api_key)->update([
-                        'api_key' => $request->airtable_api_key,
+                    Airtablekeyinfo::where('access_token', $request->airtable_access_token)->update([
+                        'access_token' => $request->airtable_access_token,
                         'base_url' => $request->airtable_base_id
                     ]);
                 } else {
                     $Airtablekeyinfo = Airtablekeyinfo::create([
-                        'api_key' => $request->airtable_api_key,
+                        'access_token' => $request->airtable_access_token,
                         'base_url' => $request->airtable_base_id
                     ]);
                 }
 
-                $response = Http::get('https://api.airtable.com/v0/' . $request->airtable_base_id . '/organizations?api_key=' . $request->airtable_api_key);
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $request->airtable_access_token
+                ])->get('https://api.airtable.com/v0/' . $request->airtable_base_id . '/organizations');
                 if ($response->status() != 200) {
                     Session::flash('message', 'Airtable key or base id is invalid. Please enter valid information.');
                     Session::flash('status', 'error');
                     return redirect()->back()->withInput();
                 }
-                $airtable_api_key = $Airtablekeyinfo->id;
+                $airtable_access_token = $Airtablekeyinfo->id;
                 $airtable_base_id = $Airtablekeyinfo->id;
             }
             if ($request->import_type == 'zipfile' && $request->hasFile('zipfile')) {
@@ -359,7 +364,7 @@ class ImportController extends Controller
             ImportDataSource::whereId($id)->update([
                 'name' => $request->name,
                 'format' => $request->format,
-                'airtable_api_key' => $airtable_api_key,
+                'airtable_api_key' => $airtable_access_token,
                 'airtable_base_id' => $airtable_base_id,
                 'auto_sync' => $request->auto_sync,
                 'endpoint' => $request->endpoint,
@@ -461,7 +466,7 @@ class ImportController extends Controller
                     return $link;
                 })
                 ->editColumn('import_type', function ($row) {
-                    $link = $row->import_type == 'airtable' ? "Airtable 2.2" : "Zipfile";
+                    $link = $row->import_type == 'airtable' ? "Airtable 2.2" : ($row->import_type == 'airtable_v3' ? "Airtable 3.0" : "Zipfile");
                     return $link;
                 })
                 // ->filter(function ($query) use ($request) {
@@ -520,27 +525,74 @@ class ImportController extends Controller
                 CodeLedger::truncate();
                 OrganizationTag::truncate();
                 ServiceTag::truncate();
+                CostOption::truncate();
+                Funding::truncate();
+                ServiceCost::truncate();
+                ServiceFunding::truncate();
+                Funding::truncate();
             }
-            if ($importData && $importData->import_type == 'airtable') {
+            if ($importData && $importData->import_type == 'airtable_v3') {
                 $organization_tag = $importData->organization_tags;
                 $airtableKeyInfo = Airtablekeyinfo::whereId($importData->airtable_api_key)->first();
-                $response = Http::get('https://api.airtable.com/v0/' . $airtableKeyInfo->base_url . '/organizations?api_key=' . $airtableKeyInfo->api_key);
+
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $airtableKeyInfo->access_token
+                ])->get('https://api.airtable.com/v0/' . $airtableKeyInfo->base_url . '/organizations');
+
                 if ($response->status() != 200) {
                     Session::flash('message', 'Airtable key or base id is invalid. Please enter valid information and try again.');
                     Session::flash('status', 'error');
                     return redirect()->back()->withInput();
                 }
-                app(\App\Http\Controllers\frontEnd\ServiceController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
-                app(\App\Http\Controllers\frontEnd\AddressController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
-                app(\App\Http\Controllers\frontEnd\ContactController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
-                app(\App\Http\Controllers\frontEnd\DetailController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
-                app(\App\Http\Controllers\frontEnd\LocationController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
-                app(\App\Http\Controllers\frontEnd\OrganizationController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url, $organization_tag);
-                app(\App\Http\Controllers\frontEnd\PhoneController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
-                app(\App\Http\Controllers\frontEnd\ScheduleController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
-                app(\App\Http\Controllers\frontEnd\TaxonomyController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
-                app(\App\Http\Controllers\backend\ProgramController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
-                app(\App\Http\Controllers\backend\TaxonomyTypeController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\frontEnd\ServiceController::class)->airtable_v3($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\frontEnd\AddressController::class)->airtable_v3($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\frontEnd\ContactController::class)->airtable_v3($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\frontEnd\LocationController::class)->airtable_v3($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\frontEnd\OrganizationController::class)->airtable_v3($airtableKeyInfo->access_token, $airtableKeyInfo->base_url, $organization_tag);
+                app(\App\Http\Controllers\frontEnd\PhoneController::class)->airtable_v3($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\frontEnd\ScheduleController::class)->airtable_v3($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\frontEnd\TaxonomyController::class)->airtable_v3($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\backend\ProgramController::class)->airtable_v3($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\backend\TaxonomyTypeController::class)->airtable_v3($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\backend\FundingController::class)->airtable_v3($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\backend\CostOptionController::class)->airtable_v3($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\backend\IdentifierController::class)->airtable_v3($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                // dd('done');
+                // app(\App\Http\Controllers\frontEnd\DetailController::class)->airtable_v2($airtableKeyInfo->api_key, $airtableKeyInfo->base_url);
+                $importData->last_imports = Carbon::now();
+                $importData->save();
+
+                $importHistory = new ImportHistory();
+                $importHistory->source_name = $importData->format;
+                $importHistory->import_type = $importData->import_type;
+                $importHistory->auto_sync = $importData->auto_sync;
+                $importHistory->status = 'Completed';
+                $importHistory->sync_by = Auth::id();
+                $importHistory->save();
+            } else if ($importData && $importData->import_type == 'airtable_v2') {
+                $organization_tag = $importData->organization_tags;
+                $airtableKeyInfo = Airtablekeyinfo::whereId($importData->airtable_api_key)->first();
+
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $airtableKeyInfo->access_token
+                ])->get('https://api.airtable.com/v0/' . $airtableKeyInfo->base_url . '/organizations');
+
+                if ($response->status() != 200) {
+                    Session::flash('message', 'Airtable key or base id is invalid. Please enter valid information and try again.');
+                    Session::flash('status', 'error');
+                    return redirect()->back()->withInput();
+                }
+                app(\App\Http\Controllers\frontEnd\ServiceController::class)->airtable_v2($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\frontEnd\AddressController::class)->airtable_v2($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\frontEnd\ContactController::class)->airtable_v2($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\frontEnd\DetailController::class)->airtable_v2($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\frontEnd\LocationController::class)->airtable_v2($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\frontEnd\OrganizationController::class)->airtable_v2($airtableKeyInfo->access_token, $airtableKeyInfo->base_url, $organization_tag);
+                app(\App\Http\Controllers\frontEnd\PhoneController::class)->airtable_v2($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\frontEnd\ScheduleController::class)->airtable_v2($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\frontEnd\TaxonomyController::class)->airtable_v2($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\backend\ProgramController::class)->airtable_v2($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
+                app(\App\Http\Controllers\backend\TaxonomyTypeController::class)->airtable_v2($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
                 $importData->last_imports = Carbon::now();
                 $importData->save();
 

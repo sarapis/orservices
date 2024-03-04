@@ -31,15 +31,22 @@ Add Source
                     <div class="form-group {{ $errors->has('import_type') ? 'has-error' : ''}}">
                         {!! Form::label('import_type', 'Format', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-6">
-                            {!! Form::select('import_type',['airtable' => 'HSDS v.2.0 Airtable' , 'zipfile' => 'HSDS v.2.0 Zip File','zipfile_api' => 'HSDS v.2.0 Zip API' ], 'airtable', ['class' => 'form-control select','id' => 'import_type']) !!}
+                            {!! Form::select('import_type',['airtable_v3' => 'HSDS v.3.0 Airtable' ,'airtable' => 'HSDS v.2.0 Airtable' , 'zipfile' => 'HSDS v.2.0 Zip File','zipfile_api' => 'HSDS v.2.0 Zip API' ], 'airtable', ['class' => 'form-control select','id' => 'import_type']) !!}
                             {!! $errors->first('import_type', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
-                    <div class="form-group {{ $errors->has('airtable_api_key') ? 'has-error' : ''}}" id="airtable_key_div">
+                    {{-- <div class="form-group {{ $errors->has('airtable_api_key') ? 'has-error' : ''}}" id="airtable_key_div">
                         {!! Form::label('airtable_api_key', 'Airtable API Key', ['class' => 'col-sm-3 control-label']) !!}
                         <div class="col-sm-6">
                             {!! Form::text('airtable_api_key', null, ['class' => 'form-control']) !!}
                             {!! $errors->first('airtable_api_key', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div> --}}
+                    <div class="form-group {{ $errors->has('airtable_access_token') ? 'has-error' : ''}}" id="airtable_key_div">
+                        {!! Form::label('airtable_access_token', 'Airtable Access Token', ['class' => 'col-sm-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::text('airtable_access_token', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('airtable_access_token', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
                     <div class="form-group {{ $errors->has('airtable_base_id') ? 'has-error' : ''}}" id="airtable_base_id_div">

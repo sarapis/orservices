@@ -22,6 +22,7 @@ use App\Model\TaxonomyEmail;
 use App\Model\TaxonomyTerm;
 use App\Model\TaxonomyType;
 use App\Services\Stringtoint;
+use App\Services\TaxonomyService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,25 +35,28 @@ use Yajra\DataTables\Facades\DataTables;
 
 class TaxonomyController extends Controller
 {
+    public $taxonomyService;
 
-    public function airtable($api_key, $base_url)
+    public function __construct(TaxonomyService $taxonomyService)
+    {
+        $this->taxonomyService = $taxonomyService;
+    }
+
+    public function airtable($access_token, $base_url)
     {
 
         $airtable_key_info = Airtablekeyinfo::find(1);
         if (!$airtable_key_info) {
             $airtable_key_info = new Airtablekeyinfo;
         }
-        $airtable_key_info->api_key = $api_key;
+        $airtable_key_info->access_token = $access_token;
         $airtable_key_info->base_url = $base_url;
         $airtable_key_info->save();
 
         Taxonomy::truncate();
-        // $airtable = new Airtable(array(
-        //     'api_key'   => env('AIRTABLE_API_KEY'),
-        //     'base'      => env('AIRTABLE_BASE_URL'),
-        // ));
+
         $airtable = new Airtable(array(
-            'api_key' => $api_key,
+            'access_token' => $access_token,
             'base' => $base_url,
         ));
 
@@ -107,24 +111,21 @@ class TaxonomyController extends Controller
         $airtable->syncdate = $date;
         $airtable->save();
     }
-    public function airtable_v2($api_key, $base_url)
+    public function airtable_v2($access_token, $base_url)
     {
         try {
             $airtable_key_info = Airtablekeyinfo::find(1);
             if (!$airtable_key_info) {
                 $airtable_key_info = new Airtablekeyinfo;
             }
-            $airtable_key_info->api_key = $api_key;
+            $airtable_key_info->access_token = $access_token;
             $airtable_key_info->base_url = $base_url;
             $airtable_key_info->save();
 
             // Taxonomy::truncate();
-            // $airtable = new Airtable(array(
-            //     'api_key'   => env('AIRTABLE_API_KEY'),
-            //     'base'      => env('AIRTABLE_BASE_URL'),
-            // ));
+
             $airtable = new Airtable(array(
-                'api_key' => $api_key,
+                'access_token' => $access_token,
                 'base' => $base_url,
             ));
 
@@ -256,6 +257,11 @@ class TaxonomyController extends Controller
         }
     }
 
+    public function airtable_v3($access_token, $base_url)
+    {
+        $this->taxonomyService->import_airtable_v3($access_token, $base_url);
+    }
+
     public function csv(Request $request)
     {
         try {
@@ -382,13 +388,16 @@ class TaxonomyController extends Controller
             $value->taxonomy_parent_name = $parent_name;
             return true;
         });
+
+        $statuses = Taxonomy::pluck('status', 'status');
+        $tags = Taxonomy::pluck('taxonomy_tag', 'taxonomy_tag');
         $languages = Language::orderBy('order')->pluck('language', 'language');
         $source_data = Source_data::find(1);
         $layout = Layout::find(1);
         $alt_taxonomies = Alt_taxonomy::all();
         $taxonomy_parent_name = Taxonomy::whereNull('taxonomy_parent_name')->pluck('taxonomy_name', 'taxonomy_recordid');
 
-        return view('backEnd.tables.tb_taxonomy', compact('taxonomies', 'source_data', 'alt_taxonomies', 'taxonomy_parent_name', 'layout', 'languages', 'taxonomieTypes', 'taxonomieParents', 'taxonomyAllParents', 'taxonomieTypesExternal'));
+        return view('backEnd.tables.tb_taxonomy', compact('taxonomies', 'source_data', 'alt_taxonomies', 'taxonomy_parent_name', 'layout', 'languages', 'taxonomieTypes', 'taxonomieParents', 'taxonomyAllParents', 'taxonomieTypesExternal', 'statuses', 'tags'));
     }
 
     /**
@@ -457,7 +466,10 @@ class TaxonomyController extends Controller
             }
             $taxonomy->badge_color = $badge_color;
             $taxonomy->taxonomy_x_notes = $request->taxonomy_x_notes;
-            $taxonomy->status = 'Unpublished';
+            $taxonomy->status = $request->status;
+            $taxonomy->code = $request->code;
+            $taxonomy->term_uri = $request->term_uri;
+            $taxonomy->taxonomy_tag = $request->taxonomy_tag;
             $taxonomy->created_by = Auth::id();
             $taxonomy->additional_taxonomy_type()->sync($request->x_taxonomies);
             $taxonomy->taxonomy_type()->sync($request->taxonomy);
@@ -495,7 +507,7 @@ class TaxonomyController extends Controller
      */
     public function show($id)
     {
-        $taxonomy = Taxonomy::with('user')->find($id);
+        $taxonomy = Taxonomy::with(['user', 'updatedUser'])->find($id);
         $taxonomyTypeId = $taxonomy->taxonomy;
         // $row->taxonomy_type && count($row->taxonomy_type) > 0 ? $row->taxonomy_type[0]->name : ''
 
@@ -563,6 +575,10 @@ class TaxonomyController extends Controller
             $taxonomy->badge_color = '#' . $taxonomy->badge_color;
         }
         $taxonomy->parentData = $parentData;
+        // $taxonomy->created_at = date('Y-m-d H:i:s', strtotime($taxonomy->created_at));
+        // $taxonomy->updated_at = date('Y-m-d H:i:s', strtotime($taxonomy->updated_at));
+
+        $taxonomy->updated_by = $taxonomy->updatedUser ? $taxonomy->updatedUser->first_name . ' ' . $taxonomy->updatedUser->last_name : '';
         return response()->json($taxonomy);
     }
 
@@ -660,6 +676,11 @@ class TaxonomyController extends Controller
             $taxonomy->taxonomy_name = $request->taxonomy_name;
             $taxonomy->taxonomy_vocabulary = $request->taxonomy_vocabulary;
             $taxonomy->x_taxonomies = $request->x_taxonomies;
+            $taxonomy->code = $request->code;
+            $taxonomy->status = $request->status;
+            $taxonomy->term_uri = $request->term_uri;
+            $taxonomy->taxonomy_tag = $request->taxonomy_tag;
+            $taxonomy->updated_by = auth()->id();
 
             if ($request->taxonomy) {
                 $taxonomy->taxonomy = $request->taxonomy;
@@ -893,6 +914,19 @@ class TaxonomyController extends Controller
                             if ($taxonomyType) {
                                 $query->where('taxonomy', $taxonomyType->taxonomy_type_recordid);
                             }
+                        }
+                        if (isset($extraData['language_select']) && $extraData['language_select']) {
+                            $query->where('language', $extraData['language_select']);
+                        }
+                        if (isset($extraData['tags_filter']) && $extraData['tags_filter']) {
+                            $query->where('taxonomy_tag', $extraData['tags_filter']);
+                        }
+                        if (isset($extraData['status_select']) && $extraData['status_select']) {
+                            $query->where('status', $extraData['status_select']);
+                        }
+                        if (isset($extraData['taxonomy_with_services']) && $extraData['taxonomy_with_services'] && $extraData['taxonomy_with_services'] == true) {
+                            $taxonomyRecordids = ServiceTaxonomy::pluck('taxonomy_recordid')->unique()->values();
+                            $query->whereIn('taxonomy_recordid', $taxonomyRecordids);
                         }
                         if (isset($extraData['parent_filter']) && $extraData['parent_filter']) {
                             $parentData = Taxonomy::whereIn('taxonomy_name', $extraData['parent_filter'])->pluck('taxonomy_recordid')->toArray();

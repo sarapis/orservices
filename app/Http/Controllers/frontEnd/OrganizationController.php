@@ -44,6 +44,7 @@ use App\Model\Region;
 use App\Model\ServiceTag;
 use App\Model\SessionInteraction;
 use App\Model\State;
+use App\Services\OrganizationService;
 use App\Services\Stringtoint;
 use App\User;
 use Carbon\Carbon;
@@ -59,33 +60,30 @@ use Illuminate\Support\Str;
 
 class OrganizationController extends Controller
 {
-    public $commonController;
+    public $commonController, $organizationService;
 
-    public function __construct(CommonController $commonController)
+    public function __construct(CommonController $commonController, OrganizationService $organizationService)
     {
         $this->commonController = $commonController;
+        $this->organizationService = $organizationService;
     }
 
-    public function airtable($api_key, $base_url)
+    public function airtable($access_token, $base_url)
     {
 
         $airtable_key_info = Airtablekeyinfo::find(1);
         if (!$airtable_key_info) {
             $airtable_key_info = new Airtablekeyinfo;
         }
-        $airtable_key_info->api_key = $api_key;
+        $airtable_key_info->access_token = $access_token;
         $airtable_key_info->base_url = $base_url;
         $airtable_key_info->save();
 
         Organization::truncate();
         OrganizationDetail::truncate();
 
-        // $airtable = new Airtable(array(
-        //     'api_key'   => env('AIRTABLE_API_KEY'),
-        //     'base'      => env('AIRTABLE_BASE_URL'),
-        // ));
         $airtable = new Airtable(array(
-            'api_key' => $api_key,
+            'access_token' => $access_token,
             'base' => $base_url,
         ));
 
@@ -240,26 +238,22 @@ class OrganizationController extends Controller
         $airtable->save();
     }
 
-    public function airtable_v2($api_key, $base_url, $organization_tag)
+    public function airtable_v2($access_token, $base_url, $organization_tag)
     {
         try {
             $airtable_key_info = Airtablekeyinfo::find(1);
             if (!$airtable_key_info) {
                 $airtable_key_info = new Airtablekeyinfo;
             }
-            $airtable_key_info->api_key = $api_key;
+            $airtable_key_info->access_token = $access_token;
             $airtable_key_info->base_url = $base_url;
             $airtable_key_info->save();
 
             // Organization::truncate();
             // OrganizationDetail::truncate();
 
-            // $airtable = new Airtable(array(
-            //     'api_key'   => env('AIRTABLE_API_KEY'),
-            //     'base'      => env('AIRTABLE_BASE_URL'),
-            // ));
             $airtable = new Airtable(array(
-                'api_key' => $api_key,
+                'access_token' => $access_token,
                 'base' => $base_url,
             ));
 
@@ -446,6 +440,11 @@ class OrganizationController extends Controller
                 'success' => false
             ], 500);
         }
+    }
+
+    public function airtable_v3($access_token, $base_url)
+    {
+        $this->organizationService->import_airtable_v3($access_token, $base_url);
     }
 
     public function csv(Request $request)
@@ -1116,6 +1115,7 @@ class OrganizationController extends Controller
             $organization->twitter_url = $request->twitter_url;
             $organization->instagram_url = $request->instagram_url;
             $organization->parent_organization = $request->parent_organization;
+            $organization->funding = $request->funding;
 
             $organization->organization_year_incorporated = $request->organization_year_incorporated;
 
@@ -1764,7 +1764,8 @@ class OrganizationController extends Controller
 
             $organization_locations_recordid_list = explode(',', $organization->organization_locations);
             // $location_info_list = Location::whereIn('location_recordid', $organization_locations_recordid_list)->orderBy('location_recordid')->paginate(10);
-            $location_info_list = array_map('intval', explode(',', $organization->organization_locations));
+            // $location_info_list = array_map('intval', explode(',', $organization->organization_locations));
+            $location_info_list = $organization->location->pluck('location_recordid')->toArray();
             //            $locationIds = $organization->location()->pluck('location_recordid')->toArray();
             //            if (count($locationIds) > 0) {
             //                $location_info_list = array_merge($location_info_list, $locationIds);
@@ -2019,6 +2020,9 @@ class OrganizationController extends Controller
                 $location_details = [];
                 $location_accessibility = [];
                 $location_accessibility_details = [];
+                $external_identifier = [];
+                $external_identifier_type = [];
+                $accessesibility_url = [];
                 $location_regions = [];
                 foreach ($organization_locations_data as $key => $locationData) {
                     $location_alternate_name[] = $locationData->location_alternate_name;
@@ -2027,6 +2031,9 @@ class OrganizationController extends Controller
                     $location_schedules[] = $locationData->schedules ? $locationData->schedules->pluck('schedule_recordid')->toArray() : [];
                     $location_description[] = $locationData->location_description;
                     $location_details[] = $locationData->location_details;
+                    $external_identifier[] = $locationData->external_identifier;
+                    $external_identifier_type[] = $locationData->external_identifier_type;
+                    $accessesibility_url[] = $locationData->accessesibility_url;
                     if ($locationData->accessibility_recordid) {
                         $location_accessibility[] = $locationData->accessibility_recordid;
                         $location_accessibility_details[] = $locationData->accessibility_details;
@@ -2042,6 +2049,9 @@ class OrganizationController extends Controller
                 $location_accessibility = json_encode($location_accessibility);
                 $location_accessibility_details = json_encode($location_accessibility_details);
                 $location_regions = json_encode($location_regions);
+                $external_identifier = json_encode($external_identifier);
+                $external_identifier_type = json_encode($external_identifier_type);
+                $accessesibility_url = json_encode($accessesibility_url);
 
                 $contact_service = [];
                 $contact_department = [];
@@ -2239,7 +2249,7 @@ class OrganizationController extends Controller
 
                 $accessibilities = Accessibility::pluck('accessibility', 'id');
 
-                return view('frontEnd.organizations.edit', compact('organization', 'map', 'organization_service_list', 'phone_info_list', 'location_info_list', 'rating_info_list', 'all_contacts', 'organizationContacts', 'organization_locations_data', 'all_locations', 'phone_languages', 'all_services', 'taxonomy_info_list', 'schedule_info_list', 'detail_info_list', 'address_info_list', 'service_info_list', 'address_states_list', 'address_city_list', 'phone_type', 'service_alternate_name', 'service_program', 'service_status', 'service_taxonomies', 'service_application_process', 'service_wait_time', 'service_fees', 'service_accreditations', 'service_licenses', 'service_schedules', 'service_details', 'service_address', 'service_metadata', 'service_airs_taxonomy_x', 'location_alternate_name', 'location_transporation', 'location_service', 'location_schedules', 'location_description', 'location_details', 'contact_service', 'contact_department', 'contact_phone_numbers', 'contact_phone_extensions', 'contact_phone_types', 'contact_phone_languages', 'contact_phone_descriptions', 'location_phone_numbers', 'location_phone_extensions', 'location_phone_types', 'location_phone_languages', 'location_phone_descriptions', 'opens_location_monday_datas', 'closes_location_monday_datas', 'schedule_closed_monday_datas', 'opens_location_tuesday_datas', 'closes_location_tuesday_datas', 'schedule_closed_tuesday_datas', 'opens_location_wednesday_datas', 'closes_location_wednesday_datas', 'schedule_closed_wednesday_datas', 'opens_location_thursday_datas', 'closes_location_thursday_datas', 'schedule_closed_thursday_datas', 'opens_location_friday_datas', 'closes_location_friday_datas', 'schedule_closed_friday_datas', 'opens_location_saturday_datas', 'closes_location_saturday_datas', 'schedule_closed_saturday_datas', 'opens_location_sunday_datas', 'closes_location_sunday_datas', 'schedule_closed_sunday_datas', 'location_holiday_start_dates', 'location_holiday_end_dates', 'location_holiday_open_ats', 'location_holiday_close_ats', 'location_holiday_closeds', 'phone_language_data', 'organizationAudits', 'organizationStatus', 'contactServices', 'contactOrganization', 'phone_language_name', 'all_phones', 'location_accessibility', 'location_accessibility_details', 'location_regions', 'regions', 'method_list', 'disposition_list', 'parent_organizations', 'all_programs', 'accessibilities'));
+                return view('frontEnd.organizations.edit', compact('organization', 'map', 'organization_service_list', 'phone_info_list', 'location_info_list', 'rating_info_list', 'all_contacts', 'organizationContacts', 'organization_locations_data', 'all_locations', 'phone_languages', 'all_services', 'taxonomy_info_list', 'schedule_info_list', 'detail_info_list', 'address_info_list', 'service_info_list', 'address_states_list', 'address_city_list', 'phone_type', 'service_alternate_name', 'service_program', 'service_status', 'service_taxonomies', 'service_application_process', 'service_wait_time', 'service_fees', 'service_accreditations', 'service_licenses', 'service_schedules', 'service_details', 'service_address', 'service_metadata', 'service_airs_taxonomy_x', 'location_alternate_name', 'location_transporation', 'location_service', 'location_schedules', 'location_description', 'location_details', 'contact_service', 'contact_department', 'contact_phone_numbers', 'contact_phone_extensions', 'contact_phone_types', 'contact_phone_languages', 'contact_phone_descriptions', 'location_phone_numbers', 'location_phone_extensions', 'location_phone_types', 'location_phone_languages', 'location_phone_descriptions', 'opens_location_monday_datas', 'closes_location_monday_datas', 'schedule_closed_monday_datas', 'opens_location_tuesday_datas', 'closes_location_tuesday_datas', 'schedule_closed_tuesday_datas', 'opens_location_wednesday_datas', 'closes_location_wednesday_datas', 'schedule_closed_wednesday_datas', 'opens_location_thursday_datas', 'closes_location_thursday_datas', 'schedule_closed_thursday_datas', 'opens_location_friday_datas', 'closes_location_friday_datas', 'schedule_closed_friday_datas', 'opens_location_saturday_datas', 'closes_location_saturday_datas', 'schedule_closed_saturday_datas', 'opens_location_sunday_datas', 'closes_location_sunday_datas', 'schedule_closed_sunday_datas', 'location_holiday_start_dates', 'location_holiday_end_dates', 'location_holiday_open_ats', 'location_holiday_close_ats', 'location_holiday_closeds', 'phone_language_data', 'organizationAudits', 'organizationStatus', 'contactServices', 'contactOrganization', 'phone_language_name', 'all_phones', 'location_accessibility', 'location_accessibility_details', 'location_regions', 'regions', 'method_list', 'disposition_list', 'parent_organizations', 'all_programs', 'accessibilities', 'external_identifier', 'external_identifier_type', 'accessesibility_url'));
             } else {
                 Session::flash('message', 'Warning! Not enough permissions. Please contact Us for more');
                 Session::flash('status', 'warning');
@@ -2288,6 +2298,7 @@ class OrganizationController extends Controller
             $organization->twitter_url = $request->twitter_url;
             $organization->instagram_url = $request->instagram_url;
             $organization->parent_organization = $request->parent_organization;
+            $organization->funding = $request->funding;
 
             $organization->organization_year_incorporated = $request->organization_year_incorporated;
 
@@ -2496,6 +2507,10 @@ class OrganizationController extends Controller
                 $location_accessibility = $request->location_accessibility && count($request->location_accessibility) > 0 ? json_decode($request->location_accessibility[0], true) : [];
                 $location_accessibility_details = $request->location_accessibility_details && count($request->location_accessibility_details) > 0 ? json_decode($request->location_accessibility_details[0], true) : [];
 
+                $external_identifier = $request->external_identifier && count($request->external_identifier) > 0 ? json_decode($request->external_identifier[0]) : [];
+                $external_identifier_type = $request->external_identifier_type && count($request->external_identifier_type) > 0 ? json_decode($request->external_identifier_type[0]) : [];
+                $accessesibility_url = $request->accessesibility_url && count($request->accessesibility_url) > 0 ? json_decode($request->accessesibility_url[0]) : [];
+
                 $location_regions = $request->location_regions && count($request->location_regions) > 0 ? json_decode($request->location_regions[0], true) : [];
 
                 for ($i = 0; $i < count($request->location_name); $i++) {
@@ -2525,10 +2540,13 @@ class OrganizationController extends Controller
                         $location->location_organization = $id;
                         $organization->organization_locations = $organization->organization_locations . ',' . $newLocationId;
 
-                        $location->location_alternate_name = $location_alternate_name[$i];
-                        $location->location_transportation = $location_transporation[$i];
-                        $location->location_description = $location_description[$i];
-                        $location->location_details = $location_details[$i];
+                        $location->location_alternate_name = $location_alternate_name[$i] ?? null;
+                        $location->location_transportation = $location_transporation[$i] ?? null;
+                        $location->location_description = $location_description[$i] ?? null;
+                        $location->location_details = $location_details[$i] ?? null;
+                        $location->external_identifier = isset($external_identifier[$i]) ? $external_identifier[$i] : null;
+                        $location->external_identifier_type = isset($external_identifier_type[$i]) ? $external_identifier_type[$i] : null;
+                        $location->accessesibility_url = isset($accessesibility_url[$i]) ? $accessesibility_url[$i] : null;
 
                         // accessesibility
                         if (!empty($location_accessibility[$i]) && !empty($location_accessibility_details[$i])) {
@@ -2659,6 +2677,9 @@ class OrganizationController extends Controller
                             $location->location_transportation = $location_transporation[$i];
                             $location->location_description = $location_description[$i];
                             $location->location_details = $location_details[$i];
+                            $location->external_identifier = isset($external_identifier[$i]) ? $external_identifier[$i] : null;
+                            $location->external_identifier_type = isset($external_identifier_type[$i]) ? $external_identifier_type[$i] : null;
+                            $location->accessesibility_url = isset($accessesibility_url[$i]) ? $accessesibility_url[$i] : null;
 
 
                             // accessesibility
