@@ -18,24 +18,20 @@ use Illuminate\Support\Facades\Log;
 class DetailController extends Controller
 {
 
-    public function airtable($api_key, $base_url)
+    public function airtable($access_token, $base_url)
     {
 
         $airtable_key_info = Airtablekeyinfo::find(1);
         if (!$airtable_key_info) {
             $airtable_key_info = new Airtablekeyinfo;
         }
-        $airtable_key_info->api_key = $api_key;
+        $airtable_key_info->access_token = $access_token;
         $airtable_key_info->base_url = $base_url;
         $airtable_key_info->save();
 
         Detail::truncate();
-        // $airtable = new Airtable(array(
-        //     'api_key'   => env('AIRTABLE_API_KEY'),
-        //     'base'      => env('AIRTABLE_BASE_URL'),
-        // ));
         $airtable = new Airtable(array(
-            'api_key' => $api_key,
+            'access_token' => $access_token,
             'base' => $base_url,
         ));
 
@@ -129,24 +125,20 @@ class DetailController extends Controller
         $airtable->syncdate = $date;
         $airtable->save();
     }
-    public function airtable_v2($api_key, $base_url)
+    public function airtable_v2($access_token, $base_url)
     {
         try {
             $airtable_key_info = Airtablekeyinfo::find(1);
             if (!$airtable_key_info) {
                 $airtable_key_info = new Airtablekeyinfo;
             }
-            $airtable_key_info->api_key = $api_key;
+            $airtable_key_info->access_token = $access_token;
             $airtable_key_info->base_url = $base_url;
             $airtable_key_info->save();
 
             // Detail::truncate();
-            // $airtable = new Airtable(array(
-            //     'api_key'   => env('AIRTABLE_API_KEY'),
-            //     'base'      => env('AIRTABLE_BASE_URL'),
-            // ));
             $airtable = new Airtable(array(
-                'api_key' => $api_key,
+                'access_token' => $access_token,
                 'base' => $base_url,
             ));
 

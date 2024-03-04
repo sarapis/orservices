@@ -12,7 +12,7 @@ class Taxonomy extends Model
     protected $primaryKey = 'taxonomy_recordid';
 
     protected $fillable = [
-        'taxonomy_recordid', 'taxonomy_name', 'taxonomy_parent_name', 'taxonomy_grandparent_name', 'taxonomy_vocabulary', 'taxonomy_x_description', 'taxonomy_x_notes', 'taxonomy_services', 'taxonomy_parent_recordid', 'taxonomy_facet', 'category_id', 'taxonomy_id', 'flag', 'category_logo', 'category_logo_white', 'exclude_vocabulary', 'badge_color', 'order', 'taxonomy', 'x_taxonomies', 'created_by', 'status', 'temp_service_recordid', 'temp_organization_recordid', 'added_term'
+        'taxonomy_recordid', 'taxonomy_name', 'taxonomy_parent_name', 'taxonomy_grandparent_name', 'taxonomy_vocabulary', 'taxonomy_x_description', 'taxonomy_x_notes', 'taxonomy_services', 'taxonomy_parent_recordid', 'taxonomy_facet', 'category_id', 'taxonomy_id', 'flag', 'category_logo', 'category_logo_white', 'exclude_vocabulary', 'badge_color', 'order', 'taxonomy', 'x_taxonomies', 'created_by', 'status', 'temp_service_recordid', 'temp_organization_recordid', 'added_term', 'code', 'term_uri', 'taxonomy_tag', 'updated_by'
     ];
 
     public function childs()
@@ -53,6 +53,11 @@ class Taxonomy extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
+    public function updatedUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by', 'id');
     }
 
     /**
@@ -115,4 +120,3 @@ class Taxonomy extends Model
         return [];
     }
 }
-

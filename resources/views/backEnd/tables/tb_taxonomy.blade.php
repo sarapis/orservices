@@ -1,6 +1,6 @@
 @extends('backLayout.app')
 @section('title')
-Taxonomy
+Taxonomy Terms
 @stop
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
@@ -37,14 +37,14 @@ Taxonomy
   <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
       <div class="x_title">
-        <h2>Service Taxonomy</h2>
+        <h2>Taxonomy Terms</h2>
         <div class="nav navbar-right panel_toolbox">
             <a href="javascript:void(0)" id="export_csv" class="btn btn-info">Download CSV</a>
-            <a href="{{route('tb_taxonomy.create')}}" class="btn btn-success">Add Service Term</a>
+            <a href="{{route('tb_taxonomy.create')}}" class="btn btn-success">Add Taxonomy Term</a>
         </div>
         <div class="clearfix"></div>
       </div>
-      {!! Form::open(['route' => 'tb_taxonomy.save_vocabulary']) !!}
+      {{-- {!! Form::open(['route' => 'tb_taxonomy.save_vocabulary']) !!} --}}
         {{-- <div class="form-group" style="float:left;width:100%;">
             <label for="inputPassword3" class="col-sm-3 control-label">Exclude vocabularies from front-end Service taxonomy options.</label>
             <div class="col-sm-7">
@@ -54,45 +54,100 @@ Taxonomy
                 <button type="submit" class="btn btn-primary">Save</button>
             </div>
         </div> --}}
-        <div class="form-group">
-            <label for="inputPassword3" class="col-sm-3 control-label">Select Taxonomies</label>
-            <div class="col-sm-7">
-                <select name="taxonomy_select" id="taxonomy_select" class="form-control">
-                    <option value="">None</option>
-                    @foreach ($taxonomieTypes as $item)
-                    <option value="{{ $item }}">{{ $item }}</option>
-                    @endforeach
-                </select>
-                {{-- <button type="submit" class="btn btn-success" style="margin-top:10px;">Search</button> --}}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-3 control-label">Taxonomies</label>
+                    <div class="col-sm-7">
+                        <select name="taxonomy_select" id="taxonomy_select" class="form-control">
+                            <option value="">None</option>
+                            @foreach ($taxonomieTypes as $item)
+                            <option value="{{ $item }}">{{ $item }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
             </div>
-            {{-- <div class="col-sm-2">
-                <button type="submit" class="btn btn-primary">Save</button>
-            </div> --}}
-        </div>
-        <div class="form-group">
-            <label for="inputPassword3" class="col-sm-3 control-label">Parent</label>
-            <div class="col-sm-7">
-                <select name="parent_filter" id="parent_filter" class="form-control selectpicker" multiple>
-                    <option value="none">None</option>
-                    <option value="all">All</option>
-                    @foreach ($taxonomieParents as $key=>$value)
-                    <option value="{{ $key }}">{{ $value }}</option>
-                    @endforeach
-                </select>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-3 control-label">Parent</label>
+                    <div class="col-sm-7">
+                        <select name="parent_filter" id="parent_filter" class="form-control selectpicker" multiple>
+                            <option value="none">None</option>
+                            <option value="all">All</option>
+                            @foreach ($taxonomieParents as $key=>$value)
+                            <option value="{{ $key }}">{{ $value }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
-        {!! Form::close() !!}
+        <div class="row" style="margin-top:10px;">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-3 control-label">Language</label>
+                    <div class="col-sm-7">
+                        <select name="language_select" id="language_select" class="form-control">
+                            <option value="">None</option>
+                            @foreach ($languages as $item)
+                                <option value="{{ $item }}">{{ $item }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-3 control-label">Tags</label>
+                    <div class="col-sm-7">
+                        <select name="tags_filter" id="tags_filter" class="form-control selectpicker" multiple>
+                            <option value="none">None</option>
+                            @foreach ($tags as $item)
+                                <option value="{{ $item }}">{{ $item }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top:10px;">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-3 control-label">Status</label>
+                    <div class="col-sm-7">
+                        <select name="status_select" id="status_select" class="form-control">
+                            <option value="">None</option>
+                            @foreach ($statuses as $item)
+                                <option value="{{ $item }}">{{ $item }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-3 control-label">Hide Terms without Services.</label>
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <input type="checkbox" name="taxonomy_with_services" id="taxonomy_with_services" value="1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- {!! Form::close() !!} --}}
       <div class="x_content" >
         <!-- <table class="table table-striped jambo_table bulk_action table-responsive"> -->
         <table id="example" class="display table-striped  jambo_table table-bordered table-responsive" cellspacing="0">
             <thead>
                 <tr>
-                    <th class="text-center">Id</th>
+                    <th class="text-center">ID</th>
                     {{-- @if($source_data->active == 0 ) --}}
                     {{-- <th class="text-center">ID</th> --}}
                     {{-- @endif --}}
-                    <th class="text-center">Term</th>
-                    <th class="text-center">Parent Term</th>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Parent</th>
                     {{-- @if($source_data->active == 0 )
                     <th class="text-center">Grandparent name</th>
                     @endif --}}
@@ -173,18 +228,45 @@ Taxonomy
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">×</span></button>
-                <h4 class="modal-title">Taxonomy</h4>
+                <h4 class="modal-title">Taxonomy Term</h4>
             </div>
             <form class=" form-horizontal user" id="frmProducts" name="frmProducts" action="{{route('tb_taxonomy.taxonommyUpdate')}}" method="post" enctype="multipart/form-data"  novalidate="" style="margin-bottom: 0;">
               @csrf
                 <div class="row modal-body">
                   <div class="col-md-12">
                     <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Term</label>
+                      <label for="inputPassword3" class="col-sm-3 control-label">ID</label>
+
+                      <div class="col-sm-7">
+                        <input type="text" class="form-control" id="taxonomy_recordid" name="taxonomy_recordid" disabled value="">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="inputPassword3" class="col-sm-3 control-label">Code</label>
+
+                      <div class="col-sm-7">
+                        <input type="text" class="form-control" id="code" name="code" value="">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="inputPassword3" class="col-sm-3 control-label">Name</label>
 
                       <div class="col-sm-7">
                         <input type="text" class="form-control" id="taxonomy_name" name="taxonomy_name" value="">
                       </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-3 control-label">Description</label>
+
+                        <div class="col-sm-7">
+                          <textarea type="text" class="form-control" id="taxonomy_x_description" name="taxonomy_x_description" value="" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group" id="parentDiv">
+                        <label for="inputPassword3" class="col-sm-3 control-label">Parent Term</label>
+                        <div class="col-sm-7">
+                            {!! Form::select('taxonomy_parent_name',$taxonomy_parent_name,null,['class' => 'form-control','id' => 'taxonomy_parent_name','placeholder' => 'select parent','data-live-search' => 'true']) !!}
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -195,18 +277,82 @@ Taxonomy
                         {!! Form::select('taxonomy',$taxonomieTypes,null,['class' => 'form-control','id' =>'taxonomy','placeholder' => 'Select taxonomy','disabled' => true]) !!}
                       </div>
                     </div>
-                    <div class="form-group" id="parentDiv">
-                        <label for="inputPassword3" class="col-sm-3 control-label">Parent</label>
-                        <div class="col-sm-7">
-                              {!! Form::select('taxonomy_parent_name',$taxonomy_parent_name,null,['class' => 'form-control','id' => 'taxonomy_parent_name','placeholder' => 'select parent','data-live-search' => 'true']) !!}
+                    <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-3 control-label">Language</label>
 
+                        <div class="col-sm-7">
+                          {{-- <input type="text" class="form-control" id="language" name="language" value=""> --}}
+                          {!! Form::select('language',$languages,null,['class' => 'form-control','id' =>'language','placeholder' => 'Select language']) !!}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-3 control-label">Term URI</label>
+
+                        <div class="col-sm-7">
+                          <input type="text" class="form-control" id="term_uri" name="term_uri" value="">
+                        </div>
+                    </div>
+                    <hr>
+                    <h2>Publishing</h2>
+                    <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-3 control-label">Status</label>
+
+                        <div class="col-sm-7">
+                          {!! Form::select('status',['Published' => 'Published' ,'Unpublished' => 'Unpublished'],null,['class' => 'form-control','id' =>'status','placeholder' => 'Select status']) !!}
+                        </div>
+                    </div>
+                    <div class="form-group" id="orderDiv">
+                        <label for="inputPassword3" class="col-sm-3 control-label">Order</label>
+
+                        <div class="col-sm-7">
+                          <input type="number" class="form-control" id="order" name="order" value="" min="1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-3 control-label">Icon</label>
+                        <div class="col-sm-7">
+                          <input type="file" class="form-control" id="category_logo" name="category_logo">
+                          <p>Recommended image size is 60px x 60px</p>
                         </div>
                       </div>
-                    <div class="form-group {{ $errors->has('x_taxonomies') ? 'has-error' : ''}}">
+                      <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-3 control-label">&nbsp;</label>
+                        <div class="col-sm-7">
+                          <img src="" id="category_logo_image" width="100px">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-3 control-label">Icon (Hover)</label>
+                        <div class="col-sm-7">
+                          <input type="file" class="form-control" id="category_logo_white" name="category_logo_white">
+                          <p>Recommended image size is 60px x 60px</p>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-3 control-label">&nbsp;</label>
+                        <div class="col-sm-7">
+                          <img src="" width="100px" id="white_logo_image" style="background: #c1c1c1;padding: 10px;border-radius: 12px;">
+                        </div>
+                      </div>
+                      <div class="form-group" style="margin-top:30px;">
+                          <label for="inputPassword3" class="col-sm-3 control-label">Icon Badge Color</label>
+                          <div class="col-sm-3">
+                              <input type="color" name="badge_color" id="badge_color" class="color-pick form-control" style="padding:0px;">
+                          </div>
+                      </div>
+                      <div class="form-group" style="margin-top:30px;">
+                          <label for="inputPassword3" class="col-sm-3 control-label">Tags</label>
+                          <div class="col-sm-3">
+                              <input type="text" name="taxonomy_tag" id="taxonomy_tag" class="form-control">
+                          </div>
+                      </div>
+
+
+                    {{-- <div class="form-group {{ $errors->has('x_taxonomies') ? 'has-error' : ''}}">
                         {!! Form::label('x_taxonomies', 'x-Taxonomies', ['class' => 'col-md-3 control-label']) !!}
                         <div class="col-sm-7">
                             {!! Form::select('x_taxonomies',$taxonomieTypesExternal,null,['class' => 'form-control','id' =>'x_taxonomies','placeholder' => 'Select x_taxonomies']) !!}
-                            {{-- {!! Form::select('taxonomy',['Service Eligibility' => 'Service Eligibility','Service Category' => 'Service Category'],null,['class' => 'form-control','id' =>'taxonomy','placeholder' => 'Select Type']) !!} --}}
                             {!! $errors->first('x_taxonomies', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
@@ -222,21 +368,7 @@ Taxonomy
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="inputPassword3" class="col-sm-3 control-label">Language</label>
 
-                        <div class="col-sm-7">
-                          {{-- <input type="text" class="form-control" id="language" name="language" value=""> --}}
-                          {!! Form::select('language',$languages,null,['class' => 'form-control','id' =>'language','placeholder' => 'Select language']) !!}
-                        </div>
-                      </div>
-                    <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Description</label>
-
-                      <div class="col-sm-7">
-                        <textarea type="text" class="form-control" id="taxonomy_x_description" name="taxonomy_x_description" value="" rows="2"></textarea>
-                      </div>
-                    </div>
 
                     <div class="form-group">
                       <label for="inputPassword3" class="col-sm-3 control-label">X-notes</label>
@@ -244,64 +376,39 @@ Taxonomy
                       <div class="col-sm-7">
                         <input type="text" class="form-control" id="taxonomy_x_notes" name="taxonomy_x_notes" value="">
                       </div>
-                    </div>
-                    <div class="form-group" id="orderDiv">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Order</label>
-
-                      <div class="col-sm-7">
-                        <input type="number" class="form-control" id="order" name="order" value="" min="1">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Term Icon</label>
-                      <div class="col-sm-7">
-                        <input type="file" class="form-control" id="category_logo" name="category_logo">
-                        <p>Recommended image size is 60px x 60px</p>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">&nbsp;</label>
-                      <div class="col-sm-7">
-                        <img src="" id="category_logo_image" width="100px">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">Hover Term Icon</label>
-                      <div class="col-sm-7">
-                        <input type="file" class="form-control" id="category_logo_white" name="category_logo_white">
-                        <p>Recommended image size is 60px x 60px</p>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-3 control-label">&nbsp;</label>
-                      <div class="col-sm-7">
-                        <img src="" width="100px" id="white_logo_image" style="background: #c1c1c1;padding: 10px;border-radius: 12px;">
-                      </div>
-                    </div>
+                    </div> --}}
+                    <hr>
+                    <h2>Metadata</h2>
                     <div class="form-group" style="margin-top:30px;">
-                        <label for="inputPassword3" class="col-sm-3 control-label">Badge Color</label>
+                        <label for="inputPassword3" class="col-sm-3 control-label">Last modified time</label>
                         <div class="col-sm-3">
-                            <input type="color" name="badge_color" id="badge_color" class="color-pick form-control" style="padding:0px;">
+                            <input type="text" name="updated_at" id="updated_at" class="form-control" style="padding:0px;" readonly>
                         </div>
                     </div>
                     <div class="form-group" style="margin-top:30px;">
-                        <label for="inputPassword3" class="col-sm-3 control-label">Created</label>
+                        <label for="inputPassword3" class="col-sm-3 control-label">Last modified by</label>
+                        <div class="col-sm-3">
+                            <input type="text" name="updated_by" id="updated_by" class="form-control" style="padding:0px;" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top:30px;">
+                        <label for="inputPassword3" class="col-sm-3 control-label">Created time</label>
                         <div class="col-sm-3">
                             <input type="text" name="created_at" id="created_at" class="form-control" style="padding:0px;" readonly>
                         </div>
                     </div>
                     <div class="form-group" style="margin-top:30px;">
-                        <label for="inputPassword3" class="col-sm-3 control-label">Created By</label>
+                        <label for="inputPassword3" class="col-sm-3 control-label">Created by</label>
                         <div class="col-sm-3">
                             <input type="text" name="created_by" id="created_by" class="form-control" style="padding:0px;" readonly>
                         </div>
                     </div>
-                    <div class="form-group" style="margin-top:30px;">
+                    {{-- <div class="form-group" style="margin-top:30px;">
                         <label for="inputPassword3" class="col-sm-3 control-label">Status</label>
                         <div class="col-sm-3">
                             {!! Form::select('status',['Published'=>'Published','Unpublished' => 'Unpublished'],null,['class' => 'form-control','id'=>'status','readonly' => (Auth::user() && Auth::user()->roles &&Auth::user()->roles->id != 1) ]) !!}
                         </div>
-                    </div>
+                    </div> --}}
                   </div>
                 </div>
                 <div class="modal-footer">
@@ -326,6 +433,7 @@ let table
 let extraData = {}
 $("#taxonomy_select").selectpicker();
 $("#parent_filter").selectpicker();
+$("#language_select").selectpicker();
 $(document).ready(function() {
     let ajaxUrl = "{{ route('tb_taxonomy.getAllTaxonomy') }}"
     table = $('#example').DataTable( {
@@ -405,6 +513,31 @@ $(document).ready(function() {
 $('#taxonomy_select').change(function () {
     let value = $(this).val()
     extraData.taxonomy_select = value
+    // table.column(3).search(value).draw();
+    table.ajax.reload();
+})
+$('#tags_filter').change(function () {
+    let value = $(this).val()
+    extraData.tags_filter = value
+    // table.column(3).search(value).draw();
+    table.ajax.reload();
+})
+$('#language_select').change(function () {
+    let value = $(this).val()
+    extraData.language_select = value
+    // table.column(3).search(value).draw();
+    table.ajax.reload();
+})
+$('#taxonomy_with_services').change(function(){
+    let val = $(this).is(':checked')
+    if(val){
+        extraData.taxonomy_with_services = val
+        table.ajax.reload()
+    }
+})
+$('#status_select').change(function () {
+    let value = $(this).val()
+    extraData.status_select = value
     // table.column(3).search(value).draw();
     table.ajax.reload();
 })

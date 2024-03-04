@@ -63,6 +63,7 @@ use App\Model\SessionData;
 use App\Model\SessionInteraction;
 use App\Model\State;
 use App\Model\TaxonomyEmail;
+use App\Services\ServiceDataService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -77,11 +78,12 @@ use Yajra\DataTables\DataTables;
 
 class ServiceController extends Controller
 {
-    public $commonController;
+    public $commonController, $serviceDataService;
 
-    public function __construct(CommonController $commonControllerData)
+    public function __construct(CommonController $commonControllerData, ServiceDataService $serviceDataService)
     {
         $this->commonController = $commonControllerData;
+        $this->serviceDataService = $serviceDataService;
     }
 
     /**
@@ -522,6 +524,8 @@ class ServiceController extends Controller
             $service->service_airs_taxonomy_x = $request->service_airs_taxonomy_x;
             $service->service_code = $request->service_code;
             $service->access_requirement = $request->access_requirement;
+            $service->alert = $request->alert;
+            $service->funding = $request->funding;
 
             $this->saveRequiredDocument($request, $service_recordid);
 
@@ -1722,6 +1726,9 @@ class ServiceController extends Controller
                 $location_details = [];
                 $location_accessibility = [];
                 $location_accessibility_details = [];
+                $external_identifier = [];
+                $external_identifier_type = [];
+                $accessesibility_url = [];
                 $location_regions = [];
                 foreach ($service_locations_data as $key => $locationData) {
                     $location_alternate_name[] = $locationData->location_alternate_name;
@@ -1730,6 +1737,9 @@ class ServiceController extends Controller
                     $location_schedules[] = $locationData->schedules ? $locationData->schedules->pluck('schedule_recordid')->toArray() : [];
                     $location_description[] = $locationData->location_description;
                     $location_details[] = $locationData->location_details;
+                    $external_identifier[] = $locationData->external_identifier;
+                    $external_identifier_type[] = $locationData->external_identifier_type;
+                    $accessesibility_url[] = $locationData->accessesibility_url;
                     if ($locationData->accessibility_recordid) {
                         $location_accessibility[$key] = $locationData->accessibility_recordid;
                         $location_accessibility_details[$key] = $locationData->accessibility_details;
@@ -1745,6 +1755,9 @@ class ServiceController extends Controller
                 $location_accessibility = json_encode($location_accessibility);
                 $location_accessibility_details = json_encode($location_accessibility_details);
                 $location_regions = json_encode($location_regions);
+                $external_identifier = json_encode($external_identifier);
+                $external_identifier_type = json_encode($external_identifier_type);
+                $accessesibility_url = json_encode($accessesibility_url);
 
                 $contact_service = [];
                 $contact_department = [];
@@ -1927,7 +1940,7 @@ class ServiceController extends Controller
                 $service_eligibility_types = Taxonomy::orderBy('taxonomy_name')->whereNull('taxonomy_parent_name')->where('taxonomy', $serviceEligibilityId ? $serviceEligibilityId->taxonomy_type_recordid : '')->pluck('taxonomy_name', 'taxonomy_recordid');
 
 
-                $service_category_term_data = $service->taxonomy()->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->get();
+                $service_category_term_data = $serviceCategoryId ? $service->taxonomy()->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->get() : [];
                 // $service_category_term_data = $service->taxonomy()->where('taxonomy', $serviceCategoryId->taxonomy_type_recordid)->get();
                 // ->whereNotNull('taxonomy_parent_name')
 
@@ -1985,7 +1998,7 @@ class ServiceController extends Controller
                 //     }
                 //     $t++;
                 // }
-                $service_eligibility_term_data = $service->taxonomy()->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->get();
+                $service_eligibility_term_data = $serviceEligibilityId ? $service->taxonomy()->where('taxonomy', $serviceEligibilityId->taxonomy_type_recordid)->get() : [];
                 $service_eligibility_type_data = [];
                 $removableIds = [];
                 $selected_eligibility_ids = [];
@@ -2076,7 +2089,7 @@ class ServiceController extends Controller
 
                 $accessibilities = Accessibility::pluck('accessibility', 'id');
 
-                return view('frontEnd.services.edit', compact('service', 'map', 'service_address_street', 'service_address_city', 'service_address_state', 'service_address_postal_code', 'service_organization_list', 'service_location_list', 'service_phone1', 'service_phone2', 'service_contacts_list', 'service_taxonomy_list', 'service_details_list', 'location_info_list', 'contact_info_list', 'taxonomy_info_list', 'detail_info_list', 'ServiceSchedule', 'ServiceDetails', 'monday', 'tuesday', 'wednesday', 'friday', 'saturday', 'thursday', 'sunday', 'holiday_schedules', 'all_contacts', 'service_locations_data', 'all_locations', 'phone_languages', 'phone_type', 'location_alternate_name', 'location_transporation', 'location_service', 'location_schedules', 'location_description', 'location_details', 'contact_service', 'contact_department', 'service_info_list', 'address_states_list', 'address_city_list', 'schedule_info_list', 'contact_phone_numbers', 'contact_phone_extensions', 'contact_phone_types', 'contact_phone_languages', 'contact_phone_descriptions', 'location_phone_numbers', 'location_phone_extensions', 'location_phone_types', 'location_phone_languages', 'location_phone_descriptions', 'opens_location_monday_datas', 'closes_location_monday_datas', 'schedule_closed_monday_datas', 'opens_location_tuesday_datas', 'closes_location_tuesday_datas', 'schedule_closed_tuesday_datas', 'opens_location_wednesday_datas', 'closes_location_wednesday_datas', 'schedule_closed_wednesday_datas', 'opens_location_thursday_datas', 'closes_location_thursday_datas', 'schedule_closed_thursday_datas', 'opens_location_friday_datas', 'closes_location_friday_datas', 'schedule_closed_friday_datas', 'opens_location_saturday_datas', 'closes_location_saturday_datas', 'schedule_closed_saturday_datas', 'opens_location_sunday_datas', 'closes_location_sunday_datas', 'schedule_closed_sunday_datas', 'location_holiday_start_dates', 'location_holiday_end_dates', 'location_holiday_open_ats', 'location_holiday_close_ats', 'location_holiday_closeds', 'service_status_list', 'address_info_list', 'addressIds', 'serviceDetailsData', 'detail_types', 'phone_language_data', 'service_category_term_data', 'service_category_type_data', 'service_category_types', 'service_eligibility_types', 'service_eligibility_term_data', 'service_eligibility_type_data', 'program', 'all_programs', 'program_names', 'program_descriptions', 'serviceAudits', 'contactOrganization', 'all_phones', 'phone_language_name', 'conditions', 'goals', 'activities', 'service_codes', 'help_text', 'layout', 'service_area', 'fee_options', 'areas', 'fees', 'location_accessibility', 'location_accessibility_details', 'location_regions', 'regions', 'codes', 'selected_ids', 'procedure_grouping', 'selected_category_ids', 'selected_eligibility_ids', 'selected_details_value', 'selected_details_types', 'disposition_list', 'method_list', 'serviceStatus', 'languages', 'interpretation_services', 'requiredDocumentTypes', 'accessibilities'));
+                return view('frontEnd.services.edit', compact('service', 'map', 'service_address_street', 'service_address_city', 'service_address_state', 'service_address_postal_code', 'service_organization_list', 'service_location_list', 'service_phone1', 'service_phone2', 'service_contacts_list', 'service_taxonomy_list', 'service_details_list', 'location_info_list', 'contact_info_list', 'taxonomy_info_list', 'detail_info_list', 'ServiceSchedule', 'ServiceDetails', 'monday', 'tuesday', 'wednesday', 'friday', 'saturday', 'thursday', 'sunday', 'holiday_schedules', 'all_contacts', 'service_locations_data', 'all_locations', 'phone_languages', 'phone_type', 'location_alternate_name', 'location_transporation', 'location_service', 'location_schedules', 'location_description', 'location_details', 'contact_service', 'contact_department', 'service_info_list', 'address_states_list', 'address_city_list', 'schedule_info_list', 'contact_phone_numbers', 'contact_phone_extensions', 'contact_phone_types', 'contact_phone_languages', 'contact_phone_descriptions', 'location_phone_numbers', 'location_phone_extensions', 'location_phone_types', 'location_phone_languages', 'location_phone_descriptions', 'opens_location_monday_datas', 'closes_location_monday_datas', 'schedule_closed_monday_datas', 'opens_location_tuesday_datas', 'closes_location_tuesday_datas', 'schedule_closed_tuesday_datas', 'opens_location_wednesday_datas', 'closes_location_wednesday_datas', 'schedule_closed_wednesday_datas', 'opens_location_thursday_datas', 'closes_location_thursday_datas', 'schedule_closed_thursday_datas', 'opens_location_friday_datas', 'closes_location_friday_datas', 'schedule_closed_friday_datas', 'opens_location_saturday_datas', 'closes_location_saturday_datas', 'schedule_closed_saturday_datas', 'opens_location_sunday_datas', 'closes_location_sunday_datas', 'schedule_closed_sunday_datas', 'location_holiday_start_dates', 'location_holiday_end_dates', 'location_holiday_open_ats', 'location_holiday_close_ats', 'location_holiday_closeds', 'service_status_list', 'address_info_list', 'addressIds', 'serviceDetailsData', 'detail_types', 'phone_language_data', 'service_category_term_data', 'service_category_type_data', 'service_category_types', 'service_eligibility_types', 'service_eligibility_term_data', 'service_eligibility_type_data', 'program', 'all_programs', 'program_names', 'program_descriptions', 'serviceAudits', 'contactOrganization', 'all_phones', 'phone_language_name', 'conditions', 'goals', 'activities', 'service_codes', 'help_text', 'layout', 'service_area', 'fee_options', 'areas', 'fees', 'location_accessibility', 'location_accessibility_details', 'location_regions', 'regions', 'codes', 'selected_ids', 'procedure_grouping', 'selected_category_ids', 'selected_eligibility_ids', 'selected_details_value', 'selected_details_types', 'disposition_list', 'method_list', 'serviceStatus', 'languages', 'interpretation_services', 'requiredDocumentTypes', 'accessibilities', 'external_identifier', 'external_identifier_type', 'accessesibility_url'));
             } else {
                 Session::flash('message', 'Warning! Not enough permissions. Please contact Us for more');
                 Session::flash('status', 'warning');
@@ -2129,6 +2142,8 @@ class ServiceController extends Controller
             $service->minimum_age = $request->minimum_age;
             $service->maximum_age = $request->maximum_age;
             $service->service_alert = $request->service_alert;
+            $service->alert = $request->alert;
+            $service->funding = $request->funding;
             $service->service_language = $request->service_language ? implode(',', $request->service_language) : '';
             $service->service_interpretation = $request->service_interpretation;
             $this->saveRequiredDocument($request, $id);
@@ -2373,6 +2388,10 @@ class ServiceController extends Controller
                 $location_schedules = $request->location_schedules && count($request->location_schedules) > 0 ? json_decode($request->location_schedules[0]) : [];
                 $location_description = $request->location_description && count($request->location_description) > 0 ? json_decode($request->location_description[0]) : [];
                 $location_details = $request->location_details && count($request->location_details) > 0 ? json_decode($request->location_details[0]) : [];
+
+                $external_identifier = $request->external_identifier && count($request->external_identifier) > 0 ? json_decode($request->external_identifier[0]) : [];
+                $external_identifier_type = $request->external_identifier_type && count($request->external_identifier_type) > 0 ? json_decode($request->external_identifier_type[0]) : [];
+                $accessesibility_url = $request->accessesibility_url && count($request->accessesibility_url) > 0 ? json_decode($request->accessesibility_url[0]) : [];
                 // accessibility
                 $location_accessibility = $request->location_accessibility && count($request->location_accessibility) > 0 ? json_decode($request->location_accessibility[0], true) : [];
 
@@ -2434,6 +2453,9 @@ class ServiceController extends Controller
                         $location->location_transportation = isset($location_transporation[$i]) ? $location_transporation[$i] : null;
                         $location->location_description = isset($location_description[$i]) ? $location_description[$i] : null;
                         $location->location_details = isset($location_details[$i]) ? $location_details[$i] : null;
+                        $location->external_identifier = isset($external_identifier[$i]) ? $external_identifier[$i] : null;
+                        $location->external_identifier_type = isset($external_identifier_type[$i]) ? $external_identifier_type[$i] : null;
+                        $location->accessesibility_url = isset($accessesibility_url[$i]) ? $accessesibility_url[$i] : null;
 
                         // accessesibility
 
@@ -2614,6 +2636,9 @@ class ServiceController extends Controller
                             $location->location_transportation = isset($location_transporation[$i]) ? $location_transporation[$i] : null;
                             $location->location_description = isset($location_description[$i]) ? $location_description[$i] : null;
                             $location->location_details = isset($location_details[$i]) ? $location_details[$i] : null;
+                            $location->external_identifier = isset($external_identifier[$i]) ? $external_identifier[$i] : null;
+                            $location->external_identifier_type = isset($external_identifier_type[$i]) ? $external_identifier_type[$i] : null;
+                            $location->accessesibility_url = isset($accessesibility_url[$i]) ? $accessesibility_url[$i] : null;
 
 
                             // accessesibility
@@ -3207,14 +3232,14 @@ class ServiceController extends Controller
         return $response_text;
     }
 
-    public function airtable($api_key, $base_url)
+    public function airtable($access_token, $base_url)
     {
         try {
             $airtable_key_info = Airtablekeyinfo::find(1);
             if (!$airtable_key_info) {
                 $airtable_key_info = new Airtablekeyinfo;
             }
-            $airtable_key_info->api_key = $api_key;
+            $airtable_key_info->access_token = $access_token;
             $airtable_key_info->base_url = $base_url;
             $airtable_key_info->save();
 
@@ -3228,12 +3253,8 @@ class ServiceController extends Controller
             ServiceTaxonomy::truncate();
             ServiceSchedule::truncate();
 
-            // $airtable = new Airtable(array(
-            //     'api_key'   => env('AIRTABLE_API_KEY'),
-            //     'base'      => env('AIRTABLE_BASE_URL'),
-            // ));
             $airtable = new Airtable(array(
-                'api_key' => $api_key,
+                'access_token' => $access_token,
                 'base' => $base_url,
             ));
             $request = $airtable->getContent('services');
@@ -3444,16 +3465,9 @@ class ServiceController extends Controller
         }
     }
 
-    public function airtable_v2($api_key, $base_url)
+    public function airtable_v2($access_token, $base_url)
     {
         try {
-            // $airtable_key_info = Airtablekeyinfo::find(1);
-            // if (!$airtable_key_info) {
-            //     $airtable_key_info = new Airtablekeyinfo;
-            // }
-            // $airtable_key_info->api_key = $api_key;
-            // $airtable_key_info->base_url = $base_url;
-            // $airtable_key_info->save();
 
             // Service::truncate();
             // ServiceLocation::truncate();
@@ -3465,12 +3479,8 @@ class ServiceController extends Controller
             // ServiceTaxonomy::truncate();
             // ServiceSchedule::truncate();
 
-            // $airtable = new Airtable(array(
-            //     'api_key'   => env('AIRTABLE_API_KEY'),
-            //     'base'      => env('AIRTABLE_BASE_URL'),
-            // ));
             $airtable = new Airtable(array(
-                'api_key' => $api_key,
+                'access_token' => $access_token,
                 'base' => $base_url,
             ));
             $request = $airtable->getContent('services');
@@ -3674,6 +3684,11 @@ class ServiceController extends Controller
                 'success' => false
             ], 500);
         }
+    }
+
+    public function airtable_v3($access_token, $base_url)
+    {
+        $this->serviceDataService->service_airtable_v3($access_token, $base_url);
     }
 
     public function csv(Request $request)

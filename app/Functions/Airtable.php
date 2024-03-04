@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Functions;
+
 use GuzzleHttp, Config, Auth;
 use \DOMDocument, \SimpleXMLElement;
 
@@ -13,18 +14,20 @@ use \DOMDocument, \SimpleXMLElement;
  */
 
 
-class Airtable 
+class Airtable
 {
-	const API_URL = "https://api.airtable.com/v0/";
+    const API_URL = "https://api.airtable.com/v0/";
 
-	private $_key;
+    private $_key;
+
+    private $_token;
 
     private $_base;
-	
-	public function __construct($config)
+
+    public function __construct($config)
     {
         if (is_array($config)) {
-            $this->setKey($config['api_key']);
+            $this->setAccessToken($config['access_token']);
             $this->setBase($config['base']);
         } else {
             echo 'Error: __construct() - Configuration data is missing.';
@@ -36,9 +39,19 @@ class Airtable
         $this->_key = $key;
     }
 
+    public function setAccessToken($token)
+    {
+        $this->_token = $token;
+    }
+
     public function getKey()
     {
         return $this->_key;
+    }
+
+    public function getAccessToken()
+    {
+        return $this->_token;
     }
 
     public function setBase($base)
@@ -51,46 +64,43 @@ class Airtable
         return $this->_base;
     }
 
-    public function getApiUrl($request){
-	    $request = str_replace( ' ', '%20', $request );
-    	$url = self::API_URL.$this->getBase().'/'.$request;
-    	return $url;
+    public function getApiUrl($request)
+    {
+        $request = str_replace(' ', '%20', $request);
+        $url = self::API_URL . $this->getBase() . '/' . $request;
+        return $url;
     }
 
-    function getContent($content_type,$params="",$relations=false)
+    function getContent($content_type, $params = "", $relations = false)
     {
-        return new Request( $this, $content_type, $params, false, $relations );
-	}
+        return new Request($this, $content_type, $params, false, $relations);
+    }
 
-	function saveContent($content_type,$fields)
-	{
-
-		$fields = array('fields'=>$fields);
-
-		$request = new Request( $this, $content_type, $fields, true );
-
-		return $request->getResponse();
-
-	}
-
-	function updateContent($content_type,$fields)
-	{
-
-		$fields = array('fields'=>$fields);
-
-		$request = new Request( $this, $content_type, $fields, 'patch' );
-
-		return $request->getResponse();
-
-	}
-
-	function deleteContent($content_type)
+    function saveContent($content_type, $fields)
     {
 
-        $request = new Request( $this, $content_type, [], 'delete' );
+        $fields = array('fields' => $fields);
+
+        $request = new Request($this, $content_type, $fields, true);
 
         return $request->getResponse();
-
     }
 
+    function updateContent($content_type, $fields)
+    {
+
+        $fields = array('fields' => $fields);
+
+        $request = new Request($this, $content_type, $fields, 'patch');
+
+        return $request->getResponse();
+    }
+
+    function deleteContent($content_type)
+    {
+
+        $request = new Request($this, $content_type, [], 'delete');
+
+        return $request->getResponse();
+    }
 }

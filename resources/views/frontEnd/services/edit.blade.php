@@ -279,6 +279,18 @@
                                             <input class="form-control selectpicker" type="text" id="service_accreditations" name="service_accreditations" value="{{ $service->service_accreditations }}">
                                         </div>
                                     </div>
+                                    {{-- <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Alert </label>
+                                            <input class="form-control" type="text" id="alert" name="alert" value="{{ $service->alert }}">
+                                        </div>
+                                    </div> --}}
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Funding </label>
+                                            <input class="form-control" type="text" id="funding" name="funding" value="{{ $service->funding }}">
+                                        </div>
+                                    </div>
                                     {{-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Code </label>
@@ -507,10 +519,7 @@
                                             <div class="card-block p-0 border-0">
                                                 {{-- location table --}}
                                                 <h4 class="title_edit text-left mb-25 mt-10">
-                                                    Locations <a
-                                                        class="locationModalOpenButton float-right plus_delteicon bg-primary-color"><img
-                                                            src="/frontend/assets/images/plus.png" alt=""
-                                                            title=""></a>
+                                                    Locations <a class="locationModalOpenButton float-right plus_delteicon bg-primary-color"><img src="/frontend/assets/images/plus.png" alt="" title=""></a>
                                                 </h4>
                                                 <div class="row">
                                                     <div class="col-md-12">
@@ -1011,8 +1020,7 @@
                                                                             <tr>
                                                                                 <td>
                                                                                     {!! Form::select('detail_type[]', $detail_types, null, [
-                                                                                        'class' => 'form-control
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        selectpicker detail_type',
+                                                                                        'class' => 'form-control selectpicker detail_type',
                                                                                         'placeholder' => 'Select Detail Type',
                                                                                         'id' => 'detail_type_0',
                                                                                     ]) !!}
@@ -1020,8 +1028,7 @@
                                                                                 </td>
                                                                                 <td class="create_btn">
                                                                                     {!! Form::select('detail_term[]', [], null, [
-                                                                                        'class' => 'form-control selectpicker
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        detail_term',
+                                                                                        'class' => 'form-control selectpicker detail_term',
                                                                                         'placeholder' => 'Select Detail Term',
                                                                                         'id' => 'detail_term_0',
                                                                                     ]) !!}
@@ -1074,8 +1081,12 @@
                         value="{{ $location_details }}">
                     <input type="hidden" name="location_accessibility[]" id="location_accessibility"
                         value="{{ $location_accessibility }}">
-                    <input type="hidden" name="location_accessibility_details[]" id="location_accessibility_details"
-                        value="{{ $location_accessibility_details }}">
+                    <input type="hidden" name="location_accessibility_details[]" id="location_accessibility_details" value="{{ $location_accessibility_details }}">
+
+                    <input type="hidden" name="external_identifier[]" id="external_identifier" value="{{ $external_identifier }}">
+                    <input type="hidden" name="external_identifier_type[]" id="external_identifier_type" value="{{ $external_identifier_type }}">
+                    <input type="hidden" name="accessesibility_url[]" id="accessesibility_url" value="{{ $accessesibility_url }}">
+
                     <input type="hidden" name="location_regions[]" id="location_regions"
                         value="{{ $location_regions }}">
 
@@ -1339,16 +1350,13 @@
                                                 <label>Location Name</label>
                                                 <input class="form-control selectpicker" type="text"
                                                     id="location_name_p" name="location_name" value="">
-                                                <span id="location_name_error" style="display: none;color:red">Location
-                                                    Name is
-                                                    required!</span>
+                                                <span id="location_name_error" style="display: none;color:red">Location Name is required!</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Address</label>
-                                                <input type="text" class="form-control" placeholder="Address"
-                                                    id="location_address_p">
+                                                <input type="text" class="form-control" placeholder="Address" id="location_address_p">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -1397,35 +1405,27 @@
                                             </div>
                                         </div>
                                         <div class="text-right col-md-12 mb-20">
-                                            <button type="button" class="btn btn_additional bg-primary-color"
-                                                data-toggle="collapse" data-target="#additional_location_modal">Additional
-                                                Info
-                                                <img src="/frontend/assets/images/white_arrow.png" alt=""
-                                                    title="" />
+                                            <button type="button" class="btn btn_additional bg-primary-color" data-toggle="collapse" data-target="#additional_location_modal">Additional Info
+                                                <img src="/frontend/assets/images/white_arrow.png" alt="" title="" />
                                             </button>
                                         </div>
                                         <div id="additional_location_modal" class="collapse row m-0 col-md-12">
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Location Alternate Name </label>
-                                                    <input class="form-control selectpicker" type="text"
-                                                        id="location_alternate_name_p" name="location_alternate_name"
-                                                        value="">
+                                                    <input class="form-control selectpicker" type="text" id="location_alternate_name_p" name="location_alternate_name" value="">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Location Transportation </label>
-                                                    <input class="form-control selectpicker" type="text"
-                                                        id="location_transporation_p" name="location_transporation"
-                                                        value="">
+                                                    <input class="form-control selectpicker" type="text" id="location_transporation_p" name="location_transporation" value="">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Location Details </label>
-                                                    <input class="form-control selectpicker" type="text"
-                                                        id="location_details_p" name="location_details" value="">
+                                                    <input class="form-control selectpicker" type="text" id="location_details_p" name="location_details" value="">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -1442,8 +1442,28 @@
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label>Location Description </label>
+                                                    <label>Accessibility Description </label>
                                                     <textarea id="location_description_p" name="location_description" class="form-control selectpicker" rows="5"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>External Identifier: </label>
+                                                    {!! Form::text('external_identifier', null, ['class' => 'form-control', 'id' => 'external_identifier_p']) !!}
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>External Identifier Type: </label>
+                                                    {!! Form::text('external_identifier_type', null, ['class' => 'form-control', 'id' => 'external_identifier_type_p']) !!}
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Accessibility URL: </label>
+                                                    {!! Form::text('accessesibility_url', null, ['class' => 'form-control', 'id' => 'accessesibility_url_p']) !!}
                                                 </div>
                                             </div>
                                         </div>
@@ -2586,6 +2606,10 @@
         let location_accessibility = JSON.parse($('#location_accessibility').val())
         let location_accessibility_details = JSON.parse($('#location_accessibility_details').val())
 
+        let external_identifier = JSON.parse($('#external_identifier').val())
+        let external_identifier_type = JSON.parse($('#external_identifier_type').val())
+        let accessesibility_url = JSON.parse($('#accessesibility_url').val())
+
         let location_phone_numbers = JSON.parse($('#location_phone_numbers').val())
         let location_phone_extensions = JSON.parse($('#location_phone_extensions').val())
         let location_phone_types = JSON.parse($('#location_phone_types').val())
@@ -2636,6 +2660,9 @@
             let location_zipcode_p = ''
             let location_details_p = ''
             let location_region_p = ''
+            let external_identifier_p = ''
+            let external_identifier_type_p = ''
+            let accessesibility_url_p = ''
             let location_accessibility_p = ''
             let location_accessibility_details_p = ''
             let location_phone_p = ''
@@ -2710,6 +2737,9 @@
                 location_region_p = $('#location_region_p').val()
                 location_accessibility_p = $('#location_accessibility_p').val()
                 location_accessibility_details_p = $('#location_accessibility_details_p').val()
+                external_identifier_p = $('#external_identifier_p').val()
+                external_identifier_type_p = $('#external_identifier_type_p').val()
+                accessesibility_url_p = $('#accessesibility_url_p').val()
                 // location_phone_p = $('#location_phone_p').val()
 
                 for (let index = 0; index < lp; index++) {
@@ -2767,6 +2797,10 @@
                 location_transporation_p = data.location_transportation ? data.location_transportation : ''
                 location_description_p = data.location_description ? data.location_description : ''
                 location_details_p = data.location_details ? data.location_details : ''
+
+                external_identifier_p = data.external_identifier ? data.external_identifier : ''
+                external_identifier_type_p = data.external_identifier_type ? data.external_identifier_type : ''
+                accessesibility_url_p = data.accessesibility_url ? data.accessesibility_url : ''
                 // for location accessibility
                 // let accessibilities = data.accessibilities && data.accessibilities.length > 0 ? data.accessibilities : []
                 // location_accessibility_p = accessibilities.map((v) => {
@@ -2875,6 +2909,9 @@
                 location_details.push(location_details_p)
                 location_accessibility.push(location_accessibility_p)
                 location_accessibility_details.push(location_accessibility_details_p)
+                external_identifier.push(external_identifier_p)
+                external_identifier_type.push(external_identifier_type_p)
+                accessesibility_url.push(accessesibility_url_p)
                 location_regions.push(location_region_p)
 
                 location_phone_numbers[l] = phone_number_location
@@ -2925,6 +2962,11 @@
                     location_details[selectedLocationTrId] = location_details_p
                     location_accessibility[selectedLocationTrId] = location_accessibility_p
                     location_accessibility_details[selectedLocationTrId] = location_accessibility_details_p
+
+                    external_identifier[selectedLocationTrId] = external_identifier_p
+                    external_identifier_type[selectedLocationTrId] = external_identifier_type_p
+                    accessesibility_url[selectedLocationTrId] = accessesibility_url_p
+
                     location_regions[selectedLocationTrId] = location_region_p
 
 
@@ -2974,6 +3016,9 @@
             $('#location_details').val(JSON.stringify(location_details))
             $('#location_accessibility').val(JSON.stringify(location_accessibility))
             $('#location_accessibility_details').val(JSON.stringify(location_accessibility_details))
+            $('#external_identifier').val(JSON.stringify(external_identifier))
+            $('#external_identifier_type').val(JSON.stringify(external_identifier_type))
+            $('#accessesibility_url').val(JSON.stringify(accessesibility_url))
             $('#location_regions').val(JSON.stringify(location_regions))
 
             $('#location_phone_numbers').val(JSON.stringify(location_phone_numbers))
@@ -3069,6 +3114,9 @@
             $('#location_details_p').val('')
             $('#location_accessibility_p').val('')
             $('#location_region_p').val('')
+            $('#external_identifier_p').val('')
+            $('#external_identifier_type_p').val('')
+            $('#accessesibility_url_p').val('')
             $('#location_region_p').selectpicker('refresh')
             $('#location_accessibility_p').selectpicker('refresh')
             $('#location_service_p').selectpicker('refresh')
@@ -3097,6 +3145,10 @@
                 let location_details_val = JSON.parse($('#location_details').val())
                 let location_accessibility_val = JSON.parse($('#location_accessibility').val())
                 let location_accessibility_details_val = JSON.parse($('#location_accessibility_details').val())
+
+                let external_identifier_val = JSON.parse($('#external_identifier').val())
+                let external_identifier_type_val = JSON.parse($('#external_identifier_type').val())
+                let accessesibility_url_val = JSON.parse($('#accessesibility_url').val())
                 let location_regions_val = JSON.parse($('#location_regions').val())
 
                 // location modal phone section
@@ -3142,6 +3194,9 @@
                 location_details_val.splice(deletedId, 1)
                 location_accessibility_val.splice(deletedId, 1)
                 location_accessibility_details_val.splice(deletedId, 1)
+                external_identifier_val.splice(deletedId, 1)
+                external_identifier_type_val.splice(deletedId, 1)
+                accessesibility_url_val.splice(deletedId, 1)
                 location_regions_val.splice(deletedId, 1)
                 location_phone_numbers.splice(deletedId, 1)
                 location_phone_extensions.splice(deletedId, 1)
@@ -3175,6 +3230,11 @@
                 location_holiday_close_ats_val.splice(deletedId, 1)
                 location_holiday_closeds_val.splice(deletedId, 1)
 
+                external_identifier_val.splice(deletedId, 1)
+                external_identifier_type_val.splice(deletedId, 1)
+                accessesibility_url_val.splice(deletedId, 1)
+
+
                 $('#location_alternate_name').val(JSON.stringify(location_alternate_name_val))
                 $('#location_transporation').val(JSON.stringify(location_transporation_val))
                 $('#location_service').val(JSON.stringify(location_service))
@@ -3183,6 +3243,9 @@
                 $('#location_details').val(JSON.stringify(location_details_val))
                 $('#location_accessibility').val(JSON.stringify(location_accessibility_val))
                 $('#location_accessibility_details').val(JSON.stringify(location_accessibility_details_val))
+                $('#external_identifier').val(JSON.stringify(external_identifier_val))
+                $('#external_identifier_type').val(JSON.stringify(external_identifier_type_val))
+                $('#accessesibility_url').val(JSON.stringify(accessesibility_url_val))
                 $('#location_regions').val(JSON.stringify(location_regions_val))
 
                 $('#location_phone_numbers').val(JSON.stringify(location_phone_numbers))
@@ -3253,6 +3316,10 @@
             $('#location_accessibility_p').val('')
             // $('#location_accessibility_details_p').val('')
             $('#location_region_p').val('')
+
+            $('#external_identifier_p').val('')
+            $('#external_identifier_type_p').val('')
+            $('#accessesibility_url_p').val('')
 
             $('#location_service_p').selectpicker('refresh')
             $('#location_schedules_p').selectpicker('refresh')
@@ -3328,6 +3395,11 @@
             let location_details_val = JSON.parse($('#location_details').val())
             let location_accessibility_val = JSON.parse($('#location_accessibility').val())
             let location_accessibility_details_val = JSON.parse($('#location_accessibility_details').val())
+
+            let external_identifier_val = JSON.parse($('#external_identifier').val())
+            let external_identifier_type_val = JSON.parse($('#external_identifier_type').val())
+            let accessesibility_url_val = JSON.parse($('#accessesibility_url').val())
+
             let location_regions_val = JSON.parse($('#location_regions').val())
 
             // location modal phone section
@@ -3523,6 +3595,11 @@
             let location_details_p = location_details_val[id]
             let location_accessibility_p = location_accessibility_val[id]
             let location_accessibility_details_p = location_accessibility_details_val[id]
+
+            let external_identifier_p = external_identifier_val[id]
+            let external_identifier_type_p = external_identifier_type_val[id]
+            let accessesibility_url_p = accessesibility_url_val[id]
+
             let location_region_p = location_regions_val[id]
 
 
@@ -3547,6 +3624,12 @@
             $('#location_details_p').val(location_details_p)
             $('#location_accessibility_p').val(location_accessibility_p)
             $('#location_accessibility_details_p').val(location_accessibility_details_p)
+
+            $('#external_identifier_p').val(external_identifier_p)
+            $('#external_identifier_type_p').val(external_identifier_type_p)
+            $('#accessesibility_url_p').val(accessesibility_url_p)
+
+
             $('#location_region_p').val(location_region_p)
             $('#locationSelectData').val('')
             $('#newLocationData').show()

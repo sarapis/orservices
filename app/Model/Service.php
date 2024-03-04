@@ -23,13 +23,25 @@ class Service extends Model implements ContractsAuditable
     // ];
 
     protected $fillable = [
-        'service_recordid', 'service_name', 'service_alternate_name', 'service_organization', 'service_description', 'service_locations', 'service_url', 'service_email', 'service_status', 'service_taxonomy', 'service_application_process', 'service_wait_time', 'service_fees', 'service_accreditations', 'service_licenses', 'service_phones', 'service_schedule', 'service_contacts', 'service_details', 'service_address', 'service_metadata', 'flag', 'service_program', 'service_airs_taxonomy_x', 'service_code', 'access_requirement', 'SDOH_code', 'code_category_ids', 'procedure_grouping', 'service_tag', 'created_by', 'updated_by', 'service_language', 'service_interpretation', 'eligibility_description', 'minimum_age', 'maximum_age', 'service_alert'
+        'service_recordid', 'service_name', 'service_alternate_name', 'service_organization', 'service_description', 'service_locations', 'service_url', 'service_email', 'service_status', 'service_taxonomy', 'service_application_process', 'service_wait_time', 'service_fees', 'service_accreditations', 'service_licenses', 'service_phones', 'service_schedule', 'service_contacts', 'service_details', 'service_address', 'service_metadata', 'flag', 'service_program', 'service_airs_taxonomy_x', 'service_code', 'access_requirement', 'SDOH_code', 'code_category_ids', 'procedure_grouping', 'service_tag', 'created_by', 'updated_by', 'service_language', 'service_interpretation', 'eligibility_description', 'minimum_age', 'maximum_age', 'service_alert', 'funding', 'alert', 'attribute', 'assured_date', 'assured_email'
     ];
 
     public function organizations()
     {
         $this->primaryKey = 'service_recordid';
         return $this->belongsTo('App\Model\Organization', 'service_organization', 'organization_recordid');
+    }
+
+    public function fundings()
+    {
+        $this->primaryKey = 'service_recordid';
+        return $this->belongsToMany('App\Model\Funding', 'service_fundings', 'service_recordid', 'funding_recordid');
+    }
+
+    public function costOptions()
+    {
+        $this->primaryKey = 'service_recordid';
+        return $this->belongsToMany('App\Model\CostOption', 'service_costs', 'service_recordid', 'cost_recordid');
     }
 
     public function getOrganizations()
@@ -252,5 +264,36 @@ class Service extends Model implements ContractsAuditable
             $otherData .=  $item->phone_language ? ' ' . $item->get_phone_language($item->id) : '';
         }
         return $otherData;
+    }
+
+    public function getAddresses()
+    {
+        $addressArray = [];
+        if ($this->locations->count() > 0) {
+            foreach ($this->locations as $key => $locationData) {
+                foreach ($locationData->address()->get() as $address) {
+                    $addressData = '';
+                    // if ($locationData->address()->where('is_main', '1')->exists()) {
+                    //     $address = $locationData->address()->where('is_main', '1')->first();
+                    // } else {
+                    //     $address = $locationData->address()->first();
+                    // }
+                    if ($address) {
+                        $addressData .= $address->address_1 . ' ';
+                        $addressData .= $address->address_2 . ' ';
+                        $addressData .= $address->address_city . ' ';
+                        $addressData .= $address->address_state_province . ' ';
+                        $addressData .= $address->address_postal_code . ' ';
+
+                        if ($address->address_type_data) {
+                            $addressData .= ' - ' . $address->address_type_data;
+                        }
+                        $addressArray[] = $addressData;
+                    }
+                }
+            }
+        }
+
+        return $addressArray;
     }
 }

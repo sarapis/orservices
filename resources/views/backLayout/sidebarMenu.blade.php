@@ -101,7 +101,7 @@
                 <li><a><img src="/images/Classifications.png" alt="" style="margin-left: -5px;width: 25px">
                         Classifications <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                        <li><a href="/tb_taxonomy">Services</a></li>
+                        <li><a href="/tb_taxonomy">Taxonomy Terms</a></li>
                         <li><a href="{{ route('languages.index') }}">Languages</a></li>
                         <li><a href="{{ route('XDetails.index') }}">Details</a></li>
                         <li><a href="{{ route('organization_tags.index') }}">Organization Tags</a></li>
@@ -121,6 +121,7 @@
                         <li><a href="{{ route('interaction_methods.index') }}">Interaction Methods</a></li>
                         <li><a href="{{ route('service_status.index') }}">Service Statuses</a></li>
                         <li><a href="{{ route('service_tags.index') }}">Service Tags</a></li>
+                        <li><a href="{{ route('address_types.index') }}">Address Type</a></li>
                         {{-- <li><a href="{{ route('service_interpretations.index') }}">Interpretation Services</a></li> --}}
 
                         {{-- <li><a href="{{ route('service_categories.index') }}">Service Category</a></li>

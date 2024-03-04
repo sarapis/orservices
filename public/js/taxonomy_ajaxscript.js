@@ -41,20 +41,26 @@ $(document).ready(function () {
                 }
                 // #c961d6
                 $('#id').val(data.taxonomy_recordid);
+                $('#taxonomy_recordid').val(data.taxonomy_recordid);
+                $('#code').val(data.code);
+                $('#term_uri').val(data.term_uri);
                 $('#taxonomy_name').val(data.taxonomy_name);
                 $('#taxonomy').val(data.taxonomy);
                 $('#x_taxonomies').val(data.x_taxonomies);
                 $('#taxonomy_x_description').val(data.taxonomy_x_description);
                 $('#taxonomy_grandparent_name').val(data.taxonomy_parent_name);
                 $('#language').val(data.language);
+                $('#status').val(data.status);
+                $('#taxonomy_tag').val(data.taxonomy_tag);
                 $('#order').val(data.order);
                 $('#taxonomy_parent_name').val(data.taxonomy_parent_name);
                 $('#taxonomy_x_notes').val(data.taxonomy_x_notes);
                 $('#exclude_vocabulary').val(data.exclude_vocabulary);
                 $('#badge_color').val(data.badge_color);
                 $('#created_at').val(data.created_at);
+                $('#updated_at').val(data.updated_at);
                 $('#created_by').val(data.user ? data.user.first_name : '');
-                $('#status').val(data.status);
+                $('#updated_by').val(data.updated_by);
                 $('#white_logo_image').attr('src', data.category_logo_white)
                 $('#category_logo_image').attr('src', data.category_logo)
                 $("#taxonomy").selectpicker('refresh');

@@ -33,7 +33,7 @@ class Organization extends Model implements ContractsAuditable
     // protected $timestamps = false;
 
     protected $fillable = [
-        'organization_recordid', 'organization_name', 'organization_alternate_name', 'organization_logo_x', 'organization_x_uid', 'organization_description', 'organization_email', 'organization_forms_x_filename', 'organization_forms_x_url', 'organization_url', 'organization_status_x', 'organization_status_sort', 'organization_legal_status', 'organization_tax_status', 'organization_tax_id', 'organization_year_incorporated', 'organization_services', 'organization_phones', 'organization_locations', 'organization_contact', 'organization_details', 'organization_tag', 'organization_airs_taxonomy_x', 'flag', 'organization_website_rating', 'organization_code', 'facebook_url', 'twitter_url', 'instagram_url', 'last_verified_at', 'bookmark', 'last_verified_by', 'created_by', 'updated_by', 'latest_updated_date', 'parent_organization', 'logo'
+        'organization_recordid', 'organization_name', 'organization_alternate_name', 'organization_logo_x', 'organization_x_uid', 'organization_description', 'organization_email', 'organization_forms_x_filename', 'organization_forms_x_url', 'organization_url', 'organization_status_x', 'organization_status_sort', 'organization_legal_status', 'organization_tax_status', 'organization_tax_id', 'organization_year_incorporated', 'organization_services', 'organization_phones', 'organization_locations', 'organization_contact', 'organization_details', 'organization_tag', 'organization_airs_taxonomy_x', 'flag', 'organization_website_rating', 'organization_code', 'facebook_url', 'twitter_url', 'instagram_url', 'last_verified_at', 'bookmark', 'last_verified_by', 'created_by', 'updated_by', 'latest_updated_date', 'parent_organization', 'logo', 'funding'
     ];
 
     public function services()
@@ -46,6 +46,18 @@ class Organization extends Model implements ContractsAuditable
     {
         $this->primaryKey = 'organization_recordid';
         return $this->belongsToMany('App\Model\Service', 'service_organizations', 'organization_recordid', 'service_recordid');
+    }
+
+    public function fundings()
+    {
+        $this->primaryKey = 'organization_recordid';
+        return $this->belongsToMany('App\Model\Funding', 'organization_fundings', 'organization_recordid', 'funding_recordid');
+    }
+
+    public function identifiers()
+    {
+        $this->primaryKey = 'organization_recordid';
+        return $this->belongsToMany('App\Model\Identifier', 'organization_identifiers', 'organization_recordid', 'identifier_recordid');
     }
 
     public function phones()
@@ -61,7 +73,11 @@ class Organization extends Model implements ContractsAuditable
     public function contact()
     {
         return $this->hasmany('App\Model\Contact', 'contact_organizations', 'organization_recordid');
-        // return $this->belongsToMany('App\Model\Contact', 'organizations_contacts', 'organization_recordid', 'contact_recordid');
+    }
+
+    public function contacts()
+    {
+        return $this->belongsToMany('App\Model\Contact', 'organization_contacts', 'organization_recordid', 'contact_recordid');
     }
 
     public function details()

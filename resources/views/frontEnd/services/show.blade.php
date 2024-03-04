@@ -542,8 +542,8 @@
                                                             @endif
                                                             <div class="tagp_class">
                                                                 <span>
-                                                                    <i class="icon md-pin font-size-18 vertical-align-top mr-10" style="float:none"></i>
-                                                                    @if (isset($location->address))
+                                                                    <i class="icon md-pin font-size-18 vertical-align-top mr-10" style="margin-top:5px;"></i>
+                                                                    {{-- @if (isset($location->address))
                                                                         @if ($location->address != null)
                                                                             @foreach ($location->address as $address)
                                                                                 {{ $address->address_1 }}
@@ -553,7 +553,12 @@
                                                                                 {{ $address->address_postal_code }}
                                                                             @endforeach
                                                                         @endif
-                                                                    @endif
+                                                                    @endif --}}
+                                                                    <ul class="p-0" style="margin-left: 25px;">
+                                                                        @foreach ($location->getAddresses() as $address)
+                                                                           <li> {{ $address }} </li>
+                                                                        @endforeach
+                                                                    </ul>
                                                                 </span>
                                                             </div>
                                                             @if ($location->location_hours)

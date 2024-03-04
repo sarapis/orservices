@@ -20,4 +20,9 @@ class Language extends Model
     {
         return $this->belongsTo('App\Model\Location', 'language_location', 'location_recordid');
     }
+
+    public function locations()
+    {
+        return $this->belongsToMany('App\Model\Location', 'location_languages', 'language_recordid', 'location_recordid');
+    }
 }

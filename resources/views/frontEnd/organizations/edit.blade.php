@@ -183,6 +183,12 @@
                                         {!! Form::text('organization_alternate_name', null, ['class' => 'form-control','id' => 'organization_alternate_name',]) !!}
                                     </div>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Funding </label>
+                                        {!! Form::textarea('funding', null, [ 'id' => 'funding', 'rows' => 4, 'cols' => 54, 'style' => 'resize:none', ]) !!}
+                                    </div>
+                                </div>
 
                                 {{-- @if (Auth::user() && Auth::user()->roles->name == 'System Admin')
                                     <div class="col-md-4">
@@ -698,6 +704,10 @@
                     <input type="hidden" name="location_accessibility_details[]" id="location_accessibility_details" value="{{ $location_accessibility_details }}">
                     <input type="hidden" name="location_regions[]" id="location_regions" value="{{ $location_regions }}">
 
+                    <input type="hidden" name="external_identifier[]" id="external_identifier" value="{{ $external_identifier }}">
+                    <input type="hidden" name="external_identifier_type[]" id="external_identifier_type" value="{{ $external_identifier_type }}">
+                    <input type="hidden" name="accessesibility_url[]" id="accessesibility_url" value="{{ $accessesibility_url }}">
+
                     <input type="hidden" name="contact_service[]" id="contact_service" value="{{ $contact_service }}">
                     <input type="hidden" name="contact_department[]" id="contact_department" value="{{ $contact_department }}">
                     {{-- <input type="hidden" name="contact_visibility[]" id="contact_visibility" value="{{ $contact_visibility }}"> --}}
@@ -1110,25 +1120,21 @@
                             <div class="modal-body all_form_field">
                                 <div class="form-group">
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input locationRadio" type="radio" name="locationRadio"
-                                            id="locationRadio2" value="new_data" checked>
-                                        <label class="form-check-label" for="locationRadio2"><b
-                                                style="color: #000">Create New Location</b></label>
+                                        <input class="form-check-input locationRadio" type="radio" name="locationRadio" id="locationRadio2" value="new_data" checked>
+                                        <label class="form-check-label" for="locationRadio2"><b style="color: #000">Create New Location</b></label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input locationRadio" type="radio" name="locationRadio"
-                                            id="locationRadio1" value="existing">
-                                        <label class="form-check-label" for="locationRadio1"><b style="color: #000">Use
-                                                Existing Location</b></label>
+                                        <input class="form-check-input locationRadio" type="radio" name="locationRadio" id="locationRadio1" value="existing">
+                                        <label class="form-check-label" for="locationRadio1"><b style="color: #000">Use Existing Location</b></label>
                                     </div>
                                 </div>
                                 <div class="" id="existingLocationData" style="display: none;">
                                     <select name="locations" id="locationSelectData" class="form-control">
                                         <option value="">Select Locations</option>
                                         @foreach ($all_locations as $location)
-                                            <option value="{{ $location }}"
-                                                data-id="{{ $location->location_recordid }}">
-                                                {{ $location->location_name }}</option>
+                                            <option value="{{ $location }}" data-id="{{ $location->location_recordid }}">
+                                                 {{ $location->location_name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -1138,27 +1144,20 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Location Name:</label>
-                                                <input class="form-control selectpicker" type="text"
-                                                    id="location_name_p" name="location_name" value="">
-                                                <span id="location_name_error" style="display: none;color:red">Location
-                                                    Name is
-                                                    required!</span>
+                                                <input class="form-control selectpicker" type="text" id="location_name_p" name="location_name" value="">
+                                                <span id="location_name_error" style="display: none;color:red">Location Name is required!</span>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Location Alternate Name: </label>
-                                                <input class="form-control selectpicker" type="text"
-                                                    id="location_alternate_name_p" name="location_alternate_name"
-                                                    value="">
+                                                <input class="form-control selectpicker" type="text" id="location_alternate_name_p" name="location_alternate_name" value="">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Location Transportation: </label>
-                                                <input class="form-control selectpicker" type="text"
-                                                    id="location_transporation_p" name="location_transporation"
-                                                    value="">
+                                                <input class="form-control selectpicker" type="text" id="location_transporation_p" name="location_transporation" value="">
                                             </div>
                                         </div>
                                         <div class="col-md-12">
@@ -1182,15 +1181,13 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Address</label>
-                                                <input type="text" class="form-control" placeholder="Address"
-                                                    id="location_address_p">
+                                                <input type="text" class="form-control" placeholder="Address" id="location_address_p">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>City: </label>
-                                                <select class="form-control selectpicker" data-live-search="true"
-                                                    id="location_city_p" name="location_city" , data-size="5">
+                                                <select class="form-control selectpicker" data-live-search="true" id="location_city_p" name="location_city" , data-size="5">
                                                     <option value="">Select city</option>
                                                     @foreach ($address_city_list as $key => $address_city)
                                                         <option value="{{ $address_city }}">{{ $address_city }}
@@ -1215,8 +1212,7 @@
                                         <div v class="col-md-4">
                                             <div class="form-group">
                                                 <label>Zip Code: </label>
-                                                <input type="text" class="form-control" placeholder="Zipcode"
-                                                    id="location_zipcode_p">
+                                                <input type="text" class="form-control" placeholder="Zipcode" id="location_zipcode_p">
                                             </div>
                                         </div>
                                         {{-- <div class="col-md-4">
@@ -1236,6 +1232,26 @@
                                             <div class="form-group">
                                                 <label>ADA Compliant: </label>
                                                 {!! Form::select('location_accessibility_p',$accessibilities,null,['class' => 'form-control selectpicker','data-live-search' => 'true','data-size' => '5','id' => 'location_accessibility_p','placeholder' => 'select accessibility',],) !!}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>External Identifier: </label>
+                                                {!! Form::text('external_identifier', null, ['class' => 'form-control', 'id' => 'external_identifier_p']) !!}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>External Identifier Type: </label>
+                                                {!! Form::text('external_identifier_type', null, ['class' => 'form-control', 'id' => 'external_identifier_type_p']) !!}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Accessibility URL: </label>
+                                                {!! Form::text('accessesibility_url', null, ['class' => 'form-control', 'id' => 'accessesibility_url_p']) !!}
                                             </div>
                                         </div>
                                         <div class="col-md-12">
@@ -2441,6 +2457,10 @@
         let location_accessibility = JSON.parse($('#location_accessibility').val())
         let location_accessibility_details = JSON.parse($('#location_accessibility_details').val())
 
+        let external_identifier = JSON.parse($('#external_identifier').val())
+        let external_identifier_type = JSON.parse($('#external_identifier_type').val())
+        let accessesibility_url = JSON.parse($('#accessesibility_url').val())
+
         let location_phone_numbers = JSON.parse($('#location_phone_numbers').val())
         let location_phone_extensions = JSON.parse($('#location_phone_extensions').val())
         let location_phone_types = JSON.parse($('#location_phone_types').val())
@@ -2492,6 +2512,9 @@
             let location_region_p = ''
             let location_accessibility_p = ''
             let location_accessibility_details_p = ''
+            let external_identifier_p = ''
+            let external_identifier_type_p = ''
+            let accessesibility_url_p = ''
             let location_phone_p = ''
             let location_recordid_p = ''
 
@@ -2564,6 +2587,9 @@
                 location_region_p = $('#location_region_p').val()
                 location_accessibility_p = $('#location_accessibility_p').val()
                 location_accessibility_details_p = $('#location_accessibility_details_p').val()
+                external_identifier_p = $('#external_identifier_p').val()
+                external_identifier_type_p = $('#external_identifier_type_p').val()
+                accessesibility_url_p = $('#accessesibility_url_p').val()
                 // location_phone_p = $('#location_phone_p').val()
 
                 for (let index = 0; index < lp; index++) {
@@ -2632,6 +2658,10 @@
                 location_accessibility_details_p = accessibilities.map((v) => {
                     return v.accessibility_details
                 }).join(',');
+
+                external_identifier_p = data.external_identifier ? data.external_identifier : ''
+                external_identifier_type_p = data.external_identifier_type ? data.external_identifier_type : ''
+                accessesibility_url_p = data.accessesibility_url ? data.accessesibility_url : ''
 
                 // for regions
                 let regions_data = data.regions && data.regions.length > 0 ? data.regions : []
@@ -2729,6 +2759,12 @@
                 location_accessibility_details.push(location_accessibility_details_p)
                 location_regions.push(location_region_p)
 
+                external_identifier.push(external_identifier_p)
+                external_identifier_type.push(external_identifier_type_p)
+                accessesibility_url.push(accessesibility_url_p)
+
+                console.log(external_identifier,'external_identifier')
+
                 location_phone_numbers[l] = phone_number_location
                 location_phone_extensions[l] = phone_extension_location
                 location_phone_types[l] = phone_type_location
@@ -2779,6 +2815,10 @@
                     location_accessibility_details[selectedLocationTrId] = location_accessibility_details_p
                     location_regions[selectedLocationTrId] = location_region_p
 
+                    external_identifier[selectedLocationTrId] = external_identifier_p
+                    external_identifier_type[selectedLocationTrId] = external_identifier_type_p
+                    accessesibility_url[selectedLocationTrId] = accessesibility_url_p
+
                     location_phone_numbers[selectedLocationTrId] = phone_number_location
                     location_phone_extensions[selectedLocationTrId] = phone_extension_location
                     location_phone_types[selectedLocationTrId] = phone_type_location
@@ -2825,6 +2865,9 @@
             $('#location_details').val(JSON.stringify(location_details))
             $('#location_accessibility').val(JSON.stringify(location_accessibility))
             $('#location_accessibility_details').val(JSON.stringify(location_accessibility_details))
+            $('#external_identifier').val(JSON.stringify(external_identifier))
+            $('#external_identifier_type').val(JSON.stringify(external_identifier_type))
+            $('#accessesibility_url').val(JSON.stringify(accessesibility_url))
             $('#location_regions').val(JSON.stringify(location_regions))
 
             $('#location_phone_numbers').val(JSON.stringify(location_phone_numbers))
@@ -2916,7 +2959,9 @@
             $('#location_description_p').val('')
             $('#location_details_p').val('')
             $('#location_accessibility_p').val('')
-            $('#location_region_p').val('')
+            $('#external_identifier_p').val('')
+            $('#external_identifier_type_p').val('')
+            $('#accessesibility_url_p').val('')
             $('#location_region_p').selectpicker('refresh')
             $('#location_accessibility_p').selectpicker('refresh')
             $('#location_service_p').selectpicker('refresh')
@@ -2945,6 +2990,9 @@
                 let location_details_val = JSON.parse($('#location_details').val())
                 let location_accessibility_val = JSON.parse($('#location_accessibility').val())
                 let location_accessibility_details_val = JSON.parse($('#location_accessibility_details').val())
+                let external_identifier_val = JSON.parse($('#external_identifier').val())
+                let external_identifier_type_val = JSON.parse($('#external_identifier_type').val())
+                let accessesibility_url_val = JSON.parse($('#accessesibility_url').val())
                 let location_regions_val = JSON.parse($('#location_regions').val())
 
                 // location modal phone section
@@ -2990,6 +3038,9 @@
                 location_details_val.splice(deletedId, 1)
                 location_accessibility_val.splice(deletedId, 1)
                 location_accessibility_details_val.splice(deletedId, 1)
+                external_identifier_val.splice(deletedId, 1)
+                external_identifier_type_val.splice(deletedId, 1)
+                accessesibility_url_val.splice(deletedId, 1)
                 location_regions_val.splice(deletedId, 1)
                 location_phone_numbers.splice(deletedId, 1)
                 location_phone_extensions.splice(deletedId, 1)
@@ -3031,6 +3082,9 @@
                 $('#location_details').val(JSON.stringify(location_details_val))
                 $('#location_accessibility').val(JSON.stringify(location_accessibility_val))
                 $('#location_accessibility_details').val(JSON.stringify(location_accessibility_details_val))
+                $('#external_identifier').val(JSON.stringify(external_identifier_val))
+                $('#external_identifier_type').val(JSON.stringify(external_identifier_type_val))
+                $('#accessesibility_url').val(JSON.stringify(accessesibility_url_val))
                 $('#location_regions').val(JSON.stringify(location_regions_val))
 
                 $('#location_phone_numbers').val(JSON.stringify(location_phone_numbers))
@@ -3102,6 +3156,10 @@
             // $('#location_accessibility_details_p').val('')
             $('#location_region_p').val('')
 
+            $('#external_identifier_p').val('')
+            $('#external_identifier_type_p').val('')
+            $('#accessesibility_url_p').val('')
+
             $('#location_service_p').selectpicker('refresh')
             $('#location_schedules_p').selectpicker('refresh')
 
@@ -3168,6 +3226,10 @@
             let location_accessibility_val = JSON.parse($('#location_accessibility').val())
             let location_accessibility_details_val = JSON.parse($('#location_accessibility_details').val())
             let location_regions_val = JSON.parse($('#location_regions').val())
+
+            let external_identifier_val = JSON.parse($('#external_identifier').val())
+            let external_identifier_type_val = JSON.parse($('#external_identifier_type').val())
+            let accessesibility_url_val = JSON.parse($('#accessesibility_url').val())
 
             // location modal phone section
             let location_phone_numbers = JSON.parse($('#location_phone_numbers').val())
@@ -3358,6 +3420,10 @@
             let location_accessibility_details_p = location_accessibility_details_val[id]
             let location_region_p = location_regions_val[id]
 
+            let external_identifier_p = external_identifier_val[id]
+            let external_identifier_type_p = external_identifier_type_val[id]
+            let accessesibility_url_p = accessesibility_url_val[id]
+
 
             // locationRadioValue = radioValue
             locationRadioValue = 'new_data'
@@ -3380,6 +3446,10 @@
             $('#location_accessibility_p').val(location_accessibility_p)
             $('#location_accessibility_details_p').val(location_accessibility_details_p)
             $('#location_region_p').val(location_region_p)
+
+            $('#external_identifier_p').val(external_identifier_p)
+            $('#external_identifier_type_p').val(external_identifier_type_p)
+            $('#accessesibility_url_p').val(accessesibility_url_p)
 
             $('#locationSelectData').val('')
             $('#newLocationData').show()

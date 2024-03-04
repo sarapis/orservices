@@ -50,15 +50,22 @@ Create Taxonomy
                         </div>
                     </div>
                     <div class="form-group {{ $errors->has('reference_url') ? 'has-error' : ''}}">
-                        {!! Form::label('reference_url', 'Reference URL', ['class' => 'col-md-3 control-label']) !!}
+                        {!! Form::label('reference_url', 'URI', ['class' => 'col-md-3 control-label']) !!}
                         <div class="col-sm-6">
                             {!! Form::text('reference_url', null, ['class' => 'form-control']) !!}
                             {!! $errors->first('reference_url', '<p class="help-block">:message</p>') !!}
                         </div>
                     </div>
+                    <div class="form-group {{ $errors->has('version') ? 'has-error' : ''}}">
+                        {!! Form::label('version', 'Version', ['class' => 'col-md-3 control-label']) !!}
+                        <div class="col-sm-6">
+                            {!! Form::text('version', null, ['class' => 'form-control']) !!}
+                            {!! $errors->first('version', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
 
                     <div class="form-group {{ $errors->has('notes') ? 'has-error' : ''}}">
-                        {!! Form::label('notes', 'Notes' , ['class' => 'col-md-3 control-label']) !!}
+                        {!! Form::label('notes', 'Description' , ['class' => 'col-md-3 control-label']) !!}
                         <div class="col-sm-6">
                             {!! Form::textarea('notes', null, ['class' => 'form-control']) !!}
                             {!! $errors->first('notes', '<p class="help-block">:message</p>') !!}

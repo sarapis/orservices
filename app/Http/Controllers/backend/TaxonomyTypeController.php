@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\backend;
 
+use App\Exports\zip\TaxonomyTypeZipExport;
 use App\Functions\Airtable;
 use App\Http\Controllers\Controller;
 use App\Model\AdditionalTaxonomy;
@@ -10,21 +11,31 @@ use App\Model\Airtablekeyinfo;
 use App\Model\TaxonomyTerm;
 use App\Model\TaxonomyType;
 use App\Services\Stringtoint;
+use App\Services\TaxonomyTypeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 class TaxonomyTypeController extends Controller
 {
-    public function airtable_v2($api_key, $base_url)
+
+    public $taxonomyTypeService;
+
+    public function __construct(TaxonomyTypeService $taxonomyTypeService)
+    {
+        $this->taxonomyTypeService = $taxonomyTypeService;
+    }
+
+    public function airtable_v2($access_token, $base_url)
     {
         try {
             $airtable_key_info = Airtablekeyinfo::find(1);
             if (!$airtable_key_info) {
                 $airtable_key_info = new Airtablekeyinfo;
             }
-            $airtable_key_info->api_key = $api_key;
+            $airtable_key_info->access_token = $access_token;
             $airtable_key_info->base_url = $base_url;
             $airtable_key_info->save();
 
@@ -36,7 +47,7 @@ class TaxonomyTypeController extends Controller
             //     'base'      => env('AIRTABLE_BASE_URL'),
             // ));
             $airtable = new Airtable(array(
-                'api_key' => $api_key,
+                'access_token' => $access_token,
                 'base' => $base_url,
             ));
             $request = $airtable->getContent('x-taxonomies');
@@ -93,6 +104,11 @@ class TaxonomyTypeController extends Controller
                 'success' => false
             ], 500);
         }
+    }
+
+    public function airtable_v3($access_token, $base_url)
+    {
+        $this->taxonomyTypeService->import_airtable_v3($access_token, $base_url);
     }
     /**
      * Display a listing of the resource.
@@ -181,6 +197,7 @@ class TaxonomyTypeController extends Controller
                 'order' => $request->order,
                 'type' => $request->type,
                 'reference_url' => $request->reference_url,
+                'version' => $request->version,
                 'notes' => $request->notes,
             ]);
             Session::flash('message', 'Success! Taxonomy type is created successfully.');
@@ -235,6 +252,7 @@ class TaxonomyTypeController extends Controller
                 'order' => $request->order,
                 'type' => $request->type,
                 'reference_url' => $request->reference_url,
+                'version' => $request->version,
                 'notes' => $request->notes,
             ]);
             Session::flash('message', 'Success! Taxonomy type is updated successfully.');
@@ -264,6 +282,15 @@ class TaxonomyTypeController extends Controller
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
             return redirect()->back()->withInput();
+        }
+    }
+
+    public function export()
+    {
+        try {
+            return Excel::download(new TaxonomyTypeZipExport(false), 'Taxonomies.csv');
+        } catch (\Throwable $th) {
+            dd($th);
         }
     }
 }

@@ -19,7 +19,7 @@ class Location extends Model implements ContractsAuditable
     ];
 
     protected $fillable = [
-        'location_recordid', 'location_name', 'location_organization', 'location_alternate_name', 'location_transportation', 'location_latitude', 'location_longitude', 'location_description', 'location_services', 'location_phones', 'location_details', 'location_schedule', 'location_address', 'flag', 'updated_by', 'created_by', 'accessibility_recordid', 'accessibility_details'
+        'location_recordid', 'location_name', 'location_organization', 'location_alternate_name', 'location_transportation', 'location_latitude', 'location_longitude', 'location_description', 'location_services', 'location_phones', 'location_details', 'location_schedule', 'location_address', 'flag', 'updated_by', 'created_by', 'accessibility_recordid', 'accessibility_details', 'location_type', 'location_url', 'external_identifier', 'external_identifier_type', 'location_languages', 'accessesibility_url'
     ];
 
     public function organization()
@@ -45,12 +45,14 @@ class Location extends Model implements ContractsAuditable
 
     public function languages()
     {
-        return $this->hasMany('App\Model\Language', 'language_location', 'location_recordid');
+        // return $this->hasMany('App\Model\Language', 'language_location', 'location_recordid');
+        return $this->belongsToMany('App\Model\Language', 'location_languages', 'location_recordid', 'language_recordid');
     }
 
     public function accessibilities()
     {
-        return $this->hasMany('App\Model\Accessibility', 'accessibility_location', 'location_recordid');
+        // return $this->hasMany('App\Model\Accessibility', 'accessibility_location', 'location_recordid');
+        return $this->belongsToMany('App\Model\Accessibility', 'location_accessibilities', 'location_recordid', 'accessibility_recordid');
     }
 
     /**
@@ -89,5 +91,32 @@ class Location extends Model implements ContractsAuditable
     public function regions()
     {
         return $this->belongsToMany('App\Model\Region', 'location_regions', 'location_recordid', 'region_id');
+    }
+
+    public function getAddresses()
+    {
+        $addressArray = [];
+        // if ($this->address()->where('is_main', '1')->exists()) {
+        //     $address = $this->address()->where('is_main', '1')->first();
+        // } else {
+        //     $address = $this->address()->first();
+        // }
+        foreach ($this->address()->get() as $address) {
+            $addressData = '';
+            if ($address) {
+                $addressData .= $address->address_1 . ' ';
+                $addressData .= $address->address_2 . ' ';
+                $addressData .= $address->address_city . ' ';
+                $addressData .= $address->address_state_province . ' ';
+                $addressData .= $address->address_postal_code . ' ';
+
+                if ($address->address_type_data) {
+                    $addressData .= ' - ' . $address->address_type_data;
+                }
+                $addressArray[] = $addressData;
+            }
+        }
+
+        return $addressArray;
     }
 }

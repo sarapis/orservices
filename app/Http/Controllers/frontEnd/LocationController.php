@@ -20,6 +20,7 @@ use App\Model\LocationAddress;
 use App\Model\LocationPhone;
 use App\Model\LocationSchedule;
 use App\Model\Accessibility;
+use App\Model\AddressType;
 use App\Model\Airtables;
 use App\Model\Airtable_v2;
 use App\Model\City;
@@ -36,6 +37,7 @@ use App\Model\PhoneType;
 use App\Model\Region;
 use App\Model\Source_data;
 use App\Model\State;
+use App\Services\LocationService;
 use Spatie\Geocoder\Geocoder;
 use App\Services\Stringtoint;
 use Carbon\Carbon;
@@ -53,21 +55,22 @@ use OwenIt\Auditing\Models\Audit;
 // use DataTables;
 class LocationController extends Controller
 {
-    public $commonController;
+    public $commonController, $locationService;
 
-    public function __construct(CommonController $commonControllerData)
+    public function __construct(CommonController $commonControllerData, LocationService $locationService)
     {
         $this->commonController = $commonControllerData;
+        $this->locationService = $locationService;
     }
 
-    public function airtable($api_key, $base_url)
+    public function airtable($access_token, $base_url)
     {
 
         $airtable_key_info = Airtablekeyinfo::find(1);
         if (!$airtable_key_info) {
             $airtable_key_info = new Airtablekeyinfo;
         }
-        $airtable_key_info->api_key = $api_key;
+        $airtable_key_info->access_token = $access_token;
         $airtable_key_info->base_url = $base_url;
         $airtable_key_info->save();
 
@@ -76,12 +79,8 @@ class LocationController extends Controller
         LocationPhone::truncate();
         LocationSchedule::truncate();
 
-        // $airtable = new Airtable(array(
-        //     'api_key'   => env('AIRTABLE_API_KEY'),
-        //     'base'      => env('AIRTABLE_BASE_URL'),
-        // ));
         $airtable = new Airtable(array(
-            'api_key'   => $api_key,
+            'access_token'   => $access_token,
             'base'      => $base_url,
         ));
 
@@ -187,14 +186,14 @@ class LocationController extends Controller
         $airtable->syncdate = $date;
         $airtable->save();
     }
-    public function airtable_v2($api_key, $base_url)
+    public function airtable_v2($access_token, $base_url)
     {
         try {
             $airtable_key_info = Airtablekeyinfo::find(1);
             if (!$airtable_key_info) {
                 $airtable_key_info = new Airtablekeyinfo;
             }
-            $airtable_key_info->api_key = $api_key;
+            $airtable_key_info->access_token = $access_token;
             $airtable_key_info->base_url = $base_url;
             $airtable_key_info->save();
 
@@ -203,12 +202,8 @@ class LocationController extends Controller
             // LocationPhone::truncate();
             // LocationSchedule::truncate();
 
-            // $airtable = new Airtable(array(
-            //     'api_key'   => env('AIRTABLE_API_KEY'),
-            //     'base'      => env('AIRTABLE_BASE_URL'),
-            // ));
             $airtable = new Airtable(array(
-                'api_key'   => $api_key,
+                'access_token'   => $access_token,
                 'base'      => $base_url,
             ));
 
@@ -342,6 +337,11 @@ class LocationController extends Controller
                 'success' => false
             ], 500);
         }
+    }
+
+    public function airtable_v3($access_token, $base_url)
+    {
+        $this->locationService->import_airtable_v3($access_token, $base_url);
     }
     /**
      * Display a listing of the resource.
@@ -672,7 +672,12 @@ class LocationController extends Controller
         $regions = Region::pluck('region', 'id');
 
         $accessibilities = Accessibility::pluck('accessibility', 'id');
-        return view('frontEnd.locations.facility-create-in-organization', compact('map', 'organization', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'phone_languages', 'phone_type', 'detail_types', 'all_phones', 'phone_language_data', 'regions', 'accessibilities'));
+
+        $languages = Language::pluck('language', 'id');
+        $addressTypes = AddressType::pluck('type', 'id');
+
+
+        return view('frontEnd.locations.facility-create-in-organization', compact('map', 'organization', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'phone_languages', 'phone_type', 'detail_types', 'all_phones', 'phone_language_data', 'regions', 'accessibilities', 'languages', 'addressTypes'));
     }
 
     public function create()
@@ -704,7 +709,10 @@ class LocationController extends Controller
 
         $accessibilities = Accessibility::pluck('accessibility', 'id');
 
-        return view('frontEnd.locations.create', compact('map', 'organization_name_list', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'phone_languages', 'phone_type', 'detail_types', 'all_phones', 'phone_language_data', 'regions', 'accessibilities'));
+        $languages = Language::pluck('language', 'id');
+        $addressTypes = AddressType::pluck('type', 'id');
+
+        return view('frontEnd.locations.create', compact('map', 'organization_name_list', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'phone_languages', 'phone_type', 'detail_types', 'all_phones', 'phone_language_data', 'regions', 'accessibilities', 'languages', 'addressTypes'));
     }
     public function add_new_facility_in_organization(Request $request)
     {
@@ -729,12 +737,19 @@ class LocationController extends Controller
             $facility->location_alternate_name = $request->location_alternate_name;
             $facility->location_transportation = $request->location_transportation;
             $facility->location_description = $request->location_description;
+            $facility->location_type = $request->location_type;
+            $facility->location_url = $request->location_url;
+            $facility->external_identifier = $request->external_identifier;
+            $facility->external_identifier_type = $request->external_identifier_type;
+            $facility->accessesibility_url = $request->accessesibility_url;
+            $facility->location_languages = $request->location_languages ? implode(', ', $request->location_languages) : '';
 
             // accessesibility
             if ($request->accessibility_recordid) {
                 $facility->accessibility_recordid = $request->accessibility_recordid;
-                $facility->accessibility_details = $request->accessibility_details;
             }
+            $facility->accessibility_details = $request->accessibility_details;
+
             $regions =  is_array($request->regions) ? array_values(array_filter($request->regions)) : [];
             if ($regions) {
                 $facility->regions()->sync($regions);
@@ -827,53 +842,103 @@ class LocationController extends Controller
             $facility_address_zip_code = $request->facility_zip_code;
             $facility_address_info = $facility_street_address . ', ' . $facility_address_city . ', ' . $facility_address_state . ', ' . $facility_address_zip_code;
 
-            $address = Address::where('address_1', '=', $facility_street_address)->first();
+            // $address = Address::where('address_1', '=', $facility_street_address)->first();
+            // $address_recordid_list = [];
+            // $address_id = '';
+            // if ($address) {
+            //     $address_id = $address["address_recordid"];
+            //     $facility->location_address = $address_id;
+            // } else {
+            //     $address = new Address;
+            //     $new_recordid = Address::max('address_recordid') + 1;
+            //     $address->address_recordid = $new_recordid;
+            //     $address->address_1 = $facility_street_address;
+            //     $address->address_city = $facility_address_city;
+            //     $address->address_state_province = $facility_address_state;
+            //     $address->address_postal_code = $facility_address_zip_code;
+            //     $facility->location_address = $new_recordid;
+            //     $address_id = $new_recordid;
+            //     $address->save();
+            // }
+            // array_push($address_recordid_list, $address_id);
+
+            $address_1 = $request->address_1 && isset($request->address_1[0]) ? json_decode($request->address_1[0]) : [];
+            $address_2 = $request->address_2 && isset($request->address_2[0]) ? json_decode($request->address_2[0]) : [];
+            $address_attention = $request->address_attention && isset($request->address_attention[0]) ? json_decode($request->address_attention[0]) : [];
+            $address_city = $request->address_city && isset($request->address_city[0]) ? json_decode($request->address_city[0]) : [];
+            $regions = $request->address_regions && isset($request->address_regions[0]) ? json_decode($request->address_regions[0]) : [];
+            $address_state = $request->address_state && isset($request->address_state[0]) ? json_decode($request->address_state[0]) : [];
+            $zip_codes = $request->zip_codes && isset($request->zip_codes[0]) ? json_decode($request->zip_codes[0]) : [];
+            $address_country = $request->address_country && isset($request->address_country[0]) ? json_decode($request->address_country[0]) : [];
+            $address_type = $request->address_type && isset($request->address_type[0]) ? json_decode($request->address_type[0]) : [];
+            $mainAddress = $request->mainAddress ?? 0;
+
             $address_recordid_list = [];
-            $address_id = '';
-            if ($address) {
-                $address_id = $address["address_recordid"];
-                $facility->location_address = $address_id;
-            } else {
-                $address = new Address;
-                $new_recordid = Address::max('address_recordid') + 1;
-                $address->address_recordid = $new_recordid;
-                $address->address_1 = $facility_street_address;
-                $address->address_city = $facility_address_city;
-                $address->address_state_province = $facility_address_state;
-                $address->address_postal_code = $facility_address_zip_code;
-                $facility->location_address = $new_recordid;
-                $address_id = $new_recordid;
-                $address->save();
+            foreach ($address_1 as $key => $value) {
+                $address = Address::where('address_1', '=', $value)->first();
+                $address_id = '';
+                if ($address) {
+                    $address_id = $address["address_recordid"];
+                    $facility->location_address = $address_id;
+                    $address->address_1 = $address_1[$key] ?? null;
+                    $address->address_2 = $address_2[$key] ?? null;
+                    $address->address_city = $address_city[$key] ?? null;
+                    $address->address_state_province = $address_state[$key] ?? null;
+                    $address->address_postal_code = $zip_codes[$key] ?? null;
+                    $address->address_attention = $address_attention[$key] ?? null;
+                    $address->address_region = $address_region[$key] ?? null;
+                    $address->address_country = $address_country[$key] ?? null;
+                    $address->address_type = $address_type && isset($address_type[$key]) && is_array($address_type[$key]) ? implode(',', $address_type[$key]) : null;
+                    $address->is_main = $mainAddress == $key ? true : false;
+                    $address->save();
+                } else {
+                    $address = new Address;
+                    $new_recordid = Address::max('address_recordid') + 1;
+                    $address->address_recordid = $new_recordid;
+                    $address->address_1 = $address_1[$key] ?? null;
+                    $address->address_2 = $address_2[$key] ?? null;
+                    $address->address_city = $address_city[$key] ?? null;
+                    $address->address_state_province = $address_state[$key] ?? null;
+                    $address->address_postal_code = $zip_codes[$key] ?? null;
+                    $address->address_attention = $address_attention[$key] ?? null;
+                    $address->address_country = $address_country[$key] ?? null;
+                    $address->address_type = $address_type && isset($address_type[$key]) && is_array($address_type[$key]) ? implode(',', $address_type[$key]) : null;
+                    $address->address_region = $address_region[$key] ?? null;
+                    $address->is_main = $mainAddress == $key ? true : false;
+                    $facility->location_address = $new_recordid;
+                    $address_id = $new_recordid;
+                    $address->save();
+                }
+                array_push($address_recordid_list, $address_id);
             }
-            array_push($address_recordid_list, $address_id);
 
             $address_recordid_list = array_values(array_filter($address_recordid_list));
             $facility->address()->sync($address_recordid_list);
 
-            $client = new \GuzzleHttp\Client();
-            $geocoder = new Geocoder($client);
-            $map = Map::find(1);
-            $geocode_api_key = $map && $map->api_key ? $map->api_key : null;
-            $geocoder->setApiKey($geocode_api_key);
+            // $client = new \GuzzleHttp\Client();
+            // $geocoder = new Geocoder($client);
+            // $map = Map::find(1);
+            // $geocode_api_key = $map && $map->api_key ? $map->api_key : null;
+            // $geocoder->setApiKey($geocode_api_key);
 
-            if ($facility->location_address) {
-                $address_recordid = $facility->location_address;
-                $address_info = Address::where('address_recordid', '=', $address_recordid)->select('address_1', 'address_city', 'address_state_province', 'address_postal_code')->first();
-                $full_address_info = $address_info->address_1 . ', ' . $address_info->address_city . ', ' . $address_info->address_state_province . ', ' . $address_info->address_postal_code;
+            // if ($facility->location_address) {
+            //     $address_recordid = $facility->location_address;
+            //     $address_info = Address::where('address_recordid', '=', $address_recordid)->select('address_1', 'address_city', 'address_state_province', 'address_postal_code')->first();
+            //     $full_address_info = $address_info->address_1 . ', ' . $address_info->address_city . ', ' . $address_info->address_state_province . ', ' . $address_info->address_postal_code;
 
-                $response = $geocoder->getCoordinatesForAddress($full_address_info);
+            //     $response = $geocoder->getCoordinatesForAddress($full_address_info);
 
-                if ($response['lat']) {
-                    $latitude = $response['lat'];
-                    $longitude = $response['lng'];
-                    $facility->location_latitude = $latitude;
-                    $facility->location_longitude = $longitude;
-                } else {
-                    Session::flash('message', 'Address info is not valid. We can not get longitude and latitude for this address');
-                    Session::flash('status', 'error');
-                    return redirect()->back()->withInput();
-                }
-            }
+            //     if ($response['lat']) {
+            //         $latitude = $response['lat'];
+            //         $longitude = $response['lng'];
+            //         $facility->location_latitude = $latitude;
+            //         $facility->location_longitude = $longitude;
+            //     } else {
+            //         Session::flash('message', 'Address info is not valid. We can not get longitude and latitude for this address');
+            //         Session::flash('status', 'error');
+            //         return redirect()->back()->withInput();
+            //     }
+            // }
 
             // $facility->location_phones = '';
             // $phone_recordid_list = [];
@@ -1010,6 +1075,12 @@ class LocationController extends Controller
             $facility->location_alternate_name = $request->location_alternate_name;
             $facility->location_transportation = $request->location_transportation;
             $facility->location_description = $request->location_description;
+            $facility->location_type = $request->location_type;
+            $facility->location_url = $request->location_url;
+            $facility->external_identifier = $request->external_identifier;
+            $facility->external_identifier_type = $request->external_identifier_type;
+            $facility->accessesibility_url = $request->accessesibility_url;
+            $facility->location_languages = $request->location_languages ? implode(', ', $request->location_languages) : '';
             // $facility->location_details = $request->location_details;
 
             // accessesibility
@@ -1106,53 +1177,103 @@ class LocationController extends Controller
             $facility_address_zip_code = $request->facility_zip_code;
             $facility_address_info = $facility_street_address . ', ' . $facility_address_city . ', ' . $facility_address_state . ', ' . $facility_address_zip_code;
 
-            $address = Address::where('address_1', '=', $facility_street_address)->first();
+            // $address = Address::where('address_1', '=', $facility_street_address)->first();
+            // $address_recordid_list = [];
+            // $address_id = '';
+            // if ($address) {
+            //     $address_id = $address["address_recordid"];
+            //     $facility->location_address = $address_id;
+            // } else {
+            //     $address = new Address;
+            //     $new_recordid = Address::max('address_recordid') + 1;
+            //     $address->address_recordid = $new_recordid;
+            //     $address->address_1 = $facility_street_address;
+            //     $address->address_city = $facility_address_city;
+            //     $address->address_state_province = $facility_address_state;
+            //     $address->address_postal_code = $facility_address_zip_code;
+            //     $facility->location_address = $new_recordid;
+            //     $address_id = $new_recordid;
+            //     $address->save();
+            // }
+            // array_push($address_recordid_list, $address_id);
+
+            $address_1 = $request->address_1 && isset($request->address_1[0]) ? json_decode($request->address_1[0]) : [];
+            $address_2 = $request->address_2 && isset($request->address_2[0]) ? json_decode($request->address_2[0]) : [];
+            $address_attention = $request->address_attention && isset($request->address_attention[0]) ? json_decode($request->address_attention[0]) : [];
+            $address_city = $request->address_city && isset($request->address_city[0]) ? json_decode($request->address_city[0]) : [];
+            $regions = $request->address_regions && isset($request->address_regions[0]) ? json_decode($request->address_regions[0]) : [];
+            $address_state = $request->address_state && isset($request->address_state[0]) ? json_decode($request->address_state[0]) : [];
+            $zip_codes = $request->zip_codes && isset($request->zip_codes[0]) ? json_decode($request->zip_codes[0]) : [];
+            $address_country = $request->address_country && isset($request->address_country[0]) ? json_decode($request->address_country[0]) : [];
+            $address_type = $request->address_type && isset($request->address_type[0]) ? json_decode($request->address_type[0]) : [];
+            $mainAddress = $request->mainAddress ?? 0;
+
             $address_recordid_list = [];
-            $address_id = '';
-            if ($address) {
-                $address_id = $address["address_recordid"];
-                $facility->location_address = $address_id;
-            } else {
-                $address = new Address;
-                $new_recordid = Address::max('address_recordid') + 1;
-                $address->address_recordid = $new_recordid;
-                $address->address_1 = $facility_street_address;
-                $address->address_city = $facility_address_city;
-                $address->address_state_province = $facility_address_state;
-                $address->address_postal_code = $facility_address_zip_code;
-                $facility->location_address = $new_recordid;
-                $address_id = $new_recordid;
-                $address->save();
+            foreach ($address_1 as $key => $value) {
+                $address = Address::where('address_1', '=', $value)->first();
+                $address_id = '';
+                if ($address) {
+                    $address_id = $address["address_recordid"];
+                    $facility->location_address = $address_id;
+                    $address->address_1 = $address_1[$key] ?? null;
+                    $address->address_2 = $address_2[$key] ?? null;
+                    $address->address_city = $address_city[$key] ?? null;
+                    $address->address_state_province = $address_state[$key] ?? null;
+                    $address->address_postal_code = $zip_codes[$key] ?? null;
+                    $address->address_attention = $address_attention[$key] ?? null;
+                    $address->address_region = $address_region[$key] ?? null;
+                    $address->address_country = $address_country[$key] ?? null;
+                    $address->address_type = $address_type && isset($address_type[$key]) && is_array($address_type[$key]) ? implode(',', $address_type[$key]) : null;
+                    $address->is_main = $mainAddress == $key ? true : false;
+                    $address->save();
+                } else {
+                    $address = new Address;
+                    $new_recordid = Address::max('address_recordid') + 1;
+                    $address->address_recordid = $new_recordid;
+                    $address->address_1 = $address_1[$key] ?? null;
+                    $address->address_2 = $address_2[$key] ?? null;
+                    $address->address_city = $address_city[$key] ?? null;
+                    $address->address_state_province = $address_state[$key] ?? null;
+                    $address->address_postal_code = $zip_codes[$key] ?? null;
+                    $address->address_attention = $address_attention[$key] ?? null;
+                    $address->address_country = $address_country[$key] ?? null;
+                    $address->address_type = $address_type && isset($address_type[$key]) && is_array($address_type[$key]) ? implode(',', $address_type[$key]) : null;
+                    $address->address_region = $address_region[$key] ?? null;
+                    $address->is_main = $mainAddress == $key ? true : false;
+                    $facility->location_address = $new_recordid;
+                    $address_id = $new_recordid;
+                    $address->save();
+                }
+                array_push($address_recordid_list, $address_id);
             }
-            array_push($address_recordid_list, $address_id);
 
             $address_recordid_list = array_values(array_filter($address_recordid_list));
             $facility->address()->sync($address_recordid_list);
 
-            $client = new \GuzzleHttp\Client();
-            $geocoder = new Geocoder($client);
-            $map = Map::find(1);
-            $geocode_api_key = $map && $map->api_key ? $map->api_key : null;
-            $geocoder->setApiKey($geocode_api_key);
+            // $client = new \GuzzleHttp\Client();
+            // $geocoder = new Geocoder($client);
+            // $map = Map::find(1);
+            // $geocode_api_key = $map && $map->api_key ? $map->api_key : null;
+            // $geocoder->setApiKey($geocode_api_key);
 
-            if ($facility->location_address) {
-                $address_recordid = $facility->location_address;
-                $address_info = Address::where('address_recordid', '=', $address_recordid)->select('address_1', 'address_city', 'address_state_province', 'address_postal_code')->first();
-                $full_address_info = $address_info->address_1 . ', ' . $address_info->address_city . ', ' . $address_info->address_state_province . ', ' . $address_info->address_postal_code;
+            // if ($facility->location_address) {
+            //     $address_recordid = $facility->location_address;
+            //     $address_info = Address::where('address_recordid', '=', $address_recordid)->select('address_1', 'address_city', 'address_state_province', 'address_postal_code')->first();
+            //     $full_address_info = $address_info->address_1 . ', ' . $address_info->address_city . ', ' . $address_info->address_state_province . ', ' . $address_info->address_postal_code;
 
-                $response = $geocoder->getCoordinatesForAddress($full_address_info);
+            //     $response = $geocoder->getCoordinatesForAddress($full_address_info);
 
-                if ($response['lat']) {
-                    $latitude = $response['lat'];
-                    $longitude = $response['lng'];
-                    $facility->location_latitude = $latitude;
-                    $facility->location_longitude = $longitude;
-                } else {
-                    Session::flash('message', 'Address info is not valid. We can not get longitude and latitude for this address');
-                    Session::flash('status', 'error');
-                    return redirect()->back()->withInput();
-                }
-            }
+            //     if ($response['lat']) {
+            //         $latitude = $response['lat'];
+            //         $longitude = $response['lng'];
+            //         $facility->location_latitude = $latitude;
+            //         $facility->location_longitude = $longitude;
+            //     } else {
+            //         Session::flash('message', 'Address info is not valid. We can not get longitude and latitude for this address');
+            //         Session::flash('status', 'error');
+            //         return redirect()->back()->withInput();
+            //     }
+            // }
 
 
 
@@ -1304,7 +1425,9 @@ class LocationController extends Controller
 
             $facilityAudits = $this->commonController->locationSection($facility);
 
-            return view('frontEnd.locations.show', compact('facility', 'map', 'locations', 'facility_organizations', 'comment_list', 'existing_tags', 'locationDetails', 'facilityAudits', 'inactiveOrganizationIds'));
+            $locationAddresses = $facility->address;
+
+            return view('frontEnd.locations.show', compact('facility', 'map', 'locations', 'facility_organizations', 'comment_list', 'existing_tags', 'locationDetails', 'facilityAudits', 'inactiveOrganizationIds', 'locationAddresses'));
         } else {
             Session::flash('message', 'This record has been deleted.');
             Session::flash('status', 'warning');
@@ -1322,6 +1445,7 @@ class LocationController extends Controller
     {
         $map = Map::find(1);
         $facility = Location::where('location_recordid', '=', $id)->first();
+
         if ($facility) {
 
             // if ($facility->accessibilities && isset($facility->accessibilities[0])) {
@@ -1335,7 +1459,7 @@ class LocationController extends Controller
             $facility_organizations = Organization::whereIn('organization_recordid', $facility_organization_recordid_list)->orderBy('organization_name')->get();
 
             if ((Auth::user() && Auth::user()->roles) && (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin') || (Auth::user()->roles->name == 'Section Admin') || (Auth::user() && Auth::user()->user_organization && count($facility_organizations) > 0 && str_contains(Auth::user()->user_organization, $facility_organizations[0]->organization_recordid))) {
-                // $organization_names = Organization::pluck("organization_name", "organization_recordid");
+
                 if (Auth::user() && Auth::user()->user_organization && (Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin')) {
                     $organization_recordid = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_recordid')->toArray() : [];
                     if (Auth::user()->organization_tags) {
@@ -1349,12 +1473,6 @@ class LocationController extends Controller
                 } else {
                     $organization_names = Organization::orderBy('organization_name')->pluck("organization_name", "organization_recordid");
                 }
-                // $organization_name_list = [];
-                // foreach ($organization_names as $key => $value) {
-                //     $org_names = explode(", ", trim($value->organization_name));
-                //     $organization_name_list = array_merge($organization_name_list, $org_names);
-                // }
-                // $organization_name_list = array_unique($organization_name_list);
 
                 $organization_id = $facility->location_organization;
                 $organization_name_info = Organization::where('organization_recordid', '=', $organization_id)->select('organization_name')->first();
@@ -1370,7 +1488,6 @@ class LocationController extends Controller
                 }
 
                 $service_info_list = Service::whereIn('service_recordid', $service_recordid_list)->orderBy('service_name')->pluck('service_name', 'service_recordid')->toArray();
-                // $service_info_list = Service::orderBy('service_name')->pluck('service_name', 'service_recordid')->toArray();
 
                 $facility_service_list = explode(',', $facility->location_services);
 
@@ -1449,8 +1566,48 @@ class LocationController extends Controller
                 $regions = Region::pluck('region', 'id');
 
                 $accessibilities = Accessibility::pluck('accessibility', 'id');
+                $languages = Language::pluck('language', 'id');
 
-                return view('frontEnd.locations.edit', compact('facility', 'map', 'facility_organization_name', 'service_info_list', 'facility_service_list', 'organization_names', 'facility_organization_list', 'facility_phone_number', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'location_address_city', 'location_street_address', 'location_zip_code', 'location_state', 'phone_languages', 'phone_type', 'detail_types', 'locationDetails', 'phone_language_data', 'facilityAudits', 'phone_language_name', 'all_phones', 'regions', 'accessibilities'));
+                $location_languages_list = explode(', ', $facility->location_languages);
+
+                $locationAddresses = $facility->address;
+
+
+                $location_address_1_list = [];
+                $location_address_2_list = [];
+                $location_address_attention_list = [];
+                $location_address_city_list = [];
+                $location_address_regions_list = [];
+                $location_address_state_list = [];
+                $location_zip_codes_list = [];
+                $location_address_country_list = [];
+                $location_address_type_list = [];
+
+                foreach ($locationAddresses as $key => $value) {
+                    $location_address_1_list[] = $value->address_1;
+                    $location_address_2_list[] = $value->address_2;
+                    $location_address_attention_list[] = $value->address_attention;
+                    $location_address_city_list[] = $value->address_city;
+                    $location_address_regions_list[] = $value->address_regions;
+                    $location_address_state_list[] = $value->address_state_province;
+                    $location_zip_codes_list[] = $value->address_postal_code;
+                    $location_address_country_list[] = $value->address_country;
+                    $location_address_type_list[] = $value->address_type ? explode(',', $value->address_type) : [];
+                }
+
+                $location_address_1_list = json_encode($location_address_1_list);
+                $location_address_2_list = json_encode($location_address_2_list);
+                $location_address_attention_list = json_encode($location_address_attention_list);
+                $location_address_city_list = json_encode($location_address_city_list);
+                $location_address_regions_list = json_encode($location_address_regions_list);
+                $location_address_state_list = json_encode($location_address_state_list);
+                $location_zip_codes_list = json_encode($location_zip_codes_list);
+                $location_address_country_list = json_encode($location_address_country_list);
+                $location_address_type_list = json_encode($location_address_type_list);
+
+                $addressTypes = AddressType::pluck('type', 'id');
+
+                return view('frontEnd.locations.edit', compact('facility', 'map', 'facility_organization_name', 'service_info_list', 'facility_service_list', 'organization_names', 'facility_organization_list', 'facility_phone_number', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'location_address_city', 'location_street_address', 'location_zip_code', 'location_state', 'phone_languages', 'phone_type', 'detail_types', 'locationDetails', 'phone_language_data', 'facilityAudits', 'phone_language_name', 'all_phones', 'regions', 'accessibilities', 'languages', 'location_languages_list', 'location_address_1_list', 'location_address_2_list', 'location_address_attention_list', 'location_address_city_list', 'location_address_regions_list', 'location_address_state_list', 'location_zip_codes_list', 'location_address_country_list', 'location_address_type_list', 'locationAddresses', 'addressTypes'));
             } else {
                 Session::flash('message', 'Warning! Not enough permissions. Please contact Us for more');
                 Session::flash('status', 'warning');
@@ -1483,6 +1640,12 @@ class LocationController extends Controller
             $facility->location_description = $request->location_description;
             $facility->location_alternate_name = $request->location_alternate_name;
             $facility->location_transportation = $request->location_transportation;
+            $facility->location_type = $request->location_type;
+            $facility->location_url = $request->location_url;
+            $facility->external_identifier = $request->external_identifier;
+            $facility->external_identifier_type = $request->external_identifier_type;
+            $facility->accessesibility_url = $request->accessesibility_url;
+            $facility->location_languages = $request->location_languages ? implode(', ', $request->location_languages) : '';
             // $facility->location_details = $request->location_details;
 
             // accessesibility
@@ -1584,39 +1747,89 @@ class LocationController extends Controller
             }
             $facility->schedules()->sync($facility_schedules);
 
-            $facility_address_city = $request->facility_address_city;
-            $facility_street_address = $request->facility_street_address;
-            $facility_address_state = '';
-            if ($request->facility_address_state) {
-                $facility_address_state = $request->facility_address_state;
-            }
-            $facility_address_zip_code = $request->facility_zip_code;
-            $facility_address_info = $facility_street_address . ', ' . $facility_address_city . ', ' . $facility_address_state . ', ' . $facility_address_zip_code;
+            // $facility_address_city = $request->facility_address_city;
+            // $facility_street_address = $request->facility_street_address;
+            // $facility_address_state = '';
+            // if ($request->facility_address_state) {
+            //     $facility_address_state = $request->facility_address_state;
+            // }
+            // $facility_address_zip_code = $request->facility_zip_code;
+            // $facility_address_info = $facility_street_address . ', ' . $facility_address_city . ', ' . $facility_address_state . ', ' . $facility_address_zip_code;
 
-            $address = Address::where('address_1', '=', $facility_street_address)->first();
+            // $address = Address::where('address_1', '=', $facility_street_address)->first();
             $address_recordid_list = [];
-            $address_id = '';
-            if ($address) {
-                $address_id = $address["address_recordid"];
-                $facility->location_address = $address_id;
-                $address->address_1 = $facility_street_address;
-                $address->address_city = $facility_address_city;
-                $address->address_state_province = $facility_address_state;
-                $address->address_postal_code = $facility_address_zip_code;
-                $address->save();
-            } else {
-                $address = new Address;
-                $new_recordid = Address::max('address_recordid') + 1;
-                $address->address_recordid = $new_recordid;
-                $address->address_1 = $facility_street_address;
-                $address->address_city = $facility_address_city;
-                $address->address_state_province = $facility_address_state;
-                $address->address_postal_code = $facility_address_zip_code;
-                $facility->location_address = $new_recordid;
-                $address_id = $new_recordid;
-                $address->save();
+            // $address_id = '';
+            // if ($address) {
+            //     $address_id = $address["address_recordid"];
+            //     $facility->location_address = $address_id;
+            //     $address->address_1 = $facility_street_address;
+            //     $address->address_city = $facility_address_city;
+            //     $address->address_state_province = $facility_address_state;
+            //     $address->address_postal_code = $facility_address_zip_code;
+            //     $address->save();
+            // } else {
+            //     $address = new Address;
+            //     $new_recordid = Address::max('address_recordid') + 1;
+            //     $address->address_recordid = $new_recordid;
+            //     $address->address_1 = $facility_street_address;
+            //     $address->address_city = $facility_address_city;
+            //     $address->address_state_province = $facility_address_state;
+            //     $address->address_postal_code = $facility_address_zip_code;
+            //     $facility->location_address = $new_recordid;
+            //     $address_id = $new_recordid;
+            //     $address->save();
+            // }
+            // array_push($address_recordid_list, $address_id);
+
+            $address_1 = $request->address_1 && isset($request->address_1[0]) ? json_decode($request->address_1[0]) : [];
+            $address_2 = $request->address_2 && isset($request->address_2[0]) ? json_decode($request->address_2[0]) : [];
+            $address_attention = $request->address_attention && isset($request->address_attention[0]) ? json_decode($request->address_attention[0]) : [];
+            $address_city = $request->address_city && isset($request->address_city[0]) ? json_decode($request->address_city[0]) : [];
+            $regions = $request->address_regions && isset($request->address_regions[0]) ? json_decode($request->address_regions[0]) : [];
+            $address_state = $request->address_state && isset($request->address_state[0]) ? json_decode($request->address_state[0]) : [];
+            $zip_codes = $request->zip_codes && isset($request->zip_codes[0]) ? json_decode($request->zip_codes[0]) : [];
+            $address_country = $request->address_country && isset($request->address_country[0]) ? json_decode($request->address_country[0]) : [];
+            $address_type = $request->address_type && isset($request->address_type[0]) ? json_decode($request->address_type[0]) : [];
+            $mainAddress = $request->mainAddress ?? 0;
+
+            $address_recordid_list = [];
+            foreach ($address_1 as $key => $value) {
+                $address = Address::where('address_1', '=', $value)->first();
+                $address_id = '';
+                if ($address) {
+                    $address_id = $address["address_recordid"];
+                    $facility->location_address = $address_id;
+                    $address->address_1 = $address_1[$key] ?? null;
+                    $address->address_2 = $address_2[$key] ?? null;
+                    $address->address_city = $address_city[$key] ?? null;
+                    $address->address_state_province = $address_state[$key] ?? null;
+                    $address->address_postal_code = $zip_codes[$key] ?? null;
+                    $address->address_attention = $address_attention[$key] ?? null;
+                    $address->address_region = $address_region[$key] ?? null;
+                    $address->address_country = $address_country[$key] ?? null;
+                    $address->address_type = $address_type && isset($address_type[$key]) && is_array($address_type[$key]) ? implode(',', $address_type[$key]) : null;
+                    $address->is_main = $mainAddress == $key ? true : false;
+                    $address->save();
+                } else {
+                    $address = new Address;
+                    $new_recordid = Address::max('address_recordid') + 1;
+                    $address->address_recordid = $new_recordid;
+                    $address->address_1 = $address_1[$key] ?? null;
+                    $address->address_2 = $address_2[$key] ?? null;
+                    $address->address_city = $address_city[$key] ?? null;
+                    $address->address_state_province = $address_state[$key] ?? null;
+                    $address->address_postal_code = $zip_codes[$key] ?? null;
+                    $address->address_attention = $address_attention[$key] ?? null;
+                    $address->address_country = $address_country[$key] ?? null;
+                    $address->address_type = $address_type && isset($address_type[$key]) && is_array($address_type[$key]) ? implode(',', $address_type[$key]) : null;
+                    $address->address_region = $address_region[$key] ?? null;
+                    $address->is_main = $mainAddress == $key ? true : false;
+                    $facility->location_address = $new_recordid;
+                    $address_id = $new_recordid;
+                    $address->save();
+                }
+                array_push($address_recordid_list, $address_id);
             }
-            array_push($address_recordid_list, $address_id);
 
             $address_recordid_list = array_values(array_filter($address_recordid_list));
             $facility->address()->sync($address_recordid_list);
@@ -1795,8 +2008,10 @@ class LocationController extends Controller
         $phone_language_data = json_encode([]);
 
         $accessibilities = Accessibility::pluck('accessibility', 'id');
+        $languages = Language::pluck('language', 'id');
+        $addressTypes = AddressType::pluck('type', 'id');
 
-        return view('frontEnd.locations.facility-create-in-service', compact('service_recordid', 'map', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'organization_recordid', 'organizations', 'phone_languages', 'phone_type', 'detail_types', 'all_phones', 'phone_language_data', 'regions', 'accessibilities'));
+        return view('frontEnd.locations.facility-create-in-service', compact('service_recordid', 'map', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'organization_recordid', 'organizations', 'phone_languages', 'phone_type', 'detail_types', 'all_phones', 'phone_language_data', 'regions', 'accessibilities', 'languages', 'addressTypes'));
     }
     public function add_new_facility_in_service(Request $request)
     {
@@ -1825,6 +2040,13 @@ class LocationController extends Controller
             $facility->location_alternate_name = $request->location_alternate_name;
             $facility->location_transportation = $request->location_transportation;
             $facility->location_description = $request->location_description;
+
+            $facility->location_type = $request->location_type;
+            $facility->location_url = $request->location_url;
+            $facility->external_identifier = $request->external_identifier;
+            $facility->external_identifier_type = $request->external_identifier_type;
+            $facility->accessesibility_url = $request->accessesibility_url;
+            $facility->location_languages = $request->location_languages ? implode(', ', $request->location_languages) : '';
 
             $organization_recordid = $request->facility_organization;
             $facility_organization = Organization::where('organization_recordid', '=', $organization_recordid)->first();
@@ -1864,8 +2086,8 @@ class LocationController extends Controller
             // }
             if ($request->accessibility_recordid) {
                 $facility->accessibility_recordid = $request->accessibility_recordid;
-                $facility->accessibility_details = $request->accessibility_details;
             }
+            $facility->accessibility_details = $request->accessibility_details;
             $regions = is_array($request->regions) ? array_values(array_filter($request->regions)) : [];
             if ($regions) {
                 $facility->regions()->sync($regions);
@@ -1925,53 +2147,104 @@ class LocationController extends Controller
             $facility_address_zip_code = $request->facility_zip_code;
             $facility_address_info = $facility_street_address . ', ' . $facility_address_city . ', ' . $facility_address_state . ', ' . $facility_address_zip_code;
 
-            $address = Address::where('address_1', '=', $facility_street_address)->first();
+            // $address = Address::where('address_1', '=', $facility_street_address)->first();
+            // $address_recordid_list = [];
+            // $address_id = '';
+            // if ($address) {
+            //     $address_id = $address["address_recordid"];
+            //     $facility->location_address = $address_id;
+            // } else {
+            //     $address = new Address;
+            //     $new_recordid = Address::max('address_recordid') + 1;
+            //     $address->address_recordid = $new_recordid;
+            //     $address->address_1 = $facility_street_address;
+            //     $address->address_city = $facility_address_city;
+            //     $address->address_state_province = $facility_address_state;
+            //     $address->address_postal_code = $facility_address_zip_code;
+            //     $facility->location_address = $new_recordid;
+            //     $address_id = $new_recordid;
+            //     $address->save();
+            // }
+            // array_push($address_recordid_list, $address_id);
+
+            $address_1 = $request->address_1 && isset($request->address_1[0]) ? json_decode($request->address_1[0]) : [];
+            $address_2 = $request->address_2 && isset($request->address_2[0]) ? json_decode($request->address_2[0]) : [];
+            $address_attention = $request->address_attention && isset($request->address_attention[0]) ? json_decode($request->address_attention[0]) : [];
+            $address_city = $request->address_city && isset($request->address_city[0]) ? json_decode($request->address_city[0]) : [];
+            $regions = $request->address_regions && isset($request->address_regions[0]) ? json_decode($request->address_regions[0]) : [];
+            $address_state = $request->address_state && isset($request->address_state[0]) ? json_decode($request->address_state[0]) : [];
+            $zip_codes = $request->zip_codes && isset($request->zip_codes[0]) ? json_decode($request->zip_codes[0]) : [];
+            $address_country = $request->address_country && isset($request->address_country[0]) ? json_decode($request->address_country[0]) : [];
+            $address_type = $request->address_type && isset($request->address_type[0]) ? json_decode($request->address_type[0]) : [];
+            $mainAddress = $request->mainAddress ?? 0;
+
             $address_recordid_list = [];
-            $address_id = '';
-            if ($address) {
-                $address_id = $address["address_recordid"];
-                $facility->location_address = $address_id;
-            } else {
-                $address = new Address;
-                $new_recordid = Address::max('address_recordid') + 1;
-                $address->address_recordid = $new_recordid;
-                $address->address_1 = $facility_street_address;
-                $address->address_city = $facility_address_city;
-                $address->address_state_province = $facility_address_state;
-                $address->address_postal_code = $facility_address_zip_code;
-                $facility->location_address = $new_recordid;
-                $address_id = $new_recordid;
-                $address->save();
+            foreach ($address_1 as $key => $value) {
+                $address = Address::where('address_1', '=', $value)->first();
+                $address_id = '';
+                if ($address) {
+                    $address_id = $address["address_recordid"];
+                    $facility->location_address = $address_id;
+                    $address->address_1 = $address_1[$key] ?? null;
+                    $address->address_2 = $address_2[$key] ?? null;
+                    $address->address_city = $address_city[$key] ?? null;
+                    $address->address_state_province = $address_state[$key] ?? null;
+                    $address->address_postal_code = $zip_codes[$key] ?? null;
+                    $address->address_attention = $address_attention[$key] ?? null;
+                    $address->address_region = $address_region[$key] ?? null;
+                    $address->address_country = $address_country[$key] ?? null;
+                    $address->address_type = $address_type && isset($address_type[$key]) && is_array($address_type[$key]) ? implode(',', $address_type[$key]) : null;
+                    $address->is_main = $mainAddress == $key ? true : false;
+                    $address->save();
+                } else {
+                    $address = new Address;
+                    $new_recordid = Address::max('address_recordid') + 1;
+                    $address->address_recordid = $new_recordid;
+                    $address->address_1 = $address_1[$key] ?? null;
+                    $address->address_2 = $address_2[$key] ?? null;
+                    $address->address_city = $address_city[$key] ?? null;
+                    $address->address_state_province = $address_state[$key] ?? null;
+                    $address->address_postal_code = $zip_codes[$key] ?? null;
+                    $address->address_attention = $address_attention[$key] ?? null;
+                    $address->address_country = $address_country[$key] ?? null;
+                    $address->address_type = $address_type && isset($address_type[$key]) && is_array($address_type[$key]) ? implode(',', $address_type[$key]) : null;
+                    $address->address_region = $address_region[$key] ?? null;
+                    $address->is_main = $mainAddress == $key ? true : false;
+                    $facility->location_address = $new_recordid;
+                    $address_id = $new_recordid;
+                    $address->save();
+                }
+                array_push($address_recordid_list, $address_id);
             }
-            array_push($address_recordid_list, $address_id);
 
             $address_recordid_list = array_values(array_filter($address_recordid_list));
             $facility->address()->sync($address_recordid_list);
 
-            $client = new \GuzzleHttp\Client();
-            $geocoder = new Geocoder($client);
-            $map = Map::find(1);
-            $geocode_api_key = $map && $map->api_key ? $map->api_key : null;
-            $geocoder->setApiKey($geocode_api_key);
+            // $client = new \GuzzleHttp\Client();
+            // $geocoder = new Geocoder($client);
+            // $map = Map::find(1);
+            // $geocode_api_key = $map && $map->api_key ? $map->api_key : null;
+            // $geocoder->setApiKey($geocode_api_key);
 
-            if ($facility->location_address) {
-                $address_recordid = $facility->location_address;
-                $address_info = Address::where('address_recordid', '=', $address_recordid)->select('address_1', 'address_city', 'address_state_province', 'address_postal_code')->first();
-                $full_address_info = $address_info->address_1 . ', ' . $address_info->address_city . ', ' . $address_info->address_state_province . ', ' . $address_info->address_postal_code;
+            // if ($facility->location_address) {
+            //     $address_recordid = $facility->location_address;
+            //     $address_info = Address::where('address_recordid', '=', $address_recordid)->select('address_1', 'address_city', 'address_state_province', 'address_postal_code')->first();
+            //     $full_address_info = $address_info->address_1 . ', ' . $address_info->address_city . ', ' . $address_info->address_state_province . ', ' . $address_info->address_postal_code;
 
-                $response = $geocoder->getCoordinatesForAddress($full_address_info);
+            //     $response = $geocoder->getCoordinatesForAddress($full_address_info);
 
-                if ($response['lat']) {
-                    $latitude = $response['lat'];
-                    $longitude = $response['lng'];
-                    $facility->location_latitude = $latitude;
-                    $facility->location_longitude = $longitude;
-                } else {
-                    Session::flash('message', 'Address info is not valid. We can not get longitude and latitude for this address');
-                    Session::flash('status', 'error');
-                    return redirect()->back()->withInput();
-                }
-            }
+            //     if ($response['lat']) {
+            //         $latitude = $response['lat'];
+            //         $longitude = $response['lng'];
+            //         $facility->location_latitude = $latitude;
+            //         $facility->location_longitude = $longitude;
+            //     } else {
+            //         Session::flash('message', 'Address info is not valid. We can not get longitude and latitude for this address');
+            //         Session::flash('status', 'error');
+            //         return redirect()->back()->withInput();
+            //     }
+            // }
+
             $facility->location_phones = '';
             $phone_recordid_list = [];
             if ($request->facility_phones) {

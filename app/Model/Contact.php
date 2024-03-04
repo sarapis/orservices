@@ -21,13 +21,18 @@ class Contact extends Model implements ContractsAuditable
     ];
 
     protected $fillable = [
-        'contact_recordid', 'contact_name', 'contact_organizations', 'contact_services', 'contact_title', 'contact_department', 'contact_email', 'contact_phones', 'visibility', 'updated_by', 'created_by'
+        'contact_recordid', 'contact_name', 'contact_organizations', 'contact_services', 'contact_title', 'contact_department', 'contact_email', 'contact_phones', 'visibility', 'updated_by', 'created_by', 'locations', 'service_at_locations'
     ];
 
     public function organization()
     {
         return $this->belongsTo('App\Model\Organization', 'contact_organizations', 'organization_recordid');
-        // return $this->belongsToMany('App\Model\Organization', 'organizations_contacts', 'contact_recordid', 'organization_recordid');
+        // return $this->belongsToMany('App\Model\Organization', 'organization_contacts', 'contact_recordid', 'organization_recordid');
+    }
+
+    public function organizations()
+    {
+        return $this->belongsToMany('App\Model\Organization', 'organization_contacts', 'contact_recordid', 'organization_recordid');
     }
 
     public function service()
