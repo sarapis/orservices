@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 06, 2024 at 09:50 AM
+-- Generation Time: Mar 08, 2024 at 02:44 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.1.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `ors-dev`
+-- Database: `blank_ors`
 --
 
 -- --------------------------------------------------------
@@ -159,6 +159,21 @@ CREATE TABLE `airtables` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `airtables`
+--
+
+INSERT INTO `airtables` (`id`, `name`, `name_v2`, `records`, `syncdate`, `created_at`, `updated_at`) VALUES
+(1, 'Services', 'Services', '1014', '2020/11/26 06:09:50', NULL, '2020-11-26 00:39:50'),
+(2, 'Locations', 'Locations', '434', '2020/07/01 05:27:01', NULL, '2020-07-01 05:27:01'),
+(3, 'Organizations', 'Organizations', '233', '2020/07/01 05:27:02', NULL, '2020-07-01 05:27:02'),
+(4, 'Contact', 'Contact', '58', '2020/07/01 05:27:03', NULL, '2020-07-01 05:27:03'),
+(5, 'Phones', 'Phones', '615', '2020/07/01 05:27:05', NULL, '2020-07-01 05:27:05'),
+(6, 'Address', 'Physical_Address', '390', '2020/07/01 05:27:07', NULL, '2020-07-01 05:27:07'),
+(7, 'Schedule', 'Schedule', '393', '2020/07/01 05:27:09', NULL, '2020-07-01 05:27:09'),
+(8, 'Taxonomy', 'Taxonomy_Term', '386', '2020/07/01 05:27:11', NULL, '2020-07-01 05:27:11'),
+(9, 'Details', 'X_Details', '161', '2020/07/01 05:27:12', NULL, '2020-07-01 05:27:12');
+
 -- --------------------------------------------------------
 
 --
@@ -179,17 +194,20 @@ CREATE TABLE `airtable_v2s` (
 --
 
 INSERT INTO `airtable_v2s` (`id`, `name`, `records`, `syncdate`, `created_at`, `updated_at`) VALUES
-(1, 'Services', '1099', '2021/02/03 09:22:45', NULL, '2021-02-03 09:22:45'),
-(2, 'Locations', '567', '2021/02/09 11:24:14', NULL, '2021-02-09 11:24:14'),
-(3, 'Organizations', '224', '2021/02/03 09:22:56', NULL, '2021-02-03 09:22:56'),
-(4, 'Contacts', '93', '2021/02/03 09:22:58', NULL, '2021-02-03 09:22:58'),
-(5, 'Phones', '754', '2021/02/03 09:23:14', NULL, '2021-02-03 09:23:14'),
-(6, 'Physical_Address', '490', '2021/02/03 09:23:17', NULL, '2021-02-03 09:23:17'),
-(7, 'Schedule', '395', '2021/02/03 09:23:20', NULL, '2021-02-03 09:23:20'),
-(8, 'Taxonomy_Term', '419', '2021/02/12 08:29:10', NULL, '2021-02-12 08:29:10'),
+(1, 'Services', '2', '2024/02/29 02:52:09', NULL, '2024-02-29 02:52:09'),
+(2, 'Locations', '1', '2024/02/29 02:52:10', NULL, '2024-02-29 02:52:10'),
+(3, 'Organizations', '1', '2024/02/29 02:52:10', NULL, '2024-02-29 02:52:10'),
+(4, 'Contacts', '1', '2024/02/29 02:52:09', NULL, '2024-02-29 02:52:10'),
+(5, 'Phones', '2', '2024/02/29 02:52:10', NULL, '2024-02-29 02:52:10'),
+(6, 'Physical_Address', '1', '2024/02/29 02:52:09', NULL, '2024-02-29 02:52:09'),
+(7, 'Schedule', '1', '2024/02/29 02:52:11', NULL, '2024-02-29 02:52:11'),
+(8, 'Taxonomy_Term', '328', '2024/02/29 02:52:13', NULL, '2024-02-29 02:52:13'),
 (9, 'X_Details', '32', '2021/02/03 09:23:25', NULL, '2021-02-03 09:23:25'),
-(10, 'Programs', '25', '2021/02/03 09:23:27', NULL, '2021-02-03 09:23:28'),
-(11, 'x_Taxonomy', '4', '2021/02/12 08:29:00', NULL, '2021-02-12 08:29:00');
+(10, 'Programs', '1', '2024/02/29 02:52:13', NULL, '2024-02-29 02:52:13'),
+(11, 'x_Taxonomy', '2', '2024/02/29 02:52:13', NULL, '2024-02-29 02:52:13'),
+(12, 'Fundings', '4', '2024/02/29 02:52:13', '2024-02-29 02:52:13', '2024-02-29 02:52:13'),
+(13, 'Cost_Options', '1', '2024/02/29 02:52:14', '2024-02-29 02:52:14', '2024-02-29 02:52:14'),
+(14, 'Identifiers', '4', '2024/02/29 02:52:14', '2024-02-29 02:52:14', '2024-02-29 02:52:14');
 
 -- --------------------------------------------------------
 
@@ -565,6 +583,25 @@ CREATE TABLE `c_s_v__sources` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `c_s_v__sources`
+--
+
+INSERT INTO `c_s_v__sources` (`id`, `name`, `source`, `records`, `syncdate`, `created_at`, `updated_at`) VALUES
+(1, 'Services', 'services.csv', '957', '2020-07-01 05:19:32', NULL, '2020-07-01 05:19:32'),
+(2, 'Locations', 'locations.csv', '4089', '2020-07-01 05:20:21', NULL, '2020-07-01 05:20:21'),
+(3, 'Organizations', 'organizations.csv', '1074', '2020-07-01 05:20:40', NULL, '2020-07-01 05:20:40'),
+(4, 'Contacts', 'contacts.csv', '4089', '2020-07-01 05:25:59', NULL, '2020-07-01 05:25:59'),
+(5, 'Phones', 'phones.csv', '4089', '2019/07/30 17:27:03', NULL, NULL),
+(6, 'Address', 'physical_addresses.csv', '4089', '2019/07/30 17:27:43', NULL, NULL),
+(7, 'Languages', 'languages.csv', '9364', '2019/07/30 17:28:19', NULL, NULL),
+(8, 'Taxonomy', 'taxonomy.csv', '1994', '2019/08/12 12:31:30', NULL, NULL),
+(9, 'Services_taxonomy', 'services_taxonomy.csv', '26259', '2019/07/30 17:29:51', NULL, NULL),
+(10, 'Services_location', 'services_at_location.csv', '4089', '2019/07/30 17:30:16', NULL, NULL),
+(11, 'Accessibility_for_disabilites', 'accessibility_for_disabilities.csv', '4089', '2019/07/30 17:30:30', NULL, NULL),
+(12, 'Regular_schedules', 'regular_schedules.csv', '11350', '2019/07/30 17:31:47', NULL, NULL),
+(13, 'Service_areas', 'service_areas.csv', '6404', '2019/08/23 02:25:25', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -996,7 +1033,7 @@ CREATE TABLE `layouts` (
 --
 
 INSERT INTO `layouts` (`id`, `logo`, `site_name`, `tagline`, `sidebar_content`, `sidebar_content_part_1`, `part_1_image`, `sidebar_content_part_2`, `part_2_image`, `sidebar_content_part_3`, `part_3_image`, `contact_text`, `banner_text1`, `banner_text2`, `contact_btn_label`, `contact_btn_link`, `footer`, `homepage_background`, `header_pdf`, `footer_pdf`, `footer_csv`, `logo_active`, `title_active`, `about_active`, `primary_color`, `secondary_color`, `button_color`, `button_hover_color`, `title_link_color`, `top_menu_color`, `top_menu_link_color`, `menu_title_color`, `top_menu_link_hover_color`, `meta_filter_activate`, `meta_filter_on_label`, `meta_filter_off_label`, `top_background`, `bottom_background`, `bottom_section_active`, `login_content`, `register_content`, `activate_login_home`, `activate_about_home`, `home_page_style`, `activate_religions`, `activate_languages`, `activate_organization_types`, `activate_contact_types`, `activate_facility_types`, `exclude_vocabulary`, `created_at`, `updated_at`, `activate_login_button`, `organization_share_button`, `service_share_button`, `show_classification`, `display_download_menu`, `display_download_pdf`, `display_download_csv`, `show_suggest_menu`, `show_registration_message`, `user_metafilter_option`, `default_label`, `hide_organizations_with_no_filtered_services`, `top_menu_link_hover_background_color`, `site_title_active`, `submenu_highlight_color`, `default_service_status`, `default_organization_status`, `taxonomy_icon_hover`, `hide_service_category_with_no_filter_service`) VALUES
-(1, '1665615645.png', 'Community Resource Inventory', NULL, '<p dir=\"ltr\" style=\"line-height:1.38;margin-top:0pt;margin-bottom:0pt;\"><span id=\"docs-internal-guid-57d17976-7fff-a35b-8680-b0195bbe172b\"></span></p><p dir=\"ltr\" style=\"line-height:1.38;margin-top:0pt;margin-bottom:0pt;\"><span style=\"font-size:11pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;\">The DC Community Resource Inventory (CRI) is a District-wide, publicly available directory that provides information about regional health, human, and social programs and organizations in the community that are available to District residents. As part of the DC Community Resource Information Exchange Initiative (DC CoRIE), the CRI is public information infrastructure operated in the interests of the residents of the District of Columbia and represents directories contributed by District organizations and services offered by members of the DC PACT coalition. Data available in the CRI include information such as organization and program description, location, contact information, service category, and service eligibility, and more.&nbsp;</span></p><p dir=\"ltr\" style=\"line-height:1.38;margin-top:0pt;margin-bottom:0pt;\"><span style=\"font-size:11pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;\">Learn More</span></p><p dir=\"ltr\" style=\"text-align: left; margin-top: 0pt; margin-bottom: 0pt; color: rgb(117, 117, 117); font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.38;\"><b style=\"font-weight:normal;\"><br></b></p><p dir=\"ltr\" style=\"line-height:1.38;margin-top:0pt;margin-bottom:0pt;\"><span style=\"font-size:11pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;\">If you have questions or would like to contribute to and/or otherwise get involved with the DC CRI initiative, please contact David Poms at </span><a href=\"mailto:dpoms@dcpca.org\" style=\"text-decoration:none;\"><span style=\"font-size:11pt;font-family:Arial;color:#1155cc;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;\">dpoms@dcpca.org</span></a><span style=\"font-size:11pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;\">&nbsp;</span></p><p dir=\"ltr\" style=\"line-height:1.38;margin-top:0pt;margin-bottom:0pt;\"><span style=\"font-size:11pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;\">Additional Information: learn more about the DC CRI initiative </span><a href=\"https://openreferral.org/evolving-the-dc-community-resource-information-exchange/\" style=\"text-decoration:none;\"><span style=\"font-size:11pt;font-family:Arial;color:#1155cc;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;\">in this blog post on OpenReferral.org</span></a><span style=\"font-size:11pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;\">.&nbsp;</span></p>', '<p dir=\"ltr\" style=\"text-align: left; margin-top: 0pt; margin-bottom: 0pt; color: rgb(117, 117, 117); font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.38;\"><span style=\"font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; vertical-align: baseline; white-space: pre-wrap;\">The DC Community Resource Inventory is a project of the DC Community Resource Information Exchange (DC CoRIE) Initiative.&nbsp;</span><span style=\"background-color: transparent; color: rgb(0, 0, 0); font-family: Arial; font-size: 11pt; white-space: pre-wrap;\">Produced by the DCPCA, in partnership with the Open Referral Initiative, with technology development by Sarapis, this is a \'proof of concept\' of a functional Community Resource Inventory containing information about health, human, and social services available to DC residents in need.&nbsp;</span></p><p dir=\"ltr\" style=\"margin-top: 0pt; margin-bottom: 0pt; color: rgb(117, 117, 117); font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.38;\"><br></p><p dir=\"ltr\" style=\"text-align: left; margin-top: 0pt; margin-bottom: 0pt; color: rgb(117, 117, 117); font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.38;\"><span id=\"docs-internal-guid-74dba194-7fff-5e13-40e1-13b1ea2fdb29\"><br></span></p><p dir=\"ltr\" style=\"text-align: left; margin-top: 0pt; margin-bottom: 0pt; color: rgb(117, 117, 117); font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.38;\"><br></p><p dir=\"ltr\" style=\"text-align: left; margin-top: 0pt; margin-bottom: 0pt; color: rgb(117, 117, 117); font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.38;\"><br></p>', '/uploads/images/1612796962_part2.png', '<p dir=\"ltr\" style=\"text-align: left; margin-top: 0pt; margin-bottom: 0pt; color: rgb(117, 117, 117); font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.38;\"><span style=\"color: rgb(0, 0, 0); font-family: Arial; font-size: 14.6667px; text-align: center; white-space: pre-wrap;\">This website is a reference implementation for the underlying database. This database is also available via an Application Programming Interface, which can be accessed at our Developer Portal here.</span><br></p>', '/uploads/images/1593798060_part3.png', '<p dir=\"ltr\" style=\"text-align: left; margin-top: 0pt; margin-bottom: 0pt; color: rgb(117, 117, 117); font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.38;\"><span style=\"font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; vertical-align: baseline; white-space: pre-wrap;\">To suggest edits or additions to this directory, reach out to David Poms at the DCPCA.</span></p><p dir=\"ltr\" style=\"text-align: left; margin-top: 0pt; margin-bottom: 0pt; color: rgb(117, 117, 117); font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.38;\"><br></p><p dir=\"ltr\" style=\"text-align: left; margin-top: 0pt; margin-bottom: 0pt; color: rgb(117, 117, 117); font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.38;\"><span style=\"font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; vertical-align: baseline; white-space: pre-wrap;\">To learn more about the Open Referral Initiative, reach out to <a href=\"mailto:Greg@openreferral.org\" target=\"_blank\">Greg Bloom</a>.</span></p>', '/uploads/images/1593798060.png', 'Help us improve by reporting software bugs.', NULL, 'Find local resources that are right for you.', 'Report a Bug', 'https://airtable.com/shrpdMJWSOyZucr9H', '<p style=\"text-align: center; \"> Community Resource Exchange</p>', '1613685113_part1.jpg', 'dc-resources.sarapis.org', 'dc-resources.sarapis.org', 'dc-resources.sarapis.org', '0', '1', '0', '#e29612', '#50d195', '#5052d9', '#ff4000', '#eb0008', '#50aed1', '#ffffff', '#ffffff', '#e09412', 1, 'South Dade Only', 'All Services', '1577102338.png', '1577102281.jpg', '0', '<p>Welcome! This is the login page.</p>', '<p>Welcome! This is the register page. </p>', 0, 1, 'Services (ex. larable-dev.sarapisorg)', 0, 0, 0, 0, 0, 'Health', NULL, '2024-01-31 23:34:56', 1, 1, 1, 'yes', '1', '1', '1', '0', NULL, NULL, NULL, NULL, '#1ec9eb', '1', '#24dde3', NULL, '11', 'no', 0);
+(1, '1665615645.png', 'DEMO', NULL, '<p dir=\"ltr\" style=\"line-height:1.38;margin-top:0pt;margin-bottom:0pt;\"><span id=\"docs-internal-guid-57d17976-7fff-a35b-8680-b0195bbe172b\"></span></p><p dir=\"ltr\" style=\"line-height:1.38;margin-top:0pt;margin-bottom:0pt;\"><span style=\"font-size:11pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;\">The DC Community Resource Inventory (CRI) is a District-wide, publicly available directory that provides information about regional health, human, and social programs and organizations in the community that are available to District residents. As part of the DC Community Resource Information Exchange Initiative (DC CoRIE), the CRI is public information infrastructure operated in the interests of the residents of the District of Columbia and represents directories contributed by District organizations and services offered by members of the DC PACT coalition. Data available in the CRI include information such as organization and program description, location, contact information, service category, and service eligibility, and more.&nbsp;</span></p><p dir=\"ltr\" style=\"line-height:1.38;margin-top:0pt;margin-bottom:0pt;\"><span style=\"font-size:11pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;\">Learn More</span></p><p dir=\"ltr\" style=\"text-align: left; margin-top: 0pt; margin-bottom: 0pt; color: rgb(117, 117, 117); font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.38;\"><b style=\"font-weight:normal;\"><br></b></p><p dir=\"ltr\" style=\"line-height:1.38;margin-top:0pt;margin-bottom:0pt;\"><span style=\"font-size:11pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;\">If you have questions or would like to contribute to and/or otherwise get involved with the DC CRI initiative, please contact David Poms at </span><a href=\"mailto:dpoms@dcpca.org\" style=\"text-decoration:none;\"><span style=\"font-size:11pt;font-family:Arial;color:#1155cc;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;\">dpoms@dcpca.org</span></a><span style=\"font-size:11pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;\">&nbsp;</span></p><p dir=\"ltr\" style=\"line-height:1.38;margin-top:0pt;margin-bottom:0pt;\"><span style=\"font-size:11pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;\">Additional Information: learn more about the DC CRI initiative </span><a href=\"https://openreferral.org/evolving-the-dc-community-resource-information-exchange/\" style=\"text-decoration:none;\"><span style=\"font-size:11pt;font-family:Arial;color:#1155cc;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;\">in this blog post on OpenReferral.org</span></a><span style=\"font-size:11pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;\">.&nbsp;</span></p>', '<p dir=\"ltr\" style=\"text-align: left; margin-top: 0pt; margin-bottom: 0pt; color: rgb(117, 117, 117); font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.38;\"><span style=\"font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; vertical-align: baseline; white-space: pre-wrap;\">The DC Community Resource Inventory is a project of the DC Community Resource Information Exchange (DC CoRIE) Initiative.&nbsp;</span><span style=\"background-color: transparent; color: rgb(0, 0, 0); font-family: Arial; font-size: 11pt; white-space: pre-wrap;\">Produced by the DCPCA, in partnership with the Open Referral Initiative, with technology development by Sarapis, this is a \'proof of concept\' of a functional Community Resource Inventory containing information about health, human, and social services available to DC residents in need.&nbsp;</span></p><p dir=\"ltr\" style=\"margin-top: 0pt; margin-bottom: 0pt; color: rgb(117, 117, 117); font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.38;\"><br></p><p dir=\"ltr\" style=\"text-align: left; margin-top: 0pt; margin-bottom: 0pt; color: rgb(117, 117, 117); font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.38;\"><span id=\"docs-internal-guid-74dba194-7fff-5e13-40e1-13b1ea2fdb29\"><br></span></p><p dir=\"ltr\" style=\"text-align: left; margin-top: 0pt; margin-bottom: 0pt; color: rgb(117, 117, 117); font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.38;\"><br></p><p dir=\"ltr\" style=\"text-align: left; margin-top: 0pt; margin-bottom: 0pt; color: rgb(117, 117, 117); font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.38;\"><br></p>', '/uploads/images/1612796962_part2.png', '<p dir=\"ltr\" style=\"text-align: left; margin-top: 0pt; margin-bottom: 0pt; color: rgb(117, 117, 117); font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.38;\"><span style=\"color: rgb(0, 0, 0); font-family: Arial; font-size: 14.6667px; text-align: center; white-space: pre-wrap;\">This website is a reference implementation for the underlying database. This database is also available via an Application Programming Interface, which can be accessed at our Developer Portal here.</span><br></p>', '/uploads/images/1593798060_part3.png', '<p dir=\"ltr\" style=\"text-align: left; margin-top: 0pt; margin-bottom: 0pt; color: rgb(117, 117, 117); font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.38;\"><span style=\"font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; vertical-align: baseline; white-space: pre-wrap;\">To suggest edits or additions to this directory, reach out to David Poms at the DCPCA.</span></p><p dir=\"ltr\" style=\"text-align: left; margin-top: 0pt; margin-bottom: 0pt; color: rgb(117, 117, 117); font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.38;\"><br></p><p dir=\"ltr\" style=\"text-align: left; margin-top: 0pt; margin-bottom: 0pt; color: rgb(117, 117, 117); font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.38;\"><span style=\"font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; vertical-align: baseline; white-space: pre-wrap;\">To learn more about the Open Referral Initiative, reach out to <a href=\"mailto:Greg@openreferral.org\" target=\"_blank\">Greg Bloom</a>.</span></p>', '/uploads/images/1593798060.png', 'Help us improve by reporting software bugs.', NULL, 'Find local resources that are right for you.', 'Report a Bug', 'https://airtable.com/shrpdMJWSOyZucr9H', '<p style=\"text-align: center; \"> Community Resource Exchange</p>', '1613685113_part1.jpg', 'dc-resources.sarapis.org', 'dc-resources.sarapis.org', 'dc-resources.sarapis.org', '0', '1', '0', '#e29612', '#50d195', '#5052d9', '#ff4000', '#eb0008', '#50aed1', '#ffffff', '#ffffff', '#e09412', 1, 'South Dade Only', 'All Services', '1577102338.png', '1577102281.jpg', '0', '<p>Welcome! This is the login page.</p>', '<p>Welcome! This is the register page. </p>', 0, 1, 'Services (ex. larable-dev.sarapisorg)', 0, 0, 0, 0, 0, 'Health', NULL, '2024-02-29 02:37:19', 1, 1, 1, 'yes', '1', '1', '1', '0', NULL, NULL, NULL, NULL, '#1ec9eb', '1', '#24dde3', NULL, '11', 'no', 0);
 
 -- --------------------------------------------------------
 
@@ -1138,6 +1175,13 @@ CREATE TABLE `maps` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `maps`
+--
+
+INSERT INTO `maps` (`id`, `name`, `sku`, `api_key`, `state`, `lat`, `long`, `active`, `zoom`, `zoom_profile`, `created_at`, `updated_at`) VALUES
+(1, 'Google Maps API', 'google_maps_api', NULL, NULL, '38.9072', '-77.0369', 1, 10, 15, '2020-06-11 05:47:08', '2023-07-28 15:02:14');
 
 -- --------------------------------------------------------
 
@@ -1537,20 +1581,6 @@ CREATE TABLE `organization_statuses` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `organization_statuses`
---
-
-INSERT INTO `organization_statuses` (`id`, `status`, `order`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
-(5, 'Unverified', 3, 1, NULL, '2021-05-17 11:30:32', '2021-05-17 11:30:32'),
-(6, 'Verified', 1, 1, 25, '2021-05-17 11:30:38', '2022-07-23 17:15:35'),
-(7, 'No previous attempts', 5, 1, NULL, '2021-05-17 11:30:54', '2021-05-17 11:30:54'),
-(8, 'Unverifiable', 6, 1, NULL, '2021-05-17 11:31:03', '2021-05-17 11:31:03'),
-(9, 'Out of Business/Inactive', 7, 1, 25, '2021-05-17 11:31:12', '2022-07-23 17:18:32'),
-(10, 'In Queue', 2, 1, 25, '2021-05-17 11:31:24', '2022-07-23 17:16:20'),
-(11, 'No Status', 11, 95, NULL, '2022-07-25 12:27:21', '2022-07-25 12:27:21'),
-(12, 'Verification in Progress', 4, 25, NULL, '2022-07-25 12:49:59', '2022-07-25 12:49:59');
 
 -- --------------------------------------------------------
 
@@ -2340,6 +2370,13 @@ CREATE TABLE `source_datas` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `source_datas`
+--
+
+INSERT INTO `source_datas` (`id`, `source_name`, `active`, `created_at`, `updated_at`) VALUES
+(1, 'source', '3', NULL, '2021-02-02 08:05:56');
+
 -- --------------------------------------------------------
 
 --
@@ -2355,6 +2392,17 @@ CREATE TABLE `states` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `states`
+--
+
+INSERT INTO `states` (`id`, `state`, `created_by`, `updated_by`, `deleted_at`, `created_at`, `updated_at`) VALUES
+(1, 'DC', NULL, NULL, NULL, '2021-06-25 00:37:30', '2021-06-25 00:37:30'),
+(2, 'MD', NULL, NULL, NULL, '2021-06-25 00:37:30', '2021-06-25 00:37:30'),
+(3, 'VA', NULL, NULL, NULL, '2021-06-25 00:37:30', '2021-06-25 00:37:30'),
+(4, 'IA', NULL, NULL, NULL, '2021-06-25 00:37:30', '2021-06-25 00:37:30'),
+(5, 'NY', NULL, NULL, NULL, '2024-02-29 02:52:09', '2024-02-29 02:52:09');
 
 -- --------------------------------------------------------
 
@@ -3259,13 +3307,13 @@ ALTER TABLE `airtablekeyinfos`
 -- AUTO_INCREMENT for table `airtables`
 --
 ALTER TABLE `airtables`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `airtable_v2s`
 --
 ALTER TABLE `airtable_v2s`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `all_languages`
@@ -3391,7 +3439,7 @@ ALTER TABLE `csv`
 -- AUTO_INCREMENT for table `c_s_v__sources`
 --
 ALTER TABLE `c_s_v__sources`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `details`
@@ -3559,7 +3607,7 @@ ALTER TABLE `location_schedules`
 -- AUTO_INCREMENT for table `maps`
 --
 ALTER TABLE `maps`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `meta_filters`
@@ -3625,7 +3673,7 @@ ALTER TABLE `organization_programs`
 -- AUTO_INCREMENT for table `organization_statuses`
 --
 ALTER TABLE `organization_statuses`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `organization_table_filters`
@@ -3700,9 +3748,63 @@ ALTER TABLE `required_documents`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `revisions`
+--
+ALTER TABLE `revisions`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `roles`
+--
+ALTER TABLE `roles`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `schedules`
 --
 ALTER TABLE `schedules`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `schedules_1`
+--
+ALTER TABLE `schedules_1`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `services`
+--
+ALTER TABLE `services`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `service_addresses`
+--
+ALTER TABLE `service_addresses`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `service_areas`
+--
+ALTER TABLE `service_areas`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `service_categories`
+--
+ALTER TABLE `service_categories`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `service_codes`
+--
+ALTER TABLE `service_codes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `service_contacts`
+--
+ALTER TABLE `service_contacts`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -3712,10 +3814,142 @@ ALTER TABLE `service_costs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `service_details`
+--
+ALTER TABLE `service_details`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `service_eligibilities`
+--
+ALTER TABLE `service_eligibilities`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `service_fees`
+--
+ALTER TABLE `service_fees`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `service_fundings`
 --
 ALTER TABLE `service_fundings`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `service_locations`
+--
+ALTER TABLE `service_locations`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `service_organizations`
+--
+ALTER TABLE `service_organizations`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `service_phones`
+--
+ALTER TABLE `service_phones`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `service_programs`
+--
+ALTER TABLE `service_programs`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `service_schedules`
+--
+ALTER TABLE `service_schedules`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `service_statuses`
+--
+ALTER TABLE `service_statuses`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `service_tags`
+--
+ALTER TABLE `service_tags`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `service_taxonomies`
+--
+ALTER TABLE `service_taxonomies`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `sessions`
+--
+ALTER TABLE `sessions`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `session_data`
+--
+ALTER TABLE `session_data`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `session_interactions`
+--
+ALTER TABLE `session_interactions`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `source_datas`
+--
+ALTER TABLE `source_datas`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `states`
+--
+ALTER TABLE `states`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `suggests`
+--
+ALTER TABLE `suggests`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `taxonomies`
+--
+ALTER TABLE `taxonomies`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `taxonomy_emails`
+--
+ALTER TABLE `taxonomy_emails`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `taxonomy_terms`
+--
+ALTER TABLE `taxonomy_terms`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `taxonomy_types`
+--
+ALTER TABLE `taxonomy_types`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
