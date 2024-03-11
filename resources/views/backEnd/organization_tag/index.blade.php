@@ -113,7 +113,7 @@ Organization tags
                  $.ajax({
                     type: "POST",
                     cache: false,
-                    url : "{{action('backend\UserController@ajax_all')}}",
+                    url : "{{route('user.ajax_all')}}",
                     data: {all_id:value,action:'delete'},
                         success: function(data) {
                           location.reload()
@@ -135,7 +135,7 @@ Organization tags
                  $.ajax({
                     type: "POST",
                     cache: false,
-                    url : "{{action('backend\UserController@ajax_all')}}",
+                    url : "{{route('user.ajax_all')}}",
                     data: {all_id:value,action:'deactivate'},
                         success: function(data) {
                           location.reload()
@@ -157,7 +157,7 @@ Organization tags
                  $.ajax({
                     type: "POST",
                     cache: false,
-                    url : "{{action('backend\UserController@ajax_all')}}",
+                    url : "{{route('user.ajax_all')}}",
                     data: {all_id:value,action:'activate'},
                         success: function(data) {
                           location.reload()
