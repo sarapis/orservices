@@ -113,17 +113,6 @@
 
     {{-- <nav id="sidebar"> --}}
     <nav id="">
-        {{-- <ul class="list-unstyled components pt-0 mb-0 sidebar-menu">
-            <li class="option-side">
-                <button class="btn btn-block waves-effect waves-classic" style="padding: 0;background: #A2E9FF;"><a href="/services" style="display: block;padding-left: 10px;">Services</a></button>
-            </li>
-            <li class="option-side">
-                <button class="btn btn-block waves-effect waves-classic" style="padding: 0;background: #A2E9FF;"><a href="/organizations" style="display: block;padding-left: 10px;">Organizations</a></button>
-            </li>
-            <li class="option-side">
-                <button class="btn btn-block waves-effect waves-classic" style="padding: 0;background: #A2E9FF;"><a href="/about" style="display: block;padding-left: 10px;">About</a></button>
-            </li>
-        </ul> --}}
 
         <ul class="list-unstyled components pt-0">
             @if ((Request::path() == 'services') || (Request::segment(1) == 'search') || (Request::segment(1) == 'services') || (Request::segment(1) == 'organizations') || (Request::segment(1) == 'services_near_me') || (Request::segment(1) == 'organizations'))
