@@ -376,7 +376,7 @@ class ExploreController extends Controller
                 // $response = $geocoder->getCoordinatesForAddress($chip_address);
                 // $lat = $response['lat'];
                 // $lng = $response['lng'];
-                if(isset($lat) && isset($lng)){
+                if (isset($lat) && isset($lng)) {
                     $avarageLatitude = $lat;
                     $avarageLongitude = $lng;
 
@@ -974,8 +974,9 @@ class ExploreController extends Controller
                     array_push($taxonomy_tree, $taxonomy_data);
                 }
             } else {
-                $serviceCategoryId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Category')->first();
-                $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId ? $serviceCategoryId->taxonomy_type_recordid : '');
+                // $serviceCategoryId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Category')->first();
+                // $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId ? $serviceCategoryId->taxonomy_type_recordid : '');
+                $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name');
                 $taxonomy_recordids = Taxonomy::getTaxonomyRecordids();
                 if (count($taxonomy_recordids) > 0) {
                     $parent_taxonomies->whereIn('taxonomy_recordid', $taxonomy_recordids);

@@ -60,7 +60,7 @@ class TaxonomyService
                         foreach ($parent_names as $key => $parent_name) {
                             $parent_name_ids[] = $strtointclass->string_to_int($parent_name);
                         }
-                        $taxonomy->taxonomy_parent_name = implode(',', $parent_name_ids);
+                        $taxonomy->taxonomy_parent_name = count($parent_name_ids) > 0 ? implode(',', $parent_name_ids) : null;
 
                         // $taxonomy->taxonomy_vocabulary = isset($record['fields']['vocabulary']) ? $record['fields']['vocabulary'] : null;
                         // $taxonomyName = isset($record['fields']['taxonomy']) ? $record['fields']['taxonomy'] : '[]';

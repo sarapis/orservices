@@ -140,7 +140,6 @@ class ComposerServiceProvider extends ServiceProvider
             $organization_tagsArray = OrganizationTag::get();
             $organization_tagsArray = json_encode($organization_tagsArray);
 
-            // $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name')->whereNotNull('taxonomy_services')->get();
             $layout = Layout::first();
             $view->with(compact('layout', 'taxonomy_tree', 'organization_tagsArray'));
         });

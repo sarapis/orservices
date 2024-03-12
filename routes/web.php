@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\backend\AddressTypeController;
-use App\Http\Controllers\backEnd\AnalyticsController;
+use App\Http\Controllers\backend\AnalyticsController;
 use App\Http\Controllers\backend\CityController;
 use App\Http\Controllers\backend\CodeCategoryController;
 use App\Http\Controllers\backend\CodeLedgerController;
@@ -14,10 +14,10 @@ use App\Http\Controllers\backend\DashboardEditController;
 use App\Http\Controllers\backend\DataController;
 use App\Http\Controllers\backend\DetailTypeController;
 use App\Http\Controllers\backend\DispositionController;
-use App\Http\Controllers\backEnd\EditaboutController;
-use App\Http\Controllers\backEnd\EdithomeController;
-use App\Http\Controllers\backEnd\EditlayoutController;
-use App\Http\Controllers\backEnd\EditLoginRegisterController;
+use App\Http\Controllers\backend\EditaboutController;
+use App\Http\Controllers\backend\EdithomeController;
+use App\Http\Controllers\backend\EditlayoutController;
+use App\Http\Controllers\backend\EditLoginRegisterController;
 use App\Http\Controllers\backend\EditsController;
 use App\Http\Controllers\backend\EmailController;
 use App\Http\Controllers\backend\ExportController;
@@ -33,14 +33,14 @@ use App\Http\Controllers\backend\OrganizationStatusController;
 use App\Http\Controllers\backend\OrganizationTagsController;
 use App\Http\Controllers\backend\OrganizationTypeController;
 use App\Http\Controllers\backend\OtherAttributesController;
-use App\Http\Controllers\backEnd\PagesController;
+use App\Http\Controllers\backend\PagesController;
 use App\Http\Controllers\backend\PhoneTypeController;
 use App\Http\Controllers\backend\PoliticalPartyController;
 use App\Http\Controllers\backend\ProgramController;
 use App\Http\Controllers\backend\RegionController;
 use App\Http\Controllers\backend\RegistrationController;
 use App\Http\Controllers\backend\ReligionsController;
-use App\Http\Controllers\backEnd\RoleController;
+use App\Http\Controllers\backend\RoleController;
 use App\Http\Controllers\backend\ServiceAreaController;
 use App\Http\Controllers\backend\ServiceAttributeController;
 use App\Http\Controllers\backend\ServiceCategoryController;
@@ -52,7 +52,7 @@ use App\Http\Controllers\backend\SessionController;
 use App\Http\Controllers\backend\StateController;
 use App\Http\Controllers\backend\TaxonomyTypeController;
 use App\Http\Controllers\backend\UploadController;
-use App\Http\Controllers\backEnd\UserController;
+use App\Http\Controllers\backend\UserController;
 use App\Http\Controllers\backend\XDetailsController;
 use App\Http\Controllers\CronController;
 use App\Http\Controllers\frontEnd\AboutController;
@@ -124,12 +124,8 @@ Auth::routes();
 
 Route::post('/fetchService', [ExploreController::class, 'fetchService'])->name('services.fetch');
 Route::post('/fetchOrganization', [ExploreController::class, 'fetchOrganization'])->name('organizations.fetch');
-Route::match(['get', 'post'], '/search', [
-    'uses' => [ExploreController::class, 'filter'],
-]);
-Route::match(['get', 'post'], '/search_organization', [
-    'uses' => [ExploreController::class, 'filter_organization'],
-]);
+Route::match(['get', 'post'], '/search', [ExploreController::class, 'filter']);
+Route::match(['get', 'post'], '/search_organization', [ExploreController::class, 'filter_organization']);
 Route::get('/services_near_me', [ExploreController::class, 'geolocation'])->name('services_near_me');
 Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
 
@@ -284,7 +280,7 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
 // admin route
 
 Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
-    Route::get('dashboard', ['uses' => 'HomeController@dashboard', 'as' => 'home.dashboard']);
+    Route::get('dashboard', [HomeController::class, 'dashboard'])->name('home.dashboard');
     Route::get('messagesSetting', [MessageController::class, 'messagesSetting'])->name('messagesSetting.index');
     Route::resource('dashboard_setting', DashboardEditController::class);
     Route::resource('pages', PagesController::class);
@@ -457,7 +453,7 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     // });
 
     //export section
-    Route::get('/export_services', ['uses' => [ServiceController::class, 'export_services']])->name('export.services');
+    Route::get('/export_services', [ServiceController::class, 'export_services'])->name('export.services');
     // Route::post('/export_locations', ['uses' => 'frontEnd\LocationController@csv'])->name('export.locations');
     // Route::post('/export_organizations', ['uses' => [OrganizationController::class, 'csv']])->name('export.organizations');
     // Route::post('/export_contacts', ['uses' => 'frontEnd\ContactController@csv'])->name('export.contacts');

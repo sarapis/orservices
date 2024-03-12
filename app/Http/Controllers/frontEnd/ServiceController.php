@@ -332,14 +332,16 @@ class ServiceController extends Controller
                 array_push($taxonomy_tree, $taxonomy_data);
             }
         } else {
-            $serviceCategoryId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Category')->first();
-            $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId ? $serviceCategoryId->taxonomy_type_recordid : '');
+            $serviceCategoryId = TaxonomyType::orderBy('order')->first();
+            $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name');
             $taxonomy_recordids = Taxonomy::getTaxonomyRecordids();
             if (count($taxonomy_recordids) > 0) {
                 $parent_taxonomies->whereIn('taxonomy_recordid', $taxonomy_recordids);
             }
+
             $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies->get();
         }
+
         $organizationStatus = OrganizationStatus::orderBy('order')->pluck('status', 'id');
         return view('frontEnd.services.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'meta_status', 'grandparent_taxonomies', 'sort_by_distance_clickable', 'service_taxonomy_info_list', 'service_taxonomy_badge_color_list', 'organization_tagsArray', 'layout', 'service_tagsArray', 'sdoh_codes_category_Array', 'sdoh_codes_Array', 'organizationStatus'))->with('taxonomy_tree', $taxonomy_tree);
     }
