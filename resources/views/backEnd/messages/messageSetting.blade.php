@@ -126,8 +126,8 @@
                     {!! Form::label('body', 'Google Analytics: ', ['class' => 'col-sm-3 control-label']) !!}
                     <div class="col-sm-6">
                         {{-- {!! Form::text('body', null, ['class' => 'form-control']) !!} --}}
-                        <input class="form-control" type="text" value="{{ '*******' . substr($page->body, -3) }}" name="body1" id="body1" disabled>
-                        <input class="form-control" type="text" value="{{ $page->body }}" name="body"
+                        <input class="form-control" type="text" value="{{ $page?->body ? '*******' . substr($page?->body, -3) : '' }}" name="body1" id="body1" disabled>
+                        <input class="form-control" type="text" value="{{ $page?->body }}" name="body"
                             id="body2" style="display: none;" required>
                         <button type="button" id="changeAnalyticKey">Change</button>
                         @if ($errors->first('body'))

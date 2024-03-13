@@ -28,7 +28,7 @@ class EditaboutController extends Controller
     {
         $layout = Layout::find(1);
 
-        $page = Page::findOrFail(2);
+        $page = Page::find(2);
 
         return view('backEnd.pages.edit_about', compact('page', 'layout'));
     }
@@ -84,7 +84,7 @@ class EditaboutController extends Controller
      */
     public function show($id)
     {
-        $page = Page::findOrFail($id);
+        $page = Page::find($id);
 
 
         return view('backEnd.pages.show', compact('page'));
@@ -99,7 +99,7 @@ class EditaboutController extends Controller
      */
     public function edit($id)
     {
-        $page = Page::findOrFail($id);
+        $page = Page::find($id);
 
         return view('backEnd.pages.edit', compact('page'));
     }
@@ -120,7 +120,7 @@ class EditaboutController extends Controller
             //     ->withErrors($this->validator($request))
             //     ->withInput();
             // }
-            $page = Page::findOrFail($id);
+            $page = Page::find($id);
             $page->update($request->all());
             $layout = Layout::find(1);
             if ($layout) {
@@ -153,9 +153,9 @@ class EditaboutController extends Controller
      */
     public function destroy($id)
     {
-        $page = Page::findOrFail($id);
+        $page = Page::find($id);
 
-        $page->delete();
+        $page?->delete();
 
         Session::flash('message', 'Page deleted!');
         Session::flash('status', 'success');

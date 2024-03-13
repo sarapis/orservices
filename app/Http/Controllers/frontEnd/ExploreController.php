@@ -277,7 +277,7 @@ class ExploreController extends Controller
 
             $pdf = $request->input('pdf');
             $csv = $request->input('csv');
-            $layout = Layout::findOrFail(1);
+            $layout = Layout::find(1);
 
             $filter_label = $request->filter_label ? $request->filter_label : (Session::has('filter_label') ? Session::get('filter_label') : $layout->default_label);
             Session::put('filter_label', $filter_label);
@@ -1283,7 +1283,7 @@ class ExploreController extends Controller
             $query = $request->get('query');
             if ($query) {
                 $metas = MetaFilter::all();
-                $layout = Layout::findOrFail(1);
+                $layout = Layout::find(1);
                 $count_metas = MetaFilter::count();
                 $serviceNames = Service::query();
                 $organization_names = Organization::where('organization_name', 'like', '%' . $query . '%');
@@ -1406,7 +1406,7 @@ class ExploreController extends Controller
                 $organization_names = Organization::where('organization_name', 'like', '%' . $query . '%')->orWhere('organization_alternate_name', 'like', '%' . $query . '%');
 
                 $metas = MetaFilter::all();
-                $layout = Layout::findOrFail(1);
+                $layout = Layout::find(1);
                 $count_metas = MetaFilter::count();
                 $filter_label = Session::has('filter_label') ? Session::get('filter_label') : $layout->default_label;
 

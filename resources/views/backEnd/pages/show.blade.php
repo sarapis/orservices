@@ -15,9 +15,9 @@ Page
             </thead>
             <tbody>
                 <tr>
-                    <td>{{ $page->id }}</td> <td> {{ $page->name }} </td><td> {{ $page->title }} </td><td> {{ $page->body }} </td>
+                    <td>{{ $page?->id }}</td> <td> {{ $page?->name }} </td><td> {{ $page?->title }} </td><td> {{ $page?->body }} </td>
                 </tr>
-            </tbody>    
+            </tbody>
         </table>
     </div>
 

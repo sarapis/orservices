@@ -81,7 +81,7 @@ class MessageController extends Controller
         $sendgridMailFromAddress = env('MAIL_FROM_ADDRESS');
         $share_this_api = env('SHARETHIS_API');
         $share_this_api_activate = env('SHARETHIS_ACTIVATE');
-        $page = Page::findOrFail(4);
+        $page = Page::find(4);
         return view('backEnd.messages.messageSetting', compact('sendgridKey', 'sendgridMailFromName', 'sendgridMailFromAddress', 'share_this_api', 'share_this_api_activate', 'page'));
     }
 

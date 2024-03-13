@@ -26,7 +26,7 @@ class AnalyticsController extends Controller
      */
     public function index()
     {
-        $page = Page::findOrFail(4);
+        $page = Page::find(4);
         $analytics = Analytic::all();
 
         return view('backEnd.pages.analytics', compact('page', 'analytics'));

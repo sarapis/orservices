@@ -116,7 +116,7 @@ class ServiceController extends Controller
         $checked_transportations = [];
         $checked_hours = [];
         $meta_status = 'On';
-        $layout = Layout::findOrFail(1);
+        $layout = Layout::find(1);
 
         $metas = MetaFilter::all();
         $count_metas = MetaFilter::count();
@@ -343,6 +343,7 @@ class ServiceController extends Controller
         }
 
         $organizationStatus = OrganizationStatus::orderBy('order')->pluck('status', 'id');
+
         return view('frontEnd.services.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'meta_status', 'grandparent_taxonomies', 'sort_by_distance_clickable', 'service_taxonomy_info_list', 'service_taxonomy_badge_color_list', 'organization_tagsArray', 'layout', 'service_tagsArray', 'sdoh_codes_category_Array', 'sdoh_codes_Array', 'organizationStatus'))->with('taxonomy_tree', $taxonomy_tree);
     }
 
@@ -389,7 +390,7 @@ class ServiceController extends Controller
         $service_status_list = ['Yes' => 'Yes', 'No' => 'No'];
 
         // $taxonomy_info_list = Taxonomy::select('taxonomy_recordid', 'taxonomy_name')->orderBy('taxonomy_name')->distinct()->get();
-        $layout = Layout::findOrFail(1);
+        $layout = Layout::find(1);
         $exclude_vocabulary = [];
         if ($layout) {
             $exclude_vocabulary = explode(',', $layout->exclude_vocabulary);
@@ -489,7 +490,7 @@ class ServiceController extends Controller
             ]);
         }
         try {
-            $layout = Layout::findOrFail(1);
+            $layout = Layout::find(1);
             $service = new Service;
             $service_recordids = Service::select("service_recordid")->distinct()->get();
             $service_recordid_list = array();
@@ -1598,7 +1599,7 @@ class ServiceController extends Controller
 
                 $service_location_list = Location::select('location_recordid', 'location_name')->get();
                 $service_contacts_list = Contact::select('contact_recordid', 'contact_name')->get();
-                $layout = Layout::findOrFail(1);
+                $layout = Layout::find(1);
                 $exclude_vocabulary = [];
                 if ($layout) {
                     $exclude_vocabulary = explode(',', $layout->exclude_vocabulary);

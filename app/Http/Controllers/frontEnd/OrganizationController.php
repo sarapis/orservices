@@ -1006,7 +1006,7 @@ class OrganizationController extends Controller
         $all_services = Service::orderBy('service_name')->with('phone', 'address', 'taxonomy', 'schedules', 'details')->get();
         $phone_languages = Language::orderBy('order')->whereNotNull('language_recordid')->pluck('language', 'language_recordid');
         // service pop section
-        $layout = Layout::findOrFail(1);
+        $layout = Layout::find(1);
         $exclude_vocabulary = [];
         if ($layout) {
             $exclude_vocabulary = explode(',', $layout->exclude_vocabulary);
@@ -1096,7 +1096,7 @@ class OrganizationController extends Controller
             $new_recordid = Organization::max("organization_recordid") + 1;
             $organization->organization_recordid = $new_recordid;
             $organization_recordid = $new_recordid;
-            $layout = Layout::findOrFail(1);
+            $layout = Layout::find(1);
             $organization->organization_name = $request->organization_name;
             // $organization->organization_status_x = $request->organization_status_x;
             if ($layout && $layout->default_organization_status) {
@@ -1928,7 +1928,7 @@ class OrganizationController extends Controller
                 $all_services = Service::with('phone', 'address', 'taxonomy', 'schedules', 'details')->get();
                 $phone_languages = Language::orderBy('order')->whereNotNull('language_recordid')->pluck('language', 'language_recordid');
                 // service pop section
-                $layout = Layout::findOrFail(1);
+                $layout = Layout::find(1);
                 $exclude_vocabulary = [];
                 if ($layout) {
                     $exclude_vocabulary = explode(',', $layout->exclude_vocabulary);
