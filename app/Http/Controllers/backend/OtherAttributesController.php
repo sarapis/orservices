@@ -145,8 +145,8 @@ class OtherAttributesController extends Controller
      */
     public function destroy($id)
     {
-        $OtherAttribute = OtherAttribute::findOrFail($id);
-        $OtherAttribute->delete();
+        $OtherAttribute = OtherAttribute::find($id);
+        $OtherAttribute?->delete();
 
         Session::flash('message', 'Success! Attribute is deleted successfully.');
         Session::flash('status', 'success');

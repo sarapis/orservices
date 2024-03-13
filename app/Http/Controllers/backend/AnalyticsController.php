@@ -28,7 +28,7 @@ class AnalyticsController extends Controller
      */
     public function index(Request $request)
     {
-        $page = Page::findOrFail(4);
+        $page = Page::find(4);
         $analytics = Analytic::all();
         $users = User::get();
 

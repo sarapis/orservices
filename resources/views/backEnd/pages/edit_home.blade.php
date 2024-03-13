@@ -137,7 +137,7 @@
 							</label>
 							<div class="col-md-6 col-sm-12">
 								<div class="row">
-									<img src="/uploads/images/{{$layout->homepage_background}}" id="home_bk_img" style="width: 100%;">
+									<img src="/uploads/images/{{$layout?->homepage_background}}" id="home_bk_img" style="width: 100%;">
 								</div>
 								<div class="row">
 									<div class="col-md-6">

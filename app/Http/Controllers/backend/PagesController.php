@@ -104,7 +104,7 @@ class PagesController extends Controller
      */
     public function show($id)
     {
-        $page = Page::findOrFail($id);
+        $page = Page::find($id);
 
         return view('backEnd.pages.show', compact('page'));
     }
@@ -118,7 +118,7 @@ class PagesController extends Controller
      */
     public function edit($id)
     {
-        $page = Page::findOrFail($id);
+        $page = Page::find($id);
 
         return view('backEnd.pages.edit', compact('page'));
     }
@@ -139,7 +139,7 @@ class PagesController extends Controller
                 ->withInput();
         }
 
-        $page = Page::findOrFail($id);
+        $page = Page::find($id);
         $page->update($request->all());
 
         Session::flash('message', 'Page updated!');
@@ -157,7 +157,7 @@ class PagesController extends Controller
      */
     public function destroy($id)
     {
-        $page = Page::findOrFail($id);
+        $page = Page::find($id);
 
         $page->delete();
 
