@@ -50,14 +50,14 @@ ul#ui-id-1 {
                         <h4 class="panel-text"><span class="badge bg-red">Alternate Name:</span> {{$service->service_alternate_name}}</h4>
 
                          <h4 class="panel-text"><span class="badge bg-red">Category:</span>
-                            @if($service->service_taxonomy!=0 || $service->service_taxonomy==null)
+                            {{-- @if($service->service_taxonomy!=0 || $service->service_taxonomy==null) --}}
                                 @foreach($service->taxonomy as $key => $taxonomy)
                                     @if($loop->last)
                                     <a class="panel-link" href="{{ config('app.url')}}/category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>                                    @else
                                     <a class="panel-link" href="{{ config('app.url')}}/category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>,
                                     @endif
                                 @endforeach
-                            @endif
+                            {{-- @endif --}}
                         </h4>
                         <p class="panel-text"><span class="badge bg-red">Organization:</span>
                             @if($service->service_organization)

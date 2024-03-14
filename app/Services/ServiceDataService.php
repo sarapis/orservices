@@ -93,24 +93,26 @@ class ServiceDataService
 
                         $service->service_status = isset($record['fields']['status']) ? $record['fields']['status'] : null;
 
-                        // if (isset($record['fields']['taxonomy'])) {
-                        //     $i = 0;
-                        //     foreach ($record['fields']['taxonomy'] as $value) {
-                        //         $service_taxonomy = new ServiceTaxonomy();
-                        //         $service_taxonomy->service_recordid = $service->service_recordid;
-                        //         $service_taxonomy->taxonomy_recordid = $strtointclass->string_to_int($value);
-                        //         $service_taxonomy->save();
-                        //         $servicetaxonomy = $strtointclass->string_to_int($value);
+                         if (isset($record['fields']['taxonomy_terms'])) {
+                             $i = 0;
+                             $servicetaxonomy = [];
+                             foreach ($record['fields']['taxonomy_terms'] as $value) {
+//                                 $service_taxonomy = new ServiceTaxonomy();
+//                                 $service_taxonomy->service_recordid = $service->service_recordid;
+//                                 $service_taxonomy->taxonomy_recordid = $strtointclass->string_to_int($value);
+//                                 $service_taxonomy->save();
+                                 $servicetaxonomy[] = $strtointclass->string_to_int($value);
 
-                        //         if ($i != 0) {
-                        //             $service->service_taxonomy = $service->service_taxonomy . ',' . $servicetaxonomy;
-                        //         } else {
-                        //             $service->service_taxonomy = $servicetaxonomy;
-                        //         }
+//                                 if ($i != 0) {
+//                                     $service->service_taxonomy = $service->service_taxonomy . ',' . $servicetaxonomy;
+//                                 } else {
+//                                     $service->service_taxonomy = $servicetaxonomy;
+//                                 }
 
-                        //         $i++;
-                        //     }
-                        // }
+//                                 $i++;
+                             }
+                             $service->service_taxonomy = count($servicetaxonomy) > 0 ? implode(',', $servicetaxonomy) : null ;
+                         }
 
                         $service->service_application_process = isset($record['fields']['application_process']) ? $record['fields']['application_process'] : null;
                         // $service->service_wait_time = isset($record['fields']['wait_time']) ? $record['fields']['wait_time'] : null;

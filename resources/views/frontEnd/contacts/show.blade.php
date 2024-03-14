@@ -176,7 +176,7 @@ Contact
                                 <span class="pl-0 category_badge subtitle">
                                     @foreach ($service->taxonomy as $service_taxonomy_info)
                                     @if (isset($service_taxonomy_info->taxonomy_type) && count($service_taxonomy_info->taxonomy_type) > 0 &&  $service_taxonomy_info->taxonomy_type[0]->name == 'Service Category')
-                                    @if($service->service_taxonomy != null)
+                                    {{-- @if($service->service_taxonomy != null) --}}
                                     @if ($i == 0)
                                     <b>Service Category:</b>
                                     @php
@@ -185,7 +185,7 @@ Contact
                                     @endif
                                     <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
                                         at="child_{{$service_taxonomy_info->taxonomy_recordid}}" style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>
-                                    @endif
+                                    {{-- @endif --}}
                                     @endif
                                     @endforeach
                                 </span>
@@ -194,7 +194,7 @@ Contact
                                 <span class="pl-0 category_badge subtitle">
                                 @foreach ($service->taxonomy as $service_taxonomy_info)
                                 @if (isset($service_taxonomy_info->taxonomy_type) && count($service_taxonomy_info->taxonomy_type) > 0 &&  $service_taxonomy_info->taxonomy_type[0]->name == 'Service Eligibility')
-                                @if($service->service_taxonomy != null)
+                                {{-- @if($service->service_taxonomy != null) --}}
                                 @if ($j == 0)
                                 <b>Service Eligibility:</b>
                                 @php
@@ -203,7 +203,7 @@ Contact
                                 @endif
                                 <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
                                     at="child_{{$service_taxonomy_info->taxonomy_recordid}}" style="background-color: {{ $service_taxonomy_info->badge_color ? '#'.$service_taxonomy_info->badge_color : '#000' }} !important; color:#fff !important;">{{$service_taxonomy_info->taxonomy_name}}</a>
-                                @endif
+                                {{-- @endif --}}
                                 @endif
                                 @endforeach
                                 </span>
