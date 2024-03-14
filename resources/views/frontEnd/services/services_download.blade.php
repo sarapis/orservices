@@ -16,17 +16,17 @@
                                     href="{{ config('app.url') }}/services/{{ $service->service_recordid }}">
                                     {{ $service->service_name }}</a></h3>
                             <h4><span class="badge bg-red">Category:</span>
-                                    @if ($service->service_taxonomy != 0)
+                                    {{-- @if ($service->service_taxonomy != 0) --}}
                                         @foreach ($service->taxonomy as $key => $taxonomy)
-                                            @if ($loop->last)
+                                        @if ($loop->last)
                                             <a class="panel-link"
                                                 href="{{ config('app.url') }}/category/{{ $taxonomy->taxonomy_recordid }}">{{ $taxonomy->taxonomy_name }}</a>
                                         @else
                                             <a class="panel-link"
                                                 href="{{ config('app.url') }}/category/{{ $taxonomy->taxonomy_recordid }}">{{ $taxonomy->taxonomy_name }}</a>,
                                         @endif
-                                    @endforeach
-                                @endif
+                                        @endforeach
+                                    {{-- @endif --}}
                             </h4>
                             <p><span class="badge bg-red">Organization:</span>
                                 @if ($service->service_organization != 0)
