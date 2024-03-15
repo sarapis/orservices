@@ -171,11 +171,27 @@ Contact
                             @php
                                 $i = 0;
                                 $j = 0;
+                                $service_category_data = 0;
+                                $service_eligibility_data = 0;
+                                foreach ($service->taxonomy as $service_taxonomy_info) {
+                                    $taxonomyTypeCategory = $service_taxonomy_info?->taxonomy_type->where('name','Service Category')->first();
+
+                                    if (!empty($taxonomyTypeCategory)) {
+                                        $service_category_data += 1;
+                                    }
+                                    $taxonomyTypeEligibility = $service_taxonomy_info?->taxonomy_type->where('name','Service Eligibility')->first();
+                                    if (!empty($taxonomyTypeEligibility)) {
+                                        $service_eligibility_data += 1;
+                                    }
+                                }
                             @endphp
                             <div class="tagp_class">
                                 <span class="pl-0 category_badge subtitle">
                                     @foreach ($service->taxonomy as $service_taxonomy_info)
-                                    @if (isset($service_taxonomy_info->taxonomy_type) && count($service_taxonomy_info->taxonomy_type) > 0 &&  $service_taxonomy_info->taxonomy_type[0]->name == 'Service Category')
+                                    @php
+                                        $taxonomyTypeCategory = $service_taxonomy_info?->taxonomy_type->where('name','Service Category')->first();
+                                    @endphp
+                                    @if (!empty($taxonomyTypeCategory))
                                     {{-- @if($service->service_taxonomy != null) --}}
                                     @if ($i == 0)
                                     <b>Service Category:</b>
@@ -193,7 +209,10 @@ Contact
                             <div class="tagp_class">
                                 <span class="pl-0 category_badge subtitle">
                                 @foreach ($service->taxonomy as $service_taxonomy_info)
-                                @if (isset($service_taxonomy_info->taxonomy_type) && count($service_taxonomy_info->taxonomy_type) > 0 &&  $service_taxonomy_info->taxonomy_type[0]->name == 'Service Eligibility')
+                                @php
+                                    $taxonomyTypeEligibility = $service_taxonomy_info?->taxonomy_type->where('name','Service Eligibility')->first();
+                                @endphp
+                                @if (!empty($taxonomyTypeEligibility))
                                 {{-- @if($service->service_taxonomy != null) --}}
                                 @if ($j == 0)
                                 <b>Service Eligibility:</b>
