@@ -82,12 +82,14 @@ class HomeController extends Controller
                 $taxonomy_tree[] = $taxonomy_data;
             }
         } else {
-            $serviceCategoryId = TaxonomyType::orderBy('order')->where('type', 'internal')->where('name', 'Service Category')->first();
-            $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name')->where('taxonomy', $serviceCategoryId ? $serviceCategoryId->taxonomy_type_recordid : '');
+            $serviceCategoryId = TaxonomyType::orderBy('order')->where('name', 'Service Category')->first();
+            $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name')->whereNotNull('taxonomy_name')->where('taxonomy', 'LIKE', '%' . ($serviceCategoryId ? $serviceCategoryId->taxonomy_type_recordid : '') . '%');
             $taxonomy_recordids = Taxonomy::getTaxonomyRecordids();
-            if(count($taxonomy_recordids) > 0){
-                $parent_taxonomies->whereIn('taxonomy_recordid',array_values($taxonomy_recordids));
+
+            if (count($taxonomy_recordids) > 0) {
+                $parent_taxonomies->whereIn('taxonomy_recordid', array_values($taxonomy_recordids));
             }
+
             $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies->get();
         }
 

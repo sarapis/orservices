@@ -333,7 +333,7 @@ class ServiceController extends Controller
             }
         } else {
             $serviceCategoryId = TaxonomyType::orderBy('order')->first();
-            $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name');
+            $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name')->whereNotNull('taxonomy_name');
             $taxonomy_recordids = Taxonomy::getTaxonomyRecordids();
             if (count($taxonomy_recordids) > 0) {
                 $parent_taxonomies->whereIn('taxonomy_recordid', $taxonomy_recordids);
