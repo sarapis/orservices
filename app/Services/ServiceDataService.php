@@ -68,23 +68,13 @@ class ServiceDataService
                         $service->service_alternate_name = isset($record['fields']['alternative_name']) ? $record['fields']['alternative_name'] : null;
                         $service->service_description = isset($record['fields']['description']) ? $record['fields']['description'] : null;
 
-                        if (isset($record['fields']['x-locations'])) {
-                            $i = 0;
-                            foreach ($record['fields']['x-locations'] as $value) {
-                                $service_location = new ServiceLocation();
-                                $service_location->service_recordid = $service->service_recordid;
-                                $service_location->location_recordid = $strtointclass->string_to_int($value);
-                                $service_location->save();
-                                $servicelocation = $strtointclass->string_to_int($value);
-
-                                if ($i != 0) {
-                                    $service->service_locations = $service->service_locations . ',' . $servicelocation;
-                                } else {
-                                    $service->service_locations = $servicelocation;
-                                }
-
-                                $i++;
+                        if (isset($record['fields']['locations'])) {
+                            $serviceLocation = [];
+                            foreach ($record['fields']['locations'] as $value) {
+                                $serviceLocation[] = $strtointclass->string_to_int($value);
                             }
+                            $service->service_locations = count($serviceLocation) > 0 ? implode(',', $serviceLocation) : null;
+                            $service->locations()->sync($serviceLocation);
                         }
 
                         $service->service_url = isset($record['fields']['url']) ? $record['fields']['url'] : null;
@@ -93,15 +83,15 @@ class ServiceDataService
 
                         $service->service_status = isset($record['fields']['status']) ? $record['fields']['status'] : null;
 
-                         if (isset($record['fields']['taxonomy_terms'])) {
-                             $i = 0;
-                             $servicetaxonomy = [];
-                             foreach ($record['fields']['taxonomy_terms'] as $value) {
+                        if (isset($record['fields']['taxonomy_terms'])) {
+                            $i = 0;
+                            $servicetaxonomy = [];
+                            foreach ($record['fields']['taxonomy_terms'] as $value) {
 //                                 $service_taxonomy = new ServiceTaxonomy();
 //                                 $service_taxonomy->service_recordid = $service->service_recordid;
 //                                 $service_taxonomy->taxonomy_recordid = $strtointclass->string_to_int($value);
 //                                 $service_taxonomy->save();
-                                 $servicetaxonomy[] = $strtointclass->string_to_int($value);
+                                $servicetaxonomy[] = $strtointclass->string_to_int($value);
 
 //                                 if ($i != 0) {
 //                                     $service->service_taxonomy = $service->service_taxonomy . ',' . $servicetaxonomy;
@@ -110,9 +100,9 @@ class ServiceDataService
 //                                 }
 
 //                                 $i++;
-                             }
-                             $service->service_taxonomy = count($servicetaxonomy) > 0 ? implode(',', $servicetaxonomy) : null ;
-                         }
+                            }
+                            $service->service_taxonomy = count($servicetaxonomy) > 0 ? implode(',', $servicetaxonomy) : null;
+                        }
 
                         $service->service_application_process = isset($record['fields']['application_process']) ? $record['fields']['application_process'] : null;
                         // $service->service_wait_time = isset($record['fields']['wait_time']) ? $record['fields']['wait_time'] : null;
