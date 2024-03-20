@@ -20,8 +20,6 @@ use App\Model\ServiceTaxonomy;
 use App\Model\Source_data;
 use App\Model\Taxonomy;
 use App\Model\TaxonomyType;
-use Geocode;
-use Geolocation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PDF;
@@ -40,7 +38,9 @@ use Illuminate\Support\Facades\Session;
 
 class ExploreController extends Controller
 {
-
+    public function __construct(public Geocoder $geocoder)
+    {
+    }
     public function geolocation(Request $request)
     {
         $ip = $request->ip();
@@ -196,10 +196,11 @@ class ExploreController extends Controller
 
         if ($chip_address != null) {
 
-            $response = Geocode::make()->address($chip_address);
+            $response = $this->geocoder->getCoordinatesForAddress($chip_address);
             if ($response) {
-                $lat = $response->latitude();
-                $lng = $response->longitude();
+                $lat = $response['lat'];
+                $lng = $response['lng'];
+
 
                 $locations = Location::with('services', 'organization')->select(DB::raw('*, ( 3959 * acos( cos( radians(' . $lat . ') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians(' . $lng . ') ) + sin( radians(' . $lat . ') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
                     ->having('distance', '<', 2)
@@ -362,11 +363,10 @@ class ExploreController extends Controller
                     // $chip_address = 'search near by';
                     // $chip_service = 'search near by';
                 } else {
-                    $response = Geocode::make()->address($chip_address);
+                    $response = $this->geocoder->getCoordinatesForAddress($chip_address);
                     if ($response) {
-
-                        $lat = $response->latitude();
-                        $lng = $response->longitude();
+                        $lat = $response['lat'];
+                        $lng = $response['lng'];
                     }
                 }
                 // $client = new \GuzzleHttp\Client();
