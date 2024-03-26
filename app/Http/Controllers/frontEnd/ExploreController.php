@@ -39,8 +39,18 @@ use Stevebauman\Location\Facades\Location as FacadesLocation;
 
 class ExploreController extends Controller
 {
+    public ?Map $map;
+    public int $radius;
+
     public function __construct(public Geocoder $geocoder, public DistanceServices $distanceServices)
     {
+        $this->map = Map::find(1);
+        $this->radius = 3959;
+
+        if ($this->map->distance_unit === 'km') {
+            $this->radius = 6371;
+        }
+        $this->geocoder->setApiKey($this->map->geocode_map_key);
     }
 
     public function geolocation(Request $request)
@@ -107,7 +117,7 @@ class ExploreController extends Controller
 
             foreach ($service_taxonomy_recordid_list as $key => $service_taxonomy_recordid) {
 
-                $taxonomy = Taxonomy::where('taxonomy_recordid', '=', (int) ($service_taxonomy_recordid))->first();
+                $taxonomy = Taxonomy::where('taxonomy_recordid', '=', (int)($service_taxonomy_recordid))->first();
                 if (isset($taxonomy)) {
                     $service_taxonomy_name = $taxonomy->taxonomy_name;
                     $service_taxonomy_info_list[$service_taxonomy_recordid] = $service_taxonomy_name;
@@ -202,8 +212,14 @@ class ExploreController extends Controller
             if ($response) {
                 $lat = $response['lat'];
                 $lng = $response['lng'];
+                $radius = '3959';
 
-                $locations = Location::with('services', 'organization')->select(DB::raw('*, ( 3959 * acos( cos( radians(' . $lat . ') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians(' . $lng . ') ) + sin( radians(' . $lat . ') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
+                if ($this->map->distance_unit === 'km') {
+                    $radius = '6,371';
+                }
+
+
+                $locations = Location::with('services', 'organization')->select(DB::raw('*, ( ' . $radius . ' * acos( cos( radians(' . $lat . ') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians(' . $lng . ') ) + sin( radians(' . $lat . ') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
                     ->having('distance', '<', 2)
                     ->orderBy('distance');
 
@@ -385,11 +401,11 @@ class ExploreController extends Controller
 
                     $locations = Location::select('*')
                         ->selectRaw(
-                            '(3963 * acos(cos(radians(?)) * cos(radians(location_latitude)) * cos(radians(location_longitude) - radians(?)) + sin(radians(?)) * sin(radians(location_latitude)))) AS distance',
+                            '(' . $this->radius . ' * acos(cos(radians(?)) * cos(radians(location_latitude)) * cos(radians(location_longitude) - radians(?)) + sin(radians(?)) * sin(radians(location_latitude)))) AS distance',
                             [$lat, $lng, $lat]
                         )
-                        //                        ->select(DB::raw('* , (((acos(sin((' . $lat . ' * pi()/180)) * sin((location_latitude*pi()/180))+cos((' . $lat . ' * pi()/180)) * cos((location_latitude*pi()/180)) * cos(((' . $lng . '- location_longitude)*  pi()/180))))*180/pi())*60*1.1515*5280) AS distance'))
-                        //                        ->select(DB::raw('*, ( 3959 * acos( cos( radians(' . $lat . ') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians(' . $lng . ') ) + sin( radians(' . $lat . ') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
+//                        ->select(DB::raw('* , (((acos(sin((' . $lat . ' * pi()/180)) * sin((location_latitude*pi()/180))+cos((' . $lat . ' * pi()/180)) * cos((location_latitude*pi()/180)) * cos(((' . $lng . '- location_longitude)*  pi()/180))))*180/pi())*60*1.1515*5280) AS distance'))
+//                        ->select(DB::raw('*, ( 3959 * acos( cos( radians(' . $lat . ') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians(' . $lng . ') ) + sin( radians(' . $lat . ') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
                         ->having('distance', '<', 50)
                         ->orderBy('distance');
 
@@ -874,7 +890,7 @@ class ExploreController extends Controller
                         //                        $dist = acos($dist);
                         //                        $dist = rad2deg($dist);
 
-                        $miles = $this->distanceServices->getDistance($lat1, $lon1, $lat2, $lon2, 'mi');
+                        $miles = $this->distanceServices->getDistance($lat1, $lon1, $lat2, $lon2,  $this->map?->distance_unit);
                     }
 
                     $value->miles = $miles;
@@ -899,7 +915,7 @@ class ExploreController extends Controller
 
                 foreach ($service_taxonomy_recordid_list as $key => $service_taxonomy_recordid) {
 
-                    $taxonomy = Taxonomy::where('taxonomy_recordid', '=', (int) ($service_taxonomy_recordid))->first();
+                    $taxonomy = Taxonomy::where('taxonomy_recordid', '=', (int)($service_taxonomy_recordid))->first();
                     if (isset($taxonomy)) {
                         $service_taxonomy_name = $taxonomy->taxonomy_name;
                         $service_taxonomy_info_list[$service_taxonomy_recordid] = $service_taxonomy_name;
@@ -912,7 +928,7 @@ class ExploreController extends Controller
             foreach ($services as $key => $service) {
                 $service_details_recordid_list = explode(',', $service->service_details);
                 foreach ($service_details_recordid_list as $key => $service_details_recordid) {
-                    $detail = Detail::where('detail_recordid', '=', (int) ($service_details_recordid))->first();
+                    $detail = Detail::where('detail_recordid', '=', (int)($service_details_recordid))->first();
                     if (isset($detail)) {
                         $service_detail_type = $detail->detail_type;
                         $service_details_info_list[$service_details_recordid] = $service_detail_type;
@@ -1211,7 +1227,7 @@ class ExploreController extends Controller
 
                         foreach ($service_taxonomy_recordid_list as $key => $service_taxonomy_recordid) {
 
-                            $taxonomy = Taxonomy::where('taxonomy_recordid', '=', (int) ($service_taxonomy_recordid))->first();
+                            $taxonomy = Taxonomy::where('taxonomy_recordid', '=', (int)($service_taxonomy_recordid))->first();
                             if (isset($taxonomy)) {
                                 $service_taxonomy_name = $taxonomy->taxonomy_name;
                                 $service_taxonomy_info_list[$service_taxonomy_recordid] = $service_taxonomy_name;
@@ -1242,7 +1258,7 @@ class ExploreController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -1253,7 +1269,7 @@ class ExploreController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -1263,7 +1279,7 @@ class ExploreController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -1456,7 +1472,7 @@ class ExploreController extends Controller
                 echo $output;
             }
         } catch (\Throwable $th) {
-            Log::error('Error in fetchOrganization : ', $th);
+            Log::error('Error in fetchOrganization : ' . $th);
         }
     }
 }

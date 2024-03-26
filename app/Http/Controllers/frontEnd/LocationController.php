@@ -918,7 +918,7 @@ class LocationController extends Controller
             // $client = new \GuzzleHttp\Client();
             // $geocoder = new Geocoder($client);
             // $map = Map::find(1);
-            // $geocode_api_key = $map && $map->api_key ? $map->api_key : null;
+            // $geocode_api_key = $map && $map->geocode_map_key ? $map->geocode_map_key : null;
             // $geocoder->setApiKey($geocode_api_key);
 
             // if ($facility->location_address) {
@@ -1249,33 +1249,6 @@ class LocationController extends Controller
 
             $address_recordid_list = array_values(array_filter($address_recordid_list));
             $facility->address()->sync($address_recordid_list);
-
-            // $client = new \GuzzleHttp\Client();
-            // $geocoder = new Geocoder($client);
-            // $map = Map::find(1);
-            // $geocode_api_key = $map && $map->api_key ? $map->api_key : null;
-            // $geocoder->setApiKey($geocode_api_key);
-
-            // if ($facility->location_address) {
-            //     $address_recordid = $facility->location_address;
-            //     $address_info = Address::where('address_recordid', '=', $address_recordid)->select('address_1', 'address_city', 'address_state_province', 'address_postal_code')->first();
-            //     $full_address_info = $address_info->address_1 . ', ' . $address_info->address_city . ', ' . $address_info->address_state_province . ', ' . $address_info->address_postal_code;
-
-            //     $response = $geocoder->getCoordinatesForAddress($full_address_info);
-
-            //     if ($response['lat']) {
-            //         $latitude = $response['lat'];
-            //         $longitude = $response['lng'];
-            //         $facility->location_latitude = $latitude;
-            //         $facility->location_longitude = $longitude;
-            //     } else {
-            //         Session::flash('message', 'Address info is not valid. We can not get longitude and latitude for this address');
-            //         Session::flash('status', 'error');
-            //         return redirect()->back()->withInput();
-            //     }
-            // }
-
-
 
             $facility->location_phones = '';
             $phone_recordid_list = [];
@@ -2219,31 +2192,6 @@ class LocationController extends Controller
 
             $address_recordid_list = array_values(array_filter($address_recordid_list));
             $facility->address()->sync($address_recordid_list);
-
-            // $client = new \GuzzleHttp\Client();
-            // $geocoder = new Geocoder($client);
-            // $map = Map::find(1);
-            // $geocode_api_key = $map && $map->api_key ? $map->api_key : null;
-            // $geocoder->setApiKey($geocode_api_key);
-
-            // if ($facility->location_address) {
-            //     $address_recordid = $facility->location_address;
-            //     $address_info = Address::where('address_recordid', '=', $address_recordid)->select('address_1', 'address_city', 'address_state_province', 'address_postal_code')->first();
-            //     $full_address_info = $address_info->address_1 . ', ' . $address_info->address_city . ', ' . $address_info->address_state_province . ', ' . $address_info->address_postal_code;
-
-            //     $response = $geocoder->getCoordinatesForAddress($full_address_info);
-
-            //     if ($response['lat']) {
-            //         $latitude = $response['lat'];
-            //         $longitude = $response['lng'];
-            //         $facility->location_latitude = $latitude;
-            //         $facility->location_longitude = $longitude;
-            //     } else {
-            //         Session::flash('message', 'Address info is not valid. We can not get longitude and latitude for this address');
-            //         Session::flash('status', 'error');
-            //         return redirect()->back()->withInput();
-            //     }
-            // }
 
             $facility->location_phones = '';
             $phone_recordid_list = [];

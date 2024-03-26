@@ -221,7 +221,7 @@ class AutoSync extends Command
             $client = new \GuzzleHttp\Client();
             $geocoder = new Geocoder($client);
             $map = Map::find(1);
-            $geocode_api_key = $map && $map->api_key ? $map->api_key : null;
+            $geocode_api_key = $map && $map->geocode_map_key ? $map->geocode_map_key : null;
             $geocoder->setApiKey($geocode_api_key);
 
             if ($ungeocoded_location_info_list) {

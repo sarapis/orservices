@@ -2,7 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Model\Layout;
 use Closure;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Config;
 
 class TimeZoneMiddleware
 {
@@ -10,17 +13,21 @@ class TimeZoneMiddleware
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
      * @return mixed
      */
     public function handle($request, Closure $next)
     {
-        if (env('TIME_ZONE')) {
-            // \Config::set('app.timezone', env('TIME_ZONE'));
-            date_default_timezone_set(env('TIME_ZONE'));
+        $layout = Layout::find(1);
+        if ($layout && $layout->timezone) {
+            date_default_timezone_set($layout->timezone);
+            Config::set('app.timezone', $layout->timezone);
+
+            Artisan::call('cache:clear');
+            Artisan::call('config:clear');
         } else {
             date_default_timezone_set('UTC');
         }
+
         return $next($request);
     }
 }

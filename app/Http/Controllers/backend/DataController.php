@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\backend;
 
 use App\Http\Controllers\Controller;
-use App\Model\Map;
-use App\Model\Source_data;
 use App\Model\Address;
 use App\Model\Airtablekeyinfo;
+use App\Model\Layout;
+use App\Model\Map;
+use App\Model\Source_data;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
@@ -117,9 +119,7 @@ class DataController extends Controller
             // exit();
             $source_data->active = $request->input('source_data');
 
-
             $source_data->save();
-
 
             return redirect('import');
         } catch (\Throwable $th) {
@@ -139,11 +139,13 @@ class DataController extends Controller
 
         return Redirect::route('admin.posts.index');
     }
+
     public function add_country()
     {
         $countries = DB::table('countries')->pluck('name', 'sortname');
+        $layout = Layout::find(1);
 
-        $zones_array = array();
+        $zones_array = [];
         $timestamp = time();
         // $dummy_datetime_object = new DateTime();
         foreach (timezone_identifiers_list() as $key => $zone) {
@@ -153,8 +155,9 @@ class DataController extends Controller
 
             // $tz = new DateTimeZone($zone);
             // $zones_array[$key]['offset'] = $tz->getOffset($dummy_datetime_object);
-            $zones_array[$zone] = ('UTC/GMT ' . date('P', $timestamp)) . ' ' . $zone;
+            $zones_array[$zone] = ('UTC/GMT '.date('P', $timestamp)).' '.$zone;
         }
+        date_default_timezone_set(($layout->timezone ?? 'UTC'));
 
         // $zones_array = array();
         // $timestamp = time();
@@ -165,55 +168,74 @@ class DataController extends Controller
         //     // $zones_array[$key]['diff_from_GMT'] = 'UTC/GMT ' . date('P', $timestamp);
         //     $zones_array[$zone] = ('UTC/GMT ' . date('P', $timestamp)) . ' ' . $zone;
         // }
-        return view('backEnd.settings.add_country', compact('countries', 'zones_array'));
+        return view('backEnd.settings.add_country', compact('countries', 'zones_array', 'layout'));
     }
+
     public function save_country(Request $request)
     {
         try {
             Address::whereNULL('address_country')->update([
-                'address_country' => $request->country
+                'address_country' => $request->country,
             ]);
             DB::commit();
 
-            $envFile = app()->environmentFilePath();
-            $str = file_get_contents($envFile);
-            $values = [
-                "TIME_ZONE" => $request->get('timezone') ? $request->get('timezone') : 'UTC',
-                "LOCALIZATION" => $request->get('country') ? $request->get('country') : 'US',
-            ];
+            $layout = Layout::find(1);
+            if ($layout) {
+                $layout->timezone = $request->get('timezone');
+                $layout->localization = $request->get('country');
+                $layout->save();
 
-            if (count($values) > 0) {
-                foreach ($values as $envKey => $envValue) {
+                date_default_timezone_set(($layout->timezone ?? 'UTC'));
+                if ($layout && $layout->timezone) {
+                    Config::set('app.timezone', $layout->timezone);
 
-                    $str .= "\n"; // In case the searched variable is in the last line without \n
-                    $keyPosition = strpos($str, "{$envKey}=");
-                    $endOfLinePosition = strpos($str, "\n", $keyPosition);
-                    $oldLine = substr($str, $keyPosition, $endOfLinePosition - $keyPosition);
-
-                    // If key does not exist, add it
-                    if (!$keyPosition || !$endOfLinePosition || !$oldLine) {
-                        $str .= "{$envKey}={$envValue}\n";
-                    } else {
-                        $str = str_replace($oldLine, "{$envKey}={$envValue}", $str);
-                    }
+                    Artisan::call('cache:clear');
+                    Artisan::call('config:clear');
                 }
             }
 
-            $str = substr($str, 0, -1);
-            if (!file_put_contents($envFile, $str)) {
-                return false;
-            }
-            Artisan::call('config:cache');
-            Artisan::call('config:clear');
+            // $envFile = app()->environmentFilePath();
+            // $str = file_get_contents($envFile);
+            // $values = [
+            //     "TIME_ZONE" => $request->get('timezone') ? $request->get('timezone') : 'UTC',
+            //     "LOCALIZATION" => $request->get('country') ? $request->get('country') : 'US',
+            // ];
+
+            // if (count($values) > 0) {
+            //     foreach ($values as $envKey => $envValue) {
+
+            //         $str .= "\n"; // In case the searched variable is in the last line without \n
+            //         $keyPosition = strpos($str, "{$envKey}=");
+            //         $endOfLinePosition = strpos($str, "\n", $keyPosition);
+            //         $oldLine = substr($str, $keyPosition, $endOfLinePosition - $keyPosition);
+
+            //         // If key does not exist, add it
+            //         if (!$keyPosition || !$endOfLinePosition || !$oldLine) {
+            //             $str .= "{$envKey}={$envValue}\n";
+            //         } else {
+            //             $str = str_replace($oldLine, "{$envKey}={$envValue}", $str);
+            //         }
+            //     }
+            // }
+
+            // $str = substr($str, 0, -1);
+            // if (!file_put_contents($envFile, $str)) {
+            //     return false;
+            // }
+            // Artisan::call('config:cache');
+            // Artisan::call('config:clear');
             Session::flash('message', 'Data saved successfully!');
             Session::flash('status', 'success');
+
             return redirect()->back();
         } catch (\Throwable $th) {
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
+
             return redirect()->back();
         }
     }
+
     public function save_source_data(Request $request)
     {
         try {
@@ -222,6 +244,7 @@ class DataController extends Controller
             $source_data->save();
             $airtable_api_key_input = $request->airtable_api_key_input;
             $airtable_base_url_input = $request->airtable_base_url_input;
+
             // if ($request->source_data == 1) {
             //     Airtablekeyinfo::whereid(1)->update([
             //         'api_key' => $airtable_api_key_input,
@@ -234,12 +257,12 @@ class DataController extends Controller
             //     ]);
             // }
             return response()->json([
-                'success' => true
+                'success' => true,
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => $th->getMessage(),
-                'success' => false
+                'success' => false,
             ], 500);
         }
     }
