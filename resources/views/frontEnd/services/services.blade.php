@@ -218,7 +218,7 @@ Services
                             <h4 class="card-title">
                                 <a href="/services/{{$service->service_recordid}}">{{$service->service_name}}</a>
                                 <p style="float: right;">
-                                    {{ isset($service->miles)  ? floatval(number_format($service->miles,2)) .' miles'  : '' }}
+                                    {{ isset($service->miles)  ? floatval(number_format($service->miles,2)) .' '. ucfirst($map?->distance_unit)  : '' }}
                                 </p>
                                 @if ($service->organizations && $service->organizations->organization_status_x && isset($organizationStatus[$service->organizations->organization_status_x]) && ($organizationStatus[$service->organizations->organization_status_x] == 'Out of Business' || $organizationStatus[$service->organizations->organization_status_x] == 'Inactive'))
                                     <span class="badge badge-danger float-right m-2" style="color:#fff;">Inactive</span>

@@ -115,7 +115,9 @@ class MapController extends Controller
     {
         $map = Map::find(1);
         $map->active = $request->active;
-        $map->api_key = $request->api_key;
+        $map->geocode_map_key = $request->geocode_map_key;
+        $map->javascript_map_key = $request->javascript_map_key;
+        $map->distance_unit = $request->distance_unit;
         $map->state = $request->state;
         $map->lat = $request->lat;
         $map->long = $request->long;
@@ -174,7 +176,9 @@ class MapController extends Controller
             // exit();
             if ($request->input('active') == 'checked') {
                 $map->active = 1;
-                $map->api_key = $request->input('api_key');
+                $map->geocode_map_key = $request->input('geocode_map_key');
+                $map->javascript_map_key = $request->input('javascript_map_key');
+                $map->distance_unit = $request->input('distance_unit');
                 $map->state = $request->input('state');
                 $map->lat = $request->input('lat');
                 $map->long = $request->input('long');
@@ -239,7 +243,7 @@ class MapController extends Controller
             $client = new \GuzzleHttp\Client();
             $geocoder = new Geocoder($client);
             $map = Map::find(1);
-            $geocode_api_key = $map && $map->api_key ? $map->api_key : null;
+            $geocode_api_key = $map && $map->geocode_map_key ? $map->geocode_map_key : null;
             $geocoder->setApiKey($geocode_api_key);
 
 
@@ -296,7 +300,7 @@ class MapController extends Controller
             $client = new \GuzzleHttp\Client();
             $geocoder = new Geocoder($client);
             $map = Map::find(1);
-            $geocode_api_key = $map && $map->api_key ? $map->api_key : null;
+            $geocode_api_key = $map && $map->geocode_map_key ? $map->geocode_map_key : null;
             $geocoder->setApiKey($geocode_api_key);
 
 

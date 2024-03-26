@@ -67,7 +67,6 @@ use App\Model\Taxonomy;
 use App\Model\TaxonomyTerm;
 use App\Model\TaxonomyType;
 use Carbon\Carbon;
-use Illuminate\Auth\Events\Failed;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -75,10 +74,10 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
-use Yajra\DataTables\Facades\DataTables;
 use Maatwebsite\Excel\Facades\Excel;
 use OwenIt\Auditing\Models\Audit;
 use Spatie\Geocoder\Geocoder;
+use Yajra\DataTables\Facades\DataTables;
 use ZanySoft\Zip\Zip;
 use ZipArchive;
 
@@ -90,6 +89,7 @@ class ImportController extends Controller
     {
         $this->mapController = $mapController;
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -113,7 +113,6 @@ class ImportController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -128,7 +127,7 @@ class ImportController extends Controller
         ]);
         if ($request->import_type == 'zipfile') {
             $this->validate($request, [
-                'zipfile' => 'required'
+                'zipfile' => 'required',
             ]);
         } elseif ($request->import_type == 'zipfile_api') {
             $this->validate($request, [
@@ -145,22 +144,22 @@ class ImportController extends Controller
             $airtable_access_token = '';
             $airtable_base_id = '';
             $zipfile_path = '';
-            if ($request->has('airtable_access_token') && $request->has('airtable_base_id') && ($request->import_type == 'airtable'  || $request->import_type == 'airtable_v3')) {
+            if ($request->has('airtable_access_token') && $request->has('airtable_base_id') && ($request->import_type == 'airtable' || $request->import_type == 'airtable_v3')) {
 
                 $response = Http::withHeaders([
-                    'Authorization' => 'Bearer ' . $request->airtable_access_token
-                ])->get('https://api.airtable.com/v0/' . $request->airtable_base_id . '/organizations');
+                    'Authorization' => 'Bearer '.$request->airtable_access_token,
+                ])->get('https://api.airtable.com/v0/'.$request->airtable_base_id.'/organizations');
 
                 if ($response->status() != 200) {
                     Session::flash('message', 'Airtable key or base id is invalid. Please enter valid information.');
                     Session::flash('status', 'error');
+
                     return redirect()->back()->withInput();
                 }
 
-
                 $Airtablekeyinfo = Airtablekeyinfo::create([
                     'access_token' => $request->airtable_access_token,
-                    'base_url' => $request->airtable_base_id
+                    'base_url' => $request->airtable_base_id,
                 ]);
                 $airtable_access_token = $Airtablekeyinfo->id;
                 $airtable_base_id = $Airtablekeyinfo->id;
@@ -171,25 +170,26 @@ class ImportController extends Controller
                 $type = $file->getClientOriginalExtension();
                 $path = public_path('import_source_file');
                 $file->move($path, $name);
-                $zipfile_path = '/import_source_file/' . $name;
-            } else if ($request->import_type == 'zipfile_api') {
-                $path = public_path('import_source_file/' . $request->key . '.zip');
+                $zipfile_path = '/import_source_file/'.$name;
+            } elseif ($request->import_type == 'zipfile_api') {
+                $path = public_path('import_source_file/'.$request->key.'.zip');
                 $ch = curl_init();
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
                 curl_setopt($ch, CURLOPT_HEADER, false);
                 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
                 curl_setopt($ch, CURLOPT_URL, $request->endpoint);
                 curl_setopt($ch, CURLOPT_REFERER, $request->endpoint);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 $result = curl_exec($ch);
                 curl_close($ch);
-                if (json_decode($result) == "Failed") {
+                if (json_decode($result) == 'Failed') {
                     Session::flash('message', 'Error! : api response error please check api endpoint!');
                     Session::flash('status', 'error');
+
                     return redirect('import');
                 }
                 // if($result == )
-                $ifp = fopen($path, "wb");
+                $ifp = fopen($path, 'wb');
                 // if ($decode) {
                 //     fwrite($ifp, base64_decode($result));
                 // } else {
@@ -198,13 +198,14 @@ class ImportController extends Controller
 
                 fclose($ifp);
                 // $zipfile_path = $path . $name;
-                $zipfile_path = '/import_source_file/' . $request->key . '.zip';
+                $zipfile_path = '/import_source_file/'.$request->key.'.zip';
             }
             if ($request->has('auto_sync') && $request->auto_sync == 1) {
                 $syncData = ImportDataSource::where('auto_sync', '1')->get();
                 if (count($syncData) > 0) {
                     Session::flash('message', 'You can only have one auto-synced Airtable and you already have one.');
                     Session::flash('status', 'error');
+
                     return redirect()->back()->withInput();
                 }
             }
@@ -224,10 +225,12 @@ class ImportController extends Controller
             ]);
             Session::flash('message', 'Success! Data Source added successfully.');
             Session::flash('status', 'success');
+
             return redirect('import');
         } catch (\Throwable $th) {
-            Session::flash('message', 'Error! :' . $th->getMessage());
+            Session::flash('message', 'Error! :'.$th->getMessage());
             Session::flash('status', 'error');
+
             return redirect('import');
         }
     }
@@ -252,13 +255,13 @@ class ImportController extends Controller
     public function edit($id)
     {
         $dataSource = ImportDataSource::whereId($id)->first();
+
         return view('backEnd.import.edit', compact('dataSource'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -274,7 +277,7 @@ class ImportController extends Controller
         ]);
         if ($request->import_type == 'zipfile') {
             $this->validate($request, [
-                'zipfile' => 'required'
+                'zipfile' => 'required',
             ]);
         } elseif ($request->import_type == 'zipfile_api') {
             $this->validate($request, [
@@ -297,21 +300,22 @@ class ImportController extends Controller
                 if ($Airtablekeyinfo) {
                     Airtablekeyinfo::where('access_token', $request->airtable_access_token)->update([
                         'access_token' => $request->airtable_access_token,
-                        'base_url' => $request->airtable_base_id
+                        'base_url' => $request->airtable_base_id,
                     ]);
                 } else {
                     $Airtablekeyinfo = Airtablekeyinfo::create([
                         'access_token' => $request->airtable_access_token,
-                        'base_url' => $request->airtable_base_id
+                        'base_url' => $request->airtable_base_id,
                     ]);
                 }
 
                 $response = Http::withHeaders([
-                    'Authorization' => 'Bearer ' . $request->airtable_access_token
-                ])->get('https://api.airtable.com/v0/' . $request->airtable_base_id . '/organizations');
+                    'Authorization' => 'Bearer '.$request->airtable_access_token,
+                ])->get('https://api.airtable.com/v0/'.$request->airtable_base_id.'/organizations');
                 if ($response->status() != 200) {
                     Session::flash('message', 'Airtable key or base id is invalid. Please enter valid information.');
                     Session::flash('status', 'error');
+
                     return redirect()->back()->withInput();
                 }
                 $airtable_access_token = $Airtablekeyinfo->id;
@@ -323,25 +327,26 @@ class ImportController extends Controller
                 $type = $file->getClientOriginalExtension();
                 $path = public_path('import_source_file');
                 $file->move($path, $name);
-                $zipfile_path = '/import_source_file/' . $name;
-            } else if ($request->import_type == 'zipfile_api') {
-                $path = public_path('import_source_file/' . $request->key . '.zip');
+                $zipfile_path = '/import_source_file/'.$name;
+            } elseif ($request->import_type == 'zipfile_api') {
+                $path = public_path('import_source_file/'.$request->key.'.zip');
                 $ch = curl_init();
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
                 curl_setopt($ch, CURLOPT_HEADER, false);
                 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
                 curl_setopt($ch, CURLOPT_URL, $request->endpoint);
                 curl_setopt($ch, CURLOPT_REFERER, $request->endpoint);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 $result = curl_exec($ch);
                 curl_close($ch);
-                if (json_decode($result) == "Failed") {
+                if (json_decode($result) == 'Failed') {
                     Session::flash('message', 'Error! : api response error please check api endpoint!');
                     Session::flash('status', 'error');
+
                     return redirect('import');
                 }
                 // if($result == )
-                $ifp = fopen($path, "wb");
+                $ifp = fopen($path, 'wb');
                 // if ($decode) {
                 //     fwrite($ifp, base64_decode($result));
                 // } else {
@@ -350,7 +355,7 @@ class ImportController extends Controller
 
                 fclose($ifp);
                 // $zipfile_path = $path . $name;
-                $zipfile_path = '/import_source_file/' . $request->key . '.zip';
+                $zipfile_path = '/import_source_file/'.$request->key.'.zip';
             }
             if ($request->has('auto_sync') && $request->auto_sync == 1) {
                 $syncData = ImportDataSource::where('auto_sync', '1')->first();
@@ -358,6 +363,7 @@ class ImportController extends Controller
                 if ($syncData && $syncData->id != $id) {
                     Session::flash('message', 'You can only have one auto-synced Airtable and you already have one.');
                     Session::flash('status', 'error');
+
                     return redirect()->back()->withInput();
                 }
             }
@@ -378,10 +384,12 @@ class ImportController extends Controller
             ]);
             Session::flash('message', 'Success! Data Source updated successfully.');
             Session::flash('status', 'success');
+
             return redirect('import');
         } catch (\Throwable $th) {
-            Session::flash('message', 'Error! :' . $th->getMessage());
+            Session::flash('message', 'Error! :'.$th->getMessage());
             Session::flash('status', 'error');
+
             return redirect('import');
         }
     }
@@ -398,38 +406,44 @@ class ImportController extends Controller
             ImportDataSource::whereId($id)->delete();
             Session::flash('message', 'Success! Data Source deleted successfully.');
             Session::flash('status', 'success');
+
             return redirect('import');
         } catch (\Throwable $th) {
-            Session::flash('message', 'Error! :' . $th->getMessage());
+            Session::flash('message', 'Error! :'.$th->getMessage());
             Session::flash('status', 'error');
+
             return redirect('import');
         }
     }
+
     public function getDataSource(Request $request)
     {
         try {
             $ImportDataSource = ImportDataSource::select('*');
 
-            if (!$request->ajax()) {
+            if (! $request->ajax()) {
                 return view('backEnd.import.import', compact('ImportDataSource'));
             }
+
             return DataTables::of($ImportDataSource)
                 ->editColumn('auto_sync', function ($row) {
                     // $link = 'Off&nbsp;&nbsp;<input type="checkbox" class="switch" value="1" name="auto_sync" data-id="' . $row->id . '" id="auto_sync" ' . ($row->auto_sync == 1 ? "checked" : "") . ' />&nbsp;&nbsp;On';
                     // return $link;
-                    $link = $row->auto_sync == 1 ? "On" : "Off";
+                    $link = $row->auto_sync == 1 ? 'On' : 'Off';
+
                     return $link;
                 })
 
                 ->addColumn('action', function ($row) {
                     $links = '';
                     if ($row) {
-                        $links .= '<a href="' . route("import.importData", $row->id) . '" class="btn btn-info btn-sm " style="margin-right:10px;">Import Now</a>';
-                        $links .= '<a href="' . route("import.edit", $row->id) . '" style="margin-right:10px;"><i class="fa fa-pencil" data-toggle="tooltip" data-placement="top" title="Edit" style="color: #4caf50;"></i></a>';
+                        $links .= '<a href="'.route('import.importData', $row->id).'" class="btn btn-info btn-sm " style="margin-right:10px;">Import Now</a>';
+                        $links .= '<a href="'.route('import.edit', $row->id).'" style="margin-right:10px;"><i class="fa fa-pencil" data-toggle="tooltip" data-placement="top" title="Edit" style="color: #4caf50;"></i></a>';
                         $id = $row->id;
                         $route = 'import';
-                        $links .=  view('backEnd.delete', compact('id', 'route'))->render();
+                        $links .= view('backEnd.delete', compact('id', 'route'))->render();
                     }
+
                     return $links;
                 })
                 // ->filter(function ($query) use ($request) {
@@ -448,25 +462,29 @@ class ImportController extends Controller
             //throw $th;
         }
     }
+
     public function getImportHistory(Request $request)
     {
         try {
             $importHistory = ImportHistory::select('*');
 
-            if (!$request->ajax()) {
+            if (! $request->ajax()) {
                 return view('backEnd.import.import', compact('importHistory'));
             }
+
             return DataTables::of($importHistory)
                 ->editColumn('created_at', function ($row) {
 
                     return date('d-m-Y H:i:s A', strtotime($row->created_at));
                 })
                 ->editColumn('auto_sync', function ($row) {
-                    $link = $row->auto_sync == 1 ? "Auto" : "Manual";
+                    $link = $row->auto_sync == 1 ? 'Auto' : 'Manual';
+
                     return $link;
                 })
                 ->editColumn('import_type', function ($row) {
-                    $link = $row->import_type == 'airtable' ? "Airtable 2.2" : ($row->import_type == 'airtable_v3' ? "Airtable 3.0" : "Zipfile");
+                    $link = $row->import_type == 'airtable' ? 'Airtable 2.2' : ($row->import_type == 'airtable_v3' ? 'Airtable 3.0' : 'Zipfile');
+
                     return $link;
                 })
                 // ->filter(function ($query) use ($request) {
@@ -485,6 +503,7 @@ class ImportController extends Controller
             //throw $th;
         }
     }
+
     public function importData($id)
     {
         try {
@@ -536,12 +555,13 @@ class ImportController extends Controller
                 $airtableKeyInfo = Airtablekeyinfo::whereId($importData->airtable_api_key)->first();
 
                 $response = Http::withHeaders([
-                    'Authorization' => 'Bearer ' . $airtableKeyInfo->access_token
-                ])->get('https://api.airtable.com/v0/' . $airtableKeyInfo->base_url . '/organizations');
+                    'Authorization' => 'Bearer '.$airtableKeyInfo->access_token,
+                ])->get('https://api.airtable.com/v0/'.$airtableKeyInfo->base_url.'/organizations');
 
                 if ($response->status() != 200) {
                     Session::flash('message', 'Airtable key or base id is invalid. Please enter valid information and try again.');
                     Session::flash('status', 'error');
+
                     return redirect()->back()->withInput();
                 }
                 app(\App\Http\Controllers\frontEnd\ServiceController::class)->airtable_v3($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
@@ -569,17 +589,18 @@ class ImportController extends Controller
                 $importHistory->status = 'Completed';
                 $importHistory->sync_by = Auth::id();
                 $importHistory->save();
-            } else if ($importData && $importData->import_type == 'airtable_v2') {
+            } elseif ($importData && $importData->import_type == 'airtable_v2') {
                 $organization_tag = $importData->organization_tags;
                 $airtableKeyInfo = Airtablekeyinfo::whereId($importData->airtable_api_key)->first();
 
                 $response = Http::withHeaders([
-                    'Authorization' => 'Bearer ' . $airtableKeyInfo->access_token
-                ])->get('https://api.airtable.com/v0/' . $airtableKeyInfo->base_url . '/organizations');
+                    'Authorization' => 'Bearer '.$airtableKeyInfo->access_token,
+                ])->get('https://api.airtable.com/v0/'.$airtableKeyInfo->base_url.'/organizations');
 
                 if ($response->status() != 200) {
                     Session::flash('message', 'Airtable key or base id is invalid. Please enter valid information and try again.');
                     Session::flash('status', 'error');
+
                     return redirect()->back()->withInput();
                 }
                 app(\App\Http\Controllers\frontEnd\ServiceController::class)->airtable_v2($airtableKeyInfo->access_token, $airtableKeyInfo->base_url);
@@ -603,25 +624,26 @@ class ImportController extends Controller
                 $importHistory->status = 'Completed';
                 $importHistory->sync_by = Auth::id();
                 $importHistory->save();
-            } else if ($importData && $importData->import_type == 'zipfile' || $importData && $importData->import_type == 'zipfile_api') {
+            } elseif ($importData && $importData->import_type == 'zipfile' || $importData && $importData->import_type == 'zipfile_api') {
                 if ($importData && $importData->import_type == 'zipfile_api') {
-                    $path = public_path('import_source_file/' . $importData->key . '.zip');
+                    $path = public_path('import_source_file/'.$importData->key.'.zip');
                     $ch = curl_init();
-                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
                     curl_setopt($ch, CURLOPT_HEADER, false);
                     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
                     curl_setopt($ch, CURLOPT_URL, $importData->endpoint);
                     curl_setopt($ch, CURLOPT_REFERER, $importData->endpoint);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                     $result = curl_exec($ch);
                     curl_close($ch);
-                    if (json_decode($result) == "Failed") {
+                    if (json_decode($result) == 'Failed') {
                         Session::flash('message', 'Error! : api response error please check api endpoint!');
                         Session::flash('status', 'error');
+
                         return redirect('import');
                     }
                     // if($result == )
-                    $ifp = fopen($path, "wb");
+                    $ifp = fopen($path, 'wb');
                     // if ($decode) {
                     //     fwrite($ifp, base64_decode($result));
                     // } else {
@@ -645,9 +667,10 @@ class ImportController extends Controller
             $this->apply_geocode();
             Session::flash('message', 'Success! Data Source Imported successfully.');
             Session::flash('status', 'success');
+
             return redirect('import');
         } catch (\Throwable $th) {
-            Log::error('Error from importData : ' . $th);
+            Log::error('Error from importData : '.$th);
             $importHistory = new ImportHistory();
             $importHistory->status = 'Error';
             $importHistory->error_message = $th->getMessage();
@@ -655,9 +678,11 @@ class ImportController extends Controller
             $importHistory->save();
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
+
             return redirect('import');
         }
     }
+
     public function changeAutoImport(Request $request)
     {
         try {
@@ -672,23 +697,25 @@ class ImportController extends Controller
                 if (count($syncData) > 0) {
                     return response()->json([
                         'message' => 'You can only have one auto-synced Airtable and you already have one.',
-                        'success' => false
+                        'success' => false,
                     ], 500);
                 }
                 $importData = ImportDataSource::whereId($id)->first();
                 $importData->auto_sync = '1';
                 $importData->save();
+
                 return response()->json([
                     'message' => 'Auto sync changed successfully!',
-                    'success' => true
+                    'success' => true,
                 ], 200);
             } else {
                 $importData = ImportDataSource::whereId($id)->first();
                 $importData->auto_sync = '0';
                 $importData->save();
+
                 return response()->json([
                     'message' => 'Auto sync changed successfully!',
-                    'success' => true
+                    'success' => true,
                 ], 200);
             }
             // } else {
@@ -700,10 +727,11 @@ class ImportController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => $th->getMessage(),
-                'success' => false
+                'success' => false,
             ], 500);
         }
     }
+
     public function zip($importData)
     {
         try {
@@ -732,15 +760,14 @@ class ImportController extends Controller
 
             $path = public_path('/HSDS/data/services.csv');
 
-
-            if (!file_exists($path)) {
-                $response = array(
+            if (! file_exists($path)) {
+                $response = [
                     'status' => 'error',
                     'result' => 'services.csv does not exist.',
-                );
+                ];
+
                 return $response;
             }
-
 
             //
             Excel::import(new Services, $path);
@@ -754,11 +781,12 @@ class ImportController extends Controller
             //locations.csv
             $path = public_path('/HSDS/data/locations.csv');
 
-            if (!file_exists($path)) {
-                $response = array(
+            if (! file_exists($path)) {
+                $response = [
                     'status' => 'error',
                     'result' => 'locations.csv does not exist.',
-                );
+                ];
+
                 return $response;
             }
 
@@ -775,11 +803,12 @@ class ImportController extends Controller
             //organizations.csv
             $path = public_path('/HSDS/data/organizations.csv');
 
-            if (!file_exists($path)) {
-                $response = array(
+            if (! file_exists($path)) {
+                $response = [
                     'status' => 'error',
                     'result' => 'organizations.csv does not exist.',
-                );
+                ];
+
                 return $response;
             }
 
@@ -795,11 +824,12 @@ class ImportController extends Controller
             //contacts.csv
             $path = public_path('/HSDS/data/contacts.csv');
 
-            if (!file_exists($path)) {
-                $response = array(
+            if (! file_exists($path)) {
+                $response = [
                     'status' => 'error',
                     'result' => 'contacts.csv does not exist.',
-                );
+                ];
+
                 return $response;
             }
             //
@@ -814,11 +844,12 @@ class ImportController extends Controller
             //phones.csv
             $path = public_path('/HSDS/data/phones.csv');
 
-            if (!file_exists($path)) {
-                $response = array(
+            if (! file_exists($path)) {
+                $response = [
                     'status' => 'error',
                     'result' => 'phones.csv does not exist.',
-                );
+                ];
+
                 return $response;
             }
             //
@@ -833,11 +864,12 @@ class ImportController extends Controller
             //physical_addresses.csv
             $path = public_path('/HSDS/data/physical_addresses.csv');
 
-            if (!file_exists($path)) {
-                $response = array(
+            if (! file_exists($path)) {
+                $response = [
                     'status' => 'error',
                     'result' => 'physical_addresses.csv does not exist.',
-                );
+                ];
+
                 return $response;
             }
             //
@@ -851,11 +883,12 @@ class ImportController extends Controller
             //
             //languages.csv
             $path = public_path('/HSDS/data/languages.csv');
-            if (!file_exists($path)) {
-                $response = array(
+            if (! file_exists($path)) {
+                $response = [
                     'status' => 'error',
                     'result' => 'languages.csv does not exist.',
-                );
+                ];
+
                 return $response;
             }
             //
@@ -870,11 +903,12 @@ class ImportController extends Controller
             //taxonomy.csv
             $path = public_path('/HSDS/data/taxonomy_terms.csv');
 
-            if (!file_exists($path)) {
-                $response = array(
+            if (! file_exists($path)) {
+                $response = [
                     'status' => 'error',
                     'result' => 'taxonomy_terms.csv does not exist.',
-                );
+                ];
+
                 return $response;
             }
             //
@@ -889,11 +923,12 @@ class ImportController extends Controller
             //taxonomy_types.csv
             $path = public_path('/HSDS/data/taxonomy_types.csv');
 
-            if (!file_exists($path)) {
-                $response = array(
+            if (! file_exists($path)) {
+                $response = [
                     'status' => 'error',
                     'result' => 'taxonomy_types.csv does not exist.',
-                );
+                ];
+
                 return $response;
             }
             //
@@ -909,11 +944,12 @@ class ImportController extends Controller
             //taxonomy_terms_types.csv
             $path = public_path('/HSDS/data/taxonomy_terms_types.csv');
 
-            if (!file_exists($path)) {
-                $response = array(
+            if (! file_exists($path)) {
+                $response = [
                     'status' => 'error',
                     'result' => 'taxonomy_terms_types.csv does not exist.',
-                );
+                ];
+
                 return $response;
             }
             //
@@ -928,11 +964,12 @@ class ImportController extends Controller
             //services_taxonomy.csv
             $path = public_path('/HSDS/data/service_attributes.csv');
 
-            if (!file_exists($path)) {
-                $response = array(
+            if (! file_exists($path)) {
+                $response = [
                     'status' => 'error',
                     'result' => 'service_attributes.csv does not exist.',
-                );
+                ];
+
                 return $response;
             }
 
@@ -940,7 +977,7 @@ class ImportController extends Controller
             //
             Excel::import(new ServiceTaxonomyImport, $path);
 
-            $date = date("Y/m/d H:i:s");
+            $date = date('Y/m/d H:i:s');
             $csv_source = CSV_Source::where('name', '=', 'Services_taxonomy')->first();
             $csv_source->records = ServiceTaxonomy::count();
             $csv_source->syncdate = $date;
@@ -949,11 +986,12 @@ class ImportController extends Controller
             //services_at_location.csv
             $path = public_path('/HSDS/data/services_at_location.csv');
 
-            if (!file_exists($path)) {
-                $response = array(
+            if (! file_exists($path)) {
+                $response = [
                     'status' => 'error',
                     'result' => 'services_at_location.csv does not exist.',
-                );
+                ];
+
                 return $response;
             }
 
@@ -970,11 +1008,12 @@ class ImportController extends Controller
             //accessibility_for_disabilities.csv
             $path = public_path('/HSDS/data/accessibility_for_disabilities.csv');
 
-            if (!file_exists($path)) {
-                $response = array(
+            if (! file_exists($path)) {
+                $response = [
                     'status' => 'error',
                     'result' => 'accessibility_for_disabilities.csv does not exist.',
-                );
+                ];
+
                 return $response;
             }
             // Accessibility::truncate();
@@ -990,11 +1029,12 @@ class ImportController extends Controller
             //regular_schedules.csv
             $path = public_path('/HSDS/data/schedules.csv');
 
-            if (!file_exists($path)) {
-                $response = array(
+            if (! file_exists($path)) {
+                $response = [
                     'status' => 'error',
                     'result' => 'schedules.csv does not exist.',
-                );
+                ];
+
                 return $response;
             }
 
@@ -1009,11 +1049,12 @@ class ImportController extends Controller
             //service tag.csv
             $path = public_path('/HSDS/data/service_tags.csv');
 
-            if (!file_exists($path)) {
-                $response = array(
+            if (! file_exists($path)) {
+                $response = [
                     'status' => 'error',
                     'result' => 'service_tags.csv does not exist.',
-                );
+                ];
+
                 return $response;
             }
             Excel::import(new ServiceTagImport, $path);
@@ -1021,11 +1062,12 @@ class ImportController extends Controller
             //organization tag.csv
             $path = public_path('/HSDS/data/organization_tags.csv');
 
-            if (!file_exists($path)) {
-                $response = array(
+            if (! file_exists($path)) {
+                $response = [
                     'status' => 'error',
                     'result' => 'organization_tags.csv does not exist.',
-                );
+                ];
+
                 return $response;
             }
             Excel::import(new OrganizationTagImport, $path);
@@ -1033,11 +1075,12 @@ class ImportController extends Controller
             //LocationAddress
             $path = public_path('/HSDS/data/location_addresses.csv');
 
-            if (!file_exists($path)) {
-                $response = array(
+            if (! file_exists($path)) {
+                $response = [
                     'status' => 'error',
                     'result' => 'location_addresses.csv does not exist.',
-                );
+                ];
+
                 return $response;
             }
             Excel::import(new LocationAddressImport, $path);
@@ -1045,11 +1088,12 @@ class ImportController extends Controller
             //LocationPhone
             $path = public_path('/HSDS/data/location_phones.csv');
 
-            if (!file_exists($path)) {
-                $response = array(
+            if (! file_exists($path)) {
+                $response = [
                     'status' => 'error',
                     'result' => 'location_phones.csv does not exist.',
-                );
+                ];
+
                 return $response;
             }
             Excel::import(new LocationPhoneImport, $path);
@@ -1057,15 +1101,15 @@ class ImportController extends Controller
             //ServicePhone
             $path = public_path('/HSDS/data/service_phones.csv');
 
-            if (!file_exists($path)) {
-                $response = array(
+            if (! file_exists($path)) {
+                $response = [
                     'status' => 'error',
                     'result' => 'service_phones.csv does not exist.',
-                );
+                ];
+
                 return $response;
             }
             Excel::import(new ServicePhoneImport, $path);
-
 
             rename(public_path('/HSDS/data/services.csv'), public_path('/csv/services.csv'));
             rename(public_path('/HSDS/data/locations.csv'), public_path('/csv/locations.csv'));
@@ -1079,12 +1123,14 @@ class ImportController extends Controller
             rename(public_path('/HSDS/data/services_at_location.csv'), public_path('/csv/services_at_location.csv'));
             rename(public_path('/HSDS/data/accessibility_for_disabilities.csv'), public_path('/csv/accessibility_for_disabilities.csv'));
             rename(public_path('/HSDS/data/schedules.csv'), public_path('/csv/schedules.csv'));
-            return "import completed";
+
+            return 'import completed';
         } catch (\Throwable $th) {
             dd($th);
-            Log::error('Error in import controller import : ' . $th);
+            Log::error('Error in import controller import : '.$th);
         }
     }
+
     public function apply_geocode()
     {
         try {
@@ -1093,7 +1139,7 @@ class ImportController extends Controller
             $client = new \GuzzleHttp\Client();
             $geocoder = new Geocoder($client);
             $map = Map::find(1);
-            $geocode_api_key = $map && $map->api_key ? $map->api_key : null;
+            $geocode_api_key = $map && $map->geocode_map_key ? $map->geocode_map_key : null;
             $geocoder->setApiKey($geocode_api_key);
 
             if ($ungeocoded_location_info_list) {
@@ -1103,10 +1149,10 @@ class ImportController extends Controller
                         $address_info = $location_info->location_name;
                         if ($location_info->address && count($location_info->address) > 0 && isset($location_info->address[0])) {
                             $add = $location_info->address[0];
-                            $address_info = $add->address_1 . ($add->address_city ? ', ' . $add->address_city : '') . ($add->address_state_province ? ', ' . $add->address_state_province : '') . ($add->address_postal_code ? ', ' . $add->address_postal_code : '');
+                            $address_info = $add->address_1.($add->address_city ? ', '.$add->address_city : '').($add->address_state_province ? ', '.$add->address_state_province : '').($add->address_postal_code ? ', '.$add->address_postal_code : '');
                         }
                         // $response = $geocoder->getCoordinatesForAddress('30-61 87th Street, Queens, NY, 11369');
-                        $response = $geocoder->getCoordinatesForAddress($address_info . ', ' . (env('LOCALIZATION') ? env('LOCALIZATION') : 'US'));
+                        $response = $geocoder->getCoordinatesForAddress($address_info.', '.(env('LOCALIZATION') ? env('LOCALIZATION') : 'US'));
                         // if (($response['lat'] > 40.5) && ($response['lat'] < 42.0)) {
                         //     $latitude = $response['lat'];
                         //     $longitude = $response['lng'];
@@ -1142,7 +1188,7 @@ class ImportController extends Controller
 
             return;
         } catch (\Throwable $th) {
-            Log::error('Error in applying geocode in import : ' . $th);
+            Log::error('Error in applying geocode in import : '.$th);
         }
     }
 }

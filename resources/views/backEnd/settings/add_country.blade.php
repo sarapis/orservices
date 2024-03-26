@@ -32,7 +32,7 @@ Add Country
                             <label class="col-sm-3 control-label text-right">Select County</label>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    {!! Form::select('country',$countries,env('LOCALIZATION') ? env('LOCALIZATION') : 'US',['class' => 'form-control']) !!}
+                                    {!! Form::select('country', $countries, ($layout->localization ?? 'US'),['class' => 'form-control']) !!}
                                     {!! $errors->first('country', '<p class="help-block">:message</p>') !!}
                                 </div>
                             </div>
@@ -43,7 +43,7 @@ Add Country
                             <label class="col-sm-3 control-label text-right">Select Timezone</label>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    {!! Form::select('timezone',$zones_array,env('TIME_ZONE') ? env('TIME_ZONE') : 'UTC' ,['class' => 'form-control selectpicker','data-live-search' => 'true']) !!}
+                                    {!! Form::select('timezone',$zones_array, ($layout->timezone ?? 'UTC') ,['class' => 'form-control selectpicker','data-live-search' => 'true']) !!}
                                     {!! $errors->first('country', '<p class="help-block">:message</p>') !!}
                                 </div>
                             </div>
@@ -78,16 +78,21 @@ Add Country
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css" rel="stylesheet" />
+{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js" integrity="sha512-hUhvpC5f8cgc04OZb55j0KNGh4eh7dLxd/dPSJ5VyzqDWxsayYbojWyl5Tkcgrmb/RVKCRJI1jNlRbVP4WWC4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.45/moment-timezone.min.js" integrity="sha512-EUm65YBi2BbIovgy8ZNxiNEa0xnA3LSxYYcMuYdCpxwNILaHa+IXNJcnJQo9AugzC3uQ9tsf0n2aoSRaHIfQjg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> --}}
 <script>
     $(function() {
         $('.selectpicker').selectpicker();
     });
     // moment.tz.setDefault("America/New_York");
-    var tzString = "{{ env('TIME_ZONE') ? env('TIME_ZONE') : 'UTC' }}"
+    var tzString = "{{ $layout->timezone ?? 'UTC' }}"
+    // console.log(moment(moment().format('Y-MM-DD hh:mm:ss a')).tz("America/New_York").format(),'tzString')
+    // moment.tz.setDefault(tzString);
     setInterval(() => {
         // var currentDate = moment().format('DD-MM-YYYY HH:mm:ss');
         $('#currentDate').empty()
         $('#currentDate').append(new Date().toLocaleString("en-US", {timeZone: tzString}))
+        // $('#currentDate').append(moment().format('Y-MM-DD hh:mm:ss a'));
     }, 1000);
 </script>
 @endsection

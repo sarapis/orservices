@@ -5,12 +5,7 @@ namespace App\Http\Controllers;
 use App\Model\Alt_taxonomy;
 use App\Model\Layout;
 use App\Model\Map;
-use App\Model\MetaFilter;
-use App\Model\Organization;
 use App\Model\Page;
-use App\Model\Service;
-use App\Model\ServiceOrganization;
-use App\Model\ServiceTaxonomy;
 use App\Model\Taxonomy;
 use App\Model\TaxonomyType;
 use Illuminate\Http\Request;
@@ -38,6 +33,7 @@ class HomeController extends Controller
     {
         return view('home');
     }
+
     public function home($value = '')
     {
         $home = Layout::find(1);
@@ -73,7 +69,7 @@ class HomeController extends Controller
                     } else {
                         foreach ($grandparent->terms()->where('taxonomy_parent_name', '=', $taxonomy_parent_name)->get() as $child_key => $child_term) {
                             $child_data['parent_taxonomy'] = $child_term;
-                            $child_data['child_taxonomies'] = "";
+                            $child_data['child_taxonomies'] = '';
                             $parent_taxonomy[] = $child_data;
                         }
                     }
@@ -83,7 +79,7 @@ class HomeController extends Controller
             }
         } else {
             $serviceCategoryId = TaxonomyType::orderBy('order')->where('name', 'Service Category')->first();
-            $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name')->whereNotNull('taxonomy_name')->where('taxonomy', 'LIKE', '%' . ($serviceCategoryId ? $serviceCategoryId->taxonomy_type_recordid : '') . '%');
+            $parent_taxonomies = Taxonomy::whereNull('taxonomy_parent_name')->whereNotNull('taxonomy_name')->where('taxonomy', 'LIKE', '%'.($serviceCategoryId ? $serviceCategoryId->taxonomy_type_recordid : '').'%');
             $taxonomy_recordids = Taxonomy::getTaxonomyRecordids();
 
             if (count($taxonomy_recordids) > 0) {
@@ -93,12 +89,13 @@ class HomeController extends Controller
             $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies->get();
         }
 
-        if ($layout && $layout->activate_login_home == 1 && !Auth::check()) {
+        if ($layout && $layout->activate_login_home == 1 && ! Auth::check()) {
             return redirect('/login');
         } else {
             return view('frontEnd.home', compact('home', 'map', 'grandparent_taxonomies', 'layout'))->with('taxonomy_tree', $taxonomy_tree);
         }
     }
+
     public function dashboard($value = '')
     {
         $layout = Layout::first();
@@ -106,6 +103,7 @@ class HomeController extends Controller
 
         return view('backEnd.dashboard', compact('layout', 'page'));
     }
+
     public function checkTwillio(Request $request)
     {
         try {
@@ -113,8 +111,9 @@ class HomeController extends Controller
             $token = $request->get('twillioKey');
             $twilio = new Client($sid, $token);
 
-            $account = $twilio->api->v2010->accounts("ACd991aaec2fba11620c174e9148e04d7a")
+            $account = $twilio->api->v2010->accounts('ACd991aaec2fba11620c174e9148e04d7a')
                 ->fetch();
+
             return response()->json([
                 'message' => 'Your twillio key is verified!',
                 'success' => true,
@@ -137,7 +136,7 @@ class HomeController extends Controller
             $email->setFrom(env('MAIL_FROM_ADDRESS'), 'test');
             $email->setSubject('test');
             $email->addTo('example@example.com', 'test');
-            $email->addContent("text/plain", 'test');
+            $email->addContent('text/plain', 'test');
 
             $sendgrid = new \SendGrid($key);
             $response = $sendgrid->send($email);

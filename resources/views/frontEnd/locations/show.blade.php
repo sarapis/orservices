@@ -696,7 +696,7 @@ target="_blank">{{ $address->address_1 }} {{ $address->address_2 }} {{ $address-
 
 </script>
 
-<!-- <script src="https://maps.googleapis.com/maps/api/js?key={{$map->api_key}}&libraries=places&callback=initMap" async
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key={{$map->javascript_map_key}}&libraries=places&callback=initMap" async
     defer>
 </script> -->
 

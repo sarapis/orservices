@@ -8,7 +8,7 @@ class DistanceServices
     {
         $earthRadius = [
             'km' => 6371, // kilometers
-            'mi' => 3959, // miles
+            'miles' => 3959, // miles
             'nm' => 3440, // nautical miles
         ];
 
