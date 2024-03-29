@@ -1074,11 +1074,8 @@
         </div>
         <script>
             $(document).ready(function() {
-                // navigator.geolocation.getCurrentPosition(showPosition)
-
                 $('#service_tag').change(function() {
                 let val = $(this).val()
-                // console.log($.inArray('create_new', val))
                 if ($.inArray('create_new', val) != -1) {
                     $('#create_new_service_tag').modal('show')
                 } else {
@@ -1091,7 +1088,6 @@
                             val, id,_token
                         },
                         success: function(response) {
-                            // alert('Tag save successfully!')
                         },
                         error: function(error) {
                             console.log(error)
@@ -1139,12 +1135,16 @@
                         longitude = avglng;
                     }
 
-                    var map = new google.maps.Map(document.getElementById('map'), {
+                async function initMap() {
+                    const { Map } = await google.maps.importLibrary("maps");
+                    const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary(
+                        "marker",
+                    );
+
+                    const map = new Map(document.getElementById("map"), {
+                        center: { lat: parseFloat(latitude), lng: parseFloat(longitude) },
                         zoom: zoom,
-                        center: {
-                            lat: parseFloat(latitude),
-                            lng: parseFloat(longitude)
-                        }
+                        mapId: "4504f8b37365c3d0",
                     });
 
                     var latlongbounds = new google.maps.LatLngBounds();
@@ -1163,46 +1163,51 @@
                             '<div class="iw-subTitle">Organization Name</div>' +
                             '<a href="/organizations/' + location.organization_recordid + '">' +
                             location.organization_name + '</a>';
-                        // '<a href="https://www.google.com/maps/dir/?api=1&destination=' + location.address_name + '" target="_blank">' + location.address_name +'</a>'+
-                        if (location.address) {
-                            for (i = 0; i < location.address.length; i++) {
-                                content += '<div class="iw-subTitle">Address</div>' +
-                                    location.address[i].address_1 + (location.address[i]
-                                    .address_city ? ', ' + location.address[i]
-                                    .address_city : '') +  (location.address[i].address_state_province ? ', ' + location.address[i].address_state_province : '') +
-                                    (location.address[i].address_postal_code ? ', ' + location.address[i].address_postal_code : '');
-                                content +=
-                                    '<div><a href="https://www.google.com/maps/dir/?api=1&destination=' +
-                                    location.address[i].address_1 + (location.address[i]
-                                    .address_city ? ', ' + location.address[i]
-                                    .address_city : '') + (location.address[i].address_state_province ? ', ' + location.address[i].address_state_province : '') +
-                                    (location.address[i].address_postal_code ? ', ' + location.address[i].address_postal_code : '') +
-                                    '" target="_blank">View on Google Maps</a></div>';
+
+                            if (location.address) {
+                                for (i = 0; i < location.address.length; i++) {
+                                    content += '<div class="iw-subTitle">Address</div>' +
+                                        location.address[i].address_1 + (location.address[i]
+                                        .address_city ? ', ' + location.address[i]
+                                        .address_city : '') +  (location.address[i].address_state_province ? ', ' + location.address[i].address_state_province : '') +
+                                        (location.address[i].address_postal_code ? ', ' + location.address[i].address_postal_code : '');
+                                    content +=
+                                        '<div><a href="https://www.google.com/maps/dir/?api=1&destination=' +
+                                        location.address[i].address_1 + (location.address[i]
+                                        .address_city ? ', ' + location.address[i]
+                                        .address_city : '') + (location.address[i].address_state_province ? ', ' + location.address[i].address_state_province : '') +
+                                        (location.address[i].address_postal_code ? ', ' + location.address[i].address_postal_code : '') +
+                                        '" target="_blank">View on Google Maps</a></div>';
+                                }
                             }
-                        }
                         content += '</div>' +
                             '<div class="iw-bottom-gradient"></div>' +
                             '</div>';
 
-                        var infowindow = new google.maps.InfoWindow({
-                            content: content
+                        const infowindow = new google.maps.InfoWindow({
+                            content: content,
+                            ariaLabel: "Uluru",
                         });
-
-                        var marker = new google.maps.Marker({
+                        const marker = new AdvancedMarkerElement({
+                            map,
                             position: position,
-                            map: map,
                             title: location.location_name,
                         });
-                        marker.addListener('click', function() {
-                            infowindow.open(map, marker);
+                        marker.addListener("click", () => {
+                            infowindow.open({
+                                anchor: marker,
+                                map,
+                            });
                         });
-                        return marker;
                     });
 
                     // map.fitBounds(latlongbounds);
                     if (locations.length > 1) {
                         map.fitBounds(latlongbounds);
                     }
+                }
+            initMap()
+
 
                 }, 2000);
 

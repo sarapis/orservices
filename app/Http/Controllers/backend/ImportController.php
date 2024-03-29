@@ -83,11 +83,8 @@ use ZipArchive;
 
 class ImportController extends Controller
 {
-    public $mapController;
-
-    public function __construct(MapController $mapController)
+    public function __construct(public MapController $mapController)
     {
-        $this->mapController = $mapController;
     }
 
     /**
@@ -211,7 +208,7 @@ class ImportController extends Controller
             }
             ImportDataSource::create([
                 'name' => $request->name,
-                'format' => $request->format,
+                'format' => $request->get('format'),
                 'airtable_api_key' => $airtable_access_token,
                 'airtable_base_id' => $airtable_base_id,
                 'auto_sync' => $request->auto_sync,
@@ -369,7 +366,7 @@ class ImportController extends Controller
             }
             ImportDataSource::whereId($id)->update([
                 'name' => $request->name,
-                'format' => $request->format,
+                'format' => $request->get('format'),
                 'airtable_api_key' => $airtable_access_token,
                 'airtable_base_id' => $airtable_base_id,
                 'auto_sync' => $request->auto_sync,
@@ -475,7 +472,7 @@ class ImportController extends Controller
             return DataTables::of($importHistory)
                 ->editColumn('created_at', function ($row) {
 
-                    return date('d-m-Y H:i:s A', strtotime($row->created_at));
+                    return date('Y-m-d H:i:s', strtotime($row->created_at));
                 })
                 ->editColumn('auto_sync', function ($row) {
                     $link = $row->auto_sync == 1 ? 'Auto' : 'Manual';

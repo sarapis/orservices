@@ -47,7 +47,7 @@
                                            value="{{ '********************' . substr($map->javascript_map_key, -7) }}"
                                            name="api_key1" id="api_key1" disabled>
                                     <input class="form-control" type="text" value="{{ $map->javascript_map_key }}" name="javascript_map_key"
-                                           id="api_key2" style="display: none;" required>
+                                           id="api_key2" style="display: none;" >
                                     <button type="button" id="clickChangeKey">Change</button>
                                     @if ($errors->first('javascript_map_key'))
                                         <div class="alert alert-danger">{{ $errors->first('javascript_map_key') }}</div>
@@ -63,7 +63,7 @@
                                            value="{{ '********************' . substr($map->geocode_map_key, -7) }}"
                                            name="api_key1" id="geocode_api_key1" disabled>
                                     <input class="form-control" type="text" value="{{ $map->geocode_map_key }}" name="geocode_map_key"
-                                           id="geocode_api_key2" style="display: none;" required>
+                                           id="geocode_api_key2" style="display: none;" >
                                     <button type="button" id="clickChangeKeyGeocode">Change</button>
                                     @if ($errors->first('geocode_map_key'))
                                         <div class="alert alert-danger">{{ $errors->first('geocode_map_key') }}</div>
@@ -333,30 +333,42 @@
 
             var locations = <?php print_r(json_encode($map)) ?>;
 
+
+            let position
+            let zoom
             if (locations.active == 1) {
-                var map = new GMaps({
-                    el: '#map',
-                    lat: locations.lat,
-                    lng: locations.long,
-                    zoom: locations.zoom
-                });
-                map.addMarker({
-                    lat: locations.lat,
-                    lng: locations.long
-                });
+                position = {
+                    lat: parseFloat(locations.lat),
+                    lng: parseFloat(locations.long),
+                }
+                zoom = locations.zoom
             } else {
-                var map = new GMaps({
-                    el: '#map',
+                position = {
                     lat: 40.712722,
                     lng: -74.006058,
-                    zoom: 10
-                });
-                map.addMarker({
-                    lat: 40.712722,
-                    lng: -74.006058
-                });
+                }
+                zoom = 10
             }
+            setTimeout(() => {
+                async function initMap() {
+                    const { Map } = await google.maps.importLibrary("maps");
+                    const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary(
+                        "marker",
+                    );
 
+                    const map = new Map(document.getElementById("map"), {
+                        center: position,
+                        zoom: zoom,
+                        mapId: "4504f8b37365c3d0",
+                    });
+                    const marker = new AdvancedMarkerElement({
+                            map,
+                            position: position,
+                            title: location.location_name,
+                        });
+                }
+                initMap()
+            }, 2000);
         });
     </script>
 @endsection

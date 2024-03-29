@@ -376,12 +376,9 @@ Services
         setTimeout(function(){
             var locations = <?php print_r(json_encode($locations)) ?>;
             var maplocation = <?php print_r(json_encode($map)) ?>;
-            // var chip_address = <?php if(isset($chip_address)){print_r(json_encode($chip_address));}else{echo '0';} ?>;
             var chip_address = "{{isset($chip_address) ? $chip_address : '0'}}"
             var chip_service = "{{isset($chip_service) ? $chip_service : '0'}}"
-            // var avarageLatitude = <?php if(isset($avarageLatitude)){print_r(json_encode($avarageLatitude));}else{echo '0';} ?>;
             var avarageLatitude = "{{ isset($avarageLatitude) ? $avarageLatitude : '0'  }}"
-            // var avarageLongitude = <?php if(isset($avarageLongitude)){print_r(json_encode($avarageLongitude));}else{echo '0';} ?>;
             var avarageLongitude = "{{ isset($avarageLongitude) ? $avarageLongitude : '0' }}"
             var sumlat = 0.0;
             var sumlng = 0.0;
@@ -390,9 +387,7 @@ Services
                 avglat = maplocation.lat;
                 avglng = maplocation.long;
                 zoom = maplocation.zoom;
-            }
-            else
-            {
+            } else {
                 avglat = 40.730981;
                 avglng = -73.998107;
                 zoom = 14;
@@ -406,132 +401,148 @@ Services
                     avglng = avarageLongitude
                 }
             }
-            var mymap = new GMaps({
-              el: '#map',
-              lat: avglat,
-              lng: avglng,
-              zoom: zoom
-            });
-            let checkunKnownAddress = [];
-            $.each(locations, function(index, value ){
-                var name = value.organization == null? '' :value.organization.organization_name;
-                var content = '<div id="iw-container">';
-                let first_service = []
-                if(chip_service != '0' && chip_service != ''){
-                value.services.map(function(v,i){
-                            // console.log(v,v.service_name.toLowerCase().includes(chip_service),chip_service)
-                        if(v.service_name.toLowerCase().includes(chip_service)  && first_service.length == 0){
-                            return first_service.push(i)
-                        }
-                    })
-                }
-                if(value.services.length > 0){
-                    let indexValue
-                    if(first_service.length > 0){
-                        indexValue = first_service[0]
-                    }else{
-                        indexValue = 0
-                    }
-                    content +=  '<div class="iw-title"> <a href="/services/'+value.services[indexValue].service_recordid+'">'+value.services[indexValue].service_name+'</a></div>';
-                }
-                if(value.organization){
+            async function initMap() {
+                const { Map } = await google.maps.importLibrary("maps");
+                const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary(
+                    "marker",
+                );
 
-                content += '<div class="iw-content">' +
-                            '<div class="iw-subTitle">Organization Name</div>' +
-                            '<a href="/organizations/' + value.organization.organization_recordid + '">' + value.organization.organization_name +'</a>';
-                }
-                if(value.address){
-                    for(i = 0; i < value.address.length; i ++){
-                        // content +=  '<div class="iw-subTitle">Address</div>'+
-                        //          value.address[i].address_1+ ', '+value.address[i].address_city+','+value.address[i].address_state_province+','+value.address[i].address_postal_code ;
-                        content += '<div class="iw-subTitle">Address</div>' +
-                                    value.address[i].address_1 + (value.address[i]
-                                    .address_city ? ', ' + value.address[i]
-                                    .address_city : '') +  (value.address[i].address_state_province ? ',' + value.address[i].address_state_province : '') +
-                                    (value.address[i].address_postal_code ? ',' + value.address[i].address_postal_code : '');
-                        // content += '<div><a href="https://www.google.com/maps/dir/?api=1&destination=' + value.address[i].address_1+ ', '+value.address[i].address_city+','+value.address[i].address_state_province+','+value.address[i].address_postal_code + '" target="_blank">View on Google Maps</a></div>';
-                        content += '<div><a href="https://www.google.com/maps/dir/?api=1&destination=' + value.address[i].address_1 + (value.address[i].address_city ? ', ' + value.address[i].address_city : '') + (value.address[i].address_state_province ? ',' + value.address[i].address_state_province : '') + (value.address[i].address_postal_code ? ',' + value.address[i].address_postal_code : '') + '" target="_blank">View on Google Maps</a></div>';
+                const map = new Map(document.getElementById("map"), {
+                    center: { lat: parseFloat(avglat), lng: parseFloat(avglng) },
+                    zoom: zoom,
+                    mapId: "4504f8b37365c3d0",
+                });
+
+                let checkunKnownAddress = [];
+                $.each(locations, function(index, value ){
+                    var name = value.organization == null? '' :value.organization.organization_name;
+                    var content = '<div id="iw-container">';
+                    let first_service = []
+                    if(chip_service != '0' && chip_service != ''){
+                    value.services.map(function(v,i){
+                            if(v.service_name.toLowerCase().includes(chip_service)  && first_service.length == 0){
+                                return first_service.push(i)
+                            }
+                        })
                     }
-                }
-                if(value.services.length > 1){
-                    content += '<div class="iw-subTitle">Other Services</div>';
-                }
-                content += '<ul>'
-                    if(first_service.length > 0){
-                        let indexValue = first_service[0]
-                        for(i = 0; i < value.services.length; i ++){
-                            if(i != indexValue)
+                    if(value.services.length > 0){
+                        let indexValue
+                        if(first_service.length > 0){
+                            indexValue = first_service[0]
+                        }else{
+                            indexValue = 0
+                        }
+                        content +=  '<div class="iw-title"> <a href="/services/'+value.services[indexValue].service_recordid+'">'+value.services[indexValue].service_name+'</a></div>';
+                    }
+                    if(value.organization){
+
+                    content += '<div class="iw-content">' +
+                                '<div class="iw-subTitle">Organization Name</div>' +
+                                '<a href="/organizations/' + value.organization.organization_recordid + '">' + value.organization.organization_name +'</a>';
+                    }
+                    if(value.address){
+                        for(i = 0; i < value.address.length; i ++){
+                            content += '<div class="iw-subTitle">Address</div>' +
+                                        value.address[i].address_1 + (value.address[i]
+                                        .address_city ? ', ' + value.address[i]
+                                        .address_city : '') +  (value.address[i].address_state_province ? ',' + value.address[i].address_state_province : '') +
+                                        (value.address[i].address_postal_code ? ',' + value.address[i].address_postal_code : '');
+                            content += '<div><a href="https://www.google.com/maps/dir/?api=1&destination=' + value.address[i].address_1 + (value.address[i].address_city ? ', ' + value.address[i].address_city : '') + (value.address[i].address_state_province ? ',' + value.address[i].address_state_province : '') + (value.address[i].address_postal_code ? ',' + value.address[i].address_postal_code : '') + '" target="_blank">View on Google Maps</a></div>';
+                        }
+                    }
+                    if(value.services.length > 1){
+                        content += '<div class="iw-subTitle">Other Services</div>';
+                    }
+                    content += '<ul>'
+                        if(first_service.length > 0){
+                            let indexValue = first_service[0]
+                            for(i = 0; i < value.services.length; i ++){
+                                if(i != indexValue)
+                                    content +=  '<li><a href="/services/'+value.services[i].service_recordid+'">'+value.services[i].service_name+'</a></li>';
+                                }
+                        }else{
+                            for(i = 1; i < value.services.length; i ++){
                                 content +=  '<li><a href="/services/'+value.services[i].service_recordid+'">'+value.services[i].service_name+'</a></li>';
                             }
-                    }else{
-                        for(i = 1; i < value.services.length; i ++){
-                            content +=  '<li><a href="/services/'+value.services[i].service_recordid+'">'+value.services[i].service_name+'</a></li>';
+                        }
+
+                    content += '</ul>'
+                    content += '</div>' +
+                            '<div class="iw-bottom-gradient"></div>' +
+                            '</div>';
+
+
+                    if(value.location_latitude){
+
+                        if(chip_address != '0' && avarageLatitude != '0' && avarageLongitude != '0' && value.location_latitude == avarageLatitude && value.location_longitude == avarageLongitude){
+                            checkunKnownAddress.push(1)
+                            const pinBackground = new PinElement({
+                                background: "#FBBC04",
+                            });
+                            const infowindow = new google.maps.InfoWindow({
+                                content: content,
+                                ariaLabel: "Uluru",
+                            });
+                            const marker = new AdvancedMarkerElement({
+                                map,
+                                position: { lat: value.location_latitude, lng: value.location_longitude },
+                                title: value.city,
+                                content: pinBackground.element,
+                            });
+                            marker.addListener("click", () => {
+                                infowindow.open({
+                                    anchor: marker,
+                                    map,
+                                });
+                            });
+                        }else{
+                            const infowindow = new google.maps.InfoWindow({
+                                content: content,
+                                ariaLabel: "Uluru",
+                            });
+                            const marker = new AdvancedMarkerElement({
+                                map,
+                                position: { lat: value.location_latitude, lng: value.location_longitude },
+                                title: value.city,
+                            });
+                            marker.addListener("click", () => {
+                                infowindow.open({
+                                    anchor: marker,
+                                    map,
+                                });
+                            });
                         }
                     }
-
-                content += '</ul>'
-                content += '</div>' +
-                        '<div class="iw-bottom-gradient"></div>' +
-                        '</div>';
-
-
-                if(value.location_latitude){
-
-                    if(chip_address != '0' && avarageLatitude != '0' && avarageLongitude != '0' && value.location_latitude == avarageLatitude && value.location_longitude == avarageLongitude){
-                        checkunKnownAddress.push(1)
-                        let url = "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png";
-                        mymap.addMarker({
-
-                            lat: value.location_latitude,
-                            lng: value.location_longitude,
-                            title: value.city,
-
-                            infoWindow: {
-                                maxWidth: 250,
-                                content: (content)
-                            },
-                            icon: {
-                                  url: url,
-                                  scaledSize: new google.maps.Size(40, 40), // size
-                                }
-                        });
-                    }else{
-                        mymap.addMarker({
-
-                            lat: value.location_latitude,
-                            lng: value.location_longitude,
-                            title: value.city,
-
-                            infoWindow: {
-                                maxWidth: 250,
-                                content: (content)
-                            }
-                        });
-                    }
-                }
-            });
-            let content = '';
-            if(chip_address != '0'){
-                content =  '<div class="iw-content"><div class="iw-subTitle">Address</div>'+
-                            '<a href="https://www.google.com/maps/dir/?api=1&destination=' + chip_address + '" target="_blank">' + chip_address +'</a></div>';
-            }
-            if(chip_address != '0' && avarageLatitude != '0' && avarageLongitude != '0' && checkunKnownAddress.length == 0){
-                let url = "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png";
-                mymap.addMarker({
-
-                    lat: avarageLatitude,
-                    lng: avarageLongitude,
-
-                    infoWindow: {
-                        maxWidth: 250,
-                        content: (content)
-                    },
-                    icon: {
-                          url: url,
-                          scaledSize: new google.maps.Size(40, 40), // size
-                        }
                 });
+                let content = '';
+                if(chip_address != '0'){
+                    content =  '<div class="iw-content"><div class="iw-subTitle">Address</div>'+
+                                '<a href="https://www.google.com/maps/dir/?api=1&destination=' + chip_address + '" target="_blank">' + chip_address +'</a></div>';
+                }
+                if(chip_address != '0' && avarageLatitude != '0' && avarageLongitude != '0' && checkunKnownAddress.length == 0){
+
+                    const infowindow = new google.maps.InfoWindow({
+                                content: content,
+                                ariaLabel: "Uluru",
+                            });
+                    const pinBackground = new PinElement({
+                        background: "#FBBC04",
+                    });
+                    const marker = new AdvancedMarkerElement({
+                        map,
+                        position: { lat: parseFloat(avarageLatitude), lng: parseFloat(avarageLongitude) },
+                        content: pinBackground.element,
+                    });
+                    marker.addListener("click", () => {
+                        infowindow.open({
+                            anchor: marker,
+                            map,
+                        });
+                    });
+                }
             }
+            initMap()
+
         }, 2000);
 
         $('.panel-link').on('click', function(e){

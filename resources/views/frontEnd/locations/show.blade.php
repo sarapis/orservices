@@ -650,15 +650,19 @@ target="_blank">{{ $address->address_1 }} {{ $address->address_2 }} {{ $address-
         }
 
 
-        var mymap = new GMaps({
-            el: '#map',
-            lat: latitude,
-            lng: longitude,
-            zoom: zoom
-        });
+        async function initMap() {
+            const { Map } = await google.maps.importLibrary("maps");
+            const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary(
+                "marker",
+            );
 
-        $.each( locations, function(index, value ){
+            const map = new Map(document.getElementById("map"), {
+                center: { lat: parseFloat(latitude), lng: parseFloat(longitude) },
+                zoom: zoom,
+                mapId: "4504f8b37365c3d0",
+            });
 
+            $.each( locations, function(index, value ){
                 var content = '<div id="iw-container">';
                 for(i = 0; i < value.services.length; i ++){
                     content +=  '<div class="iw-title"> <a href="/services/'+value.services[i].service_recordid+'">'+value.services[i].service_name+'</a></div>';
@@ -678,26 +682,33 @@ target="_blank">{{ $address->address_1 }} {{ $address->address_2 }} {{ $address-
                         '</div>';
 
                 if(value.location_latitude){
-                    mymap.addMarker({
 
+                    const infowindow = new google.maps.InfoWindow({
+                        content: content,
+                        ariaLabel: "Uluru",
+                    });
+                    let position = {
                         lat: value.location_latitude,
                         lng: value.location_longitude,
-                        title: value.city,
-
-                        infoWindow: {
-                            maxWidth: 250,
-                            content: (content)
-                        }
+                    }
+                    const marker = new AdvancedMarkerElement({
+                        map,
+                        position: position,
+                        title: location.location_name,
+                    });
+                    marker.addListener("click", () => {
+                        infowindow.open({
+                            anchor: marker,
+                            map,
+                        });
                     });
                 }
             });
+        }
+        initMap()
         }, 2000)
     });
 
 </script>
-
-<!-- <script src="https://maps.googleapis.com/maps/api/js?key={{$map->javascript_map_key}}&libraries=places&callback=initMap" async
-    defer>
-</script> -->
 
 @endsection

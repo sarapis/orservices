@@ -505,10 +505,7 @@
                                 <div class="tab-pane {{ ((isset($organization->services) && count($organization->services) == 0) || (count($organization->services) == 0 && $organization->getServices->count() == 0) && ($location_info_list && count($location_info_list) == 0) && ($organization->contact->count() > 0)) ? 'active' : '' }}" id="contacts">
                                     @if (isset($organization->contact))
                                         @if ($organization->contact->count() > 0 && ((Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin') || (Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization, $organization->organization_recordid) && (Auth::user()->roles->name == 'Organization Admin' || Auth::user()->roles->name == 'Section Admin')) || (Auth::user() && Auth::user()->roles->name == 'Network Admin' && count(array_intersect(explode(',', Auth::user()->organization_tags),explode(',', $organization->organization_tag))) > 0) || (Auth::user() && Auth::user()->roles && count(array_intersect(explode(',', Auth::user()->organization_tags),explode(',', $organization->organization_tag))) > 0)))
-                                            {{-- <h4 class="card_services_title"> Contacts
-                                            (@if (isset($organization->contact)){{$organization->contact->count()}}@else
-                                            0 @endif)
-                                            </h4> --}}
+
                                             @foreach ($organization->contact as $contact_info)
                                                 <div class="location_border p-0">
                                                     @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
@@ -611,13 +608,11 @@
                     <!-- comment area design -->
                     @auth
                         <ul class="nav nav-tabs tabpanel_above">
-                            {{-- @if (Auth::user() && Auth::user()->roles && (Auth::user()->roles->name != 'Organization Admin' || Auth::user()->roles->name != 'Section Admin')) --}}
                             <li class="nav-item">
                                 <a class="nav-link active" data-toggle="tab" href="#interactions">
                                     <h4 class="card_services_title">Notes</h4>
                                 </a>
                             </li>
-                            {{-- @endif --}}
                             <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" href="#commnets">
                                     <h4 class="card_services_title">Comments</h4>
@@ -1095,65 +1090,73 @@
                 longitude = avglng;
             }
 
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: zoom,
-                center: {
-                    lat: parseFloat(latitude),
-                    lng: parseFloat(longitude)
-                }
-            });
+            async function initMap() {
+                const { Map } = await google.maps.importLibrary("maps");
+                const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary(
+                    "marker",
+                );
 
-            var latlongbounds = new google.maps.LatLngBounds();
-            var markers = locations.map(function(location, i) {
-                var position = {
-                    lat: location.location_latitude,
-                    lng: location.location_longitude
-                }
-                var latlong = new google.maps.LatLng(position.lat, position.lng);
-                latlongbounds.extend(latlong);
+                const map = new Map(document.getElementById("map"), {
+                    center: { lat: parseFloat(latitude), lng: parseFloat(longitude) },
+                    zoom: zoom,
+                    mapId: "4504f8b37365c3d0",
+                });
 
-                var content = '<div id="iw-container">';
-                for (i = 0; i < location.services.length; i++) {
-                    content += '<div class="iw-title"> <a href="/services/' + location.services[i]
-                        .service_recordid + '">' + location.services[i].service_name + '</a></div>';
-                }
-                // '<div class="iw-title"> <a href="/services/'+ location.service_recordid +'">' + location.service_name + '</a> </div>' +
-
-                content += '<div class="iw-content">' +
-                    '<div class="iw-subTitle">Organization Name</div>' +
-                    '<a href="/organizations/' + location.organization_recordid + '">' + location
-                    .organization_name + '</a>';
-                // '<div class="iw-subTitle">Address</div>' +
-                // location.address_name ;
-                // '<br> <a href="https://www.google.com/maps/dir/?api=1&destination=' + location.address_name + '" target="_blank">View on Google Maps</a>'+
-
-                if (location.address) {
-                    for (i = 0; i < location.address.length; i++) {
-                        content += '<div class="iw-subTitle">Address</div>' + location.address[i].address_1 + (location.address[i].address_city ? ', ' + location.address[i].address_city : '') +  (location.address[i].address_state_province ? ',' + location.address[i].address_state_province : '') + (location.address[i].address_postal_code ? ',' + location.address[i].address_postal_code : '');
-                        content +='<div><a href="https://www.google.com/maps/dir/?api=1&destination=' + location.address[i].address_1 + (location.address[i].address_city ? ', ' + location.address[i].address_city : '') + (location.address[i].address_state_province ? ',' + location.address[i].address_state_province : '') + (location.address[i].address_postal_code ? ',' + location.address[i].address_postal_code : '') + '" target="_blank">View on Google Maps</a></div>';
+                var latlongbounds = new google.maps.LatLngBounds();
+                var markers = locations.map(function(location, i) {
+                    var position = {
+                        lat: location.location_latitude,
+                        lng: location.location_longitude
                     }
+                    var latlong = new google.maps.LatLng(position.lat, position.lng);
+                    latlongbounds.extend(latlong);
+
+                    var content = '<div id="iw-container">';
+                    for (i = 0; i < location.services.length; i++) {
+                        content += '<div class="iw-title"> <a href="/services/' + location.services[i]
+                            .service_recordid + '">' + location.services[i].service_name + '</a></div>';
+                    }
+                    // '<div class="iw-title"> <a href="/services/'+ location.service_recordid +'">' + location.service_name + '</a> </div>' +
+
+                    content += '<div class="iw-content">' +
+                        '<div class="iw-subTitle">Organization Name</div>' +
+                        '<a href="/organizations/' + location.organization_recordid + '">' + location
+                        .organization_name + '</a>';
+                    // '<div class="iw-subTitle">Address</div>' +
+                    // location.address_name ;
+                    // '<br> <a href="https://www.google.com/maps/dir/?api=1&destination=' + location.address_name + '" target="_blank">View on Google Maps</a>'+
+
+                    if (location.address) {
+                        for (i = 0; i < location.address.length; i++) {
+                            content += '<div class="iw-subTitle">Address</div>' + location.address[i].address_1 + (location.address[i].address_city ? ', ' + location.address[i].address_city : '') +  (location.address[i].address_state_province ? ',' + location.address[i].address_state_province : '') + (location.address[i].address_postal_code ? ',' + location.address[i].address_postal_code : '');
+                            content +='<div><a href="https://www.google.com/maps/dir/?api=1&destination=' + location.address[i].address_1 + (location.address[i].address_city ? ', ' + location.address[i].address_city : '') + (location.address[i].address_state_province ? ',' + location.address[i].address_state_province : '') + (location.address[i].address_postal_code ? ',' + location.address[i].address_postal_code : '') + '" target="_blank">View on Google Maps</a></div>';
+                        }
+                    }
+                    content += '</div><div class="iw-bottom-gradient"></div>' +
+                        '</div>';
+
+                    const infowindow = new google.maps.InfoWindow({
+                        content: content,
+                        ariaLabel: "Uluru",
+                    });
+                    const marker = new AdvancedMarkerElement({
+                        map,
+                        position: position,
+                        title: location.location_name,
+                    });
+                    marker.addListener("click", () => {
+                        infowindow.open({
+                            anchor: marker,
+                            map,
+                        });
+                    });
+                });
+
+                if (locations.length > 1) {
+                    map.fitBounds(latlongbounds);
                 }
-                content += '</div><div class="iw-bottom-gradient"></div>' +
-                    '</div>';
-
-                var infowindow = new google.maps.InfoWindow({
-                    content: content
-                });
-
-                var marker = new google.maps.Marker({
-                    position: position,
-                    map: map,
-                    title: location.location_name,
-                });
-                marker.addListener('click', function() {
-                    infowindow.open(map, marker);
-                });
-                return marker;
-            });
-
-            if (locations.length > 1) {
-                map.fitBounds(latlongbounds);
             }
+            initMap()
 
         });
 
