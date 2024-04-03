@@ -1113,11 +1113,9 @@
 
                     var content = '<div id="iw-container">';
                     for (i = 0; i < location.services.length; i++) {
-                        content += '<div class="iw-title"> <a href="/services/' + location.services[i]
-                            .service_recordid + '">' + location.services[i].service_name + '</a></div>';
+                        content += '<div class="iw-title"> <a href="/services/' + location.services[i].service_recordid + '">' + location.services[i].service_name + '</a></div>';
                     }
                     // '<div class="iw-title"> <a href="/services/'+ location.service_recordid +'">' + location.service_name + '</a> </div>' +
-
                     content += '<div class="iw-content">' +
                         '<div class="iw-subTitle">Organization Name</div>' +
                         '<a href="/organizations/' + location.organization_recordid + '">' + location

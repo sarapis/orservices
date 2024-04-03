@@ -10,30 +10,29 @@ use Illuminate\Support\Facades\Log;
 
 class LocationService
 {
-    function import_airtable_v3(string $access_token, string $base_url)
+    public function import_airtable_v3(string $access_token, string $base_url)
     {
         try {
             $airtable_key_info = Airtablekeyinfo::find(1);
-            if (!$airtable_key_info) {
+            if (! $airtable_key_info) {
                 $airtable_key_info = new Airtablekeyinfo;
             }
             $airtable_key_info->access_token = $access_token;
             $airtable_key_info->base_url = $base_url;
             $airtable_key_info->save();
 
-            $airtable = new Airtable(array(
-                'access_token'   => $access_token,
-                'base'      => $base_url,
-            ));
+            $airtable = new Airtable([
+                'access_token' => $access_token,
+                'base' => $base_url,
+            ]);
 
             $request = $airtable->getContent('locations');
 
             do {
 
-
                 $response = $request->getResponse();
 
-                $airtable_response = json_decode($response, TRUE);
+                $airtable_response = json_decode($response, true);
 
                 foreach ($airtable_response['records'] as $record) {
                     $strtointclass = new Stringtoint();
@@ -64,7 +63,7 @@ class LocationService
 
                         if (isset($record['fields']['services'])) {
                             $serviceRecordIds = [];
-                            foreach ($record['fields']['services']  as  $value) {
+                            foreach ($record['fields']['services'] as $value) {
                                 $serviceRecordIds[] = $strtointclass->string_to_int($value);
                             }
                             $location->location_services = implode(', ', $serviceRecordIds);
@@ -72,7 +71,7 @@ class LocationService
 
                         if (isset($record['fields']['phones'])) {
                             $phoneRecordIds = [];
-                            foreach ($record['fields']['phones']  as  $value) {
+                            foreach ($record['fields']['phones'] as $value) {
                                 $phoneRecordIds[] = $strtointclass->string_to_int($value);
                             }
                             $location->phones()->sync($phoneRecordIds);
@@ -80,16 +79,15 @@ class LocationService
 
                         if (isset($record['fields']['schedules'])) {
                             $scheduleRecordIds = [];
-                            foreach ($record['fields']['schedules']  as  $value) {
+                            foreach ($record['fields']['schedules'] as $value) {
                                 $scheduleRecordIds[] = $strtointclass->string_to_int($value);
                             }
                             $location->schedules()->sync($scheduleRecordIds);
                         }
 
-
                         if (isset($record['fields']['addresses'])) {
                             $addressRecordIds = [];
-                            foreach ($record['fields']['addresses']  as  $value) {
+                            foreach ($record['fields']['addresses'] as $value) {
                                 $addressRecordIds[] = $strtointclass->string_to_int($value);
                             }
                             $location->address()->sync($addressRecordIds);
@@ -97,7 +95,7 @@ class LocationService
 
                         if (isset($record['fields']['languages'])) {
                             $languageRecordIds = [];
-                            foreach ($record['fields']['languages']  as  $value) {
+                            foreach ($record['fields']['languages'] as $value) {
                                 $languageRecordIds[] = $strtointclass->string_to_int($value);
                             }
                             $location->languages()->sync($languageRecordIds);
@@ -105,7 +103,7 @@ class LocationService
 
                         if (isset($record['fields']['accessibility'])) {
                             $accessebilityRecordIds = [];
-                            foreach ($record['fields']['accessibility']  as  $value) {
+                            foreach ($record['fields']['accessibility'] as $value) {
                                 $accessebilityRecordIds[] = $strtointclass->string_to_int($value);
                             }
                             $location->accessibilities()->sync($accessebilityRecordIds);
@@ -113,7 +111,7 @@ class LocationService
 
                         if (isset($record['fields']['location_type'])) {
                             $locationTypes = [];
-                            foreach ($record['fields']['location_type']  as  $value) {
+                            foreach ($record['fields']['location_type'] as $value) {
                                 $locationTypes[] = $strtointclass->string_to_int($value);
                             }
                             $location->location_type = implode(', ', $locationTypes);
@@ -124,17 +122,18 @@ class LocationService
                 }
             } while ($request = $response->next());
 
-            $date = date("Y/m/d H:i:s");
+            $date = date('Y/m/d H:i:s');
             $airtable = Airtable_v2::where('name', '=', 'Locations')->first();
             $airtable->records = Location::count();
             $airtable->syncdate = $date;
             $airtable->save();
         } catch (\Throwable $th) {
             dd($th);
-            Log::error('Error in location: ' . $th->getMessage());
+            Log::error('Error in location: '.$th->getMessage());
+
             return response()->json([
                 'message' => $th->getMessage(),
-                'success' => false
+                'success' => false,
             ], 500);
         }
     }

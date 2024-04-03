@@ -60,12 +60,8 @@ use Illuminate\Support\Str;
 
 class OrganizationController extends Controller
 {
-    public $commonController, $organizationService;
-
-    public function __construct(CommonController $commonController, OrganizationService $organizationService)
+    public function __construct(public CommonController $commonController, public OrganizationService $organizationService)
     {
-        $this->commonController = $commonController;
-        $this->organizationService = $organizationService;
     }
 
     public function airtable($access_token, $base_url)
@@ -1728,8 +1724,6 @@ class OrganizationController extends Controller
      */
     public function show($id)
     {
-        // $organization= Organization::find($id);
-        // return response()->json($organization);
         $organization = Organization::where('organization_recordid', '=', $id)->first();
         $organizationStatus = OrganizationStatus::orderBy('order')->pluck('status', 'id');
         if ($organization && (Auth::check() || (!Auth::check() && $organization->organization_status_x && isset($organizationStatus[$organization->organization_status_x]) && ($organizationStatus[$organization->organization_status_x] != 'Out of Business' && $organizationStatus[$organization->organization_status_x] != 'Inactive')) || !$organization->organization_status_x)) {
@@ -1770,9 +1764,9 @@ class OrganizationController extends Controller
             //            if (count($locationIds) > 0) {
             //                $location_info_list = array_merge($location_info_list, $locationIds);
             //            }
-            if (count($serviceLocationIds) > 0) {
-                $location_info_list = array_merge($location_info_list, $serviceLocationIds);
-            }
+            //            if (count($serviceLocationIds) > 0) {
+            //                $location_info_list = array_unique(array_merge($location_info_list, $serviceLocationIds));
+            //            }
             $locations = Location::whereIn('location_recordid', $location_info_list)->with('phones', 'address', 'services', 'schedules')->get();
             $location_info_list = Location::whereIn('location_recordid', $location_info_list)->with('phones', 'address', 'services', 'schedules')->get();
 
