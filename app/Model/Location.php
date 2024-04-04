@@ -12,6 +12,7 @@ class Location extends Model implements ContractsAuditable
     protected $primaryKey = 'location_recordid';
 
     use Auditable;
+
     protected $auditEvents = [
         'updated',
         'deleted',
@@ -19,7 +20,7 @@ class Location extends Model implements ContractsAuditable
     ];
 
     protected $fillable = [
-        'location_recordid', 'location_name', 'location_organization', 'location_alternate_name', 'location_transportation', 'location_latitude', 'location_longitude', 'location_description', 'location_services', 'location_phones', 'location_details', 'location_schedule', 'location_address', 'flag', 'updated_by', 'created_by', 'accessibility_recordid', 'accessibility_details', 'location_type', 'location_url', 'external_identifier', 'external_identifier_type', 'location_languages', 'accessesibility_url'
+        'location_recordid', 'location_name', 'location_organization', 'location_alternate_name', 'location_transportation', 'location_latitude', 'location_longitude', 'location_description', 'location_services', 'location_phones', 'location_details', 'location_schedule', 'location_address', 'flag', 'updated_by', 'created_by', 'accessibility_recordid', 'accessibility_details', 'location_type', 'location_url', 'external_identifier', 'external_identifier_type', 'location_languages', 'accessesibility_url',
     ];
 
     public function organization()
@@ -57,8 +58,6 @@ class Location extends Model implements ContractsAuditable
 
     /**
      * Get the get_accessibility that owns the Location
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function get_accessibility(): BelongsTo
     {
@@ -80,7 +79,7 @@ class Location extends Model implements ContractsAuditable
         // $circle_radius = 3959;
         // $max_distance = 2;
 
-        return $cities = Location::select(Location::raw('*, ( 3959 * acos( cos( radians(' . $latitude . ') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians(' . $longitude . ') ) + sin( radians(' . $latitude . ') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
+        return $cities = Location::select(Location::raw('*, ( 3959 * acos( cos( radians('.$latitude.') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians('.$longitude.') ) + sin( radians('.$latitude.') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
             ->having('distance', '<', 2)
             ->orderBy('distance')
             ->get();
@@ -104,14 +103,14 @@ class Location extends Model implements ContractsAuditable
         foreach ($this->address()->get() as $address) {
             $addressData = '';
             if ($address) {
-                $addressData .= $address->address_1 . ' ';
-                $addressData .= $address->address_2 . ' ';
-                $addressData .= $address->address_city . ' ';
-                $addressData .= $address->address_state_province . ' ';
-                $addressData .= $address->address_postal_code . ' ';
+                $addressData .= $address->address_1.' ';
+                $addressData .= $address->address_2.' ';
+                $addressData .= $address->address_city.' ';
+                $addressData .= $address->address_state_province.' ';
+                $addressData .= $address->address_postal_code.' ';
 
                 if ($address->address_type_data) {
-                    $addressData .= ' - ' . $address->address_type_data;
+                    $addressData .= ' - '.$address->address_type_data;
                 }
                 $addressArray[] = $addressData;
             }
