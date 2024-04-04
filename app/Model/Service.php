@@ -14,6 +14,7 @@ class Service extends Model implements ContractsAuditable
     use Auditable;
 
     protected $primaryKey = 'service_recordid';
+
     public $timestamps = false;
 
     // protected $auditEvents = [
@@ -23,30 +24,34 @@ class Service extends Model implements ContractsAuditable
     // ];
 
     protected $fillable = [
-        'service_recordid', 'service_name', 'service_alternate_name', 'service_organization', 'service_description', 'service_locations', 'service_url', 'service_email', 'service_status', 'service_taxonomy', 'service_application_process', 'service_wait_time', 'service_fees', 'service_accreditations', 'service_licenses', 'service_phones', 'service_schedule', 'service_contacts', 'service_details', 'service_address', 'service_metadata', 'flag', 'service_program', 'service_airs_taxonomy_x', 'service_code', 'access_requirement', 'SDOH_code', 'code_category_ids', 'procedure_grouping', 'service_tag', 'created_by', 'updated_by', 'service_language', 'service_interpretation', 'eligibility_description', 'minimum_age', 'maximum_age', 'service_alert', 'funding', 'alert', 'attribute', 'assured_date', 'assured_email'
+        'service_recordid', 'service_name', 'service_alternate_name', 'service_organization', 'service_description', 'service_locations', 'service_url', 'service_email', 'service_status', 'service_taxonomy', 'service_application_process', 'service_wait_time', 'service_fees', 'service_accreditations', 'service_licenses', 'service_phones', 'service_schedule', 'service_contacts', 'service_details', 'service_address', 'service_metadata', 'flag', 'service_program', 'service_airs_taxonomy_x', 'service_code', 'access_requirement', 'SDOH_code', 'code_category_ids', 'procedure_grouping', 'service_tag', 'created_by', 'updated_by', 'service_language', 'service_interpretation', 'eligibility_description', 'minimum_age', 'maximum_age', 'service_alert', 'funding', 'alert', 'attribute', 'assured_date', 'assured_email',
     ];
 
     public function organizations()
     {
         $this->primaryKey = 'service_recordid';
+
         return $this->belongsTo('App\Model\Organization', 'service_organization', 'organization_recordid');
     }
 
     public function fundings()
     {
         $this->primaryKey = 'service_recordid';
+
         return $this->belongsToMany('App\Model\Funding', 'service_fundings', 'service_recordid', 'funding_recordid');
     }
 
     public function costOptions()
     {
         $this->primaryKey = 'service_recordid';
+
         return $this->belongsToMany('App\Model\CostOption', 'service_costs', 'service_recordid', 'cost_recordid');
     }
 
     public function getOrganizations()
     {
         $this->primaryKey = 'service_recordid';
+
         return $this->belongsToMany('App\Model\Organization', 'service_organizations', 'service_recordid', 'organization_recordid');
     }
 
@@ -86,7 +91,6 @@ class Service extends Model implements ContractsAuditable
         return $this->belongsToMany('App\Model\Contact', 'service_contacts', 'service_recordid', 'contact_recordid');
     }
 
-
     public function languages()
     {
         return $this->hasMany('App\Model\Language', 'language_service', 'service_recordid');
@@ -113,8 +117,6 @@ class Service extends Model implements ContractsAuditable
     // }
     /**
      * Get all of the comments for the Service
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function codes(): HasMany
     {
@@ -123,8 +125,6 @@ class Service extends Model implements ContractsAuditable
 
     /**
      * The service area that belong to the Service
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function areas(): BelongsToMany
     {
@@ -133,8 +133,6 @@ class Service extends Model implements ContractsAuditable
 
     /**
      * The fees that belong to the Service
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function fees(): BelongsToMany
     {
@@ -148,8 +146,6 @@ class Service extends Model implements ContractsAuditable
 
     /**
      * Get the get_status that owns the Service
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function get_status(): BelongsTo
     {
@@ -158,8 +154,6 @@ class Service extends Model implements ContractsAuditable
 
     /**
      * Get all of the require_documents for the Service
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function require_documents(): HasMany
     {
@@ -174,6 +168,7 @@ class Service extends Model implements ContractsAuditable
             $lan = Language::whereId($value)->first();
             $languges[] = $lan->language;
         }
+
         return implode(', ', $languges);
     }
 
@@ -185,6 +180,7 @@ class Service extends Model implements ContractsAuditable
             $data = InterpretationService::whereId($value)->first();
             $interPretations[] = $data->name;
         }
+
         return implode(', ', $interPretations);
     }
 
@@ -194,17 +190,17 @@ class Service extends Model implements ContractsAuditable
         $documents = [];
         foreach ($require_documents as $key => $value) {
             if ($value->document_link) {
-                $documents[] = '<a href="' . $value->document_link . '" target="_blank">' . ($value->document_title ?? $value->document_type) . '</a>';
+                $documents[] = '<a href="'.$value->document_link.'" target="_blank">'.($value->document_title ?? $value->document_type).'</a>';
             } else {
                 $documents[] = $value->document_title ?? $value->document_type;
             }
         }
+
         return implode(', ', $documents);
     }
 
     /**
-     * @param array $values
-     * @param array $operations
+     * @param  array  $operations
      * @return mixed
      */
     public static function getServiceTagMeta(array $values = [], $operations = '')
@@ -212,19 +208,18 @@ class Service extends Model implements ContractsAuditable
         return Service::where(function ($query) use ($values, $operations) {
             foreach ($values as $keyword) {
                 if ($keyword && $operations == 'Include') {
-                    $query = $query->orWhereRaw('find_in_set(' . $keyword . ', service_tag)');
+                    $query = $query->orWhereRaw('find_in_set('.$keyword.', service_tag)');
                 }
                 if ($keyword && $operations == 'Exclude') {
-                    $query = $query->orWhereRaw('NOT find_in_set(' . $keyword . ', service_tag)');
+                    $query = $query->orWhereRaw('NOT find_in_set('.$keyword.', service_tag)');
                 }
             }
+
             return $query;
         })->pluck('service_recordid')->toArray();
     }
 
     /**
-     * @param array $values
-     * @param string $operations
      * @return array
      */
     public static function getServiceStatusMeta(array $values = [], string $operations = '')
@@ -238,6 +233,7 @@ class Service extends Model implements ContractsAuditable
         if ($operations == 'Exclude') {
             $serviceids->whereNotIn('service_status', $values);
         }
+
         return $serviceids->pluck('service_recordid')->toArray();
     }
 
@@ -258,11 +254,12 @@ class Service extends Model implements ContractsAuditable
         $mainPhoneNumber = array_filter(array_merge($mainPhoneNumber, $phone_number_info_array));
         $otherData = '';
         foreach ($mainPhoneNumber as $key => $item) {
-            $otherData = '<a href="tel:' . $item->phone_number . '">' . $item->phone_number . '</a>';
-            $otherData .= $item->phone_extension ? '&nbsp;&nbsp;ext. ' . $item->phone_extension : '';
-            $otherData .=  $item->type ? '&nbsp;(' . $item->type->type . ')' : '';
-            $otherData .=  $item->phone_language ? ' ' . $item->get_phone_language($item->id) : '';
+            $otherData = '<a href="tel:'.$item->phone_number.'">'.$item->phone_number.'</a>';
+            $otherData .= $item->phone_extension ? '&nbsp;&nbsp;ext. '.$item->phone_extension : '';
+            $otherData .= $item->type ? '&nbsp;('.$item->type->type.')' : '';
+            $otherData .= $item->phone_language ? ' '.$item->get_phone_language($item->id) : '';
         }
+
         return $otherData;
     }
 
@@ -279,14 +276,14 @@ class Service extends Model implements ContractsAuditable
                     //     $address = $locationData->address()->first();
                     // }
                     if ($address) {
-                        $addressData .= $address->address_1 . ' ';
-                        $addressData .= $address->address_2 . ' ';
-                        $addressData .= $address->address_city . ' ';
-                        $addressData .= $address->address_state_province . ' ';
-                        $addressData .= $address->address_postal_code . ' ';
+                        $addressData .= $address->address_1.' ';
+                        $addressData .= $address->address_2.' ';
+                        $addressData .= $address->address_city.' ';
+                        $addressData .= $address->address_state_province.' ';
+                        $addressData .= $address->address_postal_code.' ';
 
                         if ($address->address_type_data) {
-                            $addressData .= ' - ' . $address->address_type_data;
+                            $addressData .= ' - '.$address->address_type_data;
                         }
                         $addressArray[] = $addressData;
                     }

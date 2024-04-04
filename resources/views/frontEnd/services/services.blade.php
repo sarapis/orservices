@@ -240,24 +240,45 @@ Services
                                 </span>
                             </div>
                             @endif
-                            @isset($service->address)
-                            @if (count($service->address) > 0)
+                            @if (count($locations) > 0)
                             <div class="tagp_class">
-                                @if(isset($service->address))
+                                @if(isset($locations))
                                 <ul class="p-0" style="margin-left: 25px;">
-                                    @foreach($service->address as $address)
+{{--                                    @foreach($locations->get() as $location)--}}
+                                        @php
+                                            $location = $locations->first();
+                                        @endphp
                                     <span><i class="icon md-pin font-size-18 vertical-align-top mr-10"></i>
-                                        <li>
-                                            {{ $address->address_1 }} {{ $address->address_2 }} {{ $address->address_city }}
-                                            {{ $address->address_state_province }} {{ $address->address_postal_code }}
-                                        </li>
+                                        @if(!empty($location->address->first()))
+                                            <li>
+                                                {{ $location->address->first()?->address_1 }} {{ $location->address->first()?->address_2 }} {{ $location->address->first()?->address_city }}
+                                                {{ $location->address->first()?->address_state_province }} {{ $location->address->first()?->address_postal_code }}
+                                            </li>
+                                        @else
+                                            {{ $location->location_name }}
+                                        @endif
                                     </span>
-                                        @endforeach
-                                    </ul>
-                                    @endif
+{{--                                        @endforeach--}}
+                                </ul>
+                                @endif
                             </div>
                             @endif
-                            @endisset
+{{--                            @isset($service->address)--}}
+{{--                                @if (count($service->address) > 0)--}}
+{{--                                    <div class="tagp_class">--}}
+{{--                                        <ul class="p-0" style="margin-left: 25px;">--}}
+{{--                                        @foreach($service->address as $address)--}}
+{{--                                        <span><i class="icon md-pin font-size-18 vertical-align-top mr-10"></i>--}}
+{{--                                            <li>--}}
+{{--                                                {{ $address->address_1 }} {{ $address->address_2 }} {{ $address->address_city }}--}}
+{{--                                                {{ $address->address_state_province }} {{ $address->address_postal_code }}--}}
+{{--                                            </li>--}}
+{{--                                        </span>--}}
+{{--                                        @endforeach--}}
+{{--                                        </ul>--}}
+{{--                                    </div>--}}
+{{--                                @endif--}}
+{{--                            @endisset--}}
                             @isset($service->taxonomy)
                             @if (count($service->taxonomy) > 0)
                             @php

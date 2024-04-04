@@ -40,6 +40,7 @@ use Stevebauman\Location\Facades\Location as FacadesLocation;
 class ExploreController extends Controller
 {
     public ?Map $map;
+
     public int $radius;
 
     public function __construct(public Geocoder $geocoder, public DistanceServices $distanceServices)
@@ -73,7 +74,7 @@ class ExploreController extends Controller
         // $lat = 38.9327313;
         // $lng = -77.0373987;
 
-        $locations = Location::with('services', 'organization', 'address')->select(DB::raw('*, ( 3959 * acos( cos( radians(' . $lat . ') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians(' . $lng . ') ) + sin( radians(' . $lat . ') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
+        $locations = Location::with('services', 'organization', 'address')->select(DB::raw('*, ( 3959 * acos( cos( radians('.$lat.') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians('.$lng.') ) + sin( radians('.$lat.') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
             ->having('distance', '<', 2)
             ->orderBy('distance');
 
@@ -117,7 +118,7 @@ class ExploreController extends Controller
 
             foreach ($service_taxonomy_recordid_list as $key => $service_taxonomy_recordid) {
 
-                $taxonomy = Taxonomy::where('taxonomy_recordid', '=', (int)($service_taxonomy_recordid))->first();
+                $taxonomy = Taxonomy::where('taxonomy_recordid', '=', (int) ($service_taxonomy_recordid))->first();
                 if (isset($taxonomy)) {
                     $service_taxonomy_name = $taxonomy->taxonomy_name;
                     $service_taxonomy_info_list[$service_taxonomy_recordid] = $service_taxonomy_name;
@@ -188,20 +189,20 @@ class ExploreController extends Controller
         $location_locationids = Location::with('services', 'organization')->pluck('location_recordid')->toArray();
 
         if ($source_data->active == 1) {
-            $services = Service::with(['organizations', 'taxonomy', 'details'])->where('service_name', 'like', '%' . $chip_service . '%')->orwhere('service_description', 'like', '%' . $chip_service . '%')->orwhere('service_airs_taxonomy_x', 'like', '%' . $chip_service . '%')->orwhereHas('organizations', function ($q) use ($chip_service) {
-                $q->where('organization_name', 'like', '%' . $chip_service . '%');
+            $services = Service::with(['organizations', 'taxonomy', 'details'])->where('service_name', 'like', '%'.$chip_service.'%')->orwhere('service_description', 'like', '%'.$chip_service.'%')->orwhere('service_airs_taxonomy_x', 'like', '%'.$chip_service.'%')->orwhereHas('organizations', function ($q) use ($chip_service) {
+                $q->where('organization_name', 'like', '%'.$chip_service.'%');
             })->orwhereHas('taxonomy', function ($q) use ($chip_service) {
-                $q->where('taxonomy_name', 'like', '%' . $chip_service . '%');
+                $q->where('taxonomy_name', 'like', '%'.$chip_service.'%');
             })->orwhereHas('details', function ($q) use ($chip_service) {
-                $q->where('detail_value', 'like', '%' . $chip_service . '%');
+                $q->where('detail_value', 'like', '%'.$chip_service.'%');
             })->select('services.*');
         } else {
-            $serviceids = Service::where('service_name', 'like', '%' . $chip_service . '%')->orwhere('service_description', 'like', '%' . $chip_service . '%')->orwhere('service_airs_taxonomy_x', 'like', '%' . $chip_service . '%')->pluck('service_recordid')->toArray();
+            $serviceids = Service::where('service_name', 'like', '%'.$chip_service.'%')->orwhere('service_description', 'like', '%'.$chip_service.'%')->orwhere('service_airs_taxonomy_x', 'like', '%'.$chip_service.'%')->pluck('service_recordid')->toArray();
         }
 
-        $organization_recordids = Organization::where('organization_name', 'like', '%' . $chip_service . '%')->pluck('organization_recordid')->toArray();
+        $organization_recordids = Organization::where('organization_name', 'like', '%'.$chip_service.'%')->pluck('organization_recordid')->toArray();
         $organization_serviceids = ServiceOrganization::whereIn('organization_recordid', $organization_recordids)->pluck('service_recordid')->toArray();
-        $taxonomy_recordids = Taxonomy::where('taxonomy_name', 'like', '%' . $chip_service . '%')->pluck('taxonomy_recordid')->toArray();
+        $taxonomy_recordids = Taxonomy::where('taxonomy_name', 'like', '%'.$chip_service.'%')->pluck('taxonomy_recordid')->toArray();
         $taxonomy_serviceids = ServiceTaxonomy::whereIn('taxonomy_recordid', $taxonomy_recordids)->pluck('service_recordid')->toArray();
 
         $service_locationids = ServiceLocation::whereIn('service_recordid', $serviceids)->pluck('location_recordid')->toArray();
@@ -218,8 +219,7 @@ class ExploreController extends Controller
                     $radius = '6,371';
                 }
 
-
-                $locations = Location::with('services', 'organization')->select(DB::raw('*, ( ' . $radius . ' * acos( cos( radians(' . $lat . ') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians(' . $lng . ') ) + sin( radians(' . $lat . ') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
+                $locations = Location::with('services', 'organization')->select(DB::raw('*, ( '.$radius.' * acos( cos( radians('.$lat.') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians('.$lng.') ) + sin( radians('.$lat.') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
                     ->having('distance', '<', 2)
                     ->orderBy('distance');
 
@@ -321,7 +321,7 @@ class ExploreController extends Controller
 
             if ($sdoh_codes_category) {
                 $sdoh_codes_category = json_decode($sdoh_codes_category);
-                if (count($sdoh_codes_category) > 0 && !Auth::check()) {
+                if (count($sdoh_codes_category) > 0 && ! Auth::check()) {
                     Session::flash('message', 'Only registered users can access this link.');
                     Session::flash('status', 'error');
 
@@ -339,7 +339,7 @@ class ExploreController extends Controller
 
             $sdoh_codes_data = $request->sdoh_codes_data;
             $sdoh_codes_data = json_decode($sdoh_codes_data);
-            if (is_array($sdoh_codes_data) && count($sdoh_codes_data) > 0 && !Auth::check()) {
+            if (is_array($sdoh_codes_data) && count($sdoh_codes_data) > 0 && ! Auth::check()) {
                 Session::flash('message', 'Only registered users can access this link.');
                 Session::flash('status', 'error');
 
@@ -357,15 +357,15 @@ class ExploreController extends Controller
             $service_tags = $request->get('service_tags');
             $organizationStatus = OrganizationStatus::orderBy('order')->pluck('status', 'id');
 
-            $serviceids = Service::where('service_name', 'like', '%' . $chip_service . '%')->orwhere('service_description', 'like', '%' . $chip_service . '%')->orwhere('service_alternate_name', 'like', '%' . $chip_service . '%')->orwhere('service_airs_taxonomy_x', 'like', '%' . $chip_service . '%')->pluck('service_recordid')->toArray();
+            $serviceids = Service::where('service_name', 'like', '%'.$chip_service.'%')->orwhere('service_description', 'like', '%'.$chip_service.'%')->orwhere('service_alternate_name', 'like', '%'.$chip_service.'%')->orwhere('service_airs_taxonomy_x', 'like', '%'.$chip_service.'%')->pluck('service_recordid')->toArray();
 
-            $organization_recordids = Organization::where('organization_name', 'like', '%' . $chip_service . '%')->pluck('organization_recordid')->unique();
+            $organization_recordids = Organization::where('organization_name', 'like', '%'.$chip_service.'%')->pluck('organization_recordid')->unique();
 
             // $organizations = Organization::where('organization_name', 'like', '%' . $chip_service . '%');
 
             $organization_serviceids = ServiceOrganization::whereIn('organization_recordid', $organization_recordids)->pluck('service_recordid')->unique();
 
-            $taxonomy_recordids = Taxonomy::where('taxonomy_name', 'like', '%' . $chip_service . '%')->pluck('taxonomy_recordid')->unique();
+            $taxonomy_recordids = Taxonomy::where('taxonomy_name', 'like', '%'.$chip_service.'%')->pluck('taxonomy_recordid')->unique();
             $taxonomy_serviceids = ServiceTaxonomy::whereIn('taxonomy_recordid', $taxonomy_recordids)->pluck('service_recordid')->unique();
 
             $service_locationids = ServiceLocation::whereIn('service_recordid', $serviceids)->pluck('location_recordid')->unique();
@@ -401,7 +401,7 @@ class ExploreController extends Controller
 
                     $locations = Location::select('*')
                         ->selectRaw(
-                            '(' . $this->radius . ' * acos(cos(radians(?)) * cos(radians(location_latitude)) * cos(radians(location_longitude) - radians(?)) + sin(radians(?)) * sin(radians(location_latitude)))) AS distance',
+                            '('.$this->radius.' * acos(cos(radians(?)) * cos(radians(location_latitude)) * cos(radians(location_longitude) - radians(?)) + sin(radians(?)) * sin(radians(location_latitude)))) AS distance',
                             [$lat, $lng, $lat]
                         )
 //                        ->select(DB::raw('* , (((acos(sin((' . $lat . ' * pi()/180)) * sin((location_latitude*pi()/180))+cos((' . $lat . ' * pi()/180)) * cos((location_latitude*pi()/180)) * cos(((' . $lng . '- location_longitude)*  pi()/180))))*180/pi())*60*1.1515*5280) AS distance'))
@@ -436,7 +436,7 @@ class ExploreController extends Controller
                 $locations = Location::with('services', 'organization', 'address');
             }
 
-            if (!Auth::check()) {
+            if (! Auth::check()) {
                 $organizations = Organization::get();
                 $inactiveOrganizationIds = [];
                 foreach ($organizations as $key => $org) {
@@ -454,12 +454,12 @@ class ExploreController extends Controller
 
             if ($chip_service) {
 
-                $serviceTagsIds = ServiceTag::whereNotNull('tag')->where('tag', 'LIKE', '%' . $chip_service . '%')->pluck('id')->toArray();
+                $serviceTagsIds = ServiceTag::whereNotNull('tag')->where('tag', 'LIKE', '%'.$chip_service.'%')->pluck('id')->toArray();
                 if (count($serviceTagsIds) > 0) {
                     $services = $services->orWhere(function ($query) use ($serviceTagsIds) {
                         foreach ($serviceTagsIds as $keyword) {
                             if ($keyword) {
-                                $query = $query->orWhereRaw('find_in_set(' . $keyword . ', service_tag)');
+                                $query = $query->orWhereRaw('find_in_set('.$keyword.', service_tag)');
                             }
                         }
 
@@ -471,7 +471,7 @@ class ExploreController extends Controller
 
                 $services = $services->orWhere(function ($query) use ($selected_category_ids) {
                     foreach ($selected_category_ids as $keyword) {
-                        $query = $query->orWhereRaw('find_in_set(' . $keyword . ', code_category_ids)');
+                        $query = $query->orWhereRaw('find_in_set('.$keyword.', code_category_ids)');
                     }
 
                     return $query;
@@ -488,7 +488,7 @@ class ExploreController extends Controller
 
                 $services = $services->orWhere(function ($query) use ($sdoh_codes_data) {
                     foreach ($sdoh_codes_data as $keyword) {
-                        $query = $query->orWhereRaw('find_in_set(' . $keyword . ', SDOH_code)');
+                        $query = $query->orWhereRaw('find_in_set('.$keyword.', SDOH_code)');
                     }
 
                     return $query;
@@ -531,7 +531,7 @@ class ExploreController extends Controller
                 if ($service_tags) {
                     $services_tags_ids = Service::where(function ($query) use ($service_tags) {
                         foreach ($service_tags as $keyword) {
-                            $query = $query->orWhereRaw('find_in_set(' . $keyword . ', service_tag)');
+                            $query = $query->orWhereRaw('find_in_set('.$keyword.', service_tag)');
                         }
 
                         return $query;
@@ -622,7 +622,7 @@ class ExploreController extends Controller
             $child_service_ids = [];
 
             for ($i = 0; $i < count($selected_taxonomies); $i++) {
-                $service_ids = Service::where('service_taxonomy', 'like', '%' . $selected_taxonomies[$i] . '%')->groupBy('service_recordid')->pluck('service_recordid')->toArray();
+                $service_ids = Service::where('service_taxonomy', 'like', '%'.$selected_taxonomies[$i].'%')->groupBy('service_recordid')->pluck('service_recordid')->toArray();
                 $child_service_ids = array_merge($child_service_ids, $service_ids);
             }
             $child_service_ids = array_unique($child_service_ids);
@@ -686,7 +686,7 @@ class ExploreController extends Controller
                     $details = '';
 
                     foreach ($service->taxonomy as $key => $taxonomy) {
-                        $taxonomies = $taxonomies . $taxonomy->taxonomy_name . ',';
+                        $taxonomies = $taxonomies.$taxonomy->taxonomy_name.',';
                     }
                     $service['taxonomies'] = $taxonomies;
                     if (isset($service->organizations)) {
@@ -700,17 +700,17 @@ class ExploreController extends Controller
                     $service['organizations'] = $organizations;
 
                     foreach ($service->phone as $phone1) {
-                        $phones = $phones . $phone1->phone_number;
+                        $phones = $phones.$phone1->phone_number;
                     }
                     $service['phones'] = $phones;
 
                     foreach ($service->address as $address) {
-                        $address1 = $address1 . $address->address_1 . ' ' . $address->address_city . ' ' . $address->address_state_province . ' ' . $address->address_postal_code;
+                        $address1 = $address1.$address->address_1.' '.$address->address_city.' '.$address->address_state_province.' '.$address->address_postal_code;
                     }
                     $service['address1'] = $address1;
 
                     foreach ($service->contact as $contact) {
-                        $contacts = $contacts . $contact->contact_name;
+                        $contacts = $contacts.$contact->contact_name;
                     }
                     $service['contacts'] = $contacts;
 
@@ -725,11 +725,11 @@ class ExploreController extends Controller
                         if ($i == count($show_details)) {
                             $show_details[$i] = ['detail_type' => $detail->detail_type, 'detail_value' => $detail->detail_value];
                         } else {
-                            $show_details[$i]['detail_value'] = $show_details[$i]['detail_value'] . ', ' . $detail->detail_value;
+                            $show_details[$i]['detail_value'] = $show_details[$i]['detail_value'].', '.$detail->detail_value;
                         }
                     }
                     foreach ($show_details as $detail) {
-                        $details = $details . $detail['detail_type'] . ':' . $detail['detail_value'] . '; ';
+                        $details = $details.$detail['detail_type'].':'.$detail['detail_value'].'; ';
                     }
                     $service['details'] = $details;
                 }
@@ -746,9 +746,9 @@ class ExploreController extends Controller
                     if ($child_taxonomy_names != '') {
                         $filter_category = '';
                         foreach ($child_taxonomy_names as $child_taxonomy_name) {
-                            $filter_category = $filter_category . $child_taxonomy_name . ',';
+                            $filter_category = $filter_category.$child_taxonomy_name.',';
                         }
-                        $description = $description . 'Category: ' . $filter_category;
+                        $description = $description.'Category: '.$filter_category;
                     }
                 }
 
@@ -756,10 +756,10 @@ class ExploreController extends Controller
                     if ($checked_organization_names != '') {
                         $filter_organization = '';
                         foreach ($checked_organization_names as $checked_organization_name) {
-                            $filter_organization = $filter_organization . $checked_organization_name . ',';
+                            $filter_organization = $filter_organization.$checked_organization_name.',';
                         }
 
-                        $description = $description . 'Organization: ' . $filter_organization;
+                        $description = $description.'Organization: '.$filter_organization;
                     }
                 }
 
@@ -767,10 +767,10 @@ class ExploreController extends Controller
                     if ($checked_insurance_names != '') {
                         $filter_insurance = '';
                         foreach ($checked_insurance_names as $checked_insurance_name) {
-                            $filter_insurance = $filter_insurance . $checked_insurance_name . ',';
+                            $filter_insurance = $filter_insurance.$checked_insurance_name.',';
                         }
 
-                        $description = $description . 'Insurance: ' . $filter_insurance;
+                        $description = $description.'Insurance: '.$filter_insurance;
                     }
                 }
 
@@ -778,10 +778,10 @@ class ExploreController extends Controller
                     if ($checked_age_names != '') {
                         $filter_age = '';
                         foreach ($checked_age_names as $checked_age_name) {
-                            $filter_age = $filter_age . $checked_age_name . ',';
+                            $filter_age = $filter_age.$checked_age_name.',';
                         }
 
-                        $description = $description . 'Age: ' . $filter_age;
+                        $description = $description.'Age: '.$filter_age;
                     }
                 }
 
@@ -789,10 +789,10 @@ class ExploreController extends Controller
                     if ($checked_language_names != '') {
                         $filter_language = '';
                         foreach ($checked_language_names as $checked_language_name) {
-                            $filter_language = $filter_language . $checked_language_name . ',';
+                            $filter_language = $filter_language.$checked_language_name.',';
                         }
 
-                        $description = $description . 'Language: ' . $filter_language;
+                        $description = $description.'Language: '.$filter_language;
                     }
                 }
 
@@ -800,10 +800,10 @@ class ExploreController extends Controller
                     if ($checked_setting_names != '') {
                         $filter_setting = '';
                         foreach ($checked_setting_names as $checked_setting_name) {
-                            $filter_setting = $filter_setting . $checked_setting_name . ',';
+                            $filter_setting = $filter_setting.$checked_setting_name.',';
                         }
 
-                        $description = $description . 'Setting: ' . $filter_setting;
+                        $description = $description.'Setting: '.$filter_setting;
                     }
                 }
 
@@ -811,10 +811,10 @@ class ExploreController extends Controller
                     if ($checked_cultural_names != '') {
                         $filter_cultural = '';
                         foreach ($checked_cultural_names as $checked_cultural_name) {
-                            $filter_cultural = $filter_cultural . $checked_cultural_name . ',';
+                            $filter_cultural = $filter_cultural.$checked_cultural_name.',';
                         }
 
-                        $description = $description . 'Cultural: ' . $filter_cultural;
+                        $description = $description.'Cultural: '.$filter_cultural;
                     }
                 }
 
@@ -822,10 +822,10 @@ class ExploreController extends Controller
                     if ($checked_transportation_names != '') {
                         $filter_transportation = '';
                         foreach ($checked_transportation_names as $checked_transportation_name) {
-                            $filter_transportation = $filter_cultural . $checked_transportation_name . ',';
+                            $filter_transportation = $filter_cultural.$checked_transportation_name.',';
                         }
 
-                        $description = $description . 'Transportation: ' . $filter_transportation;
+                        $description = $description.'Transportation: '.$filter_transportation;
                     }
                 }
 
@@ -833,10 +833,10 @@ class ExploreController extends Controller
                     if ($checked_hour_names != '') {
                         $filter_hour = '';
                         foreach ($checked_hour_names as $checked_hour_name) {
-                            $filter_hour = $filter_hour . $checked_hour_name . ',';
+                            $filter_hour = $filter_hour.$checked_hour_name.',';
                         }
 
-                        $description = $description . 'Additional Hour: ' . $filter_hour;
+                        $description = $description.'Additional Hour: '.$filter_hour;
                     }
                 }
 
@@ -865,7 +865,7 @@ class ExploreController extends Controller
             //     // $services = Service::whereIn('services.service_recordid', $services_ids);
             //     $services = $services->leftjoin('organizations', 'services.service_organization', '=', 'organizations.organization_recordid')->orderBy('organization_name');
             // }
-            if (!Auth::check()) {
+            if (! Auth::check()) {
                 $services = $services->where('access_requirement', '!=', 'yes');
                 $locations = $locations->whereHas('services', function ($q) {
                     $q->where('access_requirement', '!=', 'yes');
@@ -890,7 +890,7 @@ class ExploreController extends Controller
                         //                        $dist = acos($dist);
                         //                        $dist = rad2deg($dist);
 
-                        $miles = $this->distanceServices->getDistance($lat1, $lon1, $lat2, $lon2,  $this->map?->distance_unit);
+                        $miles = $this->distanceServices->getDistance($lat1, $lon1, $lat2, $lon2, $this->map?->distance_unit);
                     }
 
                     $value->miles = $miles;
@@ -915,7 +915,7 @@ class ExploreController extends Controller
 
                 foreach ($service_taxonomy_recordid_list as $key => $service_taxonomy_recordid) {
 
-                    $taxonomy = Taxonomy::where('taxonomy_recordid', '=', (int)($service_taxonomy_recordid))->first();
+                    $taxonomy = Taxonomy::where('taxonomy_recordid', '=', (int) ($service_taxonomy_recordid))->first();
                     if (isset($taxonomy)) {
                         $service_taxonomy_name = $taxonomy->taxonomy_name;
                         $service_taxonomy_info_list[$service_taxonomy_recordid] = $service_taxonomy_name;
@@ -928,7 +928,7 @@ class ExploreController extends Controller
             foreach ($services as $key => $service) {
                 $service_details_recordid_list = explode(',', $service->service_details);
                 foreach ($service_details_recordid_list as $key => $service_details_recordid) {
-                    $detail = Detail::where('detail_recordid', '=', (int)($service_details_recordid))->first();
+                    $detail = Detail::where('detail_recordid', '=', (int) ($service_details_recordid))->first();
                     if (isset($detail)) {
                         $service_detail_type = $detail->detail_type;
                         $service_details_info_list[$service_details_recordid] = $service_detail_type;
@@ -1111,9 +1111,9 @@ class ExploreController extends Controller
             if ($chip_organization) {
                 if ($chip_organization[0] == '"' && $chip_organization[strlen($chip_organization) - 1] == '"') {
                     $string = trim($chip_organization, '"');
-                    $organizations->where('organization_name', 'like', $string . '%');
+                    $organizations->where('organization_name', 'like', $string.'%');
                 } else {
-                    $organizations->where('organization_name', 'like', '%' . $chip_organization . '%');
+                    $organizations->where('organization_name', 'like', '%'.$chip_organization.'%');
                 }
             }
 
@@ -1123,7 +1123,7 @@ class ExploreController extends Controller
                 // $organizations = $organizations->whereIn('organization_tag', $organization_tags);
                 $orgIds = [];
                 foreach ($organization_tags as $keyword) {
-                    $ids = Organization::where('organization_tag', 'LIKE', '%' . $keyword . '%')->pluck('id')->toArray();
+                    $ids = Organization::where('organization_tag', 'LIKE', '%'.$keyword.'%')->pluck('id')->toArray();
                     $orgIds = array_merge($orgIds, $ids);
                 }
                 $organizations->whereIn('id', $orgIds);
@@ -1227,7 +1227,7 @@ class ExploreController extends Controller
 
                         foreach ($service_taxonomy_recordid_list as $key => $service_taxonomy_recordid) {
 
-                            $taxonomy = Taxonomy::where('taxonomy_recordid', '=', (int)($service_taxonomy_recordid))->first();
+                            $taxonomy = Taxonomy::where('taxonomy_recordid', '=', (int) ($service_taxonomy_recordid))->first();
                             if (isset($taxonomy)) {
                                 $service_taxonomy_name = $taxonomy->taxonomy_name;
                                 $service_taxonomy_info_list[$service_taxonomy_recordid] = $service_taxonomy_name;
@@ -1258,7 +1258,7 @@ class ExploreController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -1269,7 +1269,7 @@ class ExploreController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -1279,7 +1279,7 @@ class ExploreController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -1315,7 +1315,7 @@ class ExploreController extends Controller
                 $layout = Layout::find(1);
                 $count_metas = MetaFilter::count();
                 $serviceNames = Service::query();
-                $organization_names = Organization::where('organization_name', 'like', '%' . $query . '%');
+                $organization_names = Organization::where('organization_name', 'like', '%'.$query.'%');
                 $filter_label = Session::has('filter_label') ? Session::get('filter_label') : $layout->default_label;
                 if ($layout->meta_filter_activate == 1 && $count_metas > 0 && $filter_label == 'on_label') {
                     $address_serviceids = [];
@@ -1385,7 +1385,7 @@ class ExploreController extends Controller
                     $organization_names = $organization_names->whereIn('organization_recordid', $organization_serviceids);
                 }
                 $serviceNames->where(function ($q) use ($query) {
-                    $q->where('service_name', 'like', '%' . $query . '%')->orwhere('service_description', 'like', '%' . $query . '%')->orwhere('service_airs_taxonomy_x', 'like', '%' . $query . '%');
+                    $q->where('service_name', 'like', '%'.$query.'%')->orwhere('service_description', 'like', '%'.$query.'%')->orwhere('service_airs_taxonomy_x', 'like', '%'.$query.'%');
                 });
 
                 // $serviceTagsIds = ServiceTag::whereNotNull('tag')->where('tag', 'LIKE', '%' . $query . '%')->pluck('id')->toArray();
@@ -1399,7 +1399,7 @@ class ExploreController extends Controller
                 //     });
                 // }
 
-                $taxonomy_names = Taxonomy::where('taxonomy_name', 'like', '%' . $query . '%');
+                $taxonomy_names = Taxonomy::where('taxonomy_name', 'like', '%'.$query.'%');
                 $taxonomy_recordids = Taxonomy::getTaxonomyRecordids();
                 if (count($taxonomy_recordids) > 0) {
                     $taxonomy_names = $taxonomy_names->whereIn('taxonomy_recordid', array_values($taxonomy_recordids));
@@ -1413,7 +1413,7 @@ class ExploreController extends Controller
                 $output = '<ul class="dropdown-menu" style="display:block;position:absolute;max-height:300px;overflow:auto;width: 100%;">';
                 if (count($data) > 0) {
                     foreach ($data as $key => $value) {
-                        $output .= '<li><a href="javascript:void(0)" style="color:#000;">' . $value . '</a></li> ';
+                        $output .= '<li><a href="javascript:void(0)" style="color:#000;">'.$value.'</a></li> ';
                     }
                 } else {
                     $output .= '<li><a href="javascript:void(0)" style="color:#000;">No record found!</a></li> ';
@@ -1423,7 +1423,7 @@ class ExploreController extends Controller
                 echo $output;
             }
         } catch (\Throwable $th) {
-            Log::error('Error in fetchService : ' . $th);
+            Log::error('Error in fetchService : '.$th);
         }
     }
 
@@ -1432,7 +1432,7 @@ class ExploreController extends Controller
         try {
             $query = $request->get('query');
             if ($query) {
-                $organization_names = Organization::where('organization_name', 'like', '%' . $query . '%')->orWhere('organization_alternate_name', 'like', '%' . $query . '%');
+                $organization_names = Organization::where('organization_name', 'like', '%'.$query.'%')->orWhere('organization_alternate_name', 'like', '%'.$query.'%');
 
                 $metas = MetaFilter::all();
                 $layout = Layout::find(1);
@@ -1462,7 +1462,7 @@ class ExploreController extends Controller
                 $output = '<ul class="dropdown-menu" style="display:block;position:absolute;max-height:300px;overflow:auto;width: 100%;">';
                 if (count($data) > 0) {
                     foreach ($data as $key => $value) {
-                        $output .= '<li><a href="#">' . $value . '</a></li> ';
+                        $output .= '<li><a href="#">'.$value.'</a></li> ';
                     }
                 } else {
                     $output .= '<li><a href="#">No record found!</a></li> ';
@@ -1472,7 +1472,7 @@ class ExploreController extends Controller
                 echo $output;
             }
         } catch (\Throwable $th) {
-            Log::error('Error in fetchOrganization : ' . $th);
+            Log::error('Error in fetchOrganization : '.$th);
         }
     }
 }
