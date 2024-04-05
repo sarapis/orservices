@@ -118,6 +118,7 @@ class MapController extends Controller
         $map->geocode_map_key = $request->geocode_map_key;
         $map->javascript_map_key = $request->javascript_map_key;
         $map->distance_unit = $request->distance_unit;
+        $map->distance_radius = $request->get('distance_radius', 50);
         $map->state = $request->state;
         $map->lat = $request->lat;
         $map->long = $request->long;
@@ -179,6 +180,7 @@ class MapController extends Controller
                 $map->geocode_map_key = $request->input('geocode_map_key');
                 $map->javascript_map_key = $request->input('javascript_map_key');
                 $map->distance_unit = $request->input('distance_unit');
+                $map->distance_radius = $request->get('distance_radius', 50);
                 $map->state = $request->input('state');
                 $map->lat = $request->input('lat');
                 $map->long = $request->input('long');
