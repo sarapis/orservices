@@ -75,7 +75,7 @@ class ExploreController extends Controller
         // $lng = -77.0373987;
 
         $locations = Location::with('services', 'organization', 'address')->select(DB::raw('*, ( 3959 * acos( cos( radians('.$lat.') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians('.$lng.') ) + sin( radians('.$lat.') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
-            ->having('distance', '<', 2)
+            ->having('distance', '<', $this->map->distance_radius)
             ->orderBy('distance');
 
         $locationids = $locations->pluck('location_recordid')->toArray();
@@ -220,7 +220,7 @@ class ExploreController extends Controller
                 }
 
                 $locations = Location::with('services', 'organization')->select(DB::raw('*, ( '.$radius.' * acos( cos( radians('.$lat.') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians('.$lng.') ) + sin( radians('.$lat.') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
-                    ->having('distance', '<', 2)
+                    ->having('distance', '<', $this->map->distance_radius)
                     ->orderBy('distance');
 
                 $location_locationids = $locations->pluck('location_recordid')->toArray();
@@ -406,7 +406,7 @@ class ExploreController extends Controller
                         )
 //                        ->select(DB::raw('* , (((acos(sin((' . $lat . ' * pi()/180)) * sin((location_latitude*pi()/180))+cos((' . $lat . ' * pi()/180)) * cos((location_latitude*pi()/180)) * cos(((' . $lng . '- location_longitude)*  pi()/180))))*180/pi())*60*1.1515*5280) AS distance'))
 //                        ->select(DB::raw('*, ( 3959 * acos( cos( radians(' . $lat . ') ) * cos( radians( location_latitude ) ) * cos( radians( location_longitude ) - radians(' . $lng . ') ) + sin( radians(' . $lat . ') ) * sin( radians( location_latitude ) ) ) ) AS distance'))
-                        ->having('distance', '<', 50)
+                        ->having('distance', '<', $this->map->distance_radius)
                         ->orderBy('distance');
 
                     $location_locationids = $locations->pluck('location_recordid');

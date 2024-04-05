@@ -411,10 +411,10 @@ Services
             } else {
                 avglat = 40.730981;
                 avglng = -73.998107;
-                zoom = 14;
+                zoom = 12;
             }
             if(chip_address != '0' && chip_address != ''){
-                zoom = 15
+                zoom = 13
                 if(avarageLatitude != '0'){
                     avglat = avarageLatitude
                 }
