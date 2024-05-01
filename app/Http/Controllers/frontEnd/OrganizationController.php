@@ -2,61 +2,60 @@
 
 namespace App\Http\Controllers\frontEnd;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Functions\Airtable;
+use App\Http\Controllers\Controller;
 use App\Imports\OrganizationImport;
 use App\Model\Accessibility;
 use App\Model\Address;
-use App\Model\Organization;
-use App\Model\OrganizationDetail;
-use App\Model\Taxonomy;
-use App\Model\Alt_taxonomy;
-use App\Model\ServiceOrganization;
-use App\Model\Servicetaxonomy;
-use App\Model\Service;
-use App\Model\Contact;
-use App\Model\SessionData;
-use App\Model\Comment;
-use App\Model\Phone;
-use App\Model\Location;
-use App\Model\Airtablekeyinfo;
-use App\Model\Layout;
-use App\Model\Map;
-use App\Model\Airtables;
-use App\Model\CSV_Source;
-use App\Model\Source_data;
 use App\Model\Airtable_v2;
+use App\Model\Airtablekeyinfo;
+use App\Model\Airtables;
+use App\Model\Alt_taxonomy;
 use App\Model\City;
-use App\Model\OrganizationStatus;
+use App\Model\Comment;
+use App\Model\Contact;
+use App\Model\CSV_Source;
 use App\Model\Detail;
 use App\Model\Disposition;
 use App\Model\InteractionMethod;
 use App\Model\Language;
+use App\Model\Layout;
+use App\Model\Location;
+use App\Model\Map;
 use App\Model\MetaFilter;
+use App\Model\Organization;
+use App\Model\OrganizationDetail;
 use App\Model\OrganizationPhone;
+use App\Model\OrganizationStatus;
 use App\Model\OrganizationTableFilter;
-use App\Model\PhoneType;
-use App\Model\Schedule;
 use App\Model\OrganizationTag;
+use App\Model\Phone;
+use App\Model\PhoneType;
 use App\Model\Program;
 use App\Model\Region;
+use App\Model\Schedule;
+use App\Model\Service;
+use App\Model\ServiceOrganization;
 use App\Model\ServiceTag;
+use App\Model\SessionData;
 use App\Model\SessionInteraction;
+use App\Model\Source_data;
 use App\Model\State;
+use App\Model\Taxonomy;
 use App\Services\OrganizationService;
 use App\Services\Stringtoint;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
-use Maatwebsite\Excel\Facades\Excel;
-use PDF;
-use OwenIt\Auditing\Models\Audit;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
-use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
+use OwenIt\Auditing\Models\Audit;
+use PDF;
+use Yajra\DataTables\Facades\DataTables;
 
 class OrganizationController extends Controller
 {
@@ -68,7 +67,7 @@ class OrganizationController extends Controller
     {
 
         $airtable_key_info = Airtablekeyinfo::find(1);
-        if (!$airtable_key_info) {
+        if (! $airtable_key_info) {
             $airtable_key_info = new Airtablekeyinfo;
         }
         $airtable_key_info->access_token = $access_token;
@@ -78,19 +77,18 @@ class OrganizationController extends Controller
         Organization::truncate();
         OrganizationDetail::truncate();
 
-        $airtable = new Airtable(array(
+        $airtable = new Airtable([
             'access_token' => $access_token,
             'base' => $base_url,
-        ));
+        ]);
 
         $request = $airtable->getContent('organizations');
 
         do {
 
-
             $response = $request->getResponse();
 
-            $airtable_response = json_decode($response, TRUE);
+            $airtable_response = json_decode($response, true);
 
             foreach ($airtable_response['records'] as $record) {
 
@@ -101,7 +99,7 @@ class OrganizationController extends Controller
                 if (isset($record['fields']['logo-x'])) {
                     foreach ($record['fields']['logo-x'] as $key => $image) {
                         try {
-                            $organization->organization_logo_x .= $image["url"];
+                            $organization->organization_logo_x .= $image['url'];
                         } catch (\Exception $e) {
                             echo 'Caught exception: ', $e->getMessage(), "\n";
                         }
@@ -110,8 +108,8 @@ class OrganizationController extends Controller
                 if (isset($record['fields']['forms-x'])) {
                     foreach ($record['fields']['forms-x'] as $key => $form) {
                         try {
-                            $organization->organization_forms_x_filename .= $form["filename"];
-                            $organization->organization_forms_x_url .= $form["url"];
+                            $organization->organization_forms_x_filename .= $form['filename'];
+                            $organization->organization_forms_x_url .= $form['url'];
                         } catch (\Exception $e) {
                             echo 'Caught exception: ', $e->getMessage(), "\n";
                         }
@@ -121,7 +119,7 @@ class OrganizationController extends Controller
                 $organization->organization_x_uid = isset($record['fields']['x-uid']) ? $record['fields']['x-uid'] : null;
                 $organization->organization_description = isset($record['fields']['description']) ? $record['fields']['description'] : null;
 
-                $organization->organization_description = mb_convert_encoding($organization->organization_description, "HTML-ENTITIES", "UTF-8");
+                $organization->organization_description = mb_convert_encoding($organization->organization_description, 'HTML-ENTITIES', 'UTF-8');
 
                 $organization->organization_email = isset($record['fields']['email']) ? $record['fields']['email'] : null;
                 $organization->organization_url = isset($record['fields']['url']) ? $record['fields']['url'] : null;
@@ -155,10 +153,11 @@ class OrganizationController extends Controller
 
                         $organizationservice = $strtointclass->string_to_int($value);
 
-                        if ($i != 0)
-                            $organization->organization_services = $organization->organization_services . ',' . $organizationservice;
-                        else
+                        if ($i != 0) {
+                            $organization->organization_services = $organization->organization_services.','.$organizationservice;
+                        } else {
                             $organization->organization_services = $organizationservice;
+                        }
                         $i++;
                     }
                 }
@@ -169,14 +168,14 @@ class OrganizationController extends Controller
 
                         $organizationphone = $strtointclass->string_to_int($value);
 
-                        if ($i != 0)
-                            $organization->organization_phones = $organization->organization_phones . ',' . $organizationphone;
-                        else
+                        if ($i != 0) {
+                            $organization->organization_phones = $organization->organization_phones.','.$organizationphone;
+                        } else {
                             $organization->organization_phones = $organizationphone;
+                        }
                         $i++;
                     }
                 }
-
 
                 if (isset($record['fields']['locations'])) {
                     $i = 0;
@@ -184,14 +183,15 @@ class OrganizationController extends Controller
 
                         $organizationlocation = $strtointclass->string_to_int($value);
 
-                        if ($i != 0)
-                            $organization->organization_locations = $organization->organization_locations . ',' . $organizationlocation;
-                        else
+                        if ($i != 0) {
+                            $organization->organization_locations = $organization->organization_locations.','.$organizationlocation;
+                        } else {
                             $organization->organization_locations = $organizationlocation;
+                        }
                         $i++;
                     }
                 }
-                $organization->organization_contact = isset($record['fields']['contact']) ? implode(",", $record['fields']['contact']) : null;
+                $organization->organization_contact = isset($record['fields']['contact']) ? implode(',', $record['fields']['contact']) : null;
                 $organization->organization_contact = $strtointclass->string_to_int($organization->organization_contact);
 
                 if (isset($record['fields']['details'])) {
@@ -203,10 +203,11 @@ class OrganizationController extends Controller
                         $organization_detail->save();
                         $organizationdetail = $strtointclass->string_to_int($value);
 
-                        if ($i != 0)
-                            $organization->organization_details = $organization->organization_details . ',' . $organizationdetail;
-                        else
+                        if ($i != 0) {
+                            $organization->organization_details = $organization->organization_details.','.$organizationdetail;
+                        } else {
                             $organization->organization_details = $organizationdetail;
+                        }
                         $i++;
                     }
                 }
@@ -215,10 +216,11 @@ class OrganizationController extends Controller
                     $i = 0;
                     foreach ($record['fields']['AIRS Taxonomy-x'] as $value) {
 
-                        if ($i != 0)
-                            $organization->organization_airs_taxonomy_x = $organization->organization_airs_taxonomy_x . ',' . $value;
-                        else
+                        if ($i != 0) {
+                            $organization->organization_airs_taxonomy_x = $organization->organization_airs_taxonomy_x.','.$value;
+                        } else {
                             $organization->organization_airs_taxonomy_x = $value;
+                        }
                         $i++;
                     }
                 }
@@ -227,7 +229,7 @@ class OrganizationController extends Controller
             }
         } while ($request = $response->next());
 
-        $date = date("Y/m/d H:i:s");
+        $date = date('Y/m/d H:i:s');
         $airtable = Airtables::where('name', '=', 'Organizations')->first();
         $airtable->records = Organization::count();
         $airtable->syncdate = $date;
@@ -238,7 +240,7 @@ class OrganizationController extends Controller
     {
         try {
             $airtable_key_info = Airtablekeyinfo::find(1);
-            if (!$airtable_key_info) {
+            if (! $airtable_key_info) {
                 $airtable_key_info = new Airtablekeyinfo;
             }
             $airtable_key_info->access_token = $access_token;
@@ -248,19 +250,18 @@ class OrganizationController extends Controller
             // Organization::truncate();
             // OrganizationDetail::truncate();
 
-            $airtable = new Airtable(array(
+            $airtable = new Airtable([
                 'access_token' => $access_token,
                 'base' => $base_url,
-            ));
+            ]);
 
             $request = $airtable->getContent('organizations');
 
             do {
 
-
                 $response = $request->getResponse();
 
-                $airtable_response = json_decode($response, TRUE);
+                $airtable_response = json_decode($response, true);
 
                 foreach ($airtable_response['records'] as $record) {
                     $strtointclass = new Stringtoint();
@@ -274,7 +275,7 @@ class OrganizationController extends Controller
                         if (isset($record['fields']['x-logo'])) {
                             foreach ($record['fields']['x-logo'] as $key => $image) {
                                 try {
-                                    $organization->organization_logo_x .= $image["url"];
+                                    $organization->organization_logo_x .= $image['url'];
                                 } catch (\Exception $e) {
                                     echo 'Caught exception: ', $e->getMessage(), "\n";
                                 }
@@ -283,8 +284,8 @@ class OrganizationController extends Controller
                         if (isset($record['fields']['x-forms'])) {
                             foreach ($record['fields']['x-forms'] as $key => $form) {
                                 try {
-                                    $organization->organization_forms_x_filename .= $form["filename"];
-                                    $organization->organization_forms_x_url .= $form["url"];
+                                    $organization->organization_forms_x_filename .= $form['filename'];
+                                    $organization->organization_forms_x_url .= $form['url'];
                                 } catch (\Exception $e) {
                                     echo 'Caught exception: ', $e->getMessage(), "\n";
                                 }
@@ -295,7 +296,7 @@ class OrganizationController extends Controller
                         $organization->organization_website_rating = isset($record['fields']['y-website_quality']) ? $record['fields']['y-website_quality'] : null;
                         $organization->organization_description = isset($record['fields']['description']) ? $record['fields']['description'] : null;
 
-                        $organization->organization_description = mb_convert_encoding($organization->organization_description, "HTML-ENTITIES", "UTF-8");
+                        $organization->organization_description = mb_convert_encoding($organization->organization_description, 'HTML-ENTITIES', 'UTF-8');
 
                         $organization->organization_email = isset($record['fields']['email']) ? $record['fields']['email'] : null;
                         $organization->organization_url = isset($record['fields']['url']) ? $record['fields']['url'] : null;
@@ -328,16 +329,16 @@ class OrganizationController extends Controller
                         $organization->organization_year_incorporated = isset($record['fields']['year_incorporated']) ? $record['fields']['year_incorporated'] : null;
                         // $organization->organization_tag = isset($record['fields']['x-tags']) ? implode(',', $record['fields']['x-tags']) : null;
                         $organization_tags = isset($record['fields']['x-tags']) ? $record['fields']['x-tags'] : [];
-                        if (!empty($organization_tags)) {
+                        if (! empty($organization_tags)) {
                             // $organization->organization_tag = $organization->organization_tag . ',' . $organization_tag;
                             $orgTag = [];
                             foreach ($organization_tags as $key1 => $value1) {
-                                $organization_tag = OrganizationTag::where('tag', 'LIKE', '%' . $value1 . '%')->first();
+                                $organization_tag = OrganizationTag::where('tag', 'LIKE', '%'.$value1.'%')->first();
                                 if ($organization_tag) {
                                     $orgTag[] = $organization_tag->id;
                                 } else {
                                     $organization_tag = OrganizationTag::create([
-                                        'tag' => $value1
+                                        'tag' => $value1,
                                     ]);
                                     $orgTag[] = $organization_tag->id;
                                 }
@@ -351,10 +352,11 @@ class OrganizationController extends Controller
 
                                 $organizationservice = $strtointclass->string_to_int($value);
 
-                                if ($i != 0)
-                                    $organization->organization_services = $organization->organization_services . ',' . $organizationservice;
-                                else
+                                if ($i != 0) {
+                                    $organization->organization_services = $organization->organization_services.','.$organizationservice;
+                                } else {
                                     $organization->organization_services = $organizationservice;
+                                }
                                 $i++;
                             }
                         }
@@ -365,14 +367,14 @@ class OrganizationController extends Controller
 
                                 $organizationphone = $strtointclass->string_to_int($value);
 
-                                if ($i != 0)
-                                    $organization->organization_phones = $organization->organization_phones . ',' . $organizationphone;
-                                else
+                                if ($i != 0) {
+                                    $organization->organization_phones = $organization->organization_phones.','.$organizationphone;
+                                } else {
                                     $organization->organization_phones = $organizationphone;
+                                }
                                 $i++;
                             }
                         }
-
 
                         if (isset($record['fields']['locations'])) {
                             $i = 0;
@@ -380,14 +382,15 @@ class OrganizationController extends Controller
 
                                 $organizationlocation = $strtointclass->string_to_int($value);
 
-                                if ($i != 0)
-                                    $organization->organization_locations = $organization->organization_locations . ',' . $organizationlocation;
-                                else
+                                if ($i != 0) {
+                                    $organization->organization_locations = $organization->organization_locations.','.$organizationlocation;
+                                } else {
                                     $organization->organization_locations = $organizationlocation;
+                                }
                                 $i++;
                             }
                         }
-                        $organization->organization_contact = isset($record['fields']['contacts']) ? implode(",", $record['fields']['contacts']) : null;
+                        $organization->organization_contact = isset($record['fields']['contacts']) ? implode(',', $record['fields']['contacts']) : null;
                         $organization->organization_contact = $strtointclass->string_to_int($organization->organization_contact);
 
                         if (isset($record['fields']['x-details'])) {
@@ -399,10 +402,11 @@ class OrganizationController extends Controller
                                 $organization_detail->save();
                                 $organizationdetail = $strtointclass->string_to_int($value);
 
-                                if ($i != 0)
-                                    $organization->organization_details = $organization->organization_details . ',' . $organizationdetail;
-                                else
+                                if ($i != 0) {
+                                    $organization->organization_details = $organization->organization_details.','.$organizationdetail;
+                                } else {
                                     $organization->organization_details = $organizationdetail;
+                                }
                                 $i++;
                             }
                         }
@@ -411,10 +415,11 @@ class OrganizationController extends Controller
                             $i = 0;
                             foreach ($record['fields']['AIRS Taxonomy-x'] as $value) {
 
-                                if ($i != 0)
-                                    $organization->organization_airs_taxonomy_x = $organization->organization_airs_taxonomy_x . ',' . $value;
-                                else
+                                if ($i != 0) {
+                                    $organization->organization_airs_taxonomy_x = $organization->organization_airs_taxonomy_x.','.$value;
+                                } else {
                                     $organization->organization_airs_taxonomy_x = $value;
+                                }
                                 $i++;
                             }
                         }
@@ -424,16 +429,17 @@ class OrganizationController extends Controller
                 }
             } while ($request = $response->next());
 
-            $date = date("Y/m/d H:i:s");
+            $date = date('Y/m/d H:i:s');
             $airtable = Airtable_v2::where('name', '=', 'Organizations')->first();
             $airtable->records = Organization::count();
             $airtable->syncdate = $date;
             $airtable->save();
         } catch (\Throwable $th) {
-            Log::error('Error in Organization sync : ' . $th->getMessage());
+            Log::error('Error in Organization sync : '.$th->getMessage());
+
             return response()->json([
                 'message' => $th->getMessage(),
-                'success' => false
+                'success' => false,
             ], 500);
         }
     }
@@ -480,16 +486,18 @@ class OrganizationController extends Controller
             $csv_source->syncdate = $date;
             $csv_source->save();
 
-            $response = array(
+            $response = [
                 'status' => 'success',
                 'result' => 'Organization imported successfully',
-            );
+            ];
+
             return $response;
         } catch (\Throwable $th) {
-            $response = array(
+            $response = [
                 'status' => 'false',
                 'result' => $th->getMessage(),
-            );
+            ];
+
             return $response;
         }
     }
@@ -511,7 +519,7 @@ class OrganizationController extends Controller
         if ($layout->meta_filter_activate == 1 && $count_metas > 0 && $filter_label == 'on_label') {
             $filterServiceRecordId = [];
             foreach ($metas as $key => $meta) {
-                $values = explode(",", $meta->values);
+                $values = explode(',', $meta->values);
                 if (count($values) > 0) {
                     if ($meta->facet == 'organization_status') {
                         $organizations_status_ids = Organization::getOrganizationStatusMeta($values, $meta->operations);
@@ -585,7 +593,7 @@ class OrganizationController extends Controller
                     } else {
                         foreach ($grandparent->terms()->where('taxonomy_parent_name', '=', $taxonomy_parent_name)->get() as $child_key => $child_term) {
                             $child_data['parent_taxonomy'] = $child_term;
-                            $child_data['child_taxonomies'] = "";
+                            $child_data['child_taxonomies'] = '';
                             array_push($parent_taxonomy, $child_data);
                         }
                     }
@@ -621,58 +629,64 @@ class OrganizationController extends Controller
             $organizationStatus = OrganizationStatus::orderBy('order')->pluck('status', 'id');
             $saved_filters = OrganizationTableFilter::where('user_id', Auth::id())->get();
 
-            if (!$request->ajax()) {
+            if (! $request->ajax()) {
                 return view('backEnd.tables.tb_organization', compact('organizations', 'organization_tags', 'organizationStatus', 'service_tags', 'saved_filters'));
             }
+
             return DataTables::of($organizations)
                 ->editColumn('services', function ($row) {
                     $service_name = '';
                     if (isset($row->services)) {
                         foreach ($row->services as $key => $service) {
-                            $service_name .= '<span class="badge bg-green"> ' . $service->service_name . '</span>';
+                            $service_name .= '<span class="badge bg-green"> '.$service->service_name.'</span>';
                         }
                     }
+
                     return $service_name;
                 })
                 ->editColumn('phones', function ($row) {
                     $phone_number = '';
                     if (isset($row->phones)) {
                         foreach ($row->phones as $key => $phone) {
-                            $phone_number .= '<span class="badge bg-blue"> ' . $phone->phone_number . '</span>';
+                            $phone_number .= '<span class="badge bg-blue"> '.$phone->phone_number.'</span>';
                         }
                     }
+
                     return $phone_number;
                 })
                 ->editColumn('location', function ($row) {
                     $location_name = '';
                     if (isset($row->location)) {
                         foreach ($row->location as $key => $location) {
-                            $location_name .= '<span class="badge bg-blue"> ' . $location->location_name . '</span>';
+                            $location_name .= '<span class="badge bg-blue"> '.$location->location_name.'</span>';
                         }
                     }
+
                     return $location_name;
                 })
                 ->editColumn('organization_details', function ($row) {
                     $organization_detail = '';
                     if (isset($row->organization_details)) {
                         foreach ($row->organization_details as $key => $organization_detail) {
-                            $organization_detail .= '<span class="badge bg-purple"> ' . $organization_detail->detail_value . '</span>';
+                            $organization_detail .= '<span class="badge bg-purple"> '.$organization_detail->detail_value.'</span>';
                         }
                     }
+
                     return $organization_detail;
                 })
                 ->editColumn('contact_name', function ($row) {
                     $location_name = '';
                     if (isset($row->contact()->first()->contact_name)) {
-                        $location_name .= '<span class="badge bg-red">' . $row->contact()->first()->contact_name . '</span>';
+                        $location_name .= '<span class="badge bg-red">'.$row->contact()->first()->contact_name.'</span>';
                     }
+
                     return $location_name;
                 })
                 ->editColumn('bookmark', function ($row) {
                     if ($row->bookmark && $row->bookmark == 1) {
-                        return '<a href="javascript:void(0)" class="clickBookmark" data-id="' . $row->id . '" data-value="' . ($row->bookmark ? $row->bookmark : 0) . '"><img src="/images/bookmark.svg"></a>';
+                        return '<a href="javascript:void(0)" class="clickBookmark" data-id="'.$row->id.'" data-value="'.($row->bookmark ? $row->bookmark : 0).'"><img src="/images/bookmark.svg"></a>';
                     } else {
-                        return '<a href="javascript:void(0)" class="clickBookmark" data-id="' . $row->id . '" data-value="0"><img src="/images/unbookmark.svg"></a>';
+                        return '<a href="javascript:void(0)" class="clickBookmark" data-id="'.$row->id.'" data-value="0"><img src="/images/unbookmark.svg"></a>';
                     }
                 })
                 ->editColumn('organization_description', function ($row) {
@@ -681,17 +695,17 @@ class OrganizationController extends Controller
                     return $organization_description;
                 })
                 ->editColumn('organization_url', function ($row) {
-                    return '<a href="' . $row->organization_url . '" target="_blank" style="text-decoration: underline;color: #0097c9;">' . $row->organization_url . '</a>';
+                    return '<a href="'.$row->organization_url.'" target="_blank" style="text-decoration: underline;color: #0097c9;">'.$row->organization_url.'</a>';
                 })
                 ->editColumn('organization_name', function ($row) {
-                    return '<a href="/organizations/' . $row->organization_recordid . '" target="_blank" style="text-decoration: underline;color: #0097c9;">' . $row->organization_name . '</a>';
+                    return '<a href="/organizations/'.$row->organization_recordid.'" target="_blank" style="text-decoration: underline;color: #0097c9;">'.$row->organization_name.'</a>';
                 })
                 ->editColumn('organization_status_x', function ($row) {
                     return $row->status_data ? $row->status_data->status : '';
                 })
                 ->editColumn('last_verified_by', function ($row) {
                     // return $row->get_latest_updated($row, 'updated_by');
-                    return $row->get_last_verified_by ? $row->get_last_verified_by->first_name . ' ' . $row->get_last_verified_by->last_name : '';
+                    return $row->get_last_verified_by ? $row->get_last_verified_by->first_name.' '.$row->get_last_verified_by->last_name : '';
                 })
                 ->editColumn('updated_by', function ($row) {
                     return $row->get_latest_updated($row, 'updated_by');
@@ -707,12 +721,12 @@ class OrganizationController extends Controller
                 ->addColumn('last_note_date', function ($row) {
                     $note = SessionData::where('session_organization', $row->organization_recordid)->orderBy('id', 'desc')->first();
 
-                    return $note ? '<a href="/organization_notes/' . $row->organization_recordid . '"> ' . $note->created_at . '</a>' : "";
+                    return $note ? '<a href="/organization_notes/'.$row->organization_recordid.'"> '.$note->created_at.'</a>' : '';
                 })
                 ->addColumn('last_edit_date', function ($row) {
                     $audit = Audit::where('auditable_id', $row->organization_recordid)->orderBy('id', 'desc')->first();
 
-                    return $audit ? '<a href="/organization_edits/0/' . $row->organization_recordid . '"> ' . $audit->created_at . '</a>' : "";
+                    return $audit ? '<a href="/organization_edits/0/'.$row->organization_recordid.'"> '.$audit->created_at.'</a>' : '';
                 })
                 ->addColumn('service_tag', function ($row) {
                     $tags = [];
@@ -730,6 +744,7 @@ class OrganizationController extends Controller
                             }
                         }
                     }
+
                     return count($tags) > 0 ? implode(',', $tags) : '';
                 })
                 ->editColumn('organization_tag', function ($row) {
@@ -739,12 +754,13 @@ class OrganizationController extends Controller
                         foreach ($organization_tags as $key => $value) {
                             $tag = OrganizationTag::whereId($value)->first();
                             if ($tag) {
-                                $organization_tag[] = '<a href="javascript:void(0)" data-id="' . $row->organization_recordid . '" class="organizationTags" data-tags="' . $row->organization_tag . '"> ' . $tag->tag . '</a>';
+                                $organization_tag[] = '<a href="javascript:void(0)" data-id="'.$row->organization_recordid.'" class="organizationTags" data-tags="'.$row->organization_tag.'"> '.$tag->tag.'</a>';
                             }
                         }
+
                         return implode(',', $organization_tag);
                     } else {
-                        return '<button type="button" class="btn btn-sm btn-primary organizationTags" data-id="' . $row->organization_recordid . '" data-tags="">Add Tag</button>';
+                        return '<button type="button" class="btn btn-sm btn-primary organizationTags" data-id="'.$row->organization_recordid.'" data-tags="">Add Tag</button>';
                     }
                 })
                 ->editColumn('organization_status_x', function ($row) {
@@ -755,12 +771,13 @@ class OrganizationController extends Controller
                         foreach ($organization_statuses as $key => $value) {
                             $status = OrganizationStatus::whereId($value)->first();
                             if ($status) {
-                                $organization_status[] = '<a href="javascript:void(0)" data-id="' . $row->organization_recordid . '" class="organizationStatuses" data-status="' . $status->id . '"> ' . $status->status . '</a>';
+                                $organization_status[] = '<a href="javascript:void(0)" data-id="'.$row->organization_recordid.'" class="organizationStatuses" data-status="'.$status->id.'"> '.$status->status.'</a>';
                             }
                         }
+
                         return implode(',', $organization_status);
                     } else {
-                        return '<button type="button" class="btn btn-sm btn-primary organizationStatuses" data-id="' . $row->organization_recordid . '" data-status="">Add Status</button>';
+                        return '<button type="button" class="btn btn-sm btn-primary organizationStatuses" data-id="'.$row->organization_recordid.'" data-status="">Add Status</button>';
                     }
                 })
                 ->filter(function ($query) use ($request) {
@@ -772,11 +789,11 @@ class OrganizationController extends Controller
                             $organization_tags = count($extraData['organization_tag']) > 0 ? array_filter($extraData['organization_tag']) : [];
                             $query = $query->where(function ($q) use ($organization_tags) {
                                 foreach ($organization_tags as $key => $value) {
-                                    $q->orWhere('organization_tag', 'LIKE', '%' . $value . '%');
+                                    $q->orWhere('organization_tag', 'LIKE', '%'.$value.'%');
                                 }
                             });
                         }
-                        if (isset($extraData['organization_bookmark_only']) && $extraData['organization_bookmark_only'] != null && $extraData['organization_bookmark_only'] == "true") {
+                        if (isset($extraData['organization_bookmark_only']) && $extraData['organization_bookmark_only'] != null && $extraData['organization_bookmark_only'] == 'true') {
                             $query = $query->where('bookmark', 1);
                         }
                         if (isset($extraData['service_tag']) && $extraData['service_tag'] != null) {
@@ -784,7 +801,7 @@ class OrganizationController extends Controller
 
                             $organization_recordids = Service::where(function ($q) use ($service_tags) {
                                 foreach ($service_tags as $key => $value) {
-                                    $q->orWhere('service_tag', 'LIKE', '%' . $value . '%');
+                                    $q->orWhere('service_tag', 'LIKE', '%'.$value.'%');
                                 }
                             })->pluck('service_organization')->toArray();
                             $query->whereIn('organization_recordid', $organization_recordids);
@@ -805,13 +822,15 @@ class OrganizationController extends Controller
                             $query->whereIn('organization_status_x', $extraData['status']);
                         }
                     }
+
                     return $query;
                 }, true)
                 ->rawColumns(['services', 'phones', 'location', 'organization_details', 'contact_name', 'last_note_date', 'last_edit_date', 'organization_name', 'organization_tag', 'organization_url', 'bookmark', 'organization_status_x'])
                 ->make(true);
         } catch (\Throwable $th) {
             dd($th);
-            Log::error('Error in organization table index : ' . $th);
+            Log::error('Error in organization table index : '.$th);
+
             return redirect()->back();
         }
     }
@@ -863,7 +882,7 @@ class OrganizationController extends Controller
                     } else {
                         foreach ($grandparent->terms()->where('taxonomy_parent_name', '=', $taxonomy_parent_name)->get() as $child_key => $child_term) {
                             $child_data['parent_taxonomy'] = $child_term;
-                            $child_data['child_taxonomies'] = "";
+                            $child_data['child_taxonomies'] = '';
                             array_push($parent_taxonomy, $child_data);
                         }
                     }
@@ -892,14 +911,16 @@ class OrganizationController extends Controller
             $organization->organization_tag = $request->organization_tag ? implode(',', $request->organization_tag) : '';
             $organization->latest_updated_date = Carbon::now();
             $organization->updated_by = Auth::id();
-            $organization->updated_at = date("Y-m-d H:i:s");
+            $organization->updated_at = date('Y-m-d H:i:s');
             $organization->save();
             Session::flash('message', 'Tag added successfully!');
             Session::flash('status', 'success');
+
             return redirect()->back();
         } catch (\Throwable $th) {
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
+
             return redirect()->back();
         }
     }
@@ -940,11 +961,13 @@ class OrganizationController extends Controller
             ]);
             Session::flash('message', 'Filter Saved Successfully!');
             Session::flash('status', 'success');
+
             return redirect()->back();
         } catch (\Throwable $th) {
             dd($th);
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
+
             return redirect()->back();
         }
     }
@@ -955,7 +978,7 @@ class OrganizationController extends Controller
             $id = $request->organization_recordid;
             $organization = Organization::where('organization_recordid', $id)->first();
             $organization->organization_status_x = $request->organisation_status ? $request->organisation_status : '';
-            $organization->updated_at = date("Y-m-d H:i:s");
+            $organization->updated_at = date('Y-m-d H:i:s');
             $organization->latest_updated_date = Carbon::now();
             $organization->updated_by = Auth::id();
             $organizationStatus = OrganizationStatus::whereId($request->organisation_status)->first();
@@ -966,10 +989,12 @@ class OrganizationController extends Controller
             $organization->save();
             Session::flash('message', 'Organization Status added successfully!');
             Session::flash('status', 'success');
+
             return redirect()->back();
         } catch (\Throwable $th) {
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
+
             return redirect()->back();
         }
     }
@@ -983,7 +1008,7 @@ class OrganizationController extends Controller
 
         $pdf = PDF::loadView('frontEnd.organization_download', compact('organization', 'layout'));
 
-        return $pdf->download($organization_name . '.pdf');
+        return $pdf->download($organization_name.'.pdf');
     }
 
     /**
@@ -1009,7 +1034,7 @@ class OrganizationController extends Controller
         }
         $taxonomy_info_list = Taxonomy::whereNull('taxonomy_parent_name')->Where(function ($query) use ($exclude_vocabulary) {
             for ($i = 0; $i < count($exclude_vocabulary); $i++) {
-                $query->where('taxonomy_name', 'not like', '%' . $exclude_vocabulary[$i] . '%');
+                $query->where('taxonomy_name', 'not like', '%'.$exclude_vocabulary[$i].'%');
             }
         })->get();
         $taxonomyArray = [];
@@ -1022,6 +1047,7 @@ class OrganizationController extends Controller
                 }
                 $value->taxonomyArray = $taxonomyArray;
             }
+
             return true;
         });
         $schedule_info_list = Schedule::select('schedule_recordid', 'opens', 'closes')->whereNotNull('opens')->where('opens', '!=', '')->orderBy('opens')->distinct()->get();
@@ -1071,7 +1097,6 @@ class OrganizationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -1089,7 +1114,7 @@ class OrganizationController extends Controller
         try {
             $organization = new Organization;
 
-            $new_recordid = Organization::max("organization_recordid") + 1;
+            $new_recordid = Organization::max('organization_recordid') + 1;
             $organization->organization_recordid = $new_recordid;
             $organization_recordid = $new_recordid;
             $layout = Layout::find(1);
@@ -1120,7 +1145,7 @@ class OrganizationController extends Controller
                 if ($request->logo_type == 'file' && $request->hasFile('logo')) {
                     $link = $request->file('logo')->store('uploads', 'public');
                     $link = Storage::url($link);
-                } else if ($request->logo_type == 'url' && $request->logo) {
+                } elseif ($request->logo_type == 'url' && $request->logo) {
                     $link = $request->logo;
                 } else {
                     $link = $organization->logo;
@@ -1150,7 +1175,6 @@ class OrganizationController extends Controller
                     $contact_phone_languages = $request->contact_phone_languages && count($request->contact_phone_languages) ? json_decode($request->contact_phone_languages[0]) : [];
                     $contact_phone_descriptions = $request->contact_phone_descriptions && count($request->contact_phone_descriptions) ? json_decode($request->contact_phone_descriptions[0]) : [];
 
-
                     if ($request->contactRadio[$i] == 'new_data') {
                         $contact = new Contact();
                         $contact->contact_recordid = Contact::max('contact_recordid') + 1;
@@ -1162,7 +1186,7 @@ class OrganizationController extends Controller
                         $contact->contact_organizations = $new_recordid;
                         // $contact->contact_phones = $request->contact_phone[$i];
                         if ($contact_service) {
-                            $contact->contact_services = join(',', $contact_service[$i]);
+                            $contact->contact_services = implode(',', $contact_service[$i]);
                         } else {
                             $contact->contact_services = '';
                         }
@@ -1173,7 +1197,7 @@ class OrganizationController extends Controller
                         for ($p = 0; $p < count($contact_phone_numbers[$i]); $p++) {
                             $phone_info = Phone::where('phone_number', '=', $contact_phone_numbers[$i][$p])->first();
                             if ($phone_info) {
-                                $contact->contact_phones = $contact->contact_phones . $phone_info->phone_recordid . ',';
+                                $contact->contact_phones = $contact->contact_phones.$phone_info->phone_recordid.',';
                                 $phone_info->phone_number = $contact_phone_numbers[$i][$p];
                                 $phone_info->phone_extension = $contact_phone_extensions[$i][$p];
                                 $phone_info->phone_type = $contact_phone_types[$i][$p];
@@ -1191,7 +1215,7 @@ class OrganizationController extends Controller
                                 $new_phone->phone_language = isset($contact_phone_languages[$i][$p]) && is_array($contact_phone_languages[$i][$p]) && count($contact_phone_languages[$i][$p]) > 0 ? implode(',', $contact_phone_languages[$i][$p]) : '';
                                 $new_phone->phone_description = $contact_phone_descriptions[$i][$p];
                                 $new_phone->save();
-                                $contact->contact_phones = $contact->contact_phones . $new_phone_recordid . ',';
+                                $contact->contact_phones = $contact->contact_phones.$new_phone_recordid.',';
                                 array_push($contact_phone_recordid_list, $new_phone_recordid);
                             }
                         }
@@ -1209,7 +1233,7 @@ class OrganizationController extends Controller
                             $updating_contact->visibility = $contact_visibility[$i];
                             // $contact->contact_phones = $request->contact_phone[$i];
                             if ($contact_service) {
-                                $updating_contact->contact_services = join(',', $contact_service[$i]);
+                                $updating_contact->contact_services = implode(',', $contact_service[$i]);
                             } else {
                                 $updating_contact->contact_services = '';
                             }
@@ -1219,7 +1243,7 @@ class OrganizationController extends Controller
                             for ($p = 0; $p < count($contact_phone_numbers[$i]); $p++) {
                                 $phone_info = Phone::where('phone_number', '=', $contact_phone_numbers[$i][$p])->first();
                                 if ($phone_info) {
-                                    $updating_contact->contact_phones = $updating_contact->contact_phones . $phone_info->phone_recordid . ',';
+                                    $updating_contact->contact_phones = $updating_contact->contact_phones.$phone_info->phone_recordid.',';
                                     $phone_info->phone_number = $contact_phone_numbers[$i][$p];
                                     $phone_info->phone_extension = $contact_phone_extensions[$i][$p];
                                     $phone_info->phone_type = $contact_phone_types[$i][$p];
@@ -1237,7 +1261,7 @@ class OrganizationController extends Controller
                                     $new_phone->phone_language = isset($contact_phone_languages[$i][$p]) && is_array($contact_phone_languages[$i][$p]) && count($contact_phone_languages[$i][$p]) > 0 ? implode(',', $contact_phone_languages[$i][$p]) : '';
                                     $new_phone->phone_description = $contact_phone_descriptions[$i][$p];
                                     $new_phone->save();
-                                    $updating_contact->contact_phones = $updating_contact->contact_phones . $new_phone_recordid . ',';
+                                    $updating_contact->contact_phones = $updating_contact->contact_phones.$new_phone_recordid.',';
                                     array_push($contact_phone_recordid_list, $new_phone_recordid);
                                 }
                             }
@@ -1287,7 +1311,7 @@ class OrganizationController extends Controller
                         $location->location_recordid = $newLocationId;
                         $location->location_name = $request->location_name[$i];
                         $location->location_organization = $new_recordid;
-                        $organization->organization_locations = $organization->organization_locations . ',' . $newLocationId;
+                        $organization->organization_locations = $organization->organization_locations.','.$newLocationId;
 
                         $location->location_alternate_name = isset($location_alternate_name[$i]) ? $location_alternate_name[$i] : null;
                         $location->location_transportation = isset($location_transporation[$i]) ? $location_transporation[$i] : null;
@@ -1311,7 +1335,7 @@ class OrganizationController extends Controller
                         }
 
                         if ($location_service) {
-                            $location->location_services = join(',', $location_service[$i]);
+                            $location->location_services = implode(',', $location_service[$i]);
                         } else {
                             $location->location_services = '';
                         }
@@ -1319,7 +1343,7 @@ class OrganizationController extends Controller
                         $location->services()->sync($location_service[$i]);
 
                         if ($location_schedules[$i]) {
-                            $location->location_schedule = join(',', $location_schedules[$i]);
+                            $location->location_schedule = implode(',', $location_schedules[$i]);
                         } else {
                             $location->location_schedule = '';
                         }
@@ -1415,7 +1439,7 @@ class OrganizationController extends Controller
                             }
                         }
                         $schedule_locations = is_array($schedule_locations) ? array_values(array_filter($schedule_locations)) : [];
-                        $location->location_schedule = join(',', $schedule_locations);
+                        $location->location_schedule = implode(',', $schedule_locations);
 
                         $location->schedules()->sync($schedule_locations);
 
@@ -1434,16 +1458,15 @@ class OrganizationController extends Controller
                             $location->location_name = $request->location_name[$i];
                             $location->location_organization = $new_recordid;
                             // location address
-                            $organization->organization_locations = $organization->organization_locations . ',' . $request->location_recordid[$i];
+                            $organization->organization_locations = $organization->organization_locations.','.$request->location_recordid[$i];
 
                             $location->location_alternate_name = $location_alternate_name[$i];
                             $location->location_transportation = $location_transporation[$i];
                             $location->location_description = $location_description[$i];
                             $location->location_details = $location_details[$i];
 
-
                             // accessesibility
-                            if (!empty($location_accessibility[$i]) && !empty($location_accessibility_details[$i])) {
+                            if (! empty($location_accessibility[$i]) && ! empty($location_accessibility_details[$i])) {
                                 // Accessibility::updateOrCreate([
                                 //     'accessibility_location' => $request->location_recordid[$i]
                                 // ], [
@@ -1459,7 +1482,7 @@ class OrganizationController extends Controller
                             }
 
                             if ($location_service) {
-                                $location->location_services = join(',', $location_service[$i]);
+                                $location->location_services = implode(',', $location_service[$i]);
                             } else {
                                 $location->location_services = '';
                             }
@@ -1467,7 +1490,7 @@ class OrganizationController extends Controller
                             $location->services()->sync($location_service[$i]);
 
                             if ($location_schedules[$i]) {
-                                $location->location_schedule = join(',', $location_schedules[$i]);
+                                $location->location_schedule = implode(',', $location_schedules[$i]);
                             } else {
                                 $location->location_schedule = '';
                             }
@@ -1595,7 +1618,7 @@ class OrganizationController extends Controller
                                     // }
                                 }
                             }
-                            $location->location_schedule = join(',', $schedule_locations);
+                            $location->location_schedule = implode(',', $schedule_locations);
                             $location_phone_recordid_list = is_array($location_phone_recordid_list) ? array_values(array_filter($location_phone_recordid_list)) : [];
                             $location_address_recordid_list = is_array($location_address_recordid_list) ? array_values(array_filter($location_address_recordid_list)) : [];
                             $location->phones()->sync($location_phone_recordid_list);
@@ -1610,7 +1633,6 @@ class OrganizationController extends Controller
                     }
                 }
             }
-
 
             $phone_recordids = [];
             // if ($request->organization_phones) {
@@ -1706,12 +1728,14 @@ class OrganizationController extends Controller
             }
             Session::flash('message', 'Organization created successfully!');
             Session::flash('status', 'success');
+
             return redirect('organizations');
         } catch (\Throwable $th) {
             dd($th);
-            Log::error('Error in create organization : ' . $th);
+            Log::error('Error in create organization : '.$th);
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
+
             return redirect('organizations');
         }
     }
@@ -1719,23 +1743,24 @@ class OrganizationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
         $organization = Organization::where('organization_recordid', '=', $id)->first();
         $organizationStatus = OrganizationStatus::orderBy('order')->pluck('status', 'id');
-        if ($organization && (Auth::check() || (!Auth::check() && $organization->organization_status_x && isset($organizationStatus[$organization->organization_status_x]) && ($organizationStatus[$organization->organization_status_x] != 'Out of Business' && $organizationStatus[$organization->organization_status_x] != 'Inactive')) || !$organization->organization_status_x)) {
+        if ($organization && (Auth::check() || (! Auth::check() && $organization->organization_status_x && isset($organizationStatus[$organization->organization_status_x]) && ($organizationStatus[$organization->organization_status_x] != 'Out of Business' && $organizationStatus[$organization->organization_status_x] != 'Inactive')) || ! $organization->organization_status_x)) {
             $layout = Layout::find(1);
             $orgService = $organization->organization_service_data->with('locations')->get();
             $serviceLocationIds = [];
             foreach ($orgService as $key => $value) {
-                if ($value->locations)
+                if ($value->locations) {
                     foreach ($value->locations as $key => $location) {
                         $serviceLocationIds[] = $location->location_recordid;
                         // $locations->push($location->with('services', 'address', 'phones')->first());
                     }
+                }
             }
 
             $organization_services = $organization->organization_service_data->paginate(10);
@@ -1760,13 +1785,13 @@ class OrganizationController extends Controller
             // $location_info_list = Location::whereIn('location_recordid', $organization_locations_recordid_list)->orderBy('location_recordid')->paginate(10);
             // $location_info_list = array_map('intval', explode(',', $organization->organization_locations));
             $location_info_list = $organization->location->pluck('location_recordid')->toArray();
-            //            $locationIds = $organization->location()->pluck('location_recordid')->toArray();
-            //            if (count($locationIds) > 0) {
-            //                $location_info_list = array_merge($location_info_list, $locationIds);
-            //            }
-            //            if (count($serviceLocationIds) > 0) {
-            //                $location_info_list = array_unique(array_merge($location_info_list, $serviceLocationIds));
-            //            }
+            $locationIds = $organization->location()->pluck('location_recordid')->toArray();
+            if (count($locationIds) > 0) {
+                $location_info_list = array_merge($location_info_list, $locationIds);
+            }
+            if (count($serviceLocationIds) > 0) {
+                $location_info_list = array_unique(array_merge($location_info_list, $serviceLocationIds));
+            }
             $locations = Location::whereIn('location_recordid', $location_info_list)->with('phones', 'address', 'services', 'schedules')->get();
             $location_info_list = Location::whereIn('location_recordid', $location_info_list)->with('phones', 'address', 'services', 'schedules')->get();
 
@@ -1777,6 +1802,7 @@ class OrganizationController extends Controller
                     $value->organization_name = $value->organization ? $value->organization->organization_name : '';
                     $value->organization_recordid = $value->organization ? $value->organization->organization_recordid : '';
                     $value->address_name = $value->address && count($value->address) > 0 ? $value->address[0]->address_1 : '';
+
                     return true;
                 });
             }
@@ -1805,7 +1831,7 @@ class OrganizationController extends Controller
                         } else {
                             foreach ($grandparent->terms()->where('taxonomy_parent_name', '=', $taxonomy_parent_name)->get() as $child_key => $child_term) {
                                 $child_data['parent_taxonomy'] = $child_term;
-                                $child_data['child_taxonomies'] = "";
+                                $child_data['child_taxonomies'] = '';
                                 array_push($parent_taxonomy, $child_data);
                             }
                         }
@@ -1826,10 +1852,10 @@ class OrganizationController extends Controller
             $existing_tag_element_list = Organization::whereNotNull('organization_tag')->get()->pluck('organization_tag');
             $existing_tags = [];
             foreach ($existing_tag_element_list as $key => $existing_tag_element) {
-                $existing_tag_list = explode(",", $existing_tag_element);
+                $existing_tag_list = explode(',', $existing_tag_element);
 
                 foreach ($existing_tag_list as $key => $existing_tag) {
-                    if (!in_array($existing_tag, $existing_tags, true)) {
+                    if (! in_array($existing_tag, $existing_tags, true)) {
                         array_push($existing_tags, $existing_tag);
                     }
                 }
@@ -1855,6 +1881,7 @@ class OrganizationController extends Controller
         } else {
             Session::flash('message', 'This record has been deleted.');
             Session::flash('status', 'warning');
+
             return redirect('organizations');
         }
     }
@@ -1862,7 +1889,7 @@ class OrganizationController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -1891,7 +1918,6 @@ class OrganizationController extends Controller
 
                 $organization_locations_data = Location::where('location_organization', $organization->organization_recordid)->get();
 
-
                 $organizationContacts = Contact::where('contact_organizations', '=', $id)->with('service')->get();
 
                 $phone_info_list = explode(',', $organization->organization_phones);
@@ -1914,6 +1940,7 @@ class OrganizationController extends Controller
                     $value->location_state = $address ? $address->address_state_province : '';
                     $value->location_zipcode = $address ? $address->address_postal_code : '';
                     $value->location_phone = $phones ? $phones->phone_number : '';
+
                     return true;
                 });
                 $phone_languages = Language::orderBy('order')->pluck('language', 'language_recordid');
@@ -1929,7 +1956,7 @@ class OrganizationController extends Controller
                 }
                 $taxonomy_info_list = Taxonomy::whereNull('taxonomy_parent_name')->Where(function ($query) use ($exclude_vocabulary) {
                     for ($i = 0; $i < count($exclude_vocabulary); $i++) {
-                        $query->where('taxonomy_name', 'not like', '%' . $exclude_vocabulary[$i] . '%');
+                        $query->where('taxonomy_name', 'not like', '%'.$exclude_vocabulary[$i].'%');
                     }
                 })->get();
                 $taxonomyArray = [];
@@ -1942,6 +1969,7 @@ class OrganizationController extends Controller
                         }
                         $value->taxonomyArray = $taxonomyArray;
                     }
+
                     return true;
                 });
                 $schedule_info_list = Schedule::select('schedule_recordid', 'opens', 'closes')->whereNotNull('opens')->where('opens', '!=', '')->orderBy('opens')->distinct()->get();
@@ -2148,7 +2176,7 @@ class OrganizationController extends Controller
                 $j = 0;
 
                 foreach ($organization_locations_data as $key => $value) {
-                    if ($value->schedules && !empty($value->schedules) && count($value->schedules) > 0) {
+                    if ($value->schedules && ! empty($value->schedules) && count($value->schedules) > 0) {
                         foreach ($value->schedules as $key1 => $schedule) {
                             if ($schedule->schedule_holiday == 1) {
                                 $location_holiday_start_dates[$j][] = $schedule->dtstart;
@@ -2163,10 +2191,10 @@ class OrganizationController extends Controller
                                     if (str_contains($schedule->weekday, $weekdays[$i])) {
                                         if (in_array(($i + 1), $schedule_closed_array)) {
 
-                                            ${'schedule_closed_' . $weekdays[$i] . '_datas'}[$j] = in_array(($i + 1), $schedule_closed_array) ? ($i + 1) : '';
+                                            ${'schedule_closed_'.$weekdays[$i].'_datas'}[$j] = in_array(($i + 1), $schedule_closed_array) ? ($i + 1) : '';
                                         } else {
-                                            ${'opens_location_' . $weekdays[$i] . '_datas'}[$j] = $schedule->opens;
-                                            ${'closes_location_' . $weekdays[$i] . '_datas'}[$j] = $schedule->closes;
+                                            ${'opens_location_'.$weekdays[$i].'_datas'}[$j] = $schedule->opens;
+                                            ${'closes_location_'.$weekdays[$i].'_datas'}[$j] = $schedule->closes;
                                         }
                                     }
                                 }
@@ -2181,9 +2209,9 @@ class OrganizationController extends Controller
                         $weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
                         for ($i = 0; $i < 7; $i++) {
                             // if ($schedule->weekday == $weekdays[$i]) {
-                            ${'opens_location_' . $weekdays[$i] . '_datas'}[$j] = '';
-                            ${'closes_location_' . $weekdays[$i] . '_datas'}[$j] = '';
-                            ${'schedule_closed_' . $weekdays[$i] . '_datas'}[$j] = '';
+                            ${'opens_location_'.$weekdays[$i].'_datas'}[$j] = '';
+                            ${'closes_location_'.$weekdays[$i].'_datas'}[$j] = '';
+                            ${'schedule_closed_'.$weekdays[$i].'_datas'}[$j] = '';
                             // }
                         }
                     }
@@ -2247,11 +2275,13 @@ class OrganizationController extends Controller
             } else {
                 Session::flash('message', 'Warning! Not enough permissions. Please contact Us for more');
                 Session::flash('status', 'warning');
+
                 return redirect('/');
             }
         } else {
             Session::flash('message', 'This record has been deleted.');
             Session::flash('status', 'warning');
+
             return redirect('organizations');
         }
     }
@@ -2259,8 +2289,7 @@ class OrganizationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -2296,13 +2325,12 @@ class OrganizationController extends Controller
 
             $organization->organization_year_incorporated = $request->organization_year_incorporated;
 
-
             if ($request->has('logo_type')) {
                 $link = '';
                 if ($request->logo_type == 'file' && $request->hasFile('logo')) {
                     $link = $request->file('logo')->store('uploads', 'public');
                     $link = Storage::url($link);
-                } else if ($request->logo_type == 'url' && $request->logo) {
+                } elseif ($request->logo_type == 'url' && $request->logo) {
                     $link = $request->logo;
                 } else {
                     $link = $organization->logo;
@@ -2316,9 +2344,7 @@ class OrganizationController extends Controller
                 $contact->save();
             }
 
-
             $this->saveOrganizationProgram($request, $organization);
-
 
             $phone_recordids = [];
 
@@ -2396,7 +2422,7 @@ class OrganizationController extends Controller
                         $contact->contact_organizations = $id;
                         // $contact->contact_phones = $request->contact_phone[$i];
                         if ($contact_service) {
-                            $contact->contact_services = join(',', $contact_service[$i]);
+                            $contact->contact_services = implode(',', $contact_service[$i]);
                         } else {
                             $contact->contact_services = '';
                         }
@@ -2408,7 +2434,7 @@ class OrganizationController extends Controller
                         for ($p = 0; $p < count($contact_phone_numbers[$i]); $p++) {
                             $phone_info = Phone::where('phone_number', '=', $contact_phone_numbers[$i][$p])->first();
                             if ($phone_info) {
-                                $contact->contact_phones = $contact->contact_phones . $phone_info->phone_recordid . ',';
+                                $contact->contact_phones = $contact->contact_phones.$phone_info->phone_recordid.',';
                                 $phone_info->phone_number = $contact_phone_numbers[$i][$p];
                                 $phone_info->phone_extension = $contact_phone_extensions[$i][$p];
                                 $phone_info->phone_type = $contact_phone_types[$i][$p];
@@ -2426,7 +2452,7 @@ class OrganizationController extends Controller
                                 $new_phone->phone_language = isset($contact_phone_languages[$i][$p]) && is_array($contact_phone_languages[$i][$p]) && count($contact_phone_languages[$i][$p]) > 0 ? implode(',', $contact_phone_languages[$i][$p]) : '';
                                 $new_phone->phone_description = $contact_phone_descriptions[$i][$p];
                                 $new_phone->save();
-                                $contact->contact_phones = $contact->contact_phones . $new_phone_recordid . ',';
+                                $contact->contact_phones = $contact->contact_phones.$new_phone_recordid.',';
                                 array_push($contact_phone_recordid_list, $new_phone_recordid);
                             }
                         }
@@ -2444,7 +2470,7 @@ class OrganizationController extends Controller
                             $updating_contact->contact_organizations = $id;
                             // $contact->contact_phones = $request->contact_phone[$i];
                             if ($contact_service) {
-                                $updating_contact->contact_services = join(',', $contact_service[$i]);
+                                $updating_contact->contact_services = implode(',', $contact_service[$i]);
                             } else {
                                 $updating_contact->contact_services = '';
                             }
@@ -2457,7 +2483,7 @@ class OrganizationController extends Controller
                                     $phone_info = Phone::where('phone_number', '=', $contact_phone_numbers[$i][$p])->first();
                                     // $contact_phones = explode(',',$updating_contact->contact_phones);
                                     if ($phone_info) {
-                                        $updating_contact->contact_phones = $updating_contact->contact_phones . $phone_info->phone_recordid . ',';
+                                        $updating_contact->contact_phones = $updating_contact->contact_phones.$phone_info->phone_recordid.',';
                                         $phone_info->phone_number = $contact_phone_numbers[$i][$p];
                                         $phone_info->phone_extension = $contact_phone_extensions[$i][$p];
                                         $phone_info->phone_type = $contact_phone_types[$i][$p];
@@ -2475,7 +2501,7 @@ class OrganizationController extends Controller
                                         $new_phone->phone_language = isset($contact_phone_languages[$i][$p]) && is_array($contact_phone_languages[$i][$p]) && count($contact_phone_languages[$i][$p]) > 0 ? implode(',', $contact_phone_languages[$i][$p]) : '';
                                         $new_phone->phone_description = $contact_phone_descriptions[$i][$p];
                                         $new_phone->save();
-                                        $contact->contact_phones = $contact->contact_phones . $new_phone_recordid . ',';
+                                        $contact->contact_phones = $contact->contact_phones.$new_phone_recordid.',';
                                         array_push($contact_phone_recordid_list, $new_phone_recordid);
                                     }
                                 }
@@ -2532,7 +2558,7 @@ class OrganizationController extends Controller
                         $location->location_recordid = $newLocationId;
                         $location->location_name = $request->location_name[$i];
                         $location->location_organization = $id;
-                        $organization->organization_locations = $organization->organization_locations . ',' . $newLocationId;
+                        $organization->organization_locations = $organization->organization_locations.','.$newLocationId;
 
                         $location->location_alternate_name = $location_alternate_name[$i] ?? null;
                         $location->location_transportation = $location_transporation[$i] ?? null;
@@ -2543,7 +2569,7 @@ class OrganizationController extends Controller
                         $location->accessesibility_url = isset($accessesibility_url[$i]) ? $accessesibility_url[$i] : null;
 
                         // accessesibility
-                        if (!empty($location_accessibility[$i]) && !empty($location_accessibility_details[$i])) {
+                        if (! empty($location_accessibility[$i]) && ! empty($location_accessibility_details[$i])) {
                             // Accessibility::create([
                             //     'accessibility_recordid' => Accessibility::max('accessibility_recordid') + 1,
                             //     'accessibility' => $location_accessibility[$i],
@@ -2558,7 +2584,7 @@ class OrganizationController extends Controller
                         }
 
                         if ($location_service) {
-                            $location->location_services = join(',', $location_service[$i]);
+                            $location->location_services = implode(',', $location_service[$i]);
                         } else {
                             $location->location_services = '';
                         }
@@ -2652,7 +2678,7 @@ class OrganizationController extends Controller
                             }
                         }
                         $location_phone_recordid_list = is_array($location_phone_recordid_list) ? array_values(array_filter($location_phone_recordid_list)) : [];
-                        $location->location_schedule = join(',', $schedule_locations);
+                        $location->location_schedule = implode(',', $schedule_locations);
                         $location->schedules()->sync($schedule_locations);
                         $location->phones()->sync($location_phone_recordid_list);
 
@@ -2665,7 +2691,7 @@ class OrganizationController extends Controller
                             $location->location_name = $request->location_name[$i];
                             $location->location_organization = $id;
                             // location address
-                            $organization->organization_locations = $organization->organization_locations . ',' . $request->location_recordid[$i];
+                            $organization->organization_locations = $organization->organization_locations.','.$request->location_recordid[$i];
 
                             $location->location_alternate_name = $location_alternate_name[$i];
                             $location->location_transportation = $location_transporation[$i];
@@ -2675,9 +2701,8 @@ class OrganizationController extends Controller
                             $location->external_identifier_type = isset($external_identifier_type[$i]) ? $external_identifier_type[$i] : null;
                             $location->accessesibility_url = isset($accessesibility_url[$i]) ? $accessesibility_url[$i] : null;
 
-
                             // accessesibility
-                            if (!empty($location_accessibility[$i]) && !empty($location_accessibility_details[$i])) {
+                            if (! empty($location_accessibility[$i]) && ! empty($location_accessibility_details[$i])) {
                                 // Accessibility::updateOrCreate([
                                 //     'accessibility_location' => $request->location_recordid[$i]
                                 // ], [
@@ -2693,7 +2718,7 @@ class OrganizationController extends Controller
                             }
 
                             if ($location_service) {
-                                $location->location_services = join(',', $location_service[$i]);
+                                $location->location_services = implode(',', $location_service[$i]);
                             } else {
                                 $location->location_services = '';
                             }
@@ -2736,7 +2761,7 @@ class OrganizationController extends Controller
                                 for ($p = 0; $p < count($location_phone_numbers[$i]); $p++) {
                                     $phone_info = Phone::where('phone_number', '=', $request->location_phone[$i])->first();
                                     if ($phone_info) {
-                                        $location->location_phones = $location->location_phones . $phone_info->phone_recordid . ',';
+                                        $location->location_phones = $location->location_phones.$phone_info->phone_recordid.',';
                                         $phone_info->phone_number = $location_phone_numbers[$i][$p];
                                         $phone_info->phone_extension = $location_phone_extensions[$i][$p];
                                         $phone_info->phone_type = $location_phone_types[$i][$p];
@@ -2754,7 +2779,7 @@ class OrganizationController extends Controller
                                         $new_phone->phone_language = isset($location_phone_languages[$i][$p]) && is_array($location_phone_languages[$i][$p]) && count($location_phone_languages[$i][$p]) > 0 ? implode(',', $location_phone_languages[$i][$p]) : '';
                                         $new_phone->phone_description = $location_phone_descriptions[$i][$p];
                                         $new_phone->save();
-                                        $location->location_phones = $location->location_phones . $new_phone_recordid . ',';
+                                        $location->location_phones = $location->location_phones.$new_phone_recordid.',';
                                         array_push($location_phone_recordid_list, $new_phone_recordid);
                                     }
                                 }
@@ -2766,7 +2791,7 @@ class OrganizationController extends Controller
 
                             if ($location_holiday_start_dates && isset($location_holiday_start_dates[$i]) && $location_holiday_start_dates[$i] != null) {
                                 Schedule::where('locations', $location->location_recordid)->where('schedule_holiday', '1')->delete();
-                                if ($location_holiday_start_dates[$i] != null && !empty($location_holiday_start_dates[$i])) {
+                                if ($location_holiday_start_dates[$i] != null && ! empty($location_holiday_start_dates[$i])) {
                                     for ($hs = 0; $hs < count($location_holiday_start_dates[$i]); $hs++) {
                                         $schedule_recordid = Schedule::max('schedule_recordid') + 1;
                                         $schedules = new Schedule();
@@ -2785,7 +2810,7 @@ class OrganizationController extends Controller
                                     }
                                 }
                             }
-                            $location->location_schedule = join(',', $schedule_locations);
+                            $location->location_schedule = implode(',', $schedule_locations);
 
                             $location_phone_recordid_list = is_array($location_phone_recordid_list) ? array_values(array_filter($location_phone_recordid_list)) : [];
                             $schedule_locations = is_array($schedule_locations) ? array_values(array_filter($schedule_locations)) : [];
@@ -2821,8 +2846,8 @@ class OrganizationController extends Controller
                 $new_recordid = SessionData::max('session_recordid') + 1;
                 $session->session_recordid = $new_recordid;
                 $user = Auth::user();
-                $date_time = date("Y-m-d h:i:sa");
-                $session->session_name = 'session' . $new_recordid;
+                $date_time = date('Y-m-d h:i:sa');
+                $session->session_name = 'session'.$new_recordid;
                 $session->session_organization = $id;
                 $session->session_method = $request->interaction_method;
                 $session->session_disposition = $request->interaction_disposition;
@@ -2852,7 +2877,7 @@ class OrganizationController extends Controller
                 $interaction->organization_services = $request->organization_services ? implode(',', $request->organization_services) : '';
                 $interaction->organization_status = $request->organization_status;
                 $interaction->interaction_records_edited = $request->interaction_records_edited;
-                $date_time = date("Y-m-d h:i:sa");
+                $date_time = date('Y-m-d h:i:sa');
                 $interaction->interaction_timestamp = $date_time;
 
                 $interaction->save();
@@ -2865,21 +2890,22 @@ class OrganizationController extends Controller
                 $organization->organization_status_x = $request->organization_status;
             }
 
-
             $organization->latest_updated_date = Carbon::now();
             if ($organization->wasChanged()) {
-                $organization->updated_at = date("Y-m-d H:i:s");
+                $organization->updated_at = date('Y-m-d H:i:s');
             }
             $organization->updated_by = Auth::id();
             $organization->save();
             Session::flash('message', 'Organization updated successfully!');
             Session::flash('status', 'success');
-            return redirect('organizations/' . $id);
+
+            return redirect('organizations/'.$id);
         } catch (\Throwable $th) {
             dd($th);
-            Log::error('Error in update organization : ' . $th);
+            Log::error('Error in update organization : '.$th);
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
+
             return redirect('organizations');
         }
     }
@@ -2887,17 +2913,17 @@ class OrganizationController extends Controller
     public function add_comment(Request $request, $id)
     {
         $this->validate($request, [
-            'comment' => 'required'
+            'comment' => 'required',
         ]);
         try {
             $organization = Organization::find($id);
             $comment_content = $request->comment;
             $user = Auth::user();
-            $date_time = date("Y-m-d H:i:s");
+            $date_time = date('Y-m-d H:i:s');
             $comment = new Comment();
 
-            $comment_recordids = Comment::select("comments_recordid")->distinct()->get();
-            $comment_recordid_list = array();
+            $comment_recordids = Comment::select('comments_recordid')->distinct()->get();
+            $comment_recordid_list = [];
             foreach ($comment_recordids as $key => $value) {
                 $comment_recordid = $value->comments_recordid;
                 array_push($comment_recordid_list, $comment_recordid);
@@ -2920,10 +2946,12 @@ class OrganizationController extends Controller
             $comment_list = Comment::where('comments_organization', '=', $id)->get();
             Session::flash('message', 'Comment added successfully!');
             Session::flash('status', 'success');
-            return redirect('organizations/' . $id);
+
+            return redirect('organizations/'.$id);
         } catch (\Throwable $th) {
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
+
             return redirect()->back();
         }
     }
@@ -2931,7 +2959,7 @@ class OrganizationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -2950,6 +2978,7 @@ class OrganizationController extends Controller
                 }
                 Session::flash('message', 'Organization deleted successfully!');
                 Session::flash('status', 'success');
+
                 return redirect('organizations');
             } else {
                 $organization = Organization::where('organization_recordid', '=', $organization_recordid)->first();
@@ -2964,11 +2993,13 @@ class OrganizationController extends Controller
                 }
                 Session::flash('message', 'The organization and its services, contacts & facilities have been successfully deleted.');
                 Session::flash('status', 'success');
+
                 return redirect('organizations');
             }
         } catch (\Throwable $th) {
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
+
             return redirect()->back();
         }
     }
@@ -2984,28 +3015,31 @@ class OrganizationController extends Controller
     public function createNewTag(Request $request, $id)
     {
         try {
-            if (!$request->tag) {
+            if (! $request->tag) {
                 Session::flash('message', 'Organization tag can`t be blank!');
                 Session::flash('status', 'error');
+
                 return redirect()->back();
             }
             $organizationTag = OrganizationTag::create([
                 'tag' => $request->tag,
-                'created_by' => Auth::id()
+                'created_by' => Auth::id(),
             ]);
             $organization = Organization::whereId($id)->first();
             $orgTag = $organization->organization_tag != null ? explode(',', $organization->organization_tag) : [];
             $orgTag[] = $organizationTag->id;
-            if (!empty($orgTag)) {
+            if (! empty($orgTag)) {
                 $organization->organization_tag = implode(',', $orgTag);
                 $organization->save();
             }
             Session::flash('message', 'Organization tag added successfully!');
             Session::flash('status', 'success');
+
             return redirect()->back();
         } catch (\Throwable $th) {
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'success');
+
             return redirect()->back();
         }
     }
@@ -3013,29 +3047,32 @@ class OrganizationController extends Controller
     public function createNewOrganizationTag(Request $request)
     {
         try {
-            if (!$request->tag) {
+            if (! $request->tag) {
                 Session::flash('message', 'Organization tag can`t be blank!');
                 Session::flash('status', 'error');
+
                 return redirect()->back();
             }
             $organizationTag = OrganizationTag::create([
                 'tag' => $request->tag,
-                'created_by' => Auth::id()
+                'created_by' => Auth::id(),
             ]);
             $organization_recordid = $request->organization_recordid;
             $organization = Organization::where('organization_recordid', $organization_recordid)->first();
             $orgTag = $organization->organization_tag != null ? explode(',', $organization->organization_tag) : [];
             $orgTag[] = $organizationTag->id;
-            if (!empty($orgTag)) {
+            if (! empty($orgTag)) {
                 $organization->organization_tag = implode(',', $orgTag);
                 $organization->save();
             }
             Session::flash('message', 'Organization tag added successfully!');
             Session::flash('status', 'success');
+
             return redirect()->back();
         } catch (\Throwable $th) {
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'success');
+
             return redirect()->back();
         }
     }
@@ -3050,14 +3087,15 @@ class OrganizationController extends Controller
             $organization->updated_by = Auth::id();
             $organization->updated_at = Carbon::now();
             $organization->save();
+
             return response()->json([
                 'message' => 'tags added successfully!',
-                'success' => true
+                'success' => true,
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => $th->getMessage(),
-                'success' => false
+                'success' => false,
             ], 500);
         }
     }
@@ -3072,16 +3110,17 @@ class OrganizationController extends Controller
             $organization->updated_by = Auth::id();
             $organization->updated_at = Carbon::now();
             $organization->save();
+
             // Session::flash('message', 'Organization Bookmarked successfully!');
             // Session::flash('status', 'success');
             return response()->json([
                 'success' => true,
-                'message' => 'Organization Bookmarked successfully'
+                'message' => 'Organization Bookmarked successfully',
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => $th->getMessage(),
-                'success' => false
+                'success' => false,
             ], 500);
         }
     }
@@ -3099,6 +3138,7 @@ class OrganizationController extends Controller
 
         Session::flash('message', 'Filter Deleted successfully!');
         Session::flash('status', 'success');
+
         return redirect()->back();
     }
 
@@ -3111,10 +3151,12 @@ class OrganizationController extends Controller
             $organization->save();
             Session::flash('message', 'Organization tag updated successfully!');
             Session::flash('status', 'success');
+
             return redirect()->back();
         } catch (\Throwable $th) {
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'success');
+
             return redirect()->back();
         }
     }
@@ -3152,11 +3194,6 @@ class OrganizationController extends Controller
         $organization->program()->sync($organizationPrograms);
     }
 
-    /**
-     * @param $request
-     * @param $new_recordid
-     * @return array
-     */
     public function saveOrganizationService($request, $new_recordid): array
     {
         $service_recordids = [];
@@ -3195,26 +3232,26 @@ class OrganizationController extends Controller
                     } else {
                         $service->service_status = '';
                     }
-                    $service->service_taxonomy = join(',', $service_taxonomies[$i]);
+                    $service->service_taxonomy = implode(',', $service_taxonomies[$i]);
                     $service->service_application_process = $service_application_process[$i];
                     $service->service_wait_time = $service_wait_time[$i];
                     $service->service_fees = $service_fees[$i];
                     $service->service_accreditations = $service_accreditations[$i];
                     $service->service_licenses = $service_licenses[$i];
                     if ($service_schedules[$i]) {
-                        $service->service_schedule = join(',', $service_schedules[$i]);
+                        $service->service_schedule = implode(',', $service_schedules[$i]);
                     } else {
                         $service->service_schedule = '';
                     }
                     // $service->service_details = $service_details[$i];
                     if ($service_details[$i]) {
-                        $service->service_details = join(',', $service_details[$i]);
+                        $service->service_details = implode(',', $service_details[$i]);
                     } else {
                         $service->service_details = '';
                     }
                     // $service->service_address = $service_address[$i];
                     if ($service_address[$i]) {
-                        $service->service_address = join(',', $service_address[$i]);
+                        $service->service_address = implode(',', $service_address[$i]);
                     } else {
                         $service->service_address = '';
                     }
@@ -3224,7 +3261,7 @@ class OrganizationController extends Controller
 
                     $phone_info = Phone::where('phone_number', '=', $request->service_phone[$i])->first();
                     if ($phone_info) {
-                        $service->service_phones = $service->service_phones . $phone_info->phone_recordid . ',';
+                        $service->service_phones = $service->service_phones.$phone_info->phone_recordid.',';
                         $phone_info->phone_number = $request->service_phone[$i];
                         $phone_info->save();
                         array_push($service_phone_recordid_list, $phone_info->phone_recordid);
@@ -3234,7 +3271,7 @@ class OrganizationController extends Controller
                         $new_phone->phone_recordid = $new_phone_recordid;
                         $new_phone->phone_number = $request->service_phone[$i];
                         $new_phone->save();
-                        $service->service_phones = $service->service_phones . $new_phone_recordid . ',';
+                        $service->service_phones = $service->service_phones.$new_phone_recordid.',';
                         array_push($service_phone_recordid_list, $new_phone_recordid);
                     }
                     array_push($service_recordids, Service::max('service_recordid') + 1);
@@ -3269,26 +3306,26 @@ class OrganizationController extends Controller
                         } else {
                             $updating_service->service_status = '';
                         }
-                        $updating_service->service_taxonomy = join(',', $service_taxonomies[$i]);
+                        $updating_service->service_taxonomy = implode(',', $service_taxonomies[$i]);
                         $updating_service->service_application_process = $service_application_process[$i];
                         $updating_service->service_wait_time = $service_wait_time[$i];
                         $updating_service->service_fees = $service_fees[$i];
                         $updating_service->service_accreditations = $service_accreditations[$i];
                         $updating_service->service_licenses = $service_licenses[$i];
                         if ($service_schedules[$i]) {
-                            $updating_service->service_schedule = join(',', $service_schedules[$i]);
+                            $updating_service->service_schedule = implode(',', $service_schedules[$i]);
                         } else {
                             $updating_service->service_schedule = '';
                         }
                         // $updating_service->service_details = $service_details[$i];
                         if ($service_details[$i]) {
-                            $updating_service->service_details = join(',', $service_details[$i]);
+                            $updating_service->service_details = implode(',', $service_details[$i]);
                         } else {
                             $updating_service->service_details = '';
                         }
                         // $updating_service->service_address = $service_address[$i];
                         if ($service_address[$i]) {
-                            $updating_service->service_address = join(',', $service_address[$i]);
+                            $updating_service->service_address = implode(',', $service_address[$i]);
                         } else {
                             $updating_service->service_address = '';
                         }
@@ -3298,7 +3335,7 @@ class OrganizationController extends Controller
 
                         $phone_info = Phone::where('phone_number', '=', $request->service_phone[$i])->first();
                         if ($phone_info) {
-                            $updating_service->service_phones = $updating_service->service_phones . $phone_info->phone_recordid . ',';
+                            $updating_service->service_phones = $updating_service->service_phones.$phone_info->phone_recordid.',';
                             $phone_info->phone_number = $request->service_phone[$i];
                             $phone_info->save();
                             array_push($service_phone_recordid_list, $phone_info->phone_recordid);
@@ -3308,7 +3345,7 @@ class OrganizationController extends Controller
                             $new_phone->phone_recordid = $new_phone_recordid;
                             $new_phone->phone_number = $request->service_phone[$i];
                             $new_phone->save();
-                            $updating_service->service_phones = $updating_service->service_phones . $new_phone_recordid . ',';
+                            $updating_service->service_phones = $updating_service->service_phones.$new_phone_recordid.',';
                             array_push($service_phone_recordid_list, $new_phone_recordid);
                         }
                         $service_recordids[] = Service::max('service_recordid') + 1;
@@ -3330,15 +3367,10 @@ class OrganizationController extends Controller
                 }
             }
         }
+
         return $service_recordids;
     }
 
-    /**
-     * @param $request
-     * @param $i
-     * @param $location_recordid
-     * @return array
-     */
     public function saveLocationSchedule($request, $i, $location_recordid): array
     {
         // location schedule section
@@ -3376,20 +3408,20 @@ class OrganizationController extends Controller
         $weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
         for ($s = 0; $s < 7; $s++) {
             // dd($request);
-            if ((isset(${'opens_location_' . $weekdays[$s] . '_datas'}[$i]) && isset(${'closes_location_' . $weekdays[$s] . '_datas'}[$i])) || ((isset(${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i]) && ${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i] == ($s + 1)))) {
-                if ((isset(${'opens_location_' . $weekdays[$s] . '_datas'}[$i]) && isset(${'closes_location_' . $weekdays[$s] . '_datas'}[$i])) && ${'opens_location_' . $weekdays[$s] . '_datas'}[$i] && ${'closes_location_' . $weekdays[$s] . '_datas'}[$i]) {
-                    $schedules = Schedule::where('locations', $location_recordid)->where('opens', ${'opens_location_' . $weekdays[$s] . '_datas'}[$i])->where('closes', ${'closes_location_' . $weekdays[$s] . '_datas'}[$i])->first();
+            if ((isset(${'opens_location_'.$weekdays[$s].'_datas'}[$i]) && isset(${'closes_location_'.$weekdays[$s].'_datas'}[$i])) || ((isset(${'schedule_closed_'.$weekdays[$s].'_datas'}[$i]) && ${'schedule_closed_'.$weekdays[$s].'_datas'}[$i] == ($s + 1)))) {
+                if ((isset(${'opens_location_'.$weekdays[$s].'_datas'}[$i]) && isset(${'closes_location_'.$weekdays[$s].'_datas'}[$i])) && ${'opens_location_'.$weekdays[$s].'_datas'}[$i] && ${'closes_location_'.$weekdays[$s].'_datas'}[$i]) {
+                    $schedules = Schedule::where('locations', $location_recordid)->where('opens', ${'opens_location_'.$weekdays[$s].'_datas'}[$i])->where('closes', ${'closes_location_'.$weekdays[$s].'_datas'}[$i])->first();
                 } else {
                     $schedules = Schedule::where('locations', $location_recordid)->whereNotNull('schedule_closed')->first();
                 }
                 if ($schedules) {
                     $schedules->locations = $location_recordid;
-                    $schedules->weekday = $schedules->weekday ? (str_contains($schedules->weekday, $weekdays[$s]) ? $schedules->weekday : ($schedules->weekday . ',' . $weekdays[$s])) : $weekdays[$s];
-                    $schedules->opens = isset(${'opens_location_' . $weekdays[$s] . '_datas'}[$i]) && ${'opens_location_' . $weekdays[$s] . '_datas'}[$i] ? ${'opens_location_' . $weekdays[$s] . '_datas'}[$i] : $schedules->opens;
-                    $schedules->closes = isset(${'closes_location_' . $weekdays[$s] . '_datas'}[$i]) && ${'closes_location_' . $weekdays[$s] . '_datas'}[$i] ? ${'closes_location_' . $weekdays[$s] . '_datas'}[$i] : $schedules->closes;
-                    if (isset(${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i]) && ${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i] == ($s + 1)) {
+                    $schedules->weekday = $schedules->weekday ? (str_contains($schedules->weekday, $weekdays[$s]) ? $schedules->weekday : ($schedules->weekday.','.$weekdays[$s])) : $weekdays[$s];
+                    $schedules->opens = isset(${'opens_location_'.$weekdays[$s].'_datas'}[$i]) && ${'opens_location_'.$weekdays[$s].'_datas'}[$i] ? ${'opens_location_'.$weekdays[$s].'_datas'}[$i] : $schedules->opens;
+                    $schedules->closes = isset(${'closes_location_'.$weekdays[$s].'_datas'}[$i]) && ${'closes_location_'.$weekdays[$s].'_datas'}[$i] ? ${'closes_location_'.$weekdays[$s].'_datas'}[$i] : $schedules->closes;
+                    if (isset(${'schedule_closed_'.$weekdays[$s].'_datas'}[$i]) && ${'schedule_closed_'.$weekdays[$s].'_datas'}[$i] == ($s + 1)) {
 
-                        $schedules->schedule_closed = $schedules->schedule_closed ? (str_contains($schedules->schedule_closed, ($s + 1)) ? $schedules->schedule_closed : $schedules->schedule_closed . ',' . ($s + 1)) : ($s + 1);
+                        $schedules->schedule_closed = $schedules->schedule_closed ? (str_contains($schedules->schedule_closed, ($s + 1)) ? $schedules->schedule_closed : $schedules->schedule_closed.','.($s + 1)) : ($s + 1);
                     } else {
                         if (str_contains($schedules->schedule_closed, ($s + 1))) {
                             $schedule_closed = explode(',', $schedules->schedule_closed);
@@ -3407,9 +3439,9 @@ class OrganizationController extends Controller
                     $schedules->schedule_recordid = $schedule_recordid;
                     $schedules->locations = $location_recordid;
                     $schedules->weekday = $weekdays[$s];
-                    $schedules->opens = isset(${'opens_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'opens_location_' . $weekdays[$s] . '_datas'}[$i] : null;
-                    $schedules->closes = isset(${'closes_location_' . $weekdays[$s] . '_datas'}[$i]) ? ${'closes_location_' . $weekdays[$s] . '_datas'}[$i] : null;
-                    if (isset(${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i]) && ${'schedule_closed_' . $weekdays[$s] . '_datas'}[$i] == ($s + 1)) {
+                    $schedules->opens = isset(${'opens_location_'.$weekdays[$s].'_datas'}[$i]) ? ${'opens_location_'.$weekdays[$s].'_datas'}[$i] : null;
+                    $schedules->closes = isset(${'closes_location_'.$weekdays[$s].'_datas'}[$i]) ? ${'closes_location_'.$weekdays[$s].'_datas'}[$i] : null;
+                    if (isset(${'schedule_closed_'.$weekdays[$s].'_datas'}[$i]) && ${'schedule_closed_'.$weekdays[$s].'_datas'}[$i] == ($s + 1)) {
                         $schedules->schedule_closed = $s + 1;
                     }
                     $schedules->save();
@@ -3417,6 +3449,7 @@ class OrganizationController extends Controller
                 }
             }
         }
+
         // }
         return $schedule_locations;
     }
