@@ -27,6 +27,8 @@ The Laravel framework has a few system requirements. You will need to make sure 
 
 * PHP >= 8.1
 * BCMath PHP Extension
+* Curl PHP Extension
+* Zip PHP Extension
 * Ctype PHP Extension
 * JSON PHP Extension
 * Fileinfo PHP extension
@@ -41,6 +43,8 @@ The Laravel framework has a few system requirements. You will need to make sure 
 
 
 *Apache*
+
+ * This step is option if code is not starting on server.
 
 `Pretty URLs`
 Laravel includes a public/.htaccess file that is used to provide URLs without the index.php front controller in the path. Before serving Laravel with Apache, be sure to enable the mod_rewrite module so the .htaccess file will be honored by the server.
@@ -72,21 +76,19 @@ location / {
 **👉Configuration**
    * Run git clone https://github.com/sarapis/orservices.git
    * Create a MySQL database for the project
-   * mysql -u root -p, if using Vagrant: mysql -u homestead -psecret    
+   * mysql -u root -p, if using Vagrant: mysql -u homestead -p secret    
    * From the projects root run cp .env.example .env
    * Configure your .env file
-   * Run composer -W update from the projects root folder
+   * Run composer install from the projects root folder
    * Run npm install & npm run dev from the projects root folder
-   * From the projects root folder run sudo chmod -R 755 ../orservices
+   * From the projects root folder run sudo chmod -R 755 /orservices
    * From the projects root folder run php artisan key:generate
-   * From the projects root folder run php artisan migrate
-   * From the projects root folder run php artisan db:seed
    * From the projects root folder run composer dump-autoload
     
 **👉Database upload**
    * Create database and upload sql dump file from database/dump/latest_date.sql
-
-
+   * If you import the database then no need to Run php artisan migrate command.
+   * Once the database is setup you have to add DB configuration to .env file.
 
 **👉Local Development Server**
 
