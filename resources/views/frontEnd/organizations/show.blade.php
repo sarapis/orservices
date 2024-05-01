@@ -320,7 +320,7 @@
                                                                 @endforeach
                                                             @endif --}}
                                                             @foreach ($service->getAddresses() as $address)
-                                                            <li> {{ $address }} </
+                                                            <li> {{ $address }} </li>
                                                             @endforeach
                                                             </ul>
                                                         </span>
@@ -1065,6 +1065,7 @@
         $(document).ready(function() {
 
             var locations = <?php print_r(json_encode($locations)); ?>;
+            console.log(locations,'locations')
             var organization = <?php print_r(json_encode($organization->organization_name)); ?>;
             var maplocation = <?php print_r(json_encode($map)); ?>;
 

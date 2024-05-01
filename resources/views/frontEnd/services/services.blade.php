@@ -240,13 +240,13 @@ Services
                                 </span>
                             </div>
                             @endif
-                            @if (count($locations) > 0)
+                            @if ($service->locations->count() > 0)
                             <div class="tagp_class">
-                                @if(isset($locations))
+                                @if(isset($service->locations))
                                 <ul class="p-0" style="margin-left: 25px;">
 {{--                                    @foreach($locations->get() as $location)--}}
                                         @php
-                                            $location = $locations->first();
+                                            $location = $service->locations->first();
                                         @endphp
                                     <span><i class="icon md-pin font-size-18 vertical-align-top mr-10"></i>
                                         @if(!empty($location->address->first()))
