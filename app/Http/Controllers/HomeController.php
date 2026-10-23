@@ -111,7 +111,7 @@ class HomeController extends Controller
             $token = $request->get('twillioKey');
             $twilio = new Client($sid, $token);
 
-            $account = $twilio->api->v2010->accounts('ACd991aaec2fba11620c174e9148e04d7a')
+            $account = $twilio->api->v2010->accounts($sid)
                 ->fetch();
 
             return response()->json([
