@@ -93,7 +93,7 @@ class AutoSync extends Command
                 $hours = $importData->sync_hours;
                 $to = \Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $importData->last_imports);
                 $from = \Carbon\Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now());
-                $diff_in_hours = $to->diffInHours($from);
+                $diff_in_hours = (int) abs($to->diffInHours($from));
                 if ($diff_in_hours >= intval($hours)) {
                     // if (Carbon::parse($importData->last_imports)->DiffInHours(Carbon::now()) == $hours) {
                     $organization_tag = $importData->organization_tags;
