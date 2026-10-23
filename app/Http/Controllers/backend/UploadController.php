@@ -43,7 +43,6 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
-use ZanySoft\Zip\Zip;
 
 class UploadController extends Controller
 {

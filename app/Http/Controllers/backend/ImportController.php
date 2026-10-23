@@ -79,7 +79,6 @@ use Maatwebsite\Excel\Facades\Excel;
 use OwenIt\Auditing\Models\Audit;
 use Spatie\Geocoder\Geocoder;
 use Yajra\DataTables\Facades\DataTables;
-use ZanySoft\Zip\Zip;
 
 class ImportController extends Controller
 {
