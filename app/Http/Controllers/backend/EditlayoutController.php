@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-use Image;
+use Intervention\Image\ImageManager;
 
 class EditlayoutController extends Controller
 {
@@ -111,9 +111,7 @@ class EditlayoutController extends Controller
             if ($request->hasFile('logo')) {
                 $companylogo = $request->file('logo');
                 $filename = SafeUpload::name((string) time(), SafeUpload::extension($companylogo, SafeUpload::IMAGE, 'logo'));
-                Image::make($companylogo)->resize(300, 300, function ($constraint) {
-                    $constraint->aspectRatio();
-                })->save(public_path('/uploads/images/' . $filename));
+                ImageManager::gd()->read($companylogo)->scale(300, 300)->save(public_path('/uploads/images/' . $filename));
                 $layout->logo = $filename;
             }
             if ($request->input('logo_active') == 'checked') {

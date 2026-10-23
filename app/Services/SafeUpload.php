@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Intervention\Image\ImageManager;
 use RuntimeException;
 use ZipArchive;
 
@@ -56,6 +58,21 @@ class SafeUpload
     {
         $name = self::name($basename, self::extension($file, $allowed, $field));
         $file->move($dir, $name);
+
+        return $name;
+    }
+
+    /**
+     * Download an image (e.g. an Airtable attachment URL), re-encode it and save it into $dir.
+     * The saved name keeps the remote file's base name, cleaned, with an allowlisted image
+     * extension (png when the remote one isn't). Returns the saved name.
+     */
+    public static function saveRemoteImage(string $url, string $dir, string $filename): string
+    {
+        $extension = self::IMAGE[strtolower(pathinfo($filename, PATHINFO_EXTENSION))] ?? 'png';
+        $name = self::name(pathinfo($filename, PATHINFO_FILENAME), $extension);
+        $bytes = Http::timeout(30)->get($url)->throw()->body();
+        ImageManager::gd()->read($bytes)->save(rtrim($dir, '/') . '/' . $name);
 
         return $name;
     }

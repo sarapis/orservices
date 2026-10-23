@@ -31,7 +31,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
-use Image;
 use Yajra\DataTables\Facades\DataTables;
 
 class TaxonomyController extends Controller
@@ -189,7 +188,7 @@ class TaxonomyController extends Controller
                             foreach ($icon_dark as $key => $value) {
                                 $path = $value['url'];
                                 $filename = $value['filename'];
-                                Image::make($path)->save(public_path('/uploads/images/' . $filename));
+                                $filename = SafeUpload::saveRemoteImage($path, public_path('uploads/images'), $filename);
                                 $taxonomy->category_logo = '/uploads/images/' . $filename;
                             }
                         }
@@ -198,7 +197,7 @@ class TaxonomyController extends Controller
                             foreach ($icon_light as $key => $value) {
                                 $path = $value['url'];
                                 $filename = $value['filename'];
-                                Image::make($path)->save(public_path('/uploads/images/' . $filename));
+                                $filename = SafeUpload::saveRemoteImage($path, public_path('uploads/images'), $filename);
                                 $taxonomy->category_logo_white = '/uploads/images/' . $filename;
                             }
                         }

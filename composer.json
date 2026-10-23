@@ -13,7 +13,7 @@
         "barryvdh/laravel-dompdf": "^3.1",
         "dompdf/dompdf": "^3.1",
         "guzzlehttp/guzzle": "^7.8",
-        "intervention/image": "^2.5",
+        "intervention/image": "^3.11",
         "itsjavi/bootstrap-colorpicker": "^3.2",
         "ixudra/curl": "^6.19",
         "laravel/framework": "^13.0",

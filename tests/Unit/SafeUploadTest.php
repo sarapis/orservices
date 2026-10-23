@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Services\SafeUpload;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 use ZipArchive;
@@ -158,5 +159,25 @@ class SafeUploadTest extends TestCase
         $this->assertFileDoesNotExist($this->dir . '/out/data/shell.php');
         $this->assertFileDoesNotExist($this->dir . '/out/data/a.php.csv');
         $this->assertFileDoesNotExist($this->dir . '/escape.csv');
+    }
+
+    public function test_remote_image_gets_a_clean_name_inside_the_target_dir()
+    {
+        // Airtable attachment names are not trusted: no path, no script extension.
+        Http::fake(['*' => Http::response($this->fixture('tiny.png'))]);
+
+        $name = SafeUpload::saveRemoteImage('https://example.test/a', $this->dir . '/out', '../../logo.php');
+
+        $this->assertSame('logo.png', $name);
+        $this->assertFileExists($this->dir . '/out/logo.png');
+        $this->assertSame('image/png', mime_content_type($this->dir . '/out/logo.png'));
+        $this->assertSame([], glob($this->dir . '/*.php'));
+    }
+
+    public function test_remote_image_keeps_an_allowed_extension()
+    {
+        Http::fake(['*' => Http::response($this->fixture('tiny.jpg'))]);
+
+        $this->assertSame('icon_dark.jpg', SafeUpload::saveRemoteImage('https://example.test/b', $this->dir . '/out', 'icon_dark.JPEG'));
     }
 }
