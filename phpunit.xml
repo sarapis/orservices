@@ -8,6 +8,9 @@
         <testsuite name="Unit">
             <directory suffix="Test.php">./tests/Unit</directory>
         </testsuite>
+        <testsuite name="Smoke">
+            <directory suffix="Test.php">./tests/Smoke</directory>
+        </testsuite>
         <testsuite name="Feature">
             <directory suffix="Test.php">./tests/Feature</directory>
         </testsuite>
@@ -19,6 +22,8 @@
     </source>
     <php>
         <server name="APP_ENV" value="testing"/>
+        <!-- Test-only key: lets the app boot under PHPUnit, protects nothing. -->
+        <server name="APP_KEY" value="base64:KQfA1ggTytN7zAjwn0VjJrNk5Q/9ymFU4OUiCxXM3O4="/>
         <server name="BCRYPT_ROUNDS" value="4"/>
         <server name="CACHE_DRIVER" value="array"/>
         <server name="DB_CONNECTION" value="sqlite"/>
