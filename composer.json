@@ -17,7 +17,6 @@
         "itsjavi/bootstrap-colorpicker": "^3.2",
         "ixudra/curl": "^6.19",
         "laravel/framework": "^13.0",
-        "laravel/legacy-factories": "^1.3",
         "laravel/tinker": "^3.0",
         "laravel/ui": "^4.6",
         "league/flysystem-aws-s3-v3": "^3.0",
