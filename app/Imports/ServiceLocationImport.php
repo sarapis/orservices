@@ -13,7 +13,7 @@ class ServiceLocationImport implements ToModel, WithHeadingRow
      *
      * @return \Illuminate\Database\Eloquent\Model|null
      */
-    public function model(array $row)
+    public function model(array $row): \Illuminate\Database\Eloquent\Model|array|null
     {
         $array = [
             'location_recordid' => $row['location_id'],

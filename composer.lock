@@ -4,146 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e56c5a9abefd4706c41020a93f28ff79",
+    "content-hash": "57441cf0bcdaae56a67465e0b2d0a3b4",
     "packages": [
-        {
-            "name": "arcanedev/log-viewer",
-            "version": "11.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ARCANEDEV/LogViewer.git",
-                "reference": "806498da9792eb34e39df9350a7379a9018eaf5d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ARCANEDEV/LogViewer/zipball/806498da9792eb34e39df9350a7379a9018eaf5d",
-                "reference": "806498da9792eb34e39df9350a7379a9018eaf5d",
-                "shasum": ""
-            },
-            "require": {
-                "arcanedev/support": "^11.0",
-                "ext-json": "*",
-                "php": "^8.2",
-                "psr/log": "^1.0|^2.0|^3.0"
-            },
-            "require-dev": {
-                "laravel/framework": "^11.0",
-                "mockery/mockery": "^1.6",
-                "orchestra/testbench-core": "^9.0",
-                "phpunit/phpunit": "^10.5"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Arcanedev\\LogViewer\\LogViewerServiceProvider",
-                        "Arcanedev\\LogViewer\\Providers\\DeferredServicesProvider"
-                    ]
-                },
-                "branch-alias": {
-                    "dev-develop": "11.x-dev"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "helpers.php"
-                ],
-                "psr-4": {
-                    "Arcanedev\\LogViewer\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "ARCANEDEV",
-                    "email": "arcanedev.maroc@gmail.com",
-                    "homepage": "https://github.com/arcanedev-maroc",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Provides a Log Viewer for Laravel",
-            "homepage": "https://github.com/ARCANEDEV/LogViewer",
-            "keywords": [
-                "arcanedev",
-                "arcanesoft",
-                "laravel",
-                "log",
-                "log viewer",
-                "log-viewer",
-                "logviewer"
-            ],
-            "support": {
-                "issues": "https://github.com/ARCANEDEV/LogViewer/issues",
-                "source": "https://github.com/ARCANEDEV/LogViewer/tree/11.0.1"
-            },
-            "time": "2024-03-18T22:50:40+00:00"
-        },
-        {
-            "name": "arcanedev/support",
-            "version": "11.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ARCANEDEV/Support.git",
-                "reference": "dcade384b54d540b63eac152bfdeebc155066524"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ARCANEDEV/Support/zipball/dcade384b54d540b63eac152bfdeebc155066524",
-                "reference": "dcade384b54d540b63eac152bfdeebc155066524",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/contracts": "^11.0",
-                "illuminate/support": "^11.0",
-                "php": "^8.2"
-            },
-            "require-dev": {
-                "laravel/framework": "^11.0",
-                "orchestra/testbench-core": "^9.0",
-                "phpunit/phpunit": "^10.5"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-develop": "11.x-dev"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "helpers.php"
-                ],
-                "psr-4": {
-                    "Arcanedev\\Support\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "ARCANEDEV",
-                    "email": "arcanedev.maroc@gmail.com",
-                    "homepage": "https://github.com/arcanedev-maroc"
-                }
-            ],
-            "description": "ARCANEDEV Support Helpers",
-            "homepage": "https://github.com/ARCANEDEV/Support",
-            "keywords": [
-                "arcanedev",
-                "arcanesoft",
-                "laravel",
-                "support"
-            ],
-            "support": {
-                "issues": "https://github.com/ARCANEDEV/Support/issues",
-                "source": "https://github.com/ARCANEDEV/Support/tree/11.0.0"
-            },
-            "time": "2024-03-17T21:57:40+00:00"
-        },
         {
             "name": "aws/aws-crt-php",
             "version": "v1.2.7",
@@ -1307,67 +1169,6 @@
             "time": "2025-03-06T22:45:56+00:00"
         },
         {
-            "name": "ezyang/htmlpurifier",
-            "version": "v4.19.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ezyang/htmlpurifier.git",
-                "reference": "5e0539132d934f936fbae2c88b55d58f9438623f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/5e0539132d934f936fbae2c88b55d58f9438623f",
-                "reference": "5e0539132d934f936fbae2c88b55d58f9438623f",
-                "shasum": ""
-            },
-            "require": {
-                "php": "~5.6.0 || ~7.0.0 || ~7.1.0 || ~7.2.0 || ~7.3.0 || ~7.4.0 || ~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0"
-            },
-            "require-dev": {
-                "cerdic/css-tidy": "^1.7 || ^2.0",
-                "simpletest/simpletest": "dev-master"
-            },
-            "suggest": {
-                "cerdic/css-tidy": "If you want to use the filter 'Filter.ExtractStyleBlocks'.",
-                "ext-bcmath": "Used for unit conversion and imagecrash protection",
-                "ext-iconv": "Converts text to and from non-UTF-8 encodings",
-                "ext-tidy": "Used for pretty-printing HTML"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "library/HTMLPurifier.composer.php"
-                ],
-                "psr-0": {
-                    "HTMLPurifier": "library/"
-                },
-                "exclude-from-classmap": [
-                    "/library/HTMLPurifier/Language/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-2.1-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Edward Z. Yang",
-                    "email": "admin@htmlpurifier.org",
-                    "homepage": "http://ezyang.com"
-                }
-            ],
-            "description": "Standards compliant HTML filter written in PHP",
-            "homepage": "http://htmlpurifier.org/",
-            "keywords": [
-                "html"
-            ],
-            "support": {
-                "issues": "https://github.com/ezyang/htmlpurifier/issues",
-                "source": "https://github.com/ezyang/htmlpurifier/tree/v4.19.1"
-            },
-            "time": "2026-09-15T15:42:51+00:00"
-        },
-        {
             "name": "fruitcake/php-cors",
             "version": "v1.4.0",
             "source": {
@@ -2171,20 +1972,20 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v11.57.0",
+            "version": "v12.70.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "4fc41929c95024795d83a54309aa4e9922f74263"
+                "reference": "e09fc54263d1a56cfe1709958fcbb22a4159b1e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/4fc41929c95024795d83a54309aa4e9922f74263",
-                "reference": "4fc41929c95024795d83a54309aa4e9922f74263",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/e09fc54263d1a56cfe1709958fcbb22a4159b1e3",
+                "reference": "e09fc54263d1a56cfe1709958fcbb22a4159b1e3",
                 "shasum": ""
             },
             "require": {
-                "brick/math": "^0.9.3|^0.10.2|^0.11|^0.12|^0.13|^0.14",
+                "brick/math": "^0.11|^0.12|^0.13|^0.14",
                 "composer-runtime-api": "^2.2",
                 "doctrine/inflector": "^2.0.5",
                 "dragonmantank/cron-expression": "^3.4",
@@ -2199,32 +2000,34 @@
                 "fruitcake/php-cors": "^1.3",
                 "guzzlehttp/guzzle": "^7.8.2",
                 "guzzlehttp/uri-template": "^1.0",
-                "laravel/prompts": "^0.1.18|^0.2.0|^0.3.0",
+                "laravel/prompts": "^0.3.0",
                 "laravel/serializable-closure": "^1.3|^2.0",
-                "league/commonmark": "^2.7",
+                "league/commonmark": "^2.8.1",
                 "league/flysystem": "^3.25.1",
                 "league/flysystem-local": "^3.25.1",
                 "league/uri": "^7.5.1",
                 "monolog/monolog": "^3.0",
-                "nesbot/carbon": "^2.72.6|^3.8.4",
+                "nesbot/carbon": "^3.8.4",
                 "nunomaduro/termwind": "^2.0",
                 "php": "^8.2",
                 "psr/container": "^1.1.1|^2.0.1",
                 "psr/log": "^1.0|^2.0|^3.0",
                 "psr/simple-cache": "^1.0|^2.0|^3.0",
                 "ramsey/uuid": "^4.7",
-                "symfony/console": "^7.0.3",
-                "symfony/error-handler": "^7.0.3",
-                "symfony/finder": "^7.0.3",
+                "symfony/console": "^7.2.0",
+                "symfony/error-handler": "^7.2.0",
+                "symfony/finder": "^7.2.0",
                 "symfony/http-foundation": "^7.2.0",
-                "symfony/http-kernel": "^7.0.3",
-                "symfony/mailer": "^7.0.3",
-                "symfony/mime": "^7.0.3",
-                "symfony/polyfill-php83": "^1.31",
-                "symfony/process": "^7.0.3",
-                "symfony/routing": "^7.0.3",
-                "symfony/uid": "^7.0.3",
-                "symfony/var-dumper": "^7.0.3",
+                "symfony/http-kernel": "^7.2.0",
+                "symfony/mailer": "^7.2.0",
+                "symfony/mime": "^7.2.0",
+                "symfony/polyfill-php83": "^1.33",
+                "symfony/polyfill-php84": "^1.34",
+                "symfony/polyfill-php85": "^1.34",
+                "symfony/process": "^7.2.0",
+                "symfony/routing": "^7.2.0",
+                "symfony/uid": "^7.2.0",
+                "symfony/var-dumper": "^7.2.0",
                 "tijsverkoyen/css-to-inline-styles": "^2.2.5",
                 "vlucas/phpdotenv": "^5.6.1",
                 "voku/portable-ascii": "^2.0.2"
@@ -2256,6 +2059,7 @@
                 "illuminate/filesystem": "self.version",
                 "illuminate/hashing": "self.version",
                 "illuminate/http": "self.version",
+                "illuminate/json-schema": "self.version",
                 "illuminate/log": "self.version",
                 "illuminate/macroable": "self.version",
                 "illuminate/mail": "self.version",
@@ -2265,6 +2069,7 @@
                 "illuminate/process": "self.version",
                 "illuminate/queue": "self.version",
                 "illuminate/redis": "self.version",
+                "illuminate/reflection": "self.version",
                 "illuminate/routing": "self.version",
                 "illuminate/session": "self.version",
                 "illuminate/support": "self.version",
@@ -2288,17 +2093,18 @@
                 "league/flysystem-read-only": "^3.25.1",
                 "league/flysystem-sftp-v3": "^3.25.1",
                 "mockery/mockery": "^1.6.10",
-                "orchestra/testbench-core": "^9.18.0",
-                "pda/pheanstalk": "^5.0.6",
+                "opis/json-schema": "^2.4.1",
+                "orchestra/testbench-core": "^10.15.0",
+                "pda/pheanstalk": "^5.0.6|^7.0.0",
                 "php-http/discovery": "^1.15",
-                "phpstan/phpstan": "2.1.41",
-                "phpunit/phpunit": "^10.5.35|^11.3.6|^12.0.1",
-                "predis/predis": "^2.3",
-                "resend/resend-php": "^0.10.0",
-                "symfony/cache": "^7.0.3",
-                "symfony/http-client": "^7.0.3",
-                "symfony/psr-http-message-bridge": "^7.0.3",
-                "symfony/translation": "^7.0.3"
+                "phpstan/phpstan": "2.2.13",
+                "phpunit/phpunit": "^10.5.35|^11.5.3|^12.0.1",
+                "predis/predis": "^2.3|^3.0",
+                "resend/resend-php": "^0.10.0|^1.0",
+                "symfony/cache": "^7.2.0",
+                "symfony/http-client": "^7.2.0",
+                "symfony/psr-http-message-bridge": "^7.2.0",
+                "symfony/translation": "^7.2.0"
             },
             "suggest": {
                 "ably/ably-php": "Required to use the Ably broadcast driver (^1.0).",
@@ -2313,7 +2119,7 @@
                 "ext-pdo": "Required to use all database features.",
                 "ext-posix": "Required to use all features of the queue worker.",
                 "ext-redis": "Required to use the Redis cache and queue drivers (^4.0|^5.0|^6.0).",
-                "fakerphp/faker": "Required to use the eloquent factory builder (^1.9.1).",
+                "fakerphp/faker": "Required to generate fake data using the fake() helper (^1.23).",
                 "filp/whoops": "Required for friendly error pages in development (^2.14.3).",
                 "laravel/tinker": "Required to use the tinker console command (^2.0).",
                 "league/flysystem-aws-s3-v3": "Required to use the Flysystem S3 driver (^3.25.1).",
@@ -2324,22 +2130,22 @@
                 "mockery/mockery": "Required to use mocking (^1.6).",
                 "pda/pheanstalk": "Required to use the beanstalk queue driver (^5.0).",
                 "php-http/discovery": "Required to use PSR-7 bridging features (^1.15).",
-                "phpunit/phpunit": "Required to use assertions and run tests (^10.5.35|^11.3.6|^12.0.1).",
-                "predis/predis": "Required to use the predis connector (^2.3).",
+                "phpunit/phpunit": "Required to use assertions and run tests (^10.5.35|^11.5.3|^12.0.1).",
+                "predis/predis": "Required to use the predis connector (^2.3|^3.0).",
                 "psr/http-message": "Required to allow Storage::put to accept a StreamInterface (^1.0).",
                 "pusher/pusher-php-server": "Required to use the Pusher broadcast driver (^6.0|^7.0).",
-                "resend/resend-php": "Required to enable support for the Resend mail transport (^0.10.0).",
-                "symfony/cache": "Required to PSR-6 cache bridge (^7.0).",
-                "symfony/filesystem": "Required to enable support for relative symbolic links (^7.0).",
-                "symfony/http-client": "Required to enable support for the Symfony API mail transports (^7.0).",
-                "symfony/mailgun-mailer": "Required to enable support for the Mailgun mail transport (^7.0).",
-                "symfony/postmark-mailer": "Required to enable support for the Postmark mail transport (^7.0).",
-                "symfony/psr-http-message-bridge": "Required to use PSR-7 bridging features (^7.0)."
+                "resend/resend-php": "Required to enable support for the Resend mail transport (^0.10.0|^1.0).",
+                "symfony/cache": "Required to PSR-6 cache bridge (^7.2).",
+                "symfony/filesystem": "Required to enable support for relative symbolic links (^7.2).",
+                "symfony/http-client": "Required to enable support for the Symfony API mail transports (^7.2).",
+                "symfony/mailgun-mailer": "Required to enable support for the Mailgun mail transport (^7.2).",
+                "symfony/postmark-mailer": "Required to enable support for the Postmark mail transport (^7.2).",
+                "symfony/psr-http-message-bridge": "Required to use PSR-7 bridging features (^7.2)."
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "11.x-dev"
+                    "dev-master": "12.x-dev"
                 }
             },
             "autoload": {
@@ -2350,6 +2156,7 @@
                     "src/Illuminate/Filesystem/functions.php",
                     "src/Illuminate/Foundation/helpers.php",
                     "src/Illuminate/Log/functions.php",
+                    "src/Illuminate/Reflection/helpers.php",
                     "src/Illuminate/Support/functions.php",
                     "src/Illuminate/Support/helpers.php"
                 ],
@@ -2358,7 +2165,8 @@
                     "Illuminate\\Support\\": [
                         "src/Illuminate/Macroable/",
                         "src/Illuminate/Collections/",
-                        "src/Illuminate/Conditionable/"
+                        "src/Illuminate/Conditionable/",
+                        "src/Illuminate/Reflection/"
                     ]
                 }
             },
@@ -2382,7 +2190,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2026-09-29T15:33:27+00:00"
+            "time": "2026-10-21T12:55:36+00:00"
         },
         {
             "name": "laravel/legacy-factories",
@@ -3495,30 +3303,38 @@
         },
         {
             "name": "maatwebsite/excel",
-            "version": "3.1.70",
+            "version": "4.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SpartnerNL/Laravel-Excel.git",
-                "reference": "b5cafdfcf7ec63924e83303763be8fcae340f70b"
+                "reference": "90b012ef8680e0f0e20208ce7f05400a798b1c0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SpartnerNL/Laravel-Excel/zipball/b5cafdfcf7ec63924e83303763be8fcae340f70b",
-                "reference": "b5cafdfcf7ec63924e83303763be8fcae340f70b",
+                "url": "https://api.github.com/repos/SpartnerNL/Laravel-Excel/zipball/90b012ef8680e0f0e20208ce7f05400a798b1c0b",
+                "reference": "90b012ef8680e0f0e20208ce7f05400a798b1c0b",
                 "shasum": ""
             },
             "require": {
-                "composer/semver": "^3.3",
-                "ext-json": "*",
-                "illuminate/support": "5.8.*||^6.0||^7.0||^8.0||^9.0||^10.0||^11.0||^12.0||^13.0",
-                "php": "^7.0||^8.0",
-                "phpoffice/phpspreadsheet": "^1.30.5",
-                "psr/simple-cache": "^1.0||^2.0||^3.0"
+                "composer/semver": "^3.4",
+                "illuminate/support": "^12.0 || ^13.0",
+                "php": "^8.3",
+                "phpoffice/phpspreadsheet": "^5.9",
+                "psr/simple-cache": "^1.0 || ^2.0 || ^3.0"
             },
             "require-dev": {
-                "laravel/scout": "^7.0||^8.0||^9.0||^10.0||^11.0",
-                "orchestra/testbench": "^6.0||^7.0||^8.0||^9.0||^10.0||^11.0",
-                "predis/predis": "^1.1"
+                "brianium/paratest": "^7.20",
+                "driftingly/rector-laravel": "^2.5",
+                "ext-sqlite3": "*",
+                "larastan/larastan": "^3.10",
+                "laravel/pint": "^1.29",
+                "laravel/scout": "^10.25 || ^11.2",
+                "orchestra/testbench": "^10.11 || ^11.1",
+                "phpstan/extension-installer": "^1.4",
+                "phpstan/phpstan-mockery": "^2.0",
+                "phpunit/phpunit": "^12.5 || ~13.1.14",
+                "predis/predis": "^2.3 || ^3.0",
+                "rector/rector": "^2.4.2"
             },
             "type": "library",
             "extra": {
@@ -3560,7 +3376,7 @@
             ],
             "support": {
                 "issues": "https://github.com/SpartnerNL/Laravel-Excel/issues",
-                "source": "https://github.com/SpartnerNL/Laravel-Excel/tree/3.1.70"
+                "source": "https://github.com/SpartnerNL/Laravel-Excel/tree/4.0.6"
             },
             "funding": [
                 {
@@ -3572,7 +3388,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-08-13T09:11:54+00:00"
+            "time": "2026-10-23T11:35:56+00:00"
         },
         {
             "name": "maennchen/zipstream-php",
@@ -4522,6 +4338,147 @@
             "time": "2026-02-16T23:10:27+00:00"
         },
         {
+            "name": "opcodesio/log-viewer",
+            "version": "v3.24.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opcodesio/log-viewer.git",
+                "reference": "bdf931182c40001dd3ebf728fdded0648b121ae0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opcodesio/log-viewer/zipball/bdf931182c40001dd3ebf728fdded0648b121ae0",
+                "reference": "bdf931182c40001dd3ebf728fdded0648b121ae0",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "opcodesio/mail-parser": "^0.2.3",
+                "php": "^8.0"
+            },
+            "conflict": {
+                "arcanedev/log-viewer": "^8.0"
+            },
+            "require-dev": {
+                "guzzlehttp/guzzle": "^7.2",
+                "itsgoingd/clockwork": "^5.1",
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^7.0|^8.0",
+                "orchestra/testbench": "^7.6|^8.0|^9.5|^10.0|^11.0",
+                "pestphp/pest": "^2.0|^3.7|^4.4",
+                "pestphp/pest-plugin-laravel": "^2.0|^3.1|^4.1",
+                "spatie/test-time": "^1.3"
+            },
+            "suggest": {
+                "guzzlehttp/guzzle": "Required for multi-host support. ^7.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "LogViewer": "Opcodes\\LogViewer\\Facades\\LogViewer"
+                    },
+                    "providers": [
+                        "Opcodes\\LogViewer\\LogViewerServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Opcodes\\LogViewer\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Arunas Skirius",
+                    "email": "arukomp@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Fast and easy-to-use log viewer for your Laravel application",
+            "homepage": "https://github.com/opcodesio/log-viewer",
+            "keywords": [
+                "arukompas",
+                "better-log-viewer",
+                "laravel",
+                "log viewer",
+                "logs",
+                "opcodesio"
+            ],
+            "support": {
+                "issues": "https://github.com/opcodesio/log-viewer/issues",
+                "source": "https://github.com/opcodesio/log-viewer/tree/v3.24.2"
+            },
+            "funding": [
+                {
+                    "url": "https://www.buymeacoffee.com/arunas",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/arukompas",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-06-11T13:41:17+00:00"
+        },
+        {
+            "name": "opcodesio/mail-parser",
+            "version": "v0.2.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opcodesio/mail-parser.git",
+                "reference": "7151e4183288e46d911a76803c5545a1c8822226"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opcodesio/mail-parser/zipball/7151e4183288e46d911a76803c5545a1c8822226",
+                "reference": "7151e4183288e46d911a76803c5545a1c8822226",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "pestphp/pest": "^2.16",
+                "symfony/var-dumper": "^6.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Opcodes\\MailParser\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Arunas Skirius",
+                    "email": "arukomp@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Parse emails without the mailparse extension",
+            "keywords": [
+                "arukompas",
+                "email",
+                "email parser",
+                "mail",
+                "opcodesio",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/opcodesio/mail-parser/issues",
+                "source": "https://github.com/opcodesio/mail-parser/tree/v0.2.4"
+            },
+            "time": "2026-06-11T08:50:37+00:00"
+        },
+        {
             "name": "owen-it/laravel-auditing",
             "version": "v14.0.6",
             "source": {
@@ -4726,16 +4683,16 @@
         },
         {
             "name": "phpoffice/phpspreadsheet",
-            "version": "1.30.7",
+            "version": "5.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPOffice/PhpSpreadsheet.git",
-                "reference": "f5dd9c1f084d336ea63cf53099533e061a9c157a"
+                "reference": "eb18727acf6b1f4cc67145a52ab04f9fd4c28d53"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/f5dd9c1f084d336ea63cf53099533e061a9c157a",
-                "reference": "f5dd9c1f084d336ea63cf53099533e061a9c157a",
+                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/eb18727acf6b1f4cc67145a52ab04f9fd4c28d53",
+                "reference": "eb18727acf6b1f4cc67145a52ab04f9fd4c28d53",
                 "shasum": ""
             },
             "require": {
@@ -4743,6 +4700,7 @@
                 "ext-ctype": "*",
                 "ext-dom": "*",
                 "ext-fileinfo": "*",
+                "ext-filter": "*",
                 "ext-gd": "*",
                 "ext-iconv": "*",
                 "ext-libxml": "*",
@@ -4753,30 +4711,32 @@
                 "ext-xmlwriter": "*",
                 "ext-zip": "*",
                 "ext-zlib": "*",
-                "ezyang/htmlpurifier": "^4.15",
                 "maennchen/zipstream-php": "^2.1 || ^3.0",
                 "markbaker/complex": "^3.0",
                 "markbaker/matrix": "^3.0",
-                "php": ">=7.4.0 <8.5.0",
+                "php": "^8.2",
                 "psr/simple-cache": "^1.0 || ^2.0 || ^3.0"
             },
             "require-dev": {
                 "dealerdirect/phpcodesniffer-composer-installer": "dev-main",
-                "doctrine/instantiator": "^1.5",
-                "dompdf/dompdf": "^1.0 || ^2.0 || ^3.0",
+                "dompdf/dompdf": "^2.0 || ^3.0",
+                "ext-intl": "*",
+                "ext-openssl": "*",
                 "friendsofphp/php-cs-fixer": "^3.2",
-                "mitoteam/jpgraph": "^10.3",
+                "mitoteam/jpgraph": "^10.5",
                 "mpdf/mpdf": "^8.1.1",
                 "phpcompatibility/php-compatibility": "^9.3",
-                "phpstan/phpstan": "^1.1",
-                "phpstan/phpstan-phpunit": "^1.0",
-                "phpunit/phpunit": "^8.5 || ^9.0",
+                "phpstan/phpstan": "^1.1 || ^2.0",
+                "phpstan/phpstan-deprecation-rules": "^1.0 || ^2.0",
+                "phpstan/phpstan-phpunit": "^1.0 || ^2.0",
+                "phpunit/phpunit": "^10.5 || ^11.0",
                 "squizlabs/php_codesniffer": "^3.7",
-                "tecnickcom/tcpdf": "^6.5"
+                "tecnickcom/tcpdf": ">=6.8.0 <7.0.0"
             },
             "suggest": {
                 "dompdf/dompdf": "Option for rendering PDF with PDF Writer",
-                "ext-intl": "PHP Internationalization Functions",
+                "ext-intl": "PHP Internationalization Functions, required for NumberFormat Wizard and StringHelper::setLocale()",
+                "ext-openssl": "Handline Agile-encrypted Xlsx spreadsheets",
                 "mitoteam/jpgraph": "Option for rendering charts, or including charts with PDF or HTML Writers",
                 "mpdf/mpdf": "Option for rendering PDF with PDF Writer",
                 "tecnickcom/tcpdf": "Option for rendering PDF with PDF Writer"
@@ -4828,9 +4788,9 @@
             ],
             "support": {
                 "issues": "https://github.com/PHPOffice/PhpSpreadsheet/issues",
-                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/1.30.7"
+                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/5.10.0"
             },
-            "time": "2026-09-17T03:56:23+00:00"
+            "time": "2026-09-17T03:54:50+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -8075,6 +8035,86 @@
             "time": "2026-09-25T15:50:05+00:00"
         },
         {
+            "name": "symfony/polyfill-php84",
+            "version": "v1.43.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-php84.git",
+                "reference": "22c6548499cbe5c5bb072fc0c42312dff062a015"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-php84/zipball/22c6548499cbe5c5bb072fc0c42312dff062a015",
+                "reference": "22c6548499cbe5c5bb072fc0c42312dff062a015",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "type": "library",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php84\\": ""
+                },
+                "classmap": [
+                    "Resources/stubs"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 8.4+ features to lower PHP versions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php84/tree/v1.43.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-09-23T22:01:09+00:00"
+        },
+        {
             "name": "symfony/polyfill-php85",
             "version": "v1.43.0",
             "source": {
@@ -9394,31 +9434,31 @@
         },
         {
             "name": "yajra/laravel-datatables-buttons",
-            "version": "v11.2.2",
+            "version": "v12.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yajra/laravel-datatables-buttons.git",
-                "reference": "78c84636f4bb56efb149f694b67784ed651cf0ad"
+                "reference": "8c6763404c24402817e3c3ea10e70ad5a27dc67b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yajra/laravel-datatables-buttons/zipball/78c84636f4bb56efb149f694b67784ed651cf0ad",
-                "reference": "78c84636f4bb56efb149f694b67784ed651cf0ad",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables-buttons/zipball/8c6763404c24402817e3c3ea10e70ad5a27dc67b",
+                "reference": "8c6763404c24402817e3c3ea10e70ad5a27dc67b",
                 "shasum": ""
             },
             "require": {
-                "illuminate/console": "^11",
+                "illuminate/console": "^12",
                 "php": "^8.2",
-                "yajra/laravel-datatables-html": "^11",
-                "yajra/laravel-datatables-oracle": "^11"
+                "yajra/laravel-datatables-html": "^12",
+                "yajra/laravel-datatables-oracle": "^12"
             },
             "require-dev": {
-                "larastan/larastan": "^2.9.2",
-                "laravel/pint": "^1.14",
-                "maatwebsite/excel": "^3.1.55",
-                "orchestra/testbench": "^9",
-                "rap2hpoutre/fast-excel": "^5.4",
-                "rector/rector": "^1.0.2"
+                "larastan/larastan": "^3.1",
+                "laravel/pint": "^1.21",
+                "maatwebsite/excel": "^3.1.64",
+                "orchestra/testbench": "^10",
+                "rap2hpoutre/fast-excel": "^5.6",
+                "rector/rector": "^2.0"
             },
             "suggest": {
                 "barryvdh/laravel-snappy": "Allows exporting of dataTable to PDF using the print view.",
@@ -9435,7 +9475,7 @@
                     ]
                 },
                 "branch-alias": {
-                    "dev-master": "11.0-dev"
+                    "dev-master": "12.x-dev"
                 }
             },
             "autoload": {
@@ -9462,7 +9502,7 @@
             ],
             "support": {
                 "issues": "https://github.com/yajra/laravel-datatables-buttons/issues",
-                "source": "https://github.com/yajra/laravel-datatables-buttons/tree/v11.2.2"
+                "source": "https://github.com/yajra/laravel-datatables-buttons/tree/v12.3.1"
             },
             "funding": [
                 {
@@ -9470,33 +9510,33 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-01-18T11:12:52+00:00"
+            "time": "2025-12-02T08:51:24+00:00"
         },
         {
             "name": "yajra/laravel-datatables-html",
-            "version": "v11.8.1",
+            "version": "v12.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yajra/laravel-datatables-html.git",
-                "reference": "76cb7a423c84fa81cc5c6418cbb8c3c95d1a4f89"
+                "reference": "8d3a3041f1f33e2f34647942be6b0f9fe321a05c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yajra/laravel-datatables-html/zipball/76cb7a423c84fa81cc5c6418cbb8c3c95d1a4f89",
-                "reference": "76cb7a423c84fa81cc5c6418cbb8c3c95d1a4f89",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables-html/zipball/8d3a3041f1f33e2f34647942be6b0f9fe321a05c",
+                "reference": "8d3a3041f1f33e2f34647942be6b0f9fe321a05c",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "php": "^8.2",
-                "yajra/laravel-datatables-oracle": "^11.0"
+                "yajra/laravel-datatables-oracle": "^12.0"
             },
             "require-dev": {
-                "larastan/larastan": "^2.9.1",
-                "laravel/pint": "^1.14",
-                "livewire/livewire": "^3.4",
-                "orchestra/testbench": "^9",
-                "rector/rector": "^1.0"
+                "larastan/larastan": "^3.1",
+                "laravel/pint": "^1.21",
+                "livewire/livewire": "^3.4|^4.0",
+                "orchestra/testbench": "^10",
+                "rector/rector": "^2.0"
             },
             "suggest": {
                 "laravel/livewire": "Required for Livewire layout support."
@@ -9509,7 +9549,7 @@
                     ]
                 },
                 "branch-alias": {
-                    "dev-master": "11.0-dev"
+                    "dev-master": "12.x-dev"
                 }
             },
             "autoload": {
@@ -9538,7 +9578,7 @@
             ],
             "support": {
                 "issues": "https://github.com/yajra/laravel-datatables-html/issues",
-                "source": "https://github.com/yajra/laravel-datatables-html/tree/v11.8.1"
+                "source": "https://github.com/yajra/laravel-datatables-html/tree/v12.7.0"
             },
             "funding": [
                 {
@@ -9554,38 +9594,38 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2025-02-19T02:11:43+00:00"
+            "time": "2026-01-23T06:41:02+00:00"
         },
         {
             "name": "yajra/laravel-datatables-oracle",
-            "version": "v11.1.6",
+            "version": "v12.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yajra/laravel-datatables.git",
-                "reference": "b48eb614d0474c23a9c8041563beef9dda39656d"
+                "reference": "af48ca6c9f05ee4b67353c630a8f2cae0f2a8a46"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/b48eb614d0474c23a9c8041563beef9dda39656d",
-                "reference": "b48eb614d0474c23a9c8041563beef9dda39656d",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/af48ca6c9f05ee4b67353c630a8f2cae0f2a8a46",
+                "reference": "af48ca6c9f05ee4b67353c630a8f2cae0f2a8a46",
                 "shasum": ""
             },
             "require": {
-                "illuminate/database": "^11",
-                "illuminate/filesystem": "^11",
-                "illuminate/http": "^11",
-                "illuminate/support": "^11",
-                "illuminate/view": "^11",
+                "illuminate/database": "^12",
+                "illuminate/filesystem": "^12",
+                "illuminate/http": "^12",
+                "illuminate/support": "^12",
+                "illuminate/view": "^12",
                 "php": "^8.2"
             },
             "require-dev": {
                 "algolia/algoliasearch-client-php": "^3.4.1",
-                "larastan/larastan": "^2.9.1",
+                "larastan/larastan": "^3.1.0",
                 "laravel/pint": "^1.14",
                 "laravel/scout": "^10.8.3",
                 "meilisearch/meilisearch-php": "^1.6.1",
-                "orchestra/testbench": "^9",
-                "rector/rector": "^1.0"
+                "orchestra/testbench": "^10",
+                "rector/rector": "^2.0"
             },
             "suggest": {
                 "yajra/laravel-datatables-buttons": "Plugin for server-side exporting of dataTables.",
@@ -9605,7 +9645,7 @@
                     ]
                 },
                 "branch-alias": {
-                    "dev-master": "11.x-dev"
+                    "dev-master": "12.x-dev"
                 }
             },
             "autoload": {
@@ -9635,7 +9675,7 @@
             ],
             "support": {
                 "issues": "https://github.com/yajra/laravel-datatables/issues",
-                "source": "https://github.com/yajra/laravel-datatables/tree/v11.1.6"
+                "source": "https://github.com/yajra/laravel-datatables/tree/v12.7.2"
             },
             "funding": [
                 {
@@ -9643,7 +9683,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-01-21T03:15:46+00:00"
+            "time": "2026-05-16T02:08:01+00:00"
         }
     ],
     "packages-dev": [

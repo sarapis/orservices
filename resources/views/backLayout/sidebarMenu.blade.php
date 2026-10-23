@@ -186,8 +186,7 @@
                 {{-- @endif --}}
                 <li><a><i class="fa fa-list"></i> Log Viewer <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                        <li><a href="/log-viewer"> Dashboard</a></li>
-                        <li><a href="/log-viewer/logs"> Logs</a></li>
+                        <li><a href="/log-viewer"> Logs</a></li>
                     </ul>
                 </li>
                 <li><a href="/logout"><i class="fa fa-sign-out "></i> Logout</a></li>

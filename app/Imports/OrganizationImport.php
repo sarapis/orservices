@@ -13,7 +13,7 @@ class OrganizationImport implements ToModel, WithHeadingRow
      *
      * @return \Illuminate\Database\Eloquent\Model|null
      */
-    public function model(array $row)
+    public function model(array $row): \Illuminate\Database\Eloquent\Model|array|null
     {
         $array = [
             'organization_recordid' => $row['id'],
