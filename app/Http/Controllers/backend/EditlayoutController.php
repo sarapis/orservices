@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\backEnd;
 
+use App\Services\SafeUpload;
 use App\Http\Controllers\Controller;
 use App\Model\Airtables;
 use App\Model\Layout;
@@ -109,7 +110,7 @@ class EditlayoutController extends Controller
             $layout = Layout::find($id);
             if ($request->hasFile('logo')) {
                 $companylogo = $request->file('logo');
-                $filename = time() . '.' . $companylogo->getClientOriginalExtension();
+                $filename = SafeUpload::name((string) time(), SafeUpload::extension($companylogo, SafeUpload::IMAGE, 'logo'));
                 Image::make($companylogo)->resize(300, 300, function ($constraint) {
                     $constraint->aspectRatio();
                 })->save(public_path('/uploads/images/' . $filename));

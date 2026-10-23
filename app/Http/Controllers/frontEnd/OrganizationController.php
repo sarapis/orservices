@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\frontEnd;
 
+use App\Services\SafeUpload;
 use App\Functions\Airtable;
 use App\Http\Controllers\Controller;
 use App\Imports\OrganizationImport;
@@ -1143,8 +1144,7 @@ class OrganizationController extends Controller
             if ($request->has('logo_type')) {
                 $link = '';
                 if ($request->logo_type == 'file' && $request->hasFile('logo')) {
-                    $link = $request->file('logo')->store('uploads', 'public');
-                    $link = Storage::url($link);
+                    $link = '/uploads/images/' . SafeUpload::save($request->file('logo'), public_path('uploads/images'), time() . '_organization_logo', SafeUpload::IMAGE, 'logo');
                 } elseif ($request->logo_type == 'url' && $request->logo) {
                     $link = $request->logo;
                 } else {
@@ -2328,8 +2328,7 @@ class OrganizationController extends Controller
             if ($request->has('logo_type')) {
                 $link = '';
                 if ($request->logo_type == 'file' && $request->hasFile('logo')) {
-                    $link = $request->file('logo')->store('uploads', 'public');
-                    $link = Storage::url($link);
+                    $link = '/uploads/images/' . SafeUpload::save($request->file('logo'), public_path('uploads/images'), time() . '_organization_logo', SafeUpload::IMAGE, 'logo');
                 } elseif ($request->logo_type == 'url' && $request->logo) {
                     $link = $request->logo;
                 } else {

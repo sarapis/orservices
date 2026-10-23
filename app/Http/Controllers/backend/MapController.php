@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\backend;
 
+use App\Services\SafeUpload;
 use App\Http\Controllers\Controller;
 use App\Model\Address;
 use App\Model\Layout;
@@ -229,9 +230,7 @@ class MapController extends Controller
             return Response::json(array('success' => false, 'errors' => $validator->getMessageBag()->toArray()));
         }
 
-        $fileName = time() . '-' . $file->getClientOriginalName();
-        $destination = public_path() . '/uploads/';
-        $file->move($destination, $fileName);
+        $fileName = SafeUpload::save($file, public_path('uploads'), time() . '-map', SafeUpload::IMAGE);
 
         echo url('/uploads/' . $fileName);
     }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\backend;
 
+use Illuminate\Validation\ValidationException;
+use App\Services\SafeUpload;
 use App\Http\Controllers\Controller;
 use App\Imports\AccessibilityImport;
 use App\Imports\AddressImport;
@@ -55,9 +57,15 @@ class UploadController extends Controller
     public function zip(Request $request)
     {
         try {
-            $extension = $request->file('file_zip')->getClientOriginalExtension();
+            $file = $request->file('file_zip');
+            try {
+                SafeUpload::extension($file, SafeUpload::ZIP, 'file_zip');
+                $is_zip = true;
+            } catch (ValidationException $e) {
+                $is_zip = false;
+            }
 
-            if ($extension != 'zip') {
+            if (! $is_zip) {
                 $response = array(
                     'status' => 'error',
                     'result' => 'This File is not zip file.',
@@ -66,13 +74,10 @@ class UploadController extends Controller
             }
 
             $path = $request->file('file_zip')->getRealPath();
-            $zip = Zip::open($request->file('file_zip'));
-
             // Zip::make($path)->extractTo('HSDS');
-            $zip->extract(public_path('HSDS'));
+            SafeUpload::extractZip($file->getRealPath(), public_path('HSDS'));
 
-            $filename =  $request->file('file_zip')->getClientOriginalName();
-            $request->file('file_zip')->move(public_path('/zip/'), $filename);
+            $filename = SafeUpload::save($file, public_path('zip'), 'hsds_' . time(), SafeUpload::ZIP, 'file_zip');
 
             $path = public_path('/HSDS/data/services.csv');
 

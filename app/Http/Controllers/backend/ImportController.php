@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\backend;
 
+use App\Services\SafeUpload;
 use App\Functions\Airtable;
 use App\Http\Controllers\Controller;
 use App\Imports\AccessibilityImport;
@@ -79,7 +80,6 @@ use OwenIt\Auditing\Models\Audit;
 use Spatie\Geocoder\Geocoder;
 use Yajra\DataTables\Facades\DataTables;
 use ZanySoft\Zip\Zip;
-use ZipArchive;
 
 class ImportController extends Controller
 {
@@ -163,13 +163,10 @@ class ImportController extends Controller
             }
             if ($request->import_type == 'zipfile' && $request->hasFile('zipfile')) {
                 $file = $request->file('zipfile');
-                $name = $file->getClientOriginalName();
-                $type = $file->getClientOriginalExtension();
-                $path = public_path('import_source_file');
-                $file->move($path, $name);
+                $name = SafeUpload::save($file, public_path('import_source_file'), 'import_' . time(), SafeUpload::ZIP, 'zipfile');
                 $zipfile_path = '/import_source_file/'.$name;
             } elseif ($request->import_type == 'zipfile_api') {
-                $path = public_path('import_source_file/'.$request->key.'.zip');
+                $path = public_path('import_source_file/'.SafeUpload::name((string) $request->key, 'zip'));
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
                 curl_setopt($ch, CURLOPT_HEADER, false);
@@ -195,7 +192,7 @@ class ImportController extends Controller
 
                 fclose($ifp);
                 // $zipfile_path = $path . $name;
-                $zipfile_path = '/import_source_file/'.$request->key.'.zip';
+                $zipfile_path = '/import_source_file/'.SafeUpload::name((string) $request->key, 'zip');
             }
             if ($request->has('auto_sync') && $request->auto_sync == 1) {
                 $syncData = ImportDataSource::where('auto_sync', '1')->get();
@@ -320,13 +317,10 @@ class ImportController extends Controller
             }
             if ($request->import_type == 'zipfile' && $request->hasFile('zipfile')) {
                 $file = $request->file('zipfile');
-                $name = $file->getClientOriginalName();
-                $type = $file->getClientOriginalExtension();
-                $path = public_path('import_source_file');
-                $file->move($path, $name);
+                $name = SafeUpload::save($file, public_path('import_source_file'), 'import_' . time(), SafeUpload::ZIP, 'zipfile');
                 $zipfile_path = '/import_source_file/'.$name;
             } elseif ($request->import_type == 'zipfile_api') {
-                $path = public_path('import_source_file/'.$request->key.'.zip');
+                $path = public_path('import_source_file/'.SafeUpload::name((string) $request->key, 'zip'));
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
                 curl_setopt($ch, CURLOPT_HEADER, false);
@@ -352,7 +346,7 @@ class ImportController extends Controller
 
                 fclose($ifp);
                 // $zipfile_path = $path . $name;
-                $zipfile_path = '/import_source_file/'.$request->key.'.zip';
+                $zipfile_path = '/import_source_file/'.SafeUpload::name((string) $request->key, 'zip');
             }
             if ($request->has('auto_sync') && $request->auto_sync == 1) {
                 $syncData = ImportDataSource::where('auto_sync', '1')->first();
@@ -742,10 +736,7 @@ class ImportController extends Controller
             //     return $response;
             // }
             // $path = $request->file('file_zip')->getRealPath();
-            $zip = new ZipArchive();
-            $zip->open(public_path($importData->source_file));
-            $zip->extractTo(public_path('HSDS/data/'));
-            $zip->close();
+            SafeUpload::extractZip(public_path($importData->source_file), public_path('HSDS/data'));
             // $file = file_get_contents(public_path($importData->source_file));
             // $zip = Zip::open($file);
 
