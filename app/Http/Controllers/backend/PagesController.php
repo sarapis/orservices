@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\backEnd;
 
+use App\Services\SafeUpload;
 use App\Exports\ContactsExport;
 use App\Http\Controllers\Controller;
 use App\Model\Accessibility;
@@ -1360,8 +1361,7 @@ class PagesController extends Controller
 
                 // $data = Excel::load($path)->get();
 
-                $filename = $request->file('csv_import')->getClientOriginalName();
-                $request->file('csv_import')->move(public_path('/csv/'), $filename);
+                $filename = SafeUpload::save($request->file('csv_import'), public_path('csv'), 'metafilter_' . time(), SafeUpload::CSV, 'csv_import');
             }
             if ($request->input('table_records') != null) {
                 $metafilter->values = implode(",", $request->input('table_records'));

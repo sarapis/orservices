@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\frontEnd;
 
+use App\Services\SafeUpload;
 use App\Exports\LocationExport;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -381,7 +382,7 @@ class LocationController extends Controller
         $data = Excel::load($path)->get();
 
         $filename =  $request->file('csv_file')->getClientOriginalName();
-        $request->file('csv_file')->move(public_path('/csv/'), $filename);
+        SafeUpload::save($request->file('csv_file'), public_path('csv'), 'accessibility_for_disabilities', SafeUpload::CSV, 'csv_file');
 
         if ($filename != 'accessibility_for_disabilities.csv') {
             $response = array(

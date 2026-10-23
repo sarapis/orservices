@@ -101,4 +101,11 @@ return [
 
     'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache'),
 
+    /*
+    | Classes that may be unserialized from the cache. The app caches no objects,
+    | so none are allowed (Laravel 13 default; limits gadget chains if APP_KEY leaks).
+    */
+
+    'serializable_classes' => false,
+
 ];

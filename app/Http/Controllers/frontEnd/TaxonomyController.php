@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\frontEnd;
 
+use App\Services\SafeUpload;
 use App\Exports\TaxonomyExport;
 use App\Functions\Airtable;
 use App\Http\Controllers\Controller;
@@ -30,7 +31,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
-use Image;
 use Yajra\DataTables\Facades\DataTables;
 
 class TaxonomyController extends Controller
@@ -188,7 +188,7 @@ class TaxonomyController extends Controller
                             foreach ($icon_dark as $key => $value) {
                                 $path = $value['url'];
                                 $filename = $value['filename'];
-                                Image::make($path)->save(public_path('/uploads/images/' . $filename));
+                                $filename = SafeUpload::saveRemoteImage($path, public_path('uploads/images'), $filename);
                                 $taxonomy->category_logo = '/uploads/images/' . $filename;
                             }
                         }
@@ -197,7 +197,7 @@ class TaxonomyController extends Controller
                             foreach ($icon_light as $key => $value) {
                                 $path = $value['url'];
                                 $filename = $value['filename'];
-                                Image::make($path)->save(public_path('/uploads/images/' . $filename));
+                                $filename = SafeUpload::saveRemoteImage($path, public_path('uploads/images'), $filename);
                                 $taxonomy->category_logo_white = '/uploads/images/' . $filename;
                             }
                         }
@@ -476,17 +476,13 @@ class TaxonomyController extends Controller
 
             if ($request->hasFile('category_logo')) {
                 $category_logo = $request->file('category_logo');
-                $name = time() . 'category_logo_1' . $category_logo->getClientOriginalExtension();
-                $path = public_path('uploads/images');
-                $category_logo->move($path, $name);
-                $taxonomy->category_logo = '/uploads/images' . $name;
+                $name = SafeUpload::save($category_logo, public_path('uploads/images'), time() . 'category_logo_1', SafeUpload::IMAGE, 'category_logo');
+                $taxonomy->category_logo = '/uploads/images/' . $name;
             }
             if ($request->hasFile('category_logo_white')) {
                 $category_logo_white = $request->file('category_logo_white');
-                $name = time() . 'category_logo_white_2' . $category_logo_white->getClientOriginalExtension();
-                $path = public_path('uploads/images');
-                $category_logo_white->move($path, $name);
-                $taxonomy->category_logo_white = '/uploads/images' . $name;
+                $name = SafeUpload::save($category_logo_white, public_path('uploads/images'), time() . 'category_logo_white_2', SafeUpload::IMAGE, 'category_logo_white');
+                $taxonomy->category_logo_white = '/uploads/images/' . $name;
             }
             $taxonomy->save();
             Session::flash('message', 'Taxonomy Created successfully!');
@@ -625,17 +621,13 @@ class TaxonomyController extends Controller
 
         if ($request->hasFile('category_logo')) {
             $category_logo = $request->file('category_logo');
-            $name = time() . 'category_logo_' . $id . $category_logo->getClientOriginalExtension();
-            $path = public_path('uploads/images');
-            $category_logo->move($path, $name);
-            $taxonomy->category_logo = '/uploads/images' . $name;
+            $name = SafeUpload::save($category_logo, public_path('uploads/images'), time() . 'category_logo_' . $id, SafeUpload::IMAGE, 'category_logo');
+            $taxonomy->category_logo = '/uploads/images/' . $name;
         }
         if ($request->hasFile('category_logo_white')) {
             $category_logo_white = $request->file('category_logo_white');
-            $name = time() . 'category_logo_white_' . $id . $category_logo_white->getClientOriginalExtension();
-            $path = public_path('uploads/images');
-            $category_logo_white->move($path, $name);
-            $taxonomy->category_logo_white = '/uploads/images' . $name;
+            $name = SafeUpload::save($category_logo_white, public_path('uploads/images'), time() . 'category_logo_white_' . $id, SafeUpload::IMAGE, 'category_logo_white');
+            $taxonomy->category_logo_white = '/uploads/images/' . $name;
         }
 
 
@@ -707,16 +699,12 @@ class TaxonomyController extends Controller
 
             if ($request->hasFile('category_logo')) {
                 $category_logo = $request->file('category_logo');
-                $name = time() . 'category_logo_' . $id . '.' . $category_logo->getClientOriginalExtension();
-                $path = public_path('uploads/images/');
-                $category_logo->move($path, $name);
+                $name = SafeUpload::save($category_logo, public_path('uploads/images'), time() . 'category_logo_' . $id, SafeUpload::IMAGE, 'category_logo');
                 $taxonomy->category_logo = '/uploads/images/' . $name;
             }
             if ($request->hasFile('category_logo_white')) {
                 $category_logo_white = $request->file('category_logo_white');
-                $name = time() . 'category_logo_white_' . $id . '.' . $category_logo_white->getClientOriginalExtension();
-                $path = public_path('uploads/images/');
-                $category_logo_white->move($path, $name);
+                $name = SafeUpload::save($category_logo_white, public_path('uploads/images'), time() . 'category_logo_white_' . $id, SafeUpload::IMAGE, 'category_logo_white');
                 $taxonomy->category_logo_white = '/uploads/images/' . $name;
             }
 

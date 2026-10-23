@@ -14,7 +14,7 @@ class TaxonomyImport implements ToModel, WithHeadingRow
      *
      * @return \Illuminate\Database\Eloquent\Model|null
      */
-    public function model(array $row)
+    public function model(array $row): \Illuminate\Database\Eloquent\Model|array|null
     {
         $taxonomy = Taxonomy::where('taxonomy_recordid', $row['taxonomy_recordid'])->first();
         $array = [];
@@ -69,7 +69,7 @@ class TaxonomyImport implements ToModel, WithHeadingRow
         }
         return new Taxonomy($array);
     }
-    // public function model(array $row)
+    // public function model(array $row): \Illuminate\Database\Eloquent\Model|array|null
     // {
     //     $taxonomy = Taxonomy::where('taxonomy_recordid', $row['id'])->first();
     //     $array = [];

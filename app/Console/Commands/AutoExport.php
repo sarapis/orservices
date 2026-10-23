@@ -61,7 +61,7 @@ class AutoExport extends Command
                 $hours = $export_configuration->hours;
                 $to = \Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $export_configuration->last_sync);
                 $from = \Carbon\Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now());
-                $diff_in_hours = $to->diffInHours($from);
+                $diff_in_hours = (int) abs($to->diffInHours($from));
                 if ($diff_in_hours >= intval($hours) || $export_configuration->last_sync == null) {
                     $path_csv_export = public_path($export_configuration->file_path);
                     $public_path = public_path('/');

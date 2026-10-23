@@ -15,7 +15,7 @@ class Services implements ToModel, WithHeadingRow
      *
      * @return \Illuminate\Database\Eloquent\Model|null
      */
-    public function model(array $row)
+    public function model(array $row): \Illuminate\Database\Eloquent\Model|array|null
     {
         $array = [
             'service_recordid' => isset($row['service_recordid']) ? $row['service_recordid'] : null,

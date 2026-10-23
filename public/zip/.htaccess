@@ -1,0 +1,5 @@
+# Files in this directory are written by the app from user uploads, imports or exports.
+# Never serve anything here as a script, whatever else is in its name.
+<FilesMatch "(?i)\.(php[0-9]?|phtml|phar|pht|phps|inc)(\.|$)">
+    Require all denied
+</FilesMatch>

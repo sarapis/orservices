@@ -25,10 +25,13 @@ Features include:
 
 The Laravel framework has a few system requirements. You will need to make sure your server meets the following requirements:
 
-* PHP >= 8.1
+* PHP >= 8.4 (Laravel 13; tested on 8.4 and 8.5)
 * BCMath PHP Extension
 * Curl PHP Extension
 * Zip PHP Extension
+* GD PHP Extension (image uploads)
+* FTP PHP Extension
+* PDO MySQL PHP Extension (MySQL 8 or MariaDB 10.6+)
 * Ctype PHP Extension
 * JSON PHP Extension
 * Fileinfo PHP extension
@@ -86,9 +89,17 @@ location / {
    * From the projects root folder run composer dump-autoload
     
 **👉Database upload**
-   * Create database and upload sql dump file from database/dump/latest_date.sql
-   * If you import the database then no need to Run php artisan migrate command.
-   * Once the database is setup you have to add DB configuration to .env file.
+   * Create a database and import the starter dump `database/dump/01052024.sql` (default settings, roles and one admin user).
+   * Then run `php artisan migrate --force` to apply any migrations newer than the dump.
+   * Add the DB configuration to your `.env` file.
+   * **Log in as `admin@admin.com` and change that account's password (or create your own admin and delete it) before the site is reachable by anyone else.**
+
+**👉Running in production**
+   * Set `APP_ENV=production` and `APP_DEBUG=false` in `.env` (the defaults in `.env.example`). With `APP_DEBUG=true`, any error shows a full debug page including configuration values.
+   * Don't run `php artisan config:cache`: the admin settings pages write mail/SMS keys into `.env` at runtime, and a cached config would ignore them.
+   * The web server user must be able to write `storage/`, `bootstrap/cache/` and the upload/export folders under `public/` (`uploads`, `csv`, `xlsx`, `zip`, `newExport`, `HSDS`, `csv_export`, `import_source_file`). Each of those folders ships an `.htaccess` that refuses script files; on Nginx add the equivalent, e.g. `location ~* ^/(uploads|csv|xlsx|zip|newExport|HSDS|csv_export|import_source_file|storage)/.*\.(php[0-9]?|phtml|phar)(\.|/|$) { return 403; }`.
+   * Schedule `php artisan schedule:run` every minute. It runs the hourly Airtable/import sync and the daily `db:backup` (gzipped dumps in `storage/app/backup`, newest 14 kept; it uses `mariadb-dump` or `mysqldump`).
+   * Application logs are at `/log-viewer`, visible only to logged-in users whose role has the `log-viewer::logs.list` permission.
 
 **👉Local Development Server**
 

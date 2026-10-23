@@ -216,19 +216,19 @@ class Response implements \ArrayAccess
         return $this->parsedContent && isset( $this->parsedContent->$key );
     }
 
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return $this->parsedContent && isset( $this->parsedContent->$offset );
     }
 
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->parsedContent && isset( $this->parsedContent->$offset )
                 ? $this->parsedContent->$offset
                 : null;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         if( $this->parsedContent )
         {
@@ -236,7 +236,7 @@ class Response implements \ArrayAccess
         }
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         if( $this->parsedContent && isset( $this->parsedContent->$offset ) )
         {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\backEnd;
 
+use App\Services\SafeUpload;
 use App\Http\Controllers\Controller;
 use App\Model\Airtables;
 use App\Model\Layout;
@@ -10,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-use Image;
+use Intervention\Image\ImageManager;
 
 class EditlayoutController extends Controller
 {
@@ -109,10 +110,8 @@ class EditlayoutController extends Controller
             $layout = Layout::find($id);
             if ($request->hasFile('logo')) {
                 $companylogo = $request->file('logo');
-                $filename = time() . '.' . $companylogo->getClientOriginalExtension();
-                Image::make($companylogo)->resize(300, 300, function ($constraint) {
-                    $constraint->aspectRatio();
-                })->save(public_path('/uploads/images/' . $filename));
+                $filename = SafeUpload::name((string) time(), SafeUpload::extension($companylogo, SafeUpload::IMAGE, 'logo'));
+                ImageManager::gd()->read($companylogo)->scale(300, 300)->save(public_path('/uploads/images/' . $filename));
                 $layout->logo = $filename;
             }
             if ($request->input('logo_active') == 'checked') {

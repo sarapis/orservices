@@ -12,7 +12,7 @@ class ServicePhoneImport implements ToModel
      *
      * @return \Illuminate\Database\Eloquent\Model|null
      */
-    public function model(array $row)
+    public function model(array $row): \Illuminate\Database\Eloquent\Model|array|null
     {
         return new ServicePhone([
             'service_recordid' => $row['service_recordid'],

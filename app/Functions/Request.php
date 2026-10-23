@@ -111,19 +111,19 @@ class Request implements \ArrayAccess
         $this->data[$key] = $value;
     }
 
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return is_array($this->data) && isset($this->data[$offset]);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return is_array($this->data) && isset($this->data[$offset])
             ? $this->data[$offset]
             : null;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         if (!is_array($this->data)) {
             $this->data = [];
@@ -132,7 +132,7 @@ class Request implements \ArrayAccess
         $this->data[$offset] = $value;
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         if (is_array($this->data) && isset($this->data[$offset])) {
             unset($this->data[$offset]);

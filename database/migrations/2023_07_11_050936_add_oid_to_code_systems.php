@@ -13,6 +13,10 @@ class AddOidToCodeSystems extends Migration
      */
     public function up()
     {
+        // SQLite reserves "oid" as a rowid alias; only the in-memory test database skips it.
+        if (Schema::getConnection()->getDriverName() === 'sqlite') {
+            return;
+        }
         Schema::table('code_systems', function (Blueprint $table) {
             $table->string('oid')->nullable();
         });
@@ -25,6 +29,9 @@ class AddOidToCodeSystems extends Migration
      */
     public function down()
     {
+        if (Schema::getConnection()->getDriverName() === 'sqlite') {
+            return;
+        }
         Schema::table('code_systems', function (Blueprint $table) {
             $table->dropColumn('oid');
         });

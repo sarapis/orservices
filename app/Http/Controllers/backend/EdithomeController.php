@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\backEnd;
 
+use App\Services\SafeUpload;
 use App\Http\Controllers\Controller;
 use App\Model\Layout;
 use App\Model\Page;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-use Image;
+use Intervention\Image\ImageManager;
 
 class EdithomeController extends Controller
 {
@@ -118,17 +119,15 @@ class EdithomeController extends Controller
 
             if ($request->hasFile('home_bk_img_file')) {
                 $homepage_background = $request->file('home_bk_img_file');
-                $filename = time() . '_part1' . '.' . $homepage_background->getClientOriginalExtension();
-                Image::make($homepage_background)->resize(1800, 1000, function ($constraint) {
-                    $constraint->aspectRatio();
-                })->save(public_path('/uploads/images/' . $filename));
+                $filename = SafeUpload::name(time() . '_part1', SafeUpload::extension($homepage_background, SafeUpload::IMAGE, 'home_bk_img_file'));
+                ImageManager::gd()->read($homepage_background)->scale(1800, 1000)->save(public_path('/uploads/images/' . $filename));
                 $layout->homepage_background =  $filename;
             }
             // part 1
             if ($request->hasFile('part_1_image')) {
                 $part_1_image = $request->file('part_1_image');
-                $filename = time() . '_part2' . '.' . $part_1_image->getClientOriginalExtension();
-                Image::make($part_1_image)->save(public_path('/uploads/images/' . $filename));
+                $filename = SafeUpload::name(time() . '_part2', SafeUpload::extension($part_1_image, SafeUpload::IMAGE, 'part_1_image'));
+                ImageManager::gd()->read($part_1_image)->save(public_path('/uploads/images/' . $filename));
                 $layout->part_1_image = '/uploads/images/' . $filename;
             }
             // part 2

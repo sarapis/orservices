@@ -8,7 +8,6 @@ use App\Model\Airtablekeyinfo;
 use App\Model\Taxonomy;
 use App\Model\TaxonomyType;
 use Illuminate\Support\Facades\Log;
-use Intervention\Image\ImageManagerStatic as Image;
 
 class TaxonomyService
 {
@@ -88,7 +87,7 @@ class TaxonomyService
                             foreach ($icon_dark as $key => $value) {
                                 $path = $value['url'];
                                 $filename = $value['filename'];
-                                Image::make($path)->save(public_path('/uploads/images/' . $filename));
+                                $filename = SafeUpload::saveRemoteImage($path, public_path('uploads/images'), $filename);
                                 $taxonomy->category_logo = '/uploads/images/' . $filename;
                             }
                         }
@@ -97,7 +96,7 @@ class TaxonomyService
                             foreach ($icon_light as $key => $value) {
                                 $path = $value['url'];
                                 $filename = $value['filename'];
-                                Image::make($path)->save(public_path('/uploads/images/' . $filename));
+                                $filename = SafeUpload::saveRemoteImage($path, public_path('uploads/images'), $filename);
                                 $taxonomy->category_logo_white = '/uploads/images/' . $filename;
                             }
                         }
