@@ -10,6 +10,9 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class PhoneImport implements ToModel, WithHeadingRow
 {
+    // Columns model() reads without a fallback; CsvImport::assertColumns() checks them before importing.
+    public const REQUIRED_COLUMNS = ['id', 'location_id', 'service_id', 'organization_id', 'contact_id', 'number', 'extension', 'type', 'language', 'description', 'priority'];
+
     /**
      * @param array $row
      *

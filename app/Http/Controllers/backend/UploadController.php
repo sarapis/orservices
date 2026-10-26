@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\backend;
 
+use App\Services\CsvImport;
 use Illuminate\Validation\ValidationException;
 use App\Services\SafeUpload;
 use App\Http\Controllers\Controller;
@@ -92,6 +93,8 @@ class UploadController extends Controller
             // Service::truncate();
             // ServiceOrganization::truncate();
 
+            CsvImport::assertColumns(new Services, $path);
+
             Excel::import(new Services, $path);
 
             $date = Carbon::now();
@@ -110,9 +113,9 @@ class UploadController extends Controller
                 );
                 return $response;
             }
-
-            // $data = Excel::load($path)->get();
             // Location::truncate();
+
+            CsvImport::assertColumns(new LocationImport, $path);
 
             Excel::import(new LocationImport, $path);
 
@@ -136,6 +139,8 @@ class UploadController extends Controller
             // Organization::truncate();
             // OrganizationDetail::truncate();
 
+            CsvImport::assertColumns(new OrganizationImport, $path);
+
             Excel::import(new OrganizationImport, $path);
 
             $date = Carbon::now();
@@ -156,6 +161,8 @@ class UploadController extends Controller
             }
             // Contact::truncate();
             // ServiceContact::truncate();
+
+            CsvImport::assertColumns(new ContactImport, $path);
 
             Excel::import(new ContactImport, $path);
 
@@ -179,6 +186,8 @@ class UploadController extends Controller
             // ServicePhone::truncate();
             // LocationPhone::truncate();
 
+            CsvImport::assertColumns(new PhoneImport, $path);
+
             Excel::import(new PhoneImport, $path);
 
             $date = Carbon::now();
@@ -201,6 +210,8 @@ class UploadController extends Controller
             // LocationAddress::truncate();
             // ServiceAddress::truncate();
 
+            CsvImport::assertColumns(new AddressImport, $path);
+
             Excel::import(new AddressImport, $path);
 
             $date = Carbon::now();
@@ -221,6 +232,8 @@ class UploadController extends Controller
             }
             // Language::truncate();
 
+            CsvImport::assertColumns(new LanguageImport, $path);
+
             Excel::import(new LanguageImport, $path);
 
             $date = Carbon::now();
@@ -240,6 +253,8 @@ class UploadController extends Controller
                 );
                 return $response;
             }
+
+            CsvImport::assertColumns(new TaxonomyImport, $path);
 
             Excel::import(new TaxonomyImport, $path);
 
@@ -262,6 +277,8 @@ class UploadController extends Controller
 
             // ServiceTaxonomy::truncate();
 
+            CsvImport::assertColumns(new ServiceTaxonomyImport, $path);
+
             Excel::import(new ServiceTaxonomyImport, $path);
 
             $date = date("Y/m/d H:i:s");
@@ -283,6 +300,8 @@ class UploadController extends Controller
 
             // ServiceLocation::truncate();
 
+            CsvImport::assertColumns(new ServiceLocationImport, $path);
+
             Excel::import(new ServiceLocationImport, $path);
 
             $date = Carbon::now();
@@ -302,6 +321,8 @@ class UploadController extends Controller
                 return $response;
             }
             // Accessibility::truncate();
+
+            CsvImport::assertColumns(new AccessibilityImport, $path);
 
             Excel::import(new AccessibilityImport, $path);
 
@@ -325,6 +346,8 @@ class UploadController extends Controller
             // Schedule::truncate();
             // ServiceSchedule::truncate();
             // LocationSchedule::truncate();
+
+            CsvImport::assertColumns(new ScheduleImport, $path);
 
             Excel::import(new ScheduleImport, $path);
 

@@ -9,6 +9,9 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class TaxonomyImport implements ToModel, WithHeadingRow
 {
+    // Columns model() reads without a fallback; CsvImport::assertColumns() checks them before importing.
+    public const REQUIRED_COLUMNS = ['taxonomy_recordid'];
+
     /**
      * @param array $row
      *
@@ -38,9 +41,9 @@ class TaxonomyImport implements ToModel, WithHeadingRow
                 'category_id' => isset($row['category_id']) ? $row['category_id'] : null,
                 'taxonomy_id' => isset($row['taxonomy_id']) ? $row['taxonomy_id'] : null,
                 'order' => isset($row['order']) ? $row['order'] : null,
-                'badge_color' => isset($row['badge_color']) ? $row['badge_color'] : null,
+                'badge_color' => $row['badge_color'] ?? '#000', // the column's default; NULL is rejected
                 'flag' => isset($row['flag']) ? $row['flag'] : null,
-                'status' => isset($row['status']) ? $row['status'] : null,
+                'status' => $row['status'] ?? 'Published', // the column's default; NULL is rejected
             ];
         } else {
             $taxonomy->taxonomy_recordid = $taxonomy->taxonomy_recordid;
@@ -61,11 +64,13 @@ class TaxonomyImport implements ToModel, WithHeadingRow
             $taxonomy->category_id = isset($row['category_id']) ? $row['category_id'] : null;
             $taxonomy->taxonomy_id = isset($row['taxonomy_id']) ? $row['taxonomy_id'] : null;
             $taxonomy->order = isset($row['order']) ? $row['order'] : null;
-            $taxonomy->badge_color = isset($row['badge_color']) ? $row['badge_color'] : null;
+            $taxonomy->badge_color = $row['badge_color'] ?? $taxonomy->badge_color;
             $taxonomy->flag = isset($row['flag']) ? $row['flag'] : null;
-            $taxonomy->status = isset($row['status']) ? $row['status'] : null;
+            $taxonomy->status = $row['status'] ?? $taxonomy->status;
 
             $taxonomy->save();
+
+            return null; // updated in place; returning a model here inserted a blank taxonomy
         }
         return new Taxonomy($array);
     }

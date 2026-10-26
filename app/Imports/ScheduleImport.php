@@ -10,6 +10,11 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class ScheduleImport implements ToModel, WithHeadingRow
 {
+    // Columns model() reads without a fallback; CsvImport::assertColumns() checks them before importing.
+    // name is read when no existing schedule matches; schedule_holiday, schedule_closed and
+    // open_24_hours when one does (a blank name triggers that lookup).
+    public const REQUIRED_COLUMNS = ['name', 'service_id', 'opens', 'closes', 'weekday', 'location_id', 'id', 'service_at_location_id', 'valid_from', 'valid_to', 'dtstart', 'until', 'wkst', 'freq', 'interval', 'byday', 'byweekno', 'bymonthday', 'byyearday', 'description', 'schedule_holiday', 'schedule_closed', 'open_24_hours'];
+
     /**
      * @param array $row
      *

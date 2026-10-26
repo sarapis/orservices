@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\frontEnd;
 
+use App\Services\CsvImport;
 use App\Functions\Airtable;
 use App\Http\Controllers\Controller;
 use App\Imports\AddressImport;
@@ -231,34 +232,14 @@ class AddressController extends Controller
     public function csv(Request $request)
     {
         try {
-            // $path = $request->file('csv_file')->getRealPath();
-
-            // $data = Excel::load($path)->get();
-
-            // $filename = $request->file('csv_file')->getClientOriginalName();
-            // $request->file('csv_file')->move(public_path('/csv/'), $filename);
-
-            // if ($filename != 'physical_addresses.csv') {
-            //     $response = array(
-            //         'status' => 'error',
-            //         'result' => 'This CSV is not correct.',
-            //     );
-            //     return $response;
-            // }
-
-            // if (count($data) > 0) {
-            //     $csv_header_fields = [];
-            //     foreach ($data[0] as $key => $value) {
-            //         $csv_header_fields[] = $key;
-            //     }
-            //     $csv_data = $data;
-            // }
+            $file = CsvImport::upload($request, 'csv_file');
+            CsvImport::assertColumns(new AddressImport, $file);
 
             Address::truncate();
             LocationAddress::truncate();
             ServiceAddress::truncate();
 
-            Excel::import(new AddressImport, $request->file('csv_file'));
+            Excel::import(new AddressImport, $file);
 
             $date = Carbon::now();
             $csv_source = CSV_Source::where('name', '=', 'Address')->first();

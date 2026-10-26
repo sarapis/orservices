@@ -10,6 +10,9 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class Services implements ToModel, WithHeadingRow
 {
+    // Columns model() reads without a fallback; CsvImport::assertColumns() checks them before importing.
+    public const REQUIRED_COLUMNS = ['service_recordid', 'service_organization'];
+
     /**
      * @param array $row
      *
@@ -27,7 +30,7 @@ class Services implements ToModel, WithHeadingRow
             'service_url' => isset($row['service_url']) ? $row['service_url'] : null,
             'service_email' => isset($row['service_email']) ? $row['service_email'] : null,
             'service_status' => isset($row['service_status']) ? $row['service_status'] : null,
-            'access_requirement' => isset($row['access_requirement']) ? $row['access_requirement'] : null,
+            'access_requirement' => $row['access_requirement'] ?? 'none', // the column's default; NULL is rejected
             'service_taxonomy' => isset($row['service_taxonomy']) ? $row['service_taxonomy'] : null,
             'service_application_process' => isset($row['service_application_process']) ? $row['service_application_process'] : null,
             'service_wait_time' => isset($row['service_wait_time']) ? $row['service_wait_time'] : null,
