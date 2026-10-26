@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
 use App\Model\Accessibility;
 use App\Model\Address;
 use App\Model\Contact;
@@ -64,7 +66,10 @@ class AutoExport extends Command
                 $diff_in_hours = (int) abs($to->diffInHours($from));
                 if ($diff_in_hours >= intval($hours) || $export_configuration->last_sync == null) {
                     $path_csv_export = public_path($export_configuration->file_path);
-                    $public_path = public_path('/');
+                    // Build each export in its own folder under storage/ (public/ isn't writable, and the
+                    // relative paths used before depended on the current directory). Deleted once zipped.
+                    $work_path = storage_path('app/exports/' . Str::uuid() . '/');
+                    File::ensureDirectoryExists($work_path);
                     $organization_ids = [];
                     if ($export_configuration->organization_tags) {
                         $export_configuration->organization_tags = explode(',', $export_configuration->organization_tags);
@@ -89,7 +94,7 @@ class AutoExport extends Command
                     // if (file_exists(public_path('datapackage.zip'))) {
                     //     unlink(public_path('datapackage.zip'));
                     // }
-                    $file_service = fopen('services.csv', 'w');
+                    $file_service = fopen($work_path . 'services.csv', 'w');
                     fputcsv($file_service, array('id', 'organization_id', 'program_id', 'name', 'alternate_name', 'description', 'url', 'email', 'status', 'interpretation_services', 'application_process', 'wait_time', 'fees', 'accreditations', 'licenses'));
                     // fputcsv($file_service, array('ID', 'id', 'name', 'alternate_name', 'organization_id', 'description', 'service_locations', 'url', 'program_id', 'email', 'status', 'service_taxonomy', 'application_process', 'wait_time', 'fees', 'accreditations', 'licenses', 'service_phones'));
                     foreach ($table_service as $row) {
@@ -121,14 +126,14 @@ class AutoExport extends Command
                     if (file_exists($path_csv_export . 'services.csv')) {
                         unlink($path_csv_export . 'services.csv');
                     }
-                    rename($public_path . 'services.csv', $path_csv_export . 'services.csv');
+                    rename($work_path . 'services.csv', $path_csv_export . 'services.csv');
 
                     if (!empty($organization_ids)) {
                         $table_location = Location::whereIn('location_organization', $organization_ids)->get();
                     } else {
                         $table_location = Location::all();
                     }
-                    $file_location = fopen('locations.csv', 'w');
+                    $file_location = fopen($work_path . 'locations.csv', 'w');
                     fputcsv($file_location, array('id', 'organization_id', 'name', 'alternate_name', 'description', 'transportation', 'latitude', 'longitude'));
 
                     // fputcsv($file_location, array('ID', 'id', 'name', 'organization_id', 'alternate_name', 'transportation', 'latitude', 'longitude', 'description', 'location_services', 'location_phones', 'location_details', 'location_schedule', 'location_address', 'flag'));
@@ -153,14 +158,14 @@ class AutoExport extends Command
                     if (file_exists($path_csv_export . 'locations.csv')) {
                         unlink($path_csv_export . 'locations.csv');
                     }
-                    rename($public_path . 'locations.csv', $path_csv_export . 'locations.csv');
+                    rename($work_path . 'locations.csv', $path_csv_export . 'locations.csv');
 
                     if (!empty($organization_ids)) {
                         $table_organization = Organization::whereIn('organization_recordid', $organization_ids)->get();
                     } else {
                         $table_organization = Organization::all();
                     }
-                    $file_organization = fopen('organizations.csv', 'w');
+                    $file_organization = fopen($work_path . 'organizations.csv', 'w');
 
                     fputcsv($file_organization, array('id', 'name', 'alternate_name', 'description', 'email', 'url', 'tax_status', 'tax_id', 'year_incorporated', 'legal_status'));
 
@@ -188,14 +193,14 @@ class AutoExport extends Command
                     if (file_exists($path_csv_export . 'organizations.csv')) {
                         unlink($path_csv_export . 'organizations.csv');
                     }
-                    rename($public_path . 'organizations.csv', $path_csv_export . 'organizations.csv');
+                    rename($work_path . 'organizations.csv', $path_csv_export . 'organizations.csv');
 
                     if (!empty($organization_ids)) {
                         $table_contact = Contact::whereIn('contact_organizations', $organization_ids)->get();
                     } else {
                         $table_contact = Contact::all();
                     }
-                    $file_contact = fopen('contacts.csv', 'w');
+                    $file_contact = fopen($work_path . 'contacts.csv', 'w');
                     fputcsv($file_contact, array('id', 'organization_id', 'service_id', 'service_at_location_id', 'name', 'title', 'department', 'email'));
                     // fputcsv($file_contact, array('ID', 'id', 'name', 'organization_id', 'service_id', 'title', 'department', 'email', 'phone_number', 'phone_areacode', 'phone_extension', 'flag'));
                     foreach ($table_contact as $row) {
@@ -218,13 +223,13 @@ class AutoExport extends Command
                     if (file_exists($path_csv_export . 'contacts.csv')) {
                         unlink($path_csv_export . 'contacts.csv');
                     }
-                    rename($public_path . 'contacts.csv', $path_csv_export . 'contacts.csv');
+                    rename($work_path . 'contacts.csv', $path_csv_export . 'contacts.csv');
                     if (!empty($organization_ids)) {
                         $table_phone = Phone::whereIn('phone_organizations', $organization_ids)->get();
                     } else {
                         $table_phone = Phone::all();
                     }
-                    $file_phone = fopen('phones.csv', 'w');
+                    $file_phone = fopen($work_path . 'phones.csv', 'w');
                     fputcsv($file_phone, array('id', 'location_id', 'service_id', 'organization_id', 'contact_id', 'service_at_location_id', 'number', 'extension', 'type', 'language', 'description', 'department'));
                     // fputcsv($file_phone, array('ID', 'id', 'number', 'location_id', 'service_id', 'organization_id', 'contact_id', 'extension', 'type', 'language', 'description', 'phone_schedule', 'flag'));
                     foreach ($table_phone as $row) {
@@ -252,10 +257,10 @@ class AutoExport extends Command
                     if (file_exists($path_csv_export . 'phones.csv')) {
                         unlink($path_csv_export . 'phones.csv');
                     }
-                    rename($public_path . 'phones.csv', $path_csv_export . 'phones.csv');
+                    rename($work_path . 'phones.csv', $path_csv_export . 'phones.csv');
 
                     $table_address = Address::all();
-                    $file_address = fopen('physical_addresses.csv', 'w');
+                    $file_address = fopen($work_path . 'physical_addresses.csv', 'w');
                     fputcsv($file_address, array('id', 'location_id', 'attention', 'address_1', 'address_2', 'address_3', 'address_4', 'city', 'region', 'state_province', 'postal_code', 'country'));
                     // fputcsv($file_address, array('ID', 'id', 'address_1', 'address_2', 'city', 'state_province', 'postal_code', 'region', 'country', 'attention', 'address_type', 'location_id', 'address_services', 'organization_id', 'flag'));
                     foreach ($table_address as $row) {
@@ -302,10 +307,10 @@ class AutoExport extends Command
                     if (file_exists($path_csv_export . 'physical_addresses.csv')) {
                         unlink($path_csv_export . 'physical_addresses.csv');
                     }
-                    rename($public_path . 'physical_addresses.csv', $path_csv_export . 'physical_addresses.csv');
+                    rename($work_path . 'physical_addresses.csv', $path_csv_export . 'physical_addresses.csv');
 
                     $table_language = Language::all();
-                    $file_language = fopen('languages.csv', 'w');
+                    $file_language = fopen($work_path . 'languages.csv', 'w');
                     fputcsv($file_language, array('id', 'service_id', 'location_id', 'language'));
                     // fputcsv($file_language, array('ID', 'id', 'location_id', 'service_id', 'language', 'flag'));
                     foreach ($table_language as $row) {
@@ -324,10 +329,10 @@ class AutoExport extends Command
                     if (file_exists($path_csv_export . 'languages.csv')) {
                         unlink($path_csv_export . 'languages.csv');
                     }
-                    rename($public_path . 'languages.csv', $path_csv_export . 'languages.csv');
+                    rename($work_path . 'languages.csv', $path_csv_export . 'languages.csv');
 
                     $table_taxonomy = Taxonomy::all();
-                    $file_taxonomy = fopen('taxonomy_terms.csv', 'w');
+                    $file_taxonomy = fopen($work_path . 'taxonomy_terms.csv', 'w');
                     // fputcsv($file_taxonomy, array('ID', 'id', 'name', 'parent_name', 'taxonomy_grandparent_name', 'vocabulary', 'taxonomy_x_description', 'taxonomy_x_notes', 'taxonomy_services', 'parent_id', 'taxonomy_facet', 'category_id', 'taxonomy_id', 'flag'));
                     fputcsv($file_taxonomy, array('id', 'term', 'description', 'parent_id', 'taxonomy', 'language'));
                     foreach ($table_taxonomy as $row) {
@@ -353,10 +358,10 @@ class AutoExport extends Command
                     if (file_exists($path_csv_export . 'taxonomy_terms.csv')) {
                         unlink($path_csv_export . 'taxonomy_terms.csv');
                     }
-                    rename($public_path . 'taxonomy_terms.csv', $path_csv_export . 'taxonomy_terms.csv');
+                    rename($work_path . 'taxonomy_terms.csv', $path_csv_export . 'taxonomy_terms.csv');
 
                     $table_servicetaxonomy = ServiceTaxonomy::all();
-                    $file_servicetaxonomy = fopen('service_attributes.csv', 'w');
+                    $file_servicetaxonomy = fopen($work_path . 'service_attributes.csv', 'w');
                     fputcsv($file_servicetaxonomy, array('id', 'service_id', 'taxonomy_term_id'));
                     // fputcsv($file_servicetaxonomy, array('ID', 'service_id', 'taxonomy_recordid', 'taxonomy_id', 'taxonomy_detail'));
                     foreach ($table_servicetaxonomy as $row) {
@@ -375,10 +380,10 @@ class AutoExport extends Command
                     if (file_exists($path_csv_export . 'service_attributes.csv')) {
                         unlink($path_csv_export . 'service_attributes.csv');
                     }
-                    rename($public_path . 'service_attributes.csv', $path_csv_export . 'service_attributes.csv');
+                    rename($work_path . 'service_attributes.csv', $path_csv_export . 'service_attributes.csv');
 
                     $table_servicelocation = ServiceLocation::all();
-                    $file_servicelocation = fopen('services_at_location.csv', 'w');
+                    $file_servicelocation = fopen($work_path . 'services_at_location.csv', 'w');
                     fputcsv($file_servicelocation, array('id', 'service_id', 'location_id', 'description'));
                     // fputcsv($file_servicelocation, array('ID', 'location_id', 'service_id'));
                     foreach ($table_servicelocation as $row) {
@@ -396,10 +401,10 @@ class AutoExport extends Command
                     if (file_exists($path_csv_export . 'services_at_location.csv')) {
                         unlink($path_csv_export . 'services_at_location.csv');
                     }
-                    rename($public_path . 'services_at_location.csv', $path_csv_export . 'services_at_location.csv');
+                    rename($work_path . 'services_at_location.csv', $path_csv_export . 'services_at_location.csv');
 
                     $table_accessibility = Accessibility::all();
-                    $file_accessibility = fopen('accessibility_for_disabilities.csv', 'w');
+                    $file_accessibility = fopen($work_path . 'accessibility_for_disabilities.csv', 'w');
                     fputcsv($file_accessibility, array('ID', 'id', 'location_id', 'accessibility', 'details'));
                     foreach ($table_accessibility as $row) {
                         fputcsv($file_accessibility, $row->toArray());
@@ -408,10 +413,10 @@ class AutoExport extends Command
                     if (file_exists($path_csv_export . 'accessibility_for_disabilities.csv')) {
                         unlink($path_csv_export . 'accessibility_for_disabilities.csv');
                     }
-                    rename($public_path . 'accessibility_for_disabilities.csv', $path_csv_export . 'accessibility_for_disabilities.csv');
+                    rename($work_path . 'accessibility_for_disabilities.csv', $path_csv_export . 'accessibility_for_disabilities.csv');
 
                     $table_schedule = Schedule::all();
-                    $file_schedule = fopen('schedules.csv', 'w');
+                    $file_schedule = fopen($work_path . 'schedules.csv', 'w');
                     // fputcsv($file_schedule, array('ID', 'schedule_recordid', 'schedule_id', 'service_id', 'location_id', 'schedule_x_phones', 'weekday', 'opens_at', 'closes_at', 'holiday', 'start_date', 'end_date', 'original_text', 'Schedule_closed', 'flag'));
                     fputcsv($file_schedule, array('id', 'service_id', 'location_id', 'service_at_location_id', 'valid_from', 'valid_to', 'dtstart', 'until', 'wkst', 'freq', 'interval', 'byday', 'byweekno', 'bymonthday', 'byyearday', 'description'));
                     foreach ($table_schedule as $row) {
@@ -444,12 +449,12 @@ class AutoExport extends Command
                     if (file_exists($path_csv_export . 'schedules.csv')) {
                         unlink($path_csv_export . 'schedules.csv');
                     }
-                    rename($public_path . 'schedules.csv', $path_csv_export . 'schedules.csv');
+                    rename($work_path . 'schedules.csv', $path_csv_export . 'schedules.csv');
 
                     // program
 
                     $table_program = Program::all();
-                    $file_program = fopen('programs.csv', 'w');
+                    $file_program = fopen($work_path . 'programs.csv', 'w');
                     fputcsv($file_program, array('id', 'organization_id', 'name', 'alternate_name'));
 
                     // fputcsv($file_program, array('ID', 'id', 'name', 'organization_id', 'alternate_name', 'transportation', 'latitude', 'longitude', 'description', 'program_services', 'program_phones', 'program_details', 'program_schedule', 'program_address', 'flag'));
@@ -469,7 +474,7 @@ class AutoExport extends Command
                     if (file_exists($path_csv_export . 'programs.csv')) {
                         unlink($path_csv_export . 'programs.csv');
                     }
-                    rename($public_path . 'programs.csv', $path_csv_export . 'programs.csv');
+                    rename($work_path . 'programs.csv', $path_csv_export . 'programs.csv');
 
                     ExportHistory::create([
                         'name' => $export_configuration->name,
@@ -478,7 +483,7 @@ class AutoExport extends Command
                         'status' => 'completed',
                     ]);
 
-                    $zip_file = 'zip/' . $export_configuration->file_name;
+                    $zip_file = public_path('zip/' . $export_configuration->file_name);
                     // $zip_file = 'datapackage.zip';
                     $zip = new \ZipArchive();
                     $zip->open($zip_file, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
@@ -496,6 +501,7 @@ class AutoExport extends Command
                         }
                     }
                     $zip->close();
+                    File::deleteDirectory($work_path);
                     Log::info("Auto Export Completed.");
                 }
             }

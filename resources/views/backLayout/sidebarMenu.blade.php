@@ -83,9 +83,6 @@
                 <li><a><i class="fa fa-database"></i> Datasync <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                         <li><a href="/import">Import</a></li>
-                        {{-- <li><a href="/importContact">Import Contact</a></li>
-                        <li><a href="/importOrganization">Import Organization</a></li>
-                        <li><a href="/importFacility">Import Loaction</a></li> --}}
                         <!-- <li><a href="/home_edit">Home</a></li> -->
                         <li><a href="{{ route('export.index') }}">Export</a></li>
                     </ul>

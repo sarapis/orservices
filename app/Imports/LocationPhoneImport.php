@@ -8,6 +8,9 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class LocationPhoneImport implements ToModel, WithHeadingRow
 {
+    // Columns model() reads without a fallback; CsvImport::assertColumns() checks them before importing.
+    public const REQUIRED_COLUMNS = ['location_recordid', 'phone_recordid'];
+
     /**
      * @param array $row
      *

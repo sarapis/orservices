@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\backend;
 
+use App\Services\CsvImport;
 use App\Http\Controllers\Controller;
 use App\Imports\LanguageImport;
 use App\Model\Language;
@@ -23,32 +24,12 @@ class LanguageController extends Controller
     public function csv(Request $request)
     {
         try {
-            // $path = $request->file('csv_file')->getRealPath();
-
-            // $data = Excel::load($path)->get();
-
-            // $filename =  $request->file('csv_file')->getClientOriginalName();
-            // $request->file('csv_file')->move(public_path('/csv/'), $filename);
-
-            // if ($filename != 'languages.csv') {
-            //     $response = array(
-            //         'status' => 'error',
-            //         'result' => 'This CSV is not correct.',
-            //     );
-            //     return $response;
-            // }
-
-            // if (count($data) > 0) {
-            //     $csv_header_fields = [];
-            //     foreach ($data[0] as $key => $value) {
-            //         $csv_header_fields[] = $key;
-            //     }
-            //     $csv_data = $data;
-            // }
+            $file = CsvImport::upload($request, 'csv_file');
+            CsvImport::assertColumns(new LanguageImport, $file);
 
             Language::truncate();
 
-            Excel::import(new LanguageImport, $request->file('csv_file'));
+            Excel::import(new LanguageImport, $file);
 
             $date = Carbon::now();
             $csv_source = CSV_Source::where('name', '=', 'Languages')->first();

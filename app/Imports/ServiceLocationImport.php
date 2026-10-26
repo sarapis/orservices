@@ -8,6 +8,9 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class ServiceLocationImport implements ToModel, WithHeadingRow
 {
+    // Columns model() reads without a fallback; CsvImport::assertColumns() checks them before importing.
+    public const REQUIRED_COLUMNS = ['location_id', 'service_id'];
+
     /**
      * @param array $row
      *

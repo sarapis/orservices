@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\frontEnd;
 
+use App\Services\CsvImport;
 use App\Http\Controllers\Controller;
 use App\Imports\AreaImport;
 use App\Model\Area;
@@ -17,32 +18,12 @@ class AreaController extends Controller
     public function csv(Request $request)
     {
         try {
-            // $path = $request->file('csv_file')->getRealPath();
-
-            // $data = Excel::load($path)->get();
-
-            // $filename =  $request->file('csv_file')->getClientOriginalName();
-            // $request->file('csv_file')->move(public_path('/csv/'), $filename);
-
-            // if ($filename != 'service_areas.csv') {
-            //     $response = array(
-            //         'status' => 'error',
-            //         'result' => 'This CSV is not correct.',
-            //     );
-            //     return $response;
-            // }
-
-            // if (count($data) > 0) {
-            //     $csv_header_fields = [];
-            //     foreach ($data[0] as $key => $value) {
-            //         $csv_header_fields[] = $key;
-            //     }
-            //     $csv_data = $data;
-            // }
+            $file = CsvImport::upload($request, 'csv_file');
+            CsvImport::assertColumns(new AreaImport, $file);
 
             Area::truncate();
 
-            Excel::import(new AreaImport, $request->file('csv_file'));
+            Excel::import(new AreaImport, $file);
 
             $date = Carbon::now();
             $csv_source = CSV_Source::where('name', '=', 'Service_areas')->first();

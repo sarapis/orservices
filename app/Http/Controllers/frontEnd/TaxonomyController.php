@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\frontEnd;
 
+use App\Services\CsvImport;
 use App\Services\SafeUpload;
 use App\Exports\TaxonomyExport;
 use App\Functions\Airtable;
@@ -265,30 +266,10 @@ class TaxonomyController extends Controller
     public function csv(Request $request)
     {
         try {
-            // $path = $request->file('csv_file')->getRealPath();
+            $file = CsvImport::upload($request, 'csv_file');
+            CsvImport::assertColumns(new TaxonomyImport, $file);
 
-            // $data = Excel::load($path)->get();
-
-            // $filename = $request->file('csv_file')->getClientOriginalName();
-            // $request->file('csv_file')->move(public_path('/csv/'), $filename);
-
-            // if ($filename != 'taxonomy.csv') {
-            //     $response = array(
-            //         'status' => 'error',
-            //         'result' => 'This CSV is not correct.',
-            //     );
-            //     return $response;
-            // }
-
-            // if (count($data) > 0) {
-            //     $csv_header_fields = [];
-            //     foreach ($data[0] as $key => $value) {
-            //         $csv_header_fields[] = $key;
-            //     }
-            //     $csv_data = $data;
-            // }
-
-            Excel::import(new TaxonomyImport, $request->file('csv_file'));
+            Excel::import(new TaxonomyImport, $file);
 
             $date = Carbon::now();
             $csv_source = CSV_Source::where('name', '=', 'Taxonomy')->first();
@@ -312,32 +293,12 @@ class TaxonomyController extends Controller
     public function csv_services_taxonomy(Request $request)
     {
         try {
-            // $path = $request->file('csv_file')->getRealPath();
-
-            // $data = Excel::load($path)->get();
-
-            // $filename = $request->file('csv_file')->getClientOriginalName();
-            // $request->file('csv_file')->move(public_path('/csv/'), $filename);
-
-            // if ($filename != 'services_taxonomy.csv') {
-            //     $response = array(
-            //         'status' => 'error',
-            //         'result' => 'This CSV is not correct.',
-            //     );
-            //     return $response;
-            // }
-
-            // if (count($data) > 0) {
-            //     $csv_header_fields = [];
-            //     foreach ($data[0] as $key => $value) {
-            //         $csv_header_fields[] = $key;
-            //     }
-            //     $csv_data = $data;
-            // }
+            $file = CsvImport::upload($request, 'csv_file');
+            CsvImport::assertColumns(new ServiceTaxonomyImport, $file);
 
             ServiceTaxonomy::truncate();
 
-            Excel::import(new ServiceTaxonomyImport, $request->file('csv_file'));
+            Excel::import(new ServiceTaxonomyImport, $file);
 
             $date = date("Y/m/d H:i:s");
             $csv_source = CSV_Source::where('name', '=', 'Services_taxonomy')->first();

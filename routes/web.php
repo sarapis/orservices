@@ -572,10 +572,6 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::resource('languages', LanguageController::class);
     Route::resource('service_categories', ServiceCategoryController::class);
     Route::resource('service_eligibilities', ServiceEligibilityController::class);
-    // Route::get('import', 'backend\ExcelImportController@importContact')->name('dataSync.import');
-    // Route::get('importOrganization', 'backend\ExcelImportController@importOrganization');
-    // Route::get('importFacility', 'backend\ExcelImportController@importFacility');
-    Route::post('ImportContactExcel', 'backend\ExcelImportController@ImportContactExcel')->name('dataSync.ImportContactExcel');
     Route::post('save_default_service_status', 'backend\ServiceStatusController@save_default_service_status')->name('service_status.save_default_service_status');
     Route::post('save_default_organization_status', 'backend\OrganizationStatusController@save_default_organization_status')->name('organization_status.save_default_organization_status');
 });

@@ -8,6 +8,9 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class TaxonomyTermImport implements ToModel, WithHeadingRow
 {
+    // Columns model() reads without a fallback; CsvImport::assertColumns() checks them before importing.
+    public const REQUIRED_COLUMNS = ['taxonomy_recordid', 'taxonomy_type_recordid'];
+
     /**
      * @param array $row
      *

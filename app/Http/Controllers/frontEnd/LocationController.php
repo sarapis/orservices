@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\frontEnd;
 
+use App\Services\CsvImport;
 use App\Services\SafeUpload;
 use App\Exports\LocationExport;
 use App\Http\Controllers\Controller;
@@ -353,9 +354,12 @@ class LocationController extends Controller
     public function csv(Request $request)
     {
         try {
+            $file = CsvImport::upload($request, 'csv_file');
+            CsvImport::assertColumns(new LocationImport, $file);
+
             Location::truncate();
 
-            Excel::import(new LocationImport, $request->file('csv_file'));
+            Excel::import(new LocationImport, $file);
 
             $date = Carbon::now();
             $csv_source = CSV_Source::where('name', '=', 'Locations')->first();
@@ -370,63 +374,12 @@ class LocationController extends Controller
             return $response;
         } catch (\Throwable $th) {
             Log::error('Error in location csv : ' . $th);
+
+            return [
+                'status' => 'false',
+                'result' => $th->getMessage(),
+            ];
         }
-    }
-
-    public function csv_accessibility(Request $request)
-    {
-
-
-        $path = $request->file('csv_file')->getRealPath();
-
-        $data = Excel::load($path)->get();
-
-        $filename =  $request->file('csv_file')->getClientOriginalName();
-        SafeUpload::save($request->file('csv_file'), public_path('csv'), 'accessibility_for_disabilities', SafeUpload::CSV, 'csv_file');
-
-        if ($filename != 'accessibility_for_disabilities.csv') {
-            $response = array(
-                'status' => 'error',
-                'result' => 'This CSV is not correct.',
-            );
-            return $response;
-        }
-
-        if (count($data) > 0) {
-            $csv_header_fields = [];
-            foreach ($data[0] as $key => $value) {
-                $csv_header_fields[] = $key;
-            }
-            $csv_data = $data;
-        }
-
-        if ($csv_header_fields[0] != 'id' || $csv_header_fields[1] != 'location_id' || $csv_header_fields[2] != 'accessibility' || $csv_header_fields[3] != 'details') {
-            $response = array(
-                'status' => 'error',
-                'result' => 'This CSV field is not matched.',
-            );
-            return $response;
-        }
-
-        Accessibility::truncate();
-
-        $size = '';
-        foreach ($csv_data as $key => $row) {
-
-            $accessibility = new Accessibility();
-
-            $accessibility->accessibility_recordid = $row[$csv_header_fields[0]] != 'NULL' ? $row[$csv_header_fields[0]] : null;
-            $accessibility->location_recordid = $row[$csv_header_fields[1]] != 'NULL' ? $row[$csv_header_fields[1]] : null;
-            $accessibility->accessibility = $row[$csv_header_fields[2]] != 'NULL' ? $row[$csv_header_fields[2]] : null;;
-            $accessibility->details = $row[$csv_header_fields[3]] != 'NULL' ? $row[$csv_header_fields[3]] : null;;
-            $accessibility->save();
-        }
-
-        $date = date("Y/m/d H:i:s");
-        $csv_source = CSV_Source::where('name', '=', 'Accessibility_for_disabilites')->first();
-        $csv_source->records = Accessibility::count();
-        $csv_source->syncdate = $date;
-        $csv_source->save();
     }
 
     public function index(Request $request)

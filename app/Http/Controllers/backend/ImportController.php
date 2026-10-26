@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\backend;
 
+use App\Services\CsvImport;
 use App\Services\SafeUpload;
 use App\Functions\Airtable;
 use App\Http\Controllers\Controller;
@@ -757,6 +758,7 @@ class ImportController extends Controller
             }
 
             //
+            CsvImport::assertColumns(new Services, $path);
             Excel::import(new Services, $path);
 
             $date = Carbon::now();
@@ -776,9 +778,8 @@ class ImportController extends Controller
 
                 return $response;
             }
-
-            // $data = Excel::load($path)->get();
             //
+            CsvImport::assertColumns(new LocationImport, $path);
             Excel::import(new LocationImport, $path);
 
             $date = Carbon::now();
@@ -800,6 +801,7 @@ class ImportController extends Controller
             }
 
             //
+            CsvImport::assertColumns(new OrganizationImport, $path);
             Excel::import(new OrganizationImport, $path);
 
             $date = Carbon::now();
@@ -820,6 +822,7 @@ class ImportController extends Controller
                 return $response;
             }
             //
+            CsvImport::assertColumns(new ContactImport, $path);
             Excel::import(new ContactImport, $path);
 
             $date = Carbon::now();
@@ -840,6 +843,7 @@ class ImportController extends Controller
                 return $response;
             }
             //
+            CsvImport::assertColumns(new PhoneImport, $path);
             Excel::import(new PhoneImport, $path);
 
             $date = Carbon::now();
@@ -860,6 +864,7 @@ class ImportController extends Controller
                 return $response;
             }
             //
+            CsvImport::assertColumns(new AddressImport, $path);
             Excel::import(new AddressImport, $path);
 
             $date = Carbon::now();
@@ -879,6 +884,7 @@ class ImportController extends Controller
                 return $response;
             }
             //
+            CsvImport::assertColumns(new LanguageImport, $path);
             Excel::import(new LanguageImport, $path);
             $date = Carbon::now();
             $csv_source = CSV_Source::where('name', '=', 'Languages')->first();
@@ -899,6 +905,7 @@ class ImportController extends Controller
                 return $response;
             }
             //
+            CsvImport::assertColumns(new TaxonomyImport, $path);
             Excel::import(new TaxonomyImport, $path);
 
             $date = Carbon::now();
@@ -919,6 +926,7 @@ class ImportController extends Controller
                 return $response;
             }
             //
+            CsvImport::assertColumns(new TaxonomyTypeImport, $path);
             Excel::import(new TaxonomyTypeImport, $path);
 
             $date = Carbon::now();
@@ -940,6 +948,7 @@ class ImportController extends Controller
                 return $response;
             }
             //
+            CsvImport::assertColumns(new TaxonomyTermImport, $path);
             Excel::import(new TaxonomyTermImport, $path);
 
             $date = Carbon::now();
@@ -962,6 +971,7 @@ class ImportController extends Controller
 
             // ServiceTaxonomy::truncate();
             //
+            CsvImport::assertColumns(new ServiceTaxonomyImport, $path);
             Excel::import(new ServiceTaxonomyImport, $path);
 
             $date = date('Y/m/d H:i:s');
@@ -984,6 +994,7 @@ class ImportController extends Controller
 
             // ServiceLocation::truncate();
             //
+            CsvImport::assertColumns(new ServiceLocationImport, $path);
             Excel::import(new ServiceLocationImport, $path);
 
             $date = Carbon::now();
@@ -1005,6 +1016,7 @@ class ImportController extends Controller
             }
             // Accessibility::truncate();
             //
+            CsvImport::assertColumns(new AccessibilityImport, $path);
             Excel::import(new AccessibilityImport, $path);
 
             $date = Carbon::now();
@@ -1025,6 +1037,8 @@ class ImportController extends Controller
                 return $response;
             }
 
+            CsvImport::assertColumns(new ScheduleImport, $path);
+
             Excel::import(new ScheduleImport, $path);
 
             $date = Carbon::now();
@@ -1044,6 +1058,7 @@ class ImportController extends Controller
 
                 return $response;
             }
+            CsvImport::assertColumns(new ServiceTagImport, $path);
             Excel::import(new ServiceTagImport, $path);
 
             //organization tag.csv
@@ -1057,6 +1072,7 @@ class ImportController extends Controller
 
                 return $response;
             }
+            CsvImport::assertColumns(new OrganizationTagImport, $path);
             Excel::import(new OrganizationTagImport, $path);
 
             //LocationAddress
@@ -1070,6 +1086,7 @@ class ImportController extends Controller
 
                 return $response;
             }
+            CsvImport::assertColumns(new LocationAddressImport, $path);
             Excel::import(new LocationAddressImport, $path);
 
             //LocationPhone
@@ -1083,6 +1100,7 @@ class ImportController extends Controller
 
                 return $response;
             }
+            CsvImport::assertColumns(new LocationPhoneImport, $path);
             Excel::import(new LocationPhoneImport, $path);
 
             //ServicePhone
@@ -1096,6 +1114,7 @@ class ImportController extends Controller
 
                 return $response;
             }
+            CsvImport::assertColumns(new ServicePhoneImport, $path);
             Excel::import(new ServicePhoneImport, $path);
 
             rename(public_path('/HSDS/data/services.csv'), public_path('/csv/services.csv'));

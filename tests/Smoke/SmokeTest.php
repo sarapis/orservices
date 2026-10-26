@@ -2,35 +2,18 @@
 
 namespace Tests\Smoke;
 
-use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
+use Tests\Smoke\Concerns\SetsUpSite;
 use Tests\TestCase;
 
 class SmokeTest extends TestCase
 {
-    use RefreshDatabase;
-
-    // Single-row settings tables the app reads as Model::find(1) on every page.
-    private const SETTINGS_TABLES = ['layouts', 'maps', 'source_datas'];
+    use RefreshDatabase, SetsUpSite;
 
     protected function setUp(): void
     {
         parent::setUp();
-        foreach (self::SETTINGS_TABLES as $table) {
-            $this->insertRow($table, ['id' => 1]);
-        }
-    }
-
-    /** Insert $values, filling any other NOT NULL column without a default with 0 or ''. */
-    private function insertRow(string $table, array $values): void
-    {
-        foreach (DB::select("PRAGMA table_info($table)") as $col) {
-            if ($col->notnull && $col->dflt_value === null && ! array_key_exists($col->name, $values) && ! $col->pk) {
-                $values[$col->name] = preg_match('/int|real|num|dec|float|double|bool/i', $col->type) ? 0 : '';
-            }
-        }
-        DB::table($table)->insert($values);
+        $this->setUpSite();
     }
 
     public function test_home_page()
@@ -43,14 +26,6 @@ class SmokeTest extends TestCase
         $this->get('/login')->assertOk();
     }
 
-    /** A user whose role grants exactly $permissions (route names, as the app stores them). */
-    private function userWith(array $permissions): User
-    {
-        $this->insertRow('roles', ['name' => 'Smoke', 'permissions' => json_encode($permissions)]);
-        $roleId = DB::table('roles')->max('id');
-
-        return User::factory()->create(['role_id' => $roleId]);
-    }
 
     public function test_admin_page_for_a_user_with_the_permission()
     {

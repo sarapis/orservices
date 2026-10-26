@@ -10,6 +10,9 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class AddressImport implements ToModel, WithHeadingRow
 {
+    // Columns model() reads without a fallback; CsvImport::assertColumns() checks them before importing.
+    public const REQUIRED_COLUMNS = ['id', 'location_id', 'address_1', 'address_2', 'city', 'postal_code', 'state_province', 'country', 'attention', 'region', 'address_services', 'address_organization'];
+
     /**
      * @param array $row
      *

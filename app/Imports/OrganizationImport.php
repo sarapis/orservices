@@ -8,6 +8,9 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class OrganizationImport implements ToModel, WithHeadingRow
 {
+    // Columns model() reads without a fallback; CsvImport::assertColumns() checks them before importing.
+    public const REQUIRED_COLUMNS = ['id', 'name', 'alternate_name', 'description', 'url', 'email', 'tax_status', 'tax_id', 'year_incorporated', 'legal_status', 'organization_tag'];
+
     /**
      * @param array $row
      *

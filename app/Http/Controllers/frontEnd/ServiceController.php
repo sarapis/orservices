@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\frontEnd;
 
+use App\Services\CsvImport;
 use App\Exports\ServiceExport;
 use App\Functions\Airtable;
 use App\Http\Controllers\Controller;
@@ -3694,23 +3695,13 @@ class ServiceController extends Controller
     public function csv(Request $request)
     {
         try {
-            // $file = $request->file('csv_file');
-
-            // $filename = $request->file('csv_file')->getClientOriginalName();
-            // $file->move(public_path('/csv/'), $filename);
-
-            // if ($filename != 'services.csv') {
-            //     $response = array(
-            //         'status' => 'error',
-            //         'result' => 'This CSV is not correct.',
-            //     );
-            //     return $response;
-            // }
+            $file = CsvImport::upload($request, 'csv_file');
+            CsvImport::assertColumns(new Services, $file);
 
             Service::truncate();
             ServiceOrganization::truncate();
 
-            Excel::import(new Services, $request->file('csv_file'));
+            Excel::import(new Services, $file);
 
             $date = Carbon::now();
             $csv_source = CSV_Source::where('name', '=', 'Services')->first();
@@ -3726,6 +3717,11 @@ class ServiceController extends Controller
             return $response;
         } catch (\Throwable $th) {
             Log::error('Error in service csv : '.$th);
+
+            return [
+                'status' => 'false',
+                'result' => $th->getMessage(),
+            ];
         }
     }
 
@@ -3744,32 +3740,12 @@ class ServiceController extends Controller
     public function csv_services_location(Request $request)
     {
         try {
-            // $path = $request->file('csv_file')->getRealPath();
-
-            // $data = Excel::load($path)->get();
-
-            // $filename = $request->file('csv_file')->getClientOriginalName();
-            // $request->file('csv_file')->move(public_path('/csv/'), $filename);
-
-            // if ($filename != 'services_at_location.csv') {
-            //     $response = array(
-            //         'status' => 'error',
-            //         'result' => 'This CSV is not correct.',
-            //     );
-            //     return $response;
-            // }
-
-            // if (count($data) > 0) {
-            //     $csv_header_fields = [];
-            //     foreach ($data[0] as $key => $value) {
-            //         $csv_header_fields[] = $key;
-            //     }
-            //     $csv_data = $data;
-            // }
+            $file = CsvImport::upload($request, 'csv_file');
+            CsvImport::assertColumns(new ServiceLocationImport, $file);
 
             ServiceLocation::truncate();
 
-            Excel::import(new ServiceLocationImport, $request->file('csv_file'));
+            Excel::import(new ServiceLocationImport, $file);
 
             $date = Carbon::now();
             $csv_source = CSV_Source::where('name', '=', 'Services_location')->first();
